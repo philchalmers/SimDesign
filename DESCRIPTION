@@ -1,5 +1,5 @@
 Package: SimDesign
-Title: Generic code for organizing Monte Carlo simulations
+Title: Code for organizing Monte Carlo simulations in R
 Version: 0.1
 Authors@R: person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com",
            role = c("aut", "cre"))
