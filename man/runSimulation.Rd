@@ -46,14 +46,34 @@ runSimulation(Functions, Design, each, parallel = FALSE, save_every = 1,
   'sim', 'compute', and 'collect' in that order}
 }
 \description{
-The following function will appropriately call the `Analysis()` function given the parameters
-defined from `runSimulation`. Two constants for each condition are returned by default:
+This function runs a Monte Carlo simulation study given the simulation function, the deisgn conditions,
+and the number of replications. Results are saved as temporary files in case of interuptions
+and can be restored simply by reruning the function again in the same working directory as the
+temp file. Supports parallel and cluster computing, and is designed to be cross-platform and highly
+customizable.
+}
+\details{
+The stategy for organizing the Monte Carlo simulation workflow is to
+\describe{
+   \item{1)}{Define a suitable Design data.frame. This is often expidited by using the
+      \code{\link{expand.grid}} function}
+   \item{2)}{Define the three step functions to simulate the data (\code{\link{sim}}),
+      compute the respective parameter estimates, detection rates, etc (\code{\link{compute}}),
+      and finally collect the results across the total number of replications (\code{\link{collect}}).
+      Save these functions as a named list with the elements 'sim', 'compute', and 'collect'
+   }
+   \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
+      number of replications with the \code{each} input}
+   \item{4)}{Analyze the output from \code{runSimulation}, possibly using techniques from ANOVA
+     and generating suitable plots}
+}
+
+Two constants for each condition are returned by default:
 N_CELL_RUNS to indicate the number of Monte Carlo runs it took to obtain valid results (this will
 be greater than the number of replications requested if, for example, models failed to converge
 and had to be re-drawn), and SIM_TIME to indicate how long (in seconds) it took to complete
 all the Monte Carlo replications for each respective condition.
-}
-\details{
+
 In the event of a computer crash, power outage, etc, if the 'save_every' command has been
 used to save temporary results then the original code in main.R need only be rerun again.
 The temp file will be read into the design, and the simulation will continue where it left

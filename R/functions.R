@@ -45,6 +45,11 @@ sim <- function(condition, edit) NULL
 #' the output to a named list containing different parameter configurations (i.e., when
 #' determining RMSD values for a large set of population parameters).
 #'
+#' Be sure to make heavy use
+#' of \code{\link{try}} combinations and throw a \code{\link{stop}} if an iterative function fails
+#' to converge. This will cause the function to stop, and \code{\link{sim}} will be called again
+#' to obtain a different dataset.
+#'
 #' @param simlist a list containing the data.frame ('dat') and parameters ('parameters')
 #'   generated from the sim() function
 #' @param condition a single row from the Design input (as a data.frame), indicating the

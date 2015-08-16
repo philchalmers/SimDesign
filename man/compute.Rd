@@ -26,6 +26,12 @@ This is the computational heavy lifting section. In some cases, it may be easier
 the output to a named list containing different parameter configurations (i.e., when
 determining RMSD values for a large set of population parameters).
 }
+\details{
+Be sure to make heavy use
+of \code{\link{try}} combinations and throw a \code{\link{stop}} if an iterative function fails
+to converge. This will cause the function to stop, and \code{\link{sim}} will be called again
+to obtain a different dataset.
+}
 \examples{
 \dontrun{
 
