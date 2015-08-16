@@ -5,9 +5,10 @@
 \title{Run a Monte Carlo simulation given a Design data.frame and functions}
 \usage{
 runSimulation(Functions, Design, each, parallel = FALSE, save_every = 1,
-  clean = TRUE, filename = paste0(Sys.info()["nodename"], "_Final.rds"),
-  tmpfilename = paste0(Sys.info()["nodename"], "_tmpsim.rds"),
-  ncores = parallel::detectCores(), MPI = FALSE, edit = "none")
+  clean = TRUE, filename = paste0(Sys.info()["nodename"], "_Final_", each,
+  ".rds"), tmpfilename = paste0(Sys.info()["nodename"], "_tmpsim.rds"),
+  ncores = parallel::detectCores(), MPI = FALSE, save = TRUE,
+  edit = "none")
 }
 \arguments{
 \item{Functions}{a named list of 3-4 functions for the simulation. The three functions 'sim', 'compute',
@@ -37,7 +38,9 @@ runSimulation(Functions, Design, each, parallel = FALSE, save_every = 1,
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
-\item{MPI}{logical; use the doMPI package to run simulation in parallel on a cluster?}
+\item{MPI}{logical; use the doMPI package to run simulation in parallel on a cluster? Default is FALSE}
+
+\item{save}{logical; save the final simulation and temp files to the hard-drive? Default is TRUE}
 
 \item{edit}{a string indicating where to initiate a `browser()` call for editing and debugging.
   Options are 'none' (default), 'main' to edit the main function calls loop, 'sim' to edit the
@@ -183,10 +186,8 @@ Funs <- list(sim=mysim, compute=mycompute, collect=mycollect)
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 3 --- Collect results by looping over the rows in Design
 
-# this simulation saves a temp file to the working directory
-#    after every condition is finished, and will save an .rds file
-#    when the simulation is complete
-Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE)
+# this simulation does not save temp files or the final result to disk (save=FALSE)
+Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE, save=FALSE)
 
 ## Debug the sim function (not run). See ?browser for help on debugging
 # runSimulation(Funs, Design, each = 1000, parallel=TRUE, edit = 'sim')

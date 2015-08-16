@@ -61,7 +61,9 @@
 #'   read in if it is in the working directory, and the simulation will continue where at the last
 #'   point this file was saved. This file will be deleted when the simulation is complete
 #'
-#' @param MPI logical; use the doMPI package to run simulation in parallel on a cluster?
+#' @param MPI logical; use the doMPI package to run simulation in parallel on a cluster? Default is FALSE
+#'
+#' @param save logical; save the final simulation and temp files to the hard-drive? Default is TRUE
 #'
 #' @param edit a string indicating where to initiate a `browser()` call for editing and debugging.
 #'   Options are 'none' (default), 'main' to edit the main function calls loop, 'sim' to edit the
@@ -176,10 +178,8 @@
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Step 3 --- Collect results by looping over the rows in Design
 #'
-#' # this simulation saves a temp file to the working directory
-#' #    after every condition is finished, and will save an .rds file
-#' #    when the simulation is complete
-#' Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE)
+#' # this simulation does not save temp files or the final result to disk (save=FALSE)
+#' Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE, save=FALSE)
 #'
 #' ## Debug the sim function (not run). See ?browser for help on debugging
 #' # runSimulation(Funs, Design, each = 1000, parallel=TRUE, edit = 'sim')
@@ -233,9 +233,9 @@
 #' }
 #'
 runSimulation <- function(Functions, Design, each, parallel = FALSE, save_every = 1, clean = TRUE,
-                          filename = paste0(Sys.info()['nodename'],'_Final.rds'),
+                          filename = paste0(Sys.info()['nodename'],'_Final_', each, '.rds'),
                           tmpfilename = paste0(Sys.info()['nodename'], '_tmpsim.rds'),
-                          ncores = parallel::detectCores(), MPI = FALSE, edit = 'none')
+                          ncores = parallel::detectCores(), MPI = FALSE, save = TRUE, edit = 'none')
 {
     FunNames <- names(Functions)
     if(!all(FunNames %in% c('sim', 'compute', 'collect', 'main')))
@@ -303,7 +303,7 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, save_every 
                                                              cl=cl, MPI=MPI))))
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
-        if(!is.na(save_every))
+        if(save && !is.na(save_every))
             if((i %% save_every) == 0L) saveRDS(Result_list, tmpfilename)
     }
     Final <- do.call(rbind, Result_list)
@@ -322,8 +322,10 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, save_every 
     if(filename0 != filename)
         message(paste0('\nWARNING:\n', filename0, ' existed in the working directory already.
                        A new unique name was created.\n'))
-    message(paste('\nSaving simulation results to file:', filename))
-    saveRDS(Final, filename)
+    if(save){
+        message(paste('\nSaving simulation results to file:', filename))
+        saveRDS(Final, filename)
+    }
     if(clean) system(paste0('rm -f ', tmpfilename))
     if(parallel){
         if(MPI){
