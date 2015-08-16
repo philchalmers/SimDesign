@@ -4,13 +4,11 @@
 \alias{sim}
 \title{Simulate data}
 \usage{
-sim(condition, edit)
+sim(condition)
 }
 \arguments{
 \item{condition}{a single row from the Design input (as a data.frame), indicating the
-simulation conditions}
-
-\item{edit}{a character indicating whether the function should be debugged}
+  simulation conditions}
 }
 \value{
 returns a list with a 'dat' and 'parameters' element.  The 'dat' element should be
@@ -24,9 +22,7 @@ Simulate data
 \examples{
 \dontrun{
 
-mysim <- function(condition, edit){
-
-    if(edit == 'sim') browser()
+mysim <- function(condition){
 
     #require packages/define functions if needed, or better yet index with the :: operator
 

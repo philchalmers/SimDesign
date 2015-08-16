@@ -1,4 +1,4 @@
-#' runSimulation() -- Run a simulation given a Design data.frame
+#' Run a Monte Carlo simulation given a Design data.frame and functions
 #'
 #' This function runs a Monte Carlo simulation study given the simulation function, the deisgn conditions,
 #' and the number of replications. Results are saved as temporary files in case of interuptions
@@ -93,9 +93,7 @@
 #' #### Step 2 --- Define sim, compute, and collect functions, and assign to a named list
 #'
 #' # help(sim)
-#' mysim <- function(condition, edit){
-#'
-#'     if(edit == 'sim') browser()
+#' mysim <- function(condition){
 #'
 #'     #require packages/define functions if needed, or better yet index with the :: operator
 #'
@@ -113,9 +111,7 @@
 #'
 #' # help(compute)
 #'
-#' mycompute <- function(simlist, condition, edit){
-#'
-#'     if(edit == 'compute') browser()
+#' mycompute <- function(simlist, condition){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -143,10 +139,7 @@
 #'
 #' # help(collect)
 #'
-#' mycollect <- function(results, parameters, condition, edit){
-#'
-#'     #editing call
-#'     if(edit == 'collect') browser()
+#' mycollect <- function(results, parameters, condition){
 #'
 #'     # handy functions
 #'     bias <- function(observed, population) mean(observed - population)
@@ -183,11 +176,13 @@
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Step 3 --- Collect results by looping over the rows in Design
 #'
-#' # Documentation for this function is in analysis.R. Read it carefully to understand all the
-#' #   potential inputs
-#' Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE, edit = 'none')
+#' # this simulation saves a temp file to the working directory
+#' #    after every condition is finished, and will save an .rds file
+#' #    when the simulation is complete
+#' Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE)
 #'
-#'
+#' ## Debug the sim function (not run). See ?browser for help on debugging
+#' # runSimulation(Funs, Design, each = 1000, parallel=TRUE, edit = 'sim')
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Step 4 --- Post-analysis: Create a new R file for analyzing the Final data.frame with R based
@@ -207,14 +202,14 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, save_every 
     FunNames <- names(Functions)
     if(!all(FunNames %in% c('sim', 'compute', 'collect', 'main')))
         stop('Names of Functions list do not match the required names')
-    if(is.null(Functions$main)) Functions$main <- main
+    if(is.null(Functions$main)) Functions$main <- SimDesign::main
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))
         truefms <- switch(i,
-                          main = c('index', 'condition', 'sim', 'compute', 'edit'),
-                          sim  = c('condition', 'edit'),
-                          compute = c('simlist', 'condition', 'edit'),
-                          collect = c('results', 'parameters', 'condition', 'edit'))
+                          main = c('index', 'condition', 'sim', 'compute'),
+                          sim  = c('condition'),
+                          compute = c('simlist', 'condition'),
+                          collect = c('results', 'parameters', 'condition'))
         if(!all(truefms %in% fms))
             stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
     }
@@ -231,7 +226,11 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, save_every 
     if(is.null(Design$ID))
         Design <- data.frame(ID=1L:nrow(Design), Design)
 
-    if(edit != 'none') parallel <- MPI <- FALSE
+    if(edit != 'none'){
+        parallel <- MPI <- FALSE
+        debug(Functions[[edit]])
+        on.exit(undebug(Functions[[edit]]))
+    }
 
     cl <- NULL
     if(parallel){
@@ -263,7 +262,7 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, save_every 
         Result_list[[i]] <- as.data.frame(c(as.list(Design[i, ]),
                                             as.list(Analysis(Functions=Functions,
                                                              condition=Design[i,], each=each,
-                                                             cl=cl, MPI=MPI, edit=edit))))
+                                                             cl=cl, MPI=MPI))))
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
         if(!is.na(save_every))

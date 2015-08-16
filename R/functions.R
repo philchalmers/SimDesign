@@ -2,7 +2,6 @@
 #'
 #' @param condition a single row from the Design input (as a data.frame), indicating the
 #'   simulation conditions
-#' @param edit a character indicating whether the function should be debugged
 #'
 #' @return returns a list with a 'dat' and 'parameters' element.  The 'dat' element should be
 #'   the observed data object (i.e., a vector, matrix, or data.frame), and the 'parameters'
@@ -14,9 +13,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' mysim <- function(condition, edit){
-#'
-#'     if(edit == 'sim') browser()
+#' mysim <- function(condition){
 #'
 #'     #require packages/define functions if needed, or better yet index with the :: operator
 #'
@@ -34,7 +31,7 @@
 #'
 #' }
 #'
-sim <- function(condition, edit) NULL
+sim <- function(condition) NULL
 
 #=================================================================================================#
 
@@ -54,7 +51,6 @@ sim <- function(condition, edit) NULL
 #'   generated from the sim() function
 #' @param condition a single row from the Design input (as a data.frame), indicating the
 #'   simulation conditions
-#' @param edit a character indicating whether the function should be debugged
 #'
 #' @return returns a named numeric vector with the values of interest (e.g., p-values,
 #'   effects sizes, etc), or a list containing values of interest (e.g., seperate matrix
@@ -65,9 +61,7 @@ sim <- function(condition, edit) NULL
 #' @examples
 #' \dontrun{
 #'
-#' mycompute <- function(simlist, condition, edit){
-#'
-#'     if(edit == 'compute') browser()
+#' mycompute <- function(simlist, condition){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -94,7 +88,7 @@ sim <- function(condition, edit) NULL
 #' }
 #'
 #' }
-compute <- function(simlist, condition, edit) NULL
+compute <- function(simlist, condition) NULL
 
 
 
@@ -114,7 +108,6 @@ compute <- function(simlist, condition, edit) NULL
 #'   each repetition is stored in a unique list element
 #' @param condition a single row from the Design input (as a data.frame), indicating the
 #'   simulation conditions
-#' @param edit a character indicating whether the function should be debugged
 #'
 #' @aliases collect
 #'
@@ -123,10 +116,7 @@ compute <- function(simlist, condition, edit) NULL
 #' @examples
 #' \dontrun{
 #'
-#' mycollect <- function(results, parameters, condition, edit){
-#'
-#'     #editing call
-#'     if(edit == 'collect') browser()
+#' mycollect <- function(results, parameters, condition){
 #'
 #'     # handy functions
 #'     bias <- function(observed, population) mean(observed - population)
@@ -157,7 +147,7 @@ compute <- function(simlist, condition, edit) NULL
 #'
 #' }
 #'
-collect <- function(results, parameters, condition, edit) NULL
+collect <- function(results, parameters, condition) NULL
 
 #=================================================================================================#
 
@@ -173,31 +163,30 @@ collect <- function(results, parameters, condition, edit) NULL
 #'   simulation conditions
 #' @param sim the sim() function defined above (required for parallel computing)
 #' @param compute the compute() function defined above (required for parallel computing)
-#' @param edit a character indicating whether the function should be debugged
 #'
 #' @return must return a named list with the 'result' and 'parameters' elements for the
 #'   computational results and Monte Carlo parameters from sim()
 #'
 #' @aliases main
 #'
+#' @export main
+#'
 #' @examples
 #' \dontrun{
 #'
 #' # This is the default main function
-#' print(SimDesign:::main)
+#' print(SimDesign::main)
 #'
 #' }
-main <- function(index, condition, sim, compute, edit){
-
-    if(edit == 'main') browser()
+main <- function(index, condition, sim, compute){
 
     count <- 0L
 
     while(TRUE){
 
         count <- count + 1L
-        simlist <- sim(condition, edit=edit)
-        res <- try(compute(simlist=simlist, condition=condition, edit=edit), silent=TRUE)
+        simlist <- sim(condition)
+        res <- try(compute(simlist=simlist, condition=condition), silent=TRUE)
 
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')) next

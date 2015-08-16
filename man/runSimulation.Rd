@@ -2,7 +2,7 @@
 % Please edit documentation in R/runSimulation.R
 \name{runSimulation}
 \alias{runSimulation}
-\title{runSimulation() -- Run a simulation given a Design data.frame}
+\title{Run a Monte Carlo simulation given a Design data.frame and functions}
 \usage{
 runSimulation(Functions, Design, each, parallel = FALSE, save_every = 1,
   clean = TRUE, filename = paste0(Sys.info()["nodename"], "_Final.rds"),
@@ -100,9 +100,7 @@ head(Design)
 #### Step 2 --- Define sim, compute, and collect functions, and assign to a named list
 
 # help(sim)
-mysim <- function(condition, edit){
-
-    if(edit == 'sim') browser()
+mysim <- function(condition){
 
     #require packages/define functions if needed, or better yet index with the :: operator
 
@@ -120,9 +118,7 @@ mysim <- function(condition, edit){
 
 # help(compute)
 
-mycompute <- function(simlist, condition, edit){
-
-    if(edit == 'compute') browser()
+mycompute <- function(simlist, condition){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
@@ -150,10 +146,7 @@ mycompute <- function(simlist, condition, edit){
 
 # help(collect)
 
-mycollect <- function(results, parameters, condition, edit){
-
-    #editing call
-    if(edit == 'collect') browser()
+mycollect <- function(results, parameters, condition){
 
     # handy functions
     bias <- function(observed, population) mean(observed - population)
@@ -190,11 +183,13 @@ Funs <- list(sim=mysim, compute=mycompute, collect=mycollect)
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 3 --- Collect results by looping over the rows in Design
 
-# Documentation for this function is in analysis.R. Read it carefully to understand all the
-#   potential inputs
-Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE, edit = 'none')
+# this simulation saves a temp file to the working directory
+#    after every condition is finished, and will save an .rds file
+#    when the simulation is complete
+Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE)
 
-
+## Debug the sim function (not run). See ?browser for help on debugging
+# runSimulation(Funs, Design, each = 1000, parallel=TRUE, edit = 'sim')
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 # Step 4 --- Post-analysis: Create a new R file for analyzing the Final data.frame with R based

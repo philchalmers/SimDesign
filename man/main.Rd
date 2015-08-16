@@ -4,7 +4,7 @@
 \alias{main}
 \title{Main subroutine}
 \usage{
-main(index, condition, sim, compute, edit)
+main(index, condition, sim, compute)
 }
 \arguments{
 \item{index}{an integer place-holder value indexed from the 1:each input}
@@ -15,8 +15,6 @@ simulation conditions}
 \item{sim}{the sim() function defined above (required for parallel computing)}
 
 \item{compute}{the compute() function defined above (required for parallel computing)}
-
-\item{edit}{a character indicating whether the function should be debugged}
 }
 \value{
 must return a named list with the 'result' and 'parameters' elements for the
@@ -32,7 +30,7 @@ function.
 \dontrun{
 
 # This is the default main function
-print(SimDesign:::main)
+print(SimDesign::main)
 
 }
 }

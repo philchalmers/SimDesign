@@ -4,7 +4,7 @@
 \alias{collect}
 \title{Collect various population comparison statistics}
 \usage{
-collect(results, parameters, condition, edit)
+collect(results, parameters, condition)
 }
 \arguments{
 \item{results}{a list containing the simulation results from compute(), where each cell
@@ -16,9 +16,7 @@ numeric elements (the default)}
 each repetition is stored in a unique list element}
 
 \item{condition}{a single row from the Design input (as a data.frame), indicating the
-simulation conditions}
-
-\item{edit}{a character indicating whether the function should be debugged}
+  simulation conditions}
 }
 \value{
 must return a named numeric vector with the desired meta-simulation results
@@ -30,10 +28,7 @@ estimates such as RMSD, bias, Type I error, etc.
 \examples{
 \dontrun{
 
-mycollect <- function(results, parameters, condition, edit){
-
-    #editing call
-    if(edit == 'collect') browser()
+mycollect <- function(results, parameters, condition){
 
     # handy functions
     bias <- function(observed, population) mean(observed - population)

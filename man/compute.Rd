@@ -4,16 +4,14 @@
 \alias{compute}
 \title{Compute estimates and statistics}
 \usage{
-compute(simlist, condition, edit)
+compute(simlist, condition)
 }
 \arguments{
 \item{simlist}{a list containing the data.frame ('dat') and parameters ('parameters')
 generated from the sim() function}
 
 \item{condition}{a single row from the Design input (as a data.frame), indicating the
-simulation conditions}
-
-\item{edit}{a character indicating whether the function should be debugged}
+  simulation conditions}
 }
 \value{
 returns a named numeric vector with the values of interest (e.g., p-values,
@@ -35,9 +33,7 @@ to obtain a different dataset.
 \examples{
 \dontrun{
 
-mycompute <- function(simlist, condition, edit){
-
-    if(edit == 'compute') browser()
+mycompute <- function(simlist, condition){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
