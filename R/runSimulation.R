@@ -1,12 +1,12 @@
 #' Run a Monte Carlo simulation given a Design data.frame and functions
 #'
-#' This function runs a Monte Carlo simulation study given the simulation function, the deisgn conditions,
-#' and the number of replications. Results are saved as temporary files in case of interuptions
-#' and can be restored simply by reruning the function again in the same working directory as the
+#' This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
+#' and the number of replications. Results are saved as temporary files in case of interruptions
+#' and can be restored simply by rerunning the function again in the same working directory as the
 #' temp file. Supports parallel and cluster computing, and is designed to be cross-platform and highly
 #' customizable.
 #'
-#' The stategy for organizing the Monte Carlo simulation workflow is to
+#' The strategy for organizing the Monte Carlo simulation work-flow is to
 #' \describe{
 #'    \item{1)}{Define a suitable Design data.frame. This is often expidited by using the
 #'       \code{\link{expand.grid}} function}
@@ -81,7 +81,7 @@
 #'
 #' # (use EXPLICIT names, avoid things like N <- 100. That's fine in functions, not here)
 #' sample_sizes <- c(10, 20, 50, 100)
-#' standard_deviations <- c(1, 4, 16, 32)
+#' standard_deviations <- c(1, 4, 8)
 #'
 #' Design <- expand.grid(sample_sizes_group1=sample_sizes,
 #'                       sample_sizes_group2=sample_sizes,
@@ -189,7 +189,45 @@
 #' # regression stuff, so use the lm() function to find main effects, interactions, plots, etc.
 #' # This is where you get to be a data analyst!
 #' head(Final)
+#' # View(Final)
 #'
+#' psych::describe(Final)
+#' psych::describeBy(Final, group = Final$standard_deviations)
+#'
+#' # define new variables, if they are helpful
+#' Final$SSratio <- with(Final, sample_sizes_group1 / sample_sizes_group2)
+#'
+#' # make numerics into factors for lm() analyses
+#' Final$fSSratio <- with(Final, factor(SSratio))
+#' Final$fSD <- with(Final, factor(standard_deviations))
+#'
+#' #lm analysis (might want to change DV to a logit for better stability)
+#' mod <- lm(lessthan.05.welch ~ fSSratio * fSD, Final)
+#' car::Anova(mod)
+#'
+#' mod2 <- lm(lessthan.05.independent ~ fSSratio * fSD, Final)
+#' car::Anova(mod2)
+#'
+#' library(effects)
+#' plot(allEffects(mod2))
+#'
+#' # make some plots
+#' library(ggplot2)
+#' library(reshape2)
+#' welch_ind <- Final[,c('SSratio', "standard_deviations",
+#'     "lessthan.05.welch", "lessthan.05.independent")]
+#' dd <- melt(welch_ind, id.vars = names(welch_ind)[1:2])
+#'
+#' ggplot(dd, aes(factor(SSratio), value)) +
+#'     geom_abline(intercept=0.05, slope=0, col = 'red') +
+#'     geom_abline(intercept=0.075, slope=0, col = 'red', linetype='dotted') +
+#'     geom_abline(intercept=0.025, slope=0, col = 'red', linetype='dotted') +
+#'     geom_boxplot() + facet_wrap(~variable)
+#' ggplot(dd, aes(factor(SSratio), value, fill = factor(standard_deviations))) +
+#'     geom_abline(intercept=0.05, slope=0, col = 'red') +
+#'     geom_abline(intercept=0.075, slope=0, col = 'red', linetype='dotted') +
+#'     geom_abline(intercept=0.025, slope=0, col = 'red', linetype='dotted') +
+#'     geom_boxplot() + facet_grid(standard_deviations~variable)
 #'
 #'
 #' }
