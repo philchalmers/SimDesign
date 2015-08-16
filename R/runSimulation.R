@@ -184,15 +184,27 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, save_every 
                           tmpfilename = paste0(Sys.info()['nodename'], '_tmpsim.rds'),
                           ncores = parallel::detectCores(), MPI = FALSE, edit = 'none')
 {
-    if(!all(names(Functions) %in% c('sim', 'compute', 'collect', 'main')))
+    FunNames <- names(Functions)
+    if(!all(FunNames %in% c('sim', 'compute', 'collect', 'main')))
         stop('Names of Functions list do not match the required names')
     if(is.null(Functions$main)) Functions$main <- main
+    for(i in names(Functions)){
+        fms <- names(formals(Functions[[i]]))
+        truefms <- switch(i,
+                          main = c('index', 'condition', 'sim', 'compute', 'edit'),
+                          sim  = c('condition', 'edit'),
+                          compute = c('simlist', 'condition', 'edit'),
+                          collect = c('results', 'parameters', 'condition', 'edit'))
+        if(!all(truefms %in% fms))
+            stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
+    }
     if(!is.data.frame(Design))
         stop('Design must be a data.frame object', call. = FALSE)
     if(each < 2L)
         stop('each must be greater than or equal to 2', call. = FALSE)
-    if(save_every > nrow(Design))
-        warning('save_every is too large to be useful', call. = FALSE)
+    if(!is.na(save_every))
+        if(save_every > nrow(Design))
+            warning('save_every is too large to be useful', call. = FALSE)
     if(!(edit %in% c('none', 'sim', 'compute', 'main', 'collect')))
         stop('edit location is not valid', call. = FALSE)
 

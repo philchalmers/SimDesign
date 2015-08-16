@@ -1,7 +1,8 @@
 Package: SimDesign
 Title: Generic code for organizing Monte Carlo simulations
 Version: 0.1
-Authors@R: person("Phil", "Chalmers", email = "rphilip.chalmers", role = c("aut", "cre"))
+Authors@R: person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com",
+           role = c("aut", "cre"))
 Description: Title seems pretty self-explanatory, no?
 Depends: R (>= 3.2.1)
 Suggests: parallel, doMPI

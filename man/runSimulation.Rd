@@ -163,7 +163,7 @@ mycollect <- function(results, parameters, condition, edit){
 }
 
 
-Funs <- list(main=mymain, compute=mycompute, collect=mycollect)
+Funs <- list(sim=mysim, compute=mycompute, collect=mycollect)
 
 
 
