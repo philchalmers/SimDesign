@@ -80,7 +80,7 @@
 #'   Default is TRUE
 #'
 #' @param filename the name of the file to save the results to. Default is the system name with
-#'   'Final.rds' appended at the end.
+#'   the number of replications and 'Final' appended to the string
 #'
 #' @param tmpfilename the name of the temporary file, default is the system name with 'tmpsim.rds'
 #'   appended at the end. This file will be
@@ -90,6 +90,10 @@
 #' @param MPI logical; use the doMPI package to run simulation in parallel on a cluster? Default is FALSE
 #'
 #' @param save logical; save the final simulation and temp files to the hard-drive? Default is TRUE
+#'
+#' @param compname name of computer running the simulation. Normally this doesn't need to be modified,
+#'   but in the event that a node breaks down while running a simulation the results from the tmp files
+#'   may be resumed on another computer by changing the name of the node to match the broken computer
 #'
 #' @param edit a string indicating where to initiate a `browser()` call for editing and debugging.
 #'   Options are 'none' (default), 'main' to edit the main function calls loop, 'sim' to edit the
@@ -258,11 +262,16 @@
 #'
 #' }
 #'
-runSimulation <- function(Functions, Design, each, parallel = FALSE, save_every = 1, clean = TRUE,
-                          filename = paste0(Sys.info()['nodename'],'_Final_', each, '.rds'),
-                          tmpfilename = paste0(Sys.info()['nodename'], '_tmpsim.rds'),
-                          ncores = parallel::detectCores(), MPI = FALSE, save = TRUE, edit = 'none')
+runSimulation <- function(Functions, Design, each, parallel = FALSE, MPI = FALSE,
+                          save = TRUE, save_every = 1, clean = TRUE,
+                          compname = Sys.info()['nodename'],
+                          filename = paste0(compname,'_Final_', each, '.rds'),
+                          tmpfilename = paste0(compname, '_tmpsim.rds'),
+                          ncores = parallel::detectCores(), edit = 'none')
 {
+    stopifnot(!missing(Functions))
+    stopifnot(!missing(Design))
+    stopifnot(!missing(each))
     FunNames <- names(Functions)
     if(!all(FunNames %in% c('sim', 'compute', 'collect', 'main')))
         stop('Names of Functions list do not match the required names')
