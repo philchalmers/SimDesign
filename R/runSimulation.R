@@ -3,8 +3,7 @@
 #' This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
 #' and the number of replications. Results are saved as temporary files in case of interruptions
 #' and can be restored simply by rerunning the function again in the same working directory as the
-#' temp file. Supports parallel and cluster computing, and is designed to be cross-platform and highly
-#' customizable.
+#' temp file. Supports parallel and cluster computing, and is designed to be cross-platform.
 #'
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
 #'
@@ -46,22 +45,22 @@
 #' For instances, if the following code is run on the master node through a terminal then 16 processes
 #' will be summoned (1 master, 15 slaves) across the computers named localhost, slave1, and slave2.
 #'
-#' mpirun -np 20 -H localhost,slave1,slave2 R --slave -f simulation.R
+#' mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R
 #'
 #' @section Poor man's cluster computing:
 #'
-#' In the event that you do not have access to a Beowulf cluster or otherwise, but have multiple personal
-#' computers that can be used, then the simulation code can be manually distributed across each computer.
+#' In the event that you do not have access to a Beowulf-type cluster, but have multiple personal
+#' computers, then the simulation code can be manually distributed across each computer instead.
 #' This simply requires passing a smaller value to the \code{each} argument on each computer, and later
 #' aggregating the results using the \code{\link{aggregate_simulations}} function.
 #'
-#' For instance, if you have two computers available and wanted 500 replications, you
+#' For instance, if you have two computers available and wanted 500 replications you
 #' could pass \code{each = 300} to one computer and \code{each = 200} to the other. This will create
-#' two .rds files which can then be combined later with the \code{\link{aggregate_simulations}} function
-#' after setting the appropriate working directory.
+#' two .rds files which can be combined later with the \code{\link{aggregate_simulations}} function.
 #'
 #' @param Functions a named list of 3-4 functions for the simulation. The three functions 'sim', 'compute',
-#'   and 'collect' are required, and an optional 'main' if this function should be redefined
+#'   and 'collect' are required, and an optional 'main' if this function should be redefined (usually not
+#'   required)
 #'
 #' @param Design the Design data.frame defined from main.R
 #'
@@ -85,21 +84,21 @@
 #' @param tmpfilename the name of the temporary file, default is the system name with 'tmpsim.rds'
 #'   appended at the end. This file will be
 #'   read in if it is in the working directory, and the simulation will continue where at the last
-#'   point this file was saved. This file will be deleted when the simulation is complete
+#'   point this file was saved (useful in case of power outages or broken nodes).
+#'   This file will be deleted when the simulation is complete
 #'
 #' @param MPI logical; use the doMPI package to run simulation in parallel on a cluster? Default is FALSE
 #'
 #' @param save logical; save the final simulation and temp files to the hard-drive? Default is TRUE
 #'
-#' @param compname name of computer running the simulation. Normally this doesn't need to be modified,
+#' @param compname name of the computer running the simulation. Normally this doesn't need to be modified,
 #'   but in the event that a node breaks down while running a simulation the results from the tmp files
 #'   may be resumed on another computer by changing the name of the node to match the broken computer
 #'
 #' @param edit a string indicating where to initiate a `browser()` call for editing and debugging.
 #'   Options are 'none' (default), 'main' to edit the main function calls loop, 'sim' to edit the
 #'   data simulation function, 'compute' to edit the computational function, and 'collect' to
-#'   edit the collection function. When creating your own simulation function you will need to edit
-#'   'sim', 'compute', and 'collect' in that order
+#'   edit the collection function
 #'
 #' @aliases runSimulation
 #'
