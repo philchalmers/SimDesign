@@ -7,8 +7,9 @@
 #' customizable.
 #'
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
+#'
 #' \describe{
-#'    \item{1)}{Define a suitable Design data.frame. This is often expidited by using the
+#'    \item{1)}{Define a suitable Design data.frame. This is often expedited by using the
 #'       \code{\link{expand.grid}} function}
 #'    \item{2)}{Define the three step functions to simulate the data (\code{\link{sim}}),
 #'       compute the respective parameter estimates, detection rates, etc (\code{\link{compute}}),
@@ -33,6 +34,31 @@
 #' off before the simulation was terminated. Upon completion, a data.frame with the simulation
 #' will be returned in the R session and a '.rds' file will be saved to the hard-drive (with the
 #' file name corresponding to the 'filename' argument below).
+#'
+#' @section Cluster computing:
+#'
+#' If the package is installed across a cluster of computers, and all the computers are accessible on
+#' the same LAN network, then the package may be run in cluster mode using the MPI paradigm. This simply
+#' requires that the computers be setup using the usual MPI requirements (typically, running some flavor
+#' of Linux, have password-less openSSH access, addresses have been added to the /etc/hosts file, etc),
+#' and in the code the argument \code{MPI = TRUE} should be passed.
+#'
+#' For instances, if the following code is run on the master node through a terminal then 16 processes
+#' will be summoned (1 master, 15 slaves) across the computers named localhost, slave1, and slave2.
+#'
+#' mpirun -np 20 -H localhost,slave1,slave2 R --slave -f simulation.R
+#'
+#' @section Poor man's cluster computing:
+#'
+#' In the event that you do not have access to a Beowulf cluster or otherwise, but have multiple personal
+#' computers that can be used, then the simulation code can be manually distributed across each computer.
+#' This simply requires passing a smaller value to the \code{each} argument on each computer, and later
+#' aggregating the results using the \code{\link{aggregate_simulations}} function.
+#'
+#' For instance, if you have two computers available and wanted 500 replications, you
+#' could pass \code{each = 300} to one computer and \code{each = 200} to the other. This will create
+#' two .rds files which can then be combined later with the \code{\link{aggregate_simulations}} function
+#' after setting the appropriate working directory.
 #'
 #' @param Functions a named list of 3-4 functions for the simulation. The three functions 'sim', 'compute',
 #'   and 'collect' are required, and an optional 'main' if this function should be redefined
