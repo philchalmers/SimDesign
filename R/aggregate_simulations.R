@@ -2,8 +2,10 @@
 #'
 #' This function grabs all .rds files in the working directory and aggregates them into a single
 #' data.frame object. Weights are infered from the last numbers before .rds, in the form
-#' "name_of_sim_100.rds". Note that the working direction should ONLY consist of the .rds files to
-#' be aggregated; all other .rds files should be removed or relocated.
+#' "name_of_sim_100.rds".
+#'
+#' @param files a character vector containing the names of the simulation files. If NULL, all files
+#'   in the working directory ending in .rds will be used
 #'
 #' @return a data.frame with the (weighted) average of the simulation results
 #'
@@ -22,10 +24,11 @@
 #' saveRDS(final, 'my_final_simulation.rds')
 #'
 #' }
-aggregate_simulations <- function(){
+aggregate_simulations <- function(files = NULL){
     filenames <- dir()
     filenames <- filenames[grepl('*\\.rds', tolower(filenames))]
     if(!length(filenames)) stop('There are no .rds files in the working directory')
+    if(!is.null(files)) filenames <- files
     readin <- vector('list', length(filenames))
     for(i in 1:length(filenames))
         readin[[i]] <- readRDS(filenames[i])
