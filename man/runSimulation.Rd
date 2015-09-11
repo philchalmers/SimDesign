@@ -51,7 +51,9 @@ runSimulation(Functions, Design, each, parallel = FALSE, MPI = FALSE,
 \item{edit}{a string indicating where to initiate a `browser()` call for editing and debugging.
   Options are 'none' (default), 'main' to edit the main function calls loop, 'sim' to edit the
   data simulation function, 'compute' to edit the computational function, and 'collect' to
-  edit the collection function}
+  edit the collection function. Alternatively, users may place \code{browser()} calls within their
+  own code for debugging at specific lines (note: parallel computation flags will
+  automatically be disabled when this is detected)}
 }
 \description{
 This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
