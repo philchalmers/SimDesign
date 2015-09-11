@@ -285,6 +285,10 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, MPI = FALSE
         if(!all(truefms %in% fms))
             stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
     }
+    for(i in 1L:length(Functions)){
+        tmp <- deparse(substitute(Functions[[i]]))
+        if(any(grepl('browser()', tmp))) parallel <- MPI <- FALSE
+    }
     if(!is.data.frame(Design))
         stop('Design must be a data.frame object', call. = FALSE)
     if(each < 2L)
