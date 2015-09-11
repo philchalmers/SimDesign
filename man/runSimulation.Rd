@@ -224,6 +224,17 @@ Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE, save=FALSE)
 ## Debug the sim function (not run). See ?browser for help on debugging
 # runSimulation(Funs, Design, each = 1000, parallel=TRUE, edit = 'sim')
 
+
+
+
+## EXTRA: To run the simulation on a MPI cluster, use the following setup on each node (not run)
+# library(doMPI)
+# cl <- startMPIcluster()
+# registerDoMPI(cl)
+# Final <- runSimulation(Funs, Design, each = 1000, MPI = TRUE)
+# closeCluster(cl)
+# mpi.quit()
+
 #~~~~~~~~~~~~~~~~~~~~~~~~
 # Step 4 --- Post-analysis: Create a new R file for analyzing the Final data.frame with R based
 # regression stuff, so use the lm() function to find main effects, interactions, plots, etc.

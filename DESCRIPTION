@@ -5,6 +5,7 @@ Authors@R: person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com",
            role = c("aut", "cre"))
 Description: Title seems pretty self-explanatory, no?
 Depends: R (>= 3.2.1)
+Imports: foreach
 Suggests: parallel, doMPI
 License: GPL (>=2)
 LazyData: true

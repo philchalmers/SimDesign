@@ -213,6 +213,17 @@
 #' ## Debug the sim function (not run). See ?browser for help on debugging
 #' # runSimulation(Funs, Design, each = 1000, parallel=TRUE, edit = 'sim')
 #'
+#'
+#'
+#'
+#' ## EXTRA: To run the simulation on a MPI cluster, use the following setup on each node (not run)
+#' # library(doMPI)
+#' # cl <- startMPIcluster()
+#' # registerDoMPI(cl)
+#' # Final <- runSimulation(Funs, Design, each = 1000, MPI = TRUE)
+#' # closeCluster(cl)
+#' # mpi.quit()
+#'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Step 4 --- Post-analysis: Create a new R file for analyzing the Final data.frame with R based
 #' # regression stuff, so use the lm() function to find main effects, interactions, plots, etc.
@@ -285,6 +296,7 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, MPI = FALSE
         if(!all(truefms %in% fms))
             stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
     }
+    if(MPI) parallel <- FALSE
     for(i in 1L:length(Functions)){
         tmp <- deparse(substitute(Functions[[i]]))
         if(any(grepl('browser()', tmp))) parallel <- MPI <- FALSE
@@ -309,15 +321,7 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, MPI = FALSE
     }
 
     cl <- NULL
-    if(parallel){
-        if(MPI){
-            suppressMessages(library(doMPI))
-            cl <- startMPIcluster()
-            registerDoMPI(cl)
-        } else {
-            cl <- parallel::makeCluster(ncores)
-        }
-    }
+    if(parallel) cl <- parallel::makeCluster(ncores)
 
     start <- 1L
     Result_list <- vector('list', nrow(Design))
@@ -365,13 +369,6 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, MPI = FALSE
         saveRDS(Final, filename)
     }
     if(clean) system(paste0('rm -f ', tmpfilename))
-    if(parallel){
-        if(MPI){
-            closeCluster(cl)
-            mpi.quit()
-        } else {
-            parallel::stopCluster(cl)
-        }
-    }
+    if(parallel) parallel::stopCluster(cl)
     return(invisible(Final))
 }
