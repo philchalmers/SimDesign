@@ -3,9 +3,10 @@ Title: Code for organizing Monte Carlo simulations in R
 Version: 0.1
 Authors@R: person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com",
            role = c("aut", "cre"))
-Description: Title seems pretty self-explanatory, no?
+Description: Functions to organize simulations in R. Tries to manage the structure and back-end of the simulations,
+             managing issues like resimulating non-convergent results, organizing the functional workflow,
+             handling parallel back-end information, saving temporary files, and so on.
 Depends: R (>= 3.2.1)
-Imports: foreach
-Suggests: parallel, doMPI
+Imports: foreach, methods, parallel
 License: GPL (>=2)
 LazyData: true

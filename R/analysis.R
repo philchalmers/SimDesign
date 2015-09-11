@@ -15,6 +15,7 @@ Analysis <- function(Functions, condition, each, cl, MPI)
                                compute=Functions$compute)
     } else {
         if(MPI){
+            i <- 1L
             cell_results <- foreach(i=1L:each) %dopar%
                 Functions$main(i, condition=condition, sim=Functions$sim,
                                compute=Functions$compute)

@@ -9,6 +9,6 @@
 #' @docType package
 #' @title Simulation Design
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
-#' @import foreach
+#' @import foreach methods parallel
 #' @keywords package
 NULL
