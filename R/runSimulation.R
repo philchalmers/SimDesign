@@ -102,6 +102,8 @@
 #'   own code for debugging at specific lines (note: parallel computation flags will
 #'   automatically be disabled when this is detected)
 #'
+#' @param verbose logical; print messages to the R console?
+#'
 #' @aliases runSimulation
 #'
 #' @export runSimulation
@@ -279,7 +281,7 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, MPI = FALSE
                           compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', each, '.rds'),
                           tmpfilename = paste0(compname, '_tmpsim.rds'),
-                          ncores = parallel::detectCores(), edit = 'none')
+                          ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
 {
     stopifnot(!missing(Functions))
     stopifnot(!missing(Design))
@@ -298,7 +300,10 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, MPI = FALSE
         if(!all(truefms %in% fms))
             stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
     }
-    if(MPI) parallel <- FALSE
+    if(MPI){
+        parallel <- FALSE
+        verbose <- FALSE
+    }
     for(i in 1L:length(Functions)){
         tmp <- deparse(substitute(Functions[[i]]))
         if(any(grepl('browser()', tmp))) parallel <- MPI <- FALSE
@@ -331,13 +336,14 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, MPI = FALSE
     time0 <- time1 <- proc.time()[3]
     files <- dir()
     if(!MPI && any(files == tmpfilename)){
-        message(paste('Resuming simulation from the temporary results found in:', tmpfilename))
+        if(verbose)
+            message(paste('Resuming simulation from the temporary results found in:', tmpfilename))
         Result_list <- readRDS(tmpfilename)
         start <- min(which(sapply(Result_list, is.null)))
     }
     for(i in start:nrow(Design)){
         stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
-        if(!MPI)
+        if(verbose)
             cat(sprintf('\rCompleted: %i%s,   Previous cell time: %.1f,  Total elapsed time: %.1f ',
                         round((i-1)/(nrow(Design))*100), '%', time1 - time0, sum(stored_time)))
         time0 <- proc.time()[3]
@@ -364,10 +370,12 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, MPI = FALSE
         } else break
     }
     if(filename0 != filename)
-        message(paste0('\nWARNING:\n', filename0, ' existed in the working directory already.
-                       A new unique name was created.\n'))
+        if(verbose)
+            message(paste0('\nWARNING:\n', filename0, ' existed in the working directory already.
+                           A new unique name was created.\n'))
     if(save){
-        message(paste('\nSaving simulation results to file:', filename))
+        if(verbose)
+            message(paste('\nSaving simulation results to file:', filename))
         saveRDS(Final, filename)
     }
     if(clean) system(paste0('rm -f ', tmpfilename))

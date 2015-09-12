@@ -8,7 +8,7 @@ runSimulation(Functions, Design, each, parallel = FALSE, MPI = FALSE,
   save = TRUE, save_every = 1, clean = TRUE,
   compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
   each, ".rds"), tmpfilename = paste0(compname, "_tmpsim.rds"),
-  ncores = parallel::detectCores(), edit = "none")
+  ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
 }
 \arguments{
 \item{Functions}{a named list of 3-4 functions for the simulation. The three functions 'sim', 'compute',
@@ -54,6 +54,8 @@ runSimulation(Functions, Design, each, parallel = FALSE, MPI = FALSE,
   edit the collection function. Alternatively, users may place \code{browser()} calls within their
   own code for debugging at specific lines (note: parallel computation flags will
   automatically be disabled when this is detected)}
+
+\item{verbose}{logical; print messages to the R console?}
 }
 \description{
 This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
