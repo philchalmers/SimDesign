@@ -127,6 +127,9 @@
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Step 2 --- Define sim, compute, and collect functions, and assign to a named list
 #'
+#' # skeleton functions to be edited
+#' SimDesign_functions()
+#'
 #' # help(sim)
 #' mysim <- function(condition){
 #'
