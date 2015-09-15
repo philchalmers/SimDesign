@@ -15,7 +15,7 @@
 #'       and finally collect the results across the total number of replications (\code{\link{collect}})
 #'    }
 #'    \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
-#'       number of replications with the \code{each} input}
+#'       number of replications with the \code{replications} input}
 #'    \item{4)}{Analyze the output from \code{runSimulation}, possibly using techniques from ANOVA
 #'      and generating suitable plots}
 #' }
@@ -54,8 +54,9 @@
 #' aggregating the results using the \code{\link{aggregate_simulations}} function.
 #'
 #' For instance, if you have two computers available and wanted 500 replications you
-#' could pass \code{each = 300} to one computer and \code{each = 200} to the other. This will create
-#' two .rds files which can be combined later with the \code{\link{aggregate_simulations}} function.
+#' could pass \code{replications = 300} to one computer and \code{replications = 200} to the other.
+#' This will create two .rds files which can be combined later with the
+#' \code{\link{aggregate_simulations}} function.
 #'
 #' @param Design the Design data.frame defined from main.R
 #'
@@ -71,7 +72,7 @@
 #'
 #' @param sim simulation function. See \code{\link{sim}} for details
 #'
-#' @param each number of replication to perform per condition (i.e., each row in Design)
+#' @param replications number of replication to perform per condition (i.e., each row in Design)
 #'
 #' @param parallel logical; use parallel processing from the `parallel` package over each
 #'   unique condition?
@@ -96,7 +97,7 @@
 #'
 #' @param MPI logical; use the doMPI package to run simulation in parallel on a cluster? Default is FALSE
 #'
-#' @param save logical; save the final simulation and temp files to the hard-drive? Default is TRUE
+#' @param save logical; save the final simulation and temp files to the hard-drive? Default is FALSE
 #'
 #' @param compname name of the computer running the simulation. Normally this doesn't need to be modified,
 #'   but in the event that a node breaks down while running a simulation the results from the tmp files
@@ -215,12 +216,12 @@
 #' #### Step 3 --- Collect results by looping over the rows in Design
 #'
 #' # this simulation does not save temp files or the final result to disk (save=FALSE)
-#' Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
-#'                        each = 1000, parallel=TRUE, save=FALSE)
+#' Final <- runSimulation(Design=Design, sim=mysim, compute=mycompute, collect=mycollect,
+#'                        replications=1000, parallel=TRUE)
 #'
 #' ## Debug the sim function (not run). See ?browser for help on debugging
-#' # runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
-#'                 each = 1000, parallel=TRUE, edit = 'sim')
+#' # runSimulation(Design=Design, sim=mysim, compute=mycompute, collect=mycollect,
+#'                 replications=1000, parallel=TRUE, edit = 'sim')
 #'
 #'
 #'
@@ -229,8 +230,8 @@
 #' # library(doMPI)
 #' # cl <- startMPIcluster()
 #' # registerDoMPI(cl)
-#' # Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
-#'                          each = 1000, MPI = TRUE)
+#' # Final <- runSimulation(Design=Design, sim=mysim, compute=mycompute, collect=mycollect,
+#'                          replications=1000, MPI=TRUE)
 #' # closeCluster(cl)
 #' # mpi.quit()
 #'
@@ -282,17 +283,17 @@
 #'
 #' }
 #'
-runSimulation <- function(Design, sim, compute, collect, each, parallel = FALSE, MPI = FALSE,
+runSimulation <- function(Design, replications, sim, compute, collect, parallel = FALSE, MPI = FALSE,
                           save = TRUE, save_every = 1, clean = TRUE,
                           compname = Sys.info()['nodename'],
-                          filename = paste0(compname,'_Final_', each, '.rds'),
+                          filename = paste0(compname,'_Final_', replications, '.rds'),
                           tmpfilename = paste0(compname, '_tmpsim.rds'), main = NULL,
                           ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
 {
     stopifnot(!missing(sim) || !missing(compute) || !missing(collect))
     Functions <- list(sim=sim, collect=collect, compute=compute, main=main)
     stopifnot(!missing(Design))
-    stopifnot(!missing(each))
+    stopifnot(!missing(replications))
     FunNames <- names(Functions)
     if(is.null(main)) Functions$main <- SimDesign::main
     for(i in names(Functions)){
@@ -315,8 +316,8 @@ runSimulation <- function(Design, sim, compute, collect, each, parallel = FALSE,
     }
     if(!is.data.frame(Design))
         stop('Design must be a data.frame object', call. = FALSE)
-    if(each < 2L)
-        stop('each must be greater than or equal to 2', call. = FALSE)
+    if(replications < 2L)
+        stop('number of replications must be greater than or equal to 2', call. = FALSE)
     if(!is.na(save_every))
         if(save_every > nrow(Design))
             warning('save_every is too large to be useful', call. = FALSE)
@@ -354,7 +355,8 @@ runSimulation <- function(Design, sim, compute, collect, each, parallel = FALSE,
         time0 <- proc.time()[3]
         Result_list[[i]] <- as.data.frame(c(as.list(Design[i, ]),
                                             as.list(Analysis(Functions=Functions,
-                                                             condition=Design[i,], each=each,
+                                                             condition=Design[i,],
+                                                             replications=replications,
                                                              cl=cl, MPI=MPI))))
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0

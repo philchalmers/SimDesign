@@ -4,14 +4,17 @@
 \alias{runSimulation}
 \title{Run a Monte Carlo simulation given a Design data.frame and functions}
 \usage{
-runSimulation(Design, sim, compute, collect, each, parallel = FALSE,
+runSimulation(Design, replications, sim, compute, collect, parallel = FALSE,
   MPI = FALSE, save = TRUE, save_every = 1, clean = TRUE,
   compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
-  each, ".rds"), tmpfilename = paste0(compname, "_tmpsim.rds"), main = NULL,
-  ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
+  replications, ".rds"), tmpfilename = paste0(compname, "_tmpsim.rds"),
+  main = NULL, ncores = parallel::detectCores(), edit = "none",
+  verbose = TRUE)
 }
 \arguments{
 \item{Design}{the Design data.frame defined from main.R}
+
+\item{replications}{number of replication to perform per condition (i.e., each row in Design)}
 
 \item{sim}{user-defined simulation function. See \code{\link{sim}} for details}
 
@@ -20,14 +23,12 @@ runSimulation(Design, sim, compute, collect, each, parallel = FALSE,
 \item{collect}{user-defined collect function to be used after all the replications have completed.
    See \code{\link{collect}} for details}
 
-\item{each}{number of replication to perform per condition (i.e., each row in Design)}
-
 \item{parallel}{logical; use parallel processing from the `parallel` package over each
   unique condition?}
 
 \item{MPI}{logical; use the doMPI package to run simulation in parallel on a cluster? Default is FALSE}
 
-\item{save}{logical; save the final simulation and temp files to the hard-drive? Default is TRUE}
+\item{save}{logical; save the final simulation and temp files to the hard-drive? Default is FALSE}
 
 \item{save_every}{a number indicating how often to temporarily save your simulation results to
   disk. Default is 1 to save after every condition is complete, but set to NA if you don't
@@ -82,7 +83,7 @@ The strategy for organizing the Monte Carlo simulation work-flow is to
       and finally collect the results across the total number of replications (\code{\link{collect}})
    }
    \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
-      number of replications with the \code{each} input}
+      number of replications with the \code{replications} input}
    \item{4)}{Analyze the output from \code{runSimulation}, possibly using techniques from ANOVA
      and generating suitable plots}
 }
@@ -124,8 +125,9 @@ This simply requires passing a smaller value to the \code{each} argument on each
 aggregating the results using the \code{\link{aggregate_simulations}} function.
 
 For instance, if you have two computers available and wanted 500 replications you
-could pass \code{each = 300} to one computer and \code{each = 200} to the other. This will create
-two .rds files which can be combined later with the \code{\link{aggregate_simulations}} function.
+could pass \code{replications = 300} to one computer and \code{replications = 200} to the other.
+This will create two .rds files which can be combined later with the
+\code{\link{aggregate_simulations}} function.
 }
 \examples{
 \dontrun{
@@ -226,12 +228,12 @@ mycollect <- function(results, parameters, condition){
 #### Step 3 --- Collect results by looping over the rows in Design
 
 # this simulation does not save temp files or the final result to disk (save=FALSE)
-Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
-                       each = 1000, parallel=TRUE, save=FALSE)
+Final <- runSimulation(Design=Design, sim=mysim, compute=mycompute, collect=mycollect,
+                       replications=1000, parallel=TRUE)
 
 ## Debug the sim function (not run). See ?browser for help on debugging
-# runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
-                each = 1000, parallel=TRUE, edit = 'sim')
+# runSimulation(Design=Design, sim=mysim, compute=mycompute, collect=mycollect,
+                replications=1000, parallel=TRUE, edit = 'sim')
 
 
 
@@ -240,8 +242,8 @@ Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
 # library(doMPI)
 # cl <- startMPIcluster()
 # registerDoMPI(cl)
-# Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
-                         each = 1000, MPI = TRUE)
+# Final <- runSimulation(Design=Design, sim=mysim, compute=mycompute, collect=mycollect,
+                         replications=1000, MPI=TRUE)
 # closeCluster(cl)
 # mpi.quit()
 

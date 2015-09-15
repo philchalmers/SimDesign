@@ -2,25 +2,25 @@
 #
 # @param Functions list of functions
 # @param condition a single row from the Design input
-# @param each number of times to repeat the Monte Carlo simulations
+# @param replications number of times to repeat the Monte Carlo simulations
 # @param cl cluster object defined from the parallel package
 # @param MPI logical; flag passed down from the runSimulation function
 #
-Analysis <- function(Functions, condition, each, cl, MPI)
+Analysis <- function(Functions, condition, replications, cl, MPI)
 {
     # This defines the workflow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
     if(is.null(cl)){
-        cell_results <- lapply(1L:each, Functions$main, condition=condition, sim=Functions$sim,
+        cell_results <- lapply(1L:replications, Functions$main, condition=condition, sim=Functions$sim,
                                compute=Functions$compute)
     } else {
         if(MPI){
             i <- 1L
-            cell_results <- foreach(i=1L:each) %dopar%
+            cell_results <- foreach(i=1L:replications) %dopar%
                 Functions$main(i, condition=condition, sim=Functions$sim,
                                compute=Functions$compute)
         } else {
-            cell_results <- parallel::parLapply(cl, 1L:each, Functions$main, condition=condition,
+            cell_results <- parallel::parLapply(cl, 1L:replications, Functions$main, condition=condition,
                                                 sim=Functions$sim, compute=Functions$compute)
         }
     }
