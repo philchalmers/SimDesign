@@ -12,8 +12,7 @@
 #'       \code{\link{expand.grid}} function}
 #'    \item{2)}{Define the three step functions to simulate the data (\code{\link{sim}}),
 #'       compute the respective parameter estimates, detection rates, etc (\code{\link{compute}}),
-#'       and finally collect the results across the total number of replications (\code{\link{collect}}).
-#'       Save these functions as a named list with the elements 'sim', 'compute', and 'collect'
+#'       and finally collect the results across the total number of replications (\code{\link{collect}})
 #'    }
 #'    \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
 #'       number of replications with the \code{each} input}
@@ -58,11 +57,19 @@
 #' could pass \code{each = 300} to one computer and \code{each = 200} to the other. This will create
 #' two .rds files which can be combined later with the \code{\link{aggregate_simulations}} function.
 #'
-#' @param Functions a named list of 3-4 functions for the simulation. The three functions 'sim', 'compute',
-#'   and 'collect' are required, and an optional 'main' if this function should be redefined (usually not
-#'   required)
-#'
 #' @param Design the Design data.frame defined from main.R
+#'
+#' @param sim user-defined simulation function. See \code{\link{sim}} for details
+#'
+#' @param compute user-defined computation function. See \code{\link{compute}} for details
+#'
+#' @param collect user-defined collect function to be used after all the replications have completed.
+#'    See \code{\link{collect}} for details
+#'
+#' @param main (optional) user-defined main subroutine organization function.
+#'    See \code{\link{main}} for details
+#'
+#' @param sim simulation function. See \code{\link{sim}} for details
 #'
 #' @param each number of replication to perform per condition (i.e., each row in Design)
 #'
@@ -125,7 +132,7 @@
 #' head(Design)
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
-#' #### Step 2 --- Define sim, compute, and collect functions, and assign to a named list
+#' #### Step 2 --- Define sim, compute, and collect functions
 #'
 #' # skeleton functions to be edited
 #' SimDesign_functions()
@@ -183,9 +190,6 @@
 #'     bias <- function(observed, population) mean(observed - population)
 #'     RMSD <- function(observed, population) sqrt(mean((observed - population)^2))
 #'
-#'     #convert to matrix for convenience (if helpful)
-#'     cell_results <- do.call(rbind, results)
-#'
 #'     # silly test for bias and RMSD of a random number from 0
 #'     pop_value <- 0
 #'     bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
@@ -193,9 +197,9 @@
 #'
 #'     #find results of interest here (alpha < .1, .05, .01)
 #'     nms <- c('welch', 'independent')
-#'     lessthan.10 <- colMeans(cell_results[,nms] < .10)
-#'     lessthan.05 <- colMeans(cell_results[,nms] < .05)
-#'     lessthan.01 <- colMeans(cell_results[,nms] < .01)
+#'     lessthan.10 <- colMeans(results[,nms] < .10)
+#'     lessthan.05 <- colMeans(results[,nms] < .05)
+#'     lessthan.01 <- colMeans(results[,nms] < .01)
 #'
 #'     # return the results that will be appended to the Design input
 #'     ret <- c(bias.random_number=bias.random_number,
@@ -207,18 +211,16 @@
 #' }
 #'
 #'
-#' Funs <- list(sim=mysim, compute=mycompute, collect=mycollect)
-#'
-#'
-#'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Step 3 --- Collect results by looping over the rows in Design
 #'
 #' # this simulation does not save temp files or the final result to disk (save=FALSE)
-#' Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE, save=FALSE)
+#' Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
+#'                        each = 1000, parallel=TRUE, save=FALSE)
 #'
 #' ## Debug the sim function (not run). See ?browser for help on debugging
-#' # runSimulation(Funs, Design, each = 1000, parallel=TRUE, edit = 'sim')
+#' # runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
+#'                 each = 1000, parallel=TRUE, edit = 'sim')
 #'
 #'
 #'
@@ -227,7 +229,8 @@
 #' # library(doMPI)
 #' # cl <- startMPIcluster()
 #' # registerDoMPI(cl)
-#' # Final <- runSimulation(Funs, Design, each = 1000, MPI = TRUE)
+#' # Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
+#'                          each = 1000, MPI = TRUE)
 #' # closeCluster(cl)
 #' # mpi.quit()
 #'
@@ -279,20 +282,19 @@
 #'
 #' }
 #'
-runSimulation <- function(Functions, Design, each, parallel = FALSE, MPI = FALSE,
+runSimulation <- function(Design, sim, compute, collect, each, parallel = FALSE, MPI = FALSE,
                           save = TRUE, save_every = 1, clean = TRUE,
                           compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', each, '.rds'),
-                          tmpfilename = paste0(compname, '_tmpsim.rds'),
+                          tmpfilename = paste0(compname, '_tmpsim.rds'), main = NULL,
                           ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
 {
-    stopifnot(!missing(Functions))
+    stopifnot(!missing(sim) || !missing(compute) || !missing(collect))
+    Functions <- list(sim=sim, collect=collect, compute=compute, main=main)
     stopifnot(!missing(Design))
     stopifnot(!missing(each))
     FunNames <- names(Functions)
-    if(!all(FunNames %in% c('sim', 'compute', 'collect', 'main')))
-        stop('Names of Functions list do not match the required names')
-    if(is.null(Functions$main)) Functions$main <- SimDesign::main
+    if(is.null(main)) Functions$main <- SimDesign::main
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))
         truefms <- switch(i,
@@ -309,7 +311,7 @@ runSimulation <- function(Functions, Design, each, parallel = FALSE, MPI = FALSE
     }
     for(i in 1L:length(Functions)){
         tmp <- deparse(substitute(Functions[[i]]))
-        if(any(grepl('browser()', tmp))) parallel <- MPI <- FALSE
+        if(any(grepl('browser(', tmp))) parallel <- MPI <- FALSE
     }
     if(!is.data.frame(Design))
         stop('Design must be a data.frame object', call. = FALSE)

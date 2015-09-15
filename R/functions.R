@@ -100,10 +100,9 @@ compute <- function(simlist, condition) NULL
 #' This collapses across the simulation results within each condition for computing composite
 #' estimates such as RMSD, bias, Type I error, etc.
 #'
-#' @param results a list containing the simulation results from compute(), where each cell
-#'   is stored in a unique list element. If compute() was modified to return a list instead, then
-#'   results will be a list containing list elements. Otherwise, it will be a list containing
-#'   numeric elements (the default)
+#' @param results a data.frame (if \code{compute} returned a numeric vector) or a list (if
+#'   \code{compute} returned a list) containing the simulation results from compute(), where each cell
+#'   is stored in a unique row/list element
 #' @param parameters a list containing all the 'parameters' elements generated from sim(), where
 #'   each repetition is stored in a unique list element
 #' @param condition a single row from the Design input (as a data.frame), indicating the

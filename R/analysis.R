@@ -31,6 +31,7 @@ Analysis <- function(Functions, condition, each, cl, MPI)
     else parameters <- list()
 
     #collect meta simulation statistics (bias, RMSD, type I errors, etc)
+    if(!is.list(results[[1L]])) results <- do.call(rbind, results)
     sim_results <- Functions$collect(results=results, parameters=parameters,
                            condition=condition)
 

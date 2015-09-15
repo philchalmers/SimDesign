@@ -4,18 +4,21 @@
 \alias{runSimulation}
 \title{Run a Monte Carlo simulation given a Design data.frame and functions}
 \usage{
-runSimulation(Functions, Design, each, parallel = FALSE, MPI = FALSE,
-  save = TRUE, save_every = 1, clean = TRUE,
+runSimulation(Design, sim, compute, collect, each, parallel = FALSE,
+  MPI = FALSE, save = TRUE, save_every = 1, clean = TRUE,
   compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
-  each, ".rds"), tmpfilename = paste0(compname, "_tmpsim.rds"),
+  each, ".rds"), tmpfilename = paste0(compname, "_tmpsim.rds"), main = NULL,
   ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
 }
 \arguments{
-\item{Functions}{a named list of 3-4 functions for the simulation. The three functions 'sim', 'compute',
-  and 'collect' are required, and an optional 'main' if this function should be redefined (usually not
-  required)}
-
 \item{Design}{the Design data.frame defined from main.R}
+
+\item{sim}{user-defined simulation function. See \code{\link{sim}} for details}
+
+\item{compute}{user-defined computation function. See \code{\link{compute}} for details}
+
+\item{collect}{user-defined collect function to be used after all the replications have completed.
+   See \code{\link{collect}} for details}
 
 \item{each}{number of replication to perform per condition (i.e., each row in Design)}
 
@@ -46,6 +49,9 @@ runSimulation(Functions, Design, each, parallel = FALSE, MPI = FALSE,
   point this file was saved (useful in case of power outages or broken nodes).
   This file will be deleted when the simulation is complete}
 
+\item{main}{(optional) user-defined main subroutine organization function.
+   See \code{\link{main}} for details}
+
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
 \item{edit}{a string indicating where to initiate a `browser()` call for editing and debugging.
@@ -56,6 +62,8 @@ runSimulation(Functions, Design, each, parallel = FALSE, MPI = FALSE,
   automatically be disabled when this is detected)}
 
 \item{verbose}{logical; print messages to the R console?}
+
+\item{sim}{simulation function. See \code{\link{sim}} for details}
 }
 \description{
 This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
@@ -71,8 +79,7 @@ The strategy for organizing the Monte Carlo simulation work-flow is to
       \code{\link{expand.grid}} function}
    \item{2)}{Define the three step functions to simulate the data (\code{\link{sim}}),
       compute the respective parameter estimates, detection rates, etc (\code{\link{compute}}),
-      and finally collect the results across the total number of replications (\code{\link{collect}}).
-      Save these functions as a named list with the elements 'sim', 'compute', and 'collect'
+      and finally collect the results across the total number of replications (\code{\link{collect}})
    }
    \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
       number of replications with the \code{each} input}
@@ -136,7 +143,10 @@ dim(Design)
 head(Design)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
-#### Step 2 --- Define sim, compute, and collect functions, and assign to a named list
+#### Step 2 --- Define sim, compute, and collect functions
+
+# skeleton functions to be edited
+SimDesign_functions()
 
 # help(sim)
 mysim <- function(condition){
@@ -191,9 +201,6 @@ mycollect <- function(results, parameters, condition){
     bias <- function(observed, population) mean(observed - population)
     RMSD <- function(observed, population) sqrt(mean((observed - population)^2))
 
-    #convert to matrix for convenience (if helpful)
-    cell_results <- do.call(rbind, results)
-
     # silly test for bias and RMSD of a random number from 0
     pop_value <- 0
     bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
@@ -201,9 +208,9 @@ mycollect <- function(results, parameters, condition){
 
     #find results of interest here (alpha < .1, .05, .01)
     nms <- c('welch', 'independent')
-    lessthan.10 <- colMeans(cell_results[,nms] < .10)
-    lessthan.05 <- colMeans(cell_results[,nms] < .05)
-    lessthan.01 <- colMeans(cell_results[,nms] < .01)
+    lessthan.10 <- colMeans(results[,nms] < .10)
+    lessthan.05 <- colMeans(results[,nms] < .05)
+    lessthan.01 <- colMeans(results[,nms] < .01)
 
     # return the results that will be appended to the Design input
     ret <- c(bias.random_number=bias.random_number,
@@ -215,18 +222,16 @@ mycollect <- function(results, parameters, condition){
 }
 
 
-Funs <- list(sim=mysim, compute=mycompute, collect=mycollect)
-
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 3 --- Collect results by looping over the rows in Design
 
 # this simulation does not save temp files or the final result to disk (save=FALSE)
-Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE, save=FALSE)
+Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
+                       each = 1000, parallel=TRUE, save=FALSE)
 
 ## Debug the sim function (not run). See ?browser for help on debugging
-# runSimulation(Funs, Design, each = 1000, parallel=TRUE, edit = 'sim')
+# runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
+                each = 1000, parallel=TRUE, edit = 'sim')
 
 
 
@@ -235,7 +240,8 @@ Final <- runSimulation(Funs, Design, each = 1000, parallel=TRUE, save=FALSE)
 # library(doMPI)
 # cl <- startMPIcluster()
 # registerDoMPI(cl)
-# Final <- runSimulation(Funs, Design, each = 1000, MPI = TRUE)
+# Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
+                         each = 1000, MPI = TRUE)
 # closeCluster(cl)
 # mpi.quit()
 

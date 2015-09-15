@@ -57,9 +57,6 @@ test_that('SimDesign', {
         bias <- function(observed, population) mean(observed - population)
         RMSD <- function(observed, population) sqrt(mean((observed - population)^2))
 
-        #convert to matrix for convenience (if helpful)
-        cell_results <- do.call(rbind, results)
-
         # silly test for bias and RMSD of a random number from 0
         pop_value <- 0
         bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
@@ -67,9 +64,9 @@ test_that('SimDesign', {
 
         #find results of interest here (alpha < .1, .05, .01)
         nms <- c('welch', 'independent')
-        lessthan.10 <- colMeans(cell_results[,nms] < .10)
-        lessthan.05 <- colMeans(cell_results[,nms] < .05)
-        lessthan.01 <- colMeans(cell_results[,nms] < .01)
+        lessthan.10 <- colMeans(results[,nms] < .10)
+        lessthan.05 <- colMeans(results[,nms] < .05)
+        lessthan.01 <- colMeans(results[,nms] < .01)
 
         # return the results that will be appended to the Design input
         ret <- c(bias.random_number=bias.random_number,
@@ -80,15 +77,16 @@ test_that('SimDesign', {
         return(ret)
     }
 
-    Funs <- list(sim=mysim, compute=mycompute, collect=mycollect)
-
-    Final <- runSimulation(Funs, Design, each = 2, parallel=FALSE, save=FALSE)
+    Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
+                           each = 2, parallel=FALSE, save=FALSE)
     expect_is(Final, 'data.frame')
 
-    Final <- runSimulation(Funs, Design, each = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
+    Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
+                           each = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
-    Final <- runSimulation(Funs, Design, each = parallel::detectCores(), parallel=TRUE, save=FALSE)
+    Final <- runSimulation(Design, sim=mysim, compute=mycompute, collect=mycollect,
+                           each = parallel::detectCores(), parallel=TRUE, save=FALSE)
     expect_is(Final, 'data.frame')
 })
 
