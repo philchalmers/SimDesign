@@ -35,6 +35,7 @@ Analysis <- function(Functions, condition, each, cl, MPI)
     sim_results <- Functions$collect(results=results, parameters=parameters,
                            condition=condition)
 
+    if(!is.vector(sim_results)) stop('collect() must return a vector', call.=FALSE)
     if(any(names(sim_results) == 'N_CELL_RUNS'))
         stop('collect() cannot contain an element with the name N_CELL_RUNS')
     sim_results <- c(sim_results,

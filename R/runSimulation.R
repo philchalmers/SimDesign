@@ -311,7 +311,7 @@ runSimulation <- function(Design, sim, compute, collect, each, parallel = FALSE,
     }
     for(i in 1L:length(Functions)){
         tmp <- deparse(substitute(Functions[[i]]))
-        if(any(grepl('browser(', tmp))) parallel <- MPI <- FALSE
+        if(any(grepl('browser\\(', tmp))) parallel <- MPI <- FALSE
     }
     if(!is.data.frame(Design))
         stop('Design must be a data.frame object', call. = FALSE)

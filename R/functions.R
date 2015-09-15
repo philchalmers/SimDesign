@@ -185,10 +185,14 @@ main <- function(index, condition, sim, compute){
 
         count <- count + 1L
         simlist <- sim(condition)
+        if(!is.list(simlist) || !all(names(simlist) %in% c('dat', 'parameters')))
+            stop('sim() did not return a list with elements dat and parameters', call.=FALSE)
         res <- try(compute(simlist=simlist, condition=condition), silent=TRUE)
 
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')) next
+        if(!is.list(res) && !is.numeric(res))
+            stop('compute() did not return a list or numeric vector', call.=FALSE)
 
         # else return the result with simulation parameters
         if(!is.list(res)){
