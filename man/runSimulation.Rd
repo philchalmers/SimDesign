@@ -70,7 +70,9 @@ runSimulation(Design, replications, sim, compute, collect, parallel = FALSE,
 This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
 and the number of replications. Results are saved as temporary files in case of interruptions
 and can be restored simply by rerunning the function again in the same working directory as the
-temp file. Supports parallel and cluster computing, and is designed to be cross-platform.
+temp file. Supports parallel and cluster computing, and is designed to be cross-platform. For
+a skeleton version of the workflow useful when initially defining a simulation, see
+\code{\link{SimDesign_functions}}.
 }
 \details{
 The strategy for organizing the Monte Carlo simulation work-flow is to
@@ -294,5 +296,9 @@ ggplot(dd, aes(factor(SSratio), value, fill = factor(standard_deviations))) +
 
 
 }
+}
+\seealso{
+\code{\link{sim}}, \code{\link{compute}}, \code{\link{collect}}, \code{\link{main}},
+  \code{\link{SimDesign_functions}}
 }
 

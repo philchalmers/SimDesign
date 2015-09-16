@@ -1,7 +1,8 @@
 #' Skeleton functions for simulations
 #'
-#' This function prints skeleton versions of the required function for simulations, complete with
-#' the correct inputs and class of outputs.
+#' This function prints skeleton versions of the required functions and workflow required
+#' to run simulations, complete with the correct inputs and class of outputs. Use this at the start
+#' when defining your simulation.
 #'
 #' @param main logical; include a skeleton of the \code{main} function?
 #'
@@ -12,12 +13,14 @@
 #' @examples
 #' \dontrun{
 #'
-#' # This is the default main function
 #' SimDesign_functions()
 #'
 #' }
 SimDesign_functions <- function(main = FALSE){
-    cat('\nsim <- function(condition) {')
+    cat('\n#-------------------------------------------------------------------')
+    cat('\n### Define essential simulation functions. It may be helpful to place these')
+    cat('\n### functions in a seperate R file and source() them in')
+    cat('\n\nsim <- function(condition) {')
     cat('\n    ... \n    return(list(dat=data.frame(), parameters=list()))\n}')
     cat('\n\n')
     cat('compute <- function(simlist, condition) {')
@@ -29,5 +32,14 @@ SimDesign_functions <- function(main = FALSE){
     if(main){
         cat('main <- ', paste0(deparse(main), '\n'))
     }
+    cat('\n#-------------------------------------------------------------------')
+
+    cat('\n\n### Define design conditions and number of replications')
+    cat('\n# Design <- expand.grid(condition1, condition2, ...)')
+    cat('\n# replications <- 1000')
+
+    cat('\n\n### Run the simulation')
+    cat('\nresults <- runSimulation(Design, replications, ')
+    cat('\n    sim=sim, compute=compute, collect=collect, edit=\'none\')')
     cat('\n\n')
 }

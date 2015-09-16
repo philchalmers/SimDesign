@@ -10,13 +10,13 @@ SimDesign_functions(main = FALSE)
 \item{main}{logical; include a skeleton of the \code{main} function?}
 }
 \description{
-This function prints skeleton versions of the required function for simulations, complete with
-the correct inputs and class of outputs.
+This function prints skeleton versions of the required functions and workflow required
+to run simulations, complete with the correct inputs and class of outputs. Use this at the start
+when defining your simulation.
 }
 \examples{
 \dontrun{
 
-# This is the default main function
 SimDesign_functions()
 
 }

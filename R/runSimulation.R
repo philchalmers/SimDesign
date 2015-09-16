@@ -3,7 +3,9 @@
 #' This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
 #' and the number of replications. Results are saved as temporary files in case of interruptions
 #' and can be restored simply by rerunning the function again in the same working directory as the
-#' temp file. Supports parallel and cluster computing, and is designed to be cross-platform.
+#' temp file. Supports parallel and cluster computing, and is designed to be cross-platform. For
+#' a skeleton version of the workflow useful when initially defining a simulation, see
+#' \code{\link{SimDesign_functions}}.
 #'
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
 #'
@@ -114,6 +116,9 @@
 #'
 #' @aliases runSimulation
 #'
+#' @seealso \code{\link{sim}}, \code{\link{compute}}, \code{\link{collect}}, \code{\link{main}},
+#'   \code{\link{SimDesign_functions}}
+#'
 #' @export runSimulation
 #'
 #' @examples
@@ -121,6 +126,9 @@
 #' \dontrun{
 #'
 #' #### Step 1 --- Define your conditions under study and create Design data.frame
+#'
+#' # helpful to use the following skeleton version
+#' SimDesign_functions()
 #'
 #' # (use EXPLICIT names, avoid things like N <- 100. That's fine in functions, not here)
 #' sample_sizes <- c(10, 20, 50, 100)
