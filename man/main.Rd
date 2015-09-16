@@ -4,7 +4,7 @@
 \alias{main}
 \title{Main subroutine}
 \usage{
-main(index, condition, sim, compute)
+main(index, condition, generate, analyse)
 }
 \arguments{
 \item{index}{an integer place-holder value indexed from the 1:each input}
@@ -12,13 +12,13 @@ main(index, condition, sim, compute)
 \item{condition}{a single row from the Design input (as a data.frame), indicating the
 simulation conditions}
 
-\item{sim}{the sim() function defined above (required for parallel computing)}
+\item{generate}{the \code{\link{generate}} function defined above (required for parallel computing)}
 
-\item{compute}{the compute() function defined above (required for parallel computing)}
+\item{analyse}{the \code{\link{analyse}} function defined above (required for parallel computing)}
 }
 \value{
 must return a named list with the 'result' and 'parameters' elements for the
-  computational results and Monte Carlo parameters from sim()
+  computational results and Monte Carlo parameters from generate()
 }
 \description{
 This function runs one condition at a time exactly once. This is for

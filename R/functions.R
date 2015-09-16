@@ -1,4 +1,4 @@
-#' Simulate data
+#' Generate data
 #'
 #' @param condition a single row from the Design input (as a data.frame), indicating the
 #'   simulation conditions
@@ -8,12 +8,12 @@
 #'   element should be a named list containing the simulated parameters (if any, otherwise,
 #'   this could just be an empty list)
 #'
-#' @aliases sim
+#' @aliases generate
 #'
 #' @examples
 #' \dontrun{
 #'
-#' mysim <- function(condition){
+#' mygenerate <- function(condition){
 #'
 #'     #require packages/define functions if needed, or better yet index with the :: operator
 #'
@@ -31,7 +31,7 @@
 #'
 #' }
 #'
-sim <- function(condition) NULL
+generate <- function(condition) NULL
 
 #=================================================================================================#
 
@@ -44,7 +44,7 @@ sim <- function(condition) NULL
 #'
 #' Be sure to make heavy use
 #' of \code{\link{try}} combinations and throw a \code{\link{stop}} if an iterative function fails
-#' to converge. This will cause the function to stop, and \code{\link{sim}} will be called again
+#' to converge. This will cause the function to stop, and \code{\link{generate}} will be called again
 #' to obtain a different dataset.
 #'
 #' @param simlist a list containing the data.frame ('dat') and parameters ('parameters')
@@ -56,12 +56,12 @@ sim <- function(condition) NULL
 #'   effects sizes, etc), or a list containing values of interest (e.g., seperate matrix
 #'   and vector of parameter estimates corresponding to elements in simlist$parameters)
 #'
-#' @aliases compute
+#' @aliases analyse
 #'
 #' @examples
 #' \dontrun{
 #'
-#' mycompute <- function(simlist, condition){
+#' myanalyse <- function(simlist, condition){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -88,34 +88,34 @@ sim <- function(condition) NULL
 #' }
 #'
 #' }
-compute <- function(simlist, condition) NULL
+analyse <- function(simlist, condition) NULL
 
 
 
 
 #=================================================================================================#
 
-#' Collect various population comparison statistics
+#' Summerise simulated data using various population comparison statistics
 #'
 #' This collapses across the simulation results within each condition for computing composite
 #' estimates such as RMSD, bias, Type I error, etc.
 #'
-#' @param results a data.frame (if \code{compute} returned a numeric vector) or a list (if
-#'   \code{compute} returned a list) containing the simulation results from compute(), where each cell
+#' @param results a data.frame (if \code{analyse} returned a numeric vector) or a list (if
+#'   \code{analyse} returned a list) containing the simulation results from analyse(), where each cell
 #'   is stored in a unique row/list element
-#' @param parameters a list containing all the 'parameters' elements generated from sim(), where
+#' @param parameters a list containing all the 'parameters' elements generated from generate(), where
 #'   each repetition is stored in a unique list element
 #' @param condition a single row from the Design input (as a data.frame), indicating the
 #'   simulation conditions
 #'
-#' @aliases collect
+#' @aliases summerise
 #'
 #' @return must return a named numeric vector with the desired meta-simulation results
 #'
 #' @examples
 #' \dontrun{
 #'
-#' mycollect <- function(results, parameters, condition){
+#' mysummerise <- function(results, parameters, condition){
 #'
 #'     # handy functions
 #'     bias <- function(observed, population) mean(observed - population)
@@ -146,7 +146,7 @@ compute <- function(simlist, condition) NULL
 #'
 #' }
 #'
-collect <- function(results, parameters, condition) NULL
+summerise <- function(results, parameters, condition) NULL
 
 #=================================================================================================#
 
@@ -160,11 +160,11 @@ collect <- function(results, parameters, condition) NULL
 #' @param index an integer place-holder value indexed from the 1:each input
 #' @param condition a single row from the Design input (as a data.frame), indicating the
 #'   simulation conditions
-#' @param sim the sim() function defined above (required for parallel computing)
-#' @param compute the compute() function defined above (required for parallel computing)
+#' @param generate the \code{\link{generate}} function defined above (required for parallel computing)
+#' @param analyse the \code{\link{analyse}} function defined above (required for parallel computing)
 #'
 #' @return must return a named list with the 'result' and 'parameters' elements for the
-#'   computational results and Monte Carlo parameters from sim()
+#'   computational results and Monte Carlo parameters from generate()
 #'
 #' @aliases main
 #'
@@ -177,22 +177,22 @@ collect <- function(results, parameters, condition) NULL
 #' print(SimDesign::main)
 #'
 #' }
-main <- function(index, condition, sim, compute){
+main <- function(index, condition, generate, analyse){
 
     count <- 0L
 
     while(TRUE){
 
         count <- count + 1L
-        simlist <- sim(condition)
+        simlist <- generate(condition)
         if(!is.list(simlist) || !all(names(simlist) %in% c('dat', 'parameters')))
-            stop('sim() did not return a list with elements dat and parameters', call.=FALSE)
-        res <- try(compute(simlist=simlist, condition=condition), silent=TRUE)
+            stop('generate() did not return a list with elements dat and parameters', call.=FALSE)
+        res <- try(analyse(simlist=simlist, condition=condition), silent=TRUE)
 
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')) next
         if(!is.list(res) && !is.numeric(res))
-            stop('compute() did not return a list or numeric vector', call.=FALSE)
+            stop('analyse() did not return a list or numeric vector', call.=FALSE)
 
         # else return the result with simulation parameters
         if(!is.list(res)){

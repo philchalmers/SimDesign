@@ -4,12 +4,12 @@
 \alias{runSimulation}
 \title{Run a Monte Carlo simulation given a Design data.frame and functions}
 \usage{
-runSimulation(Design, replications, sim, compute, collect, parallel = FALSE,
-  MPI = FALSE, save = TRUE, save_every = 1, clean = TRUE,
-  compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
-  replications, ".rds"), tmpfilename = paste0(compname, "_tmpsim.rds"),
-  main = NULL, ncores = parallel::detectCores(), edit = "none",
-  verbose = TRUE)
+runSimulation(Design, replications, generate, analyse, summerise,
+  parallel = FALSE, MPI = FALSE, save = TRUE, save_every = 1,
+  clean = TRUE, compname = Sys.info()["nodename"],
+  filename = paste0(compname, "_Final_", replications, ".rds"),
+  tmpfilename = paste0(compname, "_tmpsim.rds"), main = NULL,
+  ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
 }
 \arguments{
 \item{Design}{the Design data.frame object containing the Monte carlo simulation conditions to
@@ -17,13 +17,10 @@ runSimulation(Design, replications, sim, compute, collect, parallel = FALSE,
 
 \item{replications}{number of replication to perform per condition (i.e., each row in Design)}
 
-\item{sim}{user-defined data and parameter generating function. See \code{\link{sim}} for details}
+\item{generate}{user-defined data and parameter generating function. See \code{\link{sim}} for details}
 
-\item{compute}{user-defined computation function which acts on the dat generated from
-  \code{\link{sim}}. See \code{\link{compute}} for details}
-
-\item{collect}{user-defined collect function to be used after all the replications have completed.
-   See \code{\link{collect}} for details}
+\item{analyse}{user-defined computation function which acts on the dat generated from
+  \code{\link{generate}}. See \code{\link{analyse}} for details}
 
 \item{parallel}{logical; use parallel processing from the `parallel` package over each
   unique condition?}
@@ -53,19 +50,23 @@ runSimulation(Design, replications, sim, compute, collect, parallel = FALSE,
   point this file was saved (useful in case of power outages or broken nodes).
   This file will be deleted when the simulation is complete}
 
-\item{main}{(optional) user-defined main subroutine organization function.
-   See \code{\link{main}} for details}
+\item{main}{(optional) user-defined organization function defining how the simulation should be
+   organized. When NULL, the internal function definition is used (and the majority of the time
+   this is sufficient). See \code{\link{main}} for further details}
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
 \item{edit}{a string indicating where to initiate a `browser()` call for editing and debugging.
-  Options are 'none' (default), 'main' to edit the main function calls loop, 'sim' to edit the
-  data simulation function, 'compute' to edit the computational function, and 'collect' to
+  Options are 'none' (default), 'main' to edit the main function calls loop, 'generate' to edit the
+  data simulation function, 'analyse' to edit the computational function, and 'summerise' to
   edit the collection function. Alternatively, users may place \code{\link{browser}} calls within their
   own code for debugging at specific lines (note: parallel computation flags will
   automatically be disabled when this is detected)}
 
 \item{verbose}{logical; print messages to the R console?}
+
+\item{summarise}{user-defined summary function to be used after all the replications have completed.
+   See \code{\link{summarise}} for details}
 }
 \description{
 This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
@@ -81,9 +82,9 @@ The strategy for organizing the Monte Carlo simulation work-flow is to
 \describe{
    \item{1)}{Define a suitable Design data.frame. This is often expedited by using the
       \code{\link{expand.grid}} function}
-   \item{2)}{Define the three step functions to simulate the data (\code{\link{sim}}),
-      compute the respective parameter estimates, detection rates, etc (\code{\link{compute}}),
-      and finally collect the results across the total number of replications (\code{\link{collect}})
+   \item{2)}{Define the three step functions to simulate the data (\code{\link{generate}}),
+      compute the respective parameter estimates, detection rates, etc (\code{\link{analyse}}),
+      and finally collect the results across the total number of replications (\code{\link{summarise}})
    }
    \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
       number of replications with the \code{replications} input}
@@ -156,8 +157,8 @@ head(Design)
 # skeleton functions to be edited
 SimDesign_functions()
 
-# help(sim)
-mysim <- function(condition){
+# help(generate)
+Generate <- function(condition){
 
     #require packages/define functions if needed, or better yet index with the :: operator
 
@@ -173,9 +174,9 @@ mysim <- function(condition){
     return(list(dat=dat, parameters=pars))
 }
 
-# help(compute)
+# help(analyse)
 
-mycompute <- function(simlist, condition){
+Analyse <- function(simlist, condition){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
@@ -201,9 +202,9 @@ mycompute <- function(simlist, condition){
     return(ret)
 }
 
-# help(collect)
+# help(summerise)
 
-mycollect <- function(results, parameters, condition){
+Summerise <- function(results, parameters, condition){
 
     # handy functions
     bias <- function(observed, population) mean(observed - population)
@@ -235,12 +236,12 @@ mycollect <- function(results, parameters, condition){
 
 # this simulation does not save temp files or the final result to disk (save=FALSE)
 Final <- runSimulation(Design=Design, replications=1000, parallel=TRUE,
-                       sim=mysim, compute=mycompute, collect=mycollect)
+                       generate=Generate, analyse=Analyse, summerise=Summerise)
 
-## Debug the sim function (not run). See ?browser for help on debugging
+## Debug the generate function (not run). See ?browser for help on debugging
 # runSimulation(Design=Design, replications=1000,
-                sim=mysim, compute=mycompute, collect=mycollect,
-                parallel=TRUE, edit = 'sim')
+#               generate=Generate, analyse=Analyse, summerise=Summerise,
+#               parallel=TRUE, edit='generate')
 
 
 
@@ -250,9 +251,11 @@ Final <- runSimulation(Design=Design, replications=1000, parallel=TRUE,
 # cl <- startMPIcluster()
 # registerDoMPI(cl)
 # Final <- runSimulation(Design=Design, replications=1000, MPI=TRUE,
-                         sim=mysim, compute=mycompute, collect=mycollect)
+#                        generate=Generate, analyse=Analyse, summerise=Summerise)
 # closeCluster(cl)
 # mpi.quit()
+
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 # Step 4 --- Post-analysis: Create a new R file for analyzing the Final data.frame with R based
@@ -303,7 +306,7 @@ ggplot(dd, aes(factor(SSratio), value, fill = factor(standard_deviations))) +
 }
 }
 \seealso{
-\code{\link{sim}}, \code{\link{compute}}, \code{\link{collect}}, \code{\link{main}},
+\code{\link{generate}}, \code{\link{analyse}}, \code{\link{summarise}},
   \code{\link{SimDesign_functions}}
 }
 

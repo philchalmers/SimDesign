@@ -20,13 +20,13 @@ SimDesign_functions <- function(main = FALSE){
     cat('\n#-------------------------------------------------------------------')
     cat('\n### Define essential simulation functions. It may be helpful to place these')
     cat('\n### functions in a seperate R file and source() them in')
-    cat('\n\nsim <- function(condition) {')
+    cat('\n\nGenerate <- function(condition) {')
     cat('\n    ... \n    return(list(dat=data.frame(), parameters=list()))\n}')
     cat('\n\n')
-    cat('compute <- function(simlist, condition) {')
+    cat('Analyse <- function(simlist, condition) {')
     cat('\n    ... \n    return(numeric())    # alternatively, return(list())\n}')
     cat('\n\n')
-    cat('collect <- function(results, parameters, condition) {')
+    cat('Summerise <- function(results, parameters, condition) {')
     cat('\n    ... \n    return(numeric())\n}')
 
     if(main){
@@ -40,6 +40,6 @@ SimDesign_functions <- function(main = FALSE){
 
     cat('\n\n### Run the simulation')
     cat('\nresults <- runSimulation(Design, replications, ')
-    cat('\n    sim=sim, compute=compute, collect=collect, edit=\'none\')')
+    cat('\n    generate=Generate, analyse=Analyse, summerise=Summerise, edit=\'none\')')
     cat('\n\n')
 }

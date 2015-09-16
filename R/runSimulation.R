@@ -12,9 +12,9 @@
 #' \describe{
 #'    \item{1)}{Define a suitable Design data.frame. This is often expedited by using the
 #'       \code{\link{expand.grid}} function}
-#'    \item{2)}{Define the three step functions to simulate the data (\code{\link{sim}}),
-#'       compute the respective parameter estimates, detection rates, etc (\code{\link{compute}}),
-#'       and finally collect the results across the total number of replications (\code{\link{collect}})
+#'    \item{2)}{Define the three step functions to simulate the data (\code{\link{generate}}),
+#'       compute the respective parameter estimates, detection rates, etc (\code{\link{analyse}}),
+#'       and finally collect the results across the total number of replications (\code{\link{summarise}})
 #'    }
 #'    \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
 #'       number of replications with the \code{replications} input}
@@ -63,16 +63,17 @@
 #' @param Design the Design data.frame object containing the Monte carlo simulation conditions to
 #'   be studied
 #'
-#' @param sim user-defined data and parameter generating function. See \code{\link{sim}} for details
+#' @param generate user-defined data and parameter generating function. See \code{\link{sim}} for details
 #'
-#' @param compute user-defined computation function which acts on the dat generated from
-#'   \code{\link{sim}}. See \code{\link{compute}} for details
+#' @param analyse user-defined computation function which acts on the dat generated from
+#'   \code{\link{generate}}. See \code{\link{analyse}} for details
 #'
-#' @param collect user-defined collect function to be used after all the replications have completed.
-#'    See \code{\link{collect}} for details
+#' @param summarise user-defined summary function to be used after all the replications have completed.
+#'    See \code{\link{summarise}} for details
 #'
-#' @param main (optional) user-defined main subroutine organization function.
-#'    See \code{\link{main}} for details
+#' @param main (optional) user-defined organization function defining how the simulation should be
+#'    organized. When NULL, the internal function definition is used (and the majority of the time
+#'    this is sufficient). See \code{\link{main}} for further details
 #'
 #' @param replications number of replication to perform per condition (i.e., each row in Design)
 #'
@@ -107,8 +108,8 @@
 #'   may be resumed on another computer by changing the name of the node to match the broken computer
 #'
 #' @param edit a string indicating where to initiate a `browser()` call for editing and debugging.
-#'   Options are 'none' (default), 'main' to edit the main function calls loop, 'sim' to edit the
-#'   data simulation function, 'compute' to edit the computational function, and 'collect' to
+#'   Options are 'none' (default), 'main' to edit the main function calls loop, 'generate' to edit the
+#'   data simulation function, 'analyse' to edit the computational function, and 'summerise' to
 #'   edit the collection function. Alternatively, users may place \code{\link{browser}} calls within their
 #'   own code for debugging at specific lines (note: parallel computation flags will
 #'   automatically be disabled when this is detected)
@@ -117,7 +118,7 @@
 #'
 #' @aliases runSimulation
 #'
-#' @seealso \code{\link{sim}}, \code{\link{compute}}, \code{\link{collect}}, \code{\link{main}},
+#' @seealso \code{\link{generate}}, \code{\link{analyse}}, \code{\link{summarise}},
 #'   \code{\link{SimDesign_functions}}
 #'
 #' @export runSimulation
@@ -147,8 +148,8 @@
 #' # skeleton functions to be edited
 #' SimDesign_functions()
 #'
-#' # help(sim)
-#' mysim <- function(condition){
+#' # help(generate)
+#' Generate <- function(condition){
 #'
 #'     #require packages/define functions if needed, or better yet index with the :: operator
 #'
@@ -164,9 +165,9 @@
 #'     return(list(dat=dat, parameters=pars))
 #' }
 #'
-#' # help(compute)
+#' # help(analyse)
 #'
-#' mycompute <- function(simlist, condition){
+#' Analyse <- function(simlist, condition){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -192,9 +193,9 @@
 #'     return(ret)
 #' }
 #'
-#' # help(collect)
+#' # help(summerise)
 #'
-#' mycollect <- function(results, parameters, condition){
+#' Summerise <- function(results, parameters, condition){
 #'
 #'     # handy functions
 #'     bias <- function(observed, population) mean(observed - population)
@@ -226,12 +227,12 @@
 #'
 #' # this simulation does not save temp files or the final result to disk (save=FALSE)
 #' Final <- runSimulation(Design=Design, replications=1000, parallel=TRUE,
-#'                        sim=mysim, compute=mycompute, collect=mycollect)
+#'                        generate=Generate, analyse=Analyse, summerise=Summerise)
 #'
-#' ## Debug the sim function (not run). See ?browser for help on debugging
+#' ## Debug the generate function (not run). See ?browser for help on debugging
 #' # runSimulation(Design=Design, replications=1000,
-#'                 sim=mysim, compute=mycompute, collect=mycollect,
-#'                 parallel=TRUE, edit = 'sim')
+#' #               generate=Generate, analyse=Analyse, summerise=Summerise,
+#' #               parallel=TRUE, edit='generate')
 #'
 #'
 #'
@@ -241,9 +242,11 @@
 #' # cl <- startMPIcluster()
 #' # registerDoMPI(cl)
 #' # Final <- runSimulation(Design=Design, replications=1000, MPI=TRUE,
-#'                          sim=mysim, compute=mycompute, collect=mycollect)
+#' #                        generate=Generate, analyse=Analyse, summerise=Summerise)
 #' # closeCluster(cl)
 #' # mpi.quit()
+#'
+#'
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Step 4 --- Post-analysis: Create a new R file for analyzing the Final data.frame with R based
@@ -293,15 +296,16 @@
 #'
 #' }
 #'
-runSimulation <- function(Design, replications, sim, compute, collect, parallel = FALSE, MPI = FALSE,
+runSimulation <- function(Design, replications, generate, analyse, summerise,
+                          parallel = FALSE, MPI = FALSE,
                           save = TRUE, save_every = 1, clean = TRUE,
                           compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', replications, '.rds'),
                           tmpfilename = paste0(compname, '_tmpsim.rds'), main = NULL,
                           ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
 {
-    stopifnot(!missing(sim) || !missing(compute) || !missing(collect))
-    Functions <- list(sim=sim, collect=collect, compute=compute, main=main)
+    stopifnot(!missing(generate) || !missing(analyse) || !missing(summerise))
+    Functions <- list(generate=generate, analyse=analyse, summerise=summerise, main=main)
     stopifnot(!missing(Design))
     stopifnot(!missing(replications))
     FunNames <- names(Functions)
@@ -309,10 +313,10 @@ runSimulation <- function(Design, replications, sim, compute, collect, parallel 
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))
         truefms <- switch(i,
-                          main = c('index', 'condition', 'sim', 'compute'),
-                          sim  = c('condition'),
-                          compute = c('simlist', 'condition'),
-                          collect = c('results', 'parameters', 'condition'))
+                          main = c('index', 'condition', 'generate', 'analyse'),
+                          generate  = c('condition'),
+                          analyse = c('simlist', 'condition'),
+                          summerise = c('results', 'parameters', 'condition'))
         if(!all(truefms %in% fms))
             stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
     }
