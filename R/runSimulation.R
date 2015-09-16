@@ -1,11 +1,11 @@
 #' Run a Monte Carlo simulation given a Design data.frame and functions
 #'
 #' This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
-#' and the number of replications. Results are saved as temporary files in case of interruptions
-#' and can be restored simply by rerunning the function again in the same working directory as the
-#' temp file. Supports parallel and cluster computing, and is designed to be cross-platform. For
-#' a skeleton version of the workflow useful when initially defining a simulation, see
-#' \code{\link{SimDesign_functions}}.
+#' and the number of replications. Results can be saved as temporary files in case of interruptions
+#' and may be restored by rerunning the exact function calls again, provided that the respective temp
+#' file can be found in the working directory. Supports parallel and cluster computing, global and
+#' local debugging, and is designed to be cross-platform.  For a skeleton version of the workflow
+#' which may be useful when initially defining a simulation, see \code{\link{SimDesign_functions}}.
 #'
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
 #'
@@ -60,19 +60,19 @@
 #' This will create two .rds files which can be combined later with the
 #' \code{\link{aggregate_simulations}} function.
 #'
-#' @param Design the Design data.frame defined from main.R
+#' @param Design the Design data.frame object containing the Monte carlo simulation conditions to
+#'   be studied
 #'
-#' @param sim user-defined simulation function. See \code{\link{sim}} for details
+#' @param sim user-defined data and parameter generating function. See \code{\link{sim}} for details
 #'
-#' @param compute user-defined computation function. See \code{\link{compute}} for details
+#' @param compute user-defined computation function which acts on the dat generated from
+#'   \code{\link{sim}}. See \code{\link{compute}} for details
 #'
 #' @param collect user-defined collect function to be used after all the replications have completed.
 #'    See \code{\link{collect}} for details
 #'
 #' @param main (optional) user-defined main subroutine organization function.
 #'    See \code{\link{main}} for details
-#'
-#' @param sim simulation function. See \code{\link{sim}} for details
 #'
 #' @param replications number of replication to perform per condition (i.e., each row in Design)
 #'
@@ -97,7 +97,8 @@
 #'   point this file was saved (useful in case of power outages or broken nodes).
 #'   This file will be deleted when the simulation is complete
 #'
-#' @param MPI logical; use the doMPI package to run simulation in parallel on a cluster? Default is FALSE
+#' @param MPI logical; use the \code{doMPI} package to run simulation in parallel on
+#'   a cluster? Default is FALSE
 #'
 #' @param save logical; save the final simulation and temp files to the hard-drive? Default is FALSE
 #'
@@ -108,7 +109,7 @@
 #' @param edit a string indicating where to initiate a `browser()` call for editing and debugging.
 #'   Options are 'none' (default), 'main' to edit the main function calls loop, 'sim' to edit the
 #'   data simulation function, 'compute' to edit the computational function, and 'collect' to
-#'   edit the collection function. Alternatively, users may place \code{browser()} calls within their
+#'   edit the collection function. Alternatively, users may place \code{\link{browser}} calls within their
 #'   own code for debugging at specific lines (note: parallel computation flags will
 #'   automatically be disabled when this is detected)
 #'
@@ -224,12 +225,13 @@
 #' #### Step 3 --- Collect results by looping over the rows in Design
 #'
 #' # this simulation does not save temp files or the final result to disk (save=FALSE)
-#' Final <- runSimulation(Design=Design, sim=mysim, compute=mycompute, collect=mycollect,
-#'                        replications=1000, parallel=TRUE)
+#' Final <- runSimulation(Design=Design, replications=1000, parallel=TRUE,
+#'                        sim=mysim, compute=mycompute, collect=mycollect)
 #'
 #' ## Debug the sim function (not run). See ?browser for help on debugging
-#' # runSimulation(Design=Design, sim=mysim, compute=mycompute, collect=mycollect,
-#'                 replications=1000, parallel=TRUE, edit = 'sim')
+#' # runSimulation(Design=Design, replications=1000,
+#'                 sim=mysim, compute=mycompute, collect=mycollect,
+#'                 parallel=TRUE, edit = 'sim')
 #'
 #'
 #'
@@ -238,8 +240,8 @@
 #' # library(doMPI)
 #' # cl <- startMPIcluster()
 #' # registerDoMPI(cl)
-#' # Final <- runSimulation(Design=Design, sim=mysim, compute=mycompute, collect=mycollect,
-#'                          replications=1000, MPI=TRUE)
+#' # Final <- runSimulation(Design=Design, replications=1000, MPI=TRUE,
+#'                          sim=mysim, compute=mycompute, collect=mycollect)
 #' # closeCluster(cl)
 #' # mpi.quit()
 #'
