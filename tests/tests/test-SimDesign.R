@@ -62,18 +62,14 @@ test_that('SimDesign', {
         bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
         RMSD.random_number <- RMSD(sapply(parameters, function(x) x$random_number), pop_value)
 
-        #find results of interest here (alpha < .1, .05, .01)
+        #find results of interest here
         nms <- c('welch', 'independent')
-        lessthan.10 <- colMeans(results[,nms] < .10)
-        lessthan.05 <- colMeans(results[,nms] < .05)
-        lessthan.01 <- colMeans(results[,nms] < .01)
+        lessthan.05 <- EDR(results[,nms], alpha = .05)
 
         # return the results that will be appended to the Design input
         ret <- c(bias.random_number=bias.random_number,
                  RMSD.random_number=RMSD.random_number,
-                 lessthan.10=lessthan.10,
-                 lessthan.05=lessthan.05,
-                 lessthan.01=lessthan.01)
+                 lessthan.05=lessthan.05)
         return(ret)
     }
 

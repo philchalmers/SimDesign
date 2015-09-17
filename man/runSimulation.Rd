@@ -208,7 +208,6 @@ Analyse <- function(simlist, condition){
 
 Summarise <- function(results, parameters, condition){
 
-
     # silly test for bias and RMSD of a random number from 0
     pop_value <- 0
     bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
@@ -216,16 +215,12 @@ Summarise <- function(results, parameters, condition){
 
     #find results of interest here (alpha < .1, .05, .01)
     nms <- c('welch', 'independent')
-    lessthan.10 <- colMeans(results[,nms] < .10)
-    lessthan.05 <- colMeans(results[,nms] < .05)
-    lessthan.01 <- colMeans(results[,nms] < .01)
+    lessthan.05 <- EDR(results[,nms], alpha = .05)
 
     # return the results that will be appended to the design input
     ret <- c(bias.random_number=bias.random_number,
              MSE.random_number=MSE.random_number,
-             lessthan.10=lessthan.10,
-             lessthan.05=lessthan.05,
-             lessthan.01=lessthan.01)
+             lessthan.05=lessthan.05)
     return(ret)
 }
 

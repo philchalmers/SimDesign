@@ -112,6 +112,8 @@ analyse <- function(simlist, condition) NULL
 #'
 #' @return must return a named numeric vector with the desired meta-simulation results
 #'
+#' @seealso \code{\link{bias}}, \code{\link{MSE}}, \code{\link{RE}}, \code{\link{EDR}}
+#'
 #' @examples
 #' \dontrun{
 #'
@@ -127,16 +129,12 @@ analyse <- function(simlist, condition) NULL
 #'
 #'     #find results of interest here (alpha < .1, .05, .01)
 #'     nms <- c('welch', 'independent')
-#'     lessthan.10 <- colMeans(cell_results[,nms] < .10)
-#'     lessthan.05 <- colMeans(cell_results[,nms] < .05)
-#'     lessthan.01 <- colMeans(cell_results[,nms] < .01)
+#'     lessthan.05 <- EDR(results[,nms], alpha = .05)
 #'
 #'     # return the results that will be appended to the design input
 #'     ret <- c(bias.random_number=bias.random_number,
 #'              MSE.random_number=MSE.random_number,
-#'              lessthan.10=lessthan.10,
-#'              lessthan.05=lessthan.05,
-#'              lessthan.01=lessthan.01)
+#'              lessthan.05=lessthan.05)
 #'     return(ret)
 #' }
 #'

@@ -131,9 +131,6 @@
 #'
 #' #### Step 1 --- Define your conditions under study and create design data.frame
 #'
-#' # helpful to use the following skeleton version
-#' SimDesign_functions()
-#'
 #' # (use EXPLICIT names, avoid things like N <- 100. That's fine in functions, not here)
 #' sample_sizes <- c(10, 20, 50, 100)
 #' standard_deviations <- c(1, 4, 8)
@@ -206,16 +203,12 @@
 #'
 #'     #find results of interest here (alpha < .1, .05, .01)
 #'     nms <- c('welch', 'independent')
-#'     lessthan.10 <- colMeans(results[,nms] < .10)
-#'     lessthan.05 <- colMeans(results[,nms] < .05)
-#'     lessthan.01 <- colMeans(results[,nms] < .01)
+#'     lessthan.05 <- EDR(results[,nms], alpha = .05)
 #'
 #'     # return the results that will be appended to the design input
 #'     ret <- c(bias.random_number=bias.random_number,
 #'              MSE.random_number=MSE.random_number,
-#'              lessthan.10=lessthan.10,
-#'              lessthan.05=lessthan.05,
-#'              lessthan.01=lessthan.01)
+#'              lessthan.05=lessthan.05)
 #'     return(ret)
 #' }
 #'

@@ -32,6 +32,7 @@ Analysis <- function(Functions, condition, replications, cl, MPI)
     else parameters <- list()
 
     #collect meta simulation statistics (bias, RMSD, type I errors, etc)
+    N_CELL_RUNS <- sum(sapply(results, function(x) x['n_cell_runs']))
     if(!is.list(results[[1L]])) results <- do.call(rbind, results)
     sim_results <- Functions$summarise(results=results, parameters=parameters,
                            condition=condition)
@@ -39,8 +40,7 @@ Analysis <- function(Functions, condition, replications, cl, MPI)
     if(!is.vector(sim_results)) stop('summarise() must return a vector', call.=FALSE)
     if(any(names(sim_results) == 'N_CELL_RUNS'))
         stop('summarise() cannot contain an element with the name N_CELL_RUNS')
-    sim_results <- c(sim_results,
-                     N_CELL_RUNS = sum(sapply(results, function(x) x['n_cell_runs'])))
+    sim_results <- c(sim_results, N_CELL_RUNS=N_CELL_RUNS)
 
     return(sim_results)
 }

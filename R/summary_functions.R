@@ -78,3 +78,37 @@ MSE <- function(observed, population) sqrt(mean((observed - population)^2))
 #'
 RE <- function(MSEs) MSEs[1L] / MSEs
 
+
+
+#' Compute the empirical detection rate for Type I errors and Power
+#'
+#' Computes the detection rate for determining empirical Type I error and power rates
+#'
+#' @param p a vector or matrix of p-values from the desired statistical estimator. If a matrix,
+#'   each statistic must be organized by column where the number of rows is equal to the number
+#'   of replications
+#'
+#' @param alpha the nominal detection rate to be studied (typical values are .10, .05, and .01)
+#'
+#' @aliases EDR
+#'
+#' @examples
+#' \dontrun{
+#'
+#' rates <- numeric(100)
+#' for(i in 1:100){
+#'    dat <- rnorm(100)
+#'    rates[i] <- t.test(dat)$p.value
+#' }
+#'
+#' EDR(rates, alpha = .05)
+#'
+#' }
+#'
+EDR <- function(p, alpha){
+    stopifnot(all(p <= 1 && p >= 0))
+    stopifnot(alpha <= 1 && alpha >= 0)
+    if(is.vector(p)) p <- matrix(p)
+    colMeans(p <= alpha)
+}
+
