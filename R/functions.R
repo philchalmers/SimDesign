@@ -40,7 +40,7 @@ generate <- function(condition) NULL
 #' Compute all relevant test statistics and parameter estimates here.
 #' This is the computational heavy lifting section. In some cases, it may be easier to change
 #' the output to a named list containing different parameter configurations (i.e., when
-#' determining RMSD values for a large set of population parameters).
+#' determining MSE values for a large set of population parameters).
 #'
 #' Be sure to make heavy use
 #' of \code{\link{try}} combinations and throw a \code{\link{stop}} if an iterative function fails
@@ -122,7 +122,7 @@ analyse <- function(simlist, condition) NULL
 #'     #convert to matrix for convenience (if helpful)
 #'     cell_results <- do.call(rbind, results)
 #'
-#'     # silly test for bias and RMSD of a random number from 0
+#'     # silly test for bias and MSE of a random number from 0
 #'     pop_value <- 0
 #'     bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
 #'     MSE.random_number <- MSE(sapply(parameters, function(x) x$random_number), pop_value)

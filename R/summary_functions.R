@@ -30,7 +30,8 @@ bias <- function(observed, population){
 
 #' Compute the mean square error
 #'
-#' Computes the average deviation (mean square error) of a sample estimate from the population value.
+#' Computes the average deviation (mean square error; also known as the root mean square deviation)
+#' of a sample estimate from the population value.
 #'
 #' @param observed a numeric vector of parameter estimates, where the length is equal to the number of
 #'   replications
@@ -39,14 +40,14 @@ bias <- function(observed, population){
 #'
 #' @return returns a single number indicating the overall bias in the estimates
 #'
-#' @aliases RMSD
+#' @aliases MSE
 #'
 #' @examples
 #' \dontrun{
 #'
 #' pop <- 1
 #' samp <- rnorm(100, 1, sd = 0.5)
-#' RMSD(samp, pop)
+#' MSE(samp, pop)
 #'
 #' }
 #'

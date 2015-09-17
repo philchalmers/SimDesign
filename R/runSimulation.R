@@ -196,7 +196,7 @@
 #'
 #' Summarise <- function(results, parameters, condition){
 #'
-#'     # silly test for bias and RMSD of a random number from 0
+#'     # silly test for bias and MSE of a random number from 0
 #'     pop_value <- 0
 #'     bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
 #'     MSE.random_number <- MSE(sapply(parameters, function(x) x$random_number), pop_value)
