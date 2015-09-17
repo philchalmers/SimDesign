@@ -20,7 +20,11 @@
 #'
 #' }
 #'
-bias <- function(observed, population) mean(observed - population)
+bias <- function(observed, population){
+    stopifnot(is.vector(observed))
+    stopifnot(length(population) == 1L)
+    mean(observed - population)
+}
 
 
 
@@ -46,7 +50,11 @@ bias <- function(observed, population) mean(observed - population)
 #'
 #' }
 #'
-MSE <- function(observed, population) sqrt(mean((observed - population)^2))
+MSE <- function(observed, population){
+    stopifnot(is.vector(observed))
+    stopifnot(length(population) == 1L)
+    sqrt(mean((observed - population)^2))
+}
 
 
 
@@ -76,13 +84,17 @@ MSE <- function(observed, population) sqrt(mean((observed - population)^2))
 #'
 #' }
 #'
-RE <- function(MSEs) MSEs[1L] / MSEs
+RE <- function(MSEs){
+    stopifnot(is.vector(MSEs))
+    MSEs[1L] / MSEs
+}
 
 
 
 #' Compute the empirical detection rate for Type I errors and Power
 #'
-#' Computes the detection rate for determining empirical Type I error and power rates
+#' Computes the detection rate for determining empirical Type I error and power rates using information
+#' from p-values.
 #'
 #' @param p a vector or matrix of p-values from the desired statistical estimator. If a matrix,
 #'   each statistic must be organized by column where the number of rows is equal to the number
@@ -107,8 +119,46 @@ RE <- function(MSEs) MSEs[1L] / MSEs
 #'
 EDR <- function(p, alpha){
     stopifnot(all(p <= 1 && p >= 0))
+    stopifnot(length(alpha) == 1L)
     stopifnot(alpha <= 1 && alpha >= 0)
     if(is.vector(p)) p <- matrix(p)
     colMeans(p <= alpha)
+}
+
+
+
+#' Compute the empirical coverage rate for Type I errors and Power
+#'
+#' Computes the detection rate for determining empirical Type I error and power rates using information
+#' from the confidence intervals. Note that using \code{1 - ECR(CIs, population)} will provide the empirical
+#' error rate.
+#'
+#' @param CI a matrix of confidence interval values for a given population value, where the first
+#'   column indicates the lower cofidence interval and the second column the upper confidence interval
+#'
+#' @param population a numeric scalar indicating the fixed population value
+#'
+#' @aliases ECR
+#'
+#' @examples
+#' \dontrun{
+#'
+#' CIs <- matrix(NA, 100, 2)
+#' for(i in 1:100){
+#'    dat <- rnorm(100)
+#'    CIs[i,] <- t.test(dat)$conf.int
+#' }
+#'
+#' ECR(CIs, 0)
+#'
+#' }
+#'
+ECR <- function(CIs, population){
+    stopifnot(is.matrix(CIs))
+    stopifnot(length(population) == 1L)
+    if(CIs[1,1] > CIs[1,2]){
+        CIs <- cbind(CIs[,2L], CIs[,1L])
+    }
+    mean(CIs[,1L] <= population & population <= CIs[,2L])
 }
 

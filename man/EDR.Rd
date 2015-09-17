@@ -14,7 +14,8 @@ EDR(p, alpha)
 \item{alpha}{the nominal detection rate to be studied (typical values are .10, .05, and .01)}
 }
 \description{
-Computes the detection rate for determining empirical Type I error and power rates
+Computes the detection rate for determining empirical Type I error and power rates using information
+from p-values.
 }
 \examples{
 \dontrun{

@@ -140,9 +140,6 @@ This will create two .rds files which can be combined later with the
 
 #### Step 1 --- Define your conditions under study and create design data.frame
 
-# helpful to use the following skeleton version
-SimDesign_functions()
-
 # (use EXPLICIT names, avoid things like N <- 100. That's fine in functions, not here)
 sample_sizes <- c(10, 20, 50, 100)
 standard_deviations <- c(1, 4, 8)
