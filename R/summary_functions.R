@@ -132,7 +132,7 @@ EDR <- function(p, alpha){
 #'
 #' Computes the detection rate for determining empirical Type I error and power rates using information
 #' from the confidence intervals. Note that using \code{1 - ECR(CIs, population)} will provide the empirical
-#' error rate.
+#' detection rate.
 #'
 #' @param CI a matrix of confidence interval values for a given population value, where the first
 #'   column indicates the lower cofidence interval and the second column the upper confidence interval

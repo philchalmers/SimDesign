@@ -15,7 +15,7 @@ ECR(CIs, population)
 \description{
 Computes the detection rate for determining empirical Type I error and power rates using information
 from the confidence intervals. Note that using \code{1 - ECR(CIs, population)} will provide the empirical
-error rate.
+detection rate.
 }
 \examples{
 \dontrun{
