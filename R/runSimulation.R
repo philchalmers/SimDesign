@@ -229,11 +229,11 @@
 #'
 #' # this simulation does not save temp files or the final result to disk (save=FALSE)
 #' Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
-#'                        generate=Generate, analyse=Analyse, summerise=Summarise)
+#'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #'
 #' ## Debug the generate function (not run). See ?browser for help on debugging
 #' # runSimulation(design=Design, replications=1000,
-#' #               generate=Generate, analyse=Analyse, summerise=Summarise,
+#' #               generate=Generate, analyse=Analyse, summarise=Summarise,
 #' #               parallel=TRUE, edit='generate')
 #'
 #'
@@ -244,7 +244,7 @@
 #' # cl <- startMPIcluster()
 #' # registerDoMPI(cl)
 #' # Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
-#' #                        generate=Generate, analyse=Analyse, summerise=Summarise)
+#' #                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' # closeCluster(cl)
 #' # mpi.quit()
 #'
@@ -300,7 +300,7 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           parallel = FALSE, MPI = FALSE,
-                          save = TRUE, save_every = 1, clean = TRUE,
+                          save = FALSE, save_every = 1, clean = TRUE,
                           compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', replications, '.rds'),
                           tmpfilename = paste0(compname, '_tmpsim.rds'), main = NULL,

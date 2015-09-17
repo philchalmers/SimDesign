@@ -5,7 +5,7 @@
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
-  parallel = FALSE, MPI = FALSE, save = TRUE, save_every = 1,
+  parallel = FALSE, MPI = FALSE, save = FALSE, save_every = 1,
   clean = TRUE, compname = Sys.info()["nodename"],
   filename = paste0(compname, "_Final_", replications, ".rds"),
   tmpfilename = paste0(compname, "_tmpsim.rds"), main = NULL,
@@ -238,11 +238,11 @@ Summarise <- function(results, parameters, condition){
 
 # this simulation does not save temp files or the final result to disk (save=FALSE)
 Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
-                       generate=Generate, analyse=Analyse, summerise=Summarise)
+                       generate=Generate, analyse=Analyse, summarise=Summarise)
 
 ## Debug the generate function (not run). See ?browser for help on debugging
 # runSimulation(design=Design, replications=1000,
-#               generate=Generate, analyse=Analyse, summerise=Summarise,
+#               generate=Generate, analyse=Analyse, summarise=Summarise,
 #               parallel=TRUE, edit='generate')
 
 
@@ -253,7 +253,7 @@ Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
 # cl <- startMPIcluster()
 # registerDoMPI(cl)
 # Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
-#                        generate=Generate, analyse=Analyse, summerise=Summarise)
+#                        generate=Generate, analyse=Analyse, summarise=Summarise)
 # closeCluster(cl)
 # mpi.quit()
 

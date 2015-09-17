@@ -40,6 +40,6 @@ SimDesign_functions <- function(main = FALSE){
 
     cat('\n\n### Run the simulation')
     cat('\nresults <- runSimulation(Design, replications, ')
-    cat('\n    generate=Generate, analyse=Analyse, summerise=Summarise, edit=\'none\')')
+    cat('\n    generate=Generate, analyse=Analyse, summarise=Summarise, edit=\'none\')')
     cat('\n\n')
 }
