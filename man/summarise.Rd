@@ -22,7 +22,7 @@ must return a named numeric vector with the desired meta-simulation results
 }
 \description{
 This collapses across the simulation results within each condition for computing composite
-estimates such as RMSD, bias, Type I error, etc.
+estimates such as MSE, bias, Type I error rates, coverage rates, etc.
 }
 \examples{
 \dontrun{
@@ -51,6 +51,6 @@ mysummarise <- function(results, parameters, condition){
 }
 }
 \seealso{
-\code{\link{bias}}, \code{\link{MSE}}, \code{\link{RE}}, \code{\link{EDR}}
+\code{\link{bias}}, \code{\link{MSE}}, \code{\link{RE}}, \code{\link{EDR}}, \code{\link{ECR}}
 }
 
