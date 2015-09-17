@@ -26,7 +26,7 @@ SimDesign_functions <- function(main = FALSE){
     cat('Analyse <- function(simlist, condition) {')
     cat('\n    ... \n    return(numeric())    # alternatively, return(list())\n}')
     cat('\n\n')
-    cat('Summerise <- function(results, parameters, condition) {')
+    cat('Summarise <- function(results, parameters, condition) {')
     cat('\n    ... \n    return(numeric())\n}')
 
     if(main){
@@ -40,6 +40,6 @@ SimDesign_functions <- function(main = FALSE){
 
     cat('\n\n### Run the simulation')
     cat('\nresults <- runSimulation(Design, replications, ')
-    cat('\n    generate=Generate, analyse=Analyse, summerise=Summerise, edit=\'none\')')
+    cat('\n    generate=Generate, analyse=Analyse, summerise=Summarise, edit=\'none\')')
     cat('\n\n')
 }

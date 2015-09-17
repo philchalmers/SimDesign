@@ -2,9 +2,9 @@
 % Please edit documentation in R/runSimulation.R
 \name{runSimulation}
 \alias{runSimulation}
-\title{Run a Monte Carlo simulation given a Design data.frame and functions}
+\title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
-runSimulation(Design, replications, generate, analyse, summerise,
+runSimulation(design, replications, generate, analyse, summarise,
   parallel = FALSE, MPI = FALSE, save = TRUE, save_every = 1,
   clean = TRUE, compname = Sys.info()["nodename"],
   filename = paste0(compname, "_Final_", replications, ".rds"),
@@ -12,15 +12,19 @@ runSimulation(Design, replications, generate, analyse, summerise,
   ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
 }
 \arguments{
-\item{Design}{the Design data.frame object containing the Monte carlo simulation conditions to
-  be studied}
+\item{design}{a data.frame object containing the Monte carlo simulation conditions to
+  be studied, where each row represents a unique condition}
 
-\item{replications}{number of replication to perform per condition (i.e., each row in Design)}
+\item{replications}{number of replication to perform per condition (i.e., each row in \code{design})}
 
-\item{generate}{user-defined data and parameter generating function. See \code{\link{sim}} for details}
+\item{generate}{user-defined data and parameter generating function.
+  See \code{\link{generate}} for details}
 
 \item{analyse}{user-defined computation function which acts on the dat generated from
   \code{\link{generate}}. See \code{\link{analyse}} for details}
+
+\item{summarise}{user-defined summary function to be used after all the replications have completed.
+   See \code{\link{summarise}} for details}
 
 \item{parallel}{logical; use parallel processing from the `parallel` package over each
   unique condition?}
@@ -58,15 +62,12 @@ runSimulation(Design, replications, generate, analyse, summerise,
 
 \item{edit}{a string indicating where to initiate a `browser()` call for editing and debugging.
   Options are 'none' (default), 'main' to edit the main function calls loop, 'generate' to edit the
-  data simulation function, 'analyse' to edit the computational function, and 'summerise' to
+  data simulation function, 'analyse' to edit the computational function, and 'summarise' to
   edit the collection function. Alternatively, users may place \code{\link{browser}} calls within their
   own code for debugging at specific lines (note: parallel computation flags will
   automatically be disabled when this is detected)}
 
 \item{verbose}{logical; print messages to the R console?}
-
-\item{summarise}{user-defined summary function to be used after all the replications have completed.
-   See \code{\link{summarise}} for details}
 }
 \description{
 This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
@@ -80,11 +81,12 @@ which may be useful when initially defining a simulation, see \code{\link{SimDes
 The strategy for organizing the Monte Carlo simulation work-flow is to
 
 \describe{
-   \item{1)}{Define a suitable Design data.frame. This is often expedited by using the
+   \item{1)}{Define a suitable \code{design} data.frame. This is often expedited by using the
       \code{\link{expand.grid}} function}
    \item{2)}{Define the three step functions to simulate the data (\code{\link{generate}}),
-      compute the respective parameter estimates, detection rates, etc (\code{\link{analyse}}),
-      and finally collect the results across the total number of replications (\code{\link{summarise}})
+      analyse the generated data by computing the respective parameter estimates, detection rates,
+      etc (\code{\link{analyse}}), and finally summarise the results across the total
+      number of replications (\code{\link{summarise}})
    }
    \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
       number of replications with the \code{replications} input}
@@ -136,7 +138,7 @@ This will create two .rds files which can be combined later with the
 \examples{
 \dontrun{
 
-#### Step 1 --- Define your conditions under study and create Design data.frame
+#### Step 1 --- Define your conditions under study and create design data.frame
 
 # helpful to use the following skeleton version
 SimDesign_functions()
@@ -202,9 +204,9 @@ Analyse <- function(simlist, condition){
     return(ret)
 }
 
-# help(summerise)
+# help(summarise)
 
-Summerise <- function(results, parameters, condition){
+Summarise <- function(results, parameters, condition){
 
     # handy functions
     bias <- function(observed, population) mean(observed - population)
@@ -221,7 +223,7 @@ Summerise <- function(results, parameters, condition){
     lessthan.05 <- colMeans(results[,nms] < .05)
     lessthan.01 <- colMeans(results[,nms] < .01)
 
-    # return the results that will be appended to the Design input
+    # return the results that will be appended to the design input
     ret <- c(bias.random_number=bias.random_number,
              RMSD.random_number=RMSD.random_number,
              lessthan.10=lessthan.10,
@@ -232,15 +234,15 @@ Summerise <- function(results, parameters, condition){
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
-#### Step 3 --- Collect results by looping over the rows in Design
+#### Step 3 --- Collect results by looping over the rows in design
 
 # this simulation does not save temp files or the final result to disk (save=FALSE)
-Final <- runSimulation(Design=Design, replications=1000, parallel=TRUE,
-                       generate=Generate, analyse=Analyse, summerise=Summerise)
+Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
+                       generate=Generate, analyse=Analyse, summerise=Summarise)
 
 ## Debug the generate function (not run). See ?browser for help on debugging
-# runSimulation(Design=Design, replications=1000,
-#               generate=Generate, analyse=Analyse, summerise=Summerise,
+# runSimulation(design=Design, replications=1000,
+#               generate=Generate, analyse=Analyse, summerise=Summarise,
 #               parallel=TRUE, edit='generate')
 
 
@@ -250,8 +252,8 @@ Final <- runSimulation(Design=Design, replications=1000, parallel=TRUE,
 # library(doMPI)
 # cl <- startMPIcluster()
 # registerDoMPI(cl)
-# Final <- runSimulation(Design=Design, replications=1000, MPI=TRUE,
-#                        generate=Generate, analyse=Analyse, summerise=Summerise)
+# Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
+#                        generate=Generate, analyse=Analyse, summerise=Summarise)
 # closeCluster(cl)
 # mpi.quit()
 

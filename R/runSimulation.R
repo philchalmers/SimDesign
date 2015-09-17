@@ -1,4 +1,4 @@
-#' Run a Monte Carlo simulation given a Design data.frame and functions
+#' Run a Monte Carlo simulation given a data.frame of conditions and simulation functions
 #'
 #' This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
 #' and the number of replications. Results can be saved as temporary files in case of interruptions
@@ -10,11 +10,12 @@
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
 #'
 #' \describe{
-#'    \item{1)}{Define a suitable Design data.frame. This is often expedited by using the
+#'    \item{1)}{Define a suitable \code{design} data.frame. This is often expedited by using the
 #'       \code{\link{expand.grid}} function}
 #'    \item{2)}{Define the three step functions to simulate the data (\code{\link{generate}}),
-#'       compute the respective parameter estimates, detection rates, etc (\code{\link{analyse}}),
-#'       and finally collect the results across the total number of replications (\code{\link{summarise}})
+#'       analyse the generated data by computing the respective parameter estimates, detection rates,
+#'       etc (\code{\link{analyse}}), and finally summarise the results across the total
+#'       number of replications (\code{\link{summarise}})
 #'    }
 #'    \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
 #'       number of replications with the \code{replications} input}
@@ -60,10 +61,11 @@
 #' This will create two .rds files which can be combined later with the
 #' \code{\link{aggregate_simulations}} function.
 #'
-#' @param Design the Design data.frame object containing the Monte carlo simulation conditions to
-#'   be studied
+#' @param design a data.frame object containing the Monte carlo simulation conditions to
+#'   be studied, where each row represents a unique condition
 #'
-#' @param generate user-defined data and parameter generating function. See \code{\link{sim}} for details
+#' @param generate user-defined data and parameter generating function.
+#'   See \code{\link{generate}} for details
 #'
 #' @param analyse user-defined computation function which acts on the dat generated from
 #'   \code{\link{generate}}. See \code{\link{analyse}} for details
@@ -75,7 +77,7 @@
 #'    organized. When NULL, the internal function definition is used (and the majority of the time
 #'    this is sufficient). See \code{\link{main}} for further details
 #'
-#' @param replications number of replication to perform per condition (i.e., each row in Design)
+#' @param replications number of replication to perform per condition (i.e., each row in \code{design})
 #'
 #' @param parallel logical; use parallel processing from the `parallel` package over each
 #'   unique condition?
@@ -109,7 +111,7 @@
 #'
 #' @param edit a string indicating where to initiate a `browser()` call for editing and debugging.
 #'   Options are 'none' (default), 'main' to edit the main function calls loop, 'generate' to edit the
-#'   data simulation function, 'analyse' to edit the computational function, and 'summerise' to
+#'   data simulation function, 'analyse' to edit the computational function, and 'summarise' to
 #'   edit the collection function. Alternatively, users may place \code{\link{browser}} calls within their
 #'   own code for debugging at specific lines (note: parallel computation flags will
 #'   automatically be disabled when this is detected)
@@ -127,7 +129,7 @@
 #'
 #' \dontrun{
 #'
-#' #### Step 1 --- Define your conditions under study and create Design data.frame
+#' #### Step 1 --- Define your conditions under study and create design data.frame
 #'
 #' # helpful to use the following skeleton version
 #' SimDesign_functions()
@@ -193,9 +195,9 @@
 #'     return(ret)
 #' }
 #'
-#' # help(summerise)
+#' # help(summarise)
 #'
-#' Summerise <- function(results, parameters, condition){
+#' Summarise <- function(results, parameters, condition){
 #'
 #'     # handy functions
 #'     bias <- function(observed, population) mean(observed - population)
@@ -212,7 +214,7 @@
 #'     lessthan.05 <- colMeans(results[,nms] < .05)
 #'     lessthan.01 <- colMeans(results[,nms] < .01)
 #'
-#'     # return the results that will be appended to the Design input
+#'     # return the results that will be appended to the design input
 #'     ret <- c(bias.random_number=bias.random_number,
 #'              RMSD.random_number=RMSD.random_number,
 #'              lessthan.10=lessthan.10,
@@ -223,15 +225,15 @@
 #'
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
-#' #### Step 3 --- Collect results by looping over the rows in Design
+#' #### Step 3 --- Collect results by looping over the rows in design
 #'
 #' # this simulation does not save temp files or the final result to disk (save=FALSE)
-#' Final <- runSimulation(Design=Design, replications=1000, parallel=TRUE,
-#'                        generate=Generate, analyse=Analyse, summerise=Summerise)
+#' Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
+#'                        generate=Generate, analyse=Analyse, summerise=Summarise)
 #'
 #' ## Debug the generate function (not run). See ?browser for help on debugging
-#' # runSimulation(Design=Design, replications=1000,
-#' #               generate=Generate, analyse=Analyse, summerise=Summerise,
+#' # runSimulation(design=Design, replications=1000,
+#' #               generate=Generate, analyse=Analyse, summerise=Summarise,
 #' #               parallel=TRUE, edit='generate')
 #'
 #'
@@ -241,8 +243,8 @@
 #' # library(doMPI)
 #' # cl <- startMPIcluster()
 #' # registerDoMPI(cl)
-#' # Final <- runSimulation(Design=Design, replications=1000, MPI=TRUE,
-#' #                        generate=Generate, analyse=Analyse, summerise=Summerise)
+#' # Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
+#' #                        generate=Generate, analyse=Analyse, summerise=Summarise)
 #' # closeCluster(cl)
 #' # mpi.quit()
 #'
@@ -296,7 +298,7 @@
 #'
 #' }
 #'
-runSimulation <- function(Design, replications, generate, analyse, summerise,
+runSimulation <- function(design, replications, generate, analyse, summarise,
                           parallel = FALSE, MPI = FALSE,
                           save = TRUE, save_every = 1, clean = TRUE,
                           compname = Sys.info()['nodename'],
@@ -304,9 +306,9 @@ runSimulation <- function(Design, replications, generate, analyse, summerise,
                           tmpfilename = paste0(compname, '_tmpsim.rds'), main = NULL,
                           ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
 {
-    stopifnot(!missing(generate) || !missing(analyse) || !missing(summerise))
-    Functions <- list(generate=generate, analyse=analyse, summerise=summerise, main=main)
-    stopifnot(!missing(Design))
+    stopifnot(!missing(generate) || !missing(analyse) || !missing(summarise))
+    Functions <- list(generate=generate, analyse=analyse, summarise=summarise, main=main)
+    stopifnot(!missing(design))
     stopifnot(!missing(replications))
     FunNames <- names(Functions)
     if(is.null(main)) Functions$main <- SimDesign::main
@@ -316,7 +318,7 @@ runSimulation <- function(Design, replications, generate, analyse, summerise,
                           main = c('index', 'condition', 'generate', 'analyse'),
                           generate  = c('condition'),
                           analyse = c('simlist', 'condition'),
-                          summerise = c('results', 'parameters', 'condition'))
+                          summarise = c('results', 'parameters', 'condition'))
         if(!all(truefms %in% fms))
             stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
     }
@@ -328,18 +330,18 @@ runSimulation <- function(Design, replications, generate, analyse, summerise,
         tmp <- deparse(substitute(Functions[[i]]))
         if(any(grepl('browser\\(', tmp))) parallel <- MPI <- FALSE
     }
-    if(!is.data.frame(Design))
-        stop('Design must be a data.frame object', call. = FALSE)
+    if(!is.data.frame(design))
+        stop('design must be a data.frame object', call. = FALSE)
     if(replications < 2L)
         stop('number of replications must be greater than or equal to 2', call. = FALSE)
     if(!is.na(save_every))
-        if(save_every > nrow(Design))
+        if(save_every > nrow(design))
             warning('save_every is too large to be useful', call. = FALSE)
     if(!(edit %in% c('none', 'sim', 'compute', 'main', 'collect')))
         stop('edit location is not valid', call. = FALSE)
 
-    if(is.null(Design$ID))
-        Design <- data.frame(ID=1L:nrow(Design), Design)
+    if(is.null(design$ID))
+        design <- data.frame(ID=1L:nrow(design), design)
 
     if(edit != 'none'){
         parallel <- MPI <- FALSE
@@ -351,8 +353,8 @@ runSimulation <- function(Design, replications, generate, analyse, summerise,
     if(parallel) cl <- parallel::makeCluster(ncores)
 
     start <- 1L
-    Result_list <- vector('list', nrow(Design))
-    names(Result_list) <- rownames(Design)
+    Result_list <- vector('list', nrow(design))
+    names(Result_list) <- rownames(design)
     time0 <- time1 <- proc.time()[3]
     files <- dir()
     if(!MPI && any(files == tmpfilename)){
@@ -361,15 +363,15 @@ runSimulation <- function(Design, replications, generate, analyse, summerise,
         Result_list <- readRDS(tmpfilename)
         start <- min(which(sapply(Result_list, is.null)))
     }
-    for(i in start:nrow(Design)){
+    for(i in start:nrow(design)){
         stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
         if(verbose)
             cat(sprintf('\rCompleted: %i%s,   Previous cell time: %.1f,  Total elapsed time: %.1f ',
-                        round((i-1)/(nrow(Design))*100), '%', time1 - time0, sum(stored_time)))
+                        round((i-1)/(nrow(design))*100), '%', time1 - time0, sum(stored_time)))
         time0 <- proc.time()[3]
-        Result_list[[i]] <- as.data.frame(c(as.list(Design[i, ]),
+        Result_list[[i]] <- as.data.frame(c(as.list(design[i, ]),
                                             as.list(Analysis(Functions=Functions,
-                                                             condition=Design[i,],
+                                                             condition=design[i,],
                                                              replications=replications,
                                                              cl=cl, MPI=MPI))))
         time1 <- proc.time()[3]

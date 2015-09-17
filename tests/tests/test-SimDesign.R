@@ -77,15 +77,15 @@ test_that('SimDesign', {
         return(ret)
     }
 
-    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summerise=mycollect,
+    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, parallel=FALSE, save=FALSE)
     expect_is(Final, 'data.frame')
 
-    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summerise=mycollect,
+    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
-    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summerise=mycollect,
+    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = parallel::detectCores(), parallel=TRUE, save=FALSE)
     expect_is(Final, 'data.frame')
 })

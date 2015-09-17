@@ -9,7 +9,7 @@ main(index, condition, generate, analyse)
 \arguments{
 \item{index}{an integer place-holder value indexed from the 1:each input}
 
-\item{condition}{a single row from the Design input (as a data.frame), indicating the
+\item{condition}{a single row from the design input (as a data.frame), indicating the
 simulation conditions}
 
 \item{generate}{the \code{\link{generate}} function defined above (required for parallel computing)}

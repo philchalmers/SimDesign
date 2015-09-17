@@ -7,7 +7,7 @@
 generate(condition)
 }
 \arguments{
-\item{condition}{a single row from the Design input (as a data.frame), indicating the
+\item{condition}{a single row from the design input (as a data.frame), indicating the
   simulation conditions}
 }
 \value{

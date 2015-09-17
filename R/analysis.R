@@ -1,7 +1,7 @@
 # Function for computing Monte Carlo simulation results for each unique condition
 #
 # @param Functions list of functions
-# @param condition a single row from the Design input
+# @param condition a single row from the design input
 # @param replications number of times to repeat the Monte Carlo simulations
 # @param cl cluster object defined from the parallel package
 # @param MPI logical; flag passed down from the runSimulation function
@@ -33,12 +33,12 @@ Analysis <- function(Functions, condition, replications, cl, MPI)
 
     #collect meta simulation statistics (bias, RMSD, type I errors, etc)
     if(!is.list(results[[1L]])) results <- do.call(rbind, results)
-    sim_results <- Functions$summerise(results=results, parameters=parameters,
+    sim_results <- Functions$summarise(results=results, parameters=parameters,
                            condition=condition)
 
-    if(!is.vector(sim_results)) stop('summerise() must return a vector', call.=FALSE)
+    if(!is.vector(sim_results)) stop('summarise() must return a vector', call.=FALSE)
     if(any(names(sim_results) == 'N_CELL_RUNS'))
-        stop('summerise() cannot contain an element with the name N_CELL_RUNS')
+        stop('summarise() cannot contain an element with the name N_CELL_RUNS')
     sim_results <- c(sim_results,
                      N_CELL_RUNS = sum(sapply(results, function(x) x['n_cell_runs'])))
 

@@ -1,6 +1,6 @@
 #' Generate data
 #'
-#' @param condition a single row from the Design input (as a data.frame), indicating the
+#' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #'
 #' @return returns a list with a 'dat' and 'parameters' element.  The 'dat' element should be
@@ -49,7 +49,7 @@ generate <- function(condition) NULL
 #'
 #' @param simlist a list containing the data.frame ('dat') and parameters ('parameters')
 #'   generated from the sim() function
-#' @param condition a single row from the Design input (as a data.frame), indicating the
+#' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #'
 #' @return returns a named numeric vector with the values of interest (e.g., p-values,
@@ -95,7 +95,7 @@ analyse <- function(simlist, condition) NULL
 
 #=================================================================================================#
 
-#' Summerise simulated data using various population comparison statistics
+#' Summarise simulated data using various population comparison statistics
 #'
 #' This collapses across the simulation results within each condition for computing composite
 #' estimates such as RMSD, bias, Type I error, etc.
@@ -105,17 +105,17 @@ analyse <- function(simlist, condition) NULL
 #'   is stored in a unique row/list element
 #' @param parameters a list containing all the 'parameters' elements generated from generate(), where
 #'   each repetition is stored in a unique list element
-#' @param condition a single row from the Design input (as a data.frame), indicating the
+#' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #'
-#' @aliases summerise
+#' @aliases summarise
 #'
 #' @return must return a named numeric vector with the desired meta-simulation results
 #'
 #' @examples
 #' \dontrun{
 #'
-#' mysummerise <- function(results, parameters, condition){
+#' mysummarise <- function(results, parameters, condition){
 #'
 #'     # handy functions
 #'     bias <- function(observed, population) mean(observed - population)
@@ -135,7 +135,7 @@ analyse <- function(simlist, condition) NULL
 #'     lessthan.05 <- colMeans(cell_results[,nms] < .05)
 #'     lessthan.01 <- colMeans(cell_results[,nms] < .01)
 #'
-#'     # return the results that will be appended to the Design input
+#'     # return the results that will be appended to the design input
 #'     ret <- c(bias.random_number=bias.random_number,
 #'              RMSD.random_number=RMSD.random_number,
 #'              lessthan.10=lessthan.10,
@@ -146,7 +146,7 @@ analyse <- function(simlist, condition) NULL
 #'
 #' }
 #'
-summerise <- function(results, parameters, condition) NULL
+summarise <- function(results, parameters, condition) NULL
 
 #=================================================================================================#
 
@@ -158,7 +158,7 @@ summerise <- function(results, parameters, condition) NULL
 #' function.
 #'
 #' @param index an integer place-holder value indexed from the 1:each input
-#' @param condition a single row from the Design input (as a data.frame), indicating the
+#' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #' @param generate the \code{\link{generate}} function defined above (required for parallel computing)
 #' @param analyse the \code{\link{analyse}} function defined above (required for parallel computing)
