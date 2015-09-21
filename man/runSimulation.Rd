@@ -26,8 +26,13 @@ runSimulation(design, replications, generate, analyse, summarise,
 \item{summarise}{user-defined summary function to be used after all the replications have completed.
    See \code{\link{summarise}} for details}
 
-\item{parallel}{logical; use parallel processing from the `parallel` package over each
-  unique condition?}
+\item{parallel}{logical; use parallel processing from the \code{parallel} package over each
+  unique condition?
+
+  NOTE: if using other packages other than the base attached ones (e.g., \code{stats},
+  \code{graphics}, \code{utils}, etc) then you must either a) explicitly load the packages within
+  the respective defined functions with a \code{library()} or \code{require()} call, or b) use the
+  :: operator to locate the functions that are not attached by default}
 
 \item{MPI}{logical; use the \code{doMPI} package to run simulation in parallel on
   a cluster? Default is FALSE}

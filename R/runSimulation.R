@@ -79,8 +79,13 @@
 #'
 #' @param replications number of replication to perform per condition (i.e., each row in \code{design})
 #'
-#' @param parallel logical; use parallel processing from the `parallel` package over each
+#' @param parallel logical; use parallel processing from the \code{parallel} package over each
 #'   unique condition?
+#'
+#'   NOTE: if using other packages other than the base attached ones (e.g., \code{stats},
+#'   \code{graphics}, \code{utils}, etc) then you must either a) explicitly load the packages within
+#'   the respective defined functions with a \code{library()} or \code{require()} call, or b) use the
+#'   :: operator to locate the functions that are not attached by default
 #'
 #' @param save_every a number indicating how often to temporarily save your simulation results to
 #'   disk. Default is 1 to save after every condition is complete, but set to NA if you don't
