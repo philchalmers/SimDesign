@@ -4,10 +4,10 @@
 \alias{RE}
 \title{Compute the relative efficiency of multiple estimators}
 \usage{
-RE(MSEs)
+RE(RMSEs)
 }
 \arguments{
-\item{MSEs}{a vector of mean square error values (see \code{\link{MSE}})}
+\item{RMSEs}{a vector of mean square error values (see \code{\link{RMSE}})}
 }
 \value{
 returns a vector of ratios indicating the relative efficiency compared to the first
@@ -15,18 +15,18 @@ returns a vector of ratios indicating the relative efficiency compared to the fi
   values greater than 1 indicate better efficiency
 }
 \description{
-Computes the relateive efficiency given the MSE values for multiple estimators
+Computes the relateive efficiency given the RMSE values for multiple estimators
 }
 \examples{
 \dontrun{
 
 pop <- 1
 samp1 <- rnorm(100, 1, sd = 0.5)
-MSE1 <- MSE(samp1, pop)
+RMSE1 <- RMSE(samp1, pop)
 samp2 <- rnorm(100, 1, sd = 1)
-MSE2 <- MSE(samp2, pop)
+RMSE2 <- RMSE(samp2, pop)
 
-RE(c(MSE1, MSE2))
+RE(c(RMSE1, RMSE2))
 
 }
 }

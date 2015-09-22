@@ -8,5 +8,7 @@ Description: Functions to organize simulations in R. Tries to manage the structu
              handling parallel back-end information, saving temporary files, and so on.
 Depends: R (>= 3.2.1)
 Imports: foreach, methods, parallel
+Suggests: knitr
 License: GPL (>=2)
+VignetteBuilder: knitr
 LazyData: true

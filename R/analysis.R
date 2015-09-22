@@ -31,7 +31,7 @@ Analysis <- function(Functions, condition, replications, cl, MPI)
         parameters <- lapply(cell_results, function(x) x$parameters)
     else parameters <- list()
 
-    #collect meta simulation statistics (bias, MSE, type I errors, etc)
+    #collect meta simulation statistics (bias, RMSE, type I errors, etc)
     N_CELL_RUNS <- sum(sapply(results, function(x) x['n_cell_runs']))
     if(!is.list(results[[1L]])) results <- do.call(rbind, results)
     sim_results <- Functions$summarise(results=results, parameters=parameters,

@@ -7,10 +7,10 @@
 ECR(CIs, population)
 }
 \arguments{
-\item{population}{a numeric scalar indicating the fixed population value}
-
-\item{CI}{a matrix of confidence interval values for a given population value, where the first
+\item{CIs}{a matrix of confidence interval values for a given population value, where the first
   column indicates the lower cofidence interval and the second column the upper confidence interval}
+
+\item{population}{a numeric scalar indicating the fixed population value}
 }
 \description{
 Computes the detection rate for determining empirical Type I error and power rates using information

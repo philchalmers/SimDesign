@@ -210,10 +210,10 @@ Analyse <- function(simlist, condition){
 
 Summarise <- function(results, parameters, condition){
 
-    # silly test for bias and MSE of a random number from 0
+    # silly test for bias and RMSE of a random number from 0
     pop_value <- 0
     bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
-    MSE.random_number <- MSE(sapply(parameters, function(x) x$random_number), pop_value)
+    RMSE.random_number <- RMSE(sapply(parameters, function(x) x$random_number), pop_value)
 
     #find results of interest here (alpha < .1, .05, .01)
     nms <- c('welch', 'independent')
@@ -221,7 +221,7 @@ Summarise <- function(results, parameters, condition){
 
     # return the results that will be appended to the design input
     ret <- c(bias.random_number=bias.random_number,
-             MSE.random_number=MSE.random_number,
+             RMSE.random_number=RMSE.random_number,
              lessthan.05=lessthan.05)
     return(ret)
 }

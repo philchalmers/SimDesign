@@ -40,7 +40,7 @@ generate <- function(condition) NULL
 #' Compute all relevant test statistics and parameter estimates here.
 #' This is the computational heavy lifting section. In some cases, it may be easier to change
 #' the output to a named list containing different parameter configurations (i.e., when
-#' determining MSE values for a large set of population parameters).
+#' determining RMSE values for a large set of population parameters).
 #'
 #' Be sure to make heavy use
 #' of \code{\link{try}} combinations and throw a \code{\link{stop}} if an iterative function fails
@@ -98,7 +98,7 @@ analyse <- function(simlist, condition) NULL
 #' Summarise simulated data using various population comparison statistics
 #'
 #' This collapses across the simulation results within each condition for computing composite
-#' estimates such as MSE, bias, Type I error rates, coverage rates, etc.
+#' estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 #'
 #' @param results a data.frame (if \code{analyse} returned a numeric vector) or a list (if
 #'   \code{analyse} returned a list) containing the simulation results from analyse(), where each cell
@@ -112,7 +112,7 @@ analyse <- function(simlist, condition) NULL
 #'
 #' @return must return a named numeric vector with the desired meta-simulation results
 #'
-#' @seealso \code{\link{bias}}, \code{\link{MSE}}, \code{\link{RE}}, \code{\link{EDR}}, \code{\link{ECR}}
+#' @seealso \code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}}, \code{\link{ECR}}
 #'
 #' @examples
 #' \dontrun{
@@ -122,10 +122,10 @@ analyse <- function(simlist, condition) NULL
 #'     #convert to matrix for convenience (if helpful)
 #'     cell_results <- do.call(rbind, results)
 #'
-#'     # silly test for bias and MSE of a random number from 0
+#'     # silly test for bias and RMSE of a random number from 0
 #'     pop_value <- 0
 #'     bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
-#'     MSE.random_number <- MSE(sapply(parameters, function(x) x$random_number), pop_value)
+#'     RMSE.random_number <- RMSE(sapply(parameters, function(x) x$random_number), pop_value)
 #'
 #'     #find results of interest here (alpha < .1, .05, .01)
 #'     nms <- c('welch', 'independent')
@@ -133,7 +133,7 @@ analyse <- function(simlist, condition) NULL
 #'
 #'     # return the results that will be appended to the design input
 #'     ret <- c(bias.random_number=bias.random_number,
-#'              MSE.random_number=MSE.random_number,
+#'              RMSE.random_number=RMSE.random_number,
 #'              lessthan.05=lessthan.05)
 #'     return(ret)
 #' }

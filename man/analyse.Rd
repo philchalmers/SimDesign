@@ -22,7 +22,7 @@ returns a named numeric vector with the values of interest (e.g., p-values,
 Compute all relevant test statistics and parameter estimates here.
 This is the computational heavy lifting section. In some cases, it may be easier to change
 the output to a named list containing different parameter configurations (i.e., when
-determining MSE values for a large set of population parameters).
+determining RMSE values for a large set of population parameters).
 }
 \details{
 Be sure to make heavy use

@@ -22,7 +22,7 @@ must return a named numeric vector with the desired meta-simulation results
 }
 \description{
 This collapses across the simulation results within each condition for computing composite
-estimates such as MSE, bias, Type I error rates, coverage rates, etc.
+estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 }
 \examples{
 \dontrun{
@@ -32,10 +32,10 @@ mysummarise <- function(results, parameters, condition){
     #convert to matrix for convenience (if helpful)
     cell_results <- do.call(rbind, results)
 
-    # silly test for bias and MSE of a random number from 0
+    # silly test for bias and RMSE of a random number from 0
     pop_value <- 0
     bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
-    MSE.random_number <- MSE(sapply(parameters, function(x) x$random_number), pop_value)
+    RMSE.random_number <- RMSE(sapply(parameters, function(x) x$random_number), pop_value)
 
     #find results of interest here (alpha < .1, .05, .01)
     nms <- c('welch', 'independent')
@@ -43,7 +43,7 @@ mysummarise <- function(results, parameters, condition){
 
     # return the results that will be appended to the design input
     ret <- c(bias.random_number=bias.random_number,
-             MSE.random_number=MSE.random_number,
+             RMSE.random_number=RMSE.random_number,
              lessthan.05=lessthan.05)
     return(ret)
 }
@@ -51,6 +51,6 @@ mysummarise <- function(results, parameters, condition){
 }
 }
 \seealso{
-\code{\link{bias}}, \code{\link{MSE}}, \code{\link{RE}}, \code{\link{EDR}}, \code{\link{ECR}}
+\code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}}, \code{\link{ECR}}
 }
 

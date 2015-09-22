@@ -1,0 +1,15 @@
+%\VignetteIndexEntry{simTool}
+%\VignetteEngine{knitr::knitr}
+---
+title: "SimDesign"
+author: "Phil Chalmers"
+date: "September 22, 2015"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+# Introduction
+
+Intro stub.

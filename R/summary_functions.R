@@ -28,9 +28,9 @@ bias <- function(observed, population){
 
 
 
-#' Compute the mean square error
+#' Compute the root mean square error
 #'
-#' Computes the average deviation (mean square error; also known as the root mean square deviation)
+#' Computes the average deviation (root mean square error; also known as the root mean square deviation)
 #' of a sample estimate from the population value.
 #'
 #' @param observed a numeric vector of parameter estimates, where the length is equal to the number of
@@ -40,18 +40,18 @@ bias <- function(observed, population){
 #'
 #' @return returns a single number indicating the overall bias in the estimates
 #'
-#' @aliases MSE
+#' @aliases RMSE
 #'
 #' @examples
 #' \dontrun{
 #'
 #' pop <- 1
 #' samp <- rnorm(100, 1, sd = 0.5)
-#' MSE(samp, pop)
+#' RMSE(samp, pop)
 #'
 #' }
 #'
-MSE <- function(observed, population){
+RMSE <- function(observed, population){
     stopifnot(is.vector(observed))
     stopifnot(length(population) == 1L)
     sqrt(mean((observed - population)^2))
@@ -62,9 +62,9 @@ MSE <- function(observed, population){
 
 #' Compute the relative efficiency of multiple estimators
 #'
-#' Computes the relateive efficiency given the MSE values for multiple estimators
+#' Computes the relateive efficiency given the RMSE values for multiple estimators
 #'
-#' @param MSEs a vector of mean square error values (see \code{\link{MSE}})
+#' @param RMSEs a vector of mean square error values (see \code{\link{RMSE}})
 #'
 #' @return returns a vector of ratios indicating the relative efficiency compared to the first
 #'   estimator (which by default will be equal to 1). Values less than 1 indicate worse efficiency, while
@@ -77,17 +77,17 @@ MSE <- function(observed, population){
 #'
 #' pop <- 1
 #' samp1 <- rnorm(100, 1, sd = 0.5)
-#' MSE1 <- MSE(samp1, pop)
+#' RMSE1 <- RMSE(samp1, pop)
 #' samp2 <- rnorm(100, 1, sd = 1)
-#' MSE2 <- MSE(samp2, pop)
+#' RMSE2 <- RMSE(samp2, pop)
 #'
-#' RE(c(MSE1, MSE2))
+#' RE(c(RMSE1, RMSE2))
 #'
 #' }
 #'
-RE <- function(MSEs){
-    stopifnot(is.vector(MSEs))
-    MSEs[1L] / MSEs
+RE <- function(RMSEs){
+    stopifnot(is.vector(RMSEs))
+    RMSEs[1L] / RMSEs
 }
 
 
@@ -134,7 +134,7 @@ EDR <- function(p, alpha){
 #' from the confidence intervals. Note that using \code{1 - ECR(CIs, population)} will provide the empirical
 #' detection rate.
 #'
-#' @param CI a matrix of confidence interval values for a given population value, where the first
+#' @param CIs a matrix of confidence interval values for a given population value, where the first
 #'   column indicates the lower cofidence interval and the second column the upper confidence interval
 #'
 #' @param population a numeric scalar indicating the fixed population value
