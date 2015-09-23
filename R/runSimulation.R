@@ -302,6 +302,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise, main=main)
     stopifnot(!missing(design))
     stopifnot(!missing(replications))
+    stopifnot(is.list(auxillary_information))
     FunNames <- names(Functions)
     if(is.null(main)) Functions$main <- SimDesign::main
     for(i in names(Functions)){
@@ -331,19 +332,15 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             warning('save_every is too large to be useful', call. = FALSE)
     if(!(edit %in% c('none', 'sim', 'compute', 'main', 'collect')))
         stop('edit location is not valid', call. = FALSE)
-
     if(is.null(design$ID))
         design <- data.frame(ID=1L:nrow(design), design)
-
     if(edit != 'none'){
         parallel <- MPI <- FALSE
         debug(Functions[[edit]])
         on.exit(undebug(Functions[[edit]]))
     }
-
     cl <- NULL
     if(parallel) cl <- parallel::makeCluster(ncores)
-
     start <- 1L
     Result_list <- vector('list', nrow(design))
     names(Result_list) <- rownames(design)
@@ -369,12 +366,14 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                              auxillary_information=auxillary_information))))
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
+        if(!(length(unique(sapply(Result_list, length))) %in% c(1L, 2L)))
+            stop(c('Summerise() results are not all of the same length. This may require splitting up',
+                   '\nthe design input to allow for different result lengths.'), call.=FALSE)
         if(save && !is.na(save_every))
             if((i %% save_every) == 0L) saveRDS(Result_list, tmpfilename)
     }
     Final <- do.call(rbind, Result_list)
     Final$ID <- NULL
-
     #save file
     files <- dir()
     filename0 <- filename

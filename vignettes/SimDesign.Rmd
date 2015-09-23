@@ -118,7 +118,7 @@ function, therefore it is clear which element represents the Welch and Independe
 ## Run the simulation
 
 ```{r cache=TRUE, eval=FALSE}
-Final <- runSimulation(design = Design, replications = 20, verbose = FALSE, parallel = FALSE,
+Final <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
                        generate = Generate, analyse = Analyse, summarise = Summarise)
 ```
 
@@ -127,7 +127,7 @@ Final <- runSimulation(design = Design, replications = 20, verbose = FALSE, para
 Usually it is a good idea to split up analyses into Type I error and power data. More specifically, power rates really should only be interpreted when the Type I errors are well behaved (liberal detection rates naturally will result in more powerful tests, while conservative detection rates will induce lower power).
 
 
-```{r}
+```{r eval=FALSE}
 TypeI <- subset(Final, mean_difference == 0)
 Power <- subset(Final, mean_difference != 0)
 ```
@@ -149,8 +149,14 @@ Description
 ```{r}
 sample_sizes <- c(100, 250, 500, 1000)
 test_length <- c(10, 20, 30)
-
 Design <- expand.grid(sample_size=sample_sizes, test_length=test_length)
+
+aux_info <- vector('list', 3)
+names(aux_info) <- test_length
+for(i in 1:3)
+    aux_info[[i]] <- list(a = round(rlnorm(test_length[i], .2, .3), 2), 
+                          d = round(rnorm(test_length[i], 0, .5), 2))
+aux_info
 ```
 
 ## Define the functions
@@ -161,11 +167,11 @@ Something...
 Generate <- function(condition, auxillary_information) {
     
     library(mirt) #for simdata() function
-    nitems <- condition$test_length
+    nitems <- as.character(condition$test_length)
     N <- condition$sample_size
         
-    a <- matrix(rlnorm(nitems, .2, .3))
-    d <- matrix(rnorm(nitems, 0, .5))
+    a <- matrix(auxillary_information[[nitems]]$a)
+    d <- matrix(auxillary_information[[nitems]]$d)
     
     dat <- as.data.frame(simdata(a=a, d=d, N=N, itemtype = 'dich'))
     parameters <- list(a=a, d=d)
@@ -180,6 +186,7 @@ Analyse <- function(dat, parameters, condition, auxillary_information) {
     nitems <- condition$test_length
     
     mod <- try(mirt(dat, 1L, verbose=FALSE), silent=TRUE)
+    if(mod@converge != 1) stop('did not converge')
     cfs <- coef(mod, simplify = TRUE, digits = Inf)
     FIML_as <- cfs$items[,1L]
     FIML_ds <- cfs$items[,2L]
@@ -190,47 +197,56 @@ Analyse <- function(dat, parameters, condition, auxillary_information) {
     lmod <- try(sem(lavmod, dat, ordered = colnames(dat)))
     cfs2 <- coef(lmod) * 1.702 # scaling adjustment
     DWLS_as <- cfs2[1L:nitems]
-    DWLS_ds <- -1*cfs2[(1L:nitems) + nitems]
+    DWLS_ds <- -1 * cfs2[(1L:nitems) + nitems]
 
     return(list(FIML_as=FIML_as, FIML_ds=FIML_ds, DWLS_as=DWLS_as, DWLS_ds=DWLS_ds))
 }
 
 Summarise <- function(results, parameters_list, condition, auxillary_information) {
-    index <- 1L:length(results)
     
-    bias_FIML_as <- sapply(index, function(i, obs, pop) 
-        bias(obs[[i]]$FIML_as, pop[[i]]$a), obs=results, pop=parameters_list)
-    bias_FIML_ds <- sapply(index, function(i, obs, pop) 
-        bias(obs[[i]]$FIML_ds, pop[[i]]$d), obs=results, pop=parameters_list)
-    RMSE_FIML_as <- sapply(index, function(i, obs, pop) 
-        RMSE(obs[[i]]$FIML_as, pop[[i]]$a), obs=results, pop=parameters_list)
-    RMSE_FIML_ds <- sapply(index, function(i, obs, pop) 
-        RMSE(obs[[i]]$FIML_ds, pop[[i]]$d), obs=results, pop=parameters_list)
+    pop_as <- auxillary_information[[as.character(condition$test_length)]]$a
+    pop_ds <- auxillary_information[[as.character(condition$test_length)]]$d
+    index <- 1:condition$test_length
     
-    bias_DWLS_as <- sapply(index, function(i, obs, pop) 
-        bias(obs[[i]]$DWLS_as, pop[[i]]$a), obs=results, pop=parameters_list)
-    bias_DWLS_ds <- sapply(index, function(i, obs, pop) 
-        bias(obs[[i]]$DWLS_ds, pop[[i]]$d), obs=results, pop=parameters_list)
-    RMSE_DWLS_as <- sapply(index, function(i, obs, pop) 
-        RMSE(obs[[i]]$DWLS_as, pop[[i]]$a), obs=results, pop=parameters_list)
-    RMSE_DWLS_ds <- sapply(index, function(i, obs, pop) 
-        RMSE(obs[[i]]$DWLS_ds, pop[[i]]$d), obs=results, pop=parameters_list)
+    FIML_as <- do.call(rbind, lapply(results, function(x) x[['FIML_as']]))
+    FIML_ds <- do.call(rbind, lapply(results, function(x) x[['FIML_ds']]))
+    DWLS_as <- do.call(rbind, lapply(results, function(x) x[['DWLS_as']]))
+    DWLS_ds <- do.call(rbind, lapply(results, function(x) x[['DWLS_ds']]))
     
-    ret <- c(bias_FIML_as=mean(bias_FIML_as),
-             bias_DWLS_as=mean(bias_DWLS_as),
-             bias_FIML_ds=mean(bias_FIML_ds),
-             bias_DWLS_ds=mean(bias_DWLS_ds),
-             RMSE_FIML_as=mean(RMSE_FIML_as),
-             RMSE_DWLS_as=mean(RMSE_DWLS_as),
-             RMSE_FIML_ds=mean(RMSE_FIML_ds),
-             RMSE_DWLS_ds=mean(RMSE_DWLS_ds))
+    bias_FIML_as <- sapply(index, function(ind, obs, pop) bias(obs[,ind], pop[ind]),
+                           obs=FIML_as, pop=pop_as)
+    bias_DWLS_as <- sapply(index, function(ind, obs, pop) bias(obs[,ind], pop[ind]),
+                           obs=DWLS_as, pop=pop_as)
+    bias_FIML_ds <- sapply(index, function(ind, obs, pop) bias(obs[,ind], pop[ind]),
+                           obs=FIML_ds, pop=pop_ds)
+    bias_DWLS_ds <- sapply(index, function(ind, obs, pop) bias(obs[,ind], pop[ind]),
+                           obs=DWLS_ds, pop=pop_ds)
+    RMSE_FIML_as <- sapply(index, function(ind, obs, pop) RMSE(obs[,ind], pop[ind]),
+                           obs=FIML_as, pop=pop_as)
+    RMSE_DWLS_as <- sapply(index, function(ind, obs, pop) RMSE(obs[,ind], pop[ind]),
+                           obs=DWLS_as, pop=pop_as)
+    RMSE_FIML_ds <- sapply(index, function(ind, obs, pop) RMSE(obs[,ind], pop[ind]),
+                           obs=FIML_ds, pop=pop_ds)
+    RMSE_DWLS_ds <- sapply(index, function(ind, obs, pop) RMSE(obs[,ind], pop[ind]),
+                           obs=DWLS_ds, pop=pop_ds)
+    
+    ret <- c(bias_FIML_as=bias_FIML_as, bias_DWLS_as=bias_DWLS_as, 
+             bias_FIML_ds=bias_FIML_ds, bias_DWLS_ds=bias_DWLS_ds,
+             RMSE_FIML_as=RMSE_FIML_as, RMSE_DWLS_as=RMSE_DWLS_as,
+             RMSE_FIML_ds=RMSE_FIML_ds, RMSE_DWLS_ds=RMSE_DWLS_ds)
     return(ret)
 }
 ```
 
 
 ```{r cache=TRUE, eval=FALSE}
-res <- runSimulation(Design, replications = 20, generate=Generate, analyse=Analyse, summarise=Summarise,
-                     parallel = FALSE)
-
+res10 <- runSimulation(subset(Design, test_length == 10), replications = 1000, 
+                       generate=Generate, analyse=Analyse, summarise=Summarise,
+                       auxillary_information = aux_info, parallel = TRUE)
+res20 <- runSimulation(subset(Design, test_length == 20), replications = 1000, 
+                       generate=Generate, analyse=Analyse, summarise=Summarise,
+                       auxillary_information = aux_info, parallel = TRUE)
+res30 <- runSimulation(subset(Design, test_length == 30), replications = 1000, 
+                       generate=Generate, analyse=Analyse, summarise=Summarise,
+                       auxillary_information = aux_info, parallel = TRUE)
 ```

@@ -184,7 +184,8 @@ main <- function(index, condition, generate, analyse, auxillary_information){
         simlist <- generate(condition=condition, auxillary_information=auxillary_information)
         if(!is.list(simlist) || !all(names(simlist) %in% c('dat', 'parameters')))
             stop('generate() did not return a list with elements dat and parameters', call.=FALSE)
-        res <- try(analyse(dat=simlist$dat, parameters=simlist$parameters, condition=condition), silent=TRUE)
+        res <- try(analyse(dat=simlist$dat, parameters=simlist$parameters, condition=condition,
+                           auxillary_information=auxillary_information), silent=TRUE)
 
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')) next
