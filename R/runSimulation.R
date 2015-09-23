@@ -91,10 +91,6 @@
 #'   disk. Default is 1 to save after every condition is complete, but set to NA if you don't
 #'   want to save any temp files
 #'
-#' @param auxillary_information (optional) a fixed list of elements used when generating the data. This is useful
-#'   for including extra auxillary information that may not belong in the \code{design} input (i.e., may
-#'   be conditional on the elements in the design)
-#'
 #' @param ncores number of cores to be used in parallel execution. Default uses all available
 #'
 #' @param clean logical; remove any temp files that are created after the simulation is complete?
@@ -157,7 +153,7 @@
 #' SimDesign_functions()
 #'
 #' # help(generate)
-#' Generate <- function(condition, auxillary_information){
+#' Generate <- function(condition){
 #'
 #'     #require packages/define functions if needed, or better yet index with the :: operator
 #'
@@ -175,7 +171,7 @@
 #'
 #' # help(analyse)
 #'
-#' Analyse <- function(dat, parameters, condition, auxillary_information){
+#' Analyse <- function(dat, parameters, condition){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -197,7 +193,7 @@
 #'
 #' # help(summarise)
 #'
-#' Summarise <- function(results, parameters_list, condition, auxillary_information){
+#' Summarise <- function(results, parameters_list, condition){
 #'
 #'     # silly test for bias and RMSE of a random number from 0
 #'     pop_value <- 0
@@ -291,7 +287,7 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          parallel = FALSE, MPI = FALSE, auxillary_information = list(),
+                          parallel = FALSE, MPI = FALSE,
                           save = FALSE, save_every = 1, clean = TRUE,
                           compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', replications, '.rds'),
@@ -302,16 +298,15 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise, main=main)
     stopifnot(!missing(design))
     stopifnot(!missing(replications))
-    stopifnot(is.list(auxillary_information))
     FunNames <- names(Functions)
     if(is.null(main)) Functions$main <- SimDesign::main
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))
         truefms <- switch(i,
-                          main = c('index', 'condition', 'generate', 'analyse', 'auxillary_information'),
-                          generate  = c('condition', 'auxillary_information'),
-                          analyse = c('dat', 'parameters', 'condition', 'auxillary_information'),
-                          summarise = c('results', 'parameters_list', 'condition', 'auxillary_information'))
+                          main = c('index', 'condition', 'generate', 'analyse'),
+                          generate  = c('condition'),
+                          analyse = c('dat', 'parameters', 'condition'),
+                          summarise = c('results', 'parameters_list', 'condition'))
         if(!all(truefms %in% fms))
             stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
     }
@@ -362,8 +357,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                             as.list(Analysis(Functions=Functions,
                                                              condition=design[i,],
                                                              replications=replications,
-                                                             cl=cl, MPI=MPI,
-                                                             auxillary_information=auxillary_information))))
+                                                             cl=cl, MPI=MPI))))
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
         if(!(length(unique(sapply(Result_list, length))) %in% c(1L, 2L)))

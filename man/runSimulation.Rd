@@ -5,12 +5,11 @@
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
-  parallel = FALSE, MPI = FALSE, auxillary_information = list(),
-  save = FALSE, save_every = 1, clean = TRUE,
-  compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
-  replications, ".rds"), tmpfilename = paste0(compname, "_tmpsim.rds"),
-  main = NULL, ncores = parallel::detectCores(), edit = "none",
-  verbose = TRUE)
+  parallel = FALSE, MPI = FALSE, save = FALSE, save_every = 1,
+  clean = TRUE, compname = Sys.info()["nodename"],
+  filename = paste0(compname, "_Final_", replications, ".rds"),
+  tmpfilename = paste0(compname, "_tmpsim.rds"), main = NULL,
+  ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
 }
 \arguments{
 \item{design}{a data.frame object containing the Monte carlo simulation conditions to
@@ -37,10 +36,6 @@ runSimulation(design, replications, generate, analyse, summarise,
 
 \item{MPI}{logical; use the \code{doMPI} package to run simulation in parallel on
   a cluster? Default is FALSE}
-
-\item{auxillary_information}{(optional) a fixed list of elements used when generating the data. This is useful
-  for including extra auxillary information that may not belong in the \code{design} input (i.e., may
-  be conditional on the elements in the design)}
 
 \item{save}{logical; save the final simulation and temp files to the hard-drive? Default is FALSE}
 
@@ -167,7 +162,7 @@ head(Design)
 SimDesign_functions()
 
 # help(generate)
-Generate <- function(condition, auxillary_information){
+Generate <- function(condition){
 
     #require packages/define functions if needed, or better yet index with the :: operator
 
@@ -185,7 +180,7 @@ Generate <- function(condition, auxillary_information){
 
 # help(analyse)
 
-Analyse <- function(dat, parameters, condition, auxillary_information){
+Analyse <- function(dat, parameters, condition){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
@@ -207,7 +202,7 @@ Analyse <- function(dat, parameters, condition, auxillary_information){
 
 # help(summarise)
 
-Summarise <- function(results, parameters_list, condition, auxillary_information){
+Summarise <- function(results, parameters_list, condition){
 
     # silly test for bias and RMSE of a random number from 0
     pop_value <- 0

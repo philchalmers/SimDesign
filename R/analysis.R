@@ -5,26 +5,24 @@
 # @param replications number of times to repeat the Monte Carlo simulations
 # @param cl cluster object defined from the parallel package
 # @param MPI logical; flag passed down from the runSimulation function
-# @param auxillary_information a list of extra simulation parameters
 #
-Analysis <- function(Functions, condition, replications, cl, MPI, auxillary_information)
+Analysis <- function(Functions, condition, replications, cl, MPI)
 {
     # This defines the workflow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
     if(is.null(cl)){
         cell_results <- lapply(1L:replications, Functions$main, condition=condition,
                                generate=Functions$generate,
-                               analyse=Functions$analyse, auxillary_information=auxillary_information)
+                               analyse=Functions$analyse)
     } else {
         if(MPI){
             i <- 1L
             cell_results <- foreach(i=1L:replications) %dopar%
                 Functions$main(i, condition=condition, generate=Functions$generate,
-                               analyse=Functions$analyse, auxillary_information=auxillary_information)
+                               analyse=Functions$analyse)
         } else {
             cell_results <- parallel::parLapply(cl, 1L:replications, Functions$main, condition=condition,
-                                                generate=Functions$generate, analyse=Functions$analyse,
-                                                auxillary_information=auxillary_information)
+                                                generate=Functions$generate, analyse=Functions$analyse)
         }
     }
     # split lists up
@@ -44,7 +42,7 @@ Analysis <- function(Functions, condition, replications, cl, MPI, auxillary_info
             results[[i]]$n_cell_runs <- NULL
     }
     sim_results <- Functions$summarise(results=results, parameters=parameters,
-                           condition=condition, auxillary_information=auxillary_information)
+                           condition=condition)
 
     if(!is.vector(sim_results)) stop('summarise() must return a vector', call.=FALSE)
     if(any(names(sim_results) == 'N_CELL_RUNS'))

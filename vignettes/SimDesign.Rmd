@@ -60,7 +60,7 @@ Each row in `Design` represents a unique condition to be studied in the simulati
 We first start by defining the `Generate()` function. The only argument accepted by this function is `condition`, which will always be a *single row from the Design data.frame object*. Conditions are run sequentially from row 1 to the last row in `Design`.
 
 ```{r}
-Generate <- function(condition, auxillary_information){
+Generate <- function(condition){
  
     N1 <- condition$sample_size_group1
     N2 <- condition$sample_size_group2
@@ -80,7 +80,7 @@ ease of use, generates data for two groups using random normal draws, and return
 containing the dependent variable and grouping information. 
 
 ```{r}
-Analyse <- function(dat, parameters, condition, auxillary_information){
+Analyse <- function(dat, parameters, condition){
     
     require(stats)
 
@@ -98,7 +98,7 @@ The `Analyse()` defintion performs a Welch and independent t-test on the data ge
 Finally, after the number of replications defined in `replications` has been completed a matrix (or list, if the output of `Analyse()` were a list instead of a vector) the overall results should be summerised into suitable meta-descriptions of the behavior. This is accomplished with the `Summerise()` function.
 
 ```{r}
-Summarise <- function(results, parameters_list, condition, auxillary_information){
+Summarise <- function(results, parameters_list, condition){
     
     nms <- c('welch', 'independent')
     lessthan.05 <- EDR(results[,nms], alpha = .05)
@@ -164,12 +164,14 @@ aux_info
 Something...
 
 ```{r}
-Generate <- function(condition, auxillary_information) {
+Generate <- function(condition) {
     
     library(mirt) #for simdata() function
     nitems <- as.character(condition$test_length)
     N <- condition$sample_size
         
+    #source in
+    browser()
     a <- matrix(auxillary_information[[nitems]]$a)
     d <- matrix(auxillary_information[[nitems]]$d)
     

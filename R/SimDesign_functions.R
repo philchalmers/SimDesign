@@ -20,13 +20,13 @@ SimDesign_functions <- function(main = FALSE){
     cat('\n#-------------------------------------------------------------------')
     cat('\n### Define essential simulation functions. It may be helpful to place these')
     cat('\n### functions in a seperate R file and source() them in')
-    cat('\n\nGenerate <- function(condition, auxillary_information) {')
+    cat('\n\nGenerate <- function(condition) {')
     cat('\n    # Define data generation code ...\n\n    return(list(dat=data.frame(), parameters=list()))\n}')
     cat('\n\n')
-    cat('Analyse <- function(dat, parameters, condition, auxillary_information) {')
+    cat('Analyse <- function(dat, parameters, condition) {')
     cat('\n    # Run statistical analyses of interest ... \n\n    return(numeric())    # alternatively, return(list())\n}')
     cat('\n\n')
-    cat('Summarise <- function(results, parameters, condition, auxillary_information) {')
+    cat('Summarise <- function(results, parameters, condition) {')
     cat('\n    # Summarise the simulation results ...\n\n    return(numeric())\n}')
 
     if(main){
