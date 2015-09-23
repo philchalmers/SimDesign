@@ -9,7 +9,7 @@ test_that('SimDesign', {
                           sample_sizes_group2=sample_sizes,
                           standard_deviations=standard_deviations)
 
-    mysim <- function(condition, generate_extras){
+    mysim <- function(condition, auxillary_information){
 
         #require packages/define functions if needed, or better yet index with the :: operator
 
@@ -25,7 +25,7 @@ test_that('SimDesign', {
         return(list(dat=dat, parameters=pars))
     }
 
-    mycompute <- function(dat, parameters, condition, generate_extras){
+    mycompute <- function(dat, parameters, condition, auxillary_information){
 
         # require packages/define functions if needed, or better yet index with the :: operator
         require(stats)
@@ -47,7 +47,7 @@ test_that('SimDesign', {
         return(ret)
     }
 
-    mycollect <- function(results, parameters_list, condition, generate_extras){
+    mycollect <- function(results, parameters_list, condition, auxillary_information){
 
         # handy functions
         bias <- function(observed, population) mean(observed - population)

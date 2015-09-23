@@ -4,13 +4,13 @@
 \alias{generate}
 \title{Generate data}
 \usage{
-generate(condition, generate_extras)
+generate(condition, auxillary_information)
 }
 \arguments{
 \item{condition}{a single row from the design input (as a data.frame), indicating the
   simulation conditions}
 
-\item{generate_extras}{a (possibly empty) list containing extra information used to generate the
+\item{auxillary_information}{a (possibly empty) list containing extra information used to generate the
   data that has been passed down from \code{\link{runSimulation}}}
 }
 \value{
@@ -25,7 +25,7 @@ Generate data
 \examples{
 \dontrun{
 
-mygenerate <- function(condition, generate_extras){
+mygenerate <- function(condition, auxillary_information){
 
     #require packages/define functions if needed, or better yet index with the :: operator
 

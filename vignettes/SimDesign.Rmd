@@ -60,7 +60,7 @@ Each row in `Design` represents a unique condition to be studied in the simulati
 We first start by defining the `Generate()` function. The only argument accepted by this function is `condition`, which will always be a *single row from the Design data.frame object*. Conditions are run sequentially from row 1 to the last row in `Design`.
 
 ```{r}
-Generate <- function(condition){
+Generate <- function(condition, auxillary_information){
  
     N1 <- condition$sample_size_group1
     N2 <- condition$sample_size_group2
@@ -80,7 +80,7 @@ ease of use, generates data for two groups using random normal draws, and return
 containing the dependent variable and grouping information. 
 
 ```{r}
-Analyse <- function(dat, parameters, condition){
+Analyse <- function(dat, parameters, condition, auxillary_information){
     
     require(stats)
 
@@ -98,7 +98,7 @@ The `Analyse()` defintion performs a Welch and independent t-test on the data ge
 Finally, after the number of replications defined in `replications` has been completed a matrix (or list, if the output of `Analyse()` were a list instead of a vector) the overall results should be summerised into suitable meta-descriptions of the behavior. This is accomplished with the `Summerise()` function.
 
 ```{r}
-Summarise <- function(results, parameters, condition){
+Summarise <- function(results, parameters_list, condition, auxillary_information){
     
     nms <- c('welch', 'independent')
     lessthan.05 <- EDR(results[,nms], alpha = .05)
@@ -118,7 +118,7 @@ function, therefore it is clear which element represents the Welch and Independe
 ## Run the simulation
 
 ```{r cache=TRUE, eval=FALSE}
-Final <- runSimulation(design = Design, replications = 1000, verbose = FALSE,
+Final <- runSimulation(design = Design, replications = 20, verbose = FALSE, parallel = FALSE,
                        generate = Generate, analyse = Analyse, summarise = Summarise)
 ```
 
@@ -132,8 +132,15 @@ TypeI <- subset(Final, mean_difference == 0)
 Power <- subset(Final, mean_difference != 0)
 ```
 
+# Simulation 2: Determine estimator efficiency
 
-# Simulation 2: Properties of estimators
+
+## Define conditions
+
+Stuff
+
+
+# Simulation 3: Comparing two estimators
 
 Description
 
@@ -143,8 +150,7 @@ Description
 sample_sizes <- c(100, 250, 500, 1000)
 test_length <- c(10, 20, 30)
 
-Design <- expand.grid(sample_size=sample_sizes,
-                      test_length=test_length)
+Design <- expand.grid(sample_size=sample_sizes, test_length=test_length)
 ```
 
 ## Define the functions
@@ -152,7 +158,7 @@ Design <- expand.grid(sample_size=sample_sizes,
 Something...
 
 ```{r}
-Generate <- function(condition) {
+Generate <- function(condition, auxillary_information) {
     
     library(mirt) #for simdata() function
     nitems <- condition$test_length
@@ -167,7 +173,7 @@ Generate <- function(condition) {
     return(list(dat=dat, parameters=parameters))
 }
 
-Analyse <- function(dat, parameters, condition) {
+Analyse <- function(dat, parameters, condition, auxillary_information) {
     
     library(mirt)
     library(lavaan)
@@ -189,7 +195,7 @@ Analyse <- function(dat, parameters, condition) {
     return(list(FIML_as=FIML_as, FIML_ds=FIML_ds, DWLS_as=DWLS_as, DWLS_ds=DWLS_ds))
 }
 
-Summarise <- function(results, parameters_list, condition) {
+Summarise <- function(results, parameters_list, condition, auxillary_information) {
     index <- 1L:length(results)
     
     bias_FIML_as <- sapply(index, function(i, obs, pop) 
@@ -224,6 +230,7 @@ Summarise <- function(results, parameters_list, condition) {
 
 
 ```{r cache=TRUE, eval=FALSE}
-res <- runSimulation(Design, replications = 1000, generate=Generate, analyse=Analyse, summarise=Summarise)
+res <- runSimulation(Design, replications = 20, generate=Generate, analyse=Analyse, summarise=Summarise,
+                     parallel = FALSE)
 
 ```

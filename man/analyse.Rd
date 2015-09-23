@@ -4,7 +4,7 @@
 \alias{analyse}
 \title{Compute estimates and statistics}
 \usage{
-analyse(dat, parameters, condition, generate_extras)
+analyse(dat, parameters, condition, auxillary_information)
 }
 \arguments{
 \item{dat}{the 'dat' object returned from the \code{\link{generate}} function (usually a data.frame, matrix,
@@ -15,7 +15,7 @@ or vector)}
 \item{condition}{a single row from the design input (as a data.frame), indicating the
 simulation conditions}
 
-\item{generate_extras}{a list of additional design elements passed from \code{\link{runSimulation}}}
+\item{auxillary_information}{a list of additional design elements passed from \code{\link{runSimulation}}}
 }
 \value{
 returns a named numeric vector with the values of interest (e.g., p-values,
@@ -37,7 +37,7 @@ to obtain a different dataset.
 \examples{
 \dontrun{
 
-myanalyse <- function(dat, parameters, condition, generate_extras){
+myanalyse <- function(dat, parameters, condition, auxillary_information){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)

@@ -24,7 +24,7 @@
 #'
 bias <- function(observed, population){
     stopifnot(is.vector(observed))
-    stopifnot(length(population) == 1L || length(observed) == length(population))
+    stopifnot(length(population) == 1L)
     mean(observed - population)
 }
 
@@ -57,7 +57,7 @@ bias <- function(observed, population){
 #'
 RMSE <- function(observed, population){
     stopifnot(is.vector(observed))
-    stopifnot(length(population) == 1L || length(population) == length(observed))
+    stopifnot(length(population) == 1L)
     sqrt(mean((observed - population)^2))
 }
 
@@ -168,6 +168,7 @@ ECR <- function(CIs, population){
     stopifnot(is.matrix(CIs))
     stopifnot(length(population) == 1L)
     if(CIs[1,1] > CIs[1,2]){
+        warning('First column not less than second. Temporarily switching')
         CIs <- cbind(CIs[,2L], CIs[,1L])
     }
     mean(CIs[,1L] <= population & population <= CIs[,2L])

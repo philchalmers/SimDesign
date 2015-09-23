@@ -5,26 +5,26 @@
 # @param replications number of times to repeat the Monte Carlo simulations
 # @param cl cluster object defined from the parallel package
 # @param MPI logical; flag passed down from the runSimulation function
-# @param generate_extras a list of extra simulation parameters
+# @param auxillary_information a list of extra simulation parameters
 #
-Analysis <- function(Functions, condition, replications, cl, MPI, generate_extras)
+Analysis <- function(Functions, condition, replications, cl, MPI, auxillary_information)
 {
     # This defines the workflow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
     if(is.null(cl)){
         cell_results <- lapply(1L:replications, Functions$main, condition=condition,
                                generate=Functions$generate,
-                               analyse=Functions$analyse, generate_extras=generate_extras)
+                               analyse=Functions$analyse, auxillary_information=auxillary_information)
     } else {
         if(MPI){
             i <- 1L
             cell_results <- foreach(i=1L:replications) %dopar%
                 Functions$main(i, condition=condition, generate=Functions$generate,
-                               analyse=Functions$analyse, generate_extras=generate_extras)
+                               analyse=Functions$analyse, auxillary_information=auxillary_information)
         } else {
             cell_results <- parallel::parLapply(cl, 1L:replications, Functions$main, condition=condition,
                                                 generate=Functions$generate, analyse=Functions$analyse,
-                                                generate_extras=generate_extras)
+                                                auxillary_information=auxillary_information)
         }
     }
     # split lists up
@@ -44,7 +44,7 @@ Analysis <- function(Functions, condition, replications, cl, MPI, generate_extra
             results[[i]]$n_cell_runs <- NULL
     }
     sim_results <- Functions$summarise(results=results, parameters=parameters,
-                           condition=condition, generate_extras=generate_extras)
+                           condition=condition, auxillary_information=auxillary_information)
 
     if(!is.vector(sim_results)) stop('summarise() must return a vector', call.=FALSE)
     if(any(names(sim_results) == 'N_CELL_RUNS'))
