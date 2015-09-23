@@ -11,6 +11,8 @@
 #'
 #' @aliases bias
 #'
+#' @export bias
+#'
 #' @examples
 #' \dontrun{
 #'
@@ -42,6 +44,8 @@ bias <- function(observed, population){
 #'
 #' @aliases RMSE
 #'
+#' @export RMSE
+#'
 #' @examples
 #' \dontrun{
 #'
@@ -71,6 +75,8 @@ RMSE <- function(observed, population){
 #'   values greater than 1 indicate better efficiency
 #'
 #' @aliases RE
+#'
+#' @export RE
 #'
 #' @examples
 #' \dontrun{
@@ -104,6 +110,8 @@ RE <- function(RMSEs){
 #' @param alpha the nominal detection rate to be studied (typical values are .10, .05, and .01)
 #'
 #' @aliases EDR
+#'
+#' @export EDR
 #'
 #' @examples
 #' \dontrun{
@@ -140,6 +148,8 @@ EDR <- function(p, alpha){
 #' @param population a numeric scalar indicating the fixed population value
 #'
 #' @aliases ECR
+#'
+#' @export ECR
 #'
 #' @examples
 #' \dontrun{

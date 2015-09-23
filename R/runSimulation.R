@@ -138,11 +138,11 @@
 #'
 #' # (use EXPLICIT names, avoid things like N <- 100. That's fine in functions, not here)
 #' sample_sizes <- c(10, 20, 50, 100)
-#' standard_deviations <- c(1, 4, 8)
+#' standard_deviation_ratios <- c(1, 4, 8)
 #'
-#' Design <- expand.grid(sample_sizes_group1=sample_sizes,
-#'                       sample_sizes_group2=sample_sizes,
-#'                       standard_deviations=standard_deviations)
+#' Design <- expand.grid(sample_size_group1=sample_sizes,
+#'                       sample_size_group2=sample_sizes,
+#'                       standard_deviation_ratio=standard_deviation_ratios)
 #' dim(Design)
 #' head(Design)
 #'
@@ -157,9 +157,9 @@
 #'
 #'     #require packages/define functions if needed, or better yet index with the :: operator
 #'
-#'     N1 <- condition$sample_sizes_group1
-#'     N2 <- condition$sample_sizes_group2
-#'     sd <- condition$standard_deviations
+#'     N1 <- subset(condition, sample_size_group1)
+#'     N2 <- subset(condition, sample_size_group2)
+#'     sd <- subset(condition, standard_deviation_ratio)
 #'
 #'     group1 <- rnorm(N1)
 #'     group2 <- rnorm(N2, sd=sd)
@@ -183,16 +183,15 @@
 #'
 #'     #wrap computational statistics in try() statements to control estimation problems
 #'     welch <- try(t.test(DV ~ group, dat), silent=TRUE)
-#'     ind <- try(stats::t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
+#'     ind <- try(t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
 #'
-#'     # check if error, and if so stop and return an 'error'. This will re-draw the data
-#'     if(is(welch, 'try-error')) stop('Welch error message')
-#'     if(is(ind, 'try-error')) stop('Independent t-test error message')
+#'     # check if any errors occured. This will re-draw the data
+#'     check_error(welch)
+#'     check_error(ind)
 #'
 #'     # In this function the p values for the t-tests are returned,
 #'     #  and make sure to name each element, for future reference
-#'     ret <- c(welch = welch$p.value,
-#'              independent = ind$p.value)
+#'     ret <- c(welch = welch$p.value, independent = ind$p.value)
 #'
 #'     return(ret)
 #' }
@@ -374,6 +373,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if((i %% save_every) == 0L) saveRDS(Result_list, tmpfilename)
     }
     Final <- do.call(rbind, Result_list)
+    Final$ID <- NULL
 
     #save file
     files <- dir()
