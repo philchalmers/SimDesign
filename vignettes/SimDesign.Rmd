@@ -117,8 +117,8 @@ function, therefore it is clear which element represents the Welch and Independe
 
 ## Run the simulation
 
-```{r}
-Final <- runSimulation(design = Design, replications = 2, verbose = FALSE,
+```{r cache=TRUE, eval=FALSE}
+Final <- runSimulation(design = Design, replications = 1000, verbose = FALSE,
                        generate = Generate, analyse = Analyse, summarise = Summarise)
 ```
 
@@ -140,7 +140,7 @@ Description
 ## Define conditions
 
 ```{r}
-sample_sizes <- c(150, 300, 450)
+sample_sizes <- c(100, 250, 500, 1000)
 test_length <- c(10, 20, 30)
 
 Design <- expand.grid(sample_size=sample_sizes,
@@ -161,26 +161,69 @@ Generate <- function(condition) {
     a <- matrix(rlnorm(nitems, .2, .3))
     d <- matrix(rnorm(nitems, 0, .5))
     
-    dat <- simdata(a=a, d=d, N=N, itemtype = 'dich')
+    dat <- as.data.frame(simdata(a=a, d=d, N=N, itemtype = 'dich'))
     parameters <- list(a=a, d=d)
 
     return(list(dat=dat, parameters=parameters))
 }
 
 Analyse <- function(dat, parameters, condition) {
+    
     library(mirt)
     library(lavaan)
+    nitems <- condition$test_length
     
+    mod <- try(mirt(dat, 1L, verbose=FALSE), silent=TRUE)
+    cfs <- coef(mod, simplify = TRUE, digits = Inf)
+    FIML_as <- cfs$items[,1L]
+    FIML_ds <- cfs$items[,2L]
     
+    lavmod <- paste0('F =~ ', paste0('NA*', colnames(dat)[1L], ' + '), 
+                     paste0(colnames(dat)[-1L], collapse = ' + '),
+                     '\nF ~~ 1*F')
+    lmod <- try(sem(lavmod, dat, ordered = colnames(dat)))
+    cfs2 <- coef(lmod) * 1.702 # scaling adjustment
+    DWLS_as <- cfs2[1L:nitems]
+    DWLS_ds <- -1*cfs2[(1L:nitems) + nitems]
 
-    return(numeric())    # alternatively, return(list())
+    return(list(FIML_as=FIML_as, FIML_ds=FIML_ds, DWLS_as=DWLS_as, DWLS_ds=DWLS_ds))
 }
 
-Summarise <- function(results, parameters, condition) {
-    # Summarise the simulation results ...
-
-    return(numeric())
+Summarise <- function(results, parameters_list, condition) {
+    index <- 1L:length(results)
+    
+    bias_FIML_as <- sapply(index, function(i, obs, pop) 
+        bias(obs[[i]]$FIML_as, pop[[i]]$a), obs=results, pop=parameters_list)
+    bias_FIML_ds <- sapply(index, function(i, obs, pop) 
+        bias(obs[[i]]$FIML_ds, pop[[i]]$d), obs=results, pop=parameters_list)
+    RMSE_FIML_as <- sapply(index, function(i, obs, pop) 
+        RMSE(obs[[i]]$FIML_as, pop[[i]]$a), obs=results, pop=parameters_list)
+    RMSE_FIML_ds <- sapply(index, function(i, obs, pop) 
+        RMSE(obs[[i]]$FIML_ds, pop[[i]]$d), obs=results, pop=parameters_list)
+    
+    bias_DWLS_as <- sapply(index, function(i, obs, pop) 
+        bias(obs[[i]]$DWLS_as, pop[[i]]$a), obs=results, pop=parameters_list)
+    bias_DWLS_ds <- sapply(index, function(i, obs, pop) 
+        bias(obs[[i]]$DWLS_ds, pop[[i]]$d), obs=results, pop=parameters_list)
+    RMSE_DWLS_as <- sapply(index, function(i, obs, pop) 
+        RMSE(obs[[i]]$DWLS_as, pop[[i]]$a), obs=results, pop=parameters_list)
+    RMSE_DWLS_ds <- sapply(index, function(i, obs, pop) 
+        RMSE(obs[[i]]$DWLS_ds, pop[[i]]$d), obs=results, pop=parameters_list)
+    
+    ret <- c(bias_FIML_as=mean(bias_FIML_as),
+             bias_DWLS_as=mean(bias_DWLS_as),
+             bias_FIML_ds=mean(bias_FIML_ds),
+             bias_DWLS_ds=mean(bias_DWLS_ds),
+             RMSE_FIML_as=mean(RMSE_FIML_as),
+             RMSE_DWLS_as=mean(RMSE_DWLS_as),
+             RMSE_FIML_ds=mean(RMSE_FIML_ds),
+             RMSE_DWLS_ds=mean(RMSE_DWLS_ds))
+    return(ret)
 }
-
 ```
 
+
+```{r cache=TRUE, eval=FALSE}
+res <- runSimulation(Design, replications = 1000, generate=Generate, analyse=Analyse, summarise=Summarise)
+
+```

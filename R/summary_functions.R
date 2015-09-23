@@ -24,7 +24,7 @@
 #'
 bias <- function(observed, population){
     stopifnot(is.vector(observed))
-    stopifnot(length(population) == 1L)
+    stopifnot(length(population) == 1L || length(observed) == length(population))
     mean(observed - population)
 }
 
@@ -57,7 +57,7 @@ bias <- function(observed, population){
 #'
 RMSE <- function(observed, population){
     stopifnot(is.vector(observed))
-    stopifnot(length(population) == 1L)
+    stopifnot(length(population) == 1L || length(population) == length(observed))
     sqrt(mean((observed - population)^2))
 }
 

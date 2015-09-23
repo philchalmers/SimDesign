@@ -32,8 +32,15 @@ Analysis <- function(Functions, condition, replications, cl, MPI)
     else parameters <- list()
 
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
-    N_CELL_RUNS <- sum(sapply(results, function(x) x['n_cell_runs']))
-    if(!is.list(results[[1L]])) results <- do.call(rbind, results)
+    if(!is.list(results[[1L]])){
+        N_CELL_RUNS <- sum(sapply(results, function(x) x['n_cell_runs']))
+        results <- do.call(rbind, results)
+        results$n_cell_runs <- NULL
+    } else {
+        N_CELL_RUNS <- sum(do.call(c, sapply(results, function(x) x['n_cell_runs'])))
+        for(i in 1:length(results))
+            results[[i]]$n_cell_runs <- NULL
+    }
     sim_results <- Functions$summarise(results=results, parameters=parameters,
                            condition=condition)
 
