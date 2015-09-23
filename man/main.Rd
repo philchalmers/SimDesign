@@ -4,7 +4,7 @@
 \alias{main}
 \title{Main subroutine}
 \usage{
-main(index, condition, generate, analyse)
+main(index, condition, generate, analyse, generate_extras)
 }
 \arguments{
 \item{index}{an integer place-holder value indexed from the 1:each input}
@@ -15,6 +15,8 @@ simulation conditions}
 \item{generate}{the \code{\link{generate}} function defined above (required for parallel computing)}
 
 \item{analyse}{the \code{\link{analyse}} function defined above (required for parallel computing)}
+
+\item{generate_extras}{a list of additional design elements passed from \code{\link{runSimulation}}}
 }
 \value{
 must return a named list with the 'result' and 'parameters' elements for the

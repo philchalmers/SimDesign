@@ -4,7 +4,7 @@
 \alias{summarise}
 \title{Summarise simulated data using various population comparison statistics}
 \usage{
-summarise(results, parameters_list, condition)
+summarise(results, parameters_list, condition, generate_extras)
 }
 \arguments{
 \item{results}{a data.frame (if \code{analyse} returned a numeric vector) or a list (if
@@ -15,7 +15,9 @@ where each cell is stored in a unique row/list element}
 where each repetition is stored in a unique element}
 
 \item{condition}{a single row from the \code{design} input from \code{\link{runSimulation}}
-  (as a data.frame), indicating the simulation conditions}
+(as a data.frame), indicating the simulation conditions}
+
+\item{generate_extras}{a list of additional design elements passed from \code{\link{runSimulation}}}
 }
 \value{
 must return a named numeric vector with the desired meta-simulation results
@@ -27,7 +29,7 @@ estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 \examples{
 \dontrun{
 
-mysummarise <- function(results, parameters_list, condition){
+mysummarise <- function(results, parameters_list, condition, generate_extras){
 
     #convert to matrix for convenience (if helpful)
     cell_results <- do.call(rbind, results)

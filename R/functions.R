@@ -3,6 +3,9 @@
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #'
+#' @param generate_extras a (possibly empty) list containing extra information used to generate the
+#'   data that has been passed down from \code{\link{runSimulation}}
+#'
 #' @return returns a list with a 'dat' and 'parameters' element.  The 'dat' element should be
 #'   the observed data object (i.e., a vector, matrix, or data.frame), and the 'parameters'
 #'   element should be a named list containing the simulated parameters (if there are any. Otherwise,
@@ -13,7 +16,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' mygenerate <- function(condition){
+#' mygenerate <- function(condition, generate_extras){
 #'
 #'     #require packages/define functions if needed, or better yet index with the :: operator
 #'
@@ -31,7 +34,7 @@
 #'
 #' }
 #'
-generate <- function(condition) NULL
+generate <- function(condition, generate_extras) NULL
 
 #=================================================================================================#
 
@@ -47,11 +50,12 @@ generate <- function(condition) NULL
 #' to converge. This will cause the function to stop, and \code{\link{generate}} will be called again
 #' to obtain a different dataset.
 #'
-#' @param dat the 'dat' object returned from the \code{\link{sim}} function (usually a data.frame, matrix,
+#' @param dat the 'dat' object returned from the \code{\link{generate}} function (usually a data.frame, matrix,
 #'   or vector)
-#' @param parameters the list object named 'parameters' returned from the \code{\link{sim}} function
+#' @param parameters the list object named 'parameters' returned from the \code{\link{generate}} function
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
+#' @param generate_extras a list of additional design elements passed from \code{\link{runSimulation}}
 #'
 #' @return returns a named numeric vector with the values of interest (e.g., p-values,
 #'   effects sizes, etc), or a list containing values of interest (e.g., seperate matrix
@@ -62,7 +66,7 @@ generate <- function(condition) NULL
 #' @examples
 #' \dontrun{
 #'
-#' myanalyse <- function(dat, parameters, condition){
+#' myanalyse <- function(dat, parameters, condition, generate_extras){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -85,7 +89,7 @@ generate <- function(condition) NULL
 #' }
 #'
 #' }
-analyse <- function(dat, parameters, condition) NULL
+analyse <- function(dat, parameters, condition, generate_extras) NULL
 
 
 
@@ -104,6 +108,7 @@ analyse <- function(dat, parameters, condition) NULL
 #'   where each repetition is stored in a unique element
 #' @param condition a single row from the \code{design} input from \code{\link{runSimulation}}
 #'   (as a data.frame), indicating the simulation conditions
+#' @param generate_extras a list of additional design elements passed from \code{\link{runSimulation}}
 #'
 #' @aliases summarise
 #'
@@ -114,7 +119,7 @@ analyse <- function(dat, parameters, condition) NULL
 #' @examples
 #' \dontrun{
 #'
-#' mysummarise <- function(results, parameters_list, condition){
+#' mysummarise <- function(results, parameters_list, condition, generate_extras){
 #'
 #'     #convert to matrix for convenience (if helpful)
 #'     cell_results <- do.call(rbind, results)
@@ -137,7 +142,7 @@ analyse <- function(dat, parameters, condition) NULL
 #'
 #' }
 #'
-summarise <- function(results, parameters_list, condition) NULL
+summarise <- function(results, parameters_list, condition, generate_extras) NULL
 
 #=================================================================================================#
 
@@ -153,6 +158,7 @@ summarise <- function(results, parameters_list, condition) NULL
 #'   simulation conditions
 #' @param generate the \code{\link{generate}} function defined above (required for parallel computing)
 #' @param analyse the \code{\link{analyse}} function defined above (required for parallel computing)
+#' @param generate_extras a list of additional design elements passed from \code{\link{runSimulation}}
 #'
 #' @return must return a named list with the 'result' and 'parameters' elements for the
 #'   computational results and \code{parameters} from \code{\link{generate}}
@@ -168,14 +174,14 @@ summarise <- function(results, parameters_list, condition) NULL
 #' print(SimDesign::main)
 #'
 #' }
-main <- function(index, condition, generate, analyse){
+main <- function(index, condition, generate, analyse, generate_extras){
 
     count <- 0L
 
     while(TRUE){
 
         count <- count + 1L
-        simlist <- generate(condition)
+        simlist <- generate(condition=condition, generate_extras=generate_extras)
         if(!is.list(simlist) || !all(names(simlist) %in% c('dat', 'parameters')))
             stop('generate() did not return a list with elements dat and parameters', call.=FALSE)
         res <- try(analyse(dat=simlist$dat, parameters=simlist$parameters, condition=condition), silent=TRUE)

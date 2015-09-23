@@ -5,8 +5,8 @@
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
-  parallel = FALSE, MPI = FALSE, save = FALSE, save_every = 1,
-  clean = TRUE, compname = Sys.info()["nodename"],
+  parallel = FALSE, MPI = FALSE, generate_extras = list(), save = FALSE,
+  save_every = 1, clean = TRUE, compname = Sys.info()["nodename"],
   filename = paste0(compname, "_Final_", replications, ".rds"),
   tmpfilename = paste0(compname, "_tmpsim.rds"), main = NULL,
   ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
@@ -36,6 +36,10 @@ runSimulation(design, replications, generate, analyse, summarise,
 
 \item{MPI}{logical; use the \code{doMPI} package to run simulation in parallel on
   a cluster? Default is FALSE}
+
+\item{generate_extras}{(optional) a fixed list of elements used when generating the data. This is useful
+  for including extra auxillary information that may not belong in the \code{design} input (i.e., may
+  be conditional on the elements in the design)}
 
 \item{save}{logical; save the final simulation and temp files to the hard-drive? Default is FALSE}
 
@@ -162,7 +166,7 @@ head(Design)
 SimDesign_functions()
 
 # help(generate)
-Generate <- function(condition){
+Generate <- function(condition, generate_extras){
 
     #require packages/define functions if needed, or better yet index with the :: operator
 
@@ -180,7 +184,7 @@ Generate <- function(condition){
 
 # help(analyse)
 
-Analyse <- function(dat, parameters, condition){
+Analyse <- function(dat, parameters, condition, generate_extras){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
@@ -202,7 +206,7 @@ Analyse <- function(dat, parameters, condition){
 
 # help(summarise)
 
-Summarise <- function(results, parameters_list, condition){
+Summarise <- function(results, parameters_list, condition, generate_extras){
 
     # silly test for bias and RMSE of a random number from 0
     pop_value <- 0
