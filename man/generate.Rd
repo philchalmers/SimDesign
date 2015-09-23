@@ -13,7 +13,7 @@ generate(condition)
 \value{
 returns a list with a 'dat' and 'parameters' element.  The 'dat' element should be
   the observed data object (i.e., a vector, matrix, or data.frame), and the 'parameters'
-  element should be a named list containing the simulated parameters (if any, otherwise,
+  element should be a named list containing the simulated parameters (if there are any. Otherwise,
   this could just be an empty list)
 }
 \description{

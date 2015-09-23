@@ -80,10 +80,9 @@ ease of use, generates data for two groups using random normal draws, and return
 containing the dependent variable and grouping information. 
 
 ```{r}
-Analyse <- function(simlist, condition){
+Analyse <- function(dat, parameters, condition){
     
     require(stats)
-    dat <- simlist$dat
 
     welch <- try(t.test(DV ~ group, dat), silent=TRUE)
     ind <- try(t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
@@ -138,11 +137,50 @@ Power <- subset(Final, mean_difference != 0)
 
 Description
 
+## Define conditions
+
+```{r}
+sample_sizes <- c(150, 300, 450)
+test_length <- c(10, 20, 30)
+
+Design <- expand.grid(sample_size=sample_sizes,
+                      test_length=test_length)
+```
+
 ## Define the functions
 
 Something...
 
 ```{r}
+Generate <- function(condition) {
+    
+    library(mirt) #for simdata() function
+    nitems <- condition$test_length
+    N <- condition$sample_size
+        
+    a <- matrix(rlnorm(nitems, .2, .3))
+    d <- matrix(rnorm(nitems, 0, .5))
+    
+    dat <- simdata(a=a, d=d, N=N, itemtype = 'dich')
+    parameters <- list(a=a, d=d)
+
+    return(list(dat=dat, parameters=parameters))
+}
+
+Analyse <- function(dat, parameters, condition) {
+    library(mirt)
+    library(lavaan)
+    
+    
+
+    return(numeric())    # alternatively, return(list())
+}
+
+Summarise <- function(results, parameters, condition) {
+    # Summarise the simulation results ...
+
+    return(numeric())
+}
 
 ```
 

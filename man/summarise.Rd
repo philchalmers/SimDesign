@@ -4,18 +4,18 @@
 \alias{summarise}
 \title{Summarise simulated data using various population comparison statistics}
 \usage{
-summarise(results, parameters, condition)
+summarise(results, parameters_list, condition)
 }
 \arguments{
 \item{results}{a data.frame (if \code{analyse} returned a numeric vector) or a list (if
-\code{analyse} returned a list) containing the simulation results from analyse(), where each cell
-is stored in a unique row/list element}
+\code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
+where each cell is stored in a unique row/list element}
 
-\item{parameters}{a list containing all the 'parameters' elements generated from generate(), where
-each repetition is stored in a unique list element}
+\item{parameters_list}{a list containing all the 'parameters' elements generated from \code{\link{generate}},
+where each repetition is stored in a unique element}
 
-\item{condition}{a single row from the design input (as a data.frame), indicating the
-  simulation conditions}
+\item{condition}{a single row from the \code{design} input from \code{\link{runSimulation}}
+  (as a data.frame), indicating the simulation conditions}
 }
 \value{
 must return a named numeric vector with the desired meta-simulation results
@@ -27,15 +27,15 @@ estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 \examples{
 \dontrun{
 
-mysummarise <- function(results, parameters, condition){
+mysummarise <- function(results, parameters_list, condition){
 
     #convert to matrix for convenience (if helpful)
     cell_results <- do.call(rbind, results)
 
     # silly test for bias and RMSE of a random number from 0
     pop_value <- 0
-    bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
-    RMSE.random_number <- RMSE(sapply(parameters, function(x) x$random_number), pop_value)
+    bias.random_number <- bias(sapply(parameters_list, function(x) x$random_number), pop_value)
+    RMSE.random_number <- RMSE(sapply(parameters_list, function(x) x$random_number), pop_value)
 
     #find results of interest here (alpha < .1, .05, .01)
     nms <- c('welch', 'independent')

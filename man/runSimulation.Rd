@@ -180,15 +180,11 @@ Generate <- function(condition){
 
 # help(analyse)
 
-Analyse <- function(simlist, condition){
+Analyse <- function(dat, parameters, condition){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
     mygreatfunction <- function(x) print('Do some stuff')
-
-    # begin extracting the data elements
-    dat <- simlist$dat
-    parameters <- simlist$parameters
 
     #wrap computational statistics in try() statements to control estimation problems
     welch <- try(t.test(DV ~ group, dat), silent=TRUE)
@@ -206,12 +202,12 @@ Analyse <- function(simlist, condition){
 
 # help(summarise)
 
-Summarise <- function(results, parameters, condition){
+Summarise <- function(results, parameters_list, condition){
 
     # silly test for bias and RMSE of a random number from 0
     pop_value <- 0
-    bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
-    RMSE.random_number <- RMSE(sapply(parameters, function(x) x$random_number), pop_value)
+    bias.random_number <- bias(sapply(parameters_list, function(x) x$random_number), pop_value)
+    RMSE.random_number <- RMSE(sapply(parameters_list, function(x) x$random_number), pop_value)
 
     #find results of interest here (alpha < .1, .05, .01)
     nms <- c('welch', 'independent')

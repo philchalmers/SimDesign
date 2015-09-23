@@ -5,7 +5,7 @@
 #'
 #' @return returns a list with a 'dat' and 'parameters' element.  The 'dat' element should be
 #'   the observed data object (i.e., a vector, matrix, or data.frame), and the 'parameters'
-#'   element should be a named list containing the simulated parameters (if any, otherwise,
+#'   element should be a named list containing the simulated parameters (if there are any. Otherwise,
 #'   this could just be an empty list)
 #'
 #' @aliases generate
@@ -47,29 +47,26 @@ generate <- function(condition) NULL
 #' to converge. This will cause the function to stop, and \code{\link{generate}} will be called again
 #' to obtain a different dataset.
 #'
-#' @param simlist a list containing the data.frame ('dat') and parameters ('parameters')
-#'   generated from the sim() function
+#' @param dat the 'dat' object returned from the \code{\link{sim}} function (usually a data.frame, matrix,
+#'   or vector)
+#' @param parameters the list object named 'parameters' returned from the \code{\link{sim}} function
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #'
 #' @return returns a named numeric vector with the values of interest (e.g., p-values,
 #'   effects sizes, etc), or a list containing values of interest (e.g., seperate matrix
-#'   and vector of parameter estimates corresponding to elements in simlist$parameters)
+#'   and vector of parameter estimates corresponding to elements in \code{parameters})
 #'
 #' @aliases analyse
 #'
 #' @examples
 #' \dontrun{
 #'
-#' myanalyse <- function(simlist, condition){
+#' myanalyse <- function(dat, parameters, condition){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
 #'     mygreatfunction <- function(x) print('Do some stuff')
-#'
-#'     # begin extracting the data elements
-#'     dat <- simlist$dat
-#'     parameters <- simlist$parameters
 #'
 #'     #wrap computational statistics in try() statements to control estimation problems
 #'     welch <- try(t.test(DV ~ group, dat), silent=TRUE)
@@ -88,7 +85,7 @@ generate <- function(condition) NULL
 #' }
 #'
 #' }
-analyse <- function(simlist, condition) NULL
+analyse <- function(dat, parameters, condition) NULL
 
 
 
@@ -101,12 +98,12 @@ analyse <- function(simlist, condition) NULL
 #' estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 #'
 #' @param results a data.frame (if \code{analyse} returned a numeric vector) or a list (if
-#'   \code{analyse} returned a list) containing the simulation results from analyse(), where each cell
-#'   is stored in a unique row/list element
-#' @param parameters a list containing all the 'parameters' elements generated from generate(), where
-#'   each repetition is stored in a unique list element
-#' @param condition a single row from the design input (as a data.frame), indicating the
-#'   simulation conditions
+#'   \code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
+#'   where each cell is stored in a unique row/list element
+#' @param parameters_list a list containing all the 'parameters' elements generated from \code{\link{generate}},
+#'   where each repetition is stored in a unique element
+#' @param condition a single row from the \code{design} input from \code{\link{runSimulation}}
+#'   (as a data.frame), indicating the simulation conditions
 #'
 #' @aliases summarise
 #'
@@ -117,15 +114,15 @@ analyse <- function(simlist, condition) NULL
 #' @examples
 #' \dontrun{
 #'
-#' mysummarise <- function(results, parameters, condition){
+#' mysummarise <- function(results, parameters_list, condition){
 #'
 #'     #convert to matrix for convenience (if helpful)
 #'     cell_results <- do.call(rbind, results)
 #'
 #'     # silly test for bias and RMSE of a random number from 0
 #'     pop_value <- 0
-#'     bias.random_number <- bias(sapply(parameters, function(x) x$random_number), pop_value)
-#'     RMSE.random_number <- RMSE(sapply(parameters, function(x) x$random_number), pop_value)
+#'     bias.random_number <- bias(sapply(parameters_list, function(x) x$random_number), pop_value)
+#'     RMSE.random_number <- RMSE(sapply(parameters_list, function(x) x$random_number), pop_value)
 #'
 #'     #find results of interest here (alpha < .1, .05, .01)
 #'     nms <- c('welch', 'independent')
@@ -140,7 +137,7 @@ analyse <- function(simlist, condition) NULL
 #'
 #' }
 #'
-summarise <- function(results, parameters, condition) NULL
+summarise <- function(results, parameters_list, condition) NULL
 
 #=================================================================================================#
 
@@ -158,7 +155,7 @@ summarise <- function(results, parameters, condition) NULL
 #' @param analyse the \code{\link{analyse}} function defined above (required for parallel computing)
 #'
 #' @return must return a named list with the 'result' and 'parameters' elements for the
-#'   computational results and Monte Carlo parameters from generate()
+#'   computational results and \code{parameters} from \code{\link{generate}}
 #'
 #' @aliases main
 #'
@@ -181,7 +178,7 @@ main <- function(index, condition, generate, analyse){
         simlist <- generate(condition)
         if(!is.list(simlist) || !all(names(simlist) %in% c('dat', 'parameters')))
             stop('generate() did not return a list with elements dat and parameters', call.=FALSE)
-        res <- try(analyse(simlist=simlist, condition=condition), silent=TRUE)
+        res <- try(analyse(dat=simlist$dat, parameters=simlist$parameters, condition=condition), silent=TRUE)
 
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')) next

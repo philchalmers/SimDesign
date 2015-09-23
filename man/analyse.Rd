@@ -4,11 +4,13 @@
 \alias{analyse}
 \title{Compute estimates and statistics}
 \usage{
-analyse(simlist, condition)
+analyse(dat, parameters, condition)
 }
 \arguments{
-\item{simlist}{a list containing the data.frame ('dat') and parameters ('parameters')
-generated from the sim() function}
+\item{dat}{the 'dat' object returned from the \code{\link{sim}} function (usually a data.frame, matrix,
+or vector)}
+
+\item{parameters}{the list object named 'parameters' returned from the \code{\link{sim}} function}
 
 \item{condition}{a single row from the design input (as a data.frame), indicating the
   simulation conditions}
@@ -16,7 +18,7 @@ generated from the sim() function}
 \value{
 returns a named numeric vector with the values of interest (e.g., p-values,
   effects sizes, etc), or a list containing values of interest (e.g., seperate matrix
-  and vector of parameter estimates corresponding to elements in simlist$parameters)
+  and vector of parameter estimates corresponding to elements in \code{parameters})
 }
 \description{
 Compute all relevant test statistics and parameter estimates here.
@@ -33,15 +35,11 @@ to obtain a different dataset.
 \examples{
 \dontrun{
 
-myanalyse <- function(simlist, condition){
+myanalyse <- function(dat, parameters, condition){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
     mygreatfunction <- function(x) print('Do some stuff')
-
-    # begin extracting the data elements
-    dat <- simlist$dat
-    parameters <- simlist$parameters
 
     #wrap computational statistics in try() statements to control estimation problems
     welch <- try(t.test(DV ~ group, dat), silent=TRUE)

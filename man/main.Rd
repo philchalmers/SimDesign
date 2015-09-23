@@ -18,7 +18,7 @@ simulation conditions}
 }
 \value{
 must return a named list with the 'result' and 'parameters' elements for the
-  computational results and Monte Carlo parameters from generate()
+  computational results and \code{parameters} from \code{\link{generate}}
 }
 \description{
 This function runs one condition at a time exactly once. This is for

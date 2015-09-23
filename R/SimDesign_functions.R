@@ -23,7 +23,7 @@ SimDesign_functions <- function(main = FALSE){
     cat('\n\nGenerate <- function(condition) {')
     cat('\n    # Define data generation code ...\n\n    return(list(dat=data.frame(), parameters=list()))\n}')
     cat('\n\n')
-    cat('Analyse <- function(simlist, condition) {')
+    cat('Analyse <- function(dat, parameters, condition) {')
     cat('\n    # Run statistical analyses of interest ... \n\n    return(numeric())    # alternatively, return(list())\n}')
     cat('\n\n')
     cat('Summarise <- function(results, parameters, condition) {')
