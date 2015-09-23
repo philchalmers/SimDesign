@@ -117,8 +117,8 @@ function, therefore it is clear which element represents the Welch and Independe
 
 ## Run the simulation
 
-```{r cache=TRUE, eval=FALSE}
-Final <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
+```{r cache=TRUE, eval=TRUE}
+Final <- runSimulation(design = Design, replications = 1000, verbose = TRUE, parallel = FALSE,
                        generate = Generate, analyse = Analyse, summarise = Summarise)
 ```
 
@@ -151,12 +151,15 @@ sample_sizes <- c(100, 250, 500, 1000)
 test_length <- c(10, 20, 30)
 Design <- expand.grid(sample_size=sample_sizes, test_length=test_length)
 
+# save extra verbose information in an external file, and read it in later
+set.seed(1234)
 aux_info <- vector('list', 3)
 names(aux_info) <- test_length
 for(i in 1:3)
     aux_info[[i]] <- list(a = round(rlnorm(test_length[i], .2, .3), 2), 
                           d = round(rnorm(test_length[i], 0, .5), 2))
 aux_info
+saveRDS(aux_info, 'parameters.rds')
 ```
 
 ## Define the functions
@@ -171,9 +174,9 @@ Generate <- function(condition) {
     N <- condition$sample_size
         
     #source in
-    browser()
-    a <- matrix(auxillary_information[[nitems]]$a)
-    d <- matrix(auxillary_information[[nitems]]$d)
+    parameters <- readRDS('parameters.rds')
+    a <- matrix(parameters[[nitems]]$a)
+    d <- matrix(parameters[[nitems]]$d)
     
     dat <- as.data.frame(simdata(a=a, d=d, N=N, itemtype = 'dich'))
     parameters <- list(a=a, d=d)
@@ -181,7 +184,7 @@ Generate <- function(condition) {
     return(list(dat=dat, parameters=parameters))
 }
 
-Analyse <- function(dat, parameters, condition, auxillary_information) {
+Analyse <- function(dat, parameters, condition) {
     
     library(mirt)
     library(lavaan)
@@ -204,10 +207,11 @@ Analyse <- function(dat, parameters, condition, auxillary_information) {
     return(list(FIML_as=FIML_as, FIML_ds=FIML_ds, DWLS_as=DWLS_as, DWLS_ds=DWLS_ds))
 }
 
-Summarise <- function(results, parameters_list, condition, auxillary_information) {
+Summarise <- function(results, parameters_list, condition) {
     
-    pop_as <- auxillary_information[[as.character(condition$test_length)]]$a
-    pop_ds <- auxillary_information[[as.character(condition$test_length)]]$d
+    browser()
+    pop_as <- something
+    pop_ds <- something
     index <- 1:condition$test_length
     
     FIML_as <- do.call(rbind, lapply(results, function(x) x[['FIML_as']]))
@@ -243,12 +247,9 @@ Summarise <- function(results, parameters_list, condition, auxillary_information
 
 ```{r cache=TRUE, eval=FALSE}
 res10 <- runSimulation(subset(Design, test_length == 10), replications = 1000, 
-                       generate=Generate, analyse=Analyse, summarise=Summarise,
-                       auxillary_information = aux_info, parallel = TRUE)
+                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
 res20 <- runSimulation(subset(Design, test_length == 20), replications = 1000, 
-                       generate=Generate, analyse=Analyse, summarise=Summarise,
-                       auxillary_information = aux_info, parallel = TRUE)
+                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
 res30 <- runSimulation(subset(Design, test_length == 30), replications = 1000, 
-                       generate=Generate, analyse=Analyse, summarise=Summarise,
-                       auxillary_information = aux_info, parallel = TRUE)
+                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
 ```
