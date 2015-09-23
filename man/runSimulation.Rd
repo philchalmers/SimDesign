@@ -166,9 +166,9 @@ Generate <- function(condition){
 
     #require packages/define functions if needed, or better yet index with the :: operator
 
-    N1 <- subset(condition, sample_size_group1)
-    N2 <- subset(condition, sample_size_group2)
-    sd <- subset(condition, standard_deviation_ratio)
+    N1 <- condition$sample_size_group1
+    N2 <- condition$sample_size_group2
+    sd <- condition$standard_deviation_ratio
 
     group1 <- rnorm(N1)
     group2 <- rnorm(N2, sd=sd)
@@ -195,8 +195,7 @@ Analyse <- function(simlist, condition){
     ind <- try(t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
 
     # check if any errors occured. This will re-draw the data
-    check_error(welch)
-    check_error(ind)
+    check_error(welch, ind)
 
     # In this function the p values for the t-tests are returned,
     #  and make sure to name each element, for future reference

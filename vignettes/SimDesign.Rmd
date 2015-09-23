@@ -20,6 +20,17 @@ Intro stub describing general workflow.
 library(SimDesign)
 ```
 
+To begin defining the required function, a quick call to `SimDesign_functions()` will create a template to be
+filled in with all the necessary functional arguments pre-assigned. This should be copied and saved to an external source file.
+
+```{r}
+SimDesign_functions()
+```
+
+### Debugging and editing
+
+Something
+
 # Simulation 1: Type I error rates and Power rates
 
 Describe simulation scenerio TODO
@@ -44,14 +55,7 @@ tail(Design, 3)
 
 Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where both broups have a sample size of 10 and the ratio of the standard devitions are 1 (i.e., they are exactly equal) and there is no mean difference between the groups. Analysing rows with no mean difference will give us an idea of the Type I error rates. The last condition on row 96 indicates that both groups have sample sizes of 100 but that one of the standard deviations is 8 times larger than the other and a mean difference of 0.5. Which group is larger in both the standard deviation and mean will be defined in the `Generate()` function. 
 
-## Define functions
-
-To begin defining the required function, a quick call to `SimDesign_functions()` will create a template to be
-filled in with all the necessary functional arguments pre-assigned. This should be copied and saved to an external source file.
-
-```{r}
-SimDesign_functions()
-```
+## Define the functions
 
 We first start by defining the `Generate()` function. The only argument accepted by this function is `condition`, which will always be a *single row from the Design data.frame object*. Conditions are run sequentially from row 1 to the last row in `Design`.
 
@@ -83,8 +87,7 @@ Analyse <- function(simlist, condition){
 
     welch <- try(t.test(DV ~ group, dat), silent=TRUE)
     ind <- try(t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
-    check_error(welch)
-    check_error(ind)
+    check_error(welch, ind)
 
     ret <- c(welch=welch$p.value, independent=ind$p.value)
     return(ret)
@@ -122,6 +125,9 @@ Final <- runSimulation(design = Design, replications = 2, verbose = FALSE,
 
 ## Analyse the results
 
+Usually it is a good idea to split up analyses into Type I error and power data. More specifically, power rates really should only be interpreted when the Type I errors are well behaved (liberal detection rates naturally will result in more powerful tests, while conservative detection rates will induce lower power).
+
+
 ```{r}
 TypeI <- subset(Final, mean_difference == 0)
 Power <- subset(Final, mean_difference != 0)
@@ -129,6 +135,12 @@ Power <- subset(Final, mean_difference != 0)
 
 
 # Simulation 2: Properties of estimators
+
+Description
+
+## Define the functions
+
+Something...
 
 ```{r}
 

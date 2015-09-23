@@ -2,12 +2,12 @@
 % Please edit documentation in R/util.R
 \name{check_error}
 \alias{check_error}
-\title{Check if object contains and error and stop flow}
+\title{Check if object contains an error and stop flow}
 \usage{
-check_error(object)
+check_error(...)
 }
 \arguments{
-\item{object}{an object that has been returned from a \code{\link{try}} call}
+\item{...}{objects that have been returned from a \code{\link{try}} call}
 }
 \description{
 Check if the supplied object, which has previously been wrapped in a \code{\link{try}} function,
@@ -24,6 +24,9 @@ check_error(res) # no error thrown
 res <- try(fun('this'), silent = TRUE)
 check_error(res) # throws error
 
+# multiple error check
+res2 <- try(fun('that'), silent = TRUE)
+check_error(res, res2)
 }
 }
 
