@@ -6,7 +6,7 @@
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
   parallel = FALSE, MPI = FALSE, save = FALSE, save_every = 1,
-  clean = TRUE, compname = Sys.info()["nodename"],
+  clean = TRUE, seed = NULL, compname = Sys.info()["nodename"],
   filename = paste0(compname, "_Final_", replications, ".rds"),
   tmpfilename = paste0(compname, "_tmpsim.rds"), main = NULL,
   ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
@@ -45,6 +45,11 @@ runSimulation(design, replications, generate, analyse, summarise,
 
 \item{clean}{logical; remove any temp files that are created after the simulation is complete?
   Default is TRUE}
+
+\item{seed}{a vector of integers to be used for reproducability. The length of the vector must be
+  equal to the number of rows in \code{design}. This calls \code{\link{set.seed}} or
+  \code{\link{clusterSetRNGStream}}, respectively, but will not be run when \code{MPI = TRUE}.
+  Default is NULL, indicating that no seed is set}
 
 \item{compname}{name of the computer running the simulation. Normally this doesn't need to be modified,
   but in the event that a node breaks down while running a simulation the results from the tmp files

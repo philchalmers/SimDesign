@@ -121,6 +121,11 @@
 #'   own code for debugging at specific lines (note: parallel computation flags will
 #'   automatically be disabled when this is detected)
 #'
+#' @param seed a vector of integers to be used for reproducability. The length of the vector must be
+#'   equal to the number of rows in \code{design}. This calls \code{\link{set.seed}} or
+#'   \code{\link{clusterSetRNGStream}}, respectively, but will not be run when \code{MPI = TRUE}.
+#'   Default is NULL, indicating that no seed is set
+#'
 #' @param verbose logical; print messages to the R console?
 #'
 #' @aliases runSimulation
@@ -280,7 +285,7 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           parallel = FALSE, MPI = FALSE,
-                          save = FALSE, save_every = 1, clean = TRUE,
+                          save = FALSE, save_every = 1, clean = TRUE, seed = NULL,
                           compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', replications, '.rds'),
                           tmpfilename = paste0(compname, '_tmpsim.rds'), main = NULL,
@@ -290,6 +295,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise, main=main)
     stopifnot(!missing(design))
     stopifnot(!missing(replications))
+    if(!is.null(seed)) stopifnot(nrow(design) == length(seed))
     FunNames <- names(Functions)
     edit <- tolower(edit)
     if(is.null(main)) Functions$main <- SimDesign::main
@@ -353,7 +359,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                             as.list(Analysis(Functions=Functions,
                                                              condition=design[i,],
                                                              replications=replications,
-                                                             cl=cl, MPI=MPI))))
+                                                             cl=cl, MPI=MPI, seed=seed))))
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
         if(!(length(unique(sapply(Result_list, length))) %in% c(1L, 2L)))

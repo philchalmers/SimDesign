@@ -6,11 +6,12 @@
 # @param cl cluster object defined from the parallel package
 # @param MPI logical; flag passed down from the runSimulation function
 #
-Analysis <- function(Functions, condition, replications, cl, MPI)
+Analysis <- function(Functions, condition, replications, cl, MPI, seed)
 {
     # This defines the workflow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
     if(is.null(cl)){
+        if(!is.null(seed)) set.seed(seed[condition$ID])
         cell_results <- lapply(1L:replications, Functions$main, condition=condition,
                                generate=Functions$generate,
                                analyse=Functions$analyse)
@@ -21,6 +22,7 @@ Analysis <- function(Functions, condition, replications, cl, MPI)
                 Functions$main(i, condition=condition, generate=Functions$generate,
                                analyse=Functions$analyse)
         } else {
+            if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
             cell_results <- parallel::parLapply(cl, 1L:replications, Functions$main, condition=condition,
                                                 generate=Functions$generate, analyse=Functions$analyse)
         }
