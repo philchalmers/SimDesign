@@ -1,0 +1,396 @@
+%\VignetteIndexEntry{simTool}
+%\VignetteEngine{knitr::knitr}
+---
+title: "SimDesign"
+author: "Phil Chalmers"
+date: "September 22, 2015"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+# Introduction
+
+```{r, include=FALSE}
+EVAL <- FALSE
+```
+
+Designing Monte Carlo simulations can be a fun and rewarding experiance. Whether you are interested in
+evaluating the performance of a new optimizer or model, re-evaluating previous reseach claims (like the 
+ANOVA is 'robust' to violation of normality), determing power rates for an upcoming research proposal, 
+or simply to appeas a strange thought in your head about a new statistical idea you heard about, 
+Monte Carlo simulations can be incredibly rewarding. However, organizing them can be a challange, and 
+all to often people resourt to the dreaded for loop-nesting, *for*-ever resulting in confusing and error 
+prone code. The package `SimDesign` is one attempt to fix this issue.
+
+Monte Carlo simulations can be broken into three major steps:
+
+- **generate** your data from some model given some **design** conditions to be studied (e.g., sample size,
+distributions, group sizes, etc),
+- **analyse** the generated data using whatever statistical analyses you are interested in (e.g., t-test,
+ANOVA, SEMs, IRT, etc), and collect the statistics or estimates you are interested in, and
+- **summarise** the results after repeating the simulations $R$ number of times.
+
+Each bolded term above represents the essential compenents in the `SimDesign` package, where **design** 
+represents a `data.frame` object containing the simulation conditions to be investigated, and **generate**,
+**analyse**, and **summarise** represent user defined functions which comprise the steps in the simulation.
+Each of these components are constructed and passed to the `runSimulation()` function where the simulation 
+steps are evaluated.
+
+```{r include=FALSE}
+options(digits = 2)
+```
+
+After loading the `SimDesign` package, we begin by defining the required functions. To expidit this process,
+a call to `SimDesign_functions()` will create a template to be filled in, where all the necessary functional arguments have been pre-assigned. The documentation of each argument can be found in the respective 
+R help files, however there organization is very simple conceptually:
+
+To begin, the follwing code should be copied and saved to an external source (i.e., text) file.
+
+```{r}
+library(SimDesign)
+SimDesign_functions()
+```
+
+# Simulation 1: Determine estimator efficiency
+
+*Question*: How does trimming affect recovring the mean of a distribution? Investigate this using
+different sample size and distribution configurations. Also demonstrate the effect of using the 
+median to recover the mean.
+
+### Define the conditions
+
+First, define the condition combinations that should be investigated. In this case we wish to study
+4 different sample sizes, and use a symmetric and skewed distribution. The use of `expand.grid()` is
+extremly helpful here to create a completely crossed-design for each combination (there are 8 in total).
+
+```{r}
+sample_sizes <- c(30, 60, 120, 240)
+distributions <- c('normal', 'skewed')
+Design <- expand.grid(sample_size = sample_sizes, 
+                      distribution = distributions)
+```
+
+Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where $N=30$ and the distribution should be normal. 
+
+### Define the functions
+
+We first start by defining the `generate` component. The only argument accepted by this function is `condition`, which will always be a *single row from the Design data.frame object* and will
+be of class `data.frame`. Conditions are run sequentially from row 1 to the last row in `Design`.
+
+```{r}
+Generate <- function(condition) {
+    N <- condition$sample_size
+    dist <- condition$distribution
+    if(dist == 'normal'){
+        dat <- rnorm(N, mean = 3)
+    } else if(dist == 'skewed'){
+        dat <- rchisq(N, df = 3)
+    }
+    return(dat)
+}
+```
+
+As we can see from above, `Generate()` will return a numeric vector of length $N$ containing the data to
+be analysed each with a population mean of 3 (because a $\chi^2$ distribution has a mean equal to its df).
+Next, we define the `analyse` component to analyse said data:
+
+```{r}
+Analyse <- function(dat, parameters, condition) {
+    M0 <- mean(dat)
+    M1 <- mean(dat, trim = .1)
+    M2 <- mean(dat, trim = .2)
+    med <- median(dat)
+    
+    ret <- c(mean_no_trim=M0, mean_trim.1=M1, mean_trim.2=M2, median=med)
+    return(ret)
+}
+```
+
+This function accepts the data previously returned from `Generate()` (`dat`), the condtions vector previously
+mentioned, and an additional (optional) list of `parameters` that may have been defined in `Generate()`. In 
+this case `Generate()` only returned a single object, therefore `parameters` will simple be a `NULL` element.
+
+At this point, we may conceptually think of the first two functions as being run $R$ different times to obtain
+$R$ sets of results. In other words, if we wanted the number of replications to be 100, the first two functions
+would be independetly run 100 times, the results from `Analyse()` would be stored somewhere, and we would 
+somehow need to summarise these 100 elements into meaninful meta statistics. This is where computing statistcs
+such as bias, root mean-square error, detection rates, and so on are of primary importance. This is the purpose
+of the `summarise` component:
+
+```{r}
+Summarise <- function(results, parameters_list, condition) {
+    obt_bias <- apply(results, 2, bias, population = 3)
+    obt_RMSE <- apply(results, 2, RMSE, population = 3)
+    
+    ret <- c(bias=obt_bias, RMSE=obt_RMSE)
+    return(ret)
+}
+```
+
+Again, `condition` is the same as was defined before, `parameters_list` is a list of (optional) parameters
+that may have been defined in `Generate()` (here it is just `NULL`), and finally `results` which is a `matrix`
+containing all the results from `Analyse()` where each row represents the result returned from each respective
+replication and the number of columns is equal to the length of the vector returned by `Analyse()`. 
+
+That sounds much more complicated than it is --- all you really need for this simulation 
+is the $R$ x 4 matrix `results` to build a suitable summary. Because the results is a matrix, the `apply()` 
+function is useful to apply a function over each respective row. The bias and RMSE are obtained for each
+respective statistic, and the overall result is returned as a vector.
+
+Stopping for a moment and thinking now, each `condition` will be paired with a unqiue vector returned from
+`Summarise()`. Therefore, you might be thinking that the result returned from the simulation will be in
+a rectanular form, such as in a `matrix` or `data.frame`. 
+Well, you'd be right --- good on you for thinking.
+
+### Putting it all together
+
+The last stage of the `SimDesign` workflow is to pass the four defined objects to the `runSimulation()` 
+function which, unsurprisingly, runs the simulation. There are numerous options avaialable in the 
+function, and these should be investigated by reading the `help(runSimulation)` file. Options for 
+performing simulations in parallel, storing/resuming temporary results, debugging functions,
+and so on are available. Below we simply request that each condition be run 1000 times on a 
+single processor, and finally store the results to an object called `results`.
+
+```{r, cache=TRUE, eval=EVAL}
+results <- runSimulation(Design, replications = 1000, 
+    generate=Generate, analyse=Analyse, summarise=Summarise)
+results
+```
+
+As can be seen from the printed results, each result from the `Summary()` function has been paired with the 
+respective conditions, statistics have been properly named, and two additional columns have been appended
+to the results: `N_CELL_RUNS`, which indicates how many time the conditions were performed (in this case 1000 times each because there were no errors thrown which would require re-estimation), and `SIM_TIME` indicating
+the time (in seconds) it took to completely finish the respective conditions.
+
+### Interpret the results
+
+In this case visually inspecting the simulation table is enough to understand what is occuring, though for
+other Monte Carlo simulations use of ANOVAs, marginalized tables, and graphics should be used to capture the
+essentially phenomomenon in the results. Monte Carlo simulations are just like collecting data for exeriments,
+so be an analyst and present your data as though it were data collected from the real world. 
+
+In this particular simulation, it is readily clear that using the un-adjusted mean will adequetly recover
+the population mean with little bias. The pricesion also seems to increase as sample sizes increase, which 
+is indicated by the decreasing RMSE statistics. Generally, trimming causes less efficieny in the estimates,
+where greater amounts of trimming result in even less efficiency, and using the median as a proxy to estimate
+the mean is the least effective method. This can be seen rather clearly in the following table, which 
+prints the relative efficiency of the estimators:
+
+```{r eval=EVAL}
+RMSEs <- results[,grepl('RMSE\\.', colnames(results))]
+data.frame(Design, RE(RMSEs))
+```
+
+Finally, when the $\chi^2$ distribution was investigated only the un-adjusted mean accuratly portrayed the
+population mean. This isn't surprising, because the trimmed mean is after all making inferences about the 
+population trimmed mean, and the median is making inferences about, well, the median. Only when the
+distributions under investigation are symmetric will the statitics be able to make the same inferences about
+the mean of the population.
+
+# Debugging/editing, and passing further arguments to runSimulation()
+
+Something
+
+# Simulation 2: Type I error rates and Power rates
+
+Describe simulation scenerio TODO
+
+### Define conditions
+
+First, define the condition combinations that should be investigated. In this case we know that the size and ratio of the sample sizes within each group, as well as the respective group standard deviations, will influence the detection rates of the independent t-test. Here we study define three different sample sizes and standard deviations, and investigate their effect when completely crossed.
+
+```{r conditions}
+sample_sizes <- c(10, 20, 50, 100)
+standard_deviation_ratios <- c(1, 4, 8)
+mean_difference <- c(0, 0.5)
+
+Design <- expand.grid(sample_size_group1=sample_sizes,
+                      sample_size_group2=sample_sizes,
+                      standard_deviation_ratio=standard_deviation_ratios,
+                      mean_difference=mean_difference)
+dim(Design)
+head(Design, 3)
+tail(Design, 3)
+```
+
+Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where both broups have a sample size of 10 and the ratio of the standard devitions are 1 (i.e., they are exactly equal) and there is no mean difference between the groups. Analysing rows with no mean difference will give us an idea of the Type I error rates. The last condition on row 96 indicates that both groups have sample sizes of 100 but that one of the standard deviations is 8 times larger than the other and a mean difference of 0.5. Which group is larger in both the standard deviation and mean will be defined in the `Generate()` function. 
+
+### Define the functions
+
+
+
+```{r}
+Generate <- function(condition){
+ 
+    N1 <- condition$sample_size_group1
+    N2 <- condition$sample_size_group2
+    sd <- condition$standard_deviation_ratio
+    md <- condition$mean_difference
+    
+    group1 <- rnorm(N1)
+    group2 <- rnorm(N2, mean=md, sd=sd)
+    dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
+    
+    return(dat)
+}
+```
+
+The `Generate()` function defined above first extracts the elements from `condition` for less verbose
+ease of use, generates data for two groups using random normal draws, and returns a data.frame object 
+containing the dependent variable and grouping information. 
+
+```{r}
+Analyse <- function(dat, parameters, condition){
+    
+    require(stats)
+
+    welch <- try(t.test(DV ~ group, dat), silent=TRUE)
+    ind <- try(t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
+    check_error(welch, ind)
+
+    ret <- c(welch=welch$p.value, independent=ind$p.value)
+    return(ret)
+}
+```
+
+The `Analyse()` defintion performs a Welch and independent t-test on the data generated from `Generate()`, checks whether any errors occured during the calls to the estimation functions, and extracts and returns the respective p-values for each statistical analysis.
+
+Finally, after the number of replications defined in `replications` has been completed a matrix (or list, if the output of `Analyse()` were a list instead of a vector) the overall results should be summerised into suitable meta-descriptions of the behavior. This is accomplished with the `Summerise()` function.
+
+```{r}
+Summarise <- function(results, parameters_list, condition){
+    
+    nms <- c('welch', 'independent')
+    lessthan.05 <- EDR(results[,nms], alpha = .05)
+    
+    ret <- c(lessthan.05=lessthan.05)
+    return(ret)
+}
+```
+
+In the above function, the `results` input is a matrix of size `replications` by 2 containing the respective 
+p-values returned from `Analyse()` across the desired number of replications. It is here where empirical 
+detection rates can be determined, and a convinience function `EDR()` is avaialbe for just this purpose. Each column in the supplied matrix of p-values is checked to see whether it is less that $\alpha = .05$, and the
+average number of times this occurs is returned as a vector of length 2. Names are preserved in the `EDR()` 
+function, therefore it is clear which element represents the Welch and Independent t-test rates.
+
+
+### Run the simulation
+
+```{r cache=TRUE, eval=EVAL}
+Final <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
+                       generate = Generate, analyse = Analyse, summarise = Summarise)
+```
+
+### Analyse the results
+
+Usually it is a good idea to split up analyses into Type I error and power data. More specifically, power rates really should only be interpreted when the Type I errors are well behaved (liberal detection rates naturally will result in more powerful tests, while conservative detection rates will induce lower power).
+
+
+```{r eval=EVAL}
+TypeI <- subset(Final, mean_difference == 0)
+Power <- subset(Final, mean_difference != 0)
+```
+
+# Simulation 3: Comparing two estimators
+
+Description
+
+### Define conditions
+
+```{r}
+sample_sizes <- c(100, 250, 500, 1000)
+test_length <- c(10, 20, 30)
+Design <- expand.grid(sample_size=sample_sizes, test_length=test_length)
+
+# save extra verbose information in an external file, and read it in later
+set.seed(1234)
+aux_info <- vector('list', 3)
+names(aux_info) <- test_length
+for(i in 1:3)
+    aux_info[[i]] <- list(a = round(rlnorm(test_length[i], .2, .3), 2), 
+                          d = round(rnorm(test_length[i], 0, .5), 2))
+aux_info
+saveRDS(aux_info, 'parameters.rds')
+```
+
+### Define the functions
+
+Something...
+
+```{r}
+Generate <- function(condition) {
+    
+    library(mirt) #for simdata() function
+    nitems <- as.character(condition$test_length)
+    N <- condition$sample_size
+        
+    #source in for convience (otherwise, these could be manually define in the source code)
+    parameters <- readRDS('parameters.rds')
+    a <- matrix(parameters[[nitems]]$a)
+    d <- matrix(parameters[[nitems]]$d)
+    
+    dat <- as.data.frame(simdata(a=a, d=d, N=N, itemtype = 'dich'))
+    return(dat)
+}
+
+Analyse <- function(dat, parameters, condition) {
+    
+    library(mirt)
+    library(lavaan)
+    nitems <- condition$test_length
+    
+    mod <- try(mirt(dat, 1L, verbose=FALSE), silent=TRUE)
+    if(mod@converge != 1) stop('did not converge')
+    cfs <- coef(mod, simplify = TRUE, digits = Inf)
+    FIML_as <- cfs$items[,1L]
+    FIML_ds <- cfs$items[,2L]
+    
+    lavmod <- paste0('F =~ ', paste0('NA*', colnames(dat)[1L], ' + '), 
+                     paste0(colnames(dat)[-1L], collapse = ' + '),
+                     '\nF ~~ 1*F')
+    lmod <- try(sem(lavmod, dat, ordered = colnames(dat)))
+    cfs2 <- coef(lmod) * 1.702 # scaling adjustment
+    DWLS_as <- cfs2[1L:nitems]
+    DWLS_ds <- -1 * cfs2[(1L:nitems) + nitems]
+
+    return(c(FIML_as=unname(FIML_as), FIML_ds=unname(FIML_ds), 
+             DWLS_as=unname(DWLS_as), DWLS_ds=unname(DWLS_ds)))
+}
+
+Summarise <- function(results, parameters_list, condition) {
+    
+    parameters <- readRDS('parameters.rds')
+    nitems <- as.character(condition$test_length)
+    pop_as <- matrix(parameters[[nitems]]$a)
+    pop_ds <- matrix(parameters[[nitems]]$d)
+    pop <- c(pop_as, pop_ds, pop_as, pop_ds)
+    
+    index <- 1:ncol(results)
+    
+    obt_bias <- sapply(index, function(ind, obs, pop) bias(obs[,ind], pop[ind]),
+                       obs = results, pop = pop)
+    obt_RMSE <- sapply(index, function(ind, obs, pop) RMSE(obs[,ind], pop[ind]),
+                       obs = results, pop = pop)
+    names(obt_bias) <- names(obt_RMSE) <- colnames(results)
+    
+    ret <- c(bias=obt_bias, RMSE=obt_RMSE)
+    return(ret)
+}
+```
+
+
+```{r cache=TRUE, eval=EVAL}
+res10 <- runSimulation(subset(Design, test_length == 10), replications = 100, verbose = FALSE,
+                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
+res20 <- runSimulation(subset(Design, test_length == 20), replications = 100, verbose = FALSE,
+                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
+res30 <- runSimulation(subset(Design, test_length == 30), replications = 100, verbose = FALSE,
+                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
+```
+
+```{r, include=FALSE}
+system('rm parameters.rds')
+```

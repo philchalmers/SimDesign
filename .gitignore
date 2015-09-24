@@ -1,5 +1,6 @@
 .Rproj.user
 .Rhistory
 .RData
-inst/doc/SimDesign_cache/
+inst/doc/*_cache/
+inst/doc/*_files/
 inst/doc/*.html
