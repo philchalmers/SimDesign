@@ -46,8 +46,10 @@ runSimulation(design, replications, generate, analyse, summarise,
 \item{clean}{logical; remove any temp files that are created after the simulation is complete?
   Default is TRUE}
 
-\item{seed}{a vector of integers to be used for reproducability. The length of the vector must be
-  equal to the number of rows in \code{design}. This calls \code{\link{set.seed}} or
+\item{seed}{a vector of integers (or single number)
+  to be used for reproducability. The length of the vector must be
+  equal to either 1 or the number of rows in \code{design}; if 1, this will be repeated for each
+  condition. This argument calls \code{\link{set.seed}} or
   \code{\link{clusterSetRNGStream}}, respectively, but will not be run when \code{MPI = TRUE}.
   Default is NULL, indicating that no seed is set}
 
