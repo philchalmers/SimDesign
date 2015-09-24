@@ -192,6 +192,8 @@ the mean of the population.
 
 # Debugging/editing, and passing further arguments to runSimulation()
 
+Talk about debugging, and how the package makes debugging really easy.
+
 ### Debugging with the `edit` argument
 
 ### Debugging with `browser()`
