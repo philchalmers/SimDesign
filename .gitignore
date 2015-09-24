@@ -2,3 +2,4 @@
 .Rhistory
 .RData
 inst/doc/SimDesign_cache/
+inst/doc/*.html
