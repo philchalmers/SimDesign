@@ -1,4 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 README.md
-vignettes/SimDesign_cache/
+inst/doc/SimDesign_cache/
+inst/doc/*.Rmd
