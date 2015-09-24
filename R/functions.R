@@ -3,10 +3,11 @@
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #'
-#' @return returns a list with a 'dat' and 'parameters' element.  The 'dat' element should be
-#'   the observed data object (i.e., a vector, matrix, or data.frame), and the 'parameters'
-#'   element should be a named list containing the simulated parameters (if there are any. Otherwise,
-#'   this could just be an empty list)
+#' @return returns a single object containing the data to be analysed (usually a vector, matrix, or data.frame),
+#'   or a list with a \code{'dat'} and \code{'parameters'} element. If a list is returned, the \code{'dat'}
+#'   element should be the observed data object while the
+#'   \code{'parameters'} element should be a named list containing the simulated parameters
+#'   (if there are any. Otherwise, this could just be an empty list)
 #'
 #' @aliases generate
 #'
@@ -26,6 +27,7 @@
 #'     dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
 #'     pars <- list(random_number = rnorm(1)) # just a silly example of a simulated parameter
 #'
+#'     #could just use return(dat) if no parameters should be tracked
 #'     return(list(dat=dat, parameters=pars))
 #' }
 #'
@@ -48,8 +50,9 @@ generate <- function(condition) NULL
 #' to obtain a different dataset.
 #'
 #' @param dat the 'dat' object returned from the \code{\link{generate}} function (usually a data.frame, matrix,
-#'   or vector)
-#' @param parameters the list object named 'parameters' returned from the \code{\link{generate}} function
+#'   or vector) if a list was returned, otherwise just the raw object defined from \code{\link{generate}}
+#' @param parameters the (optional) list object named 'parameters' returned from the
+#'   \code{\link{generate}} function when a list is returned. Otherwise, this will be an empty list
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #'
@@ -100,8 +103,9 @@ analyse <- function(dat, parameters, condition) NULL
 #' @param results a data.frame (if \code{analyse} returned a numeric vector) or a list (if
 #'   \code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
 #'   where each cell is stored in a unique row/list element
-#' @param parameters_list a list containing all the 'parameters' elements generated from \code{\link{generate}},
-#'   where each repetition is stored in a unique element
+#' @param parameters_list an (optional) list containing all the 'parameters' elements generated
+#'   from \code{\link{generate}},  where each repetition is stored in a unique element. If a list was
+#'   not returned from \code{\link{generate}} then this will be NULL
 #' @param condition a single row from the \code{design} input from \code{\link{runSimulation}}
 #'   (as a data.frame), indicating the simulation conditions
 #'
@@ -170,14 +174,17 @@ summarise <- function(results, parameters_list, condition) NULL
 #' }
 main <- function(index, condition, generate, analyse){
 
+    require('SimDesign') #this is required if SimDesign functions are called
     count <- 0L
 
     while(TRUE){
 
         count <- count + 1L
         simlist <- generate(condition=condition)
-        if(!is.list(simlist) || !all(names(simlist) %in% c('dat', 'parameters')))
-            stop('generate() did not return a list with elements dat and parameters', call.=FALSE)
+        if(is.data.frame(simlist) || !is.list(simlist)) simlist <- list(dat=simlist)
+        if(length(names(simlist)) > 1L)
+            if(!all(names(simlist) %in% c('dat', 'parameters')))
+            stop('generate() did not return a list with elements \'dat\' and \'parameters\'', call.=FALSE)
         res <- try(analyse(dat=simlist$dat, parameters=simlist$parameters, condition=condition), silent=TRUE)
 
         # if an error was detected in compute(), try again

@@ -7,10 +7,11 @@
 RE(RMSEs)
 }
 \arguments{
-\item{RMSEs}{a vector of mean square error values (see \code{\link{RMSE}})}
+\item{RMSEs}{a vector or matrix of mean square error values (see \code{\link{RMSE}}), where the first
+ element/row will be used as the reference}
 }
 \value{
-returns a vector of ratios indicating the relative efficiency compared to the first
+returns a vector/matrix of ratios indicating the relative efficiency compared to the first
   estimator (which by default will be equal to 1). Values less than 1 indicate worse efficiency, while
   values greater than 1 indicate better efficiency
 }

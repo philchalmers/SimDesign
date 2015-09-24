@@ -29,7 +29,7 @@ Analysis <- function(Functions, condition, replications, cl, MPI)
     results <- lapply(cell_results, function(x) x$result)
     if(!is.null(cell_results[[1L]]$parameters))
         parameters <- lapply(cell_results, function(x) x$parameters)
-    else parameters <- list()
+    else parameters <- NULL
 
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
     if(!is.list(results[[1L]])){
@@ -41,7 +41,7 @@ Analysis <- function(Functions, condition, replications, cl, MPI)
         for(i in 1:length(results))
             results[[i]]$n_cell_runs <- NULL
     }
-    sim_results <- Functions$summarise(results=results, parameters=parameters,
+    sim_results <- Functions$summarise(results=results, parameters_list=parameters,
                            condition=condition)
 
     if(!is.vector(sim_results)) stop('summarise() must return a vector', call.=FALSE)

@@ -173,9 +173,8 @@ Generate <- function(condition){
     group1 <- rnorm(N1)
     group2 <- rnorm(N2, sd=sd)
     dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
-    pars <- list(random_number = rnorm(1)) # just a silly example of a simulated parameter
 
-    return(list(dat=dat, parameters=pars))
+    return(dat)
 }
 
 # help(analyse)
@@ -204,19 +203,12 @@ Analyse <- function(dat, parameters, condition){
 
 Summarise <- function(results, parameters_list, condition){
 
-    # silly test for bias and RMSE of a random number from 0
-    pop_value <- 0
-    bias.random_number <- bias(sapply(parameters_list, function(x) x$random_number), pop_value)
-    RMSE.random_number <- RMSE(sapply(parameters_list, function(x) x$random_number), pop_value)
-
-    #find results of interest here (alpha < .1, .05, .01)
+    #find results of interest here (e.g., alpha < .1, .05, .01)
     nms <- c('welch', 'independent')
     lessthan.05 <- EDR(results[,nms], alpha = .05)
 
     # return the results that will be appended to the design input
-    ret <- c(bias.random_number=bias.random_number,
-             RMSE.random_number=RMSE.random_number,
-             lessthan.05=lessthan.05)
+    ret <- c(lessthan.05=lessthan.05)
     return(ret)
 }
 

@@ -26,7 +26,7 @@ SimDesign_functions <- function(main = FALSE){
     cat('Analyse <- function(dat, parameters, condition) {')
     cat('\n    # Run statistical analyses of interest ... \n\n    return(numeric())    # alternatively, return(list())\n}')
     cat('\n\n')
-    cat('Summarise <- function(results, parameters, condition) {')
+    cat('Summarise <- function(results, parameters_list, condition) {')
     cat('\n    # Summarise the simulation results ...\n\n    return(numeric())\n}')
 
     if(main){

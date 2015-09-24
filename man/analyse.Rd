@@ -8,9 +8,10 @@ analyse(dat, parameters, condition)
 }
 \arguments{
 \item{dat}{the 'dat' object returned from the \code{\link{generate}} function (usually a data.frame, matrix,
-or vector)}
+or vector) if a list was returned, otherwise just the raw object defined from \code{\link{generate}}}
 
-\item{parameters}{the list object named 'parameters' returned from the \code{\link{generate}} function}
+\item{parameters}{the (optional) list object named 'parameters' returned from the
+\code{\link{generate}} function when a list is returned. Otherwise, this will be an empty list}
 
 \item{condition}{a single row from the design input (as a data.frame), indicating the
   simulation conditions}

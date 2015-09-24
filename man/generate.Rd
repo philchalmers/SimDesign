@@ -11,10 +11,11 @@ generate(condition)
   simulation conditions}
 }
 \value{
-returns a list with a 'dat' and 'parameters' element.  The 'dat' element should be
-  the observed data object (i.e., a vector, matrix, or data.frame), and the 'parameters'
-  element should be a named list containing the simulated parameters (if there are any. Otherwise,
-  this could just be an empty list)
+returns a single object containing the data to be analysed (usually a vector, matrix, or data.frame),
+  or a list with a \code{'dat'} and \code{'parameters'} element. If a list is returned, the \code{'dat'}
+  element should be the observed data object while the
+  \code{'parameters'} element should be a named list containing the simulated parameters
+  (if there are any. Otherwise, this could just be an empty list)
 }
 \description{
 Generate data
@@ -35,6 +36,7 @@ mygenerate <- function(condition){
     dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
     pars <- list(random_number = rnorm(1)) # just a silly example of a simulated parameter
 
+    #could just use return(dat) if no parameters should be tracked
     return(list(dat=dat, parameters=pars))
 }
 

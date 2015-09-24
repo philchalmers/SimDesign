@@ -12,12 +12,16 @@ output:
 
 # Introduction
 
+```{r, include=FALSE}
+EVAL <- FALSE
+```
 
 Intro stub describing general workflow.
 
 
 ```{r}
 library(SimDesign)
+options(digits = 2)
 ```
 
 To begin defining the required function, a quick call to `SimDesign_functions()` will create a template to be
@@ -35,7 +39,7 @@ Something
 
 Describe simulation scenerio TODO
 
-## Define conditions
+### Define conditions
 
 First, define the condition combinations that should be investigated. In this case we know that the size and ratio of the sample sizes within each group, as well as the respective group standard deviations, will influence the detection rates of the independent t-test. Here we study define three different sample sizes and standard deviations, and investigate their effect when completely crossed.
 
@@ -55,7 +59,7 @@ tail(Design, 3)
 
 Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where both broups have a sample size of 10 and the ratio of the standard devitions are 1 (i.e., they are exactly equal) and there is no mean difference between the groups. Analysing rows with no mean difference will give us an idea of the Type I error rates. The last condition on row 96 indicates that both groups have sample sizes of 100 but that one of the standard deviations is 8 times larger than the other and a mean difference of 0.5. Which group is larger in both the standard deviation and mean will be defined in the `Generate()` function. 
 
-## Define the functions
+### Define the functions
 
 We first start by defining the `Generate()` function. The only argument accepted by this function is `condition`, which will always be a *single row from the Design data.frame object*. Conditions are run sequentially from row 1 to the last row in `Design`.
 
@@ -71,7 +75,7 @@ Generate <- function(condition){
     group2 <- rnorm(N2, mean=md, sd=sd)
     dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
     
-    return(list(dat=dat, parameters=list()))
+    return(dat)
 }
 ```
 
@@ -115,36 +119,85 @@ average number of times this occurs is returned as a vector of length 2. Names a
 function, therefore it is clear which element represents the Welch and Independent t-test rates.
 
 
-## Run the simulation
+### Run the simulation
 
-```{r cache=TRUE, eval=TRUE}
-Final <- runSimulation(design = Design, replications = 1000, verbose = TRUE, parallel = FALSE,
+```{r cache=TRUE, eval=EVAL}
+Final <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
                        generate = Generate, analyse = Analyse, summarise = Summarise)
 ```
 
-## Analyse the results
+### Analyse the results
 
 Usually it is a good idea to split up analyses into Type I error and power data. More specifically, power rates really should only be interpreted when the Type I errors are well behaved (liberal detection rates naturally will result in more powerful tests, while conservative detection rates will induce lower power).
 
 
-```{r eval=FALSE}
+```{r eval=EVAL}
 TypeI <- subset(Final, mean_difference == 0)
 Power <- subset(Final, mean_difference != 0)
 ```
 
 # Simulation 2: Determine estimator efficiency
 
+Determine the effect of trimming on how efficient the mean can be recovered. Also demonstrate the effect
+of using the median to recover the mean.
 
-## Define conditions
+### Define conditions
 
-Stuff
+```{r}
+sample_sizes <- c(30, 60, 120, 240)
+distributions <- c('normal', 'skewed')
+Design <- expand.grid(sample_size=sample_sizes, distribution=distributions)
+```
+
+### Define functions
+
+```{r}
+Generate <- function(condition) {
+    N <- condition$sample_size
+    if(condition$distribution == 'normal'){
+        dat <- rnorm(N, 3)
+    } else if(condition$distribution == 'skewed'){
+        dat <- rchisq(N, df=3)
+    }
+    return(dat)
+}
+
+Analyse <- function(dat, parameters, condition) {
+    M0 <- mean(dat)
+    M1 <- mean(dat, trim = .1)
+    M2 <- mean(dat, trim = .2)
+    med <- median(dat)
+    
+    ret <- c(mean_no_trim=M0, mean_trim.1=M1, mean_trim.2=M2, median=med)
+    return(ret)
+}
+
+Summarise <- function(results, parameters_list, condition) {
+    obt_bias <- apply(results, 2, bias, population = 3)
+    obt_RMSE <- apply(results, 2, RMSE, population = 3)
+    
+    ret <- c(bias=obt_bias, RMSE=obt_RMSE)
+    return(ret)
+}
+```
+
+```{r, cache=TRUE, eval=EVAL}
+results <- runSimulation(Design, replications = 1000, 
+    generate=Generate, analyse=Analyse, summarise=Summarise)
+results
+```
+
+```{r eval=EVAL}
+RMSEs <- results[,grepl('RMSE\\.', colnames(results))]
+data.frame(Design, RE(RMSEs))
+```
 
 
 # Simulation 3: Comparing two estimators
 
 Description
 
-## Define conditions
+### Define conditions
 
 ```{r}
 sample_sizes <- c(100, 250, 500, 1000)
@@ -162,7 +215,7 @@ aux_info
 saveRDS(aux_info, 'parameters.rds')
 ```
 
-## Define the functions
+### Define the functions
 
 Something...
 
@@ -173,15 +226,13 @@ Generate <- function(condition) {
     nitems <- as.character(condition$test_length)
     N <- condition$sample_size
         
-    #source in
+    #source in for convience (otherwise, these could be manually define in the source code)
     parameters <- readRDS('parameters.rds')
     a <- matrix(parameters[[nitems]]$a)
     d <- matrix(parameters[[nitems]]$d)
     
     dat <- as.data.frame(simdata(a=a, d=d, N=N, itemtype = 'dich'))
-    parameters <- list(a=a, d=d)
-
-    return(list(dat=dat, parameters=parameters))
+    return(dat)
 }
 
 Analyse <- function(dat, parameters, condition) {
@@ -209,9 +260,10 @@ Analyse <- function(dat, parameters, condition) {
 
 Summarise <- function(results, parameters_list, condition) {
     
-    browser()
-    pop_as <- something
-    pop_ds <- something
+    parameters <- readRDS('parameters.rds')
+    nitems <- as.character(condition$test_length)
+    pop_as <- matrix(parameters[[nitems]]$a)
+    pop_ds <- matrix(parameters[[nitems]]$d)
     index <- 1:condition$test_length
     
     FIML_as <- do.call(rbind, lapply(results, function(x) x[['FIML_as']]))
@@ -245,11 +297,15 @@ Summarise <- function(results, parameters_list, condition) {
 ```
 
 
-```{r cache=TRUE, eval=FALSE}
+```{r cache=TRUE, eval=EVAL}
 res10 <- runSimulation(subset(Design, test_length == 10), replications = 1000, 
                        generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
 res20 <- runSimulation(subset(Design, test_length == 20), replications = 1000, 
                        generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
 res30 <- runSimulation(subset(Design, test_length == 30), replications = 1000, 
                        generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
+```
+
+```{r, include=FALSE}
+system('rm parameters.rds')
 ```

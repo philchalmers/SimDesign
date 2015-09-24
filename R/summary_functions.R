@@ -68,9 +68,10 @@ RMSE <- function(observed, population){
 #'
 #' Computes the relateive efficiency given the RMSE values for multiple estimators
 #'
-#' @param RMSEs a vector of mean square error values (see \code{\link{RMSE}})
+#' @param RMSEs a vector or matrix of mean square error values (see \code{\link{RMSE}}), where the first
+#'  element/row will be used as the reference
 #'
-#' @return returns a vector of ratios indicating the relative efficiency compared to the first
+#' @return returns a vector/matrix of ratios indicating the relative efficiency compared to the first
 #'   estimator (which by default will be equal to 1). Values less than 1 indicate worse efficiency, while
 #'   values greater than 1 indicate better efficiency
 #'
@@ -92,8 +93,9 @@ RMSE <- function(observed, population){
 #' }
 #'
 RE <- function(RMSEs){
-    stopifnot(is.vector(RMSEs))
-    RMSEs[1L] / RMSEs
+    if(!is.vector(RMSEs)){
+        RMSEs[,1L] / RMSEs
+    } else return(RMSEs[1L] / RMSEs)
 }
 
 

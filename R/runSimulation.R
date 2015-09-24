@@ -164,9 +164,8 @@
 #'     group1 <- rnorm(N1)
 #'     group2 <- rnorm(N2, sd=sd)
 #'     dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
-#'     pars <- list(random_number = rnorm(1)) # just a silly example of a simulated parameter
 #'
-#'     return(list(dat=dat, parameters=pars))
+#'     return(dat)
 #' }
 #'
 #' # help(analyse)
@@ -195,19 +194,12 @@
 #'
 #' Summarise <- function(results, parameters_list, condition){
 #'
-#'     # silly test for bias and RMSE of a random number from 0
-#'     pop_value <- 0
-#'     bias.random_number <- bias(sapply(parameters_list, function(x) x$random_number), pop_value)
-#'     RMSE.random_number <- RMSE(sapply(parameters_list, function(x) x$random_number), pop_value)
-#'
-#'     #find results of interest here (alpha < .1, .05, .01)
+#'     #find results of interest here (e.g., alpha < .1, .05, .01)
 #'     nms <- c('welch', 'independent')
 #'     lessthan.05 <- EDR(results[,nms], alpha = .05)
 #'
 #'     # return the results that will be appended to the design input
-#'     ret <- c(bias.random_number=bias.random_number,
-#'              RMSE.random_number=RMSE.random_number,
-#'              lessthan.05=lessthan.05)
+#'     ret <- c(lessthan.05=lessthan.05)
 #'     return(ret)
 #' }
 #'
@@ -299,6 +291,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     stopifnot(!missing(design))
     stopifnot(!missing(replications))
     FunNames <- names(Functions)
+    edit <- tolower(edit)
     if(is.null(main)) Functions$main <- SimDesign::main
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))
@@ -325,7 +318,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!is.na(save_every))
         if(save_every > nrow(design))
             warning('save_every is too large to be useful', call. = FALSE)
-    if(!(edit %in% c('none', 'sim', 'compute', 'main', 'collect')))
+    if(!(edit %in% c('none', 'analyse', 'generate', 'main', 'summarise')))
         stop('edit location is not valid', call. = FALSE)
     if(is.null(design$ID))
         design <- data.frame(ID=1L:nrow(design), design)
@@ -335,7 +328,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         on.exit(undebug(Functions[[edit]]))
     }
     cl <- NULL
-    if(parallel) cl <- parallel::makeCluster(ncores)
+    if(parallel){
+        cl <- parallel::makeCluster(ncores)
+        on.exit(parallel::stopCluster(cl))
+    }
     start <- 1L
     Result_list <- vector('list', nrow(design))
     names(Result_list) <- rownames(design)
@@ -389,6 +385,5 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         saveRDS(Final, filename)
     }
     if(clean) system(paste0('rm -f ', tmpfilename))
-    if(parallel) parallel::stopCluster(cl)
     return(invisible(Final))
 }

@@ -36,7 +36,7 @@ test_that('SimDesign', {
         ind <- try(stats::t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
 
         # check if error, and if so stop and return an 'error'. This will re-draw the data
-        if(is(welch, 'try-error')) stop('Welch error message')
+        check_error(welch)
         if(is(ind, 'try-error')) stop('Independent t-test error message')
 
         # In this function the p values for the t-tests are returned,

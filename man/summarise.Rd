@@ -11,8 +11,9 @@ summarise(results, parameters_list, condition)
 \code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
 where each cell is stored in a unique row/list element}
 
-\item{parameters_list}{a list containing all the 'parameters' elements generated from \code{\link{generate}},
-where each repetition is stored in a unique element}
+\item{parameters_list}{an (optional) list containing all the 'parameters' elements generated
+from \code{\link{generate}},  where each repetition is stored in a unique element. If a list was
+not returned from \code{\link{generate}} then this will be NULL}
 
 \item{condition}{a single row from the \code{design} input from \code{\link{runSimulation}}
   (as a data.frame), indicating the simulation conditions}
