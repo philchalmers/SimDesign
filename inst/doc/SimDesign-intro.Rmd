@@ -10,11 +10,12 @@ output:
     toc: yes
 ---
 
-# Introduction
-
-```{r, include=FALSE}
-EVAL <- FALSE
+```{r include=FALSE}
+options(digits = 3)
 ```
+
+
+# Introduction
 
 Designing Monte Carlo simulations can be a fun and rewarding experiance. Whether you are interested in
 evaluating the performance of a new optimizer or model, re-evaluating previous reseach claims (like the 

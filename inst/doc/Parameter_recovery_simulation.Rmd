@@ -10,22 +10,36 @@ output:
     toc: yes
 ---
 
+```{r include=FALSE}
+options(digits = 3)
+```
+
 # Simulation: Comparing two estimators and how effectively they recover population parameters
 
-Description of IRT versus SEM approach to item factor analysis.
+Item factor analysis (IFA) is a common method for determine the effectiveness and structure of items in
+psychological tests. Two approaches currently exist: full-information IFA via method from the item response
+theory framework, and limited-information IFA from the structural equation modeling framework. The question is,
+under which circumstances should either method be used? Here we explore a simple one factor test structure
+to determine which approach can recover the item parameters when varying test length and sample size.
 
 ### Define the conditions
 
+Start by defining the conditions to be studied. Because we are interested in a number of slopes and intercepts
+it is often convientent to save long strings of numbers to external files and read them in during the simulation.
+Naturally, these could be included in teh simulation source code directly, but often will take up a large amout
+of space (could be hundreds of lines). Because these are fixed and known a prior, writting these to an external
+file is a good stragegy.
+
 ```{r}
 sample_sizes <- c(100, 250, 500, 1000)
-test_length <- c(10, 20, 30)
+test_length <- c(10, 30)
 Design <- expand.grid(sample_size=sample_sizes, test_length=test_length)
 
 # save extra verbose information in an external file, and read it in later
 set.seed(1234)
-aux_info <- vector('list', 3)
+aux_info <- vector('list', 2)
 names(aux_info) <- test_length
-for(i in 1:3)
+for(i in 1:2)
     aux_info[[i]] <- list(a = round(rlnorm(test_length[i], .2, .3), 2), 
                           d = round(rnorm(test_length[i], 0, .5), 2))
 aux_info
@@ -34,7 +48,14 @@ saveRDS(aux_info, 'parameters.rds')
 
 ### Define the functions
 
-Something...
+As usual, define the functions of interest. Here we make sure that `lavaan` and `mirt` are loaded in when they
+are required by calling a suitable `library()` call to make their functions available (required when 
+running simulations in parallel).
+
+```{r}
+library(SimDesign)
+# SimDesign_functions()
+```
 
 ```{r}
 Generate <- function(condition) {
@@ -99,17 +120,175 @@ Summarise <- function(results, parameters_list, condition) {
 
 ### Run the simulation
 
-```{r cache=TRUE, eval=EVAL}
-res10 <- runSimulation(subset(Design, test_length == 10), replications = 1000, verbose = FALSE, 
-                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
-res20 <- runSimulation(subset(Design, test_length == 20), replications = 1000, verbose = FALSE, 
-                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
-res30 <- runSimulation(subset(Design, test_length == 30), replications = 1000, verbose = FALSE, 
+Because this simulation takes considerably longer it is recommended to pass the `save = TRUE` to temporarily
+save results in case of power outages. Results can be continuted by running the identical simulation code as the
+initial run, and the function will automatically detect whether any temp files are avialable and resume the 
+simulation at the previously saved location.
+
+```{r cache=TRUE}
+res10 <- runSimulation(subset(Design, test_length == 10), replications = 1000, verbose = FALSE, save = TRUE,
                        generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
 ```
 
-```{r, include=FALSE}
-system('rm parameters.rds')
+```{r cache=TRUE}
+res30 <- runSimulation(subset(Design, test_length == 30), replications = 1000, verbose = FALSE, save = TRUE,
+                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
 ```
 
 ### Analyze the results
+
+Sometimes, reshaping and indexing your output can be very helpful. Here we break the analysis into two parts,
+though other stragegies are certainly possible. Because analysing simulations is a lot like analysing empirical
+data no one stragegy may be the best; you have to use judgement.
+
+#### Ten items
+
+```{r}
+# bias in slopes
+names10 <- colnames(res10)
+bias_as_fiml <- t(res10[,grepl('bias\\.', names10) & grepl('\\_as', names10) & 
+                       grepl('FIML', names10)])
+colnames(bias_as_fiml) <- sample_sizes
+rownames(bias_as_fiml) <- aux_info[["10"]]$a
+
+bias_as_dwls <- t(res10[,grepl('bias\\.', names10) & grepl('\\_as', names10) & 
+                       grepl('DWLS', names10)])
+colnames(bias_as_dwls) <- sample_sizes
+rownames(bias_as_dwls) <- aux_info[["10"]]$a
+
+(out <- list(FIML=bias_as_fiml, DWLS=bias_as_dwls))
+sapply(out, colMeans)
+
+# bias in intercepts
+bias_ds_fiml <- t(res10[,grepl('bias\\.', names10) & grepl('\\_ds', names10) & 
+                       grepl('FIML', names10)])
+colnames(bias_ds_fiml) <- sample_sizes
+rownames(bias_ds_fiml) <- aux_info[["10"]]$d
+
+bias_ds_dwls <- t(res10[,grepl('bias\\.', names10) & grepl('\\_ds', names10) & 
+                       grepl('DWLS', names10)])
+colnames(bias_ds_dwls) <- sample_sizes
+rownames(bias_ds_dwls) <- aux_info[["10"]]$d
+
+(out <- list(FIML=bias_ds_fiml, DWLS=bias_ds_dwls))
+sapply(out, colMeans)
+```
+
+DWLS does not appear to be less biased overall, and also does not appear to be come less biased as the 
+sample size increases. Furthermore, the slopes seem to be systematically over estimated by a large amount 
+in the DWLS as indicated by the large negative bias. FIML however does get better as the $N$ increases, 
+and does not seem to be systematically biased in either the intercepts or slopes.
+
+```{r}
+# RMSE in slopes
+RMSE_as_fiml <- t(res10[,grepl('RMSE\\.', names10) & grepl('\\_as', names10) & 
+                       grepl('FIML', names10)])
+colnames(RMSE_as_fiml) <- sample_sizes
+rownames(RMSE_as_fiml) <- aux_info[["10"]]$a
+
+RMSE_as_dwls <- t(res10[,grepl('RMSE\\.', names10) & grepl('\\_as', names10) & 
+                       grepl('DWLS', names10)])
+colnames(RMSE_as_dwls) <- sample_sizes
+rownames(RMSE_as_dwls) <- aux_info[["10"]]$a
+
+(out <- list(FIML=RMSE_as_fiml, DWLS=RMSE_as_dwls))
+sapply(out, colMeans)
+
+# RMSE in intercepts
+RMSE_ds_fiml <- t(res10[,grepl('RMSE\\.', names10) & grepl('\\_ds', names10) & 
+                       grepl('FIML', names10)])
+colnames(RMSE_ds_fiml) <- sample_sizes
+rownames(RMSE_ds_fiml) <- aux_info[["10"]]$d
+
+RMSE_ds_dwls <- t(res10[,grepl('RMSE\\.', names10) & grepl('\\_ds', names10) & 
+                       grepl('DWLS', names10)])
+colnames(RMSE_ds_dwls) <- sample_sizes
+rownames(RMSE_ds_dwls) <- aux_info[["10"]]$d
+
+(out <- list(FIML=RMSE_ds_fiml, DWLS=RMSE_ds_dwls))
+sapply(out, colMeans)
+```
+
+Concerning RMSE, FIML appeared to do less well in smaller sample sizes but become more effective than DWLS 
+when $N >= 500$. This effect appeared to be more prevalent in the slopes rather than the intercepts. The 
+conclusion about RMSE is that FIML tends to be more efficient in recovering parameters, but only after a certain
+sample size is acheived.
+
+Additionally, there appears to be an effect relating to the size of the parameters. Larger slopes tend to be recovered with more bias than slopes which are closer to 0. Had we obtained information about the parameter 
+standard errors this would have been obvious as well, because the sampling variablity for more extremem parameters tends to be much larger than more centralized parameters. 
+
+#### Thirty items
+
+```{r}
+# bias in slopes
+names30 <- colnames(res30)
+bias_as_fiml <- t(res30[,grepl('bias\\.', names30) & grepl('\\_as', names30) & 
+                       grepl('FIML', names30)])
+colnames(bias_as_fiml) <- sample_sizes
+rownames(bias_as_fiml) <- aux_info[["30"]]$a
+
+bias_as_dwls <- t(res30[,grepl('bias\\.', names30) & grepl('\\_as', names30) & 
+                       grepl('DWLS', names30)])
+colnames(bias_as_dwls) <- sample_sizes
+rownames(bias_as_dwls) <- aux_info[["30"]]$a
+
+(out <- list(FIML=bias_as_fiml, DWLS=bias_as_dwls))
+sapply(out, colMeans)
+
+# bias in intercepts
+bias_ds_fiml <- t(res30[,grepl('bias\\.', names30) & grepl('\\_ds', names30) & 
+                       grepl('FIML', names30)])
+colnames(bias_ds_fiml) <- sample_sizes
+rownames(bias_ds_fiml) <- aux_info[["30"]]$d
+
+bias_ds_dwls <- t(res30[,grepl('bias\\.', names30) & grepl('\\_ds', names30) & 
+                       grepl('DWLS', names30)])
+colnames(bias_ds_dwls) <- sample_sizes
+rownames(bias_ds_dwls) <- aux_info[["30"]]$d
+
+(out <- list(FIML=bias_ds_fiml, DWLS=bias_ds_dwls))
+sapply(out, colMeans)
+```
+
+The same trend appeared in the 30 item simulation case, where again FIML was less biased in both intercepts and 
+slopes than DWLS. However, it appears that in larger tests DWLS becomes even more biased when recovering slopes,
+but less bias in recovering intercepts. 
+
+```{r}
+# RMSE in slopes
+RMSE_as_fiml <- t(res30[,grepl('RMSE\\.', names30) & grepl('\\_as', names30) & 
+                       grepl('FIML', names30)])
+colnames(RMSE_as_fiml) <- sample_sizes
+rownames(RMSE_as_fiml) <- aux_info[["30"]]$a
+
+RMSE_as_dwls <- t(res30[,grepl('RMSE\\.', names30) & grepl('\\_as', names30) & 
+                       grepl('DWLS', names30)])
+colnames(RMSE_as_dwls) <- sample_sizes
+rownames(RMSE_as_dwls) <- aux_info[["30"]]$a
+
+(out <- list(FIML=RMSE_as_fiml, DWLS=RMSE_as_dwls))
+sapply(out, colMeans)
+
+# RMSE in intercepts
+RMSE_ds_fiml <- t(res30[,grepl('RMSE\\.', names30) & grepl('\\_ds', names30) & 
+                       grepl('FIML', names30)])
+colnames(RMSE_ds_fiml) <- sample_sizes
+rownames(RMSE_ds_fiml) <- aux_info[["30"]]$d
+
+RMSE_ds_dwls <- t(res30[,grepl('RMSE\\.', names30) & grepl('\\_ds', names30) & 
+                       grepl('DWLS', names30)])
+colnames(RMSE_ds_dwls) <- sample_sizes
+rownames(RMSE_ds_dwls) <- aux_info[["30"]]$d
+
+(out <- list(FIML=RMSE_ds_fiml, DWLS=RMSE_ds_dwls))
+sapply(out, colMeans)
+```
+
+Again the same trends appeared, however this time FIML become more efficent when $N >= 250$ in the slopes.
+
+
+
+```{r include=FALSE}
+system('rm *.rds')
+```
+

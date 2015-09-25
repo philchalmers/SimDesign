@@ -10,6 +10,10 @@ output:
     toc: yes
 ---
 
+```{r include=FALSE}
+options(digits = 3)
+```
+
 # Simulation: Type I error rates and Power rates
 
 Determine the Type I error and Power rates for a t-test when different groups sizes are used and when
@@ -147,5 +151,7 @@ gg + geom_point(size=3) + facet_wrap(~standard_deviation_ratio) + ylim(c(0,1)) +
     geom_hline(yintercept = .075, colour = 'red') + geom_hline(yintercept = .025, colour = 'red')
 ```
 
-What is immediately obvious from these figures is that the Welch test performs fairly well across all conditions for controlling Type I error rates, while the independent t-test is heavily influenced by different combinations. When the variances were equal, the test appeared to perform well, and should not be surprsing because all the assumptions were met. However, when the second group contained a larger variance AND smaller sample size than the first group the detection rates became more inflated. The converse was true when larger variances were paired with larger sample sizes.
+What is immediately obvious from these figures is that the Welch test performs fairly well across all conditions for controlling Type I error rates, while the independent t-test is heavily influenced by different combinations. When the variances were equal (left facet plot), the test appeared to perform well, and should not be surprsing because all the assumptions were met. As well, when the sample sizes were equal the test seemed to perform well across the board.
+
+However, when the second group contained a larger variance AND a larger sample size than the first group the detection rates became more conservative. The converse was true when larger variances were paired with smaller sample sizes compared to the first group, where the detection rates became progressively more liberal as both the ratio of sample sizes increase and the ratio of stadand deviations increased.
 
