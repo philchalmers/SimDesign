@@ -190,11 +190,3 @@ population mean. This isn't surprising, because the trimmed mean is after all ma
 population trimmed mean, and the median is making inferences about, well, the median. Only when the
 distributions under investigation are symmetric will the statitics be able to make the same inferences about
 the mean of the population.
-
-# Debugging/editing, and passing further arguments to runSimulation()
-
-Talk about debugging, and how the package makes debugging really easy.
-
-### Debugging with the `edit` argument
-
-### Debugging with `browser()`
