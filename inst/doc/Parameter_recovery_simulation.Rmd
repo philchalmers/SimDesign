@@ -25,10 +25,10 @@ to determine which approach can recover the item parameters when varying test le
 ### Define the conditions
 
 Start by defining the conditions to be studied. Because we are interested in a number of slopes and intercepts
-it is often convientent to save long strings of numbers to external files and read them in during the simulation.
-Naturally, these could be included in teh simulation source code directly, but often will take up a large amout
-of space (could be hundreds of lines). Because these are fixed and known a prior, writting these to an external
-file is a good stragegy.
+it is often convenient to save long strings of numbers to external files and read them in during the simulation.
+Naturally, these could be included in the simulation source code directly, but often will take up a large amount
+of space (could be hundreds of lines). Because these are fixed and known a prior, writing these to an external
+file is a good strategy.
 
 ```{r}
 sample_sizes <- c(100, 250, 500, 1000)
@@ -121,8 +121,8 @@ Summarise <- function(results, parameters_list, condition) {
 ### Run the simulation
 
 Because this simulation takes considerably longer it is recommended to pass the `save = TRUE` to temporarily
-save results in case of power outages. Results can be continuted by running the identical simulation code as the
-initial run, and the function will automatically detect whether any temp files are avialable and resume the 
+save results in case of power outages. Results can be continued by running the identical simulation code as the
+initial run, and the function will automatically detect whether any temp files are available and resume the 
 simulation at the previously saved location.
 
 ```{r cache=TRUE}
@@ -138,8 +138,8 @@ res30 <- runSimulation(subset(Design, test_length == 30), replications = 1000, v
 ### Analyze the results
 
 Sometimes, reshaping and indexing your output can be very helpful. Here we break the analysis into two parts,
-though other stragegies are certainly possible. Because analysing simulations is a lot like analysing empirical
-data no one stragegy may be the best; you have to use judgement.
+though other strategies are certainly possible. Because analyzing simulations is a lot like analyzing empirical
+data no one strategy may be the best; you have to use judgment.
 
 #### Ten items
 
@@ -212,10 +212,10 @@ sapply(out, colMeans)
 Concerning RMSE, FIML appeared to do less well in smaller sample sizes but become more effective than DWLS 
 when $N >= 500$. This effect appeared to be more prevalent in the slopes rather than the intercepts. The 
 conclusion about RMSE is that FIML tends to be more efficient in recovering parameters, but only after a certain
-sample size is acheived.
+sample size is achieved.
 
 Additionally, there appears to be an effect relating to the size of the parameters. Larger slopes tend to be recovered with more bias than slopes which are closer to 0. Had we obtained information about the parameter 
-standard errors this would have been obvious as well, because the sampling variablity for more extremem parameters tends to be much larger than more centralized parameters. 
+standard errors this would have been obvious as well, because the sampling variability for more extreme parameters tends to be much larger than more centralized parameters. 
 
 #### Thirty items
 
@@ -284,7 +284,7 @@ rownames(RMSE_ds_dwls) <- aux_info[["30"]]$d
 sapply(out, colMeans)
 ```
 
-Again the same trends appeared, however this time FIML become more efficent when $N >= 250$ in the slopes.
+Again the same trends appeared, however this time FIML become more efficient when $N >= 250$ in the slopes.
 
 
 

@@ -17,12 +17,12 @@ options(digits = 3)
 
 # Introduction
 
-Designing Monte Carlo simulations can be a fun and rewarding experiance. Whether you are interested in
-evaluating the performance of a new optimizer or model, re-evaluating previous reseach claims (like the 
-ANOVA is 'robust' to violation of normality), determing power rates for an upcoming research proposal, 
-or simply to appeas a strange thought in your head about a new statistical idea you heard about, 
-Monte Carlo simulations can be incredibly rewarding. However, organizing them can be a challange, and 
-all to often people resourt to the dreaded for loop-nesting, *for*-ever resulting in confusing and error 
+Designing Monte Carlo simulations can be a fun and rewarding experience. Whether you are interested in
+evaluating the performance of a new optimizer or model, re-evaluating previous research claims (like the 
+ANOVA is 'robust' to violation of normality), determine power rates for an upcoming research proposal, 
+or simply to appears a strange thought in your head about a new statistical idea you heard about, 
+Monte Carlo simulations can be incredibly rewarding. However, organizing them can be a challenge, and 
+all to often people resort to the dreaded for loop-nesting, *for*-ever resulting in confusing and error 
 prone code. The package `SimDesign` is one attempt to fix this issue.
 
 Monte Carlo simulations can be broken into three major steps:
@@ -33,7 +33,7 @@ distributions, group sizes, etc),
 ANOVA, SEMs, IRT, etc), and collect the statistics or estimates you are interested in, and
 - **summarise** the results after repeating the simulations $R$ number of times.
 
-Each bolded term above represents the essential compenents in the `SimDesign` package, where **design** 
+Each term above represents the essential components in the `SimDesign` package, where **design** 
 represents a `data.frame` object containing the simulation conditions to be investigated, and **generate**,
 **analyse**, and **summarise** represent user defined functions which comprise the steps in the simulation.
 Each of these components are constructed and passed to the `runSimulation()` function where the simulation 
@@ -43,11 +43,11 @@ steps are evaluated.
 options(digits = 2)
 ```
 
-After loading the `SimDesign` package, we begin by defining the required functions. To expidit this process,
+After loading the `SimDesign` package, we begin by defining the required functions. To expedite this process,
 a call to `SimDesign_functions()` will create a template to be filled in, where all the necessary functional arguments have been pre-assigned. The documentation of each argument can be found in the respective 
 R help files, however there organization is very simple conceptually:
 
-To begin, the follwing code should be copied and saved to an external source (i.e., text) file.
+To begin, the following code should be copied and saved to an external source (i.e., text) file.
 
 ```{r}
 library(SimDesign)
@@ -56,7 +56,7 @@ SimDesign_functions()
 
 # Simulation: Determine estimator efficiency
 
-*Question*: How does trimming affect recovring the mean of a distribution? Investigate this using
+*Question*: How does trimming affect recovering the mean of a distribution? Investigate this using
 different sample size and distribution configurations. Also demonstrate the effect of using the 
 median to recover the mean.
 
@@ -64,7 +64,7 @@ median to recover the mean.
 
 First, define the condition combinations that should be investigated. In this case we wish to study
 4 different sample sizes, and use a symmetric and skewed distribution. The use of `expand.grid()` is
-extremly helpful here to create a completely crossed-design for each combination (there are 8 in total).
+extremely helpful here to create a completely crossed-design for each combination (there are 8 in total).
 
 ```{r}
 sample_sizes <- c(30, 60, 120, 240)
@@ -109,14 +109,14 @@ Analyse <- function(dat, parameters, condition) {
 }
 ```
 
-This function accepts the data previously returned from `Generate()` (`dat`), the condtions vector previously
+This function accepts the data previously returned from `Generate()` (`dat`), the condition vector previously
 mentioned, and an additional (optional) list of `parameters` that may have been defined in `Generate()`. In 
 this case `Generate()` only returned a single object, therefore `parameters` will simple be a `NULL` element.
 
 At this point, we may conceptually think of the first two functions as being run $R$ different times to obtain
 $R$ sets of results. In other words, if we wanted the number of replications to be 100, the first two functions
-would be independetly run 100 times, the results from `Analyse()` would be stored somewhere, and we would 
-somehow need to summarise these 100 elements into meaninful meta statistics. This is where computing statistcs
+would be independently run 100 times, the results from `Analyse()` would be stored somewhere, and we would 
+somehow need to summarise these 100 elements into meaningful meta statistics. This is where computing meta-statistics
 such as bias, root mean-square error, detection rates, and so on are of primary importance. This is the purpose
 of the `summarise` component:
 
@@ -140,15 +140,15 @@ is the $R$ x 4 matrix `results` to build a suitable summary. Because the results
 function is useful to apply a function over each respective row. The bias and RMSE are obtained for each
 respective statistic, and the overall result is returned as a vector.
 
-Stopping for a moment and thinking now, each `condition` will be paired with a unqiue vector returned from
+Stopping for a moment and thinking now, each `condition` will be paired with a unique vector returned from
 `Summarise()`. Therefore, you might be thinking that the result returned from the simulation will be in
-a rectanular form, such as in a `matrix` or `data.frame`. 
+a rectangular form, such as in a `matrix` or `data.frame`. 
 Well, you'd be right --- good on you for thinking.
 
 ### Putting it all together
 
-The last stage of the `SimDesign` workflow is to pass the four defined objects to the `runSimulation()` 
-function which, unsurprisingly, runs the simulation. There are numerous options avaialable in the 
+The last stage of the `SimDesign` work-flow is to pass the four defined objects to the `runSimulation()` 
+function which, unsurprisingly, runs the simulation. There are numerous options available in the 
 function, and these should be investigated by reading the `help(runSimulation)` file. Options for 
 performing simulations in parallel, storing/resuming temporary results, debugging functions,
 and so on are available. Below we simply request that each condition be run 1000 times on a 
@@ -168,14 +168,14 @@ R console may also be a nice way to sift through the `results` object.
 
 ### Interpret the results
 
-In this case visually inspecting the simulation table is enough to understand what is occuring, though for
+In this case visually inspecting the simulation table is enough to understand what is occurring, though for
 other Monte Carlo simulations use of ANOVAs, marginalized tables, and graphics should be used to capture the
-essentially phenomomenon in the results. Monte Carlo simulations are just like collecting data for exeriments,
+essentially phenomenon in the results. Monte Carlo simulations are just like collecting data for experiments,
 so be an analyst and present your data as though it were data collected from the real world. 
 
-In this particular simulation, it is readily clear that using the un-adjusted mean will adequetly recover
-the population mean with little bias. The pricesion also seems to increase as sample sizes increase, which 
-is indicated by the decreasing RMSE statistics. Generally, trimming causes less efficieny in the estimates,
+In this particular simulation, it is readily clear that using the un-adjusted mean will adequately recover
+the population mean with little bias. The precision also seems to increase as sample sizes increase, which 
+is indicated by the decreasing RMSE statistics. Generally, trimming causes less efficiency in the estimates,
 where greater amounts of trimming result in even less efficiency, and using the median as a proxy to estimate
 the mean is the least effective method. This can be seen rather clearly in the following table, which 
 prints the relative efficiency of the estimators:
@@ -185,8 +185,8 @@ RMSEs <- results[,grepl('RMSE\\.', colnames(results))]
 data.frame(Design, RE(RMSEs))
 ```
 
-Finally, when the $\chi^2$ distribution was investigated only the un-adjusted mean accuratly portrayed the
+Finally, when the $\chi^2$ distribution was investigated only the un-adjusted mean accurately portrayed the
 population mean. This isn't surprising, because the trimmed mean is after all making inferences about the 
 population trimmed mean, and the median is making inferences about, well, the median. Only when the
-distributions under investigation are symmetric will the statitics be able to make the same inferences about
+distributions under investigation are symmetric will the statistics be able to make the same inferences about
 the mean of the population.

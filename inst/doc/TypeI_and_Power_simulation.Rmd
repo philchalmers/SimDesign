@@ -17,7 +17,7 @@ options(digits = 3)
 # Simulation: Type I error rates and Power rates
 
 Determine the Type I error and Power rates for a t-test when different groups sizes are used and when
-the assumption of homegeneity of variance is violated.
+the assumption of homogeneity of variance is violated.
 
 ### Define conditions
 
@@ -40,7 +40,7 @@ head(Design, 3)
 tail(Design, 3)
 ```
 
-Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where both broups have a sample size of 10 and the ratio of the standard devitions are 1 (i.e., they are exactly equal) and there is no mean difference between the groups. Analysing rows with no mean difference will give us an idea of the Type I error rates. The last condition on row 96 indicates that both groups have sample sizes of 100 but that one of the standard deviations is 8 times larger than the other and a mean difference of 0.5. Which group is larger in both the standard deviation and mean will be defined in the `Generate()` function. 
+Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where both groups have a sample size of 10 and the ratio of the standard deviations are 1 (i.e., they are exactly equal) and there is no mean difference between the groups. Analysing rows with no mean difference will give us an idea of the Type I error rates. The last condition on row 96 indicates that both groups have sample sizes of 100 but that one of the standard deviations is 8 times larger than the other and a mean difference of 0.5. Which group is larger in both the standard deviation and mean will be defined in the `Generate()` function. 
 
 ### Define the functions
 
@@ -52,7 +52,7 @@ library(SimDesign)
 # SimDesign_functions()
 ```
 
-Begin by defining a data generation function for returning a `data.frame` with two columsn: the dependent 
+Begin by defining a data generation function for returning a `data.frame` with two columns: the dependent 
 variable, and a grouping variable (a `factor` or otherwise).
 
 ```{r}
@@ -71,7 +71,7 @@ Generate <- function(condition){
 }
 ```
 
-The `Generate()` function defined above first extracts the elements from `condition` for convienience,
+The `Generate()` function defined above first extracts the elements from `condition` for convenience,
 generates data for two groups using random normal draws, and returns a data.frame object 
 containing the dependent variable and grouping information. 
 
@@ -89,7 +89,7 @@ Analyse <- function(dat, parameters, condition){
 }
 ```
 
-The `Analyse()` defintion performs a Welch and independent t-test on the data generated from `Generate()`, checks whether any errors occured during the calls to the estimation functions, and extracts and returns the respective p-values for each statistical analysis.
+The `Analyse()` definition performs a Welch and independent t-test on the data generated from `Generate()`, checks whether any errors occurred during the calls to the estimation functions, and extracts and returns the respective p-values for each statistical analysis.
 
 Finally, after the number of replications defined in `replications` has been completed a matrix (or list, if the output of `Analyse()` were a list instead of a vector) the overall results should be summerised into suitable meta-descriptions of the behavior. This is accomplished with the `Summarise()` function.
 
@@ -106,7 +106,7 @@ Summarise <- function(results, parameters_list, condition){
 
 In the above function, the `results` input is a matrix of size `replications` by 2 containing the respective 
 p-values returned from `Analyse()` across the desired number of replications. It is here where empirical 
-detection rates can be determined, and a convinience function `EDR()` is avaialbe for just this purpose. Each column in the supplied matrix of p-values is checked to see whether it is less that $\alpha = .05$, and the
+detection rates can be determined, and a convenience function `EDR()` is available for just this purpose. Each column in the supplied matrix of p-values is checked to see whether it is less that $\alpha = .05$, and the
 average number of times this occurs is returned as a vector of length 2. Names are preserved in the `EDR()` 
 function, therefore it is clear which element represents the Welch and Independent t-test rates.
 
@@ -135,7 +135,7 @@ Power <- subset(Final, mean_difference != 0)
 Rather than looking at the numbers, lets jump straight to graphical representations of the effects. 
 Because there is only three facets to look at, plotting is not an issue. With more than three factors,
 however, the use of ANOVA's with a number of interaction terms and effect sizes can be very helpful to detect
-the important effects present in the simluation.
+the important effects present in the simulation.
 
 ```{r}
 library(ggplot2)
@@ -151,7 +151,7 @@ gg + geom_point(size=3) + facet_wrap(~standard_deviation_ratio) + ylim(c(0,1)) +
     geom_hline(yintercept = .075, colour = 'red') + geom_hline(yintercept = .025, colour = 'red')
 ```
 
-What is immediately obvious from these figures is that the Welch test performs fairly well across all conditions for controlling Type I error rates, while the independent t-test is heavily influenced by different combinations. When the variances were equal (left facet plot), the test appeared to perform well, and should not be surprsing because all the assumptions were met. As well, when the sample sizes were equal the test seemed to perform well across the board.
+What is immediately obvious from these figures is that the Welch test performs fairly well across all conditions for controlling Type I error rates, while the independent t-test is heavily influenced by different combinations. When the variances were equal (left facet plot), the test appeared to perform well, and should not be surprising because all the assumptions were met. As well, when the sample sizes were equal the test seemed to perform well across the board.
 
-However, when the second group contained a larger variance AND a larger sample size than the first group the detection rates became more conservative. The converse was true when larger variances were paired with smaller sample sizes compared to the first group, where the detection rates became progressively more liberal as both the ratio of sample sizes increase and the ratio of stadand deviations increased.
+However, when the second group contained a larger variance AND a larger sample size than the first group the detection rates became more conservative. The converse was true when larger variances were paired with smaller sample sizes compared to the first group, where the detection rates became progressively more liberal as both the ratio of sample sizes increase and the ratio of standard deviations increased.
 
