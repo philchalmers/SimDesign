@@ -71,6 +71,7 @@ sample_sizes <- c(30, 60, 120, 240)
 distributions <- c('normal', 'skewed')
 Design <- expand.grid(sample_size = sample_sizes, 
                       distribution = distributions)
+Design
 ```
 
 Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where $N=30$ and the distribution should be normal. 
