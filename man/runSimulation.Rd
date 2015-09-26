@@ -12,7 +12,7 @@ runSimulation(design, replications, generate, analyse, summarise,
   ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
 }
 \arguments{
-\item{design}{a data.frame object containing the Monte carlo simulation conditions to
+\item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
   be studied, where each row represents a unique condition}
 
 \item{replications}{number of replication to perform per condition (i.e., each row in \code{design})}
@@ -29,15 +29,17 @@ runSimulation(design, replications, generate, analyse, summarise,
 \item{parallel}{logical; use parallel processing from the \code{parallel} package over each
   unique condition?
 
-  NOTE: if using other packages other than the base attached ones (e.g., \code{stats},
+  NOTE: When using packages other than the basic packages which are attached by default (e.g., \code{stats},
   \code{graphics}, \code{utils}, etc) then you must either a) explicitly load the packages within
   the respective defined functions with a \code{library()} or \code{require()} call, or b) use the
-  :: operator to locate the functions that are not attached by default}
+  \code{::} operator to locate the public functions that are not visible in the R session (e.g.,
+  \code{psych::describe()})}
 
 \item{MPI}{logical; use the \code{doMPI} package to run simulation in parallel on
   a cluster? Default is FALSE}
 
-\item{save}{logical; save the final simulation and temp files to the hard-drive? Default is FALSE}
+\item{save}{logical; save the final simulation and temp files to the hard-drive? This is useful
+  for simulations which require an extended amount of time. Default is FALSE}
 
 \item{save_every}{a number indicating how often to temporarily save your simulation results to
   disk. Default is 1 to save after every condition is complete, but set to NA if you don't
@@ -47,7 +49,7 @@ runSimulation(design, replications, generate, analyse, summarise,
   Default is TRUE}
 
 \item{seed}{a vector of integers (or single number)
-  to be used for reproducability. The length of the vector must be
+  to be used for reproducibility. The length of the vector must be
   equal to either 1 or the number of rows in \code{design}; if 1, this will be repeated for each
   condition. This argument calls \code{\link{set.seed}} or
   \code{\link{clusterSetRNGStream}}, respectively, but will not be run when \code{MPI = TRUE}.
@@ -72,12 +74,12 @@ runSimulation(design, replications, generate, analyse, summarise,
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
-\item{edit}{a string indicating where to initiate a `browser()` call for editing and debugging.
-  Options are 'none' (default), 'main' to edit the main function calls loop, 'generate' to edit the
-  data simulation function, 'analyse' to edit the computational function, and 'summarise' to
-  edit the collection function. Alternatively, users may place \code{\link{browser}} calls within their
-  own code for debugging at specific lines (note: parallel computation flags will
-  automatically be disabled when this is detected)}
+\item{edit}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
+  Options are \code{'none'} (default), 'main' to edit the main function calls loop, \code{'generate'}
+  to edit the data simulation function, \code{'analyse'} to edit the computational function, and
+  \code{'summarise'} to  edit the aggregation function. Alternatively, users may place
+  \code{\link{browser}} calls within the respective functions for debugging at specific lines
+  (note: parallel computation flags will automatically be disabled when this is detected)}
 
 \item{verbose}{logical; print messages to the R console?}
 }
@@ -85,8 +87,10 @@ runSimulation(design, replications, generate, analyse, summarise,
 This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
 and the number of replications. Results can be saved as temporary files in case of interruptions
 and may be restored by rerunning the exact function calls again, provided that the respective temp
-file can be found in the working directory. Supports parallel and cluster computing, global and
-local debugging, and is designed to be cross-platform.  For a skeleton version of the workflow
+file can be found in the working directory. To conserve RAM, temporary objects (such as
+generated data across conditions and replications) are discarded.
+Supports parallel and cluster computing, global and
+local debugging, and is designed to be cross-platform.  For a skeleton version of the work-flow
 which may be useful when initially defining a simulation, see \code{\link{SimDesign_functions}}.
 }
 \details{
@@ -103,30 +107,32 @@ The strategy for organizing the Monte Carlo simulation work-flow is to
    \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
       number of replications with the \code{replications} input}
    \item{4)}{Analyze the output from \code{runSimulation}, possibly using techniques from ANOVA
-     and generating suitable plots}
+     and generating suitable plots and tables}
 }
 
 Two constants for each condition are returned by default:
-N_CELL_RUNS to indicate the number of Monte Carlo runs it took to obtain valid results (this will
+\code{N_CELL_RUNS} to indicate the number of Monte Carlo runs it took to obtain valid results (this will
 be greater than the number of replications requested if, for example, models failed to converge
-and had to be re-drawn), and SIM_TIME to indicate how long (in seconds) it took to complete
+and had to be re-drawn), and \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 all the Monte Carlo replications for each respective condition.
 
-In the event of a computer crash, power outage, etc, if the 'save_every' command has been
-used to save temporary results then the original code in main.R need only be rerun again.
-The temp file will be read into the design, and the simulation will continue where it left
+In the event of a computer crash, power outage, etc, if the \code{save_every} command has been
+used to save temporary results (along with the logical \code{save = TRUE}) then the original code in
+the main source file need only be rerun again to resume the simulation.
+The saved temp file will be read into the function, and the simulation will continue where it left
 off before the simulation was terminated. Upon completion, a data.frame with the simulation
 will be returned in the R session and a '.rds' file will be saved to the hard-drive (with the
-file name corresponding to the 'filename' argument below).
+file name corresponding to the \code{filename} argument below).
 }
 \section{Cluster computing}{
 
 
 If the package is installed across a cluster of computers, and all the computers are accessible on
-the same LAN network, then the package may be run in cluster mode using the MPI paradigm. This simply
+the same LAN network, then the package may be run within the MPI paradigm. This simply
 requires that the computers be setup using the usual MPI requirements (typically, running some flavor
-of Linux, have password-less openSSH access, addresses have been added to the /etc/hosts file, etc),
-and in the code the argument \code{MPI = TRUE} should be passed.
+of Linux, have password-less openSSH access, addresses have been added to the \code{/etc/hosts} file, etc).
+To setup the R code for an MPI cluster one need only add the argument \code{MPI = TRUE} and submit the
+files using the suitable BASH commands.
 
 For instances, if the following code is run on the master node through a terminal then 16 processes
 will be summoned (1 master, 15 slaves) across the computers named localhost, slave1, and slave2.
@@ -143,9 +149,13 @@ This simply requires passing a smaller value to the \code{each} argument on each
 aggregating the results using the \code{\link{aggregate_simulations}} function.
 
 For instance, if you have two computers available and wanted 500 replications you
-could pass \code{replications = 300} to one computer and \code{replications = 200} to the other.
-This will create two .rds files which can be combined later with the
-\code{\link{aggregate_simulations}} function.
+could pass \code{replications = 300} to one computer and \code{replications = 200} to the other along
+with a \code{save = TRUE} argument. This will create two distinct .rds files which can be
+combined later with the \code{\link{aggregate_simulations}} function. The benifit of this approach over
+MPI is that computers need not be linked over a LAN network, and should the need arise the temporary
+simulation results can be migrated to another computer in case of a complete hardware failure by modifying
+the suitable \code{compname} input (or, if the \code{filename} and \code{tmpfilename} were modified,
+matching those files as well).
 }
 \examples{
 \dontrun{
@@ -163,7 +173,7 @@ dim(Design)
 head(Design)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
-#### Step 2 --- Define sim, compute, and collect functions
+#### Step 2 --- Define generate, analyse, and summerise functions
 
 # skeleton functions to be edited
 SimDesign_functions()
@@ -186,7 +196,7 @@ Generate <- function(condition){
 
 # help(analyse)
 
-Analyse <- function(dat, parameters, condition){
+Analyse <- function(condition, dat, parameters = NULL){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
@@ -208,7 +218,7 @@ Analyse <- function(dat, parameters, condition){
 
 # help(summarise)
 
-Summarise <- function(results, parameters_list, condition){
+Summarise <- function(condition, results, parameters_list = NULL){
 
     #find results of interest here (e.g., alpha < .1, .05, .01)
     nms <- c('welch', 'independent')
@@ -226,11 +236,34 @@ Summarise <- function(results, parameters_list, condition){
 # this simulation does not save temp files or the final result to disk (save=FALSE)
 Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
+head(Final)
+View(Final)
 
-## Debug the generate function (not run). See ?browser for help on debugging
-# runSimulation(design=Design, replications=1000,
-#               generate=Generate, analyse=Analyse, summarise=Summarise,
-#               parallel=TRUE, edit='generate')
+## Debug the generate function. See ?browser for help on debugging
+##   Type help to see available commands (e.g., n, c, where, ...),
+##   ls() to see what has been defined, and type Q to quit the debugger
+runSimulation(design=Design, replications=1000,
+              generate=Generate, analyse=Analyse, summarise=Summarise,
+              parallel=TRUE, edit='generate')
+
+## Alternatively, place a browser() within the desired function line to
+##   jump to a specific location
+Summarise <- function(condition, results, parameters_list = NULL){
+
+    #find results of interest here (e.g., alpha < .1, .05, .01)
+    nms <- c('welch', 'independent')
+    lessthan.05 <- EDR(results[,nms], alpha = .05)
+
+    browser()
+
+    # return the results that will be appended to the design input
+    ret <- c(lessthan.05=lessthan.05)
+    return(ret)
+}
+
+runSimulation(design=Design, replications=1000,
+              generate=Generate, analyse=Analyse, summarise=Summarise,
+              parallel=TRUE)
 
 
 
@@ -250,8 +283,6 @@ Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
 # Step 4 --- Post-analysis: Create a new R file for analyzing the Final data.frame with R based
 # regression stuff, so use the lm() function to find main effects, interactions, plots, etc.
 # This is where you get to be a data analyst!
-head(Final)
-# View(Final)
 
 psych::describe(Final)
 psych::describeBy(Final, group = Final$standard_deviations)

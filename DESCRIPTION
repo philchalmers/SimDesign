@@ -1,11 +1,13 @@
 Package: SimDesign
-Title: Code for organizing Monte Carlo simulations in R
-Version: 0.1
+Title: Code-base for organizing Monte Carlo simulation designs
+Version: 0.2
 Authors@R: person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com",
            role = c("aut", "cre"))
-Description: Functions to organize simulations in R. Tries to manage the structure and back-end of the simulations,
-             managing issues like resimulating non-convergent results, organizing the functional workflow,
-             handling parallel back-end information, saving temporary files, and so on.
+Description: Functions to organize Monte Carlo simulations in R. Tries to manage the structure
+             and back-end Monte Carlo simulations, managing issues like resimulating
+             non-convergent results, organizing the functional workflow through a
+             generate -> analyse -> summerise stragegy, handling parallel back-end information,
+             saving and restoring temporary files, and so on.
 Depends: R (>= 3.2.1)
 Imports: foreach, methods, parallel
 License: GPL (>=2)

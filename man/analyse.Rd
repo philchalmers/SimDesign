@@ -4,17 +4,17 @@
 \alias{analyse}
 \title{Compute estimates and statistics}
 \usage{
-analyse(dat, parameters, condition)
+analyse(condition, dat, parameters = NULL)
 }
 \arguments{
+\item{condition}{a single row from the design input (as a data.frame), indicating the
+  simulation conditions}
+
 \item{dat}{the 'dat' object returned from the \code{\link{generate}} function (usually a data.frame, matrix,
 or vector) if a list was returned, otherwise just the raw object defined from \code{\link{generate}}}
 
 \item{parameters}{the (optional) list object named 'parameters' returned from the
 \code{\link{generate}} function when a list is returned. Otherwise, this will be an empty list}
-
-\item{condition}{a single row from the design input (as a data.frame), indicating the
-  simulation conditions}
 }
 \value{
 returns a named numeric vector with the values of interest (e.g., p-values,
@@ -36,7 +36,7 @@ to obtain a different dataset.
 \examples{
 \dontrun{
 
-myanalyse <- function(dat, parameters, condition){
+myanalyse <- function(condition, dat, parameters = NULL){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)

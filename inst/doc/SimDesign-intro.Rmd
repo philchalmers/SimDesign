@@ -49,7 +49,7 @@ R help files, however there organization is very simple conceptually:
 
 To begin, the following code should be copied and saved to an external source (i.e., text) file.
 
-```{r}
+```{r comment=NA}
 library(SimDesign)
 SimDesign_functions()
 ```
@@ -98,7 +98,7 @@ be analysed each with a population mean of 3 (because a $\chi^2$ distribution ha
 Next, we define the `analyse` component to analyse said data:
 
 ```{r}
-Analyse <- function(dat, parameters, condition) {
+Analyse <- function(condition, dat, parameters = NULL) {
     M0 <- mean(dat)
     M1 <- mean(dat, trim = .1)
     M2 <- mean(dat, trim = .2)
@@ -121,7 +121,7 @@ such as bias, root mean-square error, detection rates, and so on are of primary 
 of the `summarise` component:
 
 ```{r}
-Summarise <- function(results, parameters_list, condition) {
+Summarise <- function(condition, results, parameters_list = NULL) {
     obt_bias <- apply(results, 2, bias, population = 3)
     obt_RMSE <- apply(results, 2, RMSE, population = 3)
     

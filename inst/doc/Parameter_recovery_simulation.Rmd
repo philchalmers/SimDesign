@@ -73,7 +73,7 @@ Generate <- function(condition) {
     return(dat)
 }
 
-Analyse <- function(dat, parameters, condition) {
+Analyse <- function(condition, dat, parameters = NULL) {
     
     library(mirt)
     library(lavaan)
@@ -97,7 +97,7 @@ Analyse <- function(dat, parameters, condition) {
              DWLS_as=unname(DWLS_as), DWLS_ds=unname(DWLS_ds)))
 }
 
-Summarise <- function(results, parameters_list, condition) {
+Summarise <- function(condition, results, parameters_list = NULL) {
     
     parameters <- readRDS('parameters.rds')
     nitems <- as.character(condition$test_length)
@@ -175,7 +175,7 @@ sapply(out, colMeans)
 ```
 
 DWLS does not appear to be less biased overall, and also does not appear to be come less biased as the 
-sample size increases. Furthermore, the slopes seem to be systematically over estimated by a large amount 
+sample size increases. Furthermore, the slopes seem to be systematically under-estimated by a large amount 
 in the DWLS as indicated by the large negative bias. FIML however does get better as the $N$ increases, 
 and does not seem to be systematically biased in either the intercepts or slopes.
 
@@ -215,7 +215,19 @@ conclusion about RMSE is that FIML tends to be more efficient in recovering para
 sample size is achieved.
 
 Additionally, there appears to be an effect relating to the size of the parameters. Larger slopes tend to be recovered with more bias than slopes which are closer to 0. Had we obtained information about the parameter 
-standard errors this would have been obvious as well, because the sampling variability for more extreme parameters tends to be much larger than more centralized parameters. 
+standard errors this would have been obvious as well, because the sampling variability for more extreme parameters tends to be much larger than more centralized parameters. This effect is more systematic for FIML,
+and appears to be more sporatic for DWLS.
+
+```{r}
+library(ggplot2)
+plt <- data.frame(pars = c(aux_info[["10"]]$a, aux_info[["10"]]$a), 
+                  RMSE = c(RMSE_as_fiml[,'1000'], RMSE_ds_dwls[,'1000']), 
+                  estimator = rep(c('FIML', 'DWLS'), each = 10))
+ggplot(plt, aes(pars, RMSE, colour=estimator)) + geom_point(size=2) + facet_wrap(~estimator) + 
+    ggtitle('slope sizes by RMSE for FIML and DWLS estimators')
+
+```
+
 
 #### Thirty items
 

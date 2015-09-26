@@ -4,9 +4,12 @@
 \alias{summarise}
 \title{Summarise simulated data using various population comparison statistics}
 \usage{
-summarise(results, parameters_list, condition)
+summarise(condition, results, parameters_list = NULL)
 }
 \arguments{
+\item{condition}{a single row from the \code{design} input from \code{\link{runSimulation}}
+  (as a data.frame), indicating the simulation conditions}
+
 \item{results}{a data.frame (if \code{analyse} returned a numeric vector) or a list (if
 \code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
 where each cell is stored in a unique row/list element}
@@ -14,9 +17,6 @@ where each cell is stored in a unique row/list element}
 \item{parameters_list}{an (optional) list containing all the 'parameters' elements generated
 from \code{\link{generate}},  where each repetition is stored in a unique element. If a list was
 not returned from \code{\link{generate}} then this will be NULL}
-
-\item{condition}{a single row from the \code{design} input from \code{\link{runSimulation}}
-  (as a data.frame), indicating the simulation conditions}
 }
 \value{
 must return a named numeric vector with the desired meta-simulation results
@@ -28,7 +28,7 @@ estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 \examples{
 \dontrun{
 
-mysummarise <- function(results, parameters_list, condition){
+mysummarise <- function(condition, results, parameters_list = NULL){
 
     #convert to matrix for convenience (if helpful)
     cell_results <- do.call(rbind, results)

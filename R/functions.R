@@ -65,7 +65,7 @@ generate <- function(condition) NULL
 #' @examples
 #' \dontrun{
 #'
-#' myanalyse <- function(dat, parameters, condition){
+#' myanalyse <- function(condition, dat, parameters = NULL){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -88,7 +88,7 @@ generate <- function(condition) NULL
 #' }
 #'
 #' }
-analyse <- function(dat, parameters, condition) NULL
+analyse <- function(condition, dat, parameters = NULL) NULL
 
 
 
@@ -118,7 +118,7 @@ analyse <- function(dat, parameters, condition) NULL
 #' @examples
 #' \dontrun{
 #'
-#' mysummarise <- function(results, parameters_list, condition){
+#' mysummarise <- function(condition, results, parameters_list = NULL){
 #'
 #'     #convert to matrix for convenience (if helpful)
 #'     cell_results <- do.call(rbind, results)
@@ -141,7 +141,7 @@ analyse <- function(dat, parameters, condition) NULL
 #'
 #' }
 #'
-summarise <- function(results, parameters_list, condition) NULL
+summarise <- function(condition, results, parameters_list = NULL) NULL
 
 #=================================================================================================#
 

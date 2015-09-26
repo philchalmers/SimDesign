@@ -1,8 +1,10 @@
 #' Simulation Design
 #'
-#' Functions to organize simulations in R. Tries to manage the structure and back-end of the simulations,
-#' managing issues like resimulating non-convergent results, organizing the functional workflow,
-#' handling parallel back-end information, saving temporary files, and so on. The primary function for
+#' Functions to organize Monte Carlo simulations in R. Tries to manage the structure
+#' and back-end Monte Carlo simulations, managing issues like resimulating
+#' non-convergent results, organizing the functional workflow through a
+#' generate -> analyse -> summerise stragegy, handling parallel back-end information,
+#' saving and restoring temporary files, and so on. The primary function for
 #' organizing the simulations is \code{\link{runSimulation}}.
 #'
 #' @name SimDesign

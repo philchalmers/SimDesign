@@ -76,7 +76,7 @@ generates data for two groups using random normal draws, and returns a data.fram
 containing the dependent variable and grouping information. 
 
 ```{r}
-Analyse <- function(dat, parameters, condition){
+Analyse <- function(condition, dat, parameters = NULL){
     
     require(stats)
 
@@ -94,7 +94,7 @@ The `Analyse()` definition performs a Welch and independent t-test on the data g
 Finally, after the number of replications defined in `replications` has been completed a matrix (or list, if the output of `Analyse()` were a list instead of a vector) the overall results should be summerised into suitable meta-descriptions of the behavior. This is accomplished with the `Summarise()` function.
 
 ```{r}
-Summarise <- function(results, parameters_list, condition){
+Summarise <- function(condition, results, parameters_list = NULL){
     
     nms <- c('welch', 'independent')
     alpha.05 <- EDR(results[,nms], alpha = .05)
