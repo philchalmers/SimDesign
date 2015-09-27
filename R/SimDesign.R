@@ -1,10 +1,12 @@
 #' Simulation Design
 #'
-#' Functions to organize Monte Carlo simulations in R. Tries to manage the structure
-#' and back-end Monte Carlo simulations, managing issues like resimulating
-#' non-convergent results, organizing the functional workflow through a
-#' generate -> analyse -> summerise stragegy, handling parallel back-end information,
-#' saving and restoring temporary files, and so on. The primary function for
+#' This package provides tools to help organize Monte Carlo simulations in R.
+#' The tools provided control the structure and back-end of the Monte Carlo simulations
+#' by utilizing a generate-analyse-summerise strategy. The package
+#' attempts to handle issues such as re-simulating non-convergent results,
+#' supports parallel back-end computations, saves and restores temporary files,
+#' aggregates results across independent nodes, and provides native support for debugging.
+#' The primary function for
 #' organizing the simulations is \code{\link{runSimulation}}.
 #'
 #' @name SimDesign
