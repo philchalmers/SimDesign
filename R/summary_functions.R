@@ -32,7 +32,6 @@ bias <- function(observed, population = NULL){
         ret <- mean(observed)
     } else {
         stopifnot(is.vector(observed))
-        stopifnot(length(population) == 1L)
         ret <- mean(observed - population)
     }
     ret
@@ -76,7 +75,6 @@ RMSE <- function(observed, population = NULL){
         ret <- sqrt(mean(observed^2))
     } else {
         stopifnot(is.vector(observed))
-        stopifnot(length(population) == 1L)
         ret <- sqrt(mean((observed - population)^2))
     }
     ret
