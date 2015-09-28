@@ -1,0 +1,143 @@
+%\VignetteIndexEntry{simTool}
+%\VignetteEngine{knitr::knitr}
+---
+title: "SimDesign"
+author: "Phil Chalmers"
+date: "September 22, 2015"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+```{r include=FALSE}
+options(digits = 3)
+```
+
+# Parameter recovery of secondary estimates
+
+In some situations in may be useful to track information other than the data generated from `generate`. The
+example demonstrated in this working file relates to recovering latent trait score (also known as factor
+scores or abilities) from item response theory models. The focus here is how various test characteristics
+and estimation methods affect the precision of the $N$ recovered estimates. The difference between this and
+other simulations is that, in addition to analysing and tracking the data generated from `generate`, we also
+want to track information that was used to generate said data (i.e., the latent trait scores).
+
+### Define conditions
+
+To keep this example simple, we will only investigate the effects of varying the number of items in the test
+and population distribution of the latent traits. 
+All other parameters will be sampled from some internal generating functions in R. 
+
+```{r}
+test_length <- c(10, 20, 30)
+distribution <- c('normal', 'bimodal')
+Design <- expand.grid(test_length=test_length, distribution=distribution)
+```
+
+### Define the functions
+
+As usual, define the functions of interest. Here we make sure that `mirt` is loaded in when required.
+
+```{r}
+library(SimDesign)
+# SimDesign_functions()
+```
+
+```{r}
+Generate <- function(condition) {
+    
+    library(mirt) #for simdata() function
+    nitems <- condition$test_length
+    N <- 300
+        
+    #source in for convience (otherwise, these could be manually define in the source code)
+    a <- matrix(rlnorm(nitems, .2, .3))
+    d <- matrix(rnorm(nitems, 0, .5))
+    
+    if(condition$distribution == 'normal'){
+        Theta <- matrix(scale(rnorm(N)))
+    } else if(condition$distribution == 'bimodal'){
+        Theta <- scale(c(rnorm(N/2, 1, 0.5), rnorm(N/2, -1, 0.5)))
+    }
+    dat <- simdata(a=a, d=d, Theta=Theta, itemtype = 'dich')
+    
+    ret <- list(dat=dat, parameters=list(Theta=Theta, a=a, d=d))
+    ret
+}
+
+Analyse <- function(condition, dat, parameters = NULL) {
+    
+    library(mirt)
+    
+    # assign population values for complete model
+    sv <- mirt(dat, 1, pars = 'values')
+    sv$value[sv$name == 'a1'] <- parameters$a
+    sv$value[sv$name == 'd'] <- parameters$d
+    mod <- mirt(dat, 1, pars = sv, TOL = NaN)
+    
+    EAPscore <- fscores(mod, full.scores=TRUE)
+    MAPscore <- fscores(mod, method = 'MAP', full.scores=TRUE)
+    MLscore <- fscores(mod, method = 'ML', full.scores=TRUE)
+    
+    ret <- list(EAP=EAPscore, MAP=MAPscore, ML=MLscore)
+    ret
+}
+
+Summarise <- function(condition, results, parameters_list = NULL) {
+    index <- 1:length(results)
+    diff_EAP <- do.call(c, lapply(index, function(ind, obs, pop) obs[[ind]]$EAP - pop[[ind]]$Theta,
+                   obs=results, pop=parameters_list))
+    diff_MAP <- do.call(c, lapply(index, function(ind, obs, pop) obs[[ind]]$MAP - pop[[ind]]$Theta, 
+                   obs=results, pop=parameters_list))
+    diff_ML <- do.call(c, lapply(index, function(ind, obs, pop) obs[[ind]]$ML - pop[[ind]]$Theta, 
+                   obs=results, pop=parameters_list))
+    diff_ML <- diff_ML[is.finite(diff_ML)]
+    
+    bias_EAP <- mean(diff_EAP)
+    bias_MAP <- mean(diff_MAP)
+    bias_ML <- mean(diff_ML)
+    RMSE_EAP <- sqrt(mean(diff_EAP^2))
+    RMSE_MAP <- sqrt(mean(diff_MAP^2))
+    RMSE_ML <- sqrt(mean(diff_ML^2))
+    
+    ret <- c(bias_EAP=bias_EAP, bias_MAP=bias_MAP, bias_ML=bias_ML,
+             RMSE_EAP=RMSE_EAP, RMSE_MAP=RMSE_MAP, RMSE_ML=RMSE_ML)
+    ret
+}
+```
+
+### Run the simulation
+
+The following function calls should be familar to you by now. 
+
+```{r cache=TRUE}
+result <- runSimulation(Design, replications = 100, parallel = TRUE,
+                       generate=Generate, analyse=Analyse, summarise=Summarise)
+```
+
+```{r}
+print(result)
+```
+
+### Analyze the results
+
+When the $\theta$ estimates were generate from a normal distribution it appeared that all 
+latent trait estimates were fairly 
+unbiased across random $\theta$ sets, however ML estimation provided the 
+highest RMSE (this is reasonable, because the Bayesian estimates selected a good prior). 
+As the test length increased, all estimates improved in their overall precision to recover 
+the population parameters, which makes sense
+given that longer tests provide more information about an individuals' ability. 
+
+When the distribution of the $\theta$'s were bimodal the same effect occured, however for the EAP estimates
+the overall RMSE was actually slightly *less* than when the correct prior was provided for 
+the population (the default in *mirt* is $N(0,1)$). 
+ML estimates were largely unaffected by altering the distribution, mainly because estimates
+are not influenced by prior beliefs.
+
+Note that this analysis was about population effects *across all sampled ability levels*. In general, these 
+estimators may perform differently for specific abilities (i.e., ML estimation may do much worse as $|\theta|$
+becomes larger) and when different priors are used. Depending on what the focus of the Monte Carlo study is, 
+this topic may be of more importance than overall bias and RMSE (see the *mirtCAT* package and the associated 
+JSS paper for further details on this aspect of IRT models).
