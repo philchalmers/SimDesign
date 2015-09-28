@@ -1,11 +1,13 @@
 #' Compute bias summary statistic
 #'
-#' Computes the bias of a sample estimate from the population value.
+#' Computes the bias of a sample estimate from the population value. Accepts observed and population values,
+#' as well as observed values which are in deviation form.
 #'
 #' @param observed a numeric vector of parameter estimates, where the length is equal to the number of
 #'   replications
 #'
-#' @param population a numeric scalar indicating the fixed population value
+#' @param population a numeric scalar indicating the fixed population value. If NULL, then it will be assumed
+#'   that the \code{observed} input is in a deviation form (therefore \code{mean(observed)} will be returned)
 #'
 #' @return returns a single number indicating the overall bias in the estimates
 #'
@@ -20,12 +22,20 @@
 #' samp <- rnorm(100, 1, sd = 0.5)
 #' bias(samp, pop)
 #'
+#' dev <- samp - pop
+#' bias(dev)
+#'
 #' }
 #'
-bias <- function(observed, population){
-    stopifnot(is.vector(observed))
-    stopifnot(length(population) == 1L)
-    mean(observed - population)
+bias <- function(observed, population = NULL){
+    if(is.null(population)){
+        ret <- mean(observed)
+    } else {
+        stopifnot(is.vector(observed))
+        stopifnot(length(population) == 1L)
+        ret <- mean(observed - population)
+    }
+    ret
 }
 
 
@@ -33,12 +43,15 @@ bias <- function(observed, population){
 #' Compute the root mean square error
 #'
 #' Computes the average deviation (root mean square error; also known as the root mean square deviation)
-#' of a sample estimate from the population value.
+#' of a sample estimate from the population value. Accepts observed and population values,
+#' as well as observed values which are in deviation form.
 #'
 #' @param observed a numeric vector of parameter estimates, where the length is equal to the number of
 #'   replications
 #'
-#' @param population a numeric scalar indicating the fixed population value
+#' @param population a numeric scalar indicating the fixed population value. If NULL, then it will be assumed
+#'   that the \code{observed} input is in a deviation form (therefore \code{sqrt(mean(observed^2))} will be
+#'   returned)
 #'
 #' @return returns a single number indicating the overall bias in the estimates
 #'
@@ -53,12 +66,20 @@ bias <- function(observed, population){
 #' samp <- rnorm(100, 1, sd = 0.5)
 #' RMSE(samp, pop)
 #'
+#' dev <- samp - pop
+#' RMSE(dev)
+#'
 #' }
 #'
-RMSE <- function(observed, population){
-    stopifnot(is.vector(observed))
-    stopifnot(length(population) == 1L)
-    sqrt(mean((observed - population)^2))
+RMSE <- function(observed, population = NULL){
+    if(is.null(population)){
+        ret <- sqrt(mean(observed^2))
+    } else {
+        stopifnot(is.vector(observed))
+        stopifnot(length(population) == 1L)
+        ret <- sqrt(mean((observed - population)^2))
+    }
+    ret
 }
 
 

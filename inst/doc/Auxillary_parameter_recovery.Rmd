@@ -94,12 +94,12 @@ Summarise <- function(condition, results, parameters_list = NULL) {
                    obs=results, pop=parameters_list))
     diff_ML <- diff_ML[is.finite(diff_ML)]
     
-    bias_EAP <- mean(diff_EAP)
-    bias_MAP <- mean(diff_MAP)
-    bias_ML <- mean(diff_ML)
-    RMSE_EAP <- sqrt(mean(diff_EAP^2))
-    RMSE_MAP <- sqrt(mean(diff_MAP^2))
-    RMSE_ML <- sqrt(mean(diff_ML^2))
+    bias_EAP <- bias(diff_EAP)
+    bias_MAP <- bias(diff_MAP)
+    bias_ML <- bias(diff_ML)
+    RMSE_EAP <- RMSE(diff_EAP)
+    RMSE_MAP <- RMSE(diff_MAP)
+    RMSE_ML <- RMSE(diff_ML)
     
     ret <- c(bias_EAP=bias_EAP, bias_MAP=bias_MAP, bias_ML=bias_ML,
              RMSE_EAP=RMSE_EAP, RMSE_MAP=RMSE_MAP, RMSE_ML=RMSE_ML)
