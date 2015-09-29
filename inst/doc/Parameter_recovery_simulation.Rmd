@@ -22,6 +22,32 @@ theory framework, and limited-information IFA from the structural equation model
 under which circumstances should either method be used? Here we explore a simple one factor test structure
 to determine which approach can recover the item parameters when varying test length and sample size.
 
+Unforunatly, the `mirt` package uses a slightly different parameterization of the IFA problem, implementing 
+a logistic model rather than a normal ogive model. Historically, the response curves have been equated 
+by applying a scaling correction of $D = 1.702$ to help fix this issue, which as can be seen below makes the 
+response curves very similar (as it turns out, logistic models have slightly thicker tails than ogive models).
+
+To give the following simulation the benifit of the doubt, the data will be 
+generated from the normal ogive model (implying that `lavaan` is fitting the correct model) while `mirt`
+is only fitting an approximation to this model by translating the parameters. From this we will see whether
+FIML with a logistic model will better approximate the normal ogive parmaters compared to the limited information
+DWLS approach available in `lavaan`.
+
+```{r}
+P_logit <- function(a, d, Theta) exp(a * Theta + d) / (1 + exp(a * Theta + d))
+P_ogive <- function(a, d, Theta) pnorm(a * Theta + d)
+
+Theta <- seq(-5,5,length.out=200)
+a <- 0.5
+d <- -.5
+D <- 1.702
+
+example <- data.frame(Theta, logit=P_logit(a*D, d*D, Theta), ogive=P_ogive(a, d, Theta))
+plot(Theta, example$logit, type = 'l', ylab = 'P', las=1)
+lines(Theta, example$ogive, col = 'red')
+```
+
+
 ### Define the conditions
 
 Start by defining the conditions to be studied. Because we are interested in a number of slopes and intercepts
@@ -40,8 +66,8 @@ set.seed(1234)
 aux_info <- vector('list', 2)
 names(aux_info) <- test_length
 for(i in 1:2)
-    aux_info[[i]] <- list(a = round(rlnorm(test_length[i], .2, .3), 2), 
-                          d = round(rnorm(test_length[i], 0, .5), 2))
+    aux_info[[i]] <- list(a = round(rlnorm(test_length[i], .2, .3)/1.702, 2), 
+                          d = round(rnorm(test_length[i], 0, .5)/1.702, 2))
 aux_info
 saveRDS(aux_info, 'parameters.rds')
 ```
@@ -60,17 +86,25 @@ library(SimDesign)
 ```{r}
 Generate <- function(condition) {
     
-    library(mirt) #for simdata() function
-    nitems <- as.character(condition$test_length)
+    P_ogive <- function(a, d, Theta) pnorm(a*Theta + d)
+    
+    nitems <- condition$test_length
     N <- condition$sample_size
         
     #source in for convience (otherwise, these could be manually define in the source code)
     parameters <- readRDS('parameters.rds')
-    a <- matrix(parameters[[nitems]]$a)
-    d <- matrix(parameters[[nitems]]$d)
+    a <- matrix(parameters[[as.character(nitems)]]$a)
+    d <- matrix(parameters[[as.character(nitems)]]$d)
     
-    dat <- as.data.frame(simdata(a=a, d=d, N=N, itemtype = 'dich'))
-    return(dat)
+    dat <- matrix(NA, N, nitems)
+    colnames(dat) <- paste0('item_', 1:nitems)
+    Theta <- rnorm(N)
+    for(j in 1:nitems){
+        p <- P_ogive(a[j], d[j], Theta)
+        for(i in 1:N)
+            dat[i,j] <- sample(c(1,0), 1, prob = c(p[i], 1 - p[i])) 
+    }
+    return(as.data.frame(dat))
 }
 
 Analyse <- function(condition, dat, parameters = NULL) {
@@ -82,16 +116,16 @@ Analyse <- function(condition, dat, parameters = NULL) {
     mod <- try(mirt(dat, 1L, verbose=FALSE), silent=TRUE)
     if(mod@converge != 1) stop('did not converge')
     cfs <- coef(mod, simplify = TRUE, digits = Inf)
-    FIML_as <- cfs$items[,1L]
-    FIML_ds <- cfs$items[,2L]
+    FIML_as <- cfs$items[,1L] / 1.702
+    FIML_ds <- cfs$items[,2L] / 1.702
     
     lavmod <- paste0('F =~ ', paste0('NA*', colnames(dat)[1L], ' + '), 
                      paste0(colnames(dat)[-1L], collapse = ' + '),
                      '\nF ~~ 1*F')
     lmod <- try(sem(lavmod, dat, ordered = colnames(dat)))
-    cfs2 <- coef(lmod) * 1.702 # scaling adjustment
+    cfs2 <- coef(lmod) 
     DWLS_as <- cfs2[1L:nitems]
-    DWLS_ds <- -1 * cfs2[(1L:nitems) + nitems]
+    DWLS_ds <- -1*cfs2[(1L:nitems) + nitems]
 
     return(c(FIML_as=unname(FIML_as), FIML_ds=unname(FIML_ds), 
              DWLS_as=unname(DWLS_as), DWLS_ds=unname(DWLS_ds)))
@@ -159,27 +193,6 @@ rownames(bias_as_dwls) <- aux_info[["10"]]$a
 (out <- list(FIML=bias_as_fiml, DWLS=bias_as_dwls))
 sapply(out, colMeans)
 
-# bias in intercepts
-bias_ds_fiml <- t(res10[,grepl('bias\\.', names10) & grepl('\\_ds', names10) & 
-                       grepl('FIML', names10)])
-colnames(bias_ds_fiml) <- sample_sizes
-rownames(bias_ds_fiml) <- aux_info[["10"]]$d
-
-bias_ds_dwls <- t(res10[,grepl('bias\\.', names10) & grepl('\\_ds', names10) & 
-                       grepl('DWLS', names10)])
-colnames(bias_ds_dwls) <- sample_sizes
-rownames(bias_ds_dwls) <- aux_info[["10"]]$d
-
-(out <- list(FIML=bias_ds_fiml, DWLS=bias_ds_dwls))
-sapply(out, colMeans)
-```
-
-DWLS does not appear to be less biased overall, and also does not appear to be come less biased as the 
-sample size increases. Furthermore, the slopes seem to be systematically under-estimated by a large amount 
-in the DWLS as indicated by the large negative bias. FIML however does get better as the $N$ increases, 
-and does not seem to be systematically biased in either the intercepts or slopes.
-
-```{r}
 # RMSE in slopes
 RMSE_as_fiml <- t(res10[,grepl('RMSE\\.', names10) & grepl('\\_as', names10) & 
                        grepl('FIML', names10)])
@@ -192,6 +205,52 @@ colnames(RMSE_as_dwls) <- sample_sizes
 rownames(RMSE_as_dwls) <- aux_info[["10"]]$a
 
 (out <- list(FIML=RMSE_as_fiml, DWLS=RMSE_as_dwls))
+sapply(out, colMeans)
+```
+
+Regarding the slope parameters, DWLS appears to be fairly biased across different slope values
+resulting in a systematic under-estimated by a large amount (as indicated by the large negative bias). 
+Furthermore, the bias DWLS did not appear to improve as sample size increased, though overall the RMSE did
+slightly improve in larger samples. 
+
+FIML, however, did perform better as the sample size increased, and did not seem to be systematically 
+biased. Only when $N=100$ did it appear that DWLS appear to outperform FIML in terms of RMSE, but given that 
+DWLS is systematically biased downwords it's difficult to claim that this approach should be recommended
+even in very small sample sizes.
+
+Additionally, there appears to be an effect relating to the size of the parameters. Regarding DWLS, 
+larger slopes tend to be recovered with more bias than slopes which are closer to 0. Unfortunately,
+as bias increase so too does RMSE, therefore DWLS appears to be negatively effected as the slopes become
+larger in magnitude. Both estimators appeared to have more sampling variability for larger slopes (see
+the RMSE plot below), but the DWLS appeared to perform much worse than the FIML estimator for nearly all
+parameters.
+
+```{r}
+library(ggplot2)
+plt <- data.frame(pars = c(aux_info[["10"]]$a, aux_info[["10"]]$a), 
+                  RMSE = c(RMSE_as_fiml[,'1000'], RMSE_as_dwls[,'1000']),
+                  bias = c(bias_as_fiml[,'1000'], bias_as_dwls[,'1000']),
+                  estimator = rep(c('FIML', 'DWLS'), each = 10))
+ggplot(plt, aes(pars, bias, colour=estimator)) + geom_point(size=2) + facet_wrap(~estimator) + 
+    ggtitle('slope sizes by bias for FIML and DWLS estimators')
+ggplot(plt, aes(pars, RMSE, colour=estimator)) + geom_point(size=2) + facet_wrap(~estimator) + 
+    ggtitle('slope sizes by RMSE for FIML and DWLS estimators')
+
+```
+
+```{r}
+# bias in intercepts
+bias_ds_fiml <- t(res10[,grepl('bias\\.', names10) & grepl('\\_ds', names10) & 
+                       grepl('FIML', names10)])
+colnames(bias_ds_fiml) <- sample_sizes
+rownames(bias_ds_fiml) <- aux_info[["10"]]$d
+
+bias_ds_dwls <- t(res10[,grepl('bias\\.', names10) & grepl('\\_ds', names10) & 
+                       grepl('DWLS', names10)])
+colnames(bias_ds_dwls) <- sample_sizes
+rownames(bias_ds_dwls) <- aux_info[["10"]]$d
+
+(out <- list(FIML=bias_ds_fiml, DWLS=bias_ds_dwls))
 sapply(out, colMeans)
 
 # RMSE in intercepts
@@ -209,25 +268,10 @@ rownames(RMSE_ds_dwls) <- aux_info[["10"]]$d
 sapply(out, colMeans)
 ```
 
-Concerning RMSE, FIML appeared to do less well in smaller sample sizes but become more effective than DWLS 
-when $N >= 500$. This effect appeared to be more prevalent in the slopes rather than the intercepts. The 
-conclusion about RMSE is that FIML tends to be more efficient in recovering parameters, but only after a certain
-sample size is achieved.
-
-Additionally, there appears to be an effect relating to the size of the parameters. Larger slopes tend to be recovered with more bias than slopes which are closer to 0. Had we obtained information about the parameter 
-standard errors this would have been obvious as well, because the sampling variability for more extreme parameters tends to be much larger than more centralized parameters. This effect is more systematic for FIML,
-and appears to be more sporadic for DWLS.
-
-```{r}
-library(ggplot2)
-plt <- data.frame(pars = c(aux_info[["10"]]$a, aux_info[["10"]]$a), 
-                  RMSE = c(RMSE_as_fiml[,'1000'], RMSE_ds_dwls[,'1000']), 
-                  estimator = rep(c('FIML', 'DWLS'), each = 10))
-ggplot(plt, aes(pars, RMSE, colour=estimator)) + geom_point(size=2) + facet_wrap(~estimator) + 
-    ggtitle('slope sizes by RMSE for FIML and DWLS estimators')
-
-```
-
+Moving now to the intercepts, both DWLS and FIML appeared to become less biased as the sample size increased,
+however FIML was overall slightly less biased than DWLS. The two estimators also appeared fairly comperable
+in recovering the intercept parameters, where DWLS performed slightly better in smaller sample sizes than FIML.
+Both estimators also become more accurate as $N$ increased.
 
 #### Thirty items
 
@@ -247,26 +291,6 @@ rownames(bias_as_dwls) <- aux_info[["30"]]$a
 (out <- list(FIML=bias_as_fiml, DWLS=bias_as_dwls))
 sapply(out, colMeans)
 
-# bias in intercepts
-bias_ds_fiml <- t(res30[,grepl('bias\\.', names30) & grepl('\\_ds', names30) & 
-                       grepl('FIML', names30)])
-colnames(bias_ds_fiml) <- sample_sizes
-rownames(bias_ds_fiml) <- aux_info[["30"]]$d
-
-bias_ds_dwls <- t(res30[,grepl('bias\\.', names30) & grepl('\\_ds', names30) & 
-                       grepl('DWLS', names30)])
-colnames(bias_ds_dwls) <- sample_sizes
-rownames(bias_ds_dwls) <- aux_info[["30"]]$d
-
-(out <- list(FIML=bias_ds_fiml, DWLS=bias_ds_dwls))
-sapply(out, colMeans)
-```
-
-The same trend appeared in the 30 item simulation case, where again FIML was less biased in both intercepts and 
-slopes than DWLS. However, it appears that in larger tests DWLS becomes even more biased when recovering slopes,
-but less bias in recovering intercepts. 
-
-```{r}
 # RMSE in slopes
 RMSE_as_fiml <- t(res30[,grepl('RMSE\\.', names30) & grepl('\\_as', names30) & 
                        grepl('FIML', names30)])
@@ -279,6 +303,22 @@ colnames(RMSE_as_dwls) <- sample_sizes
 rownames(RMSE_as_dwls) <- aux_info[["30"]]$a
 
 (out <- list(FIML=RMSE_as_fiml, DWLS=RMSE_as_dwls))
+sapply(out, colMeans)
+```
+
+```{r}
+# bias in intercepts
+bias_ds_fiml <- t(res30[,grepl('bias\\.', names30) & grepl('\\_ds', names30) & 
+                       grepl('FIML', names30)])
+colnames(bias_ds_fiml) <- sample_sizes
+rownames(bias_ds_fiml) <- aux_info[["30"]]$d
+
+bias_ds_dwls <- t(res30[,grepl('bias\\.', names30) & grepl('\\_ds', names30) & 
+                       grepl('DWLS', names30)])
+colnames(bias_ds_dwls) <- sample_sizes
+rownames(bias_ds_dwls) <- aux_info[["30"]]$d
+
+(out <- list(FIML=bias_ds_fiml, DWLS=bias_ds_dwls))
 sapply(out, colMeans)
 
 # RMSE in intercepts
@@ -296,9 +336,9 @@ rownames(RMSE_ds_dwls) <- aux_info[["30"]]$d
 sapply(out, colMeans)
 ```
 
-Again the same trends appeared, however this time FIML become more efficient when $N >= 250$ in the slopes.
-
-
+The same trend appeared in the 30 item simulation case, where again FIML was less biased in both intercepts and 
+slopes than DWLS, DWLS was systmetically biased in the slope parameters, and 
+DWLS performed slightly better in the $N=100$ condition for the slope parameters. 
 
 ```{r include=FALSE}
 system('rm *.rds')
