@@ -1,4 +1,4 @@
-%\VignetteIndexEntry{simTool}
+%\VignetteIndexEntry{SimDesign}
 %\VignetteEngine{knitr::knitr}
 ---
 title: "SimDesign"
@@ -216,7 +216,7 @@ sample size is achieved.
 
 Additionally, there appears to be an effect relating to the size of the parameters. Larger slopes tend to be recovered with more bias than slopes which are closer to 0. Had we obtained information about the parameter 
 standard errors this would have been obvious as well, because the sampling variability for more extreme parameters tends to be much larger than more centralized parameters. This effect is more systematic for FIML,
-and appears to be more sporatic for DWLS.
+and appears to be more sporadic for DWLS.
 
 ```{r}
 library(ggplot2)

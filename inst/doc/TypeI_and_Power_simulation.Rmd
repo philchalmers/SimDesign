@@ -1,4 +1,4 @@
-%\VignetteIndexEntry{simTool}
+%\VignetteIndexEntry{SimDesign}
 %\VignetteEngine{knitr::knitr}
 ---
 title: "SimDesign"

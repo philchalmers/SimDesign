@@ -1,4 +1,4 @@
-%\VignetteIndexEntry{simTool}
+%\VignetteIndexEntry{SimDesign}
 %\VignetteEngine{knitr::knitr}
 ---
 title: "SimDesign"
@@ -20,7 +20,7 @@ In some situations in may be useful to track information other than the data gen
 example demonstrated in this working file relates to recovering latent trait score (also known as factor
 scores or abilities) from item response theory models. The focus here is how various test characteristics
 and estimation methods affect the precision of the $N$ recovered estimates. The difference between this and
-other simulations is that, in addition to analysing and tracking the data generated from `generate`, we also
+other simulations is that, in addition to analyzing and tracking the data generated from `generate`, we also
 want to track information that was used to generate said data (i.e., the latent trait scores).
 
 ### Define conditions
@@ -107,9 +107,24 @@ Summarise <- function(condition, results, parameters_list = NULL) {
 }
 ```
 
+The difference in this simulation compared to the previous approaches is that `generate` and `analyse` 
+return lists rather than the usual data-based structures or vectors. This allows more general objects 
+to be returned if need be (because lists can contain any number of elements), though this comes at a
+small cost. When the `summarise` function is finally called, list objects cannot be easily simplified
+a priori, therefore the `results` object will be a list with the same length as the number of 
+`replications`. 
+
+Another slightly different approach here appears in the `summarise` function, where instead of supplying
+elements of `observed` and `population` values to `bias()` and `RMSE()` an object containing the 
+difference between the observed and population values are supplied. These functions recognize that 
+when only one input is supplied the objects are in a population difference form, and therefore 
+compute the respective statistics. Sometimes this is easier than supplying every element to the functions
+individually. 
+
+
 ### Run the simulation
 
-The following function calls should be familar to you by now. 
+The following function call should be familiar to you by now. 
 
 ```{r cache=TRUE}
 result <- runSimulation(Design, replications = 100, parallel = TRUE,
@@ -130,7 +145,7 @@ As the test length increased, all estimates improved in their overall precision 
 the population parameters, which makes sense
 given that longer tests provide more information about an individuals' ability. 
 
-When the distribution of the $\theta$'s were bimodal the same effect occured, however for the EAP estimates
+When the distribution of the $\theta$'s were bimodal the same effect occurred, however for the EAP estimates
 the overall RMSE was actually slightly *less* than when the correct prior was provided for 
 the population (the default in *mirt* is $N(0,1)$). 
 ML estimates were largely unaffected by altering the distribution, mainly because estimates
