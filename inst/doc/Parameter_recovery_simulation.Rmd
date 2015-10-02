@@ -114,6 +114,7 @@ Analyse <- function(condition, dat, parameters = NULL) {
     nitems <- condition$test_length
     
     mod <- try(mirt(dat, 1L, verbose=FALSE), silent=TRUE)
+    check_error(mod)
     if(mod@converge != 1) stop('did not converge')
     cfs <- coef(mod, simplify = TRUE, digits = Inf)
     FIML_as <- cfs$items[,1L] / 1.702
@@ -123,6 +124,8 @@ Analyse <- function(condition, dat, parameters = NULL) {
                      paste0(colnames(dat)[-1L], collapse = ' + '),
                      '\nF ~~ 1*F')
     lmod <- try(sem(lavmod, dat, ordered = colnames(dat)))
+    check_error(lmod)
+    if(!lmod@Fit@converged) stop('did not converge')
     cfs2 <- coef(lmod) 
     DWLS_as <- cfs2[1L:nitems]
     DWLS_ds <- -1*cfs2[(1L:nitems) + nitems]
