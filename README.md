@@ -20,4 +20,6 @@ library(SimDesign)
 help(runSimulation)
 ```
 
-Go through the worked example to understand what the function inputs require, and try your luck walking through a debugging process though the `edit` argument (also very handy for writting the initial functions if you are comfortable with the debugging enviroment).
+Go through the worked example to understand what the function inputs require, and try your luck walking through a debugging process though the `edit` argument (also very handy for writing the initial functions if you are comfortable with the debugging environment).
+
+For additional information and instructions refer to the examples on the [wiki](https://github.com/philchalmers/mirt/wiki).

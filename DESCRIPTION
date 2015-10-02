@@ -9,7 +9,9 @@ Description: This package provides tools to help organize Monte Carlo simulation
              attempts to handle issues such as re-simulating non-convergent results,
              supports parallel back-end computations, saves and restores temporary files,
              aggregates results across independent nodes, and provides native support for debugging.
+VignetteBuilder: knitr
 Depends: R (>= 3.2.1)
 Imports: foreach, methods, parallel
+Suggests: knitr
 License: GPL (>=2)
 LazyData: true

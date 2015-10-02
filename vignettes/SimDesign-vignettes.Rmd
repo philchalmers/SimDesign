@@ -1,0 +1,10 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Online Vignettes}
+-->
+
+`SimDesign` Vignette Files
+=====================
+
+To access examples and instructions that have been generated with the `knitr` package please
+visit [the package wiki on Github](https://github.com/philchalmers/SimDesign/wiki).
