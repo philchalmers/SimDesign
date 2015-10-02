@@ -2,9 +2,9 @@
 % Please edit documentation in R/summary_functions.R
 \name{bias}
 \alias{bias}
-\title{Compute bias summary statistic}
+\title{Compute (relative) bias summary statistic}
 \usage{
-bias(observed, population = NULL)
+bias(observed, population = NULL, relative = FALSE)
 }
 \arguments{
 \item{observed}{a numeric vector of parameter estimates, where the length is equal to the number of
@@ -12,20 +12,24 @@ bias(observed, population = NULL)
 
 \item{population}{a numeric scalar indicating the fixed population value. If NULL, then it will be assumed
   that the \code{observed} input is in a deviation form (therefore \code{mean(observed)} will be returned)}
+
+\item{relative}{logical; compute the relative bias statistic? Default is FALSE}
 }
 \value{
-returns a single number indicating the overall bias in the estimates
+returns a single number indicating the overall (relative) bias in the estimates
 }
 \description{
-Computes the bias of a sample estimate from the population value. Accepts observed and population values,
-as well as observed values which are in deviation form.
+Computes the (relative) bias of a sample estimate from the population value.
+Accepts observed and population values, as well as observed values which are in deviation form.
+If relative bias is requested the \code{observed} and \code{population} inputs are both required.
 }
 \examples{
 \dontrun{
 
-pop <- 1
-samp <- rnorm(100, 1, sd = 0.5)
+pop <- 2
+samp <- rnorm(100, 2, sd = 0.5)
 bias(samp, pop)
+bias(samp, pop, relative = TRUE)
 
 dev <- samp - pop
 bias(dev)

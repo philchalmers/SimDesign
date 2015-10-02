@@ -1,7 +1,8 @@
-#' Compute bias summary statistic
+#' Compute (relative) bias summary statistic
 #'
-#' Computes the bias of a sample estimate from the population value. Accepts observed and population values,
-#' as well as observed values which are in deviation form.
+#' Computes the (relative) bias of a sample estimate from the population value.
+#' Accepts observed and population values, as well as observed values which are in deviation form.
+#' If relative bias is requested the \code{observed} and \code{population} inputs are both required.
 #'
 #' @param observed a numeric vector of parameter estimates, where the length is equal to the number of
 #'   replications
@@ -9,7 +10,9 @@
 #' @param population a numeric scalar indicating the fixed population value. If NULL, then it will be assumed
 #'   that the \code{observed} input is in a deviation form (therefore \code{mean(observed)} will be returned)
 #'
-#' @return returns a single number indicating the overall bias in the estimates
+#' @param relative logical; compute the relative bias statistic? Default is FALSE
+#'
+#' @return returns a single number indicating the overall (relative) bias in the estimates
 #'
 #' @aliases bias
 #'
@@ -18,21 +21,27 @@
 #' @examples
 #' \dontrun{
 #'
-#' pop <- 1
-#' samp <- rnorm(100, 1, sd = 0.5)
+#' pop <- 2
+#' samp <- rnorm(100, 2, sd = 0.5)
 #' bias(samp, pop)
+#' bias(samp, pop, relative = TRUE)
 #'
 #' dev <- samp - pop
 #' bias(dev)
 #'
 #' }
 #'
-bias <- function(observed, population = NULL){
-    if(is.null(population)){
-        ret <- mean(observed)
+bias <- function(observed, population = NULL, relative = FALSE){
+    if(relative){
+        stopifnot(!is.null(population))
+        ret <- (mean(observed) - population) / population
     } else {
-        stopifnot(is.vector(observed))
-        ret <- mean(observed - population)
+        if(is.null(population)){
+            ret <- mean(observed)
+        } else {
+            stopifnot(is.vector(observed))
+            ret <- mean(observed - population)
+        }
     }
     ret
 }
