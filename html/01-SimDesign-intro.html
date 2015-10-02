@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Introduction</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Introduction</h1>
+
+<p>Designing Monte Carlo simulations can be a fun and rewarding experience. Whether you are interested in
+evaluating the performance of a new optimizer or model, re-evaluating previous research claims (like the 
+ANOVA is &#39;robust&#39; to violation of normality), determine power rates for an upcoming research proposal, 
+or simply to appears a strange thought in your head about a new statistical idea you heard about, 
+Monte Carlo simulations can be incredibly rewarding. However, organizing them can be a challenge, and 
+all to often people resort to the dreaded for loop-nesting, <em>for</em>-ever resulting in confusing and error 
+prone code. The package <code>SimDesign</code> is one attempt to fix this issue.</p>
+
+<p>Monte Carlo simulations can be broken into three major steps:</p>
+
+<ul>
+<li><strong>generate</strong> your data from some model given some <strong>design</strong> conditions to be studied (e.g., sample size,
+distributions, group sizes, etc),</li>
+<li><strong>analyse</strong> the generated data using whatever statistical analyses you are interested in (e.g., t-test,
+ANOVA, SEMs, IRT, etc), and collect the statistics or estimates you are interested in, and</li>
+<li><strong>summarise</strong> the results after repeating the simulations \(R\) number of times.</li>
+</ul>
+
+<p>Each term above represents the essential components in the <code>SimDesign</code> package, where <strong>design</strong> 
+represents a <code>data.frame</code> object containing the simulation conditions to be investigated, and <strong>generate</strong>,
+<strong>analyse</strong>, and <strong>summarise</strong> represent user defined functions which comprise the steps in the simulation.
+Each of these components are constructed and passed to the <code>runSimulation()</code> function where the simulation 
+steps are evaluated.</p>
+
+<p>After loading the <code>SimDesign</code> package, we begin by defining the required functions. To expedite this process,
+a call to <code>SimDesign_functions()</code> will create a template to be filled in, where all the necessary functional arguments have been pre-assigned. The documentation of each argument can be found in the respective 
+R help files, however there organization is very simple conceptually:</p>
+
+<p>To begin, the following code should be copied and saved to an external source (i.e., text) file.</p>
+
+<pre><code class="r">library(SimDesign)
+SimDesign_functions()
+</code></pre>
+
+<pre><code>
+#-------------------------------------------------------------------
+### Define essential simulation functions. It may be helpful to place these
+### functions in a seperate R file and source() them in
+
+Generate &lt;- function(condition) {
+    # Define data generation code ...
+
+    # Return a vector, matrix, data.frame, or list
+    return(data.frame())
+}
+
+Analyse &lt;- function(condition, dat, parameters = NULL) {
+    # Run statistical analyses of interest ... 
+
+    # Return a vector or list
+    return(numeric())
+}
+
+Summarise &lt;- function(condition, results, parameters_list = NULL) {
+    # Summarise the simulation results ...
+
+    # Return a vector
+    return(numeric())
+}
+#-------------------------------------------------------------------
+
+### Define design conditions and number of replications
+# Design &lt;- expand.grid(condition1, condition2, ...)
+# replications &lt;- 1000
+
+### Run the simulation
+results &lt;- runSimulation(Design, replications, 
+    generate=Generate, analyse=Analyse, summarise=Summarise, edit=&#39;none&#39;)
+</code></pre>
+
+<h1>Simulation: Determine estimator efficiency</h1>
+
+<p><em>Question</em>: How does trimming affect recovering the mean of a distribution? Investigate this using
+different sample size and distribution configurations. Also demonstrate the effect of using the 
+median to recover the mean.</p>
+
+<h3>Define the conditions</h3>
+
+<p>First, define the condition combinations that should be investigated. In this case we wish to study
+4 different sample sizes, and use a symmetric and skewed distribution. The use of <code>expand.grid()</code> is
+extremely helpful here to create a completely crossed-design for each combination (there are 8 in total).</p>
+
+<pre><code class="r">sample_sizes &lt;- c(30, 60, 120, 240)
+distributions &lt;- c(&#39;normal&#39;, &#39;skewed&#39;)
+Design &lt;- expand.grid(sample_size = sample_sizes, 
+                      distribution = distributions)
+Design
+</code></pre>
+
+<pre><code>##   sample_size distribution
+## 1          30       normal
+## 2          60       normal
+## 3         120       normal
+## 4         240       normal
+## 5          30       skewed
+## 6          60       skewed
+## 7         120       skewed
+## 8         240       skewed
+</code></pre>
+
+<p>Each row in <code>Design</code> represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where \(N=30\) and the distribution should be normal. </p>
+
+<h3>Define the functions</h3>
+
+<p>We first start by defining the <code>generate</code> component. The only argument accepted by this function is <code>condition</code>, which will always be a <em>single row from the Design data.frame object</em> and will
+be of class <code>data.frame</code>. Conditions are run sequentially from row 1 to the last row in <code>Design</code>.</p>
+
+<pre><code class="r">Generate &lt;- function(condition) {
+    N &lt;- condition$sample_size
+    dist &lt;- condition$distribution
+    if(dist == &#39;normal&#39;){
+        dat &lt;- rnorm(N, mean = 3)
+    } else if(dist == &#39;skewed&#39;){
+        dat &lt;- rchisq(N, df = 3)
+    }
+    return(dat)
+}
+</code></pre>
+
+<p>As we can see from above, <code>Generate()</code> will return a numeric vector of length \(N\) containing the data to
+be analysed each with a population mean of 3 (because a \(\chi^2\) distribution has a mean equal to its df).
+Next, we define the <code>analyse</code> component to analyse said data:</p>
+
+<pre><code class="r">Analyse &lt;- function(condition, dat, parameters = NULL) {
+    M0 &lt;- mean(dat)
+    M1 &lt;- mean(dat, trim = .1)
+    M2 &lt;- mean(dat, trim = .2)
+    med &lt;- median(dat)
+
+    ret &lt;- c(mean_no_trim=M0, mean_trim.1=M1, mean_trim.2=M2, median=med)
+    return(ret)
+}
+</code></pre>
+
+<p>This function accepts the data previously returned from <code>Generate()</code> (<code>dat</code>), the condition vector previously
+mentioned, and an additional (optional) list of <code>parameters</code> that may have been defined in <code>Generate()</code>. In 
+this case <code>Generate()</code> only returned a single object, therefore <code>parameters</code> will simple be a <code>NULL</code> element.</p>
+
+<p>At this point, we may conceptually think of the first two functions as being run \(R\) different times to obtain
+\(R\) sets of results. In other words, if we wanted the number of replications to be 100, the first two functions
+would be independently run 100 times, the results from <code>Analyse()</code> would be stored somewhere, and we would 
+somehow need to summarise these 100 elements into meaningful meta statistics. This is where computing meta-statistics
+such as bias, root mean-square error, detection rates, and so on are of primary importance. This is the purpose
+of the <code>summarise</code> component:</p>
+
+<pre><code class="r">Summarise &lt;- function(condition, results, parameters_list = NULL) {
+    obt_bias &lt;- apply(results, 2, bias, population = 3)
+    obt_RMSE &lt;- apply(results, 2, RMSE, population = 3)
+
+    ret &lt;- c(bias=obt_bias, RMSE=obt_RMSE)
+    return(ret)
+}
+</code></pre>
+
+<p>Again, <code>condition</code> is the same as was defined before, <code>parameters_list</code> is a list of (optional) parameters
+that may have been defined in <code>Generate()</code> (here it is just <code>NULL</code>), and finally <code>results</code> which is a <code>matrix</code>
+containing all the results from <code>Analyse()</code> where each row represents the result returned from each respective
+replication and the number of columns is equal to the length of the vector returned by <code>Analyse()</code>. </p>
+
+<p>That sounds much more complicated than it is &mdash; all you really need for this simulation 
+is the \(R\) x 4 matrix <code>results</code> to build a suitable summary. Because the results is a matrix, the <code>apply()</code> 
+function is useful to apply a function over each respective row. The bias and RMSE are obtained for each
+respective statistic, and the overall result is returned as a vector.</p>
+
+<p>Stopping for a moment and thinking now, each <code>condition</code> will be paired with a unique vector returned from
+<code>Summarise()</code>. Therefore, you might be thinking that the result returned from the simulation will be in
+a rectangular form, such as in a <code>matrix</code> or <code>data.frame</code>. 
+Well, you&#39;d be right &mdash; good on you for thinking.</p>
+
+<h3>Putting it all together</h3>
+
+<p>The last stage of the <code>SimDesign</code> work-flow is to pass the four defined objects to the <code>runSimulation()</code> 
+function which, unsurprisingly, runs the simulation. There are numerous options available in the 
+function, and these should be investigated by reading the <code>help(runSimulation)</code> file. Options for 
+performing simulations in parallel, storing/resuming temporary results, debugging functions,
+and so on are available. Below we simply request that each condition be run 1000 times on a 
+single processor, and finally store the results to an object called <code>results</code>.</p>
+
+<pre><code class="r">results &lt;- runSimulation(Design, replications = 1000, 
+    generate=Generate, analyse=Analyse, summarise=Summarise)
+</code></pre>
+
+<pre><code>## 
+Completed: 0%,   Previous cell time: 0.0,  Total elapsed time: 0.0 
+Completed: 12%,   Previous cell time: 0.2,  Total elapsed time: 0.2 
+Completed: 25%,   Previous cell time: 0.2,  Total elapsed time: 0.4 
+Completed: 38%,   Previous cell time: 0.2,  Total elapsed time: 0.6 
+Completed: 50%,   Previous cell time: 0.2,  Total elapsed time: 0.8 
+Completed: 62%,   Previous cell time: 0.2,  Total elapsed time: 1.0 
+Completed: 75%,   Previous cell time: 0.2,  Total elapsed time: 1.2 
+Completed: 88%,   Previous cell time: 0.2,  Total elapsed time: 1.5
+</code></pre>
+
+<pre><code class="r">results
+</code></pre>
+
+<pre><code>##   sample_size distribution bias.mean_no_trim bias.mean_trim.1
+## 1          30       normal            0.0045           0.0054
+## 2          60       normal           -0.0045          -0.0039
+## 3         120       normal           -0.0047          -0.0049
+## 4         240       normal           -0.0012          -0.0012
+## 5          30       skewed           -0.0110          -0.3246
+## 6          60       skewed            0.0144          -0.3207
+## 7         120       skewed           -0.0048          -0.3483
+## 8         240       skewed            0.0017          -0.3477
+##   bias.mean_trim.2 bias.median RMSE.mean_no_trim RMSE.mean_trim.1
+## 1           0.0072     0.00781             0.186            0.190
+## 2          -0.0030     0.00095             0.130            0.136
+## 3          -0.0051    -0.00342             0.091            0.094
+## 4          -0.0010    -0.00308             0.064            0.066
+## 5          -0.4628    -0.60970             0.457            0.537
+## 6          -0.4626    -0.59321             0.315            0.438
+## 7          -0.4927    -0.63239             0.221            0.407
+## 8          -0.4930    -0.63576             0.154            0.377
+##   RMSE.mean_trim.2 RMSE.median N_CELL_RUNS SIM_TIME
+## 1            0.196       0.221        1000     0.20
+## 2            0.142       0.161        1000     0.19
+## 3            0.098       0.117        1000     0.21
+## 4            0.068       0.082        1000     0.24
+## 5            0.631       0.771        1000     0.19
+## 6            0.552       0.679        1000     0.22
+## 7            0.535       0.676        1000     0.23
+## 8            0.515       0.657        1000     0.26
+</code></pre>
+
+<p>As can be seen from the printed results, each result from the <code>Summary()</code> function has been paired with the 
+respective conditions, statistics have been properly named, and two additional columns have been appended
+to the results: <code>N_CELL_RUNS</code>, which indicates how many time the conditions were performed (in this case 1000 times each because there were no errors thrown which would require re-estimation), and <code>SIM_TIME</code> indicating
+the time (in seconds) it took to completely finish the respective conditions. A call to <code>View()</code> in the 
+R console may also be a nice way to sift through the <code>results</code> object.</p>
+
+<h3>Interpret the results</h3>
+
+<p>In this case visually inspecting the simulation table is enough to understand what is occurring, though for
+other Monte Carlo simulations use of ANOVAs, marginalized tables, and graphics should be used to capture the
+essentially phenomenon in the results. Monte Carlo simulations are just like collecting data for experiments,
+so be an analyst and present your data as though it were data collected from the real world. </p>
+
+<p>In this particular simulation, it is readily clear that using the un-adjusted mean will adequately recover
+the population mean with little bias. The precision also seems to increase as sample sizes increase, which 
+is indicated by the decreasing RMSE statistics. Generally, trimming causes less efficiency in the estimates,
+where greater amounts of trimming result in even less efficiency, and using the median as a proxy to estimate
+the mean is the least effective method. This can be seen rather clearly in the following table, which 
+prints the relative efficiency of the estimators:</p>
+
+<pre><code class="r">RMSEs &lt;- results[,grepl(&#39;RMSE\\.&#39;, colnames(results))]
+data.frame(Design, RE(RMSEs))
+</code></pre>
+
+<pre><code>##   sample_size distribution RMSE.mean_no_trim RMSE.mean_trim.1
+## 1          30       normal                 1             0.98
+## 2          60       normal                 1             0.96
+## 3         120       normal                 1             0.96
+## 4         240       normal                 1             0.98
+## 5          30       skewed                 1             0.85
+## 6          60       skewed                 1             0.72
+## 7         120       skewed                 1             0.54
+## 8         240       skewed                 1             0.41
+##   RMSE.mean_trim.2 RMSE.median
+## 1             0.95        0.84
+## 2             0.92        0.81
+## 3             0.92        0.78
+## 4             0.94        0.79
+## 5             0.72        0.59
+## 6             0.57        0.46
+## 7             0.41        0.33
+## 8             0.30        0.23
+</code></pre>
+
+<p>Finally, when the \(\chi^2\) distribution was investigated only the un-adjusted mean accurately portrayed the
+population mean. This isn&#39;t surprising, because the trimmed mean is after all making inferences about the 
+population trimmed mean, and the median is making inferences about, well, the median. Only when the
+distributions under investigation are symmetric will the statistics be able to make the same inferences about
+the mean of the population.</p>
+
+</body>
+
+</html>
