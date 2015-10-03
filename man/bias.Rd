@@ -34,6 +34,9 @@ bias(samp, pop, relative = TRUE)
 dev <- samp - pop
 bias(dev)
 
+# equivalent here
+bias(mean(samp), pop)
+
 }
 }
 

@@ -2,9 +2,9 @@
 % Please edit documentation in R/summary_functions.R
 \name{RMSE}
 \alias{RMSE}
-\title{Compute the root mean square error}
+\title{Compute the (normalized) root mean square error}
 \usage{
-RMSE(observed, population = NULL)
+RMSE(observed, population = NULL, type = "RMSE")
 }
 \arguments{
 \item{observed}{a numeric vector of parameter estimates, where the length is equal to the number of
@@ -13,9 +13,13 @@ RMSE(observed, population = NULL)
 \item{population}{a numeric scalar indicating the fixed population value. If NULL, then it will be assumed
   that the \code{observed} input is in a deviation form (therefore \code{sqrt(mean(observed^2))} will be
   returned)}
+
+\item{type}{type of deviation to compute. Can be 'RMSE' (default) for the root mean square-error,
+  'NRMSE' for the normalized RMSE (RMSE / (max(observed) - min(observed))), or 'CV' for the coefficient of
+  variation}
 }
 \value{
-returns a single number indicating the overall bias in the estimates
+returns a single number indicating the overall average devation in the estimates
 }
 \description{
 Computes the average deviation (root mean square error; also known as the root mean square deviation)
@@ -32,6 +36,13 @@ RMSE(samp, pop)
 dev <- samp - pop
 RMSE(dev)
 
+RMSE(samp, pop, type = 'NRMSE')
+RMSE(dev, type = 'NRMSE')
+RMSE(samp, pop, type = 'CV')
+
 }
+}
+\seealso{
+MAE
 }
 

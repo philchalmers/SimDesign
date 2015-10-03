@@ -29,6 +29,9 @@
 #' dev <- samp - pop
 #' bias(dev)
 #'
+#' # equivalent here
+#' bias(mean(samp), pop)
+#'
 #' }
 #'
 bias <- function(observed, population = NULL, relative = FALSE){
@@ -48,7 +51,7 @@ bias <- function(observed, population = NULL, relative = FALSE){
 
 
 
-#' Compute the root mean square error
+#' Compute the (normalized) root mean square error
 #'
 #' Computes the average deviation (root mean square error; also known as the root mean square deviation)
 #' of a sample estimate from the population value. Accepts observed and population values,
@@ -61,11 +64,17 @@ bias <- function(observed, population = NULL, relative = FALSE){
 #'   that the \code{observed} input is in a deviation form (therefore \code{sqrt(mean(observed^2))} will be
 #'   returned)
 #'
-#' @return returns a single number indicating the overall bias in the estimates
+#' @param type type of deviation to compute. Can be 'RMSE' (default) for the root mean square-error,
+#'   'NRMSE' for the normalized RMSE (RMSE / (max(observed) - min(observed))), or 'CV' for the coefficient of
+#'   variation
+#'
+#' @return returns a single number indicating the overall average devation in the estimates
 #'
 #' @aliases RMSE
 #'
 #' @export RMSE
+#'
+#' @seealso MAE
 #'
 #' @examples
 #' \dontrun{
@@ -77,18 +86,77 @@ bias <- function(observed, population = NULL, relative = FALSE){
 #' dev <- samp - pop
 #' RMSE(dev)
 #'
+#' RMSE(samp, pop, type = 'NRMSE')
+#' RMSE(dev, type = 'NRMSE')
+#' RMSE(samp, pop, type = 'CV')
+#'
 #' }
 #'
-RMSE <- function(observed, population = NULL){
+RMSE <- function(observed, population = NULL, type = 'RMSE'){
     if(is.null(population)){
         ret <- sqrt(mean(observed^2))
     } else {
         stopifnot(is.vector(observed))
         ret <- sqrt(mean((observed - population)^2))
     }
+    if(type == 'NRMSE') ret <- ret / (max(observed) - min(observed))
+    if(type == 'CV'){
+        stopifnot(!is.null(population))
+        ret <- ret / mean(observed)
+    }
     ret
 }
 
+
+
+
+#' Compute the mean absolute error
+#'
+#' Computes the average absolute deviation of a sample estimate from the population value.
+#' Accepts observed and population values,
+#' as well as observed values which are in deviation form.
+#'
+#' @param observed a numeric vector of parameter estimates, where the length is equal to the number of
+#'   replications
+#'
+#' @param population a numeric scalar indicating the fixed population value. If NULL, then it will be assumed
+#'   that the \code{observed} input is in a deviation form (therefore \code{mean(abs(observed))} will be
+#'   returned)
+#'
+#' @param type type of deviation to compute. Can be 'MAE' (default) for the mean absolute error, or
+#'   'NMSE' for the normalized MAE (MAE / (max(observed) - min(observed)))
+#'
+#' @return returns a single number indicating the overall mean absolute error in the estimates
+#'
+#' @aliases MAE
+#'
+#' @export MAE
+#'
+#' @seealso RMSE
+#'
+#' @examples
+#' \dontrun{
+#'
+#' pop <- 1
+#' samp <- rnorm(100, 1, sd = 0.5)
+#' MAE(samp, pop)
+#'
+#' dev <- samp - pop
+#' MAE(dev)
+#' MAE(samp, pop, type = 'NMAE')
+#'
+#' }
+#'
+MAE <- function(observed, population = NULL, type = 'MAE'){
+    if(is.null(population)){
+        ret <- mean(abs(observed))
+    } else {
+        stopifnot(is.vector(observed))
+        ret <- mean(abs(observed - population))
+    }
+    if(type == 'NMAE') ret <- ret / (max(observed) - min(observed))
+    ret
+}
 
 
 

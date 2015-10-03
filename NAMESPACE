@@ -2,6 +2,7 @@
 
 export(ECR)
 export(EDR)
+export(MAE)
 export(RE)
 export(RMSE)
 export(SimDesign_functions)
