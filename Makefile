@@ -6,5 +6,4 @@ vignettes:
 
 clean:
 	$(RM) source/*.md;
-	$(RM) -r source/figure/;
 
