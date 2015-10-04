@@ -15,10 +15,6 @@ to run simulations, complete with the correct inputs and class of outputs. Use t
 when defining your simulation.
 }
 \examples{
-\dontrun{
-
 SimDesign_functions()
-
-}
 }
 

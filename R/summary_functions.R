@@ -19,7 +19,6 @@
 #' @export bias
 #'
 #' @examples
-#' \dontrun{
 #'
 #' pop <- 2
 #' samp <- rnorm(100, 2, sd = 0.5)
@@ -32,7 +31,6 @@
 #' # equivalent here
 #' bias(mean(samp), pop)
 #'
-#' }
 #'
 bias <- function(observed, population = NULL, relative = FALSE){
     if(relative){
@@ -77,7 +75,6 @@ bias <- function(observed, population = NULL, relative = FALSE){
 #' @seealso MAE
 #'
 #' @examples
-#' \dontrun{
 #'
 #' pop <- 1
 #' samp <- rnorm(100, 1, sd = 0.5)
@@ -89,8 +86,6 @@ bias <- function(observed, population = NULL, relative = FALSE){
 #' RMSE(samp, pop, type = 'NRMSE')
 #' RMSE(dev, type = 'NRMSE')
 #' RMSE(samp, pop, type = 'CV')
-#'
-#' }
 #'
 RMSE <- function(observed, population = NULL, type = 'RMSE'){
     if(is.null(population)){
@@ -135,7 +130,6 @@ RMSE <- function(observed, population = NULL, type = 'RMSE'){
 #' @seealso RMSE
 #'
 #' @examples
-#' \dontrun{
 #'
 #' pop <- 1
 #' samp <- rnorm(100, 1, sd = 0.5)
@@ -144,8 +138,6 @@ RMSE <- function(observed, population = NULL, type = 'RMSE'){
 #' dev <- samp - pop
 #' MAE(dev)
 #' MAE(samp, pop, type = 'NMAE')
-#'
-#' }
 #'
 MAE <- function(observed, population = NULL, type = 'MAE'){
     if(is.null(population)){
@@ -176,7 +168,6 @@ MAE <- function(observed, population = NULL, type = 'MAE'){
 #' @export RE
 #'
 #' @examples
-#' \dontrun{
 #'
 #' pop <- 1
 #' samp1 <- rnorm(100, 1, sd = 0.5)
@@ -185,8 +176,6 @@ MAE <- function(observed, population = NULL, type = 'MAE'){
 #' RMSE2 <- RMSE(samp2, pop)
 #'
 #' RE(c(RMSE1, RMSE2))
-#'
-#' }
 #'
 RE <- function(RMSEs){
     if(!is.vector(RMSEs)){
@@ -212,7 +201,6 @@ RE <- function(RMSEs){
 #' @export EDR
 #'
 #' @examples
-#' \dontrun{
 #'
 #' rates <- numeric(100)
 #' for(i in 1:100){
@@ -221,8 +209,6 @@ RE <- function(RMSEs){
 #' }
 #'
 #' EDR(rates, alpha = .05)
-#'
-#' }
 #'
 EDR <- function(p, alpha){
     stopifnot(all(p <= 1 && p >= 0))
@@ -250,7 +236,6 @@ EDR <- function(p, alpha){
 #' @export ECR
 #'
 #' @examples
-#' \dontrun{
 #'
 #' CIs <- matrix(NA, 100, 2)
 #' for(i in 1:100){
@@ -259,8 +244,6 @@ EDR <- function(p, alpha){
 #' }
 #'
 #' ECR(CIs, 0)
-#'
-#' }
 #'
 ECR <- function(CIs, population){
     stopifnot(is.matrix(CIs))

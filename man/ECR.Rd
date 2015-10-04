@@ -18,8 +18,6 @@ from the confidence intervals. Note that using \code{1 - ECR(CIs, population)} w
 detection rate.
 }
 \examples{
-\dontrun{
-
 CIs <- matrix(NA, 100, 2)
 for(i in 1:100){
    dat <- rnorm(100)
@@ -27,7 +25,5 @@ for(i in 1:100){
 }
 
 ECR(CIs, 0)
-
-}
 }
 

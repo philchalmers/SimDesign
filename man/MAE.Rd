@@ -26,8 +26,6 @@ Accepts observed and population values,
 as well as observed values which are in deviation form.
 }
 \examples{
-\dontrun{
-
 pop <- 1
 samp <- rnorm(100, 1, sd = 0.5)
 MAE(samp, pop)
@@ -35,8 +33,6 @@ MAE(samp, pop)
 dev <- samp - pop
 MAE(dev)
 MAE(samp, pop, type = 'NMAE')
-
-}
 }
 \seealso{
 RMSE

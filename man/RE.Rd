@@ -19,8 +19,6 @@ returns a vector/matrix of ratios indicating the relative efficiency compared to
 Computes the relateive efficiency given the RMSE values for multiple estimators
 }
 \examples{
-\dontrun{
-
 pop <- 1
 samp1 <- rnorm(100, 1, sd = 0.5)
 RMSE1 <- RMSE(samp1, pop)
@@ -28,7 +26,5 @@ samp2 <- rnorm(100, 1, sd = 1)
 RMSE2 <- RMSE(samp2, pop)
 
 RE(c(RMSE1, RMSE2))
-
-}
 }
 

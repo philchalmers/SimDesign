@@ -11,11 +11,9 @@
 #' @export SimDesign_functions
 #'
 #' @examples
-#' \dontrun{
 #'
 #' SimDesign_functions()
 #'
-#' }
 SimDesign_functions <- function(main = FALSE){
     cat('\n#-------------------------------------------------------------------')
     cat('\n### Define essential simulation functions. It may be helpful to place these')

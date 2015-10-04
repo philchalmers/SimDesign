@@ -18,8 +18,6 @@ Computes the detection rate for determining empirical Type I error and power rat
 from p-values.
 }
 \examples{
-\dontrun{
-
 rates <- numeric(100)
 for(i in 1:100){
    dat <- rnorm(100)
@@ -27,7 +25,5 @@ for(i in 1:100){
 }
 
 EDR(rates, alpha = .05)
-
-}
 }
 

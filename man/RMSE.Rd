@@ -27,8 +27,6 @@ of a sample estimate from the population value. Accepts observed and population 
 as well as observed values which are in deviation form.
 }
 \examples{
-\dontrun{
-
 pop <- 1
 samp <- rnorm(100, 1, sd = 0.5)
 RMSE(samp, pop)
@@ -39,8 +37,6 @@ RMSE(dev)
 RMSE(samp, pop, type = 'NRMSE')
 RMSE(dev, type = 'NRMSE')
 RMSE(samp, pop, type = 'CV')
-
-}
 }
 \seealso{
 MAE

@@ -1,6 +1,6 @@
 Package: SimDesign
 Title: Structure for Organizing Monte Carlo Simulation Designs
-Version: 0.2
+Version: 0.3
 Date: 2015-10-04
 Authors@R: person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com",
            role = c("aut", "cre"))
@@ -13,6 +13,6 @@ Description: Provides tools to help organize Monte Carlo simulations in R.
 VignetteBuilder: knitr
 Depends: R (>= 3.2.1)
 Imports: foreach, methods, parallel
-Suggests: knitr
+Suggests: knitr, testthat
 License: GPL (>=2)
 LazyData: true

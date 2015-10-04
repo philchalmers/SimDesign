@@ -160,8 +160,6 @@ the suitable \code{compname} input (or, if the \code{filename} and \code{tmpfile
 matching those files as well).
 }
 \examples{
-\dontrun{
-
 #### Step 1 --- Define your conditions under study and create design data.frame
 
 # (use EXPLICIT names, avoid things like N <- 100. That's fine in functions, not here)
@@ -236,7 +234,8 @@ Summarise <- function(condition, results, parameters_list = NULL){
 #### Step 3 --- Collect results by looping over the rows in design
 
 # this simulation does not save temp files or the final result to disk (save=FALSE)
-Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
+\dontrun{
+Final <- runSimulation(design=Design, replications=100, parallel=FALSE,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 head(Final)
 View(Final)

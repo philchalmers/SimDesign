@@ -24,8 +24,6 @@ Accepts observed and population values, as well as observed values which are in 
 If relative bias is requested the \code{observed} and \code{population} inputs are both required.
 }
 \examples{
-\dontrun{
-
 pop <- 2
 samp <- rnorm(100, 2, sd = 0.5)
 bias(samp, pop)
@@ -36,7 +34,5 @@ bias(dev)
 
 # equivalent here
 bias(mean(samp), pop)
-
-}
 }
 
