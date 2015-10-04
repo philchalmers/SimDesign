@@ -8,6 +8,9 @@
 #' Supports parallel and cluster computing, global and
 #' local debugging, and is designed to be cross-platform.  For a skeleton version of the work-flow
 #' which may be useful when initially defining a simulation, see \code{\link{SimDesign_functions}}.
+#' Additional examples can be found on the package wiki, located at
+#' \url{https://github.com/philchalmers/SimDesign/wiki}
+#'
 #'
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
 #'
