@@ -1,5 +1,5 @@
 Package: SimDesign
-Title: Code-base for organizing Monte Carlo simulation designs
+Title: Structure for Organizing Monte Carlo Simulation Designs
 Version: 0.2
 Authors@R: person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com",
            role = c("aut", "cre"))

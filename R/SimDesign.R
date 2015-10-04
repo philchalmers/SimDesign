@@ -1,4 +1,4 @@
-#' Simulation Design
+#' Structure for Organizing Monte Carlo Simulation Designs
 #'
 #' This package provides tools to help organize Monte Carlo simulations in R.
 #' The tools provided control the structure and back-end of the Monte Carlo simulations
@@ -11,7 +11,7 @@
 #'
 #' @name SimDesign
 #' @docType package
-#' @title Simulation Design
+#' @title Structure for Organizing Monte Carlo Simulation Designs
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #' @import foreach methods parallel
 #' @keywords package

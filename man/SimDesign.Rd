@@ -4,9 +4,9 @@
 \name{SimDesign}
 \alias{SimDesign}
 \alias{SimDesign-package}
-\title{Simulation Design}
+\title{Structure for Organizing Monte Carlo Simulation Designs}
 \description{
-Simulation Design
+Structure for Organizing Monte Carlo Simulation Designs
 }
 \details{
 This package provides tools to help organize Monte Carlo simulations in R.
