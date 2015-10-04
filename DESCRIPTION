@@ -13,6 +13,6 @@ Description: Provides tools to help organize Monte Carlo simulations in R.
 VignetteBuilder: knitr
 Depends: R (>= 3.2.1)
 Imports: foreach, methods, parallel
-Suggests: knitr, testthat
+Suggests: knitr
 License: GPL (>=2)
 LazyData: true
