@@ -96,10 +96,9 @@ Finally, after the number of replications defined in `replications` has been com
 ```{r}
 Summarise <- function(condition, results, parameters_list = NULL){
     
-    nms <- c('welch', 'independent')
-    alpha.05 <- EDR(results[,nms], alpha = .05)
-    
+    alpha.05 <- EDR(results, alpha = .05)
     ret <- c(alpha.05=alpha.05)
+    
     return(ret)
 }
 ```

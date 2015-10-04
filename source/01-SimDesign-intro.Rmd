@@ -161,7 +161,7 @@ results <- runSimulation(Design, replications = 1000,
 results
 ```
 
-As can be seen from the printed results, each result from the `Summary()` function has been paired with the 
+As can be seen from the printed results, each result from the `Summarise()` function has been paired with the 
 respective conditions, statistics have been properly named, and two additional columns have been appended
 to the results: `N_CELL_RUNS`, which indicates how many time the conditions were performed (in this case 1000 times each because there were no errors thrown which would require re-estimation), and `SIM_TIME` indicating
 the time (in seconds) it took to completely finish the respective conditions. A call to `View()` in the 
