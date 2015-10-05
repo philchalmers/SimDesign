@@ -10,7 +10,7 @@ SimDesign_functions(main = FALSE)
 \item{main}{logical; include a skeleton of the \code{main} function?}
 }
 \description{
-This function prints skeleton versions of the required functions and workflow required
+This function prints skeleton versions of the required functions and work-flow required
 to run simulations, complete with the correct inputs and class of outputs. Use this at the start
 when defining your simulation.
 }

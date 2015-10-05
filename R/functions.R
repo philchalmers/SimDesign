@@ -57,7 +57,7 @@ generate <- function(condition) NULL
 #'   simulation conditions
 #'
 #' @return returns a named numeric vector with the values of interest (e.g., p-values,
-#'   effects sizes, etc), or a list containing values of interest (e.g., seperate matrix
+#'   effects sizes, etc), or a list containing values of interest (e.g., separate matrix
 #'   and vector of parameter estimates corresponding to elements in \code{parameters})
 #'
 #' @aliases analyse

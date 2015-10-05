@@ -8,7 +8,7 @@
 #
 Analysis <- function(Functions, condition, replications, cl, MPI, seed)
 {
-    # This defines the workflow for the Monte Carlo simulation given the condition (row in Design)
+    # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
     if(is.null(cl)){
         if(!is.null(seed)) set.seed(seed[condition$ID])

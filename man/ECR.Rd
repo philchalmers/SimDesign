@@ -8,7 +8,7 @@ ECR(CIs, population)
 }
 \arguments{
 \item{CIs}{a matrix of confidence interval values for a given population value, where the first
-  column indicates the lower cofidence interval and the second column the upper confidence interval}
+  column indicates the lower confidence interval and the second column the upper confidence interval}
 
 \item{population}{a numeric scalar indicating the fixed population value}
 }

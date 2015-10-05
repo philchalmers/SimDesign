@@ -20,7 +20,7 @@ runSimulation(design, replications, generate, analyse, summarise,
 \item{generate}{user-defined data and parameter generating function.
   See \code{\link{generate}} for details}
 
-\item{analyse}{user-defined computation function which acts on the dat generated from
+\item{analyse}{user-defined computation function which acts on the data generated from
   \code{\link{generate}}. See \code{\link{analyse}} for details}
 
 \item{summarise}{user-defined summary function to be used after all the replications have completed.
@@ -153,7 +153,7 @@ aggregating the results using the \code{\link{aggregate_simulations}} function.
 For instance, if you have two computers available and wanted 500 replications you
 could pass \code{replications = 300} to one computer and \code{replications = 200} to the other along
 with a \code{save = TRUE} argument. This will create two distinct .rds files which can be
-combined later with the \code{\link{aggregate_simulations}} function. The benifit of this approach over
+combined later with the \code{\link{aggregate_simulations}} function. The benefit of this approach over
 MPI is that computers need not be linked over a LAN network, and should the need arise the temporary
 simulation results can be migrated to another computer in case of a complete hardware failure by modifying
 the suitable \code{compname} input (or, if the \code{filename} and \code{tmpfilename} were modified,
@@ -174,7 +174,7 @@ dim(Design)
 head(Design)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
-#### Step 2 --- Define generate, analyse, and summerise functions
+#### Step 2 --- Define generate, analyse, and summarise functions
 
 # skeleton functions to be edited
 SimDesign_functions()

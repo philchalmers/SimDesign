@@ -19,7 +19,7 @@ RMSE(observed, population = NULL, type = "RMSE")
   variation}
 }
 \value{
-returns a single number indicating the overall average devation in the estimates
+returns a single number indicating the overall average deviation in the estimates
 }
 \description{
 Computes the average deviation (root mean square error; also known as the root mean square deviation)

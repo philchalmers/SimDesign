@@ -16,7 +16,7 @@ returns a vector/matrix of ratios indicating the relative efficiency compared to
   values greater than 1 indicate better efficiency
 }
 \description{
-Computes the relateive efficiency given the RMSE values for multiple estimators
+Computes the relative efficiency given the RMSE values for multiple estimators
 }
 \examples{
 pop <- 1

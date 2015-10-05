@@ -1,6 +1,6 @@
 #' Skeleton functions for simulations
 #'
-#' This function prints skeleton versions of the required functions and workflow required
+#' This function prints skeleton versions of the required functions and work-flow required
 #' to run simulations, complete with the correct inputs and class of outputs. Use this at the start
 #' when defining your simulation.
 #'

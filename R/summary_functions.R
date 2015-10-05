@@ -66,7 +66,7 @@ bias <- function(observed, population = NULL, relative = FALSE){
 #'   'NRMSE' for the normalized RMSE (RMSE / (max(observed) - min(observed))), or 'CV' for the coefficient of
 #'   variation
 #'
-#' @return returns a single number indicating the overall average devation in the estimates
+#' @return returns a single number indicating the overall average deviation in the estimates
 #'
 #' @aliases RMSE
 #'
@@ -154,7 +154,7 @@ MAE <- function(observed, population = NULL, type = 'MAE'){
 
 #' Compute the relative efficiency of multiple estimators
 #'
-#' Computes the relateive efficiency given the RMSE values for multiple estimators
+#' Computes the relative efficiency given the RMSE values for multiple estimators
 #'
 #' @param RMSEs a vector or matrix of mean square error values (see \code{\link{RMSE}}), where the first
 #'  element/row will be used as the reference
@@ -227,7 +227,7 @@ EDR <- function(p, alpha){
 #' detection rate.
 #'
 #' @param CIs a matrix of confidence interval values for a given population value, where the first
-#'   column indicates the lower cofidence interval and the second column the upper confidence interval
+#'   column indicates the lower confidence interval and the second column the upper confidence interval
 #'
 #' @param population a numeric scalar indicating the fixed population value
 #'

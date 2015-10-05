@@ -18,7 +18,7 @@ or vector) if a list was returned, otherwise just the raw object defined from \c
 }
 \value{
 returns a named numeric vector with the values of interest (e.g., p-values,
-  effects sizes, etc), or a list containing values of interest (e.g., seperate matrix
+  effects sizes, etc), or a list containing values of interest (e.g., separate matrix
   and vector of parameter estimates corresponding to elements in \code{parameters})
 }
 \description{
