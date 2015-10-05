@@ -163,11 +163,12 @@ matching those files as well).
 #### Step 1 --- Define your conditions under study and create design data.frame
 
 # (use EXPLICIT names, avoid things like N <- 100. That's fine in functions, not here)
-sample_sizes <- c(10, 20, 50, 100)
+sample_sizes <- c(30, 60, 90, 120)
 standard_deviation_ratios <- c(1, 4, 8)
+group_size_ratios <- c(.5, 1, 2)
 
-Design <- expand.grid(sample_size_group1=sample_sizes,
-                      sample_size_group2=sample_sizes,
+Design <- expand.grid(sample_size=sample_sizes,
+                      group_size_ratio=group_size_ratios,
                       standard_deviation_ratio=standard_deviation_ratios)
 dim(Design)
 head(Design)
@@ -183,9 +184,19 @@ Generate <- function(condition){
 
     #require packages/define functions if needed, or better yet index with the :: operator
 
-    N1 <- condition$sample_size_group1
-    N2 <- condition$sample_size_group2
+    N <- condition$sample_size
+    grs <- condition$group_size_ratio
     sd <- condition$standard_deviation_ratio
+
+    if(grs == 0.5){
+        N2 <- N/3
+        N1 <- N - N2
+    } else if(grs == 2){
+        N1 <- N/3
+        N2 <- N - N1
+    } else {
+        N1 <- N2 <- N / 2
+    }
 
     group1 <- rnorm(N1)
     group2 <- rnorm(N2, sd=sd)
@@ -233,9 +244,13 @@ Summarise <- function(condition, results, parameters_list = NULL){
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 3 --- Collect results by looping over the rows in design
 
-# this simulation does not save temp files or the final result to disk (save=FALSE)
+# test to see if it works and for debugging
+Final <- runSimulation(design=Design, replications=10, parallel=FALSE,
+                       generate=Generate, analyse=Analyse, summarise=Summarise)
+
 \dontrun{
-Final <- runSimulation(design=Design, replications=100, parallel=FALSE,
+# complete run with 1000 replications per condition
+Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 head(Final)
 View(Final)
@@ -286,42 +301,38 @@ runSimulation(design=Design, replications=1000,
 # This is where you get to be a data analyst!
 
 psych::describe(Final)
-psych::describeBy(Final, group = Final$standard_deviations)
+psych::describeBy(Final, group = Final$standard_deviation_ratio)
 
-# define new variables, if they are helpful
-Final$SSratio <- with(Final, sample_sizes_group1 / sample_sizes_group2)
-
-# make numerics into factors for lm() analyses
-Final$fSSratio <- with(Final, factor(SSratio))
-Final$fSD <- with(Final, factor(standard_deviations))
+# make into factors (if helpful)
+Final$f_gsr <- with(Final, factor(group_size_ratio))
+Final$f_sdr <- with(Final, factor(standard_deviation_ratio))
 
 #lm analysis (might want to change DV to a logit for better stability)
-mod <- lm(lessthan.05.welch ~ fSSratio * fSD, Final)
+mod <- lm(lessthan.05.welch ~ f_gsr * f_sdr, Final)
 car::Anova(mod)
 
-mod2 <- lm(lessthan.05.independent ~ fSSratio * fSD, Final)
+mod2 <- lm(lessthan.05.independent ~ f_gsr * f_sdr, Final)
 car::Anova(mod2)
-
-library(effects)
-plot(allEffects(mod2))
 
 # make some plots
 library(ggplot2)
 library(reshape2)
-welch_ind <- Final[,c('SSratio', "standard_deviations",
+welch_ind <- Final[,c('group_size_ratio', "standard_deviation_ratio",
     "lessthan.05.welch", "lessthan.05.independent")]
 dd <- melt(welch_ind, id.vars = names(welch_ind)[1:2])
 
-ggplot(dd, aes(factor(SSratio), value)) +
+ggplot(dd, aes(factor(group_size_ratio), value)) +
     geom_abline(intercept=0.05, slope=0, col = 'red') +
     geom_abline(intercept=0.075, slope=0, col = 'red', linetype='dotted') +
     geom_abline(intercept=0.025, slope=0, col = 'red', linetype='dotted') +
     geom_boxplot() + facet_wrap(~variable)
-ggplot(dd, aes(factor(SSratio), value, fill = factor(standard_deviations))) +
+
+ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation_ratio))) +
     geom_abline(intercept=0.05, slope=0, col = 'red') +
     geom_abline(intercept=0.075, slope=0, col = 'red', linetype='dotted') +
     geom_abline(intercept=0.025, slope=0, col = 'red', linetype='dotted') +
-    geom_boxplot() + facet_grid(standard_deviations~variable)
+    geom_boxplot() + facet_grid(variable~standard_deviation_ratio) +
+    theme(legend.position = 'none')
 
 
 }
