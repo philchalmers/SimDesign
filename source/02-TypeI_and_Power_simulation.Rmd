@@ -29,7 +29,7 @@ standard deviations, and investigate their effect when completely crossed.
 ```{r conditions}
 sample_sizes <- c(30, 60, 90, 120)
 standard_deviation_ratios <- c(1, 4, 8)
-group_size_ratios <- c(.5, 1, 2)
+group_size_ratios <- c(1/2, 1, 2)
 mean_differences <- c(0, 0.5)
 
 Design <- expand.grid(sample_size=sample_sizes,
@@ -70,16 +70,13 @@ Generate <- function(condition){
     sd <- condition$standard_deviation_ratio
     md <- condition$mean_difference
     
-    if(grs == 0.5){
-        N2 <- N/3
+    if(grs < 1){
+        N2 <- N / (1/grs + 1)
         N1 <- N - N2
-    } else if(grs == 2){
-        N1 <- N/3
-        N2 <- N - N1
     } else {
-        N1 <- N2 <- N / 2
+        N1 <- N / (grs + 1)
+        N2 <- N - N1
     }
-    
     group1 <- rnorm(N1)
     group2 <- rnorm(N2, mean=md, sd=sd)
     dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
