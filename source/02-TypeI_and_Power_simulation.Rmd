@@ -27,20 +27,27 @@ influence the detection rates of the independent t-test. Here we study define th
 standard deviations, and investigate their effect when completely crossed.
 
 ```{r conditions}
-sample_sizes <- c(10, 20, 50, 100)
+sample_sizes <- c(30, 60, 90, 120)
 standard_deviation_ratios <- c(1, 4, 8)
-mean_difference <- c(0, 0.5)
+group_size_ratios <- c(.5, 1, 2)
+mean_differences <- c(0, 0.5)
 
-Design <- expand.grid(sample_size_group1=sample_sizes,
-                      sample_size_group2=sample_sizes,
+Design <- expand.grid(sample_size=sample_sizes,
+                      group_size_ratio=group_size_ratios,
                       standard_deviation_ratio=standard_deviation_ratios,
-                      mean_difference=mean_difference)
+                      mean_difference=mean_differences)
 dim(Design)
 head(Design, 3)
 tail(Design, 3)
 ```
 
-Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where both groups have a sample size of 10 and the ratio of the standard deviations are 1 (i.e., they are exactly equal) and there is no mean difference between the groups. Analysing rows with no mean difference will give us an idea of the Type I error rates. The last condition on row 96 indicates that both groups have sample sizes of 100 but that one of the standard deviations is 8 times larger than the other and a mean difference of 0.5. Which group is larger in both the standard deviation and mean will be defined in the `Generate()` function. 
+Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where the total sample size is $N=30$ however the ratio of sample sizes within each group is different. In this case, the second group is half (0.5) the size of the first group, therefore $N1 = 20$ and $N2 = 10$. The standard deviation ratio is in this case 1 (i.e., they are exactly equal), and there is no mean difference between the groups. Analysing rows with no mean difference will give us an idea of the empirical Type I error rates. 
+
+The last condition on row 72 indicates that the second group has a sample size twice as large as the first,
+and here $N1 = 40$ and $N2 = 80$. As well, group 2 has a standard deviation which is 8 times larger than the
+first group, and overall there is a mean difference of 0.5. Truth be told, however, the interpretations 
+could be switched around as it really depends on how the `Generate()` function utilizes these inputs
+(the interpreation could have been that group 1 was *smaller* when `group_size_ratio == .5` rather than larger). 
 
 ### Define the functions
 
@@ -58,10 +65,20 @@ variable, and a grouping variable (a `factor` or otherwise).
 ```{r}
 Generate <- function(condition){
  
-    N1 <- condition$sample_size_group1
-    N2 <- condition$sample_size_group2
+    N <- condition$sample_size
+    grs <- condition$group_size_ratio
     sd <- condition$standard_deviation_ratio
     md <- condition$mean_difference
+    
+    if(grs == 0.5){
+        N2 <- N/3
+        N1 <- N - N2
+    } else if(grs == 2){
+        N1 <- N/3
+        N2 <- N - N1
+    } else {
+        N1 <- N2 <- N / 2
+    }
     
     group1 <- rnorm(N1)
     group2 <- rnorm(N2, mean=md, sd=sd)
@@ -140,17 +157,17 @@ the important effects present in the simulation.
 library(ggplot2)
 
 #welch
-gg <- ggplot(TypeI, aes(sample_size_group1, alpha.05.welch, colour = sample_size_group2))
-gg + geom_point(size=3) + facet_wrap(~standard_deviation_ratio) + ylim(c(0,1)) + 
+gg <- ggplot(TypeI, aes(group_size_ratio, alpha.05.welch, fill = standard_deviation_ratio))
+gg + geom_boxplot() + facet_wrap(~standard_deviation_ratio) + ylim(c(0,0.2)) + 
     geom_hline(yintercept = .075, colour = 'red') + geom_hline(yintercept = .025, colour = 'red')
 
 #independent
-gg <- ggplot(TypeI, aes(sample_size_group1, alpha.05.independent, colour = sample_size_group2))
-gg + geom_point(size=3) + facet_wrap(~standard_deviation_ratio) + ylim(c(0,1)) + 
+gg <- ggplot(TypeI, aes(group_size_ratio, alpha.05.independent, fill = standard_deviation_ratio))
+gg + geom_boxplot() + facet_wrap(~standard_deviation_ratio) + ylim(c(0,0.2)) + 
     geom_hline(yintercept = .075, colour = 'red') + geom_hline(yintercept = .025, colour = 'red')
 ```
 
-What is immediately obvious from these figures is that the Welch test performs fairly well across all conditions for controlling Type I error rates, while the independent t-test is heavily influenced by different combinations. When the variances were equal (left facet plot), the test appeared to perform well, and should not be surprising because all the assumptions were met. As well, when the sample sizes were equal the test seemed to perform well across the board.
+What is immediately obvious from these figures is that the Welch test performs fairly well across all conditions for controlling Type I error rates, while the independent t-test is heavily influenced by different combinations. When the variances were equal (left facet plot), the independent t-test appeared to perform well, and this should not be surprising because all the assumptions were met. As well, when the sample sizes were equal the test seemed to perform well across the board.
 
 However, when the second group contained a larger variance AND a larger sample size than the first group the detection rates became more conservative. The converse was true when larger variances were paired with smaller sample sizes compared to the first group, where the detection rates became progressively more liberal as both the ratio of sample sizes increase and the ratio of standard deviations increased.
 
