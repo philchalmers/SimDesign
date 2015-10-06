@@ -4,11 +4,13 @@
 \alias{generate}
 \title{Generate data}
 \usage{
-generate(condition)
+generate(condition, fixed_design_elements = NULL)
 }
 \arguments{
 \item{condition}{a single row from the design input (as a data.frame), indicating the
   simulation conditions}
+
+\item{fixed_design_elements}{object passed down from \code{\link{runSimulation}}}
 }
 \value{
 returns a single object containing the data to be analysed (usually a vector, matrix, or data.frame),
@@ -23,7 +25,7 @@ Generate data
 \examples{
 \dontrun{
 
-mygenerate <- function(condition){
+mygenerate <- function(condition, fixed_design_elements = NULL){
 
     #require packages/define functions if needed, or better yet index with the :: operator
 

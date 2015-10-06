@@ -18,15 +18,15 @@ SimDesign_functions <- function(main = FALSE){
     cat('\n#-------------------------------------------------------------------')
     cat('\n### Define essential simulation functions. It may be helpful to place these')
     cat('\n### functions in a seperate R file and source() them in')
-    cat('\n\nGenerate <- function(condition) {')
+    cat('\n\nGenerate <- function(condition, fixed_design_elements = NULL) {')
     cat('\n    # Define data generation code ...\n')
     cat('\n    # Return a vector, matrix, data.frame, or list')
     cat('\n    return(data.frame())\n}')
     cat('\n\n')
-    cat('Analyse <- function(condition, dat, parameters = NULL) {')
+    cat('Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {')
     cat('\n    # Run statistical analyses of interest ... \n\n    # Return a vector or list\n    return(numeric())\n}')
     cat('\n\n')
-    cat('Summarise <- function(condition, results, parameters_list = NULL) {')
+    cat('Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {')
     cat('\n    # Summarise the simulation results ...\n\n    # Return a vector\n    return(numeric())\n}')
 
     if(main){

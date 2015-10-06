@@ -5,11 +5,12 @@
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
-  parallel = FALSE, MPI = FALSE, save = FALSE, save_every = 1,
-  clean = TRUE, seed = NULL, compname = Sys.info()["nodename"],
-  filename = paste0(compname, "_Final_", replications, ".rds"),
-  tmpfilename = paste0(compname, "_tmpsim.rds"), main = NULL,
-  ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
+  fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
+  save = FALSE, save_every = 1, clean = TRUE, seed = NULL,
+  compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
+  replications, ".rds"), tmpfilename = paste0(compname, "_tmpsim.rds"),
+  main = NULL, ncores = parallel::detectCores(), edit = "none",
+  verbose = TRUE)
 }
 \arguments{
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
@@ -25,6 +26,12 @@ runSimulation(design, replications, generate, analyse, summarise,
 
 \item{summarise}{user-defined summary function to be used after all the replications have completed.
    See \code{\link{summarise}} for details}
+
+\item{fixed_design_elements}{(optional) an object (usually a list) containing fixed design elements
+  which can be used across all simulation conditions. This is useful when including
+  long fixed vectors of population coefficients, including data
+  which should be used across all conditions and replications (e.g., including a fixed design matrix
+  for linear regression), or simply to control global elements such as sample size}
 
 \item{parallel}{logical; use parallel processing from the \code{parallel} package over each
   unique condition?
@@ -180,7 +187,7 @@ head(Design)
 SimDesign_functions()
 
 # help(generate)
-Generate <- function(condition){
+Generate <- function(condition, fixed_design_elements = NULL){
 
     #require packages/define functions if needed, or better yet index with the :: operator
 
@@ -207,7 +214,7 @@ Generate <- function(condition){
 
 # help(analyse)
 
-Analyse <- function(condition, dat, parameters = NULL){
+Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
@@ -229,7 +236,7 @@ Analyse <- function(condition, dat, parameters = NULL){
 
 # help(summarise)
 
-Summarise <- function(condition, results, parameters_list = NULL){
+Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL){
 
     #find results of interest here (e.g., alpha < .1, .05, .01)
     nms <- c('welch', 'independent')

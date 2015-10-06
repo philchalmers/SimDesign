@@ -3,6 +3,8 @@
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #'
+#' @param fixed_design_elements object passed down from \code{\link{runSimulation}}
+#'
 #' @return returns a single object containing the data to be analysed (usually a vector, matrix, or data.frame),
 #'   or a list with a \code{'dat'} and \code{'parameters'} element. If a list is returned, the \code{'dat'}
 #'   element should be the observed data object while the
@@ -14,7 +16,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' mygenerate <- function(condition){
+#' mygenerate <- function(condition, fixed_design_elements = NULL){
 #'
 #'     #require packages/define functions if needed, or better yet index with the :: operator
 #'
@@ -33,7 +35,7 @@
 #'
 #' }
 #'
-generate <- function(condition) NULL
+generate <- function(condition, fixed_design_elements = NULL) NULL
 
 #=================================================================================================#
 
@@ -55,6 +57,7 @@ generate <- function(condition) NULL
 #'   \code{\link{generate}} function when a list is returned. Otherwise, this will be an empty list
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
+#' @param fixed_design_elements object passed down from \code{\link{runSimulation}}
 #'
 #' @return returns a named numeric vector with the values of interest (e.g., p-values,
 #'   effects sizes, etc), or a list containing values of interest (e.g., separate matrix
@@ -65,7 +68,7 @@ generate <- function(condition) NULL
 #' @examples
 #' \dontrun{
 #'
-#' myanalyse <- function(condition, dat, parameters = NULL){
+#' myanalyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -88,7 +91,7 @@ generate <- function(condition) NULL
 #' }
 #'
 #' }
-analyse <- function(condition, dat, parameters = NULL) NULL
+analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) NULL
 
 
 
@@ -108,6 +111,7 @@ analyse <- function(condition, dat, parameters = NULL) NULL
 #'   not returned from \code{\link{generate}} then this will be NULL
 #' @param condition a single row from the \code{design} input from \code{\link{runSimulation}}
 #'   (as a data.frame), indicating the simulation conditions
+#' @param fixed_design_elements object passed down from \code{\link{runSimulation}}
 #'
 #' @aliases summarise
 #'
@@ -118,7 +122,7 @@ analyse <- function(condition, dat, parameters = NULL) NULL
 #' @examples
 #' \dontrun{
 #'
-#' mysummarise <- function(condition, results, parameters_list = NULL){
+#' mysummarise <- function(condition, results, fixed_conditoins = NULL, parameters_list = NULL){
 #'
 #'     #convert to matrix for convenience (if helpful)
 #'     cell_results <- do.call(rbind, results)
@@ -141,7 +145,7 @@ analyse <- function(condition, dat, parameters = NULL) NULL
 #'
 #' }
 #'
-summarise <- function(condition, results, parameters_list = NULL) NULL
+summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) NULL
 
 #=================================================================================================#
 
@@ -155,6 +159,7 @@ summarise <- function(condition, results, parameters_list = NULL) NULL
 #' @param index an integer place-holder value indexed from the 1:each input
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
+#' @param fixed_design_elements object passed down from \code{\link{runSimulation}}
 #' @param generate the \code{\link{generate}} function defined above (required for parallel computing)
 #' @param analyse the \code{\link{analyse}} function defined above (required for parallel computing)
 #'
@@ -172,7 +177,7 @@ summarise <- function(condition, results, parameters_list = NULL) NULL
 #' print(SimDesign::main)
 #'
 #' }
-main <- function(index, condition, generate, analyse){
+main <- function(index, condition, generate, analyse, fixed_design_elements){
 
     require('SimDesign') #this is required if SimDesign functions are called
     count <- 0L
@@ -180,12 +185,13 @@ main <- function(index, condition, generate, analyse){
     while(TRUE){
 
         count <- count + 1L
-        simlist <- generate(condition=condition)
+        simlist <- generate(condition=condition, fixed_design_elements=fixed_design_elements)
         if(is.data.frame(simlist) || !is.list(simlist)) simlist <- list(dat=simlist)
         if(length(names(simlist)) > 1L)
             if(!all(names(simlist) %in% c('dat', 'parameters')))
             stop('generate() did not return a list with elements \'dat\' and \'parameters\'', call.=FALSE)
-        res <- try(analyse(dat=simlist$dat, parameters=simlist$parameters, condition=condition), silent=TRUE)
+        res <- try(analyse(dat=simlist$dat, parameters=simlist$parameters, condition=condition,
+                           fixed_design_elements=fixed_design_elements), silent=TRUE)
 
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')) next

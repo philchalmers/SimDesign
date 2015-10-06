@@ -90,6 +90,12 @@
 #'
 #' @param replications number of replication to perform per condition (i.e., each row in \code{design})
 #'
+#' @param fixed_design_elements (optional) an object (usually a list) containing fixed design elements
+#'   which can be used across all simulation conditions. This is useful when including
+#'   long fixed vectors of population coefficients, including data
+#'   which should be used across all conditions and replications (e.g., including a fixed design matrix
+#'   for linear regression), or simply to control global elements such as sample size
+#'
 #' @param parallel logical; use parallel processing from the \code{parallel} package over each
 #'   unique condition?
 #'
@@ -172,7 +178,7 @@
 #' SimDesign_functions()
 #'
 #' # help(generate)
-#' Generate <- function(condition){
+#' Generate <- function(condition, fixed_design_elements = NULL){
 #'
 #'     #require packages/define functions if needed, or better yet index with the :: operator
 #'
@@ -199,7 +205,7 @@
 #'
 #' # help(analyse)
 #'
-#' Analyse <- function(condition, dat, parameters = NULL){
+#' Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -221,7 +227,7 @@
 #'
 #' # help(summarise)
 #'
-#' Summarise <- function(condition, results, parameters_list = NULL){
+#' Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL){
 #'
 #'     #find results of interest here (e.g., alpha < .1, .05, .01)
 #'     nms <- c('welch', 'independent')
@@ -330,7 +336,7 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          parallel = FALSE, MPI = FALSE,
+                          fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
                           save = FALSE, save_every = 1, clean = TRUE, seed = NULL,
                           compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', replications, '.rds'),
@@ -351,10 +357,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))
         truefms <- switch(i,
-                          main = c('index', 'condition', 'generate', 'analyse'),
-                          generate  = c('condition'),
-                          analyse = c('dat', 'parameters', 'condition'),
-                          summarise = c('results', 'parameters_list', 'condition'))
+                          main = c('index', 'condition', 'generate', 'analyse', 'fixed_design_elements'),
+                          generate  = c('condition', 'fixed_design_elements'),
+                          analyse = c('dat', 'parameters', 'condition', 'fixed_design_elements'),
+                          summarise = c('results', 'parameters_list', 'condition', 'fixed_design_elements'))
         if(!all(truefms %in% fms))
             stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
     }
@@ -413,6 +419,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                             as.list(Analysis(Functions=Functions,
                                                              condition=design[i,],
                                                              replications=replications,
+                                                             fixed_design_elements=fixed_design_elements,
                                                              cl=cl, MPI=MPI, seed=seed))))
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
