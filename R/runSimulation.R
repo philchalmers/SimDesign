@@ -4,12 +4,16 @@
 #' and the number of replications. Results can be saved as temporary files in case of interruptions
 #' and may be restored by rerunning the exact function calls again, provided that the respective temp
 #' file can be found in the working directory. To conserve RAM, temporary objects (such as
-#' generated data across conditions and replications) are discarded.
+#' generated data across conditions and replications) are discarded. For longer simulations, however,
+#' it is recommended to use \code{save = TRUE} and/or \code{save_results = TRUE} to temporarily save the
+#' simulation state and write the results to exteneral .rds files, respectively.
 #' Supports parallel and cluster computing, global and
-#' local debugging, and is designed to be cross-platform.  For a skeleton version of the work-flow
+#' local debugging, and is designed to be cross-platform.
+#'
+#' For a skeleton version of the work-flow
 #' which may be useful when initially defining a simulation, see \code{\link{SimDesign_functions}}.
 #' Additional examples can be found on the package wiki, located at
-#' \url{https://github.com/philchalmers/SimDesign/wiki}
+#' \url{https://github.com/philchalmers/SimDesign/wiki}.
 #'
 #'
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
@@ -34,13 +38,14 @@
 #' and had to be re-drawn), and \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 #' all the Monte Carlo replications for each respective condition.
 #'
-#' In the event of a computer crash, power outage, etc, if the \code{save_every} command has been
-#' used to save temporary results (along with the logical \code{save = TRUE}) then the original code in
+#' In the event of a computer crash, power outage, etc, if \code{save = TRUE} was used
+#' then the original code in
 #' the main source file need only be rerun again to resume the simulation.
 #' The saved temp file will be read into the function, and the simulation will continue where it left
 #' off before the simulation was terminated. Upon completion, a data.frame with the simulation
 #' will be returned in the R session and a '.rds' file will be saved to the hard-drive (with the
-#' file name corresponding to the \code{filename} argument below).
+#' file name corresponding to the \code{filename} argument below). To save the complete list of results returned
+#' from \code{\link{analyse}} to unique files use \code{save_results = TRUE}.
 #'
 #' @section Cluster computing:
 #'
@@ -105,17 +110,24 @@
 #'   \code{::} operator to locate the public functions that are not visible in the R session (e.g.,
 #'   \code{psych::describe()})
 #'
-#' @param save_every a number indicating how often to temporarily save your simulation results to
-#'   disk. Default is 1 to save after every condition is complete, but set to NA if you don't
-#'   want to save any temp files
+#' @param save_results logical; save the results returned from \code{\link{analyse}} to external .rds files
+#'   located in a 'SimDesign_results' directory/folder? If a 'SimDesign_results' folder does not exist
+#'   in the current working directory then one will be created automatically.
+#'   Use this if you would like to keep track of the individual parameters returned from the analyses.
+#'   Default is FALSE
 #'
 #' @param ncores number of cores to be used in parallel execution. Default uses all available
 #'
 #' @param clean logical; remove any temp files that are created after the simulation is complete?
 #'   Default is TRUE
 #'
-#' @param filename the name of the file to save the results to. Default is the system name with
+#' @param filename the name of the .rds file to save the final simulation results to.
+#'   Default is the system name with
 #'   the number of replications and 'Final' appended to the string
+#'
+#' @param results_filename the general name of the .rds file to save individual simluation results
+#'   to (before calling the \code{\link{summarise}} function). Default is the system name with '_results_'
+#'   and the row ID information appended
 #'
 #' @param tmpfilename the name of the temporary file, default is the system name with 'tmpsim.rds'
 #'   appended at the end. This file will be
@@ -186,16 +198,13 @@
 #'     grs <- condition$group_size_ratio
 #'     sd <- condition$standard_deviation_ratio
 #'
-#'     if(grs == 0.5){
-#'         N2 <- N/3
+#'     if(grs < 1){
+#'         N2 <- N / (1/grs + 1)
 #'         N1 <- N - N2
-#'     } else if(grs == 2){
-#'         N1 <- N/3
-#'         N2 <- N - N1
 #'     } else {
-#'         N1 <- N2 <- N / 2
+#'         N1 <- N / (grs + 1)
+#'         N2 <- N - N1
 #'     }
-#'
 #'     group1 <- rnorm(N1)
 #'     group2 <- rnorm(N2, sd=sd)
 #'     dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
@@ -335,14 +344,18 @@
 #'
 #' }
 #'
-runSimulation <- function(design, replications, generate, analyse, summarise,
+runSimulation <- function(design, replications, generate, analyse, summarise, main = NULL,
                           fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
-                          save = FALSE, save_every = 1, clean = TRUE, seed = NULL,
+                          save = FALSE, save_results = FALSE,
+                          clean = TRUE, seed = NULL,
                           compname = Sys.info()['nodename'],
-                          filename = paste0(compname,'_Final_', replications, '.rds'),
-                          tmpfilename = paste0(compname, '_tmpsim.rds'), main = NULL,
+                          filename = paste0(compname,'_Final_', replications),
+                          results_filename = paste0(compname, '_results_'),
+                          tmpfilename = paste0(compname, '_tmpsim.rds'),
                           ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
 {
+    save_every <- 1L
+    filename <- paste0(filename, '.rds')
     stopifnot(!missing(generate) || !missing(analyse) || !missing(summarise))
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise, main=main)
     stopifnot(!missing(design))
@@ -409,6 +422,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         Result_list <- readRDS(tmpfilename)
         start <- min(which(sapply(Result_list, is.null)))
     }
+    if(save_results)
+        dir.create('SimDesign_results', showWarnings = FALSE)
     for(i in start:nrow(design)){
         stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
         if(verbose)
@@ -420,7 +435,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                              condition=design[i,],
                                                              replications=replications,
                                                              fixed_design_elements=fixed_design_elements,
-                                                             cl=cl, MPI=MPI, seed=seed))))
+                                                             cl=cl, MPI=MPI, seed=seed,
+                                                             save_results=save_results,
+                                                             results_filename=results_filename))))
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
         if(!(length(unique(sapply(Result_list, length))) %in% c(1L, 2L)))
