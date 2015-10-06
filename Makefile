@@ -5,5 +5,7 @@ vignettes:
 	mv -f source/*.html html/
 
 clean:
+	$(RM) -r source/cache/;
+	$(RM) -r source/figure/;
 	$(RM) source/*.md;
 

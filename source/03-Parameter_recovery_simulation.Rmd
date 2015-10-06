@@ -57,7 +57,7 @@ of space (could be hundreds of lines), therefore passing a list object to `runSi
 convinient. 
 
 ```{r}
-sample_sizes <- c(100, 250, 500, 1000)
+sample_sizes <- c(250, 500, 1000)
 Design <- data.frame(sample_size=sample_sizes)
 
 # save extra verbose information in an external file, and read it in later
@@ -73,7 +73,7 @@ pars_30
 The above slopes, when standardized, give the following factor loadings and communalities: 
 
 ```{r}
-a10 <- pars_10['a', ]; a30 <- pars_30['d', ]
+a10 <- pars_10['a', ]; a30 <- pars_30['a', ]
 load10 <- a10 / sqrt(1 + a10^2)
 load30 <- a30 / sqrt(1 + a30^2)
 rbind(F=load10, h2=load10^2)
@@ -193,12 +193,12 @@ names10 <- colnames(res10)
 bias_as_fiml <- t(res10[,grepl('bias\\.', names10) & grepl('\\_as', names10) & 
                        grepl('FIML', names10)])
 colnames(bias_as_fiml) <- sample_sizes
-rownames(bias_as_fiml) <- aux_info[["10"]]$a
+rownames(bias_as_fiml) <- pars_10['a', ]
 
 bias_as_dwls <- t(res10[,grepl('bias\\.', names10) & grepl('\\_as', names10) & 
                        grepl('DWLS', names10)])
 colnames(bias_as_dwls) <- sample_sizes
-rownames(bias_as_dwls) <- aux_info[["10"]]$a
+rownames(bias_as_dwls) <- pars_10['a', ]
 
 (out <- list(FIML=bias_as_fiml, DWLS=bias_as_dwls))
 sapply(out, colMeans)
@@ -207,12 +207,12 @@ sapply(out, colMeans)
 RMSE_as_fiml <- t(res10[,grepl('RMSE\\.', names10) & grepl('\\_as', names10) & 
                        grepl('FIML', names10)])
 colnames(RMSE_as_fiml) <- sample_sizes
-rownames(RMSE_as_fiml) <- aux_info[["10"]]$a
+rownames(RMSE_as_fiml) <- pars_10['a', ]
 
 RMSE_as_dwls <- t(res10[,grepl('RMSE\\.', names10) & grepl('\\_as', names10) & 
                        grepl('DWLS', names10)])
 colnames(RMSE_as_dwls) <- sample_sizes
-rownames(RMSE_as_dwls) <- aux_info[["10"]]$a
+rownames(RMSE_as_dwls) <- pars_10['a', ]
 
 (out <- list(FIML=RMSE_as_fiml, DWLS=RMSE_as_dwls))
 sapply(out, colMeans)
@@ -226,7 +226,7 @@ had more difficulty recovering the more extreme slopes (see the RMSE plot below)
 
 ```{r}
 library(ggplot2)
-plt <- data.frame(pars = c(aux_info[["10"]]$a, aux_info[["10"]]$a), 
+plt <- data.frame(pars = c(pars_10['a', ], pars_10['a', ]), 
                   RMSE = c(RMSE_as_fiml[,'1000'], RMSE_as_dwls[,'1000']),
                   bias = c(bias_as_fiml[,'1000'], bias_as_dwls[,'1000']),
                   estimator = rep(c('FIML', 'DWLS'), each = 10))
@@ -245,12 +245,12 @@ names30 <- colnames(res30)
 bias_as_fiml <- t(res30[,grepl('bias\\.', names30) & grepl('\\_as', names30) & 
                        grepl('FIML', names30)])
 colnames(bias_as_fiml) <- sample_sizes
-rownames(bias_as_fiml) <- aux_info[["30"]]$a
+rownames(bias_as_fiml) <- pars_30['a', ]
 
 bias_as_dwls <- t(res30[,grepl('bias\\.', names30) & grepl('\\_as', names30) & 
                        grepl('DWLS', names30)])
 colnames(bias_as_dwls) <- sample_sizes
-rownames(bias_as_dwls) <- aux_info[["30"]]$a
+rownames(bias_as_dwls) <- pars_30['a', ]
 
 (out <- list(FIML=bias_as_fiml, DWLS=bias_as_dwls))
 sapply(out, colMeans)
@@ -259,12 +259,12 @@ sapply(out, colMeans)
 RMSE_as_fiml <- t(res30[,grepl('RMSE\\.', names30) & grepl('\\_as', names30) & 
                        grepl('FIML', names30)])
 colnames(RMSE_as_fiml) <- sample_sizes
-rownames(RMSE_as_fiml) <- aux_info[["30"]]$a
+rownames(RMSE_as_fiml) <- pars_30['a', ]
 
 RMSE_as_dwls <- t(res30[,grepl('RMSE\\.', names30) & grepl('\\_as', names30) & 
                        grepl('DWLS', names30)])
 colnames(RMSE_as_dwls) <- sample_sizes
-rownames(RMSE_as_dwls) <- aux_info[["30"]]$a
+rownames(RMSE_as_dwls) <- pars_30['a', ]
 
 (out <- list(FIML=RMSE_as_fiml, DWLS=RMSE_as_dwls))
 sapply(out, colMeans)
@@ -277,7 +277,7 @@ will be under-estimated, and therefore have larger RMSEs than the DWLS approach.
 
 ```{r}
 library(ggplot2)
-plt <- data.frame(pars = c(aux_info[["30"]]$a, aux_info[["30"]]$a), 
+plt <- data.frame(pars = c(pars_30['a', ], pars_30['a', ]), 
                   RMSE = c(RMSE_as_fiml[,'1000'], RMSE_as_dwls[,'1000']),
                   bias = c(bias_as_fiml[,'1000'], bias_as_dwls[,'1000']),
                   estimator = rep(c('FIML', 'DWLS'), each = 30))
