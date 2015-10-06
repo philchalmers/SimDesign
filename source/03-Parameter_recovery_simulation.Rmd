@@ -51,31 +51,29 @@ lines(Theta, example$ogive, col = 'red')
 ### Define the conditions
 
 Start by defining the conditions to be studied. Because we are interested in a number of slopes and intercepts
-it is often convenient to save long strings of numbers to external files and read them in during the simulation.
+it is often convenient to save long strings of numbers to a single object to be passed to `fixed_design_elements`.
 Naturally, these could be included in the simulation source code directly, but often will take up a large amount
-of space (could be hundreds of lines). Because these are fixed and known a prior, writing these to an external
-file is a good strategy.
+of space (could be hundreds of lines), therefore passing a list object to `runSimulation()` may be more 
+convinient. 
 
 ```{r}
 sample_sizes <- c(100, 250, 500, 1000)
-test_length <- c(10, 30)
-Design <- expand.grid(sample_size=sample_sizes, test_length=test_length)
+Design <- data.frame(sample_size=sample_sizes)
 
 # save extra verbose information in an external file, and read it in later
 set.seed(1)
-aux_info <- vector('list', 2)
-names(aux_info) <- test_length
-for(i in 1:2)
-    aux_info[[i]] <- list(a = round(rlnorm(test_length[i], .3, .5)/1.702, 2), 
-                          d = round(rnorm(test_length[i], 0, .5)/1.702, 2))
-aux_info
-saveRDS(aux_info, 'parameters.rds')
+pars_10 <- rbind(a = round(rlnorm(10, .3, .5)/1.702, 2), 
+                          d = round(rnorm(10, 0, .5)/1.702, 2))
+pars_10
+pars_30 <- rbind(a = round(rlnorm(30, .3, .5)/1.702, 2), 
+                          d = round(rnorm(30, 0, .5)/1.702, 2))
+pars_30
 ```
 
 The above slopes, when standardized, give the following factor loadings and communalities: 
 
 ```{r}
-a10 <- aux_info[[1]]$a; a30 <- aux_info[[2]]$a
+a10 <- pars_10['a', ]; a30 <- pars_30['d', ]
 load10 <- a10 / sqrt(1 + a10^2)
 load30 <- a30 / sqrt(1 + a30^2)
 rbind(F=load10, h2=load10^2)
@@ -95,17 +93,16 @@ library(SimDesign)
 ```
 
 ```{r}
-Generate <- function(condition) {
+Generate <- function(condition, fixed_design_elements = NULL) {
     
     P_ogive <- function(a, d, Theta) pnorm(a*Theta + d)
     
-    nitems <- condition$test_length
     N <- condition$sample_size
+    nitems <- ncol(fixed_design_elements)
         
-    #source in for convience (otherwise, these could be manually define in the source code)
-    parameters <- readRDS('parameters.rds')
-    a <- matrix(parameters[[as.character(nitems)]]$a)
-    d <- matrix(parameters[[as.character(nitems)]]$d)
+    #extract objects from fixed_design_elements
+    a <- fixed_design_elements['a', ]
+    d <- fixed_design_elements['d', ]
     
     dat <- matrix(NA, N, nitems)
     colnames(dat) <- paste0('item_', 1:nitems)
@@ -118,12 +115,13 @@ Generate <- function(condition) {
     return(as.data.frame(dat))
 }
 
-Analyse <- function(condition, dat, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
     
     library(mirt)
     library(lavaan)
-    nitems <- condition$test_length
+    nitems <- ncol(dat)
     
+    # (optional) could use better starting values from fixed_design_elements here too
     mod <- try(mirt(dat, 1L, verbose=FALSE), silent=TRUE)
     check_error(mod)
     if(!mod@converge) stop('did not converge')
@@ -144,11 +142,9 @@ Analyse <- function(condition, dat, parameters = NULL) {
     return(c(FIML_as=unname(FIML_as), DWLS_as=unname(DWLS_as)))
 }
 
-Summarise <- function(condition, results, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
     
-    parameters <- readRDS('parameters.rds')
-    nitems <- as.character(condition$test_length)
-    pop_as <- matrix(parameters[[nitems]]$a)
+    pop_as <- fixed_design_elements['a', ]
     pop <- c(pop_as, pop_as)
     
     index <- 1:ncol(results)
@@ -172,13 +168,15 @@ initial run, and the function will automatically detect whether any temp files a
 simulation at the previously saved location.
 
 ```{r cache=TRUE}
-res10 <- runSimulation(subset(Design, test_length == 10), replications = 200, verbose = FALSE, save = TRUE,
-                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
+res10 <- runSimulation(Design, replications = 200, verbose = FALSE, save = TRUE,
+                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE,
+                       fixed_design_elements=pars_10)
 ```
 
 ```{r cache=TRUE}
-res30 <- runSimulation(subset(Design, test_length == 30), replications = 200, verbose = FALSE, save = TRUE,
-                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE)
+res30 <- runSimulation(Design, replications = 200, verbose = FALSE, save = TRUE,
+                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE,
+                       fixed_design_elements=pars_30)
 ```
 
 ### Analyze the results

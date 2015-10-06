@@ -79,10 +79,11 @@ Each row in `Design` represents a unique condition to be studied in the simulati
 ### Define the functions
 
 We first start by defining the `generate` component. The only argument accepted by this function is `condition`, which will always be a *single row from the Design data.frame object* and will
-be of class `data.frame`. Conditions are run sequentially from row 1 to the last row in `Design`.
+be of class `data.frame`. Conditions are run sequentially from row 1 to the last row in `Design`. It is also
+possible to pass a `fixed_design_elements` object to the function for including fixed sets of population parameters and other conditions, however for this simple simulation this input is not required.
 
 ```{r}
-Generate <- function(condition) {
+Generate <- function(condition, fixed_design_elements = NULL) {
     N <- condition$sample_size
     dist <- condition$distribution
     if(dist == 'normal'){
@@ -99,7 +100,7 @@ be analysed each with a population mean of 3 (because a $\chi^2$ distribution ha
 Next, we define the `analyse` component to analyse said data:
 
 ```{r}
-Analyse <- function(condition, dat, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
     M0 <- mean(dat)
     M1 <- mean(dat, trim = .1)
     M2 <- mean(dat, trim = .2)
@@ -122,7 +123,7 @@ such as bias, root mean-square error, detection rates, and so on are of primary 
 of the `summarise` component:
 
 ```{r}
-Summarise <- function(condition, results, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
     obt_bias <- apply(results, 2, bias, population = 3)
     obt_RMSE <- apply(results, 2, RMSE, population = 3)
     

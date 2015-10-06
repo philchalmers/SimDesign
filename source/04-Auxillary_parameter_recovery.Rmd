@@ -45,7 +45,7 @@ library(SimDesign)
 ```
 
 ```{r}
-Generate <- function(condition) {
+Generate <- function(condition, fixed_design_elements = NULL) {
     
     library(mirt) #for simdata() function
     nitems <- condition$test_length
@@ -66,7 +66,7 @@ Generate <- function(condition) {
     ret
 }
 
-Analyse <- function(condition, dat, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
     
     library(mirt)
     
@@ -84,7 +84,7 @@ Analyse <- function(condition, dat, parameters = NULL) {
     ret
 }
 
-Summarise <- function(condition, results, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
     index <- 1:length(results)
     diff_EAP <- do.call(c, lapply(index, function(ind, obs, pop) obs[[ind]]$EAP - pop[[ind]]$Theta,
                    obs=results, pop=parameters_list))
