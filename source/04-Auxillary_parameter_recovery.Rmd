@@ -70,6 +70,8 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
     
     library(mirt)
     
+    bimodal_prior <- function(Theta, ...) as.numeric(dnorm(Theta, -1, 0.5) + dnorm(Theta, 1, 0.5))
+    
     # assign population values for complete model
     sv <- mirt(dat, 1, pars = 'values')
     sv$value[sv$name == 'a1'] <- parameters$a
@@ -79,8 +81,9 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
     EAPscore <- fscores(mod, full.scores=TRUE)
     MAPscore <- fscores(mod, method = 'MAP', full.scores=TRUE)
     MLscore <- fscores(mod, method = 'ML', full.scores=TRUE)
+    EAPscore_bimodal <- fscores(mod, method = 'EAP', full.scores=TRUE, custom_den = bimodal_prior)
     
-    ret <- list(EAP=EAPscore, MAP=MAPscore, ML=MLscore)
+    ret <- list(EAP=EAPscore, MAP=MAPscore, ML=MLscore, EAP_bimodal=EAPscore_bimodal)
     ret
 }
 
@@ -93,16 +96,20 @@ Summarise <- function(condition, results, fixed_design_elements = NULL, paramete
     diff_ML <- do.call(c, lapply(index, function(ind, obs, pop) obs[[ind]]$ML - pop[[ind]]$Theta, 
                    obs=results, pop=parameters_list))
     diff_ML <- diff_ML[is.finite(diff_ML)]
+    diff_EAP_bimodal <- do.call(c, lapply(index, function(ind, obs, pop) 
+        obs[[ind]]$EAP_bimodal - pop[[ind]]$Theta, obs=results, pop=parameters_list))
     
     bias_EAP <- bias(diff_EAP)
     bias_MAP <- bias(diff_MAP)
     bias_ML <- bias(diff_ML)
+    bias_EAP_bimodal <- bias(diff_EAP_bimodal)
     RMSE_EAP <- RMSE(diff_EAP)
     RMSE_MAP <- RMSE(diff_MAP)
     RMSE_ML <- RMSE(diff_ML)
+    RMSE_EAP_bimodal <- RMSE(diff_EAP_bimodal)
     
-    ret <- c(bias_EAP=bias_EAP, bias_MAP=bias_MAP, bias_ML=bias_ML,
-             RMSE_EAP=RMSE_EAP, RMSE_MAP=RMSE_MAP, RMSE_ML=RMSE_ML)
+    ret <- c(bias_EAP=bias_EAP, bias_MAP=bias_MAP, bias_ML=bias_ML, bias_EAP_bimodal=bias_EAP_bimodal,
+             RMSE_EAP=RMSE_EAP, RMSE_MAP=RMSE_MAP, RMSE_ML=RMSE_ML, RMSE_EAP_bimodal=RMSE_EAP_bimodal)
     ret
 }
 ```
@@ -139,8 +146,8 @@ print(result)
 
 When the $\theta$ estimates were generate from a normal distribution it appeared that all 
 latent trait estimates were fairly 
-unbiased across random $\theta$ sets, however ML estimation provided the 
-highest RMSE (this is reasonable, because the Bayesian estimates selected a good prior). 
+unbiased across random $\theta$ sets, however ML estimation generally provided the 
+highest RMSE (this is reasonable, especially in settings where the Bayesian estimates selected a good prior). 
 As the test length increased, all estimates improved in their overall precision to recover 
 the population parameters, which makes sense
 given that longer tests provide more information about an individuals' ability. 
@@ -149,7 +156,8 @@ When the distribution of the $\theta$'s were bimodal the same effect occurred, h
 the overall RMSE was actually slightly *less* than when the correct prior was provided for 
 the population (the default in *mirt* is $N(0,1)$). 
 ML estimates were largely unaffected by altering the distribution, mainly because estimates
-are not influenced by prior beliefs.
+are not influenced by prior beliefs. Finally, when the prior distribution was the same as the population
+generating model the EAP estimates demonstrated the lowest RMSEs.
 
 Note that this analysis was about population effects *across all sampled ability levels*. In general, these 
 estimators may perform differently for specific abilities (i.e., ML estimation may do much worse as $|\theta|$
