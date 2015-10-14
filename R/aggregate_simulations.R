@@ -1,4 +1,4 @@
-#' Collapse seperate simulation files into a single result
+#' Collapse separate simulation files into a single result
 #'
 #' This function grabs all .rds files in the working directory and aggregates them into a single
 #' data.frame object. Weights are inferred from the last numbers before .rds, in the form

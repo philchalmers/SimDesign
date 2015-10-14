@@ -7,7 +7,8 @@
 main(index, condition, generate, analyse, fixed_design_elements)
 }
 \arguments{
-\item{index}{an integer place-holder value indexed from the 1:each input}
+\item{index}{an integer place-holder value indexed from the \code{1:replications} input, where each value
+represents a particular draw given the \code{replications} argument in \code{\link{runSimulation}}}
 
 \item{condition}{a single row from the design input (as a data.frame), indicating the
 simulation conditions}
@@ -26,7 +27,7 @@ must return a named list with the 'result' and 'parameters' elements for the
 This function runs one condition at a time exactly once. This is for
 repeating the simulation for each condition a number of times, and is where the
 Monte Carlo flow is controlled. Generally speaking, you shouldn't need to edit this
-function.
+function, therefore \emph{only replace it if you really know what you are doing}.
 }
 \examples{
 \dontrun{

@@ -3,7 +3,7 @@
 # @param Functions list of functions
 # @param condition a single row from the design input
 # @param replications number of times to repeat the Monte Carlo simulations
-# @param fixed_design_elements optional object contaiing fixed conditoins across design
+# @param fixed_design_elements optional object containing fixed conditions across design
 # @param cl cluster object defined from the parallel package
 # @param MPI logical; flag passed down from the runSimulation function
 # @param save_results logical; save the results to .rds files

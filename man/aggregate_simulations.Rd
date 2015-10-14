@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregate_simulations.R
 \name{aggregate_simulations}
 \alias{aggregate_simulations}
-\title{Collapse seperate simulation files into a single result}
+\title{Collapse separate simulation files into a single result}
 \usage{
 aggregate_simulations(files = NULL)
 }

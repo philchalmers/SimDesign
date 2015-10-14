@@ -11,7 +11,7 @@ check_error(...)
 }
 \description{
 Check if the supplied object, which has previously been wrapped in a \code{\link{try}} function,
-contains an error. If so, this function will throw an error to stop the workflow.
+contains an error. If so, this function will throw an error to stop the work-flow.
 }
 \examples{
 \dontrun{

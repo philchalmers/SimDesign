@@ -1,7 +1,7 @@
 #' Check if object contains an error and stop flow
 #'
 #' Check if the supplied object, which has previously been wrapped in a \code{\link{try}} function,
-#' contains an error. If so, this function will throw an error to stop the workflow.
+#' contains an error. If so, this function will throw an error to stop the work-flow.
 #'
 #' @param ... objects that have been returned from a \code{\link{try}} call
 #'

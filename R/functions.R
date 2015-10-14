@@ -154,9 +154,10 @@ summarise <- function(condition, results, fixed_design_elements = NULL, paramete
 #' This function runs one condition at a time exactly once. This is for
 #' repeating the simulation for each condition a number of times, and is where the
 #' Monte Carlo flow is controlled. Generally speaking, you shouldn't need to edit this
-#' function.
+#' function, therefore \emph{only replace it if you really know what you are doing}.
 #'
-#' @param index an integer place-holder value indexed from the 1:each input
+#' @param index an integer place-holder value indexed from the \code{1:replications} input, where each value 
+#'   represents a particular draw given the \code{replications} argument in \code{\link{runSimulation}}
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #' @param fixed_design_elements object passed down from \code{\link{runSimulation}}
@@ -179,7 +180,7 @@ summarise <- function(condition, results, fixed_design_elements = NULL, paramete
 #' }
 main <- function(index, condition, generate, analyse, fixed_design_elements){
 
-    require('SimDesign') #this is required if SimDesign functions are called
+    require('SimDesign') #this is required if SimDesign functions are called (e.g., bias(), RMSE())
     count <- 0L
 
     while(TRUE){

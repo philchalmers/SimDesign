@@ -76,7 +76,7 @@ runSimulation(design, replications, generate, analyse, summarise, main = NULL,
   Default is the system name with
   the number of replications and 'Final' appended to the string}
 
-\item{results_filename}{the general name of the .rds file to save individual simluation results
+\item{results_filename}{the general name of the .rds file to save individual simulation results
   to (before calling the \code{\link{summarise}} function). Default is the system name with '_results_'
   and the row ID information appended}
 
@@ -104,7 +104,7 @@ and may be restored by rerunning the exact function calls again, provided that t
 file can be found in the working directory. To conserve RAM, temporary objects (such as
 generated data across conditions and replications) are discarded. For longer simulations, however,
 it is recommended to use \code{save = TRUE} and/or \code{save_results = TRUE} to temporarily save the
-simulation state and write the results to exteneral .rds files, respectively.
+simulation state and write the separate results to external .rds files, respectively.
 Supports parallel and cluster computing, global and
 local debugging, and is designed to be cross-platform.
 }
