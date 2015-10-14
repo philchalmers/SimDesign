@@ -47,7 +47,6 @@ plot(Theta, example$logit, type = 'l', ylab = 'P', las=1)
 lines(Theta, example$ogive, col = 'red')
 ```
 
-
 ### Define the conditions
 
 Start by defining the conditions to be studied. Because we are interested in a number of slopes and intercepts
@@ -58,16 +57,16 @@ convinient.
 
 ```{r}
 sample_sizes <- c(250, 500, 1000)
-Design <- data.frame(sample_size=sample_sizes)
+nitems <- c(10,30)
+Design <- expand.grid(sample_size=sample_sizes, nitems=nitems)
 
-# save extra verbose information in an external file, and read it in later
+# create list of additional parameters which are fixed across conditions
 set.seed(1)
-pars_10 <- rbind(a = round(rlnorm(10, .3, .5)/1.702, 2), 
-                          d = round(rnorm(10, 0, .5)/1.702, 2))
-pars_10
-pars_30 <- rbind(a = round(rlnorm(30, .3, .5)/1.702, 2), 
-                          d = round(rnorm(30, 0, .5)/1.702, 2))
-pars_30
+pars_10 <- rbind(a = round(rlnorm(10, .3, .5)/1.702, 2),
+                 d = round(rnorm(10, 0, .5)/1.702, 2))
+pars_30 <- rbind(a = round(rlnorm(30, .3, .5)/1.702, 2),
+                 d = round(rnorm(30, 0, .5)/1.702, 2))
+(pars <- list(ten=pars_10, thirty=pars_30))
 ```
 
 The above slopes, when standardized, give the following factor loadings and communalities: 
@@ -94,67 +93,71 @@ library(SimDesign)
 
 ```{r}
 Generate <- function(condition, fixed_design_elements = NULL) {
-    
+
     P_ogive <- function(a, d, Theta) pnorm(a*Theta + d)
-    
+
     N <- condition$sample_size
-    nitems <- ncol(fixed_design_elements)
-        
+    nitems <- condition$nitems
+    nitems_name <- ifelse(nitems == 10, 'ten', 'thirty')
+
     #extract objects from fixed_design_elements
-    a <- fixed_design_elements['a', ]
-    d <- fixed_design_elements['d', ]
-    
+    a <- fixed_design_elements[[nitems_name]]['a', ]
+    d <- fixed_design_elements[[nitems_name]]['d', ]
+
     dat <- matrix(NA, N, nitems)
     colnames(dat) <- paste0('item_', 1:nitems)
     Theta <- rnorm(N)
     for(j in 1:nitems){
         p <- P_ogive(a[j], d[j], Theta)
         for(i in 1:N)
-            dat[i,j] <- sample(c(1,0), 1, prob = c(p[i], 1 - p[i])) 
+            dat[i,j] <- sample(c(1,0), 1, prob = c(p[i], 1 - p[i]))
     }
     return(as.data.frame(dat))
 }
 
 Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
-    
+
     library(mirt)
     library(lavaan)
-    nitems <- ncol(dat)
-    
+    nitems <- condition$nitems
+
     # (optional) could use better starting values from fixed_design_elements here too
     mod <- try(mirt(dat, 1L, verbose=FALSE), silent=TRUE)
     check_error(mod)
-    if(!mod@converge) stop('did not converge')
+    if(!mod@OptimInfo$converge) stop('did not converge')
     cfs <- coef(mod, simplify = TRUE, digits = Inf)
     FIML_as <- cfs$items[,1L] / 1.702
-    
-    lavmod <- paste0('F =~ ', paste0('NA*', colnames(dat)[1L], ' + '), 
+
+    lavmod <- paste0('F =~ ', paste0('NA*', colnames(dat)[1L], ' + '),
                      paste0(colnames(dat)[-1L], collapse = ' + '),
                      '\nF ~~ 1*F')
     lmod <- try(sem(lavmod, dat, ordered = colnames(dat)))
     check_error(lmod)
     if(!lmod@Fit@converged) stop('did not converge')
-    cfs2 <- coef(lmod) 
+    cfs2 <- coef(lmod)
     DWLS_alpha <- cfs2[1L:nitems]
-    const <- sqrt(1 - DWLS_alpha^2) 
+    const <- sqrt(1 - DWLS_alpha^2)
     DWLS_as <- DWLS_alpha / const
 
     return(c(FIML_as=unname(FIML_as), DWLS_as=unname(DWLS_as)))
 }
 
 Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
-    
-    pop_as <- fixed_design_elements['a', ]
-    pop <- c(pop_as, pop_as)
-    
+
+    nitems <- condition$nitems
+    nitems_name <- ifelse(nitems == 10, 'ten', 'thirty')
+
+    #extract objects from fixed_design_elements
+    a <- fixed_design_elements[[nitems_name]]['a', ]
+    pop <- c(a, a)
+
     index <- 1:ncol(results)
-    
     obt_bias <- sapply(index, function(ind, obs, pop) bias(obs[,ind], pop[ind]),
                        obs = results, pop = pop)
     obt_RMSE <- sapply(index, function(ind, obs, pop) RMSE(obs[,ind], pop[ind]),
                        obs = results, pop = pop)
     names(obt_bias) <- names(obt_RMSE) <- colnames(results)
-    
+
     ret <- c(bias=obt_bias, RMSE=obt_RMSE)
     return(ret)
 }
@@ -168,22 +171,27 @@ initial run, and the function will automatically detect whether any temp files a
 simulation at the previously saved location.
 
 ```{r cache=TRUE}
-res10 <- runSimulation(Design, replications = 200, verbose = FALSE, save = TRUE,
-                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE,
-                       fixed_design_elements=pars_10)
-```
-
-```{r cache=TRUE}
-res30 <- runSimulation(Design, replications = 200, verbose = FALSE, save = TRUE,
-                       generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE,
-                       fixed_design_elements=pars_30)
+res <- runSimulation(Design, replications = 200, verbose = FALSE, save = TRUE,
+                     generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE,
+                     fixed_design_elements=pars)
 ```
 
 ### Analyze the results
 
 Sometimes, reshaping and indexing your output can be very helpful. Here we break the analysis into two parts,
 though other strategies are certainly possible. Because analyzing simulations is a lot like analyzing empirical
-data no one strategy may be the best; you have to use judgment.
+data no one strategy may be the best; you have to use judgment. 
+
+For this particular analysis, we can see that the `res` object contains NA values for 
+slope parameters that were not applicable. For ease of 
+manipulating the results it often will be conveinient to subset the results so that these NA's are no
+longer required.
+
+```{r}
+res10 <- subset(res, nitems == 10)
+res10 <- res10[,!is.na(res10[1L, ])]
+res30 <- subset(res, nitems == 30)
+```
 
 #### Ten items
 
