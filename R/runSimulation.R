@@ -440,14 +440,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise, ma
                                                              results_filename=results_filename))))
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
-        if(!(length(unique(sapply(Result_list, length))) %in% c(1L, 2L)))
-            stop(c('Summerise() results are not all of the same length. This may require splitting up',
-                   '\nthe design input to allow for different result lengths.'), call.=FALSE)
         if(save && !is.na(save_every))
             if((i %% save_every) == 0L) saveRDS(Result_list, tmpfilename)
     }
-    Final <- do.call(rbind, Result_list)
-    Final$ID <- NULL
+    Final <- plyr::rbind.fill(Result_list)
+    N_CELL_RUNS <- Final$N_CELL_RUNS; SIM_TIME <- Final$SIM_TIME
+    Final$N_CELL_RUNS <- Final$SIM_TIME <- Final$ID <- NULL
+    Final <- data.frame(Final, N_CELL_RUNS, SIM_TIME)
     #save file
     files <- dir()
     filename0 <- filename
