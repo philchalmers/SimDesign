@@ -56,7 +56,8 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
     sim_results <- Functions$summarise(results=results, parameters_list=parameters,
                            condition=condition, fixed_design_elements=fixed_design_elements)
 
-    if(!is.vector(sim_results)) stop('summarise() must return a vector', call.=FALSE)
+    if(!is.vector(sim_results) || is.null(names(sim_results)))
+        stop('summarise() must return a named vector', call.=FALSE)
     if(any(names(sim_results) == 'N_CELL_RUNS'))
         stop('summarise() cannot contain an element with the name N_CELL_RUNS')
     sim_results <- c(sim_results, N_CELL_RUNS=N_CELL_RUNS)
