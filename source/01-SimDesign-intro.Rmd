@@ -18,34 +18,36 @@ options(digits = 3)
 # Introduction
 
 Designing Monte Carlo simulations can be a fun and rewarding experience. Whether you are interested in
-evaluating the performance of a new optimizer or model, re-evaluating previous research claims (like the 
-ANOVA is 'robust' to violation of normality), determine power rates for an upcoming research proposal, 
-or simply to appears a strange thought in your head about a new statistical idea you heard about, 
-Monte Carlo simulations can be incredibly rewarding. However, organizing them can be a challenge, and 
-all to often people resort to the dreaded for loop-nesting, *for*-ever resulting in confusing and error 
-prone code. The package `SimDesign` is one attempt to fix this issue.
+evaluating the performance of a new optimizer, re-evaluating previous research claims (like the 
+ANOVA is 'robust' to violations of normality), determine power rates for an upcoming research proposal, 
+or simply to appease a strange thought in your head about a new statistical idea you heard about, 
+Monte Carlo simulations can be incredibly rewarding and are extremely important to the statistically oriented. 
+However, organizing simulations can be a challenge, and all to often people resort to the dreaded 
+for "loop-nesting", *for*-ever resulting in confusing, error prone, and simulation specific code. 
+The package `SimDesign` is one attempt to fix these and other issue that arise when designing Monte Carlo
+experiments.
 
-Monte Carlo simulations can be broken into three major steps:
+Generally speaking, Monte Carlo simulations can be broken into three major operations:
 
 - **generate** your data from some model given some **design** conditions to be studied (e.g., sample size,
 distributions, group sizes, etc),
 - **analyse** the generated data using whatever statistical analyses you are interested in (e.g., t-test,
-ANOVA, SEMs, IRT, etc), and collect the statistics or estimates you are interested in, and
+ANOVA, SEMs, IRT, etc), and collect the statistics/CIs/p-values/parameter estimates you are interested in, and
 - **summarise** the results after repeating the simulations $R$ number of times.
 
-Each term above represents the essential components in the `SimDesign` package, where **design** 
-represents a `data.frame` object containing the simulation conditions to be investigated, and **generate**,
-**analyse**, and **summarise** represent user defined functions which comprise the steps in the simulation.
+Each operation above represents the essential components of the `SimDesign` package. The **design** component
+is represented by a `data.frame` object containing the simulation conditions to be investigated, while **generate**,
+**analyse**, and **summarise** represent user defined functions which comprise the three steps in the simulation.
 Each of these components are constructed and passed to the `runSimulation()` function where the simulation 
-steps are evaluated.
+steps are evaluated, ultimately returning a `data.frame` object containing the simulation results.
 
 ```{r include=FALSE}
 options(digits = 2)
 ```
 
-After loading the `SimDesign` package, we begin by defining the required functions. To expedite this process,
+After loading the `SimDesign` package, we begin by defining the required user-constructed functions. To expedite this process,
 a call to `SimDesign_functions()` will create a template to be filled in, where all the necessary functional arguments have been pre-assigned. The documentation of each argument can be found in the respective 
-R help files, however there organization is very simple conceptually:
+R help files, however there organization is very simple conceptually.
 
 To begin, the following code should be copied and saved to an external source (i.e., text) file.
 
@@ -54,10 +56,20 @@ library(SimDesign)
 SimDesign_functions()
 ```
 
+Alternatively, if you are lazy or just don't like copy-and-pasting, `SimDesign_functions()` can write the output to two separate files
+by providing a `filename` argument. The following creates two files (`mysim.R` and `mysim-functions.R`) containing the simulation
+design/execution and required user-defined functions, respectively.
+
+```{r eval=FALSE}
+SimDesign_functions('mysim')
+```
+
 # Simulation: Determine estimator efficiency
 
+As a toy example, let's consider who the following question can be investigated with `SimDesign`: 
+
 *Question*: How does trimming affect recovering the mean of a distribution? Investigate this using
-different sample size and distribution configurations. Also demonstrate the effect of using the 
+different sample size with Gaussian and $\chi^2$ distributions. Also demonstrate the effect of using the 
 median to recover the mean.
 
 ### Define the conditions
@@ -113,14 +125,14 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
 
 This function accepts the data previously returned from `Generate()` (`dat`), the condition vector previously
 mentioned, and an additional (optional) list of `parameters` that may have been defined in `Generate()`. In 
-this case `Generate()` only returned a single object, therefore `parameters` will simple be a `NULL` element.
+this case, `Generate()` only returned a single object, therefore `parameters` will simple be a `NULL` element.
 
-At this point, we may conceptually think of the first two functions as being run $R$ different times to obtain
+At this point we may conceptually think of the first two functions as being run $R$ times to obtain
 $R$ sets of results. In other words, if we wanted the number of replications to be 100, the first two functions
-would be independently run 100 times, the results from `Analyse()` would be stored somewhere, and we would 
-somehow need to summarise these 100 elements into meaningful meta statistics. This is where computing meta-statistics
-such as bias, root mean-square error, detection rates, and so on are of primary importance. This is the purpose
-of the `summarise` component:
+would be independently run (at least) 100 times, the results from `Analyse()` would be stored, and we would 
+then need to summarise these 100 elements into meaningful meta statistics to describe their empirical properties.
+This is where computing meta-statistics such as bias, root mean-square error, detection rates, 
+and so on are of primary importance. Unsurprisingly, this is the purpose of the `summarise` component:
 
 ```{r}
 Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
@@ -134,13 +146,13 @@ Summarise <- function(condition, results, fixed_design_elements = NULL, paramete
 
 Again, `condition` is the same as was defined before, `parameters_list` is a list of (optional) parameters
 that may have been defined in `Generate()` (here it is just `NULL`), and finally `results` which is a `matrix`
-containing all the results from `Analyse()` where each row represents the result returned from each respective
-replication and the number of columns is equal to the length of the vector returned by `Analyse()`. 
+containing all the results from `Analyse()`, where each row represents the result returned from each respective
+replication and the number of columns is equal to the length of a single vector returned by `Analyse()`. 
 
-That sounds much more complicated than it is --- all you really need for this simulation 
-is the $R$ x 4 matrix `results` to build a suitable summary. Because the results is a matrix, the `apply()` 
-function is useful to apply a function over each respective row. The bias and RMSE are obtained for each
-respective statistic, and the overall result is returned as a vector.
+That sounds much more complicated than it is --- all you really need to know for this simulation 
+is that an $R$ x 4 matrix called `results` is available to build a suitable summary. 
+Because the results is a matrix, `apply()` is useful to apply a function over each respective row. 
+The bias and RMSE are obtained for each respective statistic, and the overall result is returned as a vector.
 
 Stopping for a moment and thinking now, each `condition` will be paired with a unique vector returned from
 `Summarise()`. Therefore, you might be thinking that the result returned from the simulation will be in
@@ -149,9 +161,9 @@ Well, you'd be right --- good on you for thinking.
 
 ### Putting it all together
 
-The last stage of the `SimDesign` work-flow is to pass the four defined objects to the `runSimulation()` 
+The last stage of the `SimDesign` work-flow is to pass the four defined elements to the `runSimulation()` 
 function which, unsurprisingly, runs the simulation. There are numerous options available in the 
-function, and these should be investigated by reading the `help(runSimulation)` file. Options for 
+function, and these should be investigated by reading the `help(runSimulation)` HTML file. Options for 
 performing simulations in parallel, storing/resuming temporary results, debugging functions,
 and so on are available. Below we simply request that each condition be run 1000 times on a 
 single processor, and finally store the results to an object called `results`.
@@ -164,7 +176,8 @@ results
 
 As can be seen from the printed results, each result from the `Summarise()` function has been paired with the 
 respective conditions, statistics have been properly named, and two additional columns have been appended
-to the results: `N_CELL_RUNS`, which indicates how many time the conditions were performed (in this case 1000 times each because there were no errors thrown which would require re-estimation), and `SIM_TIME` indicating
+to the results: `N_CELL_RUNS`, which indicates how many time the conditions were performed 
+(in this case 1000 times each because there were no errors thrown which would require re-estimation), and `SIM_TIME` indicating
 the time (in seconds) it took to completely finish the respective conditions. A call to `View()` in the 
 R console may also be a nice way to sift through the `results` object.
 
