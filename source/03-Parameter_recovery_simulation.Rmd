@@ -124,7 +124,7 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
     # (optional) could use better starting values from fixed_design_elements here too
     mod <- try(mirt(dat, 1L, verbose=FALSE), silent=TRUE)
     check_error(mod)
-    if(!mod@OptimInfo$converge) stop('did not converge')
+    if(!extract.mirt(mod, 'converged')) stop('did not converge')
     cfs <- coef(mod, simplify = TRUE, digits = Inf)
     FIML_as <- cfs$items[,1L] / 1.702
 
@@ -133,7 +133,7 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
                      '\nF ~~ 1*F')
     lmod <- try(sem(lavmod, dat, ordered = colnames(dat)))
     check_error(lmod)
-    if(!lmod@Fit@converged) stop('did not converge')
+    if(!lavInspect(lmod, 'converged')) stop('did not converge')
     cfs2 <- coef(lmod)
     DWLS_alpha <- cfs2[1L:nitems]
     const <- sqrt(1 - DWLS_alpha^2)
