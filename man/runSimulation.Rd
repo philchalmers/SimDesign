@@ -4,11 +4,12 @@
 \alias{runSimulation}
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
-runSimulation(design, replications, generate, analyse, summarise, main = NULL,
+runSimulation(design, replications, generate, analyse, summarise,
   fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
-  save = FALSE, save_results = FALSE, clean = TRUE, seed = NULL,
-  compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
-  replications), results_filename = paste0(compname, "_results_"),
+  save = FALSE, save_results = FALSE, try_errors = FALSE, clean = TRUE,
+  seed = NULL, compname = Sys.info()["nodename"],
+  filename = paste0(compname, "_Final_", replications),
+  results_filename = paste0(compname, "_results_"),
   tmpfilename = paste0(compname, "_tmpsim.rds"),
   ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
 }
@@ -26,10 +27,6 @@ runSimulation(design, replications, generate, analyse, summarise, main = NULL,
 
 \item{summarise}{user-defined summary function to be used after all the replications have completed.
    See \code{\link{summarise}} for details}
-
-\item{main}{(optional) user-defined organization function defining how the simulation should be
-   organized. When NULL, the internal function definition is used (and the majority of the time
-   this is sufficient). See \code{\link{main}} for further details}
 
 \item{fixed_design_elements}{(optional) an object (usually a list) containing fixed design elements
   which can be used across all simulation conditions. This is useful when including
@@ -57,6 +54,11 @@ runSimulation(design, replications, generate, analyse, summarise, main = NULL,
   in the current working directory then one will be created automatically.
   Use this if you would like to keep track of the individual parameters returned from the analyses.
   Default is FALSE}
+
+\item{try_errors}{logical; include information about which error how often they occured from
+  \code{try()} chunks or \code{\link{check_error}}? If TRUE, this informaiton will be stacked at the end
+  of the returned simulation results with the name of the specific error used as the column name in the
+  data.frame object, and the number of occurences included as the value for each condition}
 
 \item{clean}{logical; remove any temp files that are created after the simulation is complete?
   Default is TRUE}
@@ -89,7 +91,7 @@ runSimulation(design, replications, generate, analyse, summarise, main = NULL,
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
 \item{edit}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
-  Options are \code{'none'} (default), 'main' to edit the main function calls loop, \code{'generate'}
+  Options are \code{'none'} (default), \code{'generate'}
   to edit the data simulation function, \code{'analyse'} to edit the computational function, and
   \code{'summarise'} to  edit the aggregation function. Alternatively, users may place
   \code{\link{browser}} calls within the respective functions for debugging at specific lines

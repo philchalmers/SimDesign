@@ -149,39 +149,40 @@ summarise <- function(condition, results, fixed_design_elements = NULL, paramete
 
 #=================================================================================================#
 
-#' Main subroutine
-#'
-#' This function runs one condition at a time exactly once. This is for
-#' repeating the simulation for each condition a number of times, and is where the
-#' Monte Carlo flow is controlled. Generally speaking, you shouldn't need to edit this
-#' function, therefore \emph{only replace it if you really know what you are doing}.
-#'
-#' @param index an integer place-holder value indexed from the \code{1:replications} input, where each value 
-#'   represents a particular draw given the \code{replications} argument in \code{\link{runSimulation}}
-#' @param condition a single row from the design input (as a data.frame), indicating the
-#'   simulation conditions
-#' @param fixed_design_elements object passed down from \code{\link{runSimulation}}
-#' @param generate the \code{\link{generate}} function defined above (required for parallel computing)
-#' @param analyse the \code{\link{analyse}} function defined above (required for parallel computing)
-#'
-#' @return must return a named list with the 'result' and 'parameters' elements for the
-#'   computational results and \code{parameters} from \code{\link{generate}}
-#'
-#' @aliases main
-#'
-#' @export main
-#'
-#' @examples
-#' \dontrun{
-#'
-#' # This is the default main function
-#' print(SimDesign::main)
-#'
-#' }
-main <- function(index, condition, generate, analyse, fixed_design_elements){
+# Main subroutine
+#
+# This function runs one condition at a time exactly once. This is for
+# repeating the simulation for each condition a number of times, and is where the
+# Monte Carlo flow is controlled. Generally speaking, you shouldn't need to edit this
+# function, therefore \emph{only replace it if you really know what you are doing}.
+#
+# @param index an integer place-holder value indexed from the \code{1:replications} input, where each value
+#   represents a particular draw given the \code{replications} argument in \code{\link{runSimulation}}
+# @param condition a single row from the design input (as a data.frame), indicating the
+#   simulation conditions
+# @param fixed_design_elements object passed down from \code{\link{runSimulation}}
+# @param generate the \code{\link{generate}} function defined above (required for parallel computing)
+# @param analyse the \code{\link{analyse}} function defined above (required for parallel computing)
+#
+# @return must return a named list with the 'result' and 'parameters' elements for the
+#   computational results and \code{parameters} from \code{\link{generate}}
+#
+# @aliases main
+#
+# @export main
+#
+# @examples
+# \dontrun{
+#
+# # This is the default main function
+# print(SimDesign::main)
+#
+# }
+mainsim <- function(index, condition, generate, analyse, fixed_design_elements){
 
     require('SimDesign') #this is required if SimDesign functions are called (e.g., bias(), RMSE())
     count <- 0L
+    try_error <- character()
 
     while(TRUE){
 
@@ -195,7 +196,10 @@ main <- function(index, condition, generate, analyse, fixed_design_elements){
                            fixed_design_elements=fixed_design_elements), silent=TRUE)
 
         # if an error was detected in compute(), try again
-        if(is(res, 'try-error')) next
+        if(is(res, 'try-error')){
+            try_error <- c(try_error, res[1L])
+            next
+        }
         if(!is.list(res) && !is.numeric(res))
             stop('analyse() did not return a list or numeric vector', call.=FALSE)
 
@@ -206,6 +210,8 @@ main <- function(index, condition, generate, analyse, fixed_design_elements){
             result <- res
             result$n_cell_runs <- count
         }
-        return(list(result=result, parameters=simlist$parameters))
+        ret <- list(result=result, parameters=simlist$parameters)
+        attr(ret, 'try_errors') <- try_error
+        return(ret)
     }
 }

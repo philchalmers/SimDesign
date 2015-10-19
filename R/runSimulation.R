@@ -89,10 +89,6 @@
 #' @param summarise user-defined summary function to be used after all the replications have completed.
 #'    See \code{\link{summarise}} for details
 #'
-#' @param main (optional) user-defined organization function defining how the simulation should be
-#'    organized. When NULL, the internal function definition is used (and the majority of the time
-#'    this is sufficient). See \code{\link{main}} for further details
-#'
 #' @param replications number of replication to perform per condition (i.e., each row in \code{design})
 #'
 #' @param fixed_design_elements (optional) an object (usually a list) containing fixed design elements
@@ -115,6 +111,11 @@
 #'   in the current working directory then one will be created automatically.
 #'   Use this if you would like to keep track of the individual parameters returned from the analyses.
 #'   Default is FALSE
+#'
+#' @param try_errors logical; include information about which error how often they occured from
+#'   \code{try()} chunks or \code{\link{check_error}}? If TRUE, this informaiton will be stacked at the end
+#'   of the returned simulation results with the name of the specific error used as the column name in the
+#'   data.frame object, and the number of occurences included as the value for each condition
 #'
 #' @param ncores number of cores to be used in parallel execution. Default uses all available
 #'
@@ -146,7 +147,7 @@
 #'   may be resumed on another computer by changing the name of the node to match the broken computer
 #'
 #' @param edit a string indicating where to initiate a \code{browser()} call for editing and debugging.
-#'   Options are \code{'none'} (default), 'main' to edit the main function calls loop, \code{'generate'}
+#'   Options are \code{'none'} (default), \code{'generate'}
 #'   to edit the data simulation function, \code{'analyse'} to edit the computational function, and
 #'   \code{'summarise'} to  edit the aggregation function. Alternatively, users may place
 #'   \code{\link{browser}} calls within the respective functions for debugging at specific lines
@@ -344,9 +345,9 @@
 #'
 #' }
 #'
-runSimulation <- function(design, replications, generate, analyse, summarise, main = NULL,
+runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
-                          save = FALSE, save_results = FALSE,
+                          save = FALSE, save_results = FALSE, try_errors = FALSE,
                           clean = TRUE, seed = NULL,
                           compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', replications),
@@ -357,20 +358,17 @@ runSimulation <- function(design, replications, generate, analyse, summarise, ma
     save_every <- 1L
     filename <- paste0(filename, '.rds')
     stopifnot(!missing(generate) || !missing(analyse) || !missing(summarise))
-    Functions <- list(generate=generate, analyse=analyse, summarise=summarise, main=main)
+    Functions <- list(generate=generate, analyse=analyse, summarise=summarise)
     stopifnot(!missing(design))
     stopifnot(!missing(replications))
     if(!is.null(seed)){
         if(length(seed) == 1L) seed <- rep(seed, nrow(design))
         stopifnot(nrow(design) == length(seed))
     }
-    FunNames <- names(Functions)
     edit <- tolower(edit)
-    if(is.null(main)) Functions$main <- SimDesign::main
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))
         truefms <- switch(i,
-                          main = c('index', 'condition', 'generate', 'analyse', 'fixed_design_elements'),
                           generate  = c('condition', 'fixed_design_elements'),
                           analyse = c('dat', 'parameters', 'condition', 'fixed_design_elements'),
                           summarise = c('results', 'parameters_list', 'condition', 'fixed_design_elements'))
@@ -446,7 +444,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise, ma
     Final <- plyr::rbind.fill(Result_list)
     N_CELL_RUNS <- Final$N_CELL_RUNS; SIM_TIME <- Final$SIM_TIME
     Final$N_CELL_RUNS <- Final$SIM_TIME <- Final$ID <- NULL
-    Final <- data.frame(Final, N_CELL_RUNS, SIM_TIME)
+    pick <- grepl('TRY_ERROR_MESSAGE', names(Final))
+    TRY_ERRORS <- Final[,pick, drop=FALSE]
+    Final <- Final[,!pick, drop=FALSE]
+    Final <- if(try_errors){
+        data.frame(Final, N_CELL_RUNS, SIM_TIME, TRY_ERRORS)
+    } else data.frame(Final, N_CELL_RUNS, SIM_TIME)
     #save file
     files <- dir()
     filename0 <- filename

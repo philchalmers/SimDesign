@@ -8,8 +8,6 @@
 #'   containing the simulation design and the functional components, respectively. Using this option
 #'   is generally the recommended approach when designing simulations
 #'
-#' @param main logical; include a skeleton of the \code{main} function?
-#'
 #' @aliases SimDesign_functions
 #'
 #' @export SimDesign_functions
@@ -21,7 +19,7 @@
 #' # write output files (not run)
 #' # SimDesign_functions('mysim')
 #'
-SimDesign_functions <- function(filename = NULL, main = FALSE){
+SimDesign_functions <- function(filename = NULL){
     if(!is.null(filename)) sink(paste0(filename, '-functions.R'))
     cat('\n#-------------------------------------------------------------------')
     cat('\n### Define essential simulation functions')
@@ -36,9 +34,6 @@ SimDesign_functions <- function(filename = NULL, main = FALSE){
     cat('Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {')
     cat('\n    # Summarise the simulation results ...\n\n    # Return a vector\n    return(numeric())\n}')
 
-    if(main){
-        cat('main <- ', paste0(deparse(main), '\n'))
-    }
     if(!is.null(filename)) sink()
     if(!is.null(filename)){
         sink(paste0(filename, '.R'))

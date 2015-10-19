@@ -29,7 +29,6 @@ test_that('SimDesign', {
 
         # require packages/define functions if needed, or better yet index with the :: operator
         require(stats)
-        mygreatfunction <- function(x) print('Do some stuff')
 
         #wrap computational statistics in try() statements to control estimation problems
         welch <- try(t.test(DV ~ group, dat), silent=TRUE)
@@ -80,5 +79,33 @@ test_that('SimDesign', {
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = parallel::detectCores(), parallel=TRUE, save=FALSE)
     expect_is(Final, 'data.frame')
+
+    mycompute <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+
+        # require packages/define functions if needed, or better yet index with the :: operator
+        require(stats)
+
+        #wrap computational statistics in try() statements to control estimation problems
+        welch <- try(t.test(DV ~ group, dat), silent=TRUE)
+        ind <- try(stats::t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
+
+        # check if error, and if so stop and return an 'error'. This will re-draw the data
+        check_error(welch)
+        if(is(ind, 'try-error')) stop('Independent t-test error message')
+        if(runif(1, 0, 1) < .9) return(try(suppressWarnings(t.test('char')), silent=TRUE))
+
+        # In this function the p values for the t-tests are returned,
+        #  and make sure to name each element, for future reference
+        ret <- c(welch = welch$p.value,
+                 independent = ind$p.value)
+
+        return(ret)
+    }
+
+    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                           replications = 2, verbose = FALSE, try_errors = TRUE)
+    expect_is(Final, 'data.frame')
+    expect_true(any(grepl('TRY_ERROR_MESSAGE', names(Final))))
+
 })
 

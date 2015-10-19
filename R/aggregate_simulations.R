@@ -35,7 +35,10 @@ aggregate_simulations <- function(files = NULL){
     ret <- readin[[1L]]
     pick <- sapply(readin[[1L]], is.numeric)
     ret[, pick] <- 0
+    stopifnot(length(unique(sapply(readin, ncol))) == 1L)
     pick <- pick & !(colnames(readin[[1L]]) %in% c('SIM_TIME', 'N_CELL_RUNS'))
+    if(any(grepl('TRY_ERROR_MESSAGE', readin[[1L]])))
+        stop('function does not support TRY_ERROR_MESSAGE elements yet') #TODO
     splt <- strsplit(filenames, '_')
     weights <- sapply(splt, function(x){
         y <- x[length(x)]

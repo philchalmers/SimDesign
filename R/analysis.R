@@ -16,7 +16,7 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
     #  and number of replications desired
     if(is.null(cl)){
         if(!is.null(seed)) set.seed(seed[condition$ID])
-        cell_results <- lapply(1L:replications, Functions$main, condition=condition,
+        cell_results <- lapply(1L:replications, mainsim, condition=condition,
                                generate=Functions$generate,
                                analyse=Functions$analyse,
                                fixed_design_elements=fixed_design_elements)
@@ -24,16 +24,22 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
         if(MPI){
             i <- 1L
             cell_results <- foreach(i=1L:replications) %dopar%
-                Functions$main(i, condition=condition, generate=Functions$generate,
-                               analyse=Functions$analyse, fixed_design_elements=fixed_design_elements)
+                mainsim(i, condition=condition, generate=Functions$generate,
+                     analyse=Functions$analyse, fixed_design_elements=fixed_design_elements)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
-            cell_results <- parallel::parLapply(cl, 1L:replications, Functions$main,
+            cell_results <- parallel::parLapply(cl, 1L:replications, mainsim,
                                                 condition=condition, generate=Functions$generate,
                                                 analyse=Functions$analyse,
                                                 fixed_design_elements=fixed_design_elements)
         }
     }
+
+    try_errors <- lapply(cell_results, function(x) attr(x, 'try_errors'))
+    try_errors <- table(do.call(c, try_errors))
+    for(i in 1L:length(cell_results))
+        attr(cell_results[[i]], 'try_errors') <- NULL
+
     # split lists up
     results <- lapply(cell_results, function(x) x$result)
     if(!is.null(cell_results[[1L]]$parameters))
@@ -54,7 +60,7 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
             results[[i]]$n_cell_runs <- NULL
     }
     if(save_results)
-        saveRDS(list(condition=condition, results=results),
+        saveRDS(list(condition=condition, results=results, try_errors=try_errors),
                 paste0('SimDesign_results/', results_filename, 'ROWID-', condition$ID, '.rds'))
     sim_results <- Functions$summarise(results=results, parameters_list=parameters,
                            condition=condition, fixed_design_elements=fixed_design_elements)
@@ -62,8 +68,7 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
     if(!is.vector(sim_results) || is.null(names(sim_results)))
         stop('summarise() must return a named vector', call.=FALSE)
     if(any(names(sim_results) == 'N_CELL_RUNS'))
-        stop('summarise() cannot contain an element with the name N_CELL_RUNS')
-    sim_results <- c(sim_results, N_CELL_RUNS=N_CELL_RUNS)
-
+    stop('summarise() cannot contain an element with the name N_CELL_RUNS')
+    sim_results <- c(sim_results, N_CELL_RUNS=N_CELL_RUNS, TRY_ERROR_MESSAGE=try_errors)
     return(sim_results)
 }
