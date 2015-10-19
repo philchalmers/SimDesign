@@ -40,6 +40,9 @@ aggregate_simulations <- function(files = NULL){
     if(any(grepl('TRY_ERROR_MESSAGE', readin[[1L]])))
         stop('function does not support TRY_ERROR_MESSAGE elements yet') #TODO
     splt <- strsplit(filenames, '_')
+    if(!all(sapply(splt, length) > 1L))
+        stop('Some files do not contain the number of replications in the file name.
+             Should be of the form \'filename_NUMBER.rds\'. Please fix')
     weights <- sapply(splt, function(x){
         y <- x[length(x)]
         as.integer(strsplit(y, '.rds')[[1L]])

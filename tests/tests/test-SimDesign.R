@@ -80,6 +80,16 @@ test_that('SimDesign', {
                            replications = parallel::detectCores(), parallel=TRUE, save=FALSE)
     expect_is(Final, 'data.frame')
 
+    # aggregate test
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                           replications = 2, parallel=FALSE, save=TRUE)
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                           replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile_2')
+    Final <- aggregate_simulations()
+    expect_is(Final, 'data.frame')
+    expect_true(all(Final$N_CELL_RUNS == 4L))
+    system('rm *.rds')
+
     mycompute <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
 
         # require packages/define functions if needed, or better yet index with the :: operator
