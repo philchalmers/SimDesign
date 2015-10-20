@@ -6,7 +6,7 @@
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
-  try_errors = TRUE, save = FALSE, save_results = FALSE, clean = TRUE,
+  try_errors = FALSE, save = FALSE, save_results = FALSE, clean = TRUE,
   seed = NULL, compname = Sys.info()["nodename"],
   filename = paste0(compname, "_Final_", replications),
   results_filename = paste0(compname, "_results_"),

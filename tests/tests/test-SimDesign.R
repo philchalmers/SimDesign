@@ -116,15 +116,15 @@ test_that('SimDesign', {
     }
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 2, verbose = FALSE)
+                           replications = 2, verbose = FALSE, try_errors = TRUE)
     expect_is(Final, 'data.frame')
     expect_true(any(grepl('TRY_ERROR_MESSAGE', names(Final))))
 
     # aggregate test
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                         replications = 2, parallel=FALSE, save=TRUE)
+                         replications = 2, parallel=FALSE, save=TRUE, try_errors = TRUE)
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                         replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile')
+                         replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile', try_errors = TRUE)
     Final <- aggregate_simulations()
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
