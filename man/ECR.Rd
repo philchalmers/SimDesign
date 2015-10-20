@@ -26,4 +26,7 @@ for(i in 1:100){
 
 ECR(CIs, 0)
 }
+\seealso{
+\code{\link{EDR}}
+}
 

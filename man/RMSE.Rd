@@ -39,6 +39,8 @@ RMSE(dev, type = 'NRMSE')
 RMSE(samp, pop, type = 'CV')
 }
 \seealso{
+\code{\link{bias}}
+
 MAE
 }
 

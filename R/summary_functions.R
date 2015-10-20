@@ -14,6 +14,8 @@
 #'
 #' @return returns a single number indicating the overall (relative) bias in the estimates
 #'
+#' @seealso \code{\link{RMSE}}
+#'
 #' @aliases bias
 #'
 #' @export bias
@@ -69,6 +71,8 @@ bias <- function(observed, population = NULL, relative = FALSE){
 #' @return returns a single number indicating the overall average deviation in the estimates
 #'
 #' @aliases RMSE
+#'
+#' @seealso \code{\link{bias}}
 #'
 #' @export RMSE
 #'
@@ -198,6 +202,8 @@ RE <- function(RMSEs){
 #'
 #' @aliases EDR
 #'
+#' @seealso \code{\link{ECR}}
+#'
 #' @export EDR
 #'
 #' @examples
@@ -232,6 +238,8 @@ EDR <- function(p, alpha){
 #' @param population a numeric scalar indicating the fixed population value
 #'
 #' @aliases ECR
+#'
+#' @seealso \code{\link{EDR}}
 #'
 #' @export ECR
 #'

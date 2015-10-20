@@ -6,10 +6,9 @@
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
-  try_errors = FALSE, save = FALSE, save_results = FALSE, clean = TRUE,
-  seed = NULL, compname = Sys.info()["nodename"],
-  filename = paste0(compname, "_Final_", replications),
-  results_filename = paste0(compname, "_results_"),
+  try_errors = FALSE, save = FALSE, save_results = FALSE, seed = NULL,
+  compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
+  replications), results_filename = paste0(compname, "_results_"),
   tmpfilename = paste0(compname, "_tmpsim.rds"),
   ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
 }
@@ -60,9 +59,6 @@ runSimulation(design, replications, generate, analyse, summarise,
   Use this if you would like to keep track of the individual parameters returned from the analyses.
   Default is FALSE}
 
-\item{clean}{logical; remove any temp files that are created after the simulation is complete?
-  Default is TRUE}
-
 \item{seed}{a vector of integers (or single number)
   to be used for reproducibility. The length of the vector must be
   equal to either 1 or the number of rows in \code{design}; if 1, this will be repeated for each
@@ -106,9 +102,9 @@ and may be restored by rerunning the exact function calls again, provided that t
 file can be found in the working directory. To conserve RAM, temporary objects (such as
 generated data across conditions and replications) are discarded. For longer simulations, however,
 it is recommended to use \code{save = TRUE} and/or \code{save_results = TRUE} to temporarily save the
-simulation state and write the separate results to external .rds files, respectively.
-Supports parallel and cluster computing, global and
-local debugging, and is designed to be cross-platform.
+simulation state and to write results to separate external .rds files, respectively.
+Supports parallel and cluster computing, global and local debugging, error handling, and is
+designed to be cross-platform.
 }
 \details{
 For a skeleton version of the work-flow
@@ -128,7 +124,7 @@ The strategy for organizing the Monte Carlo simulation work-flow is to
    }
    \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
       number of replications with the \code{replications} input}
-   \item{4)}{Analyze the output from \code{runSimulation}, possibly using techniques from ANOVA
+   \item{4)}{Analyze the output from \code{runSimulation}, possibly using ANOVA techniques
      and generating suitable plots and tables}
 }
 
@@ -138,6 +134,9 @@ Two constants for each condition are returned by default:
 all the Monte Carlo replications for each respective condition, and if \code{try_errors = TRUE}
 then columns containing the number of replications due to \code{try()} errors where the error messages
 represent the names of the columns prefixed with a \code{TRY_ERROR_MESSAGE} string.
+}
+\section{Storing and resuming temporary results}{
+
 
 In the event of a computer crash, power outage, etc, if \code{save = TRUE} was used
 then the original code in
@@ -148,6 +147,7 @@ will be returned in the R session and a '.rds' file will be saved to the hard-dr
 file name corresponding to the \code{filename} argument below). To save the complete list of results returned
 from \code{\link{analyse}} to unique files use \code{save_results = TRUE}.
 }
+
 \section{Cluster computing}{
 
 
@@ -164,12 +164,12 @@ will be summoned (1 master, 15 slaves) across the computers named localhost, sla
 mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R
 }
 
-\section{Poor man's cluster computing}{
+\section{Poor man's cluster computing for indedependent nodes}{
 
 
-In the event that you do not have access to a Beowulf-type cluster, but have multiple personal
-computers, then the simulation code can be manually distributed across each computer instead.
-This simply requires passing a smaller value to the \code{each} argument on each computer, and later
+In the event that you do not have access to a Beowulf-type cluster but have multiple personal
+computers, then the simulation code can be manually distributed across each independent computer instead.
+This simply requires passing a smaller value to the \code{replications} argument on each computer, and later
 aggregating the results using the \code{\link{aggregate_simulations}} function.
 
 For instance, if you have two computers available and wanted 500 replications you

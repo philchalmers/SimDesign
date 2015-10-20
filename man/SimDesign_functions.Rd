@@ -19,7 +19,10 @@ when defining your simulation.
 \examples{
 SimDesign_functions()
 
-# write output files (not run)
-# SimDesign_functions('mysim')
+\dontrun{
+
+# write output files
+SimDesign_functions('mysim')
+}
 }
 

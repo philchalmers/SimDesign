@@ -26,4 +26,7 @@ for(i in 1:100){
 
 EDR(rates, alpha = .05)
 }
+\seealso{
+\code{\link{ECR}}
+}
 

@@ -16,8 +16,11 @@
 #'
 #' SimDesign_functions()
 #'
-#' # write output files (not run)
-#' # SimDesign_functions('mysim')
+#'\dontrun{
+#'
+#' # write output files
+#' SimDesign_functions('mysim')
+#' }
 #'
 SimDesign_functions <- function(filename = NULL){
     if(!is.null(filename)) sink(paste0(filename, '-functions.R'))

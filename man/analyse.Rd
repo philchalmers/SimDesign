@@ -62,4 +62,7 @@ myanalyse <- function(condition, dat, fixed_design_elements = NULL, parameters =
 
 }
 }
+\seealso{
+\code{\link{check_error}}
+}
 

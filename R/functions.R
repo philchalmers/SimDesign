@@ -63,6 +63,7 @@ generate <- function(condition, fixed_design_elements = NULL) NULL
 #'   effects sizes, etc), or a list containing values of interest (e.g., separate matrix
 #'   and vector of parameter estimates corresponding to elements in \code{parameters})
 #'
+#' @seealso \code{\link{check_error}}
 #' @aliases analyse
 #'
 #' @examples

@@ -35,4 +35,7 @@ bias(dev)
 # equivalent here
 bias(mean(samp), pop)
 }
+\seealso{
+\code{\link{RMSE}}
+}
 
