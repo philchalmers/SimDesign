@@ -1,5 +1,7 @@
 #' Generate data
 #'
+#' Generate data from a single row in the \code{design} input (see \code{\link{runSimulation}}).
+#'
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #'
@@ -41,13 +43,15 @@ generate <- function(condition, fixed_design_elements = NULL) NULL
 
 #' Compute estimates and statistics
 #'
-#' Compute all relevant test statistics and parameter estimates here.
-#' This is the computational heavy lifting section. In some cases, it may be easier to change
+#' Computes all relevant test statistics, parameter estimates, detection rates, and so on.
+#' This is the computational heavy lifting portion of the Monte Carlo simulation.
+#' In some cases, it may be easier to change
 #' the output to a named list containing different parameter configurations (i.e., when
 #' determining RMSE values for a large set of population parameters).
 #'
 #' Be sure to make heavy use
-#' of \code{\link{try}} combinations and throw a \code{\link{stop}} if an iterative function fails
+#' of \code{\link{try}} combinations and throw a \code{\link{stop}}/\code{\link{check_error}}
+#' if an iterative function fails
 #' to converge. This will cause the function to stop, and \code{\link{generate}} will be called again
 #' to obtain a different dataset.
 #'
@@ -63,7 +67,7 @@ generate <- function(condition, fixed_design_elements = NULL) NULL
 #'   effects sizes, etc), or a list containing values of interest (e.g., separate matrix
 #'   and vector of parameter estimates corresponding to elements in \code{parameters})
 #'
-#' @seealso \code{\link{check_error}}
+#' @seealso \code{\link{try}}, \code{\link{check_error}}, \code{\link{stop}}
 #' @aliases analyse
 #'
 #' @examples
@@ -101,7 +105,7 @@ analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
 
 #' Summarise simulated data using various population comparison statistics
 #'
-#' This collapses across the simulation results within each condition for computing composite
+#' This collapses the simulation results within each condition to composite
 #' estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 #'
 #' @param results a data.frame (if \code{analyse} returned a numeric vector) or a list (if
@@ -118,7 +122,8 @@ analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
 #'
 #' @return must return a named numeric vector with the desired meta-simulation results
 #'
-#' @seealso \code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}}, \code{\link{ECR}}
+#' @seealso \code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}}, \code{\link{ECR}},
+#'   \code{\link{MAE}}
 #'
 #' @examples
 #' \dontrun{

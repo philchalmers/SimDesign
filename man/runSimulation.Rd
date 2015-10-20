@@ -45,10 +45,10 @@ runSimulation(design, replications, generate, analyse, summarise,
 \item{MPI}{logical; use the \code{doMPI} package to run simulation in parallel on
   a cluster? Default is FALSE}
 
-\item{try_errors}{logical; include information about which error how often they occured from
-  \code{try()} chunks or \code{\link{check_error}}? If TRUE, this informaiton will be stacked at the end
+\item{try_errors}{logical; include information about which error how often they occurred from
+  \code{try()} chunks or \code{\link{check_error}}? If TRUE, this information will be stacked at the end
   of the returned simulation results with the name of the specific error used as the column name in the
-  data.frame object, and the number of occurences included as the value for each condition}
+  data.frame object, and the number of occurrences included as the value for each condition}
 
 \item{save}{logical; save the final simulation and temp files to the hard-drive? This is useful
   for simulations which require an extended amount of time. Default is FALSE}
@@ -236,7 +236,7 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
     welch <- try(t.test(DV ~ group, dat), silent=TRUE)
     ind <- try(t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
 
-    # check if any errors occured. This will re-draw the data
+    # check if any errors occurred. This will re-draw the data
     check_error(welch, ind)
 
     # In this function the p values for the t-tests are returned,

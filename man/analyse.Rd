@@ -24,14 +24,16 @@ returns a named numeric vector with the values of interest (e.g., p-values,
   and vector of parameter estimates corresponding to elements in \code{parameters})
 }
 \description{
-Compute all relevant test statistics and parameter estimates here.
-This is the computational heavy lifting section. In some cases, it may be easier to change
+Computes all relevant test statistics, parameter estimates, detection rates, and so on.
+This is the computational heavy lifting portion of the Monte Carlo simulation.
+In some cases, it may be easier to change
 the output to a named list containing different parameter configurations (i.e., when
 determining RMSE values for a large set of population parameters).
 }
 \details{
 Be sure to make heavy use
-of \code{\link{try}} combinations and throw a \code{\link{stop}} if an iterative function fails
+of \code{\link{try}} combinations and throw a \code{\link{stop}}/\code{\link{check_error}}
+if an iterative function fails
 to converge. This will cause the function to stop, and \code{\link{generate}} will be called again
 to obtain a different dataset.
 }
@@ -63,6 +65,6 @@ myanalyse <- function(condition, dat, fixed_design_elements = NULL, parameters =
 }
 }
 \seealso{
-\code{\link{check_error}}
+\code{\link{try}}, \code{\link{check_error}}, \code{\link{stop}}
 }
 

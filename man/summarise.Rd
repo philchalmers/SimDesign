@@ -25,7 +25,7 @@ not returned from \code{\link{generate}} then this will be NULL}
 must return a named numeric vector with the desired meta-simulation results
 }
 \description{
-This collapses across the simulation results within each condition for computing composite
+This collapses the simulation results within each condition to composite
 estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 }
 \examples{
@@ -55,6 +55,7 @@ mysummarise <- function(condition, results, fixed_conditoins = NULL, parameters_
 }
 }
 \seealso{
-\code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}}, \code{\link{ECR}}
+\code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}}, \code{\link{ECR}},
+  \code{\link{MAE}}
 }
 

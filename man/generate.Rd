@@ -20,7 +20,7 @@ returns a single object containing the data to be analysed (usually a vector, ma
   (if there are any. Otherwise, this could just be an empty list)
 }
 \description{
-Generate data
+Generate data from a single row in the \code{design} input (see \code{\link{runSimulation}}).
 }
 \examples{
 \dontrun{

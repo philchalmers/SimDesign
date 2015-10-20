@@ -115,10 +115,10 @@
 #'   Use this if you would like to keep track of the individual parameters returned from the analyses.
 #'   Default is FALSE
 #'
-#' @param try_errors logical; include information about which error how often they occured from
-#'   \code{try()} chunks or \code{\link{check_error}}? If TRUE, this informaiton will be stacked at the end
+#' @param try_errors logical; include information about which error how often they occurred from
+#'   \code{try()} chunks or \code{\link{check_error}}? If TRUE, this information will be stacked at the end
 #'   of the returned simulation results with the name of the specific error used as the column name in the
-#'   data.frame object, and the number of occurences included as the value for each condition
+#'   data.frame object, and the number of occurrences included as the value for each condition
 #'
 #' @param ncores number of cores to be used in parallel execution. Default uses all available
 #'
@@ -225,7 +225,7 @@
 #'     welch <- try(t.test(DV ~ group, dat), silent=TRUE)
 #'     ind <- try(t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
 #'
-#'     # check if any errors occured. This will re-draw the data
+#'     # check if any errors occurred. This will re-draw the data
 #'     check_error(welch, ind)
 #'
 #'     # In this function the p values for the t-tests are returned,
