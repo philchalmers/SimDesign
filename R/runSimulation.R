@@ -429,14 +429,15 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             cat(sprintf('\rCompleted: %i%s,   Previous cell time: %.1f,  Total elapsed time: %.1f ',
                         round((i-1)/(nrow(design))*100), '%', time1 - time0, sum(stored_time)))
         time0 <- proc.time()[3]
-        Result_list[[i]] <- as.data.frame(c(as.list(design[i, ]),
-                                            as.list(Analysis(Functions=Functions,
-                                                             condition=design[i,],
-                                                             replications=replications,
-                                                             fixed_design_elements=fixed_design_elements,
-                                                             cl=cl, MPI=MPI, seed=seed,
-                                                             save_results=save_results,
-                                                             results_filename=results_filename))))
+        Result_list[[i]] <- data.frame(c(as.list(design[i, ]),
+                                         as.list(Analysis(Functions=Functions,
+                                                          condition=design[i,],
+                                                          replications=replications,
+                                                          fixed_design_elements=fixed_design_elements,
+                                                          cl=cl, MPI=MPI, seed=seed,
+                                                          save_results=save_results,
+                                                          results_filename=results_filename))),
+                                       check.names=FALSE)
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
         if(save && !is.na(save_every))
@@ -449,8 +450,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     TRY_ERRORS <- Final[,pick, drop=FALSE]
     Final <- Final[,!pick, drop=FALSE]
     Final <- if(try_errors){
-        data.frame(Final, REPLICATIONS=replications, SIM_TIME, TRY_ERRORS)
-    } else data.frame(Final, REPLICATIONS=replications, SIM_TIME)
+        data.frame(Final, REPLICATIONS=replications, SIM_TIME, TRY_ERRORS, check.names=FALSE)
+    } else data.frame(Final, REPLICATIONS=replications, SIM_TIME, check.names=FALSE)
     #save file
     files <- dir()
     filename0 <- filename

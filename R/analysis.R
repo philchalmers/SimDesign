@@ -61,6 +61,6 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
 
     if(!is.vector(sim_results) || is.null(names(sim_results)))
         stop('summarise() must return a named vector', call.=FALSE)
-    sim_results <- c(sim_results, TRY_ERROR_MESSAGE=try_errors)
+    sim_results <- c(sim_results, 'TRY_ERROR_MESSAGE: '=try_errors)
     return(sim_results)
 }

@@ -96,7 +96,7 @@ test_that('SimDesign', {
         require(stats)
 
         if(runif(1, 0, 1) < .9) return(try(suppressWarnings(t.test('char')), silent=TRUE))
-        if(runif(1, 0, 1) < .9) return(try(suppressWarnings(aov('char')), silent=TRUE))
+        if(runif(1, 0, 1) < .9) check_error(try(suppressWarnings(aov('char')), silent=TRUE))
 
         #wrap computational statistics in try() statements to control estimation problems
         welch <- try(t.test(DV ~ group, dat), silent=TRUE)

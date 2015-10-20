@@ -29,5 +29,5 @@ check_error <- function(...){
     object <- list(...)
     for(i in 1L:length(object))
         if(is(object[[i]], 'try-error'))
-            stop(object[[i]][1L], call.=FALSE)
+            stop(gsub('Error : ', '', object[[i]][1L]), call.=FALSE)
 }
