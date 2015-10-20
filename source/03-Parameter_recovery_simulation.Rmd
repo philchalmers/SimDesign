@@ -299,3 +299,8 @@ ggplot(plt, aes(pars, RMSE, colour=estimator)) + geom_point(size=2) + facet_wrap
 system('rm *.rds')
 ```
 
+
+```{r}
+tail(res30)
+```
+

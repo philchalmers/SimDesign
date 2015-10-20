@@ -183,37 +183,37 @@ Completed: 25%,   Previous cell time: 0.2,  Total elapsed time: 0.4
 Completed: 38%,   Previous cell time: 0.2,  Total elapsed time: 0.6 
 Completed: 50%,   Previous cell time: 0.2,  Total elapsed time: 0.8 
 Completed: 62%,   Previous cell time: 0.2,  Total elapsed time: 1.0 
-Completed: 75%,   Previous cell time: 0.2,  Total elapsed time: 1.2 
+Completed: 75%,   Previous cell time: 0.2,  Total elapsed time: 1.3 
 Completed: 88%,   Previous cell time: 0.2,  Total elapsed time: 1.5</code></pre>
 <pre class="r"><code>results</code></pre>
 <pre><code>##   sample_size distribution bias.mean_no_trim bias.mean_trim.1
-## 1          30       normal           0.00792          7.4e-03
-## 2          60       normal           0.00041         -8.7e-05
-## 3         120       normal          -0.00522         -5.3e-03
-## 4         240       normal           0.00401          3.0e-03
-## 5          30       skewed           0.01859         -3.0e-01
-## 6          60       skewed           0.00817         -3.2e-01
-## 7         120       skewed          -0.00109         -3.5e-01
-## 8         240       skewed          -0.00510         -3.5e-01
+## 1          30       normal           0.00592          0.00956
+## 2          60       normal           0.00202          0.00050
+## 3         120       normal           0.00290          0.00272
+## 4         240       normal          -0.00093         -0.00049
+## 5          30       skewed          -0.00181         -0.32285
+## 6          60       skewed           0.03023         -0.31150
+## 7         120       skewed           0.00162         -0.34004
+## 8         240       skewed          -0.00333         -0.35003
 ##   bias.mean_trim.2 bias.median RMSE.mean_no_trim RMSE.mean_trim.1
-## 1          0.00570      0.0063             0.185            0.191
-## 2         -0.00042     -0.0044             0.132            0.136
-## 3         -0.00535     -0.0061             0.093            0.096
-## 4          0.00263      0.0023             0.065            0.067
-## 5         -0.44507     -0.5882             0.458            0.527
-## 6         -0.45873     -0.5995             0.314            0.432
-## 7         -0.48833     -0.6239             0.221            0.405
-## 8         -0.49855     -0.6372             0.160            0.384
-##   RMSE.mean_trim.2 RMSE.median N_CELL_RUNS SIM_TIME
-## 1            0.199       0.222        1000     0.18
-## 2            0.142       0.162        1000     0.19
-## 3            0.099       0.114        1000     0.21
-## 4            0.070       0.082        1000     0.24
-## 5            0.618       0.752        1000     0.20
-## 6            0.544       0.685        1000     0.21
-## 7            0.532       0.670        1000     0.23
-## 8            0.521       0.660        1000     0.27</code></pre>
-<p>As can be seen from the printed results, each result from the <code>Summarise()</code> function has been paired with the respective conditions, statistics have been properly named, and two additional columns have been appended to the results: <code>N_CELL_RUNS</code>, which indicates how many time the conditions were performed (in this case 1000 times each because there were no errors thrown which would require re-estimation), and <code>SIM_TIME</code> indicating the time (in seconds) it took to completely finish the respective conditions. A call to <code>View()</code> in the R console may also be a nice way to sift through the <code>results</code> object.</p>
+## 1          0.01252     0.01988             0.181            0.184
+## 2         -0.00159    -0.00404             0.132            0.134
+## 3          0.00282     0.00412             0.095            0.099
+## 4         -0.00022    -0.00066             0.064            0.066
+## 5         -0.46473    -0.60257             0.465            0.544
+## 6         -0.45557    -0.59944             0.324            0.434
+## 7         -0.48217    -0.61570             0.235            0.406
+## 8         -0.49235    -0.62955             0.159            0.381
+##   RMSE.mean_trim.2 RMSE.median REPLICATIONS SIM_TIME
+## 1            0.191       0.219         1000     0.18
+## 2            0.140       0.159         1000     0.20
+## 3            0.103       0.118         1000     0.22
+## 4            0.069       0.082         1000     0.25
+## 5            0.641       0.782         1000     0.20
+## 6            0.549       0.696         1000     0.22
+## 7            0.531       0.667         1000     0.24
+## 8            0.515       0.652         1000     0.28</code></pre>
+<p>As can be seen from the printed results, each result from the <code>Summarise()</code> function has been paired with the respective conditions, statistics have been properly named, and two additional columns have been appended to the results: <code>REPLICATIONS</code>, which indicates how many time the conditions were performed, and <code>SIM_TIME</code> indicating the time (in seconds) it took to completely finish the respective conditions. A call to <code>View()</code> in the R console may also be a nice way to sift through the <code>results</code> object.</p>
 </div>
 <div id="interpret-the-results" class="section level3">
 <h3>Interpret the results</h3>
@@ -222,22 +222,22 @@ Completed: 88%,   Previous cell time: 0.2,  Total elapsed time: 1.5</code></pre>
 <pre class="r"><code>RMSEs &lt;- results[,grepl('RMSE\\.', colnames(results))]
 data.frame(Design, RE(RMSEs))</code></pre>
 <pre><code>##   sample_size distribution RMSE.mean_no_trim RMSE.mean_trim.1
-## 1          30       normal                 1             0.97
-## 2          60       normal                 1             0.97
-## 3         120       normal                 1             0.97
+## 1          30       normal                 1             0.98
+## 2          60       normal                 1             0.98
+## 3         120       normal                 1             0.96
 ## 4         240       normal                 1             0.97
-## 5          30       skewed                 1             0.87
-## 6          60       skewed                 1             0.73
-## 7         120       skewed                 1             0.55
+## 5          30       skewed                 1             0.86
+## 6          60       skewed                 1             0.74
+## 7         120       skewed                 1             0.58
 ## 8         240       skewed                 1             0.42
 ##   RMSE.mean_trim.2 RMSE.median
-## 1             0.93        0.83
-## 2             0.94        0.82
-## 3             0.94        0.82
-## 4             0.93        0.79
-## 5             0.74        0.61
-## 6             0.58        0.46
-## 7             0.42        0.33
+## 1             0.95        0.83
+## 2             0.94        0.83
+## 3             0.93        0.81
+## 4             0.93        0.78
+## 5             0.73        0.60
+## 6             0.59        0.46
+## 7             0.44        0.35
 ## 8             0.31        0.24</code></pre>
 <p>Finally, when the <span class="math">\(\chi^2\)</span> distribution was investigated only the un-adjusted mean accurately portrayed the population mean. This isn’t surprising, because the trimmed mean is after all making inferences about the population trimmed mean, and the median is making inferences about, well, the median. Only when the distributions under investigation are symmetric will the statistics be able to make the same inferences about the mean of the population.</p>
 </div>

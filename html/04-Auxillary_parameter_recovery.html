@@ -155,26 +155,26 @@ Summarise &lt;- function(condition, results, fixed_design_elements = NULL, param
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 Completed: 0%,   Previous cell time: 0.0,  Total elapsed time: 0.0 
-Completed: 17%,   Previous cell time: 23.8,  Total elapsed time: 23.8 
-Completed: 33%,   Previous cell time: 40.0,  Total elapsed time: 63.8 
-Completed: 50%,   Previous cell time: 50.1,  Total elapsed time: 113.9 
-Completed: 67%,   Previous cell time: 23.0,  Total elapsed time: 136.9 
-Completed: 83%,   Previous cell time: 41.4,  Total elapsed time: 178.3</code></pre>
+Completed: 17%,   Previous cell time: 15.9,  Total elapsed time: 15.9 
+Completed: 33%,   Previous cell time: 22.1,  Total elapsed time: 38.0 
+Completed: 50%,   Previous cell time: 25.5,  Total elapsed time: 63.5 
+Completed: 67%,   Previous cell time: 12.3,  Total elapsed time: 75.8 
+Completed: 83%,   Previous cell time: 20.8,  Total elapsed time: 96.6</code></pre>
 <pre class="r"><code>print(result)</code></pre>
 <pre><code>##   test_length distribution  bias_EAP  bias_MAP   bias_ML bias_EAP_bimodal
-## 1          10       normal  0.003389  0.003535  0.002724         0.002847
-## 2          20       normal -0.001380 -0.000923 -0.004496        -0.001772
-## 3          30       normal -0.000244 -0.000683  0.000666         0.000400
-## 4          10      bimodal  0.003563  0.002753 -0.003557         0.003069
-## 5          20      bimodal -0.001128 -0.000897 -0.003226        -0.000681
-## 6          30      bimodal  0.002457  0.002147  0.003968         0.002364
-##   RMSE_EAP RMSE_MAP RMSE_ML RMSE_EAP_bimodal N_CELL_RUNS SIM_TIME
-## 1    0.521    0.524   0.607            0.550         100     23.8
-## 2    0.394    0.397   0.463            0.421         100     40.0
-## 3    0.333    0.335   0.392            0.357         100     50.1
-## 4    0.480    0.482   0.601            0.459         100     23.0
-## 5    0.376    0.374   0.482            0.350         100     41.4
-## 6    0.322    0.319   0.405            0.299         100     49.9</code></pre>
+## 1          10       normal -0.002327 -0.002639 -0.002091         -0.00101
+## 2          20       normal -0.003228 -0.003065 -0.004187         -0.00394
+## 3          30       normal  0.001243  0.000742  0.002055          0.00063
+## 4          10      bimodal  0.002689  0.001977  0.000194          0.00291
+## 5          20      bimodal -0.003461 -0.003041 -0.005331         -0.00401
+## 6          30      bimodal -0.000887 -0.000785 -0.000935         -0.00104
+##   RMSE_EAP RMSE_MAP RMSE_ML RMSE_EAP_bimodal REPLICATIONS SIM_TIME
+## 1    0.508    0.512   0.593            0.538          100     15.9
+## 2    0.393    0.396   0.464            0.421          100     22.1
+## 3    0.332    0.334   0.390            0.356          100     25.5
+## 4    0.478    0.480   0.597            0.456          100     12.3
+## 5    0.374    0.372   0.487            0.346          100     20.8
+## 6    0.320    0.317   0.403            0.297          100     26.2</code></pre>
 </div>
 <div id="analyze-the-results" class="section level3">
 <h3>Analyze the results</h3>
