@@ -32,26 +32,27 @@ aggregate_simulations <- function(files = NULL){
     readin <- vector('list', length(filenames))
     for(i in 1:length(filenames))
         readin[[i]] <- readRDS(filenames[i])
+    errors <- lapply(readin, function(x) x[ ,grepl('TRY_ERROR_MESSAGE', colnames(x)), drop=FALSE])
+    nms <- unique(do.call(c, lapply(errors, function(x) colnames(x))))
+    try_errors <- as.data.frame(matrix(0, nrow(readin[[1L]]), length(nms)))
+    names(try_errors) <- nms
+    readin <- lapply(readin, function(x) x[ ,!grepl('TRY_ERROR_MESSAGE', colnames(x)), drop=FALSE])
+    if(length(unique(sapply(readin, ncol))) > 1L)
+        stop('Number of columns in the replications not equal')
     ret <- readin[[1L]]
     pick <- sapply(readin[[1L]], is.numeric)
     ret[, pick] <- 0
-    stopifnot(length(unique(sapply(readin, ncol))) == 1L)
-    pick <- pick & !(colnames(readin[[1L]]) %in% c('SIM_TIME', 'N_CELL_RUNS'))
-    if(any(grepl('TRY_ERROR_MESSAGE', readin[[1L]])))
-        stop('function does not support TRY_ERROR_MESSAGE elements yet') #TODO
-    splt <- strsplit(filenames, '_')
-    if(!all(sapply(splt, length) > 1L))
-        stop('Some files do not contain the number of replications in the file name.
-             Should be of the form \'filename_NUMBER.rds\'. Please fix')
-    weights <- sapply(splt, function(x){
-        y <- x[length(x)]
-        as.integer(strsplit(y, '.rds')[[1L]])
-    })
+    pick <- pick & !(colnames(readin[[1L]]) %in% c('SIM_TIME', 'REPLICATIONS'))
+    weights <- sapply(readin, function(x) x$REPLICATIONS[1L])
     weights <- weights / sum(weights)
     for(i in 1L:length(filenames)){
-        ret$N_CELL_RUNS <- ret$N_CELL_RUNS + readin[[i]]$N_CELL_RUNS
+        tmp <- match(nms, names(errors[[i]]))
+        if(!is.na(tmp))
+            try_errors[,match(nms, names(try_errors))] <- errors[[i]][ ,tmp] +
+                try_errors[,match(nms, names(try_errors))]
+        ret$REPLICATIONS <- ret$REPLICATIONS + readin[[i]]$REPLICATIONS
         ret$SIM_TIME <- ret$SIM_TIME + readin[[i]]$SIM_TIME
         ret[ ,pick] <- ret[ ,pick] + weights[i] * readin[[i]][ ,pick]
     }
-    ret
+    data.frame(ret, try_errors)
 }

@@ -84,10 +84,10 @@ test_that('SimDesign', {
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, parallel=FALSE, save=TRUE)
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile_2')
+                           replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile')
     Final <- aggregate_simulations()
     expect_is(Final, 'data.frame')
-    expect_true(all(Final$N_CELL_RUNS == 4L))
+    expect_true(all(Final$REPLICATIONS == 4L))
     system('rm *.rds')
 
     mycompute <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
@@ -113,9 +113,19 @@ test_that('SimDesign', {
     }
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 2, verbose = FALSE, try_errors = TRUE)
+                           replications = 2, verbose = FALSE)
     expect_is(Final, 'data.frame')
     expect_true(any(grepl('TRY_ERROR_MESSAGE', names(Final))))
+
+    # aggregate test
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                         replications = 2, parallel=FALSE, save=TRUE)
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                         replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile')
+    Final <- aggregate_simulations()
+    expect_is(Final, 'data.frame')
+    expect_true(all(Final$REPLICATIONS == 4L))
+    system('rm *.rds')
 
 })
 

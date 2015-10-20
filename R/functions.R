@@ -181,12 +181,10 @@ summarise <- function(condition, results, fixed_design_elements = NULL, paramete
 mainsim <- function(index, condition, generate, analyse, fixed_design_elements){
 
     require('SimDesign') #this is required if SimDesign functions are called (e.g., bias(), RMSE())
-    count <- 0L
     try_error <- character()
 
     while(TRUE){
 
-        count <- count + 1L
         simlist <- generate(condition=condition, fixed_design_elements=fixed_design_elements)
         if(is.data.frame(simlist) || !is.list(simlist)) simlist <- list(dat=simlist)
         if(length(names(simlist)) > 1L)
@@ -203,14 +201,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_design_elements){
         if(!is.list(res) && !is.numeric(res))
             stop('analyse() did not return a list or numeric vector', call.=FALSE)
 
-        # else return the result with simulation parameters
-        if(!is.list(res)){
-            result <- c(res, n_cell_runs=count)
-        } else {
-            result <- res
-            result$n_cell_runs <- count
-        }
-        ret <- list(result=result, parameters=simlist$parameters)
+        ret <- list(result=res, parameters=simlist$parameters)
         attr(ret, 'try_errors') <- try_error
         return(ret)
     }

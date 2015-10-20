@@ -48,16 +48,10 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
 
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
     if(!is.list(results[[1L]])){
-        N_CELL_RUNS <- sum(sapply(results, function(x) x['n_cell_runs']))
         results <- do.call(rbind, results)
-        results <- results[ ,colnames(results) != 'n_cell_runs', drop=FALSE]
         if(any(is.na(results) | is.nan(results)))
             message(sprintf('WARNING: analyse() returned NA or NaN values from row %i in Design',
                             condition$ID))
-    } else {
-        N_CELL_RUNS <- sum(do.call(c, sapply(results, function(x) x['n_cell_runs'])))
-        for(i in 1L:length(results))
-            results[[i]]$n_cell_runs <- NULL
     }
     if(save_results)
         saveRDS(list(condition=condition, results=results, try_errors=try_errors),
@@ -67,8 +61,6 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
 
     if(!is.vector(sim_results) || is.null(names(sim_results)))
         stop('summarise() must return a named vector', call.=FALSE)
-    if(any(names(sim_results) == 'N_CELL_RUNS'))
-    stop('summarise() cannot contain an element with the name N_CELL_RUNS')
-    sim_results <- c(sim_results, N_CELL_RUNS=N_CELL_RUNS, TRY_ERROR_MESSAGE=try_errors)
+    sim_results <- c(sim_results, TRY_ERROR_MESSAGE=try_errors)
     return(sim_results)
 }

@@ -33,10 +33,11 @@
 #' }
 #'
 #' Two constants for each condition are returned by default:
-#' \code{N_CELL_RUNS} to indicate the number of Monte Carlo runs it took to obtain valid results (this will
-#' be greater than the number of replications requested if, for example, models failed to converge
-#' and had to be re-drawn), and \code{SIM_TIME} to indicate how long (in seconds) it took to complete
-#' all the Monte Carlo replications for each respective condition.
+#' \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
+#' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
+#' all the Monte Carlo replications for each respective condition, and if \code{try_errors = TRUE}
+#' then columns containing the number of replications due to \code{try()} errors where the error messages
+#' represent the names of the columns prefixed with a \code{TRY_ERROR_MESSAGE} string.
 #'
 #' In the event of a computer crash, power outage, etc, if \code{save = TRUE} was used
 #' then the original code in
@@ -347,7 +348,7 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
-                          save = FALSE, save_results = FALSE, try_errors = FALSE,
+                          try_errors = TRUE, save = FALSE, save_results = FALSE,
                           clean = TRUE, seed = NULL,
                           compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', replications),
@@ -442,14 +443,14 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if((i %% save_every) == 0L) saveRDS(Result_list, tmpfilename)
     }
     Final <- plyr::rbind.fill(Result_list)
-    N_CELL_RUNS <- Final$N_CELL_RUNS; SIM_TIME <- Final$SIM_TIME
-    Final$N_CELL_RUNS <- Final$SIM_TIME <- Final$ID <- NULL
+    SIM_TIME <- Final$SIM_TIME
+    Final$SIM_TIME <- Final$ID <- NULL
     pick <- grepl('TRY_ERROR_MESSAGE', names(Final))
     TRY_ERRORS <- Final[,pick, drop=FALSE]
     Final <- Final[,!pick, drop=FALSE]
     Final <- if(try_errors){
-        data.frame(Final, N_CELL_RUNS, SIM_TIME, TRY_ERRORS)
-    } else data.frame(Final, N_CELL_RUNS, SIM_TIME)
+        data.frame(Final, REPLICATIONS=replications, SIM_TIME, TRY_ERRORS)
+    } else data.frame(Final, REPLICATIONS=replications, SIM_TIME)
     #save file
     files <- dir()
     filename0 <- filename
