@@ -24,7 +24,7 @@
 #'
 SimDesign_functions <- function(filename = NULL){
     if(!is.null(filename)) sink(paste0(filename, '-functions.R'))
-    cat('\n#-------------------------------------------------------------------')
+    cat('#-------------------------------------------------------------------')
     cat('\n### Define essential simulation functions')
     cat('\n\nGenerate <- function(condition, fixed_design_elements = NULL) {')
     cat('\n    # Define data generation code ...\n')
@@ -35,18 +35,18 @@ SimDesign_functions <- function(filename = NULL){
     cat('\n    # Run statistical analyses of interest ... \n\n    # Return a vector or list\n    return(numeric())\n}')
     cat('\n\n')
     cat('Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {')
-    cat('\n    # Summarise the simulation results ...\n\n    # Return a vector\n    return(numeric())\n}')
+    cat('\n    # Summarise the simulation results ...\n\n    # Return a vector\n    return(numeric())\n}\n')
 
     if(!is.null(filename)) sink()
     if(!is.null(filename)){
         sink(paste0(filename, '.R'))
-        cat('\n#-------------------------------------------------------------------')
+        cat('#-------------------------------------------------------------------')
         cat('\nlibrary(SimDesign)')
         cat('\n\n### Source in essential functions')
         cat('\n# setwd(\"', getwd(), '\")', sep='')
         cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')', sep='')
     }
-    cat('\n\n### Define design conditions and number of replications')
+    cat('\n### Define design conditions and number of replications')
     cat('\nDesign <- expand.grid(condition1, condition2, ...)')
     cat('\nreplications <- 1000')
     cat('\n\n### Run the simulation')
