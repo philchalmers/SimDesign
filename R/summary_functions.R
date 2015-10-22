@@ -182,6 +182,7 @@ MAE <- function(observed, population = NULL, type = 'MAE'){
 #' RE(c(RMSE1, RMSE2))
 #'
 RE <- function(RMSEs){
+    RMSEs <- RMSEs^2
     if(!is.vector(RMSEs)){
         RMSEs[,1L] / RMSEs
     } else return(RMSEs[1L] / RMSEs)
