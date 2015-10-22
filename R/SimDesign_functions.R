@@ -41,9 +41,10 @@ SimDesign_functions <- function(filename = NULL){
     if(!is.null(filename)){
         sink(paste0(filename, '.R'))
         cat('\n#-------------------------------------------------------------------')
+        cat('\nlibrary(SimDesign)')
         cat('\n\n### Source in essential functions')
         cat('\n# setwd(\"', getwd(), '\")', sep='')
-        cat('\nsource(\"', paste0(filename, '.R\"'), ')', sep='')
+        cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')', sep='')
     }
     cat('\n\n### Define design conditions and number of replications')
     cat('\nDesign <- expand.grid(condition1, condition2, ...)')
