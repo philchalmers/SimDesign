@@ -12,8 +12,8 @@ RE(RMSEs)
 }
 \value{
 returns a vector/matrix of ratios indicating the relative efficiency compared to the first
-  estimator (which by default will be equal to 1). Values less than 1 indicate worse efficiency, while
-  values greater than 1 indicate better efficiency
+  estimator (which by default will be equal to 1). Values less than 1 indicate better efficiency, while
+  values greater than 1 indicate worse efficiency
 }
 \description{
 Computes the relative efficiency given the RMSE values for multiple estimators

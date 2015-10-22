@@ -164,8 +164,8 @@ MAE <- function(observed, population = NULL, type = 'MAE'){
 #'  element/row will be used as the reference
 #'
 #' @return returns a vector/matrix of ratios indicating the relative efficiency compared to the first
-#'   estimator (which by default will be equal to 1). Values less than 1 indicate worse efficiency, while
-#'   values greater than 1 indicate better efficiency
+#'   estimator (which by default will be equal to 1). Values less than 1 indicate better efficiency, while
+#'   values greater than 1 indicate worse efficiency
 #'
 #' @aliases RE
 #'
@@ -184,8 +184,8 @@ MAE <- function(observed, population = NULL, type = 'MAE'){
 RE <- function(RMSEs){
     RMSEs <- RMSEs^2
     if(!is.vector(RMSEs)){
-        RMSEs[,1L] / RMSEs
-    } else return(RMSEs[1L] / RMSEs)
+        RMSEs / RMSEs[,1L]
+    } else return(RMSEs / RMSEs[1L])
 }
 
 
