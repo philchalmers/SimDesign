@@ -124,7 +124,7 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
     # (optional) could use better starting values from fixed_design_elements here too
     mod <- try(mirt(dat, 1L, verbose=FALSE), silent=TRUE)
     check_error(mod)
-    if(!extract.mirt(mod, 'converged')) stop('did not converge')
+    if(!extract.mirt(mod, 'converged')) stop('mirt did not converge')
     cfs <- coef(mod, simplify = TRUE, digits = Inf)
     FIML_as <- cfs$items[,1L] / 1.702
 
@@ -133,7 +133,7 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
                      '\nF ~~ 1*F')
     lmod <- try(sem(lavmod, dat, ordered = colnames(dat)))
     check_error(lmod)
-    if(!lavInspect(lmod, 'converged')) stop('did not converge')
+    if(!lavInspect(lmod, 'converged')) stop('lavaan did not converge')
     cfs2 <- coef(lmod)
     DWLS_alpha <- cfs2[1L:nitems]
     const <- sqrt(1 - DWLS_alpha^2)
@@ -151,13 +151,8 @@ Summarise <- function(condition, results, fixed_design_elements = NULL, paramete
     a <- fixed_design_elements[[nitems_name]]['a', ]
     pop <- c(a, a)
 
-    index <- 1:ncol(results)
-    obt_bias <- sapply(index, function(ind, obs, pop) bias(obs[,ind], pop[ind]),
-                       obs = results, pop = pop)
-    obt_RMSE <- sapply(index, function(ind, obs, pop) RMSE(obs[,ind], pop[ind]),
-                       obs = results, pop = pop)
-    names(obt_bias) <- names(obt_RMSE) <- colnames(results)
-
+    obt_bias <- bias(results, pop)
+    obt_RMSE <- RMSE(results, pop)
     ret <- c(bias=obt_bias, RMSE=obt_RMSE)
     return(ret)
 }
@@ -298,9 +293,3 @@ ggplot(plt, aes(pars, RMSE, colour=estimator)) + geom_point(size=2) + facet_wrap
 ```{r include=FALSE}
 system('rm *.rds')
 ```
-
-
-```{r}
-tail(res30)
-```
-

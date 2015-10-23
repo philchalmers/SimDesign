@@ -88,6 +88,8 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
 }
 
 Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+    
+    # for ease of calculations, find the difference between the observed and population matricies
     index <- 1:length(results)
     diff_EAP <- do.call(c, lapply(index, function(ind, obs, pop) obs[[ind]]$EAP - pop[[ind]]$Theta,
                    obs=results, pop=parameters_list))

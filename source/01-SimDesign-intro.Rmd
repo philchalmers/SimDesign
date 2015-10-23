@@ -136,10 +136,9 @@ and so on are of primary importance. Unsurprisingly, this is the purpose of the 
 
 ```{r}
 Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
-    obt_bias <- apply(results, 2, bias, population = 3)
-    obt_RMSE <- apply(results, 2, RMSE, population = 3)
-    
-    ret <- c(bias=obt_bias, RMSE=obt_RMSE)
+    obs_bias <- bias(results, population = 3)
+    obs_RMSE <- RMSE(results, population = 3)
+    ret <- c(bias=obs_bias, RMSE=obs_RMSE)
     return(ret)
 }
 ```
