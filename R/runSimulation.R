@@ -241,8 +241,7 @@
 #' Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL){
 #'
 #'     #find results of interest here (e.g., alpha < .1, .05, .01)
-#'     nms <- c('welch', 'independent')
-#'     lessthan.05 <- EDR(results[,nms], alpha = .05)
+#'     lessthan.05 <- EDR(results, alpha = .05)
 #'
 #'     # return the results that will be appended to the design input
 #'     ret <- c(lessthan.05=lessthan.05)
@@ -254,7 +253,7 @@
 #' #### Step 3 --- Collect results by looping over the rows in design
 #'
 #' # test to see if it works and for debugging
-#' Final <- runSimulation(design=Design, replications=10, parallel=FALSE,
+#' Final <- runSimulation(design=Design, replications=5, parallel=FALSE,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #'
 #' \dontrun{
