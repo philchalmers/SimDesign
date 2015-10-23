@@ -147,7 +147,8 @@
 #'   may be resumed on another computer by changing the name of the node to match the broken computer
 #'
 #' @param edit a string indicating where to initiate a \code{browser()} call for editing and debugging.
-#'   Options are \code{'none'} (default), \code{'generate'}
+#'   General options are \code{'none'} (default) and \code{'recover'} to disable debugging or to use the
+#'   \code{options(error = 'recover')}. Specific options include: \code{'generate'}
 #'   to edit the data simulation function, \code{'analyse'} to edit the computational function, and
 #'   \code{'summarise'} to  edit the aggregation function. Alternatively, users may place
 #'   \code{\link{browser}} calls within the respective functions for debugging at specific lines
@@ -347,7 +348,7 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
-                          try_errors = FALSE, save = FALSE, save_results = FALSE,
+                          try_errors = TRUE, save = FALSE, save_results = FALSE,
                           seed = NULL, compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', replications),
                           results_filename = paste0(compname, '_results_'),
@@ -393,15 +394,21 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!is.na(save_every))
         if(save_every > nrow(design))
             warning('save_every is too large to be useful', call. = FALSE)
-    if(!(edit %in% c('none', 'analyse', 'generate', 'summarise')))
+    if(!(edit %in% c('none', 'recover', 'analyse', 'generate', 'summarise')))
         stop('edit location is not valid', call. = FALSE)
     if(is.null(design$ID)){
         design <- data.frame(ID=1L:nrow(design), design)
     } else stopifnot(length(unique(design$ID)) == nrow(design))
     if(edit != 'none'){
         parallel <- MPI <- FALSE
-        debug(Functions[[edit]])
-        on.exit(undebug(Functions[[edit]]))
+        if(edit == 'recover'){
+            old_recover <- getOption('error')
+            options(error = utils::recover)
+            on.exit(options(error = old_recover))
+        } else {
+            debug(Functions[[edit]])
+            on.exit(undebug(Functions[[edit]]))
+        }
     }
     cl <- NULL
     if(parallel){

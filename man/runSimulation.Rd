@@ -6,7 +6,7 @@
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
-  try_errors = FALSE, save = FALSE, save_results = FALSE, seed = NULL,
+  try_errors = TRUE, save = FALSE, save_results = FALSE, seed = NULL,
   compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
   replications), results_filename = paste0(compname, "_results_"),
   tmpfilename = paste0(compname, "_tmpsim.rds"),
@@ -87,7 +87,8 @@ runSimulation(design, replications, generate, analyse, summarise,
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
 \item{edit}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
-  Options are \code{'none'} (default), \code{'generate'}
+  General options are \code{'none'} (default) and \code{'recover'} to disable debugging or to use the
+  \code{options(error = 'recover')}. Specific options include: \code{'generate'}
   to edit the data simulation function, \code{'analyse'} to edit the computational function, and
   \code{'summarise'} to  edit the aggregation function. Alternatively, users may place
   \code{\link{browser}} calls within the respective functions for debugging at specific lines
