@@ -7,7 +7,7 @@
 EDR(p, alpha)
 }
 \arguments{
-\item{p}{a vector or matrix of p-values from the desired statistical estimator. If a matrix,
+\item{p}{a vector or matrix/data.frame of p-values from the desired statistical estimator. If a matrix,
   each statistic must be organized by column where the number of rows is equal to the number
   of replications}
 

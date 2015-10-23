@@ -7,18 +7,21 @@
 MAE(observed, population = NULL, type = "MAE")
 }
 \arguments{
-\item{observed}{a numeric vector of parameter estimates, where the length is equal to the number of
-  replications}
+\item{observed}{a numeric vector or matrix/data.frame of parameter estimates. If a vector,
+  the length is equal to the number of replications. If a matrix/data.frame,
+  the number of rows must equal the number of replications}
 
-\item{population}{a numeric scalar indicating the fixed population value. If NULL, then it will be assumed
-  that the \code{observed} input is in a deviation form (therefore \code{mean(abs(observed))} will be
-  returned)}
+\item{population}{a numeric scalar/vector indicating the fixed population values.
+  If a single value is supplied and \code{observed} is a matrix/data.frame then the value will be
+  recycled for each column.
+  If NULL, then it will be assumed that the \code{observed} input is in a deviation
+  form (therefore \code{mean(abs(observed))} will be returned)}
 
 \item{type}{type of deviation to compute. Can be 'MAE' (default) for the mean absolute error, or
   'NMSE' for the normalized MAE (MAE / (max(observed) - min(observed)))}
 }
 \value{
-returns a single number indicating the overall mean absolute error in the estimates
+returns a numeric vector indicating the overall mean absolute error in the estimates
 }
 \description{
 Computes the average absolute deviation of a sample estimate from the population value.
@@ -33,6 +36,14 @@ MAE(samp, pop)
 dev <- samp - pop
 MAE(dev)
 MAE(samp, pop, type = 'NMAE')
+
+# matrix input
+mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
+MAE(mat, population = 2)
+
+# same, but with data.frame
+df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
+MAE(df, population = c(2,2))
 }
 \seealso{
 RMSE

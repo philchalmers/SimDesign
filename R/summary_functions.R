@@ -4,15 +4,19 @@
 #' Accepts observed and population values, as well as observed values which are in deviation form.
 #' If relative bias is requested the \code{observed} and \code{population} inputs are both required.
 #'
-#' @param observed a numeric vector of parameter estimates, where the length is equal to the number of
-#'   replications
+#' @param observed a numeric vector or matrix/data.frame of parameter estimates. If a vector,
+#'   the length is equal to the number of replications. If a matrix/data.frame,
+#'   the number of rows must equal the number of replications
 #'
-#' @param population a numeric scalar indicating the fixed population value. If NULL, then it will be assumed
-#'   that the \code{observed} input is in a deviation form (therefore \code{mean(observed)} will be returned)
+#' @param population a numeric scalar/vector indicating the fixed population values.
+#'   If a single value is supplied and \code{observed} is a matrix/data.frame then the value will be
+#'   recycled for each column.
+#'   If NULL, then it will be assumed that the \code{observed} input is in a deviation
+#'   form (therefore \code{mean(observed))} will be returned)
 #'
 #' @param relative logical; compute the relative bias statistic? Default is FALSE
 #'
-#' @return returns a single number indicating the overall (relative) bias in the estimates
+#' @return returns a numeric vector indicating the overall (relative) bias in the estimates
 #'
 #' @seealso \code{\link{RMSE}}
 #'
@@ -33,19 +37,29 @@
 #' # equivalent here
 #' bias(mean(samp), pop)
 #'
+#' # matrix input
+#' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
+#' bias(mat, population = 2)
+#'
+#' # same, but with data.frame
+#' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
+#' bias(df, population = c(2,2))
+#'
 #'
 bias <- function(observed, population = NULL, relative = FALSE){
-    if(relative){
-        stopifnot(!is.null(population))
-        ret <- (mean(observed) - population) / population
-    } else {
-        if(is.null(population)){
-            ret <- mean(observed)
-        } else {
-            stopifnot(is.vector(observed))
-            ret <- mean(observed - population)
-        }
-    }
+    if(is.vector(observed)){
+        nms <- names(observed)
+        observed <- matrix(observed)
+        colnames(observed) <- nms
+    } else if(is.data.frame(observed)) observed <- as.matrix(observed)
+    stopifnot(is.matrix(observed))
+    n_col <- ncol(observed)
+    if(relative) stopifnot(!is.null(population))
+    if(is.null(population)) population <- 0
+    stopifnot(is.vector(population))
+    if(length(population) == 1L) population <- rep(population, n_col)
+    ret <- colMeans(t(t(observed) - population))
+    if(relative) ret <- ret / population
     ret
 }
 
@@ -57,18 +71,21 @@ bias <- function(observed, population = NULL, relative = FALSE){
 #' of a sample estimate from the population value. Accepts observed and population values,
 #' as well as observed values which are in deviation form.
 #'
-#' @param observed a numeric vector of parameter estimates, where the length is equal to the number of
-#'   replications
+#' @param observed a numeric vector or matrix/data.frame of parameter estimates. If a vector,
+#'   the length is equal to the number of replications. If a matrix/data.frame,
+#'   the number of rows must equal the number of replications
 #'
-#' @param population a numeric scalar indicating the fixed population value. If NULL, then it will be assumed
-#'   that the \code{observed} input is in a deviation form (therefore \code{sqrt(mean(observed^2))} will be
-#'   returned)
+#' @param population a numeric scalar/vector indicating the fixed population values.
+#'   If a single value is supplied and \code{observed} is a matrix/data.frame then the value will be
+#'   recycled for each column.
+#'   If NULL, then it will be assumed that the \code{observed} input is in a deviation
+#'   form (therefore \code{sqrt(mean(observed^2))} will be returned)
 #'
 #' @param type type of deviation to compute. Can be 'RMSE' (default) for the root mean square-error,
 #'   'NRMSE' for the normalized RMSE (RMSE / (max(observed) - min(observed))), or 'CV' for the coefficient of
 #'   variation
 #'
-#' @return returns a single number indicating the overall average deviation in the estimates
+#' @return returns a numeric vector indicating the overall average deviation in the estimates
 #'
 #' @aliases RMSE
 #'
@@ -91,17 +108,32 @@ bias <- function(observed, population = NULL, relative = FALSE){
 #' RMSE(dev, type = 'NRMSE')
 #' RMSE(samp, pop, type = 'CV')
 #'
+#' # matrix input
+#' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
+#' RMSE(mat, population = 2)
+#'
+#' # same, but with data.frame
+#' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
+#' RMSE(df, population = c(2,2))
+#'
 RMSE <- function(observed, population = NULL, type = 'RMSE'){
-    if(is.null(population)){
-        ret <- sqrt(mean(observed^2))
-    } else {
-        stopifnot(is.vector(observed))
-        ret <- sqrt(mean((observed - population)^2))
+    if(is.vector(observed)){
+        nms <- names(observed)
+        observed <- matrix(observed)
+        colnames(observed) <- nms
+    } else if(is.data.frame(observed)) observed <- as.matrix(observed)
+    stopifnot(is.matrix(observed))
+    n_col <- ncol(observed)
+    if(is.null(population)) population <- 0
+    stopifnot(is.vector(population))
+    if(length(population) == 1L) population <- rep(population, n_col)
+    ret <- sqrt(colMeans(t( (t(observed) - population)^2 )))
+    if(type == 'NRMSE'){
+        diff <- apply(observed, 2, max) - apply(observed, 2, min)
+        ret <- ret / diff
     }
-    if(type == 'NRMSE') ret <- ret / (max(observed) - min(observed))
     if(type == 'CV'){
-        stopifnot(!is.null(population))
-        ret <- ret / mean(observed)
+        ret <- ret / colMeans(observed)
     }
     ret
 }
@@ -115,17 +147,20 @@ RMSE <- function(observed, population = NULL, type = 'RMSE'){
 #' Accepts observed and population values,
 #' as well as observed values which are in deviation form.
 #'
-#' @param observed a numeric vector of parameter estimates, where the length is equal to the number of
-#'   replications
+#' @param observed a numeric vector or matrix/data.frame of parameter estimates. If a vector,
+#'   the length is equal to the number of replications. If a matrix/data.frame,
+#'   the number of rows must equal the number of replications
 #'
-#' @param population a numeric scalar indicating the fixed population value. If NULL, then it will be assumed
-#'   that the \code{observed} input is in a deviation form (therefore \code{mean(abs(observed))} will be
-#'   returned)
+#' @param population a numeric scalar/vector indicating the fixed population values.
+#'   If a single value is supplied and \code{observed} is a matrix/data.frame then the value will be
+#'   recycled for each column.
+#'   If NULL, then it will be assumed that the \code{observed} input is in a deviation
+#'   form (therefore \code{mean(abs(observed))} will be returned)
 #'
 #' @param type type of deviation to compute. Can be 'MAE' (default) for the mean absolute error, or
 #'   'NMSE' for the normalized MAE (MAE / (max(observed) - min(observed)))
 #'
-#' @return returns a single number indicating the overall mean absolute error in the estimates
+#' @return returns a numeric vector indicating the overall mean absolute error in the estimates
 #'
 #' @aliases MAE
 #'
@@ -143,14 +178,30 @@ RMSE <- function(observed, population = NULL, type = 'RMSE'){
 #' MAE(dev)
 #' MAE(samp, pop, type = 'NMAE')
 #'
+#' # matrix input
+#' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
+#' MAE(mat, population = 2)
+#'
+#' # same, but with data.frame
+#' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
+#' MAE(df, population = c(2,2))
+#'
 MAE <- function(observed, population = NULL, type = 'MAE'){
-    if(is.null(population)){
-        ret <- mean(abs(observed))
-    } else {
-        stopifnot(is.vector(observed))
-        ret <- mean(abs(observed - population))
+    if(is.vector(observed)){
+        nms <- names(observed)
+        observed <- matrix(observed)
+        colnames(observed) <- nms
+    } else if(is.data.frame(observed)) observed <- as.matrix(observed)
+    stopifnot(is.matrix(observed))
+    n_col <- ncol(observed)
+    if(is.null(population)) population <- 0
+    stopifnot(is.vector(population))
+    if(length(population) == 1L) population <- rep(population, n_col)
+    ret <- colMeans(t(abs(t(observed) - population)))
+    if(type == 'NMAE'){
+        diff <- apply(observed, 2, max) - apply(observed, 2, min)
+        ret <- ret / diff
     }
-    if(type == 'NMAE') ret <- ret / (max(observed) - min(observed))
     ret
 }
 
@@ -195,7 +246,7 @@ RE <- function(RMSEs){
 #' Computes the detection rate for determining empirical Type I error and power rates using information
 #' from p-values.
 #'
-#' @param p a vector or matrix of p-values from the desired statistical estimator. If a matrix,
+#' @param p a vector or matrix/data.frame of p-values from the desired statistical estimator. If a matrix,
 #'   each statistic must be organized by column where the number of rows is equal to the number
 #'   of replications
 #'
