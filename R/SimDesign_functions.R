@@ -26,6 +26,7 @@ SimDesign_functions <- function(filename = NULL){
     if(!is.null(filename)) sink(paste0(filename, '-functions.R'))
     cat('#-------------------------------------------------------------------')
     cat('\n### Define essential simulation functions')
+    if(is.null(filename)) cat('\nlibrary(SimDesign)')
     cat('\n\nGenerate <- function(condition, fixed_design_elements = NULL) {')
     cat('\n    # Define data generation code ...\n')
     cat('\n    # Return a vector, matrix, data.frame, or list')
