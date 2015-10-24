@@ -41,13 +41,13 @@ head(Design, 3)
 tail(Design, 3)
 ```
 
-Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where the total sample size is $N=30$ however the ratio of sample sizes within each group is different. In this case, the second group is half (0.5) the size of the first group, therefore $N1 = 20$ and $N2 = 10$. The standard deviation ratio is in this case 1 (i.e., they are exactly equal), and there is no mean difference between the groups. Analysing rows with no mean difference will give us an idea of the empirical Type I error rates. 
+Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where the total sample size is $N=30$ however the ratio of sample sizes within each group is different. In this case, the second group is half (0.5) the size of the first group, therefore $N1 = 20$ and $N2 = 10$. The standard deviation ratio is in this case 1 (i.e., they are exactly equal), and there is no mean difference between the groups. Analyzing rows with no mean difference will give us an idea of the empirical Type I error rates. 
 
 The last condition on row 72 indicates that the second group has a sample size twice as large as the first,
 and here $N1 = 40$ and $N2 = 80$. As well, group 2 has a standard deviation which is 8 times larger than the
 first group, and overall there is a mean difference of 0.5. Truth be told, however, the interpretations 
 could be switched around as it really depends on how the `Generate()` function utilizes these inputs
-(the interpreation could have been that group 1 was *smaller* when `group_size_ratio == .5` rather than larger). 
+(the interpretation could have been that group 1 was *smaller* when `group_size_ratio == .5` rather than larger). 
 
 ### Define the functions
 
@@ -140,15 +140,53 @@ Usually it is a good idea to split up analyses into Type I error and power data,
 design conditions into `factor`s if necessary. More specifically, Power rates really should only be interpreted when the Type I errors are well behaved (liberal detection rates naturally will result in more powerful tests, while conservative detection rates will induce lower power).
 
 ```{r}
+head(Final)
 for(i in 1:4) Final[,i] <- factor(Final[,i])
+Final$REPLICATIONS <- Final$SIM_TIME <- NULL
 TypeI <- subset(Final, mean_difference == 0)
 Power <- subset(Final, mean_difference != 0)
 ```
 
-Rather than looking at the numbers, lets jump straight to graphical representations of the effects. 
-Because there is only three facets to look at, plotting is not an issue. With more than three factors,
-however, the use of ANOVA's with a number of interaction terms and effect sizes can be very helpful to detect
-the important effects present in the simulation.
+Lets start off by looking at some descriptive tables, and performing simple ANOVA analyses with effect sizes
+to determine where the differences generally occurred.
+
+```{r}
+library(reshape2)
+mlt <- melt(TypeI, id.vars = colnames(TypeI)[1:4])
+out <- dcast(mlt, group_size_ratio + standard_deviation_ratio + sample_size ~ variable)
+colnames(out) <- c('Group Ratio', 'SD Ratio', 'N', 'Welch', 'Independent')
+emph <- suppressWarnings(which(out > .075 | out < .025, arr.ind = TRUE))
+pander::pander(out, round=2, emphasize.strong.cells = emph)
+
+out2 <- dcast(mlt, group_size_ratio + standard_deviation_ratio ~ variable, fun.aggregate = mean)
+colnames(out2) <- c('Group Ratio', 'SD Ratio', 'Welch', 'Independent')
+emph2 <- suppressWarnings(which(out2 > .075 | out2 < .025, arr.ind = TRUE))
+pander::pander(out2, round=2, emphasize.strong.cells = emph2)
+```
+
+The descriptive rates seem to be very favorable for the Welch test in that they are all close to the nominal
+detection rate. However, the independent t-test appears to have combinations where it is either liberal or 
+conservative. Though we could simply inspect the table to see why/where this occurred, sometimes it is easier
+to use ANOVAs to help pinpoint where the sources of variation occurred. 
+
+The one catch with ANOVAs is that there must be within-group variability, therefore something in our design must be marginalized. In this case, we will marginalize sample size because Type I error rates really shouldn't be influenced by $N$. After inspecting the previous table though, the assumption that $N$ does not affect the results is probably a good one.
+
+```{r}
+library(lsr)
+mod_TypeI_ind <- lm(alpha.05.independent ~ group_size_ratio * standard_deviation_ratio, 
+                    TypeI)
+car::Anova(mod_TypeI_ind)
+etaSquared(mod_TypeI_ind)
+```
+
+After examining the effect sizes for the independent t-test, there appears to be an interaction effect between `group_size_ratio` and `standard_deviation_ratio`. To help visualize this effect we create box-plots while continuing to marginlize over the sample size (otherwise, we would have to use point estimates for scatter plots). 
+
+```{r}
+mod_TypeI_welch <- lm(alpha.05.welch ~ group_size_ratio * standard_deviation_ratio, 
+                    TypeI)
+car::Anova(mod_TypeI_welch)
+etaSquared(mod_TypeI_welch)
+```
 
 ```{r}
 library(ggplot2)

@@ -66,7 +66,7 @@ SimDesign_functions('mysim')
 
 # Simulation: Determine estimator efficiency
 
-As a toy example, let's consider who the following question can be investigated with `SimDesign`: 
+As a toy example, let's consider how the following question can be investigated with `SimDesign`: 
 
 *Question*: How does trimming affect recovering the mean of a distribution? Investigate this using
 different sample size with Gaussian and $\chi^2$ distributions. Also demonstrate the effect of using the 
