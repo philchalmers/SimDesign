@@ -1,0 +1,58 @@
+%\VignetteIndexEntry{SimDesign}
+%\VignetteEngine{knitr::knitr}
+---
+title: "SimDesign"
+author: "Phil Chalmers"
+date: "September 22, 2015"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+```{r include=FALSE}
+options(digits = 3)
+```
+
+# Power-curve
+
+Power-curves are useful when researchers are interested in the range of power effects when varying different population and sample properties. For instance, researchers may be interested in how power improves as the magnitude of the population mean difference for a t-test increases, or how quickly power improves when increasing the sample size ($N$). By supplying a reasonable range of these values, 
+
+### Define the functions
+
+```{r}
+library(SimDesign)
+
+Generate <- function(condition, fixed_design_elements = NULL) {
+    rnorm(condition$sample_size, condition$mean_diff)
+}
+
+Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+    c(p = t.test(dat)$p.value)
+}
+
+Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+    EDR(results, alpha = .05)
+}
+
+### Define design conditions and number of replications
+Design <- expand.grid(mean_diff = seq(0, 1, by = .1), sample_size = c(10, 20, 30))
+replications <- 1000
+
+### Run the simulation
+results <- runSimulation(Design, replications, verbose=FALSE,
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
+```
+
+```{r}
+print(results)
+```
+
+A power curve is created by placing the detection rates on a $y$-axis and including different factors on the x-axis and other aesthetics (shading, colours, etc). Here we use `ggplot2` to construct suitable power-curves.
+
+```{r fig.align='center'}
+library(ggplot2)
+ggplot(results, aes(mean_diff, p, colour = factor(sample_size))) + geom_point() + geom_line() +
+    xlab('Mean Difference') + ylab('Detection Rate') + ggtitle('Empirical Power Curves') +
+    scale_color_discrete('N')
+```
