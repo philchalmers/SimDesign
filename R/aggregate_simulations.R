@@ -47,7 +47,7 @@ aggregate_simulations <- function(files = NULL){
     weights <- sapply(readin, function(x) x$REPLICATIONS[1L])
     weights <- weights / sum(weights)
     for(i in 1L:length(filenames)){
-        tmp <- na.omit(match(nms, names(errors[[i]])))
+        tmp <- stats::na.omit(match(nms, names(errors[[i]])))
         if(length(tmp) > 0L){
             try_errors[,match(nms, names(try_errors))] <- errors[[i]][ ,tmp] +
                 try_errors[,match(nms, names(try_errors))]

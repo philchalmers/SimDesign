@@ -15,6 +15,7 @@
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #' @import foreach methods parallel
 #' @importFrom plyr rbind.fill
+#' @importFrom stats na.omit
 #' @importFrom utils recover
 #' @keywords package
 NULL
