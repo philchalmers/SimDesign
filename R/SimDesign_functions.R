@@ -46,6 +46,7 @@ SimDesign_functions <- function(filename = NULL){
         cat('\n\n### Source in essential functions')
         cat('\n# setwd(\"', getwd(), '\")', sep='')
         cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')', sep='')
+        cat('\n')
     }
     cat('\n### Define design conditions and number of replications')
     cat('\nDesign <- expand.grid(condition1, condition2, ...)')
