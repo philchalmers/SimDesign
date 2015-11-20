@@ -33,7 +33,7 @@ SimDesign_functions <- function(filename = NULL){
     cat('\n    return(data.frame())\n}')
     cat('\n\n')
     cat('Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {')
-    cat('\n    # Run statistical analyses of interest ... \n\n    # Return a vector or list\n    return(numeric())\n}')
+    cat('\n    # Run statistical analyses of interest ... \n\n    # Return a named vector or list\n    return(numeric())\n}')
     cat('\n\n')
     cat('Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {')
     cat('\n    # Summarise the simulation results ...\n\n    # Return a vector\n    return(numeric())\n}\n')
