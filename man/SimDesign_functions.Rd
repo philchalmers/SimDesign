@@ -4,12 +4,14 @@
 \alias{SimDesign_functions}
 \title{Skeleton functions for simulations}
 \usage{
-SimDesign_functions(filename = NULL)
+SimDesign_functions(filename = NULL, comments = TRUE)
 }
 \arguments{
 \item{filename}{a character vector indicating whether the output should be saved to two respective files
 containing the simulation design and the functional components, respectively. Using this option
 is generally the recommended approach when designing simulations}
+
+\item{comments}{logical; include helpful comments?}
 }
 \description{
 This function prints skeleton versions of the required functions and work-flow required
