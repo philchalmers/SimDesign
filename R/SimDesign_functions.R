@@ -35,11 +35,11 @@ SimDesign_functions <- function(filename = NULL){
     cat('\n\n')
     cat('Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {')
     cat('\n    # Run statistical analyses of interest ... \n\n')
-    cat('    # Return a named vector or list\n    ret <- numeric()\n    ret\n}')
+    cat('    # Return a named vector or list\n    ret <- c(stat1=NaN, stat2=NaN)\n    ret\n}')
     cat('\n\n')
     cat('Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {')
     cat('\n    # Summarise the simulation results ...\n\n')
-    cat('    # Return a named vector of results\n    ret <- numeric()\n    ret\n}\n')
+    cat('    # Return a named vector of results\n    ret <- c(bias=NaN, RMSE=NaN)\n    ret\n}\n')
 
     if(!is.null(filename)) sink()
     if(!is.null(filename)){
@@ -52,10 +52,10 @@ SimDesign_functions <- function(filename = NULL){
         cat('\n')
     }
     cat('\n### Define design conditions and number of replications')
-    cat('\nDesign <- expand.grid(condition1, condition2, ...)')
+    cat('\nDesign <- expand.grid(condition1, condition2)')
     cat('\nreplications <- 1000')
     cat('\n\n### Run the simulation')
-    cat('\nresults <- runSimulation(Design, replications, ')
+    cat('\nresults <- runSimulation(Design=Design, replications=replications, ')
     cat('\n    generate=Generate, analyse=Analyse, summarise=Summarise, edit=\'none\')')
     cat('\n\n')
     if(!is.null(filename)) sink()
