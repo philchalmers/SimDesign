@@ -168,7 +168,7 @@ Design</code></pre>
 <pre class="r"><code>Summarise &lt;- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
     obs_bias &lt;- bias(results, population = 3)
     obs_RMSE &lt;- RMSE(results, population = 3)
-    ret &lt;- c(bias=obs_bias, RMSE=obs_RMSE)
+    ret &lt;- c(bias=obs_bias, RMSE=obs_RMSE, RE=RE(obs_RMSE))
     return(ret)
 }</code></pre>
 <p>Again, <code>condition</code> is the same as was defined before, <code>parameters_list</code> is a list of (optional) parameters that may have been defined in <code>Generate()</code> (here it is just <code>NULL</code>), and finally <code>results</code> which is a <code>matrix</code> containing all the results from <code>Analyse()</code>, where each row represents the result returned from each respective replication and the number of columns is equal to the length of a single vector returned by <code>Analyse()</code>.</p>
@@ -185,64 +185,73 @@ Completed: 0%,   Previous cell time: 0.0,  Total elapsed time: 0.0
 Completed: 12%,   Previous cell time: 0.2,  Total elapsed time: 0.2 
 Completed: 25%,   Previous cell time: 0.2,  Total elapsed time: 0.3 
 Completed: 38%,   Previous cell time: 0.2,  Total elapsed time: 0.5 
-Completed: 50%,   Previous cell time: 0.2,  Total elapsed time: 0.8 
+Completed: 50%,   Previous cell time: 0.2,  Total elapsed time: 0.7 
 Completed: 62%,   Previous cell time: 0.2,  Total elapsed time: 0.9 
 Completed: 75%,   Previous cell time: 0.2,  Total elapsed time: 1.1 
 Completed: 88%,   Previous cell time: 0.2,  Total elapsed time: 1.3</code></pre>
 <pre class="r"><code>results</code></pre>
 <pre><code>##   sample_size distribution bias.mean_no_trim bias.mean_trim.1
-## 1          30       normal          -0.00197         -0.00136
-## 2          60       normal           0.00241          0.00259
-## 3         120       normal           0.00091          0.00065
-## 4         240       normal          -0.00172         -0.00170
-## 5          30       skewed          -0.01103         -0.32888
-## 6          60       skewed          -0.00978         -0.34301
-## 7         120       skewed          -0.00596         -0.34747
-## 8         240       skewed           0.00568         -0.34289
+## 1          30       normal           0.00618          0.00659
+## 2          60       normal          -0.00025          0.00066
+## 3         120       normal          -0.00148         -0.00182
+## 4         240       normal           0.00173          0.00265
+## 5          30       skewed           0.01438         -0.30295
+## 6          60       skewed          -0.01522         -0.35243
+## 7         120       skewed          -0.00026         -0.33998
+## 8         240       skewed           0.00307         -0.34437
 ##   bias.mean_trim.2 bias.median RMSE.mean_no_trim RMSE.mean_trim.1
-## 1          4.9e-04     0.00468             0.190            0.196
-## 2          1.5e-03     0.00023             0.128            0.131
-## 3          6.3e-05     0.00044             0.092            0.094
-## 4         -1.6e-03    -0.00274             0.065            0.067
-## 5         -4.7e-01    -0.60781             0.446            0.536
-## 6         -4.9e-01    -0.62384             0.320            0.459
-## 7         -4.9e-01    -0.62698             0.221            0.408
-## 8         -4.9e-01    -0.62535             0.157            0.373
-##   RMSE.mean_trim.2 RMSE.median REPLICATIONS SIM_TIME
-## 1            0.203        0.23         1000     0.16
-## 2            0.136        0.15         1000     0.17
-## 3            0.098        0.11         1000     0.21
-## 4            0.069        0.08         1000     0.21
-## 5            0.638        0.78         1000     0.18
-## 6            0.576        0.71         1000     0.19
-## 7            0.536        0.67         1000     0.22
-## 8            0.508        0.65         1000     0.27</code></pre>
+## 1           0.0069     7.8e-03             0.178            0.185
+## 2           0.0021     9.3e-06             0.130            0.136
+## 3          -0.0019    -5.8e-03             0.092            0.095
+## 4           0.0033     7.1e-03             0.063            0.065
+## 5          -0.4488    -6.0e-01             0.466            0.540
+## 6          -0.4976    -6.4e-01             0.316            0.460
+## 7          -0.4821    -6.2e-01             0.226            0.401
+## 8          -0.4879    -6.3e-01             0.159            0.376
+##   RMSE.mean_trim.2 RMSE.median RE.mean_no_trim RE.mean_trim.1
+## 1            0.191       0.217               1            1.1
+## 2            0.141       0.165               1            1.1
+## 3            0.099       0.115               1            1.1
+## 4            0.068       0.082               1            1.1
+## 5            0.637       0.783               1            1.3
+## 6            0.582       0.726               1            2.1
+## 7            0.528       0.668               1            3.2
+## 8            0.511       0.651               1            5.6
+##   RE.mean_trim.2 RE.median REPLICATIONS SIM_TIME
+## 1            1.2       1.5         1000     0.16
+## 2            1.2       1.6         1000     0.17
+## 3            1.1       1.5         1000     0.19
+## 4            1.2       1.7         1000     0.22
+## 5            1.9       2.8         1000     0.18
+## 6            3.4       5.3         1000     0.19
+## 7            5.5       8.8         1000     0.21
+## 8           10.3      16.7         1000     0.26</code></pre>
 <p>As can be seen from the printed results, each result from the <code>Summarise()</code> function has been paired with the respective conditions, statistics have been properly named, and two additional columns have been appended to the results: <code>REPLICATIONS</code>, which indicates how many time the conditions were performed, and <code>SIM_TIME</code> indicating the time (in seconds) it took to completely finish the respective conditions. A call to <code>View()</code> in the R console may also be a nice way to sift through the <code>results</code> object.</p>
 </div>
 <div id="interpret-the-results" class="section level3">
 <h3>Interpret the results</h3>
 <p>In this case visually inspecting the simulation table is enough to understand what is occurring, though for other Monte Carlo simulations use of ANOVAs, marginalized tables, and graphics should be used to capture the essentially phenomenon in the results. Monte Carlo simulations are just like collecting data for experiments, so be an analyst and present your data as though it were data collected from the real world.</p>
 <p>In this particular simulation, it is readily clear that using the un-adjusted mean will adequately recover the population mean with little bias. The precision also seems to increase as sample sizes increase, which is indicated by the decreasing RMSE statistics. Generally, trimming causes less efficiency in the estimates, where greater amounts of trimming result in even less efficiency, and using the median as a proxy to estimate the mean is the least effective method. This can be seen rather clearly in the following table, which prints the relative efficiency of the estimators:</p>
-<pre class="r"><code>RMSEs &lt;- results[,grepl('RMSE\\.', colnames(results))]
-data.frame(Design, RE(RMSEs))</code></pre>
-<pre><code>##   sample_size distribution RMSE.mean_no_trim RMSE.mean_trim.1
-## 1          30       normal                 1              1.1
-## 2          60       normal                 1              1.0
-## 3         120       normal                 1              1.0
-## 4         240       normal                 1              1.1
-## 5          30       skewed                 1              1.4
-## 6          60       skewed                 1              2.1
-## 7         120       skewed                 1              3.4
-## 8         240       skewed                 1              5.7
-##   RMSE.mean_trim.2 RMSE.median
-## 1              1.1         1.4
-## 2              1.1         1.4
-## 3              1.1         1.6
-## 4              1.2         1.5
-## 5              2.0         3.1
-## 6              3.2         5.0
-## 7              5.9         9.3
-## 8             10.5        17.1</code></pre>
+<pre class="r"><code>REs &lt;- results[,grepl('RE\\.', colnames(results))]
+data.frame(Design, REs)</code></pre>
+<pre><code>##   sample_size distribution RE.mean_no_trim RE.mean_trim.1 RE.mean_trim.2
+## 1          30       normal               1            1.1            1.2
+## 2          60       normal               1            1.1            1.2
+## 3         120       normal               1            1.1            1.1
+## 4         240       normal               1            1.1            1.2
+## 5          30       skewed               1            1.3            1.9
+## 6          60       skewed               1            2.1            3.4
+## 7         120       skewed               1            3.2            5.5
+## 8         240       skewed               1            5.6           10.3
+##   RE.median
+## 1       1.5
+## 2       1.6
+## 3       1.5
+## 4       1.7
+## 5       2.8
+## 6       5.3
+## 7       8.8
+## 8      16.7</code></pre>
 <p>Finally, when the <span class="math">\(\chi^2\)</span> distribution was investigated only the un-adjusted mean accurately portrayed the population mean. This isn’t surprising, because the trimmed mean is after all making inferences about the population trimmed mean, and the median is making inferences about, well, the median. Only when the distributions under investigation are symmetric will the statistics be able to make the same inferences about the mean of the population.</p>
 </div>
 </div>

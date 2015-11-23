@@ -138,7 +138,7 @@ and so on are of primary importance. Unsurprisingly, this is the purpose of the 
 Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
     obs_bias <- bias(results, population = 3)
     obs_RMSE <- RMSE(results, population = 3)
-    ret <- c(bias=obs_bias, RMSE=obs_RMSE)
+    ret <- c(bias=obs_bias, RMSE=obs_RMSE, RE=RE(obs_RMSE))
     return(ret)
 }
 ```
@@ -195,8 +195,8 @@ the mean is the least effective method. This can be seen rather clearly in the f
 prints the relative efficiency of the estimators:
 
 ```{r}
-RMSEs <- results[,grepl('RMSE\\.', colnames(results))]
-data.frame(Design, RE(RMSEs))
+REs <- results[,grepl('RE\\.', colnames(results))]
+data.frame(Design, REs)
 ```
 
 Finally, when the $\chi^2$ distribution was investigated only the un-adjusted mean accurately portrayed the
