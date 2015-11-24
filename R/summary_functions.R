@@ -209,10 +209,12 @@ MAE <- function(observed, population = NULL, type = 'MAE'){
 
 #' Compute the relative efficiency of multiple estimators
 #'
-#' Computes the relative efficiency given the RMSE values for multiple estimators
+#' Computes the relative efficiency given the RMSE (default) or MSE values for multiple estimators.
 #'
-#' @param RMSEs a vector or matrix of mean square error values (see \code{\link{RMSE}}), where the first
-#'  element/row will be used as the reference
+#' @param x a vector or matrix of mean square error values (see \code{\link{RMSE}}), where the first
+#'  element/row will be used as the reference. Otherwise, the object could contain MSE values if the flag
+#'  \code{MSE = TRUE} is also included
+#' @param MSE logical; are the input value mean squared errors instead of root mean square errors?
 #'
 #' @return returns a vector/matrix of ratios indicating the relative efficiency compared to the first
 #'   estimator (which by default will be equal to 1). Values less than 1 indicate better efficiency, while
@@ -232,11 +234,16 @@ MAE <- function(observed, population = NULL, type = 'MAE'){
 #'
 #' RE(c(RMSE1, RMSE2))
 #'
-RE <- function(RMSEs){
-    RMSEs <- RMSEs^2
-    if(!is.vector(RMSEs)){
-        RMSEs / RMSEs[,1L]
-    } else return(RMSEs / RMSEs[1L])
+#' # using MSE instead
+#' mse <- c(RMSE1, RMSE2)^2
+#' RE(mse, MSE = TRUE)
+#'
+RE <- function(x, MSE = FALSE){
+    pow <- ifelse(MSE, 1, 2)
+    x <- x^pow
+    if(!is.vector(x)){
+        x / x[,1L]
+    } else return(x / x[1L])
 }
 
 

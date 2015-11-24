@@ -4,11 +4,14 @@
 \alias{RE}
 \title{Compute the relative efficiency of multiple estimators}
 \usage{
-RE(RMSEs)
+RE(x, MSE = FALSE)
 }
 \arguments{
-\item{RMSEs}{a vector or matrix of mean square error values (see \code{\link{RMSE}}), where the first
-element/row will be used as the reference}
+\item{x}{a vector or matrix of mean square error values (see \code{\link{RMSE}}), where the first
+element/row will be used as the reference. Otherwise, the object could contain MSE values if the flag
+\code{MSE = TRUE} is also included}
+
+\item{MSE}{logical; are the input value mean squared errors instead of root mean square errors?}
 }
 \value{
 returns a vector/matrix of ratios indicating the relative efficiency compared to the first
@@ -16,7 +19,7 @@ returns a vector/matrix of ratios indicating the relative efficiency compared to
   values greater than 1 indicate worse efficiency
 }
 \description{
-Computes the relative efficiency given the RMSE values for multiple estimators
+Computes the relative efficiency given the RMSE (default) or MSE values for multiple estimators.
 }
 \examples{
 
@@ -27,6 +30,10 @@ samp2 <- rnorm(100, 1, sd = 1)
 RMSE2 <- RMSE(samp2, pop)
 
 RE(c(RMSE1, RMSE2))
+
+#using MSE instead
+mse <- c(RMSE1, RMSE2)^2
+RE(mse, MSE = TRUE)
 
 }
 
