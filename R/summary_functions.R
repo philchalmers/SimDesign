@@ -320,7 +320,7 @@ EDR <- function(p, alpha){
 #' ECR(CI, 2)
 #'
 ECR <- function(CIs, population){
-    if(is.vector(CIs)) CIs <- matrix(CIs, 1L, 2L)
+    if(length(CIs) == 2L) CIs <- matrix(CIs, 1L, 2L)
     stopifnot(is.matrix(CIs))
     stopifnot(length(population) == 1L)
     if(CIs[1,1] > CIs[1,2]){
