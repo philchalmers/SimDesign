@@ -42,7 +42,7 @@ SimDesign_functions <- function(filename = NULL, comments = TRUE){
     cat('Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {')
     if(comments) cat('\n    # Summarise the simulation results ...\n')
     if(comments) cat('\n    # Return a named vector of results')
-    cat('\n    ret <- c(bias=NaN, RMSE=NaN)\n    ret\n}\n')
+    cat('\n    ret <- c(bias=NaN, RMSE=NaN)\n    ret\n}\n\n')
 
     if(!is.null(filename)) sink()
     if(!is.null(filename)){
