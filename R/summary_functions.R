@@ -292,7 +292,9 @@ EDR <- function(p, alpha){
 #' detection rate.
 #'
 #' @param CIs a matrix of confidence interval values for a given population value, where the first
-#'   column indicates the lower confidence interval and the second column the upper confidence interval
+#'   column indicates the lower confidence interval and the second column the upper confidence interval. If a
+#'   vector of length 2 is passed instead then the returned value will be either a 1 or 0 to indicate
+#'   whether the population value was or was not within the interval, respectively
 #'
 #' @param population a numeric scalar indicating the fixed population value
 #'
@@ -312,7 +314,13 @@ EDR <- function(p, alpha){
 #'
 #' ECR(CIs, 0)
 #'
+#' # single vector input
+#' CI <- c(-1, 1)
+#' ECR(CI, 0)
+#' ECR(CI, 2)
+#'
 ECR <- function(CIs, population){
+    if(is.vector(CIs)) CIs <- matrix(CIs, 1L, 2L)
     stopifnot(is.matrix(CIs))
     stopifnot(length(population) == 1L)
     if(CIs[1,1] > CIs[1,2]){
