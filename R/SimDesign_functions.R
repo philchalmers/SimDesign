@@ -59,9 +59,9 @@ SimDesign_functions <- function(filename = NULL, comments = TRUE){
     }
     if(comments) cat('\n### Define design conditions and number of replications')
     cat('\nDesign <- expand.grid(condition1, condition2)')
-    cat('\nreplications <- 1000\n')
+    cat('\nReplications <- 1000\n')
     if(comments) cat('\n### Run the simulation')
-    cat('\nresults <- runSimulation(Design=Design, replications=replications, ')
+    cat('\nresults <- runSimulation(design=Design, replications=Replications, ')
     cat('\n    generate=Generate, analyse=Analyse, summarise=Summarise, edit=\'none\')')
     cat('\n\n')
     if(!is.null(filename)) sink()
