@@ -211,7 +211,7 @@ MAE <- function(observed, population = NULL, type = 'MAE'){
 #'
 #' Computes the relative efficiency given the RMSE (default) or MSE values for multiple estimators.
 #'
-#' @param x a vector or matrix of mean square error values (see \code{\link{RMSE}}), where the first
+#' @param x a vector or matrix of root mean square error values (see \code{\link{RMSE}}), where the first
 #'  element/row will be used as the reference. Otherwise, the object could contain MSE values if the flag
 #'  \code{MSE = TRUE} is also included
 #' @param MSE logical; are the input value mean squared errors instead of root mean square errors?

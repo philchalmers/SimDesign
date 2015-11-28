@@ -7,7 +7,7 @@
 RE(x, MSE = FALSE)
 }
 \arguments{
-\item{x}{a vector or matrix of mean square error values (see \code{\link{RMSE}}), where the first
+\item{x}{a vector or matrix of root mean square error values (see \code{\link{RMSE}}), where the first
 element/row will be used as the reference. Otherwise, the object could contain MSE values if the flag
 \code{MSE = TRUE} is also included}
 
@@ -31,7 +31,7 @@ RMSE2 <- RMSE(samp2, pop)
 
 RE(c(RMSE1, RMSE2))
 
-#using MSE instead
+# using MSE instead
 mse <- c(RMSE1, RMSE2)^2
 RE(mse, MSE = TRUE)
 

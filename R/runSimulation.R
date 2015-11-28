@@ -147,12 +147,15 @@
 #'   may be resumed on another computer by changing the name of the node to match the broken computer
 #'
 #' @param edit a string indicating where to initiate a \code{browser()} call for editing and debugging.
-#'   General options are \code{'none'} (default) and \code{'recover'} to disable debugging or to use the
-#'   \code{options(error = 'recover')}. Specific options include: \code{'generate'}
+#'   General options are \code{'none'} (default), \code{'recover'}, and \code{'all'}, which are used
+#'   to disable debugging, use the \code{options(error = 'recover')} setting to debug whenever an error occurs,
+#'   or to debug all the user defined functions, respectively. Specific options include: \code{'generate'}
 #'   to edit the data simulation function, \code{'analyse'} to edit the computational function, and
-#'   \code{'summarise'} to  edit the aggregation function. Alternatively, users may place
-#'   \code{\link{browser}} calls within the respective functions for debugging at specific lines
-#'   (note: parallel computation flags will automatically be disabled when this is detected)
+#'   \code{'summarise'} to  edit the aggregation function.
+#'
+#'   Alternatively, users may place \code{\link{browser}} calls within the respective functions for
+#'   debugging at specific lines (note: parallel computation flags will automatically be disabled
+#'   when a \code{browser()} is detected)
 #'
 #' @param seed a vector of integers (or single number)
 #'   to be used for reproducibility. The length of the vector must be
@@ -393,7 +396,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!is.na(save_every))
         if(save_every > nrow(design))
             warning('save_every is too large to be useful', call. = FALSE)
-    if(!(edit %in% c('none', 'recover', 'analyse', 'generate', 'summarise')))
+    if(!(edit %in% c('none', 'recover', 'analyse', 'generate', 'summarise', 'all')))
         stop('edit location is not valid', call. = FALSE)
     if(is.null(design$ID)){
         design <- data.frame(ID=1L:nrow(design), design)
@@ -404,6 +407,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             old_recover <- getOption('error')
             options(error = utils::recover)
             on.exit(options(error = old_recover))
+        } else if(edit == 'all'){
+            debug(Functions[['generate']]); debug(Functions[['analyse']])
+            debug(Functions[['summarise']])
+            on.exit({undebug(Functions[['generate']]); undebug(Functions[['analyse']])
+                undebug(Functions[['summarise']])})
         } else {
             debug(Functions[[edit]])
             on.exit(undebug(Functions[[edit]]))

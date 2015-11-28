@@ -87,12 +87,15 @@ This file will be deleted when the simulation is complete}
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
 \item{edit}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
-General options are \code{'none'} (default) and \code{'recover'} to disable debugging or to use the
-\code{options(error = 'recover')}. Specific options include: \code{'generate'}
-to edit the data simulation function, \code{'analyse'} to edit the computational function, and
-\code{'summarise'} to  edit the aggregation function. Alternatively, users may place
-\code{\link{browser}} calls within the respective functions for debugging at specific lines
-(note: parallel computation flags will automatically be disabled when this is detected)}
+  General options are \code{'none'} (default), \code{'recover'}, and \code{'all'}, which are used
+  to disable debugging, use the \code{options(error = 'recover')} setting to debug whenever an error occurs,
+  or to debug all the user defined functions, respectively. Specific options include: \code{'generate'}
+  to edit the data simulation function, \code{'analyse'} to edit the computational function, and
+  \code{'summarise'} to  edit the aggregation function.
+
+  Alternatively, users may place \code{\link{browser}} calls within the respective functions for
+  debugging at specific lines (note: parallel computation flags will automatically be disabled
+  when a \code{browser()} is detected)}
 
 \item{verbose}{logical; print messages to the R console?}
 }
