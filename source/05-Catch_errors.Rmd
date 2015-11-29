@@ -61,8 +61,11 @@ The above simulation is just an example of how errors may be caught with `try()`
 
 ### Run the simulation
 
-```{r cache=TRUE}
+```{r include=FALSE}
 set.seed(1)
+```
+
+```{r cache=TRUE}
 result <- runSimulation(Design, replications = 100, 
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 ```

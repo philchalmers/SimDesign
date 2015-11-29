@@ -167,6 +167,10 @@ performing simulations in parallel, storing/resuming temporary results, debuggin
 and so on are available. Below we simply request that each condition be run 1000 times on a 
 single processor, and finally store the results to an object called `results`.
 
+```{r include=FALSE}
+set.seed(1234)
+```
+
 ```{r, cache=TRUE}
 results <- runSimulation(Design, replications = 1000, 
     generate=Generate, analyse=Analyse, summarise=Summarise)

@@ -16,8 +16,13 @@ options(digits = 3)
 
 # Simulation: Type I error rates and Power rates
 
-Determine the Type I error and Power rates for a t-test when different groups sizes are used and when
-the assumption of homogeneity of variance is violated.
+Determine the Type I error and Power rates for a t-test when different groups sizes are used. The independent t-test has three main assumptions:
+
+- independence of observations,
+- normality of residuals (equivalent to normality of the data within each group), and
+- homogeneity of variance.
+
+The Welch test, on the other hand, only requires the first two assumptions. In the simulation below, we will also explore how robust the independent t-test is to this violation, and compare how well the Welch test behaves under the same conditions. 
 
 ### Define conditions
 
@@ -128,6 +133,11 @@ function, therefore it is clear which element represents the Welch and Independe
 In this case a few extra arguments are passed to `runSimulation()`. To help speed things up, the use 
 of parallel architecture is used by passing `parallel = TRUE`, and messages printed to the console are 
 disabled by passing `verbose = FALSE`. 
+
+```{r include=FALSE}
+set.seed(1234)
+```
+
 
 ```{r cache=TRUE}
 Final <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,

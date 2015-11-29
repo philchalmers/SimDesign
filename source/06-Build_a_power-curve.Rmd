@@ -12,6 +12,7 @@ output:
 
 ```{r include=FALSE}
 options(digits = 3)
+set.seed(1)
 ```
 
 # Power-curve

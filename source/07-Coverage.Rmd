@@ -20,6 +20,10 @@ Coverage relates to how well a proposed confidence interval captures the populat
 
 ### Define the functions
 
+```{r include=FALSE}
+set.seed(1234)
+```
+
 ```{r}
 library(SimDesign)
 

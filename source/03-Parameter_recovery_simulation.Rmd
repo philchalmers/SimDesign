@@ -69,9 +69,8 @@ pars_30 <- rbind(a = round(rlnorm(30, .3, .5)/1.702, 2),
 (pars <- list(ten=pars_10, thirty=pars_30))
 ```
 
-The above slopes, when standardized, give the following factor loadings and communalities: 
-
-```{r}
+```{r eval=FALSE}
+# The above slopes, when standardized, give the following factor loadings and communalities (not run): 
 a10 <- pars_10['a', ]; a30 <- pars_30['a', ]
 load10 <- a10 / sqrt(1 + a10^2)
 load30 <- a30 / sqrt(1 + a30^2)

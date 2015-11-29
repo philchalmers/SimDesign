@@ -135,6 +135,10 @@ individually.
 
 The following function call should be familiar to you by now. 
 
+```{r include=FALSE}
+set.seed(1234)
+```
+
 ```{r cache=TRUE}
 result <- runSimulation(Design, replications = 100, parallel = TRUE,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
