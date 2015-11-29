@@ -246,8 +246,7 @@ Summarise &lt;- function(condition, results, fixed_design_elements = NULL, param
 
 <h3>Run the simulation</h3>
 
-<pre><code class="r">set.seed(1)
-result &lt;- runSimulation(Design, replications = 100, 
+<pre><code class="r">result &lt;- runSimulation(Design, replications = 100, 
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 </code></pre>
 
@@ -261,8 +260,8 @@ Completed: 67%,   Previous cell time: 0.0,  Total elapsed time: 0.1
 </code></pre>
 
 <pre><code>##    N     bias REPLICATIONS SIM_TIME
-## 1 10 -0.04329          100    0.028
-## 2 20  0.01684          100    0.028
+## 1 10 -0.04329          100    0.027
+## 2 20  0.01684          100    0.030
 ## 3 30 -0.00669          100    0.027
 ##   TRY_ERROR_MESSAGE: .Error : Error in t.test.default(&quot;invalid&quot;) : not enough &#39;x&#39; observations\n\n
 ## 1                                                                                                9
