@@ -455,6 +455,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(save && !is.na(save_every))
             if((i %% save_every) == 0L) saveRDS(Result_list, tmpfilename)
     }
+    stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
+    if(verbose)
+        cat(sprintf('\rCompleted: %i%s,   Previous cell time: %.1f,  Total elapsed time: %.1f ',
+                    100, '%', time1 - time0, sum(stored_time)))
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
     Final$SIM_TIME <- Final$ID <- NULL
