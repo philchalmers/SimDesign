@@ -157,12 +157,12 @@
 #'   debugging at specific lines (note: parallel computation flags will automatically be disabled
 #'   when a \code{browser()} is detected)
 #'
-#' @param seed a vector of integers (or single number)
-#'   to be used for reproducibility. The length of the vector must be
-#'   equal to either 1 or the number of rows in \code{design}; if 1, this will be repeated for each
-#'   condition. This argument calls \code{\link{set.seed}} or
-#'   \code{\link{clusterSetRNGStream}}, respectively, but will not be run when \code{MPI = TRUE}.
-#'   Default is NULL, indicating that no seed is set
+#' @param seed a vector of integers to be used for reproducibility.
+#'   The length of the vector must be equal the number of rows in \code{design}.
+#'   This argument calls \code{\link{set.seed}} or
+#'   \code{\link{clusterSetRNGStream}} for each condition, respectively,
+#'   but will not be run when \code{MPI = TRUE}.
+#'   Default is NULL, indicating that no seed is set for each condition
 #'
 #' @param verbose logical; print messages to the R console?
 #'
@@ -363,10 +363,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise)
     stopifnot(!missing(design))
     stopifnot(!missing(replications))
-    if(!is.null(seed)){
-        if(length(seed) == 1L) seed <- rep(seed, nrow(design))
+    if(!is.null(seed))
         stopifnot(nrow(design) == length(seed))
-    }
     edit <- tolower(edit)
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))

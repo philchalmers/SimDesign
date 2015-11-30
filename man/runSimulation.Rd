@@ -59,12 +59,12 @@ in the current working directory then one will be created automatically.
 Use this if you would like to keep track of the individual parameters returned from the analyses.
 Default is FALSE}
 
-\item{seed}{a vector of integers (or single number)
-to be used for reproducibility. The length of the vector must be
-equal to either 1 or the number of rows in \code{design}; if 1, this will be repeated for each
-condition. This argument calls \code{\link{set.seed}} or
-\code{\link{clusterSetRNGStream}}, respectively, but will not be run when \code{MPI = TRUE}.
-Default is NULL, indicating that no seed is set}
+\item{seed}{a vector of integers to be used for reproducibility.
+The length of the vector must be equal the number of rows in \code{design}.
+This argument calls \code{\link{set.seed}} or
+\code{\link{clusterSetRNGStream}} for each condition, respectively,
+but will not be run when \code{MPI = TRUE}.
+Default is NULL, indicating that no seed is set for each condition}
 
 \item{compname}{name of the computer running the simulation. Normally this doesn't need to be modified,
 but in the event that a node breaks down while running a simulation the results from the tmp files
