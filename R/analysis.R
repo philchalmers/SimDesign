@@ -10,7 +10,7 @@
 # @param results_filename the file name used to store results in
 #
 Analysis <- function(Functions, condition, replications, fixed_design_elements, cl, MPI, seed,
-                     save_results, results_filename)
+                     save_results, save_results_dirname, results_filename)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -53,9 +53,23 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
             message(sprintf('WARNING: analyse() returned NA or NaN values from row %i in Design',
                             condition$ID))
     }
-    if(save_results)
-        saveRDS(list(condition=condition, results=results, try_errors=try_errors),
-                paste0('SimDesign_results/', results_filename, 'ROWID-', condition$ID, '.rds'))
+    if(save_results){
+        tmpfilename <- paste0(save_results_dirname, '/', results_filename, 'ROWID-',
+                              condition$ID, '.rds')
+        if(file.exists(tmpfilename)){
+            warning('save_results filename already exists, creating new file name. Consider changing save_results_dirname',
+                    ' input to avoid this, or remove obsolete save_results files from the directory',
+                    call.=FALSE)
+            tmp <- paste0(save_results_dirname, '/', results_filename, 'ROWID-',
+                                         condition$ID)
+            tmpcount <- 1L
+            while(file.exists(tmpfilename)){
+                tmpfilename <- paste0(tmp, '-', tmpcount, '.rds')
+                tmpcount <- tmpcount + 1L
+            }
+        }
+        saveRDS(list(condition=condition, results=results, try_errors=try_errors), tmpfilename)
+    }
     sim_results <- Functions$summarise(results=results, parameters_list=parameters,
                            condition=condition, fixed_design_elements=fixed_design_elements)
 

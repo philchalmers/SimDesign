@@ -110,10 +110,14 @@
 #'   \code{psych::describe()})
 #'
 #' @param save_results logical; save the results returned from \code{\link{analyse}} to external .rds files
-#'   located in a 'SimDesign_results' directory/folder? If a 'SimDesign_results' folder does not exist
-#'   in the current working directory then one will be created automatically.
+#'   located in the defined \code{save_results_dirname} directory/folder?
 #'   Use this if you would like to keep track of the individual parameters returned from the analyses.
 #'   Default is FALSE
+#'
+#' @param save_results_dirname a string indicating the name of the folder to save results objects to
+#'   when \code{save_results = TRUE}. If a directory/folder does not exist
+#'   in the current working directory then one will be created automatically.
+#'   Default is 'SimDesign_results'
 #'
 #' @param try_errors logical; include information about which error how often they occurred from
 #'   \code{try()} chunks or \code{\link{check_error}}? If TRUE, this information will be stacked at the end
@@ -355,6 +359,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           filename = paste0(compname,'_Final_', replications),
                           results_filename = paste0(compname, '_results_'),
                           tmpfilename = paste0(compname, '_tmpsim.rds'),
+                          save_results_dirname = 'SimDesign_results',
                           ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
 {
     save_every <- 1L
@@ -432,7 +437,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         start <- min(which(sapply(Result_list, is.null)))
     }
     if(save_results)
-        dir.create('SimDesign_results', showWarnings = FALSE)
+        dir.create(save_results_dirname, showWarnings = FALSE)
     for(i in start:nrow(design)){
         stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
         if(verbose)
@@ -446,6 +451,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                           fixed_design_elements=fixed_design_elements,
                                                           cl=cl, MPI=MPI, seed=seed,
                                                           save_results=save_results,
+                                                          save_results_dirname=save_results_dirname,
                                                           results_filename=results_filename))),
                                        check.names=FALSE)
         time1 <- proc.time()[3]

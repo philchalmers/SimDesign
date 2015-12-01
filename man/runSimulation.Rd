@@ -10,6 +10,7 @@ runSimulation(design, replications, generate, analyse, summarise,
   compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
   replications), results_filename = paste0(compname, "_results_"),
   tmpfilename = paste0(compname, "_tmpsim.rds"),
+  save_results_dirname = "SimDesign_results",
   ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
 }
 \arguments{
@@ -54,8 +55,7 @@ data.frame object, and the number of occurrences included as the value for each 
 for simulations which require an extended amount of time. Default is FALSE}
 
 \item{save_results}{logical; save the results returned from \code{\link{analyse}} to external .rds files
-located in a 'SimDesign_results' directory/folder? If a 'SimDesign_results' folder does not exist
-in the current working directory then one will be created automatically.
+located in the defined \code{save_results_dirname} directory/folder?
 Use this if you would like to keep track of the individual parameters returned from the analyses.
 Default is FALSE}
 
@@ -83,6 +83,11 @@ appended at the end. This file will be
 read in if it is in the working directory, and the simulation will continue where at the last
 point this file was saved (useful in case of power outages or broken nodes).
 This file will be deleted when the simulation is complete}
+
+\item{save_results_dirname}{a string indicating the name of the folder to save results objects to
+when \code{save_results = TRUE}. If a directory/folder does not exist
+in the current working directory then one will be created automatically.
+Default is 'SimDesign_results'}
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
