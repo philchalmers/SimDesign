@@ -112,7 +112,8 @@
 #' @param save_results logical; save the results returned from \code{\link{analyse}} to external .rds files
 #'   located in the defined \code{save_results_dirname} directory/folder?
 #'   Use this if you would like to keep track of the individual parameters returned from the analyses.
-#'   Default is FALSE
+#'   Each saved object will contain a list of three elements containing the condition (row from \code{design}),
+#'   results (as a list or matrix), and try-errors. Default is FALSE
 #'
 #' @param save_results_dirname a string indicating the name of the folder to save results objects to
 #'   when \code{save_results = TRUE}. If a directory/folder does not exist

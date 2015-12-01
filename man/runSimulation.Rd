@@ -57,7 +57,8 @@ for simulations which require an extended amount of time. Default is FALSE}
 \item{save_results}{logical; save the results returned from \code{\link{analyse}} to external .rds files
 located in the defined \code{save_results_dirname} directory/folder?
 Use this if you would like to keep track of the individual parameters returned from the analyses.
-Default is FALSE}
+Each saved object will contain a list of three elements containing the condition (row from \code{design}),
+results (as a list or matrix), and try-errors. Default is FALSE}
 
 \item{seed}{a vector of integers to be used for reproducibility.
 The length of the vector must be equal the number of rows in \code{design}.
