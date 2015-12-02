@@ -488,6 +488,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(verbose)
             message(paste0('\nWARNING:\n', filename0, ' existed in the working directory already.
                            A new unique name was created.\n'))
+    class(Final) <- c('SimDesign', 'data.frame')
+    dn <- colnames(design)
+    dn <- dn[dn != 'ID']
+    ten <- colnames(Final)[grepl('TRY_ERROR_MESSAGE:', colnames(Final))]
+    sn <- colnames(Final)[!(colnames(Final) %in% dn)]
+    attr(Final, 'design_names') <- list(design=dn, sim=sn, try_errors=ten,
+                                        extra=c('REPLICATIONS', 'SIM_TIME'))
     if(save){
         if(verbose)
             message(paste('\nSaving simulation results to file:', filename))
