@@ -492,9 +492,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     dn <- colnames(design)
     dn <- dn[dn != 'ID']
     ten <- colnames(Final)[grepl('TRY_ERROR_MESSAGE:', colnames(Final))]
-    sn <- colnames(Final)[!(colnames(Final) %in% dn)]
-    attr(Final, 'design_names') <- list(design=dn, sim=sn, try_errors=ten,
-                                        extra=c('REPLICATIONS', 'SIM_TIME'))
+    en <- c('REPLICATIONS', 'SIM_TIME')
+    sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en))]
+    attr(Final, 'design_names') <- list(design=dn, sim=sn, extra=en, try_errors=ten)
     if(save){
         if(verbose)
             message(paste('\nSaving simulation results to file:', filename))
