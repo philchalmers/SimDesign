@@ -23,9 +23,6 @@
 #'
 #'\dontrun{
 #'
-#' # output to console
-#' SimDesign_functions()
-#'
 #' # write output files
 #' SimDesign_functions('mysim')
 #'
