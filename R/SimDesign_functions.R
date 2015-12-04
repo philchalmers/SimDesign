@@ -10,6 +10,9 @@
 #'
 #' @param comments logical; include helpful comments?
 #'
+#' @param singlefile logical; when \code{filename} is included, put output in one files? When FALSE the
+#'   output is saved to two seperate files containing the functions and design defintiions
+#'
 #' @aliases SimDesign_functions
 #'
 #' @export SimDesign_functions
@@ -20,12 +23,22 @@
 #'
 #'\dontrun{
 #'
+#' # output to console
+#' SimDesign_functions()
+#'
 #' # write output files
 #' SimDesign_functions('mysim')
+#'
+#' # write output files to a single file without comments
+#' SimDesign_functions('mysim', comments = FALSE, singlefile = TRUE)
 #' }
 #'
-SimDesign_functions <- function(filename = NULL, comments = TRUE){
-    if(!is.null(filename)) sink(paste0(filename, '-functions.R'))
+SimDesign_functions <- function(filename = NULL, comments = TRUE, singlefile = FALSE){
+    if(singlefile){
+        if(!is.null(filename)) sink(paste0(filename, '.R'))
+    } else {
+        if(!is.null(filename)) sink(paste0(filename, '-functions.R'))
+    }
     cat('#-------------------------------------------------------------------')
     if(comments) cat('\n### Define essential simulation functions')
     cat('\n\nGenerate <- function(condition, fixed_design_elements = NULL) {')
@@ -44,14 +57,16 @@ SimDesign_functions <- function(filename = NULL, comments = TRUE){
     if(comments) cat('\n    # Return a named vector of results')
     cat('\n    ret <- c(bias=NaN, RMSE=NaN)\n    ret\n}\n\n')
 
-    if(!is.null(filename)) sink()
+    if(!singlefile)
+        if(!is.null(filename)) sink()
     if(!is.null(filename)){
-        sink(paste0(filename, '.R'))
+        if(!singlefile) sink(paste0(filename, '.R'))
         cat('#-------------------------------------------------------------------\n')
         cat('\nlibrary(SimDesign)\n')
-        if(comments) cat('\n### Source in essential functions')
+        if(comments)
+            if(!singlefile) cat('\n### Source in essential functions')
         cat('\n# setwd(\"', getwd(), '\")', sep='')
-        cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')', sep='')
+        if(!singlefile) cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')', sep='')
         cat('\n')
     } else {
         cat('#-------------------------------------------------------------------\n')

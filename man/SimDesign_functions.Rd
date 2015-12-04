@@ -4,7 +4,7 @@
 \alias{SimDesign_functions}
 \title{Skeleton functions for simulations}
 \usage{
-SimDesign_functions(filename = NULL, comments = TRUE)
+SimDesign_functions(filename = NULL, comments = TRUE, singlefile = FALSE)
 }
 \arguments{
 \item{filename}{a character vector indicating whether the output should be saved to two respective files
@@ -12,6 +12,9 @@ containing the simulation design and the functional components, respectively. Us
 is generally the recommended approach when designing simulations}
 
 \item{comments}{logical; include helpful comments?}
+
+\item{singlefile}{logical; when \code{filename} is included, put output in one files? When FALSE the
+output is saved to two seperate files containing the functions and design defintiions}
 }
 \description{
 This function prints skeleton versions of the required functions and work-flow required
@@ -24,8 +27,14 @@ SimDesign_functions()
 
 \dontrun{
 
+# output to console
+SimDesign_functions()
+
 # write output files
 SimDesign_functions('mysim')
+
+# write output files to a single file without comments
+SimDesign_functions('mysim', comments = FALSE, singlefile = TRUE)
 }
 
 }
