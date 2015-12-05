@@ -496,7 +496,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     dn <- dn[dn != 'ID']
     ten <- colnames(Final)[grepl('ERROR_MESSAGE:', colnames(Final))]
     en <- c('REPLICATIONS', 'SIM_TIME')
-    sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en))]
+    sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten))]
     attr(Final, 'design_names') <- list(design=dn, sim=sn, extra=en, errors=ten)
     if(save){
         if(verbose)

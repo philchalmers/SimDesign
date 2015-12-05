@@ -56,5 +56,5 @@ aggregate_simulations <- function(files = NULL){
         ret$SIM_TIME <- ret$SIM_TIME + readin[[i]]$SIM_TIME
         ret[ ,pick] <- ret[ ,pick] + weights[i] * readin[[i]][ ,pick]
     }
-    data.frame(ret, try_errors)
+    data.frame(ret, try_errors, check.names = FALSE)
 }

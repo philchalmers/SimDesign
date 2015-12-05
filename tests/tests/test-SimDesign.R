@@ -116,14 +116,14 @@ test_that('SimDesign', {
     }
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 2, verbose = FALSE, include_errors = TRUE)
+                           replications = 2, verbose = FALSE, include_errors = TRUE, max_errors = Inf)
     expect_is(Final, 'data.frame')
     expect_true(any(grepl('ERROR_MESSAGE', names(Final))))
 
     # aggregate test
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                         replications = 2, parallel=FALSE, save=TRUE, include_errors = TRUE)
-    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                         replications = 2, parallel=FALSE, save=TRUE, include_errors = TRUE, max_errors=Inf)
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, max_errors=Inf,
                          replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile', include_errors = TRUE)
     Final <- aggregate_simulations()
     expect_is(Final, 'data.frame')
@@ -131,7 +131,7 @@ test_that('SimDesign', {
     system('rm *.rds')
 
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                         replications = 2, parallel=FALSE, save_results = TRUE)
+                         replications = 2, parallel=FALSE, save_results = TRUE, max_errors = Inf)
     expect_true(dir.exists('SimDesign_results'))
     files <- dir('SimDesign_results/')
     expect_equal(length(files), 8L)
@@ -141,13 +141,19 @@ test_that('SimDesign', {
 
     # error test
     mycompute <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
-        stop('this error')
+        stop('this error', call. = FALSE)
     }
 
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=FALSE, save=FALSE))
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 1, parallel=TRUE, save=FALSE, ncores = 2))
+
+    mysim <- function(condition, fixed_design_elements = NULL){
+        stop('something silly', call.=FALSE)
+    }
+    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                               replications = 1, parallel=FALSE, save=FALSE))
 
 })
 
