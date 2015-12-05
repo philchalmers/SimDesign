@@ -10,7 +10,7 @@ runSimulation(design, replications, generate, analyse, summarise,
   compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
   replications), results_filename = paste0(compname, "_results_"),
   tmpfilename = paste0(compname, "_tmpsim.rds"),
-  save_results_dirname = "SimDesign_results",
+  save_results_dirname = "SimDesign_results", max_errors = 50,
   ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
 }
 \arguments{
@@ -93,6 +93,10 @@ This file will be deleted when the simulation is complete}
 when \code{save_results = TRUE}. If a directory/folder does not exist
 in the current working directory then one will be created automatically.
 Default is 'SimDesign_results'}
+
+\item{max_errors}{the simulation will terminate when more than this number of errors are thrown in any
+given condition. The purpose of this is to indicate that likely something problematic is going
+wrong in the generate-analyse phases and should be inspected. Default is 50}
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 

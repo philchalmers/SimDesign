@@ -10,7 +10,7 @@
 # @param results_filename the file name used to store results in
 #
 Analysis <- function(Functions, condition, replications, fixed_design_elements, cl, MPI, seed,
-                     save_results, save_results_dirname, results_filename)
+                     save_results, save_results_dirname, results_filename, max_errors)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -19,19 +19,22 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
         cell_results <- lapply(1L:replications, mainsim, condition=condition,
                                generate=Functions$generate,
                                analyse=Functions$analyse,
-                               fixed_design_elements=fixed_design_elements)
+                               fixed_design_elements=fixed_design_elements,
+                               max_errors=max_errors)
     } else {
         if(MPI){
             i <- 1L
             cell_results <- foreach(i=1L:replications) %dopar%
                 mainsim(i, condition=condition, generate=Functions$generate,
-                     analyse=Functions$analyse, fixed_design_elements=fixed_design_elements)
+                     analyse=Functions$analyse, fixed_design_elements=fixed_design_elements,
+                     max_errors=max_errors)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
             cell_results <- parallel::parLapply(cl, 1L:replications, mainsim,
                                                 condition=condition, generate=Functions$generate,
                                                 analyse=Functions$analyse,
-                                                fixed_design_elements=fixed_design_elements)
+                                                fixed_design_elements=fixed_design_elements,
+                                                max_errors=max_errors)
         }
     }
 

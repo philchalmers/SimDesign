@@ -139,5 +139,15 @@ test_that('SimDesign', {
     expect_true(all(names(x) %in% c('condition', 'results', 'errors')))
     system('rm -r SimDesign_results')
 
+    # error test
+    mycompute <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+        stop('this error')
+    }
+
+    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                               replications = 1, parallel=FALSE, save=FALSE))
+    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                           replications = 1, parallel=TRUE, save=FALSE, ncores = 2))
+
 })
 

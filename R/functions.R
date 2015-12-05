@@ -186,24 +186,30 @@ summarise <- function(condition, results, fixed_design_elements = NULL, paramete
 # print(SimDesign::main)
 #
 # }
-mainsim <- function(index, condition, generate, analyse, fixed_design_elements){
+mainsim <- function(index, condition, generate, analyse, fixed_design_elements, max_errors){
 
     require('SimDesign') #this is required if SimDesign functions are called (e.g., bias(), RMSE())
     try_error <- character()
 
     while(TRUE){
 
-        simlist <- generate(condition=condition, fixed_design_elements=fixed_design_elements)
+        try(simlist <- generate(condition=condition, fixed_design_elements=fixed_design_elements))
+        if(is(simlist, 'try-error'))
+            stop('generate function threw an error. Please make sure the function does not throw errors',
+                 call.=FALSE)
         if(is.data.frame(simlist) || !is.list(simlist)) simlist <- list(dat=simlist)
         if(length(names(simlist)) > 1L)
             if(!all(names(simlist) %in% c('dat', 'parameters')))
-            stop('generate() did not return a list with elements \'dat\' and \'parameters\'', call.=FALSE)
+                stop('generate() did not return a list with elements \'dat\' and \'parameters\'', call.=FALSE)
         res <- try(analyse(dat=simlist$dat, parameters=simlist$parameters, condition=condition,
                            fixed_design_elements=fixed_design_elements), silent=TRUE)
 
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')){
             try_error <- c(try_error, res[1L])
+            if(length(try_error) == max_errors)
+                stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
+                            ' consecutive errors. Please fix'), call.=FALSE)
             next
         }
         if(!is.list(res) && !is.numeric(res))

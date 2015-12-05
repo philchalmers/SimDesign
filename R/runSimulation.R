@@ -127,6 +127,10 @@
 #'   of the returned simulation results with the name of the specific error used as the column name in the
 #'   data.frame object, and the number of occurrences included as the value for each condition
 #'
+#' @param max_errors the simulation will terminate when more than this number of errors are thrown in any
+#'   given condition. The purpose of this is to indicate that likely something problematic is going
+#'   wrong in the generate-analyse phases and should be inspected. Default is 50
+#'
 #' @param ncores number of cores to be used in parallel execution. Default uses all available
 #'
 #' @param filename the name of the .rds file to save the final simulation results to.
@@ -363,7 +367,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           filename = paste0(compname,'_Final_', replications),
                           results_filename = paste0(compname, '_results_'),
                           tmpfilename = paste0(compname, '_tmpsim.rds'),
-                          save_results_dirname = 'SimDesign_results',
+                          save_results_dirname = 'SimDesign_results', max_errors = 50,
                           ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
 {
     filename <- paste0(filename, '.rds')
@@ -452,7 +456,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                           cl=cl, MPI=MPI, seed=seed,
                                                           save_results=save_results,
                                                           save_results_dirname=save_results_dirname,
-                                                          results_filename=results_filename))),
+                                                          results_filename=results_filename,
+                                                          max_errors=max_errors))),
                                        check.names=FALSE)
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
