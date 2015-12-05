@@ -92,7 +92,8 @@
 #' @param summarise user-defined summary function to be used after all the replications have completed.
 #'    See \code{\link{summarise}} for details
 #'
-#' @param replications number of replication to perform per condition (i.e., each row in \code{design})
+#' @param replications number of replication to perform per condition (i.e., each row in \code{design}).
+#'   Must be greater than 0
 #'
 #' @param fixed_design_elements (optional) an object (usually a list) containing fixed design elements
 #'   which can be used across all simulation conditions. This is useful when including
@@ -396,8 +397,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(!is.data.frame(design))
         stop('design must be a data.frame object', call. = FALSE)
-    if(replications < 2L)
-        stop('number of replications must be greater than or equal to 2', call. = FALSE)
+    if(replications < 1L)
+        stop('number of replications must be greater than or equal to 1', call. = FALSE)
     if(!(edit %in% c('none', 'recover', 'analyse', 'generate', 'summarise', 'all')))
         stop('edit location is not valid', call. = FALSE)
     if(is.null(design$ID)){

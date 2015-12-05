@@ -17,7 +17,8 @@ runSimulation(design, replications, generate, analyse, summarise,
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
 be studied, where each row represents a unique condition}
 
-\item{replications}{number of replication to perform per condition (i.e., each row in \code{design})}
+\item{replications}{number of replication to perform per condition (i.e., each row in \code{design}).
+Must be greater than 0}
 
 \item{generate}{user-defined data and parameter generating function.
 See \code{\link{generate}} for details}
