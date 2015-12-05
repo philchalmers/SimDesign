@@ -146,11 +146,12 @@ The strategy for organizing the Monte Carlo simulation work-flow is to
      and generating suitable plots and tables}
 }
 
-Two constants for each condition are returned by default:
+Additional information for each condition are also returned:
 \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 \code{SIM_TIME} to indicate how long (in seconds) it took to complete
-all the Monte Carlo replications for each respective condition, and if \code{include_errors = TRUE}
-then columns containing the number of replications due to \code{try()} errors where the error messages
+all the Monte Carlo replications for each respective condition, \code{SEED} if the \code{seed} argument
+was used, and, if \code{include_errors = TRUE},
+columns containing the number of replications due to \code{try()} errors where the error messages
 represent the names of the columns prefixed with a \code{ERROR_MESSAGE} string.
 }
 \section{Storing and resuming temporary results}{

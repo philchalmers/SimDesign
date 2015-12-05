@@ -32,11 +32,12 @@
 #'      and generating suitable plots and tables}
 #' }
 #'
-#' Two constants for each condition are returned by default:
+#' Additional information for each condition are also returned:
 #' \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
-#' all the Monte Carlo replications for each respective condition, and if \code{include_errors = TRUE}
-#' then columns containing the number of replications due to \code{try()} errors where the error messages
+#' all the Monte Carlo replications for each respective condition, \code{SEED} if the \code{seed} argument
+#' was used, and, if \code{include_errors = TRUE},
+#' columns containing the number of replications due to \code{try()} errors where the error messages
 #' represent the names of the columns prefixed with a \code{ERROR_MESSAGE} string.
 #'
 #' @section Storing and resuming temporary results:
@@ -476,6 +477,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Final <- if(include_errors){
         data.frame(Final, REPLICATIONS=replications, SIM_TIME, TRY_ERRORS, check.names=FALSE)
     } else data.frame(Final, REPLICATIONS=replications, SIM_TIME, check.names=FALSE)
+    if(!is.null(seed)) Final$SEED <- seed
     #save file
     files <- dir()
     filename0 <- filename
@@ -496,6 +498,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     dn <- dn[dn != 'ID']
     ten <- colnames(Final)[grepl('ERROR_MESSAGE:', colnames(Final))]
     en <- c('REPLICATIONS', 'SIM_TIME')
+    if(!is.null(seed)) en <- c(en, 'SEED')
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten))]
     attr(Final, 'design_names') <- list(design=dn, sim=sn, extra=en, errors=ten)
     if(save){
