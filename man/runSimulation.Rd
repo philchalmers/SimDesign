@@ -31,7 +31,7 @@ See \code{\link{summarise}} for details}
 
 \item{fixed_design_elements}{(optional) an object (usually a list) containing fixed design elements
 which can be used across all simulation conditions. This is useful when including
-long fixed vectors of population coefficients, including data
+long fixed vectors of population parameters, including data
 which should be used across all conditions and replications (e.g., including a fixed design matrix
 for linear regression), or simply to control global elements such as sample size}
 

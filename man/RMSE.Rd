@@ -4,21 +4,21 @@
 \alias{RMSE}
 \title{Compute the (normalized) root mean square error}
 \usage{
-RMSE(observed, population = NULL, type = "RMSE")
+RMSE(estimate, parameter = NULL, type = "RMSE")
 }
 \arguments{
-\item{observed}{a numeric vector or matrix/data.frame of parameter estimates. If a vector,
+\item{estimate}{a numeric vector or matrix/data.frame of parameter estimates. If a vector,
 the length is equal to the number of replications. If a matrix/data.frame,
 the number of rows must equal the number of replications}
 
-\item{population}{a numeric scalar/vector indicating the fixed population values.
-If a single value is supplied and \code{observed} is a matrix/data.frame then the value will be
+\item{parameter}{a numeric scalar/vector indicating the fixed parameter values.
+If a single value is supplied and \code{estimate} is a matrix/data.frame then the value will be
 recycled for each column.
-If NULL, then it will be assumed that the \code{observed} input is in a deviation
-form (therefore \code{sqrt(mean(observed^2))} will be returned)}
+If NULL, then it will be assumed that the \code{estimate} input is in a deviation
+form (therefore \code{sqrt(mean(estimate^2))} will be returned)}
 
 \item{type}{type of deviation to compute. Can be 'RMSE' (default) for the root mean square-error,
-'NRMSE' for the normalized RMSE (RMSE / (max(observed) - min(observed))), or 'CV' for the coefficient of
+'NRMSE' for the normalized RMSE (RMSE / (max(estimate) - min(estimate))), or 'CV' for the coefficient of
 variation}
 }
 \value{
@@ -26,8 +26,8 @@ returns a numeric vector indicating the overall average deviation in the estimat
 }
 \description{
 Computes the average deviation (root mean square error; also known as the root mean square deviation)
-of a sample estimate from the population value. Accepts observed and population values,
-as well as observed values which are in deviation form.
+of a sample estimate from the parameter value. Accepts estimate and parameter values,
+as well as estimate values which are in deviation form.
 }
 \examples{
 
@@ -44,11 +44,11 @@ RMSE(samp, pop, type = 'CV')
 
 # matrix input
 mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
-RMSE(mat, population = 2)
+RMSE(mat, parameter = 2)
 
 # same, but with data.frame
 df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
-RMSE(df, population = c(2,2))
+RMSE(df, parameter = c(2,2))
 
 }
 \seealso{

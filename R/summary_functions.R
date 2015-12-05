@@ -1,18 +1,18 @@
 #' Compute (relative) bias summary statistic
 #'
-#' Computes the (relative) bias of a sample estimate from the population value.
-#' Accepts observed and population values, as well as observed values which are in deviation form.
-#' If relative bias is requested the \code{observed} and \code{population} inputs are both required.
+#' Computes the (relative) bias of a sample estimate from the parameter value.
+#' Accepts estimate and parameter values, as well as estimate values which are in deviation form.
+#' If relative bias is requested the \code{estimate} and \code{parameter} inputs are both required.
 #'
-#' @param observed a numeric vector or matrix/data.frame of parameter estimates. If a vector,
+#' @param estimate a numeric vector or matrix/data.frame of parameter estimates. If a vector,
 #'   the length is equal to the number of replications. If a matrix/data.frame,
 #'   the number of rows must equal the number of replications
 #'
-#' @param population a numeric scalar/vector indicating the fixed population values.
-#'   If a single value is supplied and \code{observed} is a matrix/data.frame then the value will be
+#' @param parameter a numeric scalar/vector indicating the fixed parameters.
+#'   If a single value is supplied and \code{estimate} is a matrix/data.frame then the value will be
 #'   recycled for each column.
-#'   If NULL, then it will be assumed that the \code{observed} input is in a deviation
-#'   form (therefore \code{mean(observed))} will be returned)
+#'   If NULL, then it will be assumed that the \code{estimate} input is in a deviation
+#'   form (therefore \code{mean(estimate))} will be returned)
 #'
 #' @param relative logical; compute the relative bias statistic? Default is FALSE
 #'
@@ -39,27 +39,27 @@
 #'
 #' # matrix input
 #' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
-#' bias(mat, population = 2)
+#' bias(mat, parameter = 2)
 #'
 #' # same, but with data.frame
 #' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
-#' bias(df, population = c(2,2))
+#' bias(df, parameter = c(2,2))
 #'
 #'
-bias <- function(observed, population = NULL, relative = FALSE){
-    if(is.vector(observed)){
-        nms <- names(observed)
-        observed <- matrix(observed)
-        colnames(observed) <- nms
-    } else if(is.data.frame(observed)) observed <- as.matrix(observed)
-    stopifnot(is.matrix(observed))
-    n_col <- ncol(observed)
-    if(relative) stopifnot(!is.null(population))
-    if(is.null(population)) population <- 0
-    stopifnot(is.vector(population))
-    if(length(population) == 1L) population <- rep(population, n_col)
-    ret <- colMeans(t(t(observed) - population))
-    if(relative) ret <- ret / population
+bias <- function(estimate, parameter = NULL, relative = FALSE){
+    if(is.vector(estimate)){
+        nms <- names(estimate)
+        estimate <- matrix(estimate)
+        colnames(estimate) <- nms
+    } else if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
+    stopifnot(is.matrix(estimate))
+    n_col <- ncol(estimate)
+    if(relative) stopifnot(!is.null(parameter))
+    if(is.null(parameter)) parameter <- 0
+    stopifnot(is.vector(parameter))
+    if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
+    ret <- colMeans(t(t(estimate) - parameter))
+    if(relative) ret <- ret / parameter
     ret
 }
 
@@ -68,21 +68,21 @@ bias <- function(observed, population = NULL, relative = FALSE){
 #' Compute the (normalized) root mean square error
 #'
 #' Computes the average deviation (root mean square error; also known as the root mean square deviation)
-#' of a sample estimate from the population value. Accepts observed and population values,
-#' as well as observed values which are in deviation form.
+#' of a sample estimate from the parameter value. Accepts estimate and parameter values,
+#' as well as estimate values which are in deviation form.
 #'
-#' @param observed a numeric vector or matrix/data.frame of parameter estimates. If a vector,
+#' @param estimate a numeric vector or matrix/data.frame of parameter estimates. If a vector,
 #'   the length is equal to the number of replications. If a matrix/data.frame,
 #'   the number of rows must equal the number of replications
 #'
-#' @param population a numeric scalar/vector indicating the fixed population values.
-#'   If a single value is supplied and \code{observed} is a matrix/data.frame then the value will be
+#' @param parameter a numeric scalar/vector indicating the fixed parameter values.
+#'   If a single value is supplied and \code{estimate} is a matrix/data.frame then the value will be
 #'   recycled for each column.
-#'   If NULL, then it will be assumed that the \code{observed} input is in a deviation
-#'   form (therefore \code{sqrt(mean(observed^2))} will be returned)
+#'   If NULL, then it will be assumed that the \code{estimate} input is in a deviation
+#'   form (therefore \code{sqrt(mean(estimate^2))} will be returned)
 #'
 #' @param type type of deviation to compute. Can be 'RMSE' (default) for the root mean square-error,
-#'   'NRMSE' for the normalized RMSE (RMSE / (max(observed) - min(observed))), or 'CV' for the coefficient of
+#'   'NRMSE' for the normalized RMSE (RMSE / (max(estimate) - min(estimate))), or 'CV' for the coefficient of
 #'   variation
 #'
 #' @return returns a numeric vector indicating the overall average deviation in the estimates
@@ -110,30 +110,30 @@ bias <- function(observed, population = NULL, relative = FALSE){
 #'
 #' # matrix input
 #' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
-#' RMSE(mat, population = 2)
+#' RMSE(mat, parameter = 2)
 #'
 #' # same, but with data.frame
 #' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
-#' RMSE(df, population = c(2,2))
+#' RMSE(df, parameter = c(2,2))
 #'
-RMSE <- function(observed, population = NULL, type = 'RMSE'){
-    if(is.vector(observed)){
-        nms <- names(observed)
-        observed <- matrix(observed)
-        colnames(observed) <- nms
-    } else if(is.data.frame(observed)) observed <- as.matrix(observed)
-    stopifnot(is.matrix(observed))
-    n_col <- ncol(observed)
-    if(is.null(population)) population <- 0
-    stopifnot(is.vector(population))
-    if(length(population) == 1L) population <- rep(population, n_col)
-    ret <- sqrt(colMeans(t( (t(observed) - population)^2 )))
+RMSE <- function(estimate, parameter = NULL, type = 'RMSE'){
+    if(is.vector(estimate)){
+        nms <- names(estimate)
+        estimate <- matrix(estimate)
+        colnames(estimate) <- nms
+    } else if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
+    stopifnot(is.matrix(estimate))
+    n_col <- ncol(estimate)
+    if(is.null(parameter)) parameter <- 0
+    stopifnot(is.vector(parameter))
+    if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
+    ret <- sqrt(colMeans(t( (t(estimate) - parameter)^2 )))
     if(type == 'NRMSE'){
-        diff <- apply(observed, 2, max) - apply(observed, 2, min)
+        diff <- apply(estimate, 2, max) - apply(estimate, 2, min)
         ret <- ret / diff
     }
     if(type == 'CV'){
-        ret <- ret / colMeans(observed)
+        ret <- ret / colMeans(estimate)
     }
     ret
 }
@@ -143,22 +143,22 @@ RMSE <- function(observed, population = NULL, type = 'RMSE'){
 
 #' Compute the mean absolute error
 #'
-#' Computes the average absolute deviation of a sample estimate from the population value.
-#' Accepts observed and population values,
-#' as well as observed values which are in deviation form.
+#' Computes the average absolute deviation of a sample estimate from the parameter value.
+#' Accepts estimate and parameter values,
+#' as well as estimate values which are in deviation form.
 #'
-#' @param observed a numeric vector or matrix/data.frame of parameter estimates. If a vector,
+#' @param estimate a numeric vector or matrix/data.frame of parameter estimates. If a vector,
 #'   the length is equal to the number of replications. If a matrix/data.frame,
 #'   the number of rows must equal the number of replications
 #'
-#' @param population a numeric scalar/vector indicating the fixed population values.
-#'   If a single value is supplied and \code{observed} is a matrix/data.frame then the value will be
+#' @param parameter a numeric scalar/vector indicating the fixed parameter values.
+#'   If a single value is supplied and \code{estimate} is a matrix/data.frame then the value will be
 #'   recycled for each column.
-#'   If NULL, then it will be assumed that the \code{observed} input is in a deviation
-#'   form (therefore \code{mean(abs(observed))} will be returned)
+#'   If NULL, then it will be assumed that the \code{estimate} input is in a deviation
+#'   form (therefore \code{mean(abs(estimate))} will be returned)
 #'
 #' @param type type of deviation to compute. Can be 'MAE' (default) for the mean absolute error, or
-#'   'NMSE' for the normalized MAE (MAE / (max(observed) - min(observed)))
+#'   'NMSE' for the normalized MAE (MAE / (max(estimate) - min(estimate)))
 #'
 #' @return returns a numeric vector indicating the overall mean absolute error in the estimates
 #'
@@ -180,26 +180,26 @@ RMSE <- function(observed, population = NULL, type = 'RMSE'){
 #'
 #' # matrix input
 #' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
-#' MAE(mat, population = 2)
+#' MAE(mat, parameter = 2)
 #'
 #' # same, but with data.frame
 #' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
-#' MAE(df, population = c(2,2))
+#' MAE(df, parameter = c(2,2))
 #'
-MAE <- function(observed, population = NULL, type = 'MAE'){
-    if(is.vector(observed)){
-        nms <- names(observed)
-        observed <- matrix(observed)
-        colnames(observed) <- nms
-    } else if(is.data.frame(observed)) observed <- as.matrix(observed)
-    stopifnot(is.matrix(observed))
-    n_col <- ncol(observed)
-    if(is.null(population)) population <- 0
-    stopifnot(is.vector(population))
-    if(length(population) == 1L) population <- rep(population, n_col)
-    ret <- colMeans(t(abs(t(observed) - population)))
+MAE <- function(estimate, parameter = NULL, type = 'MAE'){
+    if(is.vector(estimate)){
+        nms <- names(estimate)
+        estimate <- matrix(estimate)
+        colnames(estimate) <- nms
+    } else if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
+    stopifnot(is.matrix(estimate))
+    n_col <- ncol(estimate)
+    if(is.null(parameter)) parameter <- 0
+    stopifnot(is.vector(parameter))
+    if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
+    ret <- colMeans(t(abs(t(estimate) - parameter)))
     if(type == 'NMAE'){
-        diff <- apply(observed, 2, max) - apply(observed, 2, min)
+        diff <- apply(estimate, 2, max) - apply(estimate, 2, min)
         ret <- ret / diff
     }
     ret
@@ -288,15 +288,15 @@ EDR <- function(p, alpha){
 #' Compute the empirical coverage rate for Type I errors and Power
 #'
 #' Computes the detection rate for determining empirical Type I error and power rates using information
-#' from the confidence intervals. Note that using \code{1 - ECR(CIs, population)} will provide the empirical
+#' from the confidence intervals. Note that using \code{1 - ECR(CIs, parameter)} will provide the empirical
 #' detection rate.
 #'
-#' @param CIs a matrix of confidence interval values for a given population value, where the first
+#' @param CIs a matrix of confidence interval values for a given parameter value, where the first
 #'   column indicates the lower confidence interval and the second column the upper confidence interval. If a
 #'   vector of length 2 is passed instead then the returned value will be either a 1 or 0 to indicate
-#'   whether the population value was or was not within the interval, respectively
+#'   whether the parameter value was or was not within the interval, respectively
 #'
-#' @param population a numeric scalar indicating the fixed population value
+#' @param parameter a numeric scalar indicating the fixed parameter value
 #'
 #' @aliases ECR
 #'
@@ -319,14 +319,14 @@ EDR <- function(p, alpha){
 #' ECR(CI, 0)
 #' ECR(CI, 2)
 #'
-ECR <- function(CIs, population){
+ECR <- function(CIs, parameter){
     if(length(CIs) == 2L) CIs <- matrix(CIs, 1L, 2L)
     stopifnot(is.matrix(CIs))
-    stopifnot(length(population) == 1L)
+    stopifnot(length(parameter) == 1L)
     if(CIs[1,1] > CIs[1,2]){
         warning('First column not less than second. Temporarily switching')
         CIs <- cbind(CIs[,2L], CIs[,1L])
     }
-    mean(CIs[,1L] <= population & population <= CIs[,2L])
+    mean(CIs[,1L] <= parameter & parameter <= CIs[,2L])
 }
 

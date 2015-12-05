@@ -4,29 +4,29 @@
 \alias{MAE}
 \title{Compute the mean absolute error}
 \usage{
-MAE(observed, population = NULL, type = "MAE")
+MAE(estimate, parameter = NULL, type = "MAE")
 }
 \arguments{
-\item{observed}{a numeric vector or matrix/data.frame of parameter estimates. If a vector,
+\item{estimate}{a numeric vector or matrix/data.frame of parameter estimates. If a vector,
 the length is equal to the number of replications. If a matrix/data.frame,
 the number of rows must equal the number of replications}
 
-\item{population}{a numeric scalar/vector indicating the fixed population values.
-If a single value is supplied and \code{observed} is a matrix/data.frame then the value will be
+\item{parameter}{a numeric scalar/vector indicating the fixed parameter values.
+If a single value is supplied and \code{estimate} is a matrix/data.frame then the value will be
 recycled for each column.
-If NULL, then it will be assumed that the \code{observed} input is in a deviation
-form (therefore \code{mean(abs(observed))} will be returned)}
+If NULL, then it will be assumed that the \code{estimate} input is in a deviation
+form (therefore \code{mean(abs(estimate))} will be returned)}
 
 \item{type}{type of deviation to compute. Can be 'MAE' (default) for the mean absolute error, or
-'NMSE' for the normalized MAE (MAE / (max(observed) - min(observed)))}
+'NMSE' for the normalized MAE (MAE / (max(estimate) - min(estimate)))}
 }
 \value{
 returns a numeric vector indicating the overall mean absolute error in the estimates
 }
 \description{
-Computes the average absolute deviation of a sample estimate from the population value.
-Accepts observed and population values,
-as well as observed values which are in deviation form.
+Computes the average absolute deviation of a sample estimate from the parameter value.
+Accepts estimate and parameter values,
+as well as estimate values which are in deviation form.
 }
 \examples{
 
@@ -40,11 +40,11 @@ MAE(samp, pop, type = 'NMAE')
 
 # matrix input
 mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
-MAE(mat, population = 2)
+MAE(mat, parameter = 2)
 
 # same, but with data.frame
 df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
-MAE(df, population = c(2,2))
+MAE(df, parameter = c(2,2))
 
 }
 \seealso{
