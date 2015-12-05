@@ -43,7 +43,7 @@ aggregate_simulations <- function(files = NULL){
     ret <- readin[[1L]]
     pick <- sapply(readin[[1L]], is.numeric)
     ret[, pick] <- 0
-    pick <- pick & !(colnames(readin[[1L]]) %in% c('SIM_TIME', 'REPLICATIONS'))
+    pick <- pick & !(colnames(readin[[1L]]) %in% c('SIM_TIME', 'REPLICATIONS', 'SEED'))
     weights <- sapply(readin, function(x) x$REPLICATIONS[1L])
     weights <- weights / sum(weights)
     for(i in 1L:length(filenames)){
@@ -56,5 +56,7 @@ aggregate_simulations <- function(files = NULL){
         ret$SIM_TIME <- ret$SIM_TIME + readin[[i]]$SIM_TIME
         ret[ ,pick] <- ret[ ,pick] + weights[i] * readin[[i]][ ,pick]
     }
-    data.frame(ret, try_errors, check.names = FALSE)
+    out <- data.frame(ret, try_errors, check.names = FALSE)
+    out$SEED <- NULL
+    out
 }
