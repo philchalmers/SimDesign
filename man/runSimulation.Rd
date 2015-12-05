@@ -171,7 +171,7 @@ files using the suitable BASH commands.
 For instances, if the following code is run on the master node through a terminal then 16 processes
 will be summoned (1 master, 15 slaves) across the computers named localhost, slave1, and slave2.
 
-mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R
+\code{mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R}
 }
 
 \section{Poor man's cluster computing for indedependent nodes}{
@@ -362,7 +362,6 @@ ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation
     geom_abline(intercept=0.025, slope=0, col = 'red', linetype='dotted') +
     geom_boxplot() + facet_grid(variable~standard_deviation_ratio) +
     theme(legend.position = 'none')
-
 
 }
 

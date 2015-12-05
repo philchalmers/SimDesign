@@ -54,7 +54,7 @@ head(ymiss <- add_missing(y), 10)
 ## 50\% missing with default FUN
 head(ymiss <- add_missing(y, rate = .5), 10)
 
-## missing values only when female and high
+## missing values only when female and low
 X <- data.frame(group = sample(c('male', 'female'), 1000, replace=TRUE),
                 level = sample(c('high', 'low'), 1000, replace=TRUE))
 head(X)

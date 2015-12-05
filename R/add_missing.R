@@ -48,7 +48,7 @@
 #' ## 50% missing with default FUN
 #' head(ymiss <- add_missing(y, rate = .5), 10)
 #'
-#' ## missing values only when female and high
+#' ## missing values only when female and low
 #' X <- data.frame(group = sample(c('male', 'female'), 1000, replace=TRUE),
 #'                 level = sample(c('high', 'low'), 1000, replace=TRUE))
 #' head(X)
@@ -85,6 +85,7 @@ add_missing <- function(y, fun = function(y, rate = .1, ...) rep(rate, length(y)
         stop('fun must include a y argument')
     probs <- fun(y=y, ...)
     stopifnot(length(probs) == length(y))
+    stopifnot(all(probs >= 0 & probs <= 1))
     is_na <- sapply(probs, function(p) sample(c(FALSE, TRUE), 1L, prob = c(1-p, p)))
     y[is_na] <- NA
     y

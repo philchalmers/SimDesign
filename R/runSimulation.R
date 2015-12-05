@@ -62,7 +62,7 @@
 #' For instances, if the following code is run on the master node through a terminal then 16 processes
 #' will be summoned (1 master, 15 slaves) across the computers named localhost, slave1, and slave2.
 #'
-#' mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R
+#' \code{mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R}
 #'
 #' @section Poor man's cluster computing for indedependent nodes:
 #'
@@ -350,7 +350,6 @@
 #'     geom_boxplot() + facet_grid(variable~standard_deviation_ratio) +
 #'     theme(legend.position = 'none')
 #'
-#'
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
@@ -494,7 +493,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     ten <- colnames(Final)[grepl('ERROR_MESSAGE:', colnames(Final))]
     en <- c('REPLICATIONS', 'SIM_TIME')
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en))]
-    attr(Final, 'design_names') <- list(design=dn, sim=sn, extra=en, try_errors=ten)
+    attr(Final, 'design_names') <- list(design=dn, sim=sn, extra=en, errors=ten)
     if(save){
         if(verbose)
             message(paste('\nSaving simulation results to file:', filename))
