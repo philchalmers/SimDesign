@@ -69,7 +69,7 @@ test_that('SimDesign', {
     }
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 2, parallel=FALSE, save=FALSE)
+                           replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
@@ -77,14 +77,14 @@ test_that('SimDesign', {
     expect_is(Final, 'data.frame')
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = parallel::detectCores(), parallel=TRUE, save=FALSE)
+                           replications = parallel::detectCores(), parallel=TRUE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
     # aggregate test
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 2, parallel=FALSE, save=TRUE)
+                           replications = 2, parallel=FALSE, save=TRUE, verbose = FALSE)
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile')
+                           replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile', verbose = FALSE)
     Final <- aggregate_simulations()
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
@@ -122,15 +122,17 @@ test_that('SimDesign', {
 
     # aggregate test
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                         replications = 2, parallel=FALSE, save=TRUE, include_errors = TRUE, max_errors=Inf)
+                         replications = 2, parallel=FALSE, save=TRUE, include_errors = TRUE,
+                         max_errors=Inf, verbose = FALSE)
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, max_errors=Inf,
-                         replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile', include_errors = TRUE)
+                         replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile',
+                         include_errors = TRUE, verbose = FALSE)
     Final <- aggregate_simulations()
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
     system('rm *.rds')
 
-    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, verbose=FALSE,
                          replications = 2, parallel=FALSE, save_results = TRUE, max_errors = Inf)
     expect_true(dir.exists('SimDesign_results'))
     files <- dir('SimDesign_results/')
@@ -145,15 +147,15 @@ test_that('SimDesign', {
     }
 
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                               replications = 1, parallel=FALSE, save=FALSE))
+                               replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 1, parallel=TRUE, save=FALSE, ncores = 2))
+                           replications = 1, parallel=TRUE, save=FALSE, ncores = 2, verbose = FALSE))
 
     mysim <- function(condition, fixed_design_elements = NULL){
         stop('something silly', call.=FALSE)
     }
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                               replications = 1, parallel=FALSE, save=FALSE))
+                               replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
 
 })
 
