@@ -1,0 +1,96 @@
+%\VignetteIndexEntry{SimDesign}
+%\VignetteEngine{knitr::knitr}
+---
+title: "SimDesign"
+author: "Phil Chalmers"
+date: "September 22, 2015"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+```{r include=FALSE}
+options(digits = 3)
+```
+
+# Missing Data
+
+For some simulations, the purpose is to determine how well estimators behave in the presence of missing data. Several approaches exist for dealing with missing data including case-wise removal, pairwise removal, full-information maximum-likelihood estimation, and multiple imputation. This simulation is simply a demonstration of how to use the `add_missing()` function to the `generate` step to create different missing data mechanisms.
+
+### Define the functions
+
+```{r include=FALSE}
+set.seed(1234)
+```
+
+The first simulation defined here is simply a missing at random scheme where 20% of the observation are missing. Three sample size conditions are studied to determine the effect of list-wise versus pairwise removal of missing data when computing correlation coefficients.
+
+```{r}
+library(SimDesign)
+
+Generate <- function(condition, fixed_design_elements = NULL) {
+    library(mvtnorm)
+    cormat <- matrix(.5, 3, 3)
+    diag(cormat) <- 1
+    dat <- rmvnorm(condition$N, sigma = cormat)
+    dat <- apply(dat, 2, add_missing, rate = .2)
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+    try(r0 <- cor(dat, use = 'complete.obs'))
+    try(r1 <- cor(dat, use = 'pairwise.complete'))
+    check_error(r0, r1)
+    pick <- lower.tri(r0)
+    ret <- c(listwise=mean(r0[pick]), pairwise=mean(r1[pick]))
+    ret
+}
+
+Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+    obs_bias <- bias(results, population = .5)
+    obs_RMSE <- RMSE(results, population = .5)
+    ret <- c(bias=obs_bias, RMSE=obs_RMSE, RE = RE(obs_RMSE))
+    ret
+}
+
+### Define design conditions and number of replications. Here we want a finer range of values for plotting
+Design <- expand.grid(N = c(50, 100, 200))
+replications <- 1000
+
+### Run the simulation
+results <- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE,
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
+```
+
+```{r}
+print(results)
+```
+
+Not surprisingly, these results suggest that computing correlations with the pairwise-complete method is more efficient than removing rows in a list-wise fashion, though both approaches results in unbiased estimates when the missing data mechanism is MCAR. The selected removal mechanism appears to be less of an issue as the sample size increases, however in general pairwise complete provides better results. 
+
+## MNAR as the missing data mechanism
+
+This is essentially the same simulation as a above, however the missing data mechanism is selected such that extremely positive values in the data are more likely to be set to NA. This creates a missing not a random effect (a.k.a., non-ignorable missingness).
+
+```{r}
+Generate <- function(condition, fixed_design_elements = NULL) {
+    fun <- function(y) ifelse(y > 1, .5, 0)
+    
+    library(mvtnorm)
+    cormat <- matrix(.5, 3, 3)
+    diag(cormat) <- 1
+    dat <- rmvnorm(condition$N, sigma = cormat)
+    dat <- apply(dat, 2, add_missing, fun=fun)
+    dat
+}
+
+results <- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE,
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
+```
+
+```{r}
+print(results)
+```
+
+In this case we can see the effect of MNAR influencing the bias of the correlation values. This particular missing data mechanism causes the observed parameter estimates to be too lower on average, thereby underestimating the true magnitude of the correlation statistics. 
