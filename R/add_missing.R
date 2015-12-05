@@ -22,7 +22,7 @@
 #'
 #' @param y an input vector that should contain missing data (NA's)
 #'
-#' @param FUN a user defined function indicating the missing data mechanism for each element in y. Function
+#' @param fun a user defined function indicating the missing data mechanism for each element in y. Function
 #'   must return a vector of probability values with the length equal to the length of y.
 #'   Each value in the returned vector indicates the probability that
 #'   the respective element in y will be replaced with NA.
@@ -59,7 +59,7 @@
 #'     p
 #' }
 #'
-#' ymiss <- add_missing(y, X, FUN=fun)
+#' ymiss <- add_missing(y, X, fun=fun)
 #' tail(cbind(ymiss, X), 10)
 #'
 #' ## missingness as a function of elements in X (i.e., a type of MAR)
@@ -72,18 +72,18 @@
 #'    plogis(z)
 #' }
 #'
-#' ymiss <- add_missing(y, X, FUN=fun)
+#' ymiss <- add_missing(y, X, fun=fun)
 #' tail(cbind(ymiss, X), 10)
 #'
 #' ## missing values when y elements are large (i.e., a type of MNAR)
 #' fun <- function(y) ifelse(abs(y) > 1, .4, 0)
-#' ymiss <- add_missing(y, FUN=fun)
+#' ymiss <- add_missing(y, fun=fun)
 #' tail(cbind(y, ymiss), 10)
 #'
-add_missing <- function(y, FUN = function(y, rate = .1, ...) rep(rate, length(y)), ...){
-    if(!('y' %in% names(formals(FUN))))
-        stop('FUN must include an argument y')
-    probs <- FUN(y=y, ...)
+add_missing <- function(y, fun = function(y, rate = .1, ...) rep(rate, length(y)), ...){
+    if(!('y' %in% names(formals(fun))))
+        stop('fun must include a y argument')
+    probs <- fun(y=y, ...)
     stopifnot(length(probs) == length(y))
     is_na <- sapply(probs, function(p) sample(c(FALSE, TRUE), 1L, prob = c(1-p, p)))
     y[is_na] <- NA
