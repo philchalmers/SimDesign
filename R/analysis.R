@@ -68,7 +68,7 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
                 tmpcount <- tmpcount + 1L
             }
         }
-        saveRDS(list(condition=condition, results=results, try_errors=try_errors), tmpfilename)
+        saveRDS(list(condition=condition, results=results, errors=try_errors), tmpfilename)
     }
     sim_results <- Functions$summarise(results=results, parameters_list=parameters,
                            condition=condition, fixed_design_elements=fixed_design_elements)

@@ -5,8 +5,8 @@
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
-  fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
-  try_errors = TRUE, save = FALSE, save_results = FALSE, seed = NULL,
+  fixed_design_elements = NULL, parallel = FALSE, save = FALSE,
+  save_results = FALSE, include_errors = TRUE, MPI = FALSE, seed = NULL,
   compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
   replications), results_filename = paste0(compname, "_results_"),
   tmpfilename = paste0(compname, "_tmpsim.rds"),
@@ -43,22 +43,25 @@ for linear regression), or simply to control global elements such as sample size
   \code{::} operator to locate the public functions that are not visible in the R session (e.g.,
   \code{psych::describe()})}
 
-\item{MPI}{logical; use the \code{doMPI} package to run simulation in parallel on
-a cluster? Default is FALSE}
-
-\item{try_errors}{logical; include information about which error how often they occurred from
-\code{try()} chunks or \code{\link{check_error}}? If TRUE, this information will be stacked at the end
-of the returned simulation results with the name of the specific error used as the column name in the
-data.frame object, and the number of occurrences included as the value for each condition}
-
-\item{save}{logical; save the final simulation and temp files to the hard-drive? This is useful
-for simulations which require an extended amount of time. Default is FALSE}
+\item{save}{logical; save the final simulation to the hard-drive? This is useful
+for simulations which require an extended amount of time. When TRUE, a temp file will be created
+in the working directory which allows the simulation state to be saved and recovered (in case
+of power outages, crashes, etc). Default is FALSE}
 
 \item{save_results}{logical; save the results returned from \code{\link{analyse}} to external .rds files
 located in the defined \code{save_results_dirname} directory/folder?
 Use this if you would like to keep track of the individual parameters returned from the analyses.
 Each saved object will contain a list of three elements containing the condition (row from \code{design}),
-results (as a list or matrix), and try-errors. Default is FALSE}
+results (as a list or matrix), and try-errors. When TRUE, a temp file will be used to track the simulation
+state (in case of power outages, crashes, etc). Default is FALSE}
+
+\item{include_errors}{logical; include information about which error how often they occurred from
+\code{try()} chunks or \code{\link{check_error}}? If TRUE, this information will be stacked at the end
+of the returned simulation results with the name of the specific error used as the column name in the
+data.frame object, and the number of occurrences included as the value for each condition}
+
+\item{MPI}{logical; use the \code{doMPI} package to run simulation in parallel on
+a cluster? Default is FALSE}
 
 \item{seed}{a vector of integers to be used for reproducibility.
 The length of the vector must be equal the number of rows in \code{design}.
@@ -77,11 +80,11 @@ the number of replications and 'Final' appended to the string}
 
 \item{results_filename}{the general name of the .rds file to save individual simulation results
 to (before calling the \code{\link{summarise}} function). Default is the system name with '_results_'
-and the row ID information appended}
+and the row ID information from \code{design} appended}
 
 \item{tmpfilename}{the name of the temporary file, default is the system name with 'tmpsim.rds'
 appended at the end. This file will be
-read in if it is in the working directory, and the simulation will continue where at the last
+read-in if it is in the working directory, and the simulation will continue where at the last
 point this file was saved (useful in case of power outages or broken nodes).
 This file will be deleted when the simulation is complete}
 
@@ -141,7 +144,7 @@ The strategy for organizing the Monte Carlo simulation work-flow is to
 Two constants for each condition are returned by default:
 \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 \code{SIM_TIME} to indicate how long (in seconds) it took to complete
-all the Monte Carlo replications for each respective condition, and if \code{try_errors = TRUE}
+all the Monte Carlo replications for each respective condition, and if \code{include_errors = TRUE}
 then columns containing the number of replications due to \code{try()} errors where the error messages
 represent the names of the columns prefixed with a \code{ERROR_MESSAGE} string.
 }

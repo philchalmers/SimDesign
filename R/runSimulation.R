@@ -35,7 +35,7 @@
 #' Two constants for each condition are returned by default:
 #' \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
-#' all the Monte Carlo replications for each respective condition, and if \code{try_errors = TRUE}
+#' all the Monte Carlo replications for each respective condition, and if \code{include_errors = TRUE}
 #' then columns containing the number of replications due to \code{try()} errors where the error messages
 #' represent the names of the columns prefixed with a \code{ERROR_MESSAGE} string.
 #'
@@ -113,14 +113,15 @@
 #'   located in the defined \code{save_results_dirname} directory/folder?
 #'   Use this if you would like to keep track of the individual parameters returned from the analyses.
 #'   Each saved object will contain a list of three elements containing the condition (row from \code{design}),
-#'   results (as a list or matrix), and try-errors. Default is FALSE
+#'   results (as a list or matrix), and try-errors. When TRUE, a temp file will be used to track the simulation
+#'   state (in case of power outages, crashes, etc). Default is FALSE
 #'
 #' @param save_results_dirname a string indicating the name of the folder to save results objects to
 #'   when \code{save_results = TRUE}. If a directory/folder does not exist
 #'   in the current working directory then one will be created automatically.
 #'   Default is 'SimDesign_results'
 #'
-#' @param try_errors logical; include information about which error how often they occurred from
+#' @param include_errors logical; include information about which error how often they occurred from
 #'   \code{try()} chunks or \code{\link{check_error}}? If TRUE, this information will be stacked at the end
 #'   of the returned simulation results with the name of the specific error used as the column name in the
 #'   data.frame object, and the number of occurrences included as the value for each condition
@@ -133,19 +134,21 @@
 #'
 #' @param results_filename the general name of the .rds file to save individual simulation results
 #'   to (before calling the \code{\link{summarise}} function). Default is the system name with '_results_'
-#'   and the row ID information appended
+#'   and the row ID information from \code{design} appended
 #'
 #' @param tmpfilename the name of the temporary file, default is the system name with 'tmpsim.rds'
 #'   appended at the end. This file will be
-#'   read in if it is in the working directory, and the simulation will continue where at the last
+#'   read-in if it is in the working directory, and the simulation will continue where at the last
 #'   point this file was saved (useful in case of power outages or broken nodes).
 #'   This file will be deleted when the simulation is complete
 #'
 #' @param MPI logical; use the \code{doMPI} package to run simulation in parallel on
 #'   a cluster? Default is FALSE
 #'
-#' @param save logical; save the final simulation and temp files to the hard-drive? This is useful
-#'   for simulations which require an extended amount of time. Default is FALSE
+#' @param save logical; save the final simulation to the hard-drive? This is useful
+#'   for simulations which require an extended amount of time. When TRUE, a temp file will be created
+#'   in the working directory which allows the simulation state to be saved and recovered (in case
+#'   of power outages, crashes, etc). Default is FALSE
 #'
 #' @param compname name of the computer running the simulation. Normally this doesn't need to be modified,
 #'   but in the event that a node breaks down while running a simulation the results from the tmp files
@@ -353,16 +356,15 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          fixed_design_elements = NULL, parallel = FALSE, MPI = FALSE,
-                          try_errors = TRUE, save = FALSE, save_results = FALSE,
-                          seed = NULL, compname = Sys.info()['nodename'],
+                          fixed_design_elements = NULL, parallel = FALSE,
+                          save = FALSE, save_results = FALSE, include_errors = TRUE,
+                          MPI = FALSE, seed = NULL, compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', replications),
                           results_filename = paste0(compname, '_results_'),
                           tmpfilename = paste0(compname, '_tmpsim.rds'),
                           save_results_dirname = 'SimDesign_results',
                           ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
 {
-    save_every <- 1L
     filename <- paste0(filename, '.rds')
     stopifnot(!missing(generate) || !missing(analyse) || !missing(summarise))
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise)
@@ -396,9 +398,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         stop('design must be a data.frame object', call. = FALSE)
     if(replications < 2L)
         stop('number of replications must be greater than or equal to 2', call. = FALSE)
-    if(!is.na(save_every))
-        if(save_every > nrow(design))
-            warning('save_every is too large to be useful', call. = FALSE)
     if(!(edit %in% c('none', 'recover', 'analyse', 'generate', 'summarise', 'all')))
         stop('edit location is not valid', call. = FALSE)
     if(is.null(design$ID)){
@@ -456,8 +455,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                        check.names=FALSE)
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
-        if(save && !is.na(save_every))
-            if((i %% save_every) == 0L) saveRDS(Result_list, tmpfilename)
+        if(save || save_results) saveRDS(Result_list, tmpfilename)
     }
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     if(verbose)
@@ -469,7 +467,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     pick <- grepl('ERROR_MESSAGE', names(Final))
     TRY_ERRORS <- Final[,pick, drop=FALSE]
     Final <- Final[,!pick, drop=FALSE]
-    Final <- if(try_errors){
+    Final <- if(include_errors){
         data.frame(Final, REPLICATIONS=replications, SIM_TIME, TRY_ERRORS, check.names=FALSE)
     } else data.frame(Final, REPLICATIONS=replications, SIM_TIME, check.names=FALSE)
     #save file
@@ -497,8 +495,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(save){
         if(verbose)
             message(paste('\nSaving simulation results to file:', filename))
-        file.remove(tmpfilename)
         saveRDS(Final, filename)
     }
+    if(save || save_results) file.remove(tmpfilename)
     return(invisible(Final))
 }

@@ -116,19 +116,28 @@ test_that('SimDesign', {
     }
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 2, verbose = FALSE, try_errors = TRUE)
+                           replications = 2, verbose = FALSE, include_errors = TRUE)
     expect_is(Final, 'data.frame')
     expect_true(any(grepl('ERROR_MESSAGE', names(Final))))
 
     # aggregate test
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                         replications = 2, parallel=FALSE, save=TRUE, try_errors = TRUE)
+                         replications = 2, parallel=FALSE, save=TRUE, include_errors = TRUE)
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                         replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile', try_errors = TRUE)
+                         replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile', include_errors = TRUE)
     Final <- aggregate_simulations()
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
     system('rm *.rds')
+
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                         replications = 2, parallel=FALSE, save_results = TRUE)
+    expect_true(dir.exists('SimDesign_results'))
+    files <- dir('SimDesign_results/')
+    expect_equal(length(files), 8L)
+    x <- readRDS(paste0('SimDesign_results/', files[1]))
+    expect_true(all(names(x) %in% c('condition', 'results', 'errors')))
+    system('rm -r SimDesign_results')
 
 })
 
