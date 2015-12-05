@@ -143,7 +143,7 @@ Two constants for each condition are returned by default:
 \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 all the Monte Carlo replications for each respective condition, and if \code{try_errors = TRUE}
 then columns containing the number of replications due to \code{try()} errors where the error messages
-represent the names of the columns prefixed with a \code{TRY_ERROR_MESSAGE} string.
+represent the names of the columns prefixed with a \code{ERROR_MESSAGE} string.
 }
 \section{Storing and resuming temporary results}{
 

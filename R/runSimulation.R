@@ -37,7 +37,7 @@
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 #' all the Monte Carlo replications for each respective condition, and if \code{try_errors = TRUE}
 #' then columns containing the number of replications due to \code{try()} errors where the error messages
-#' represent the names of the columns prefixed with a \code{TRY_ERROR_MESSAGE} string.
+#' represent the names of the columns prefixed with a \code{ERROR_MESSAGE} string.
 #'
 #' @section Storing and resuming temporary results:
 #'
@@ -467,7 +467,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
     Final$SIM_TIME <- Final$ID <- NULL
-    pick <- grepl('TRY_ERROR_MESSAGE', names(Final))
+    pick <- grepl('ERROR_MESSAGE', names(Final))
     TRY_ERRORS <- Final[,pick, drop=FALSE]
     Final <- Final[,!pick, drop=FALSE]
     Final <- if(try_errors){
@@ -491,7 +491,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     class(Final) <- c('SimDesign', 'data.frame')
     dn <- colnames(design)
     dn <- dn[dn != 'ID']
-    ten <- colnames(Final)[grepl('TRY_ERROR_MESSAGE:', colnames(Final))]
+    ten <- colnames(Final)[grepl('ERROR_MESSAGE:', colnames(Final))]
     en <- c('REPLICATIONS', 'SIM_TIME')
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en))]
     attr(Final, 'design_names') <- list(design=dn, sim=sn, extra=en, try_errors=ten)
