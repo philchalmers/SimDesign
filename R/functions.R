@@ -15,6 +15,8 @@
 #'
 #' @aliases generate
 #'
+#' @seealso \code{\link{add_missing}}
+#'
 #' @examples
 #' \dontrun{
 #'

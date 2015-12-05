@@ -45,4 +45,7 @@ mygenerate <- function(condition, fixed_design_elements = NULL){
 }
 
 }
+\seealso{
+\code{\link{add_missing}}
+}
 
