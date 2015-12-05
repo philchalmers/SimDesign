@@ -101,9 +101,9 @@ wrong in the generate-analyse phases and should be inspected. Default is 50}
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
 \item{edit}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
-  General options are \code{'none'} (default), \code{'recover'}, and \code{'all'}, which are used
-  to disable debugging, use the \code{options(error = 'recover')} setting to debug whenever an error occurs,
-  or to debug all the user defined functions, respectively. Specific options include: \code{'generate'}
+  General options are \code{'none'} (default) and \code{'all'}, which are used
+  to disable debugging and to debug all the user defined functions, respectively.
+  Specific options include: \code{'generate'}
   to edit the data simulation function, \code{'analyse'} to edit the computational function, and
   \code{'summarise'} to  edit the aggregation function.
 

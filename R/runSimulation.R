@@ -161,9 +161,9 @@
 #'   may be resumed on another computer by changing the name of the node to match the broken computer
 #'
 #' @param edit a string indicating where to initiate a \code{browser()} call for editing and debugging.
-#'   General options are \code{'none'} (default), \code{'recover'}, and \code{'all'}, which are used
-#'   to disable debugging, use the \code{options(error = 'recover')} setting to debug whenever an error occurs,
-#'   or to debug all the user defined functions, respectively. Specific options include: \code{'generate'}
+#'   General options are \code{'none'} (default) and \code{'all'}, which are used
+#'   to disable debugging and to debug all the user defined functions, respectively.
+#'   Specific options include: \code{'generate'}
 #'   to edit the data simulation function, \code{'analyse'} to edit the computational function, and
 #'   \code{'summarise'} to  edit the aggregation function.
 #'
@@ -404,7 +404,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         stop('design must be a data.frame object', call. = FALSE)
     if(replications < 1L)
         stop('number of replications must be greater than or equal to 1', call. = FALSE)
-    if(!(edit %in% c('none', 'recover', 'analyse', 'generate', 'summarise', 'all')))
+    if(!(edit %in% c('none', 'analyse', 'generate', 'summarise', 'all')))
         stop('edit location is not valid', call. = FALSE)
     if(is.null(design$ID)){
         design <- data.frame(ID=1L:nrow(design), design)
