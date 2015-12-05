@@ -445,7 +445,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     for(i in start:nrow(design)){
         stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
         if(verbose)
-            cat(sprintf('\rCompleted: %i%s,   Previous cell time: %.1f,  Total elapsed time: %.1f ',
+            cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
                         round((i-1)/(nrow(design))*100), '%', time1 - time0, sum(stored_time)))
         time0 <- proc.time()[3]
         Result_list[[i]] <- data.frame(c(as.list(design[i, ]),
@@ -465,7 +465,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     if(verbose)
-        cat(sprintf('\rCompleted: %i%s,   Previous cell time: %.1f,  Total elapsed time: %.1f ',
+        cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
                     100, '%', time1 - time0, sum(stored_time)))
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
