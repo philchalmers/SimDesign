@@ -10,14 +10,16 @@ add_missing(y, FUN = function(y, rate = 0.1, ...) rep(rate, length(y)), ...)
 \item{y}{an input vector that should contain missing data (NA's)}
 
 \item{FUN}{a user defined function indicating the missing data mechanism for each element in y. Function
-must return a vector of probability values equal to the length of y to indicate the probability that
-each element in y will be replaced with NA. The function must contain the argument \code{y}, which
-is the input vector, however any number of additional arguments are possible}
+must return a vector of probability values with the length equal to the length of y.
+Each value in the returned vector indicates the probability that
+the respective element in y will be replaced with NA.
+Function must contain the argument \code{y} representing the
+input vector, however any number of additional arguments can be included}
 
 \item{...}{additional arguments to be passed to FUN}
 }
 \value{
-a the input vector y with NA values placed according to the \code{FUN} scheme
+the input vector y with sampled NA (according to the \code{FUN} scheme)
 }
 \description{
 Given an input vector replace elements of this vector with missing values according to some scheme.
@@ -25,9 +27,9 @@ Default method replaces input values with a MCAR scheme at a rate of 10%. MAR an
 replacing the default \code{FUN} argument.
 }
 \details{
-\describe{Types of missingness}{
+\describe{
   Given an input vector y that initially contains no missing values, and other relavent variables
-  inside (X) and outside (Z) the dataset:
+  inside (X) and outside (Z) the dataset, the three types of missingness are:
 
 \item{MCAR}{Missing completely at random (MCAR) is realized by randomly sampling the values of the
     input vector (y). Therefore missing values are randomly sampled and do not depend on any data
@@ -42,7 +44,6 @@ replacing the default \code{FUN} argument.
 }
 }
 \examples{
-\dontrun{
 
 set.seed(1)
 y <- rnorm(1000)
@@ -84,8 +85,6 @@ tail(cbind(ymiss, X), 10)
 fun <- function(y) ifelse(abs(y) > 1, .4, 0)
 ymiss <- add_missing(y, FUN=fun)
 tail(cbind(y, ymiss), 10)
-
-}
 
 }
 
