@@ -6,11 +6,13 @@
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_design_elements = NULL, parallel = FALSE, save = FALSE,
-  save_results = FALSE, include_errors = TRUE, MPI = FALSE, seed = NULL,
+  save_results = FALSE, save_generate_data = FALSE, max_errors = 50,
+  include_errors = TRUE, MPI = FALSE, seed = NULL,
   compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
   replications), results_filename = paste0(compname, "_results_"),
   tmpfilename = paste0(compname, "_tmpsim.rds"),
-  save_results_dirname = "SimDesign_results", max_errors = 50,
+  save_results_dirname = "SimDesign_results",
+  save_generate_data_dirname = "SimDesign_generate_data",
   ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
 }
 \arguments{
@@ -56,6 +58,16 @@ Each saved object will contain a list of three elements containing the condition
 results (as a list or matrix), and try-errors. When TRUE, a temp file will be used to track the simulation
 state (in case of power outages, crashes, etc). Default is FALSE}
 
+\item{save_generate_data}{logical; save the data returned from \code{\link{generate}} to external .rds files
+located in the defined \code{save_generate_data_dirname} directory/folder?
+It is generally recommended to leave this argument as FALSE because saving datasets will often consume
+a large amount of disk space, and by and large saving data is not required or recommended for simulations.
+Default is FALSE}
+
+\item{max_errors}{the simulation will terminate when more than this number of errors are thrown in any
+given condition. The purpose of this is to indicate that likely something problematic is going
+wrong in the generate-analyse phases and should be inspected. Default is 50}
+
 \item{include_errors}{logical; include information about which error how often they occurred from
 \code{try()} chunks or \code{\link{check_error}}? If TRUE, this information will be stacked at the end
 of the returned simulation results with the name of the specific error used as the column name in the
@@ -94,9 +106,11 @@ when \code{save_results = TRUE}. If a directory/folder does not exist
 in the current working directory then one will be created automatically.
 Default is 'SimDesign_results'}
 
-\item{max_errors}{the simulation will terminate when more than this number of errors are thrown in any
-given condition. The purpose of this is to indicate that likely something problematic is going
-wrong in the generate-analyse phases and should be inspected. Default is 50}
+\item{save_generate_data_dirname}{a string indicating the name of the folder to save data objects to
+when \code{save_generate_data = TRUE}. If a directory/folder does not exist
+in the current working directory then one will be created automatically. Within this folder nested
+directories will be created associated with each row in \code{design}.
+Default is 'SimDesign_generate_data'}
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 

@@ -118,6 +118,18 @@
 #'   results (as a list or matrix), and try-errors. When TRUE, a temp file will be used to track the simulation
 #'   state (in case of power outages, crashes, etc). Default is FALSE
 #'
+#' @param save_generate_data logical; save the data returned from \code{\link{generate}} to external .rds files
+#'   located in the defined \code{save_generate_data_dirname} directory/folder?
+#'   It is generally recommended to leave this argument as FALSE because saving datasets will often consume
+#'   a large amount of disk space, and by and large saving data is not required or recommended for simulations.
+#'   Default is FALSE
+#'
+#' @param save_generate_data_dirname a string indicating the name of the folder to save data objects to
+#'   when \code{save_generate_data = TRUE}. If a directory/folder does not exist
+#'   in the current working directory then one will be created automatically. Within this folder nested
+#'   directories will be created associated with each row in \code{design}.
+#'   Default is 'SimDesign_generate_data'
+#'
 #' @param save_results_dirname a string indicating the name of the folder to save results objects to
 #'   when \code{save_results = TRUE}. If a directory/folder does not exist
 #'   in the current working directory then one will be created automatically.
@@ -363,12 +375,14 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_design_elements = NULL, parallel = FALSE,
-                          save = FALSE, save_results = FALSE, include_errors = TRUE,
-                          MPI = FALSE, seed = NULL, compname = Sys.info()['nodename'],
+                          save = FALSE, save_results = FALSE, save_generate_data = FALSE,
+                          max_errors = 50, include_errors = TRUE, MPI = FALSE, seed = NULL,
+                          compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', replications),
                           results_filename = paste0(compname, '_results_'),
                           tmpfilename = paste0(compname, '_tmpsim.rds'),
-                          save_results_dirname = 'SimDesign_results', max_errors = 50,
+                          save_results_dirname = 'SimDesign_results',
+                          save_generate_data_dirname = 'SimDesign_generate_data',
                           ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
 {
     filename <- paste0(filename, '.rds')
@@ -443,12 +457,16 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(save_results)
         dir.create(save_results_dirname, showWarnings = FALSE)
+    if(save_generate_data)
+        dir.create(save_generate_data_dirname, showWarnings = FALSE)
     for(i in start:nrow(design)){
         stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
         if(verbose)
             cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
                         round((i-1)/(nrow(design))*100), '%', time1 - time0, sum(stored_time)))
         time0 <- proc.time()[3]
+        if(save_generate_data)
+            dir.create(paste0(save_generate_data_dirname, '/design-row_', i), showWarnings = FALSE)
         Result_list[[i]] <- data.frame(c(as.list(design[i, ]),
                                          as.list(Analysis(Functions=Functions,
                                                           condition=design[i,],
@@ -458,6 +476,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                           save_results=save_results,
                                                           save_results_dirname=save_results_dirname,
                                                           results_filename=results_filename,
+                                                          save_generate_data=save_generate_data,
+                                                          save_generate_data_dirname=save_generate_data_dirname,
                                                           max_errors=max_errors))),
                                        check.names=FALSE)
         time1 <- proc.time()[3]

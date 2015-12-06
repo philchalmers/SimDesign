@@ -186,7 +186,8 @@ summarise <- function(condition, results, fixed_design_elements = NULL, paramete
 # print(SimDesign::main)
 #
 # }
-mainsim <- function(index, condition, generate, analyse, fixed_design_elements, max_errors){
+mainsim <- function(index, condition, generate, analyse, fixed_design_elements, max_errors,
+                    save_generate_data, save_generate_data_dirname){
 
     require('SimDesign') #this is required if SimDesign functions are called (e.g., bias(), RMSE())
     try_error <- character()
@@ -197,6 +198,17 @@ mainsim <- function(index, condition, generate, analyse, fixed_design_elements, 
         if(is(simlist, 'try-error'))
             stop(paste0('generate function threw an error. Please make sure the function does not throw errors.',
                         '\n\nError message was: ', simlist), call.=FALSE)
+        if(save_generate_data){
+            filename_stem <- paste0(save_generate_data_dirname, '/design-row_', condition$ID,
+                                    '/generate_data_')
+            filename <- paste0(filename_stem, index, '.rds')
+            count <- 1L
+            while(file.exists(filename)){
+                filename <- paste0(filename_stem, index, '-', count, '.rds')
+                count <- count + 1L
+            }
+            saveRDS(simlist, filename)
+        }
         if(is.data.frame(simlist) || !is.list(simlist)) simlist <- list(dat=simlist)
         if(length(names(simlist)) > 1L)
             if(!all(names(simlist) %in% c('dat', 'parameters')))
