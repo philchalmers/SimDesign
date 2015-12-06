@@ -48,8 +48,8 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
 }
 
 Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
-    obs_bias <- bias(results, population = .5)
-    obs_RMSE <- RMSE(results, population = .5)
+    obs_bias <- bias(results, parameter = .5)
+    obs_RMSE <- RMSE(results, parameter = .5)
     ret <- c(bias=obs_bias, RMSE=obs_RMSE, RE = RE(obs_RMSE))
     ret
 }
