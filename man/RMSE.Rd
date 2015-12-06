@@ -18,7 +18,8 @@ If NULL, then it will be assumed that the \code{estimate} input is in a deviatio
 form (therefore \code{sqrt(mean(estimate^2))} will be returned)}
 
 \item{type}{type of deviation to compute. Can be 'RMSE' (default) for the root mean square-error,
-'NRMSE' for the normalized RMSE (RMSE / (max(estimate) - min(estimate))), or 'CV' for the coefficient of
+'NRMSE' for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
+'NRMSE_SD' for the normalized RMSE with the standard deviation (RMSE / sd(estimate)), or 'CV' for the coefficient of
 variation}
 }
 \value{
@@ -40,6 +41,7 @@ RMSE(dev)
 
 RMSE(samp, pop, type = 'NRMSE')
 RMSE(dev, type = 'NRMSE')
+RMSE(dev, pop, type = 'NRMSE_SD')
 RMSE(samp, pop, type = 'CV')
 
 # matrix input
