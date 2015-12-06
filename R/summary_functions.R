@@ -161,8 +161,9 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE'){
 #'   If NULL, then it will be assumed that the \code{estimate} input is in a deviation
 #'   form (therefore \code{mean(abs(estimate))} will be returned)
 #'
-#' @param type type of deviation to compute. Can be 'MAE' (default) for the mean absolute error, or
-#'   'NMSE' for the normalized MAE (MAE / (max(estimate) - min(estimate)))
+#' @param type type of deviation to compute. Can be 'MAE' (default) for the mean absolute error,
+#'   'NMSE' for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
+#'   'NMSE_SD' for the normalized MAE by the standard deviation (MAE / sd(estimate)),
 #'
 #' @return returns a numeric vector indicating the overall mean absolute error in the estimates
 #'
@@ -181,6 +182,7 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE'){
 #' dev <- samp - pop
 #' MAE(dev)
 #' MAE(samp, pop, type = 'NMAE')
+#' MAE(samp, pop, type = 'NMAE_SD')
 #'
 #' # matrix input
 #' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
@@ -204,6 +206,9 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
     ret <- colMeans(t(abs(t(estimate) - parameter)))
     if(type == 'NMAE'){
         diff <- apply(estimate, 2, max) - apply(estimate, 2, min)
+        ret <- ret / diff
+    } else if(type == 'NMAE_SD'){
+        diff <- apply(estimate, 2, sd)
         ret <- ret / diff
     }
     ret

@@ -17,8 +17,9 @@ recycled for each column.
 If NULL, then it will be assumed that the \code{estimate} input is in a deviation
 form (therefore \code{mean(abs(estimate))} will be returned)}
 
-\item{type}{type of deviation to compute. Can be 'MAE' (default) for the mean absolute error, or
-'NMSE' for the normalized MAE (MAE / (max(estimate) - min(estimate)))}
+\item{type}{type of deviation to compute. Can be 'MAE' (default) for the mean absolute error,
+'NMSE' for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
+'NMSE_SD' for the normalized MAE by the standard deviation (MAE / sd(estimate)),}
 }
 \value{
 returns a numeric vector indicating the overall mean absolute error in the estimates
@@ -37,6 +38,7 @@ MAE(samp, pop)
 dev <- samp - pop
 MAE(dev)
 MAE(samp, pop, type = 'NMAE')
+MAE(samp, pop, type = 'NMAE_SD')
 
 # matrix input
 mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
