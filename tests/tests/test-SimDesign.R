@@ -145,11 +145,19 @@ test_that('SimDesign', {
     mycompute <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
         stop('this error', call. = FALSE)
     }
-
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 1, parallel=TRUE, save=FALSE, ncores = 2, verbose = FALSE))
+
+    mycompute <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+        ret <- does_not_exist(TRUE)
+        ret
+    }
+    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                               replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
+    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                               replications = 1, parallel=TRUE, save=FALSE, verbose = FALSE))
 
     mysim <- function(condition, fixed_design_elements = NULL){
         stop('something silly', call.=FALSE)
