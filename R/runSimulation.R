@@ -510,7 +510,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         } else break
     }
     if(filename0 != filename)
-        if(verbose)
+        if(verbose && save)
             message(paste0('\nWARNING:\n', filename0, ' existed in the working directory already.
                            A new unique name was created.\n'))
     class(Final) <- c('SimDesign', 'data.frame')
