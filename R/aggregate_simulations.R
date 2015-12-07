@@ -46,6 +46,7 @@ aggregate_simulations <- function(files = NULL){
     pick <- pick & !(colnames(readin[[1L]]) %in% c('SIM_TIME', 'REPLICATIONS', 'SEED'))
     weights <- sapply(readin, function(x) x$REPLICATIONS[1L])
     weights <- weights / sum(weights)
+    message('Aggregating ', length(filenames), ' simulation files.')
     for(i in 1L:length(filenames)){
         tmp <- stats::na.omit(match(nms, names(errors[[i]])))
         if(length(tmp) > 0L){
