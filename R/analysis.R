@@ -3,13 +3,13 @@
 # @param Functions list of functions
 # @param condition a single row from the design input
 # @param replications number of times to repeat the Monte Carlo simulations
-# @param fixed_design_elements optional object containing fixed conditions across design
+# @param fixed_objects optional object containing fixed conditions across design
 # @param cl cluster object defined from the parallel package
 # @param MPI logical; flag passed down from the runSimulation function
 # @param save_results logical; save the results to .rds files
 # @param results_filename the file name used to store results in
 #
-Analysis <- function(Functions, condition, replications, fixed_design_elements, cl, MPI, seed,
+Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI, seed,
                      save_results, save_results_dirname, results_filename, max_errors,
                      save_generate_data, save_generate_data_dirname)
 {
@@ -20,7 +20,7 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
         cell_results <- lapply(1L:replications, mainsim, condition=condition,
                                generate=Functions$generate,
                                analyse=Functions$analyse,
-                               fixed_design_elements=fixed_design_elements,
+                               fixed_objects=fixed_objects,
                                max_errors=max_errors,
                                save_generate_data=save_generate_data,
                                save_generate_data_dirname=save_generate_data_dirname)
@@ -29,7 +29,7 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
             i <- 1L
             cell_results <- foreach(i=1L:replications) %dopar%
                 mainsim(i, condition=condition, generate=Functions$generate,
-                     analyse=Functions$analyse, fixed_design_elements=fixed_design_elements,
+                     analyse=Functions$analyse, fixed_objects=fixed_objects,
                      max_errors=max_errors, save_generate_data=save_generate_data,
                      save_generate_data_dirname=save_generate_data_dirname)
         } else {
@@ -37,7 +37,7 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
             cell_results <- parallel::parLapply(cl, 1L:replications, mainsim,
                                                 condition=condition, generate=Functions$generate,
                                                 analyse=Functions$analyse,
-                                                fixed_design_elements=fixed_design_elements,
+                                                fixed_objects=fixed_objects,
                                                 max_errors=max_errors, save_generate_data=save_generate_data,
                                                 save_generate_data_dirname=save_generate_data_dirname)
         }
@@ -79,7 +79,7 @@ Analysis <- function(Functions, condition, replications, fixed_design_elements, 
         saveRDS(list(condition=condition, results=results, errors=try_errors), tmpfilename)
     }
     sim_results <- Functions$summarise(results=results, parameters_list=parameters,
-                           condition=condition, fixed_design_elements=fixed_design_elements)
+                           condition=condition, fixed_objects=fixed_objects)
 
     if(!is.vector(sim_results) || is.null(names(sim_results)))
         stop('summarise() must return a named vector', call.=FALSE)

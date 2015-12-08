@@ -96,11 +96,12 @@
 #' @param replications number of replication to perform per condition (i.e., each row in \code{design}).
 #'   Must be greater than 0
 #'
-#' @param fixed_design_elements (optional) an object (usually a list) containing fixed design elements
-#'   which can be used across all simulation conditions. This is useful when including
-#'   long fixed vectors of population parameters, including data
+#' @param fixed_objects (optional) an object (usually a list) containing additional objects and functions
+#'   defined by the user that will remain fixed across conditions. This is useful when including
+#'   user defined function not available in installed packages, when including
+#'   long fixed vectors of population parameters, when including data
 #'   which should be used across all conditions and replications (e.g., including a fixed design matrix
-#'   for linear regression), or simply to control global elements such as sample size
+#'   for linear regression), or simply can be used to control constant global elements such as sample size
 #'
 #' @param parallel logical; use parallel processing from the \code{parallel} package over each
 #'   unique condition?
@@ -221,7 +222,7 @@
 #' SimDesign_functions()
 #'
 #' # help(generate)
-#' Generate <- function(condition, fixed_design_elements = NULL){
+#' Generate <- function(condition, fixed_objects = NULL){
 #'
 #'     #require packages/define functions if needed, or better yet index with the :: operator
 #'
@@ -245,7 +246,7 @@
 #'
 #' # help(analyse)
 #'
-#' Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+#' Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -267,7 +268,7 @@
 #'
 #' # help(summarise)
 #'
-#' Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL){
+#' Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL){
 #'
 #'     #find results of interest here (e.g., alpha < .1, .05, .01)
 #'     lessthan.05 <- EDR(results, alpha = .05)
@@ -374,7 +375,7 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          fixed_design_elements = NULL, parallel = FALSE,
+                          fixed_objects = NULL, parallel = FALSE,
                           save = FALSE, save_results = FALSE, save_generate_data = FALSE,
                           max_errors = 50, include_errors = TRUE, MPI = FALSE, seed = NULL,
                           compname = Sys.info()['nodename'],
@@ -396,9 +397,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))
         truefms <- switch(i,
-                          generate  = c('condition', 'fixed_design_elements'),
-                          analyse = c('dat', 'parameters', 'condition', 'fixed_design_elements'),
-                          summarise = c('results', 'parameters_list', 'condition', 'fixed_design_elements'))
+                          generate  = c('condition', 'fixed_objects'),
+                          analyse = c('dat', 'parameters', 'condition', 'fixed_objects'),
+                          summarise = c('results', 'parameters_list', 'condition', 'fixed_objects'))
         if(!all(truefms %in% fms))
             stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
     }
@@ -471,7 +472,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          as.list(Analysis(Functions=Functions,
                                                           condition=design[i,],
                                                           replications=replications,
-                                                          fixed_design_elements=fixed_design_elements,
+                                                          fixed_objects=fixed_objects,
                                                           cl=cl, MPI=MPI, seed=seed,
                                                           save_results=save_results,
                                                           save_results_dirname=save_results_dirname,

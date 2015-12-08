@@ -5,7 +5,7 @@
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
-  fixed_design_elements = NULL, parallel = FALSE, save = FALSE,
+  fixed_objects = NULL, parallel = FALSE, save = FALSE,
   save_results = FALSE, save_generate_data = FALSE, max_errors = 50,
   include_errors = TRUE, MPI = FALSE, seed = NULL,
   compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
@@ -31,11 +31,12 @@ See \code{\link{generate}} for details}
 \item{summarise}{user-defined summary function to be used after all the replications have completed.
 See \code{\link{summarise}} for details}
 
-\item{fixed_design_elements}{(optional) an object (usually a list) containing fixed design elements
-which can be used across all simulation conditions. This is useful when including
-long fixed vectors of population parameters, including data
+\item{fixed_objects}{(optional) an object (usually a list) containing additional objects and functions
+defined by the user that will remain fixed across conditions. This is useful when including
+user defined function not available in installed packages, when including
+long fixed vectors of population parameters, when including data
 which should be used across all conditions and replications (e.g., including a fixed design matrix
-for linear regression), or simply to control global elements such as sample size}
+for linear regression), or simply can be used to control constant global elements such as sample size}
 
 \item{parallel}{logical; use parallel processing from the \code{parallel} package over each
   unique condition?
@@ -236,7 +237,7 @@ head(Design)
 SimDesign_functions()
 
 # help(generate)
-Generate <- function(condition, fixed_design_elements = NULL){
+Generate <- function(condition, fixed_objects = NULL){
 
     #require packages/define functions if needed, or better yet index with the :: operator
 
@@ -260,7 +261,7 @@ Generate <- function(condition, fixed_design_elements = NULL){
 
 # help(analyse)
 
-Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
@@ -282,7 +283,7 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
 
 # help(summarise)
 
-Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL){
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL){
 
     #find results of interest here (e.g., alpha < .1, .05, .01)
     lessthan.05 <- EDR(results, alpha = .05)

@@ -4,8 +4,7 @@
 \alias{summarise}
 \title{Summarise simulated data using various population comparison statistics}
 \usage{
-summarise(condition, results, fixed_design_elements = NULL,
-  parameters_list = NULL)
+summarise(condition, results, fixed_objects = NULL, parameters_list = NULL)
 }
 \arguments{
 \item{condition}{a single row from the \code{design} input from \code{\link{runSimulation}}
@@ -15,10 +14,10 @@ summarise(condition, results, fixed_design_elements = NULL,
 \code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
 where each cell is stored in a unique row/list element}
 
-\item{fixed_design_elements}{object passed down from \code{\link{runSimulation}}}
+\item{fixed_objects}{object passed down from \code{\link{runSimulation}}}
 
 \item{parameters_list}{an (optional) list containing all the 'parameters' elements generated
-from \code{\link{generate}},  where each repetition is stored in a unique element. If a list was
+from \code{\link{generate}}, where each repetition is stored in a unique element. If a list was
 not returned from \code{\link{generate}} then this will be NULL}
 }
 \value{

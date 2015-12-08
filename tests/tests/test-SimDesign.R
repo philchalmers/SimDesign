@@ -9,7 +9,7 @@ test_that('SimDesign', {
                           sample_sizes_group2=sample_sizes,
                           standard_deviations=standard_deviations)
 
-    mysim <- function(condition, fixed_design_elements = NULL){
+    mysim <- function(condition, fixed_objects = NULL){
 
         #require packages/define functions if needed, or better yet index with the :: operator
 
@@ -25,7 +25,7 @@ test_that('SimDesign', {
         return(list(dat=dat, parameters=pars))
     }
 
-    mycompute <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+    mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
 
         # require packages/define functions if needed, or better yet index with the :: operator
         require(stats)
@@ -46,7 +46,7 @@ test_that('SimDesign', {
         return(ret)
     }
 
-    mycollect <-  function(condition, results, fixed_design_elements = NULL, parameters_list = NULL){
+    mycollect <-  function(condition, results, fixed_objects = NULL, parameters_list = NULL){
 
         # handy functions
         bias <- function(observed, population) mean(observed - population)
@@ -90,7 +90,7 @@ test_that('SimDesign', {
     expect_true(all(Final$REPLICATIONS == 4L))
     system('rm *.rds')
 
-    mycompute <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+    mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
 
         # require packages/define functions if needed, or better yet index with the :: operator
         require(stats)
@@ -142,7 +142,7 @@ test_that('SimDesign', {
     system('rm -r SimDesign_results')
 
     # error test
-    mycompute <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+    mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
         stop('this error', call. = FALSE)
     }
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
@@ -150,7 +150,7 @@ test_that('SimDesign', {
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 1, parallel=TRUE, save=FALSE, ncores = 2, verbose = FALSE))
 
-    mycompute <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+    mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
         ret <- does_not_exist(TRUE)
         ret
     }
@@ -159,7 +159,7 @@ test_that('SimDesign', {
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=TRUE, save=FALSE, verbose = FALSE))
 
-    mysim <- function(condition, fixed_design_elements = NULL){
+    mysim <- function(condition, fixed_objects = NULL){
         stop('something silly', call.=FALSE)
     }
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,

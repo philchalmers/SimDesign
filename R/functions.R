@@ -5,7 +5,7 @@
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
 #'
-#' @param fixed_design_elements object passed down from \code{\link{runSimulation}}
+#' @param fixed_objects object passed down from \code{\link{runSimulation}}
 #'
 #' @return returns a single object containing the data to be analysed (usually a vector, matrix, or data.frame),
 #'   or a list with a \code{'dat'} and \code{'parameters'} element. If a list is returned, the \code{'dat'}
@@ -20,7 +20,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' mygenerate <- function(condition, fixed_design_elements = NULL){
+#' mygenerate <- function(condition, fixed_objects = NULL){
 #'
 #'     #require packages/define functions if needed, or better yet index with the :: operator
 #'
@@ -39,7 +39,7 @@
 #'
 #' }
 #'
-generate <- function(condition, fixed_design_elements = NULL) NULL
+generate <- function(condition, fixed_objects = NULL) NULL
 
 #=================================================================================================#
 
@@ -63,7 +63,7 @@ generate <- function(condition, fixed_design_elements = NULL) NULL
 #'   \code{\link{generate}} function when a list is returned. Otherwise, this will be an empty list
 #' @param condition a single row from the design input (as a data.frame), indicating the
 #'   simulation conditions
-#' @param fixed_design_elements object passed down from \code{\link{runSimulation}}
+#' @param fixed_objects object passed down from \code{\link{runSimulation}}
 #'
 #' @return returns a named numeric vector with the values of interest (e.g., p-values,
 #'   effects sizes, etc), or a list containing values of interest (e.g., separate matrix
@@ -75,7 +75,7 @@ generate <- function(condition, fixed_design_elements = NULL) NULL
 #' @examples
 #' \dontrun{
 #'
-#' myanalyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+#' myanalyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -98,7 +98,7 @@ generate <- function(condition, fixed_design_elements = NULL) NULL
 #' }
 #'
 #' }
-analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) NULL
+analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) NULL
 
 
 
@@ -114,11 +114,11 @@ analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
 #'   \code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
 #'   where each cell is stored in a unique row/list element
 #' @param parameters_list an (optional) list containing all the 'parameters' elements generated
-#'   from \code{\link{generate}},  where each repetition is stored in a unique element. If a list was
+#'   from \code{\link{generate}}, where each repetition is stored in a unique element. If a list was
 #'   not returned from \code{\link{generate}} then this will be NULL
 #' @param condition a single row from the \code{design} input from \code{\link{runSimulation}}
 #'   (as a data.frame), indicating the simulation conditions
-#' @param fixed_design_elements object passed down from \code{\link{runSimulation}}
+#' @param fixed_objects object passed down from \code{\link{runSimulation}}
 #'
 #' @aliases summarise
 #'
@@ -153,7 +153,7 @@ analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
 #'
 #' }
 #'
-summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) NULL
+summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) NULL
 
 #=================================================================================================#
 
@@ -168,7 +168,7 @@ summarise <- function(condition, results, fixed_design_elements = NULL, paramete
 #   represents a particular draw given the \code{replications} argument in \code{\link{runSimulation}}
 # @param condition a single row from the design input (as a data.frame), indicating the
 #   simulation conditions
-# @param fixed_design_elements object passed down from \code{\link{runSimulation}}
+# @param fixed_objects object passed down from \code{\link{runSimulation}}
 # @param generate the \code{\link{generate}} function defined above (required for parallel computing)
 # @param analyse the \code{\link{analyse}} function defined above (required for parallel computing)
 #
@@ -186,7 +186,7 @@ summarise <- function(condition, results, fixed_design_elements = NULL, paramete
 # print(SimDesign::main)
 #
 # }
-mainsim <- function(index, condition, generate, analyse, fixed_design_elements, max_errors,
+mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors,
                     save_generate_data, save_generate_data_dirname){
 
     require('SimDesign') #this is required if SimDesign functions are called (e.g., bias(), RMSE())
@@ -194,7 +194,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_design_elements, 
 
     while(TRUE){
 
-        simlist <- try(generate(condition=condition, fixed_design_elements=fixed_design_elements), TRUE)
+        simlist <- try(generate(condition=condition, fixed_objects=fixed_objects), TRUE)
         if(is(simlist, 'try-error'))
             stop(paste0('generate function threw an error. Please make sure the function does not throw errors.',
                         '\n\nError message was: ', simlist), call.=FALSE)
@@ -214,7 +214,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_design_elements, 
             if(!all(names(simlist) %in% c('dat', 'parameters')))
                 stop('generate() did not return a list with elements \'dat\' and \'parameters\'', call.=FALSE)
         res <- try(analyse(dat=simlist$dat, parameters=simlist$parameters, condition=condition,
-                           fixed_design_elements=fixed_design_elements), silent=TRUE)
+                           fixed_objects=fixed_objects), silent=TRUE)
 
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')){

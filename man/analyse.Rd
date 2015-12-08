@@ -4,7 +4,7 @@
 \alias{analyse}
 \title{Compute estimates and statistics}
 \usage{
-analyse(condition, dat, fixed_design_elements = NULL, parameters = NULL)
+analyse(condition, dat, fixed_objects = NULL, parameters = NULL)
 }
 \arguments{
 \item{condition}{a single row from the design input (as a data.frame), indicating the
@@ -13,7 +13,7 @@ simulation conditions}
 \item{dat}{the 'dat' object returned from the \code{\link{generate}} function (usually a data.frame, matrix,
 or vector) if a list was returned, otherwise just the raw object defined from \code{\link{generate}}}
 
-\item{fixed_design_elements}{object passed down from \code{\link{runSimulation}}}
+\item{fixed_objects}{object passed down from \code{\link{runSimulation}}}
 
 \item{parameters}{the (optional) list object named 'parameters' returned from the
 \code{\link{generate}} function when a list is returned. Otherwise, this will be an empty list}
@@ -40,7 +40,7 @@ to obtain a different dataset.
 \examples{
 \dontrun{
 
-myanalyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+myanalyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
