@@ -41,6 +41,11 @@ SimDesign_functions <- function(filename = NULL, comments = TRUE, singlefile = F
             cat('\n### Define design conditions')
         cat('\nDesign <- expand.grid(condition1 = NA,
                       condition2 = NA)\n\n')
+        if(!is.null(filename) && !singlefile){
+            if(comments) cat('### Source in essential functions\n')
+            cat('# setwd(\"', getwd(), '\")', sep='')
+            cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')\n\n', sep='')
+        }
     }
 
     FUNCTIONS <- function(){
