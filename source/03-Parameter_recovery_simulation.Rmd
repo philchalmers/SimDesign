@@ -50,7 +50,7 @@ lines(Theta, example$ogive, col = 'red')
 ### Define the conditions
 
 Start by defining the conditions to be studied. Because we are interested in a number of slopes and intercepts
-it is often convenient to save long strings of numbers to a single object to be passed to `fixed_design_elements`.
+it is often convenient to save long strings of numbers to a single object to be passed to `fixed_objects`.
 Naturally, these could be included in the simulation source code directly, but often will take up a large amount
 of space (could be hundreds of lines), therefore passing a list object to `runSimulation()` may be more 
 convinient. 
@@ -91,7 +91,7 @@ library(SimDesign)
 ```
 
 ```{r}
-Generate <- function(condition, fixed_design_elements = NULL) {
+Generate <- function(condition, fixed_objects = NULL) {
 
     P_ogive <- function(a, d, Theta) pnorm(a*Theta + d)
 
@@ -99,9 +99,9 @@ Generate <- function(condition, fixed_design_elements = NULL) {
     nitems <- condition$nitems
     nitems_name <- ifelse(nitems == 10, 'ten', 'thirty')
 
-    #extract objects from fixed_design_elements
-    a <- fixed_design_elements[[nitems_name]]['a', ]
-    d <- fixed_design_elements[[nitems_name]]['d', ]
+    #extract objects from fixed_objects
+    a <- fixed_objects[[nitems_name]]['a', ]
+    d <- fixed_objects[[nitems_name]]['d', ]
 
     dat <- matrix(NA, N, nitems)
     colnames(dat) <- paste0('item_', 1:nitems)
@@ -114,13 +114,13 @@ Generate <- function(condition, fixed_design_elements = NULL) {
     return(as.data.frame(dat))
 }
 
-Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
 
     library(mirt)
     library(lavaan)
     nitems <- condition$nitems
 
-    # (optional) could use better starting values from fixed_design_elements here too
+    # (optional) could use better starting values from fixed_objects here too
     mod <- try(mirt(dat, 1L, verbose=FALSE), silent=TRUE)
     check_error(mod)
     if(!extract.mirt(mod, 'converged')) stop('mirt did not converge')
@@ -141,13 +141,13 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
     return(c(FIML_as=unname(FIML_as), DWLS_as=unname(DWLS_as)))
 }
 
-Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
 
     nitems <- condition$nitems
     nitems_name <- ifelse(nitems == 10, 'ten', 'thirty')
 
-    #extract objects from fixed_design_elements
-    a <- fixed_design_elements[[nitems_name]]['a', ]
+    #extract objects from fixed_objects
+    a <- fixed_objects[[nitems_name]]['a', ]
     pop <- c(a, a)
 
     obt_bias <- bias(results, pop)
@@ -167,7 +167,7 @@ simulation at the previously saved location.
 ```{r cache=TRUE}
 res <- runSimulation(Design, replications = 200, verbose = FALSE, save = TRUE,
                      generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE,
-                     fixed_design_elements=pars)
+                     fixed_objects=pars)
 ```
 
 ### Analyze the results

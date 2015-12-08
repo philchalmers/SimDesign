@@ -1,0 +1,116 @@
+%\VignetteIndexEntry{SimDesign}
+%\VignetteEngine{knitr::knitr}
+---
+title: "SimDesign"
+author: "Phil Chalmers"
+date: "September 22, 2015"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+```{r include=FALSE}
+options(digits = 3)
+```
+
+# Including fixed objects and functions
+
+R generally has a recursive strategy when attempting to find objects within functions. If an object can't be found, R will look just outside the function to see if the object can be located there, and if not, look one level higher....and so on, until it searches for the object in the user workspace. This is a strange feature to most programmers who come from other languages, and when writing simulations may cause some initially unwanted issues. This tutorial demonstrates how to make sure all required user-defined objects and functions are visible to `SimDesign`. 
+
+### Scoping
+
+```{r include=FALSE}
+set.seed(1234)
+```
+
+To demonstrate the issue, let's define two objects and a function which uses these objects. 
+
+```{r}
+obj1 <- 10
+obj2 <- 20
+```
+
+When evaluated, these objects are visible to the user, and can be seen by typing in the R console by typing `ls()`. Functions which do not define objects with the same name will also be able to locate these values.
+
+```{r}
+myfun <- function(x) obj1 + obj2
+myfun(1)
+```
+
+This behavior is indeed a bit strange, but it's one of R's quirks. Unfortunately, when running code in parallel across different cores these objects *will not be visible*, and therefore must be exported using other methods (e.g., in the `parallel` package this is done with `clusterExport()`). 
+
+```{r}
+library(parallel)
+cl <- makeCluster(2)
+res <- try(parSapply(cl=cl, 1:4, myfun), silent=TRUE)
+print(res)
+```
+
+```{r}
+clusterExport(cl=cl, c('obj1', 'obj2'))
+parSapply(cl=cl, 1:4, myfun)
+```
+
+The same reasoning applies to functions defined in the R workspace as well.
+
+# Exporting functions and objects example (required when running in parallel)
+
+In order to make functions and objects safely visible in `SimDesign` the stragegy is very simple: wrap all desired objects and functions into a named list, and pass this to the `fixed_objects` argument. From here, elements can be indexed using the `$` operator, or whatever other method may be convineient.
+
+An alternative approach is simply to define the functions and objects within the respective `SimDesign` functions, that way they will clearly be visible at runtime. The following approach is really only useful when the defined objects and functions contain a large amount of code, and therefore were likely `source()`'ed into the workspace from an external file.
+
+```{r}
+library(SimDesign)
+
+Generate <- function(condition, fixed_objects = NULL) {
+    ret <- fixed_objects$my_gen_fun(condition$N, sd=fixed_objects$SD)
+    ret
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+    ret <- fixed_objects$my_analyse_fun(dat)
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+    ret <- EDR(results, alpha = .05)
+    ret
+}
+
+### Define design conditions and number of replications
+Design <- expand.grid(N = c(10, 20, 30))
+replications <- 1000
+
+# define custom functions and objects (or use source() to read these in from an external file)
+SD <- 2
+my_gen_fun <- function(n, sd) rnorm(n, sd = sd)
+my_analyse_fun <- function(x) c(p = t.test(x)$p.value)
+fixed_objects <- list(SD=SD, my_gen_fun=my_gen_fun, my_analyse_fun=my_analyse_fun)
+
+### Run the simulation
+results <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
+results
+```
+
+By placing objects and functions in a list and passing this to `fixed_objects`, the objects are safely made available to all relavent functions. Furthermore, running this code in parallel is also valid.  
+
+```{r}
+results <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
+                         parallel = TRUE)
+results
+```
+
+Of course, because the `fixed_objects` input can be a list (or any other type of object) then better organization could be used. For instance, we might seperate the objects from the functions like so:
+
+```{r}
+fixed_design <- list(fun=list(my_gen_fun=my_gen_fun, my_analyse_fun=my_analyse_fun),
+                     obj=list(SD=SD))
+fixed_design$fun$my_gen_fun(5, sd=1)
+fixed_design$obj$SD
+```
+
+Wrapping objects in a `fixed_objects` input has the added simplicity in that the workspace does not get more complicated as the number of terms are added to `fixed_objects` (unless the `clusterExport()` approach, in which the workspace would contain several objects very quickly).
+

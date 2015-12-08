@@ -30,12 +30,12 @@ Design <- data.frame(N = c(10,20,30))
 ```
 
 ```{r}
-Generate <- function(condition, fixed_design_elements = NULL) {
+Generate <- function(condition, fixed_objects = NULL) {
     ret <- rnorm(condition$N)    
     ret
 }
 
-Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     whc <- sample(c(0,1,2,3), 1, prob = c(.7, .20, .05, .05))
     if(whc == 0){
        ret <- try(mean(dat), silent=TRUE)
@@ -51,7 +51,7 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
     ret
 }
 
-Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
     ret <- c(bias = bias(results, 0))
     ret
 }

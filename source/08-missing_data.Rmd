@@ -29,7 +29,7 @@ The first simulation defined here is simply a missing at random scheme where 20%
 ```{r}
 library(SimDesign)
 
-Generate <- function(condition, fixed_design_elements = NULL) {
+Generate <- function(condition, fixed_objects = NULL) {
     library(mvtnorm)
     cormat <- matrix(.5, 3, 3)
     diag(cormat) <- 1
@@ -38,7 +38,7 @@ Generate <- function(condition, fixed_design_elements = NULL) {
     dat
 }
 
-Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     try(r0 <- cor(dat, use = 'complete.obs'))
     try(r1 <- cor(dat, use = 'pairwise.complete'))
     check_error(r0, r1)
@@ -47,7 +47,7 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
     ret
 }
 
-Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
     obs_bias <- bias(results, parameter = .5)
     obs_RMSE <- RMSE(results, parameter = .5)
     ret <- c(bias=obs_bias, RMSE=obs_RMSE, RE = RE(obs_RMSE))
@@ -74,7 +74,7 @@ Not surprisingly, these results suggest that computing correlations with the pai
 This is essentially the same simulation as a above, however the missing data mechanism is selected such that extremely positive values in the data are more likely to be set to NA. This creates a missing not a random effect (a.k.a., non-ignorable missingness).
 
 ```{r}
-Generate <- function(condition, fixed_design_elements = NULL) {
+Generate <- function(condition, fixed_objects = NULL) {
     fun <- function(y) ifelse(y > 1, .5, 0)
     
     library(mvtnorm)

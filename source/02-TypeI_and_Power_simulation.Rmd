@@ -68,7 +68,7 @@ Begin by defining a data generation function for returning a `data.frame` with t
 variable, and a grouping variable (a `factor` or otherwise).
 
 ```{r}
-Generate <- function(condition, fixed_design_elements = NULL){
+Generate <- function(condition, fixed_objects = NULL){
  
     N <- condition$sample_size
     grs <- condition$group_size_ratio
@@ -95,7 +95,7 @@ generates data for two groups using random normal draws, and returns a data.fram
 containing the dependent variable and grouping information. 
 
 ```{r}
-Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL){
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
     
     require(stats)
 
@@ -113,7 +113,7 @@ The `Analyse()` definition performs a Welch and independent t-test on the data g
 Finally, after the number of replications defined in `replications` has been completed a matrix (or list, if the output of `Analyse()` were a list instead of a vector) the overall results should be summerised into suitable meta-descriptions of the behavior. This is accomplished with the `Summarise()` function.
 
 ```{r}
-Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL){
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL){
     
     alpha.05 <- EDR(results, alpha = .05)
     ret <- c(alpha.05=alpha.05)

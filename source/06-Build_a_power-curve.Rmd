@@ -24,17 +24,17 @@ Power-curves are useful when researchers are interested in the range of power ef
 ```{r}
 library(SimDesign)
 
-Generate <- function(condition, fixed_design_elements = NULL) {
+Generate <- function(condition, fixed_objects = NULL) {
     ret <- rnorm(condition$sample_size, condition$mean_diff)
     ret
 }
 
-Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     ret <- c(p = t.test(dat)$p.value)
     ret
 }
 
-Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
     ret <- EDR(results, alpha = .05)
     ret
 }

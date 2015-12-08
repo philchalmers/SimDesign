@@ -45,7 +45,7 @@ library(SimDesign)
 ```
 
 ```{r}
-Generate <- function(condition, fixed_design_elements = NULL) {
+Generate <- function(condition, fixed_objects = NULL) {
     
     library(mirt) #for simdata() function
     nitems <- condition$test_length
@@ -66,7 +66,7 @@ Generate <- function(condition, fixed_design_elements = NULL) {
     ret
 }
 
-Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     
     library(mirt)
     
@@ -87,7 +87,7 @@ Analyse <- function(condition, dat, fixed_design_elements = NULL, parameters = N
     ret
 }
 
-Summarise <- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
     
     # for ease of calculations, find the difference between the observed and population matricies
     index <- 1:length(results)
