@@ -212,12 +212,12 @@ hr {
 
 <pre><code class="r">library(SimDesign)
 
-Generate &lt;- function(condition, fixed_design_elements = NULL) {
+Generate &lt;- function(condition, fixed_objects = NULL) {
     ret &lt;- rnorm(condition$sample_size, condition$mu)
     ret
 }
 
-Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     z.CI &lt;- function(dat, alpha = .05){
         xbar &lt;- mean(dat)
         SE &lt;- sd(dat) / sqrt(length(dat))
@@ -233,7 +233,7 @@ Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters 
     ret
 }
 
-Summarise &lt;- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
     ret &lt;- colMeans(results)
     ret
 }
@@ -251,15 +251,15 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE
 </code></pre>
 
 <pre><code>##   mu sample_size  t_CI  z_CI REPLICATIONS SIM_TIME
-## 1  0          10 0.949 0.916        10000    1.151
-## 2  5          10 0.955 0.927        10000    0.831
-## 3 10          10 0.949 0.916        10000    0.875
-## 4  0          20 0.953 0.939        10000    0.929
-## 5  5          20 0.951 0.934        10000    0.826
-## 6 10          20 0.947 0.932        10000    0.847
-## 7  0          30 0.950 0.940        10000    0.872
-## 8  5          30 0.953 0.944        10000    0.863
-## 9 10          30 0.948 0.939        10000    0.820
+## 1  0          10 0.946 0.914        10000    1.487
+## 2  5          10 0.948 0.913        10000    1.055
+## 3 10          10 0.953 0.921        10000    1.032
+## 4  0          20 0.952 0.937        10000    1.096
+## 5  5          20 0.952 0.937        10000    1.037
+## 6 10          20 0.953 0.937        10000    0.965
+## 7  0          30 0.949 0.938        10000    1.073
+## 8  5          30 0.948 0.938        10000    1.152
+## 9 10          30 0.949 0.941        10000    1.007
 </code></pre>
 
 <p>From these results it&#39;s clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distriubtion CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.</p>
@@ -270,12 +270,12 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE
 
 <pre><code class="r">library(SimDesign)
 
-Generate &lt;- function(condition, fixed_design_elements = NULL) {
+Generate &lt;- function(condition, fixed_objects = NULL) {
     ret &lt;- rnorm(condition$sample_size, condition$mu)
     ret
 }
 
-Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     z.CI &lt;- function(dat, alpha = .05){
         xbar &lt;- mean(dat)
         SE &lt;- sd(dat) / sqrt(length(dat))
@@ -290,7 +290,7 @@ Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters 
     ret
 }
 
-Summarise &lt;- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
     ret &lt;- sapply(c(1,3), function(x, results, pop) ECR(results[,c(x, x+1L)], parameter = pop), 
         results = results, pop = condition$mu)
     names(ret) &lt;- c(&#39;t_CI&#39;, &#39;z_CI&#39;)

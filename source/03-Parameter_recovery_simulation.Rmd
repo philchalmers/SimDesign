@@ -57,25 +57,26 @@ convinient.
 
 ```{r}
 sample_sizes <- c(250, 500, 1000)
-nitems <- c(10,30)
+nitems <- c(10,20)
 Design <- expand.grid(sample_size=sample_sizes, nitems=nitems)
 
 # create list of additional parameters which are fixed across conditions
 set.seed(1)
 pars_10 <- rbind(a = round(rlnorm(10, .3, .5)/1.702, 2),
                  d = round(rnorm(10, 0, .5)/1.702, 2))
-pars_30 <- rbind(a = round(rlnorm(30, .3, .5)/1.702, 2),
-                 d = round(rnorm(30, 0, .5)/1.702, 2))
-(pars <- list(ten=pars_10, thirty=pars_30))
+pars_20 <- rbind(a = round(rlnorm(20, .3, .5)/1.702, 2),
+                 d = round(rnorm(20, 0, .5)/1.702, 2))
+(pars <- list(ten=pars_10, twenty=pars_20))
+pars$P_ogive <- P_ogive
 ```
 
 ```{r eval=FALSE}
 # The above slopes, when standardized, give the following factor loadings and communalities (not run): 
-a10 <- pars_10['a', ]; a30 <- pars_30['a', ]
+a10 <- pars_10['a', ]; a20 <- pars_20['a', ]
 load10 <- a10 / sqrt(1 + a10^2)
-load30 <- a30 / sqrt(1 + a30^2)
+load20 <- a20 / sqrt(1 + a20^2)
 rbind(F=load10, h2=load10^2)
-rbind(F=load30, h2=load30^2)
+rbind(F=load20, h2=load20^2)
 ```
 
 ### Define the functions
@@ -93,11 +94,9 @@ library(SimDesign)
 ```{r}
 Generate <- function(condition, fixed_objects = NULL) {
 
-    P_ogive <- function(a, d, Theta) pnorm(a*Theta + d)
-
     N <- condition$sample_size
     nitems <- condition$nitems
-    nitems_name <- ifelse(nitems == 10, 'ten', 'thirty')
+    nitems_name <- ifelse(nitems == 10, 'ten', 'twenty')
 
     #extract objects from fixed_objects
     a <- fixed_objects[[nitems_name]]['a', ]
@@ -107,7 +106,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     colnames(dat) <- paste0('item_', 1:nitems)
     Theta <- rnorm(N)
     for(j in 1:nitems){
-        p <- P_ogive(a[j], d[j], Theta)
+        p <- fixed_objects$P_ogive(a[j], d[j], Theta)
         for(i in 1:N)
             dat[i,j] <- sample(c(1,0), 1, prob = c(p[i], 1 - p[i]))
     }
@@ -144,7 +143,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
 Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
 
     nitems <- condition$nitems
-    nitems_name <- ifelse(nitems == 10, 'ten', 'thirty')
+    nitems_name <- ifelse(nitems == 10, 'ten', 'twenty')
 
     #extract objects from fixed_objects
     a <- fixed_objects[[nitems_name]]['a', ]
@@ -165,7 +164,7 @@ initial run, and the function will automatically detect whether any temp files a
 simulation at the previously saved location.
 
 ```{r cache=TRUE}
-res <- runSimulation(Design, replications = 200, verbose = FALSE, save = TRUE,
+res <- runSimulation(Design, replications = 100, verbose = FALSE, save = TRUE,
                      generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE,
                      fixed_objects=pars)
 ```
@@ -184,7 +183,7 @@ longer required.
 ```{r}
 res10 <- subset(res, nitems == 10)
 res10 <- res10[,!is.na(res10[1L, ])]
-res30 <- subset(res, nitems == 30)
+res20 <- subset(res, nitems == 20)
 ```
 
 #### Ten items
@@ -239,34 +238,34 @@ ggplot(plt, aes(pars, RMSE, colour=estimator)) + geom_point(size=2) + facet_wrap
 
 ```
 
-#### Thirty items
+#### Twenty items
 
 ```{r}
 # bias in slopes
-names30 <- colnames(res30)
-bias_as_fiml <- t(res30[,grepl('bias\\.', names30) & grepl('\\_as', names30) & 
-                       grepl('FIML', names30)])
+names20 <- colnames(res20)
+bias_as_fiml <- t(res20[,grepl('bias\\.', names20) & grepl('\\_as', names20) & 
+                       grepl('FIML', names20)])
 colnames(bias_as_fiml) <- sample_sizes
-rownames(bias_as_fiml) <- pars_30['a', ]
+rownames(bias_as_fiml) <- pars_20['a', ]
 
-bias_as_dwls <- t(res30[,grepl('bias\\.', names30) & grepl('\\_as', names30) & 
-                       grepl('DWLS', names30)])
+bias_as_dwls <- t(res20[,grepl('bias\\.', names20) & grepl('\\_as', names20) & 
+                       grepl('DWLS', names20)])
 colnames(bias_as_dwls) <- sample_sizes
-rownames(bias_as_dwls) <- pars_30['a', ]
+rownames(bias_as_dwls) <- pars_20['a', ]
 
 (out <- list(FIML=bias_as_fiml, DWLS=bias_as_dwls))
 sapply(out, colMeans)
 
 # RMSE in slopes
-RMSE_as_fiml <- t(res30[,grepl('RMSE\\.', names30) & grepl('\\_as', names30) & 
-                       grepl('FIML', names30)])
+RMSE_as_fiml <- t(res20[,grepl('RMSE\\.', names20) & grepl('\\_as', names20) & 
+                       grepl('FIML', names20)])
 colnames(RMSE_as_fiml) <- sample_sizes
-rownames(RMSE_as_fiml) <- pars_30['a', ]
+rownames(RMSE_as_fiml) <- pars_20['a', ]
 
-RMSE_as_dwls <- t(res30[,grepl('RMSE\\.', names30) & grepl('\\_as', names30) & 
-                       grepl('DWLS', names30)])
+RMSE_as_dwls <- t(res20[,grepl('RMSE\\.', names20) & grepl('\\_as', names20) & 
+                       grepl('DWLS', names20)])
 colnames(RMSE_as_dwls) <- sample_sizes
-rownames(RMSE_as_dwls) <- pars_30['a', ]
+rownames(RMSE_as_dwls) <- pars_20['a', ]
 
 (out <- list(FIML=RMSE_as_fiml, DWLS=RMSE_as_dwls))
 sapply(out, colMeans)
@@ -279,10 +278,10 @@ will be under-estimated, and therefore have larger RMSEs than the DWLS approach.
 
 ```{r}
 library(ggplot2)
-plt <- data.frame(pars = c(pars_30['a', ], pars_30['a', ]), 
+plt <- data.frame(pars = c(pars_20['a', ], pars_20['a', ]), 
                   RMSE = c(RMSE_as_fiml[,'1000'], RMSE_as_dwls[,'1000']),
                   bias = c(bias_as_fiml[,'1000'], bias_as_dwls[,'1000']),
-                  estimator = rep(c('FIML', 'DWLS'), each = 30))
+                  estimator = rep(c('FIML', 'DWLS'), each = 20))
 ggplot(plt, aes(pars, bias, colour=estimator)) + geom_point(size=2) + facet_wrap(~estimator) + 
     ggtitle('slope sizes by bias for FIML and DWLS estimators')
 ggplot(plt, aes(pars, RMSE, colour=estimator)) + geom_point(size=2) + facet_wrap(~estimator) + 

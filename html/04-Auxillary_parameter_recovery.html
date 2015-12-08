@@ -232,7 +232,7 @@ Design &lt;- expand.grid(test_length=test_length, distribution=distribution)
 # SimDesign_functions()
 </code></pre>
 
-<pre><code class="r">Generate &lt;- function(condition, fixed_design_elements = NULL) {
+<pre><code class="r">Generate &lt;- function(condition, fixed_objects = NULL) {
 
     library(mirt) #for simdata() function
     nitems &lt;- condition$test_length
@@ -253,7 +253,7 @@ Design &lt;- expand.grid(test_length=test_length, distribution=distribution)
     ret
 }
 
-Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
 
     library(mirt)
 
@@ -274,7 +274,7 @@ Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters 
     ret
 }
 
-Summarise &lt;- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
 
     # for ease of calculations, find the difference between the observed and population matricies
     index &lt;- 1:length(results)
@@ -327,31 +327,31 @@ individually. </p>
 
 <pre><code>## 
 Completed: 0%,   Previous condition time: 0.0,  Total elapsed time: 0.0 
-Completed: 17%,   Previous condition time: 15.9,  Total elapsed time: 15.9 
-Completed: 33%,   Previous condition time: 22.3,  Total elapsed time: 38.2 
-Completed: 50%,   Previous condition time: 27.7,  Total elapsed time: 65.9 
-Completed: 67%,   Previous condition time: 12.9,  Total elapsed time: 78.8 
-Completed: 83%,   Previous condition time: 21.9,  Total elapsed time: 100.6 
-Completed: 100%,   Previous condition time: 27.2,  Total elapsed time: 127.8
+Completed: 17%,   Previous condition time: 15.8,  Total elapsed time: 15.8 
+Completed: 33%,   Previous condition time: 21.1,  Total elapsed time: 36.9 
+Completed: 50%,   Previous condition time: 27.9,  Total elapsed time: 64.8 
+Completed: 67%,   Previous condition time: 12.6,  Total elapsed time: 77.5 
+Completed: 83%,   Previous condition time: 21.8,  Total elapsed time: 99.3 
+Completed: 100%,   Previous condition time: 27.1,  Total elapsed time: 126.4
 </code></pre>
 
 <pre><code class="r">print(result)
 </code></pre>
 
-<pre><code>##   test_length distribution bias_EAP  bias_MAP   bias_ML bias_EAP_bimodal
-## 1          10       normal -0.00233 -0.003414 -0.006561        -0.001787
-## 2          20       normal -0.00177 -0.002200 -0.000957        -0.002137
-## 3          30       normal  0.00176  0.001589  0.002914         0.001563
-## 4          10      bimodal -0.00145 -0.000170 -0.001146        -0.001774
-## 5          20      bimodal -0.00271 -0.001935 -0.003559        -0.001907
-## 6          30      bimodal  0.00089  0.000963  0.000805         0.000799
+<pre><code>##   test_length distribution  bias_EAP  bias_MAP   bias_ML bias_EAP_bimodal
+## 1          10       normal -4.84e-03 -0.005919 -0.004943        -4.34e-03
+## 2          20       normal  1.25e-04 -0.000271  0.001246         5.52e-05
+## 3          30       normal  2.13e-03  0.002275  0.003425         2.19e-03
+## 4          10      bimodal -1.64e-03 -0.000611 -0.001330        -3.67e-03
+## 5          20      bimodal  9.78e-05  0.000463  0.001070         7.34e-05
+## 6          30      bimodal -4.39e-04 -0.000137 -0.000267        -9.19e-04
 ##   RMSE_EAP RMSE_MAP RMSE_ML RMSE_EAP_bimodal REPLICATIONS SIM_TIME
-## 1    0.516    0.519   0.606            0.545          100     15.9
-## 2    0.392    0.395   0.458            0.418          100     22.3
-## 3    0.333    0.335   0.390            0.357          100     27.7
-## 4    0.484    0.485   0.603            0.463          100     12.9
-## 5    0.375    0.373   0.485            0.349          100     21.9
-## 6    0.322    0.319   0.403            0.299          100     27.2
+## 1    0.506    0.510   0.584            0.535          100     15.8
+## 2    0.391    0.394   0.460            0.420          100     21.1
+## 3    0.333    0.335   0.389            0.357          100     27.9
+## 4    0.478    0.480   0.600            0.456          100     12.6
+## 5    0.371    0.369   0.481            0.344          100     21.8
+## 6    0.320    0.317   0.402            0.297          100     27.1
 </code></pre>
 
 <h3>Analyze the results</h3>

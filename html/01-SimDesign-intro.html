@@ -245,7 +245,7 @@ SimDesign_functions()
 <pre><code>#-------------------------------------------------------------------
 ### Define essential simulation functions
 
-Generate &lt;- function(condition, fixed_design_elements = NULL) {
+Generate &lt;- function(condition, fixed_objects = NULL) {
     # Define data generation code ...
 
     # Return a vector, matrix, data.frame, or list
@@ -253,7 +253,7 @@ Generate &lt;- function(condition, fixed_design_elements = NULL) {
     dat
 }
 
-Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     # Run statistical analyses of interest ... 
 
     # Return a named vector or list
@@ -261,7 +261,7 @@ Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters 
     ret
 }
 
-Summarise &lt;- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
     # Summarise the simulation results ...
 
     # Return a named vector of results
@@ -327,9 +327,9 @@ Design
 
 <p>We first start by defining the <code>generate</code> component. The only argument accepted by this function is <code>condition</code>, which will always be a <em>single row from the Design data.frame object</em> and will
 be of class <code>data.frame</code>. Conditions are run sequentially from row 1 to the last row in <code>Design</code>. It is also
-possible to pass a <code>fixed_design_elements</code> object to the function for including fixed sets of population parameters and other conditions, however for this simple simulation this input is not required.</p>
+possible to pass a <code>fixed_objects</code> object to the function for including fixed sets of population parameters and other conditions, however for this simple simulation this input is not required.</p>
 
-<pre><code class="r">Generate &lt;- function(condition, fixed_design_elements = NULL) {
+<pre><code class="r">Generate &lt;- function(condition, fixed_objects = NULL) {
     N &lt;- condition$sample_size
     dist &lt;- condition$distribution
     if(dist == &#39;normal&#39;){
@@ -345,7 +345,7 @@ possible to pass a <code>fixed_design_elements</code> object to the function for
 be analysed each with a population mean of 3 (because a \(\chi^2\) distribution has a mean equal to its df).
 Next, we define the <code>analyse</code> component to analyse said data:</p>
 
-<pre><code class="r">Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+<pre><code class="r">Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     M0 &lt;- mean(dat)
     M1 &lt;- mean(dat, trim = .1)
     M2 &lt;- mean(dat, trim = .2)
@@ -367,7 +367,7 @@ then need to summarise these 100 elements into meaningful meta statistics to des
 This is where computing meta-statistics such as bias, root mean-square error, detection rates, 
 and so on are of primary importance. Unsurprisingly, this is the purpose of the <code>summarise</code> component:</p>
 
-<pre><code class="r">Summarise &lt;- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+<pre><code class="r">Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
     obs_bias &lt;- bias(results, parameter = 3)
     obs_RMSE &lt;- RMSE(results, parameter = 3)
     ret &lt;- c(bias=obs_bias, RMSE=obs_RMSE, RE=RE(obs_RMSE))
@@ -408,11 +408,11 @@ Completed: 0%,   Previous condition time: 0.0,  Total elapsed time: 0.0
 Completed: 12%,   Previous condition time: 0.2,  Total elapsed time: 0.2 
 Completed: 25%,   Previous condition time: 0.2,  Total elapsed time: 0.4 
 Completed: 38%,   Previous condition time: 0.2,  Total elapsed time: 0.7 
-Completed: 50%,   Previous condition time: 0.3,  Total elapsed time: 0.9 
+Completed: 50%,   Previous condition time: 0.3,  Total elapsed time: 1.0 
 Completed: 62%,   Previous condition time: 0.2,  Total elapsed time: 1.2 
-Completed: 75%,   Previous condition time: 0.3,  Total elapsed time: 1.4 
+Completed: 75%,   Previous condition time: 0.3,  Total elapsed time: 1.5 
 Completed: 88%,   Previous condition time: 0.3,  Total elapsed time: 1.7 
-Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 2.0
+Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 2.1
 </code></pre>
 
 <pre><code class="r">results
@@ -446,11 +446,11 @@ Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 2.0
 ## 7            0.530        0.67               1            3.2
 ## 8            0.515        0.65               1            6.2
 ##   RE.mean_trim.2 RE.median REPLICATIONS SIM_TIME
-## 1            1.2       1.5         1000     0.21
-## 2            1.1       1.5         1000     0.22
-## 3            1.2       1.6         1000     0.23
-## 4            1.1       1.5         1000     0.27
-## 5            2.0       3.2         1000     0.23
+## 1            1.2       1.5         1000     0.22
+## 2            1.1       1.5         1000     0.23
+## 3            1.2       1.6         1000     0.24
+## 4            1.1       1.5         1000     0.28
+## 5            2.0       3.2         1000     0.24
 ## 6            3.0       4.8         1000     0.25
 ## 7            5.5       8.7         1000     0.27
 ## 8           11.4      18.3         1000     0.33

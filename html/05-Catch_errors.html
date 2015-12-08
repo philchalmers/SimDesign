@@ -215,12 +215,12 @@ hr {
 Design &lt;- data.frame(N = c(10,20,30))
 </code></pre>
 
-<pre><code class="r">Generate &lt;- function(condition, fixed_design_elements = NULL) {
+<pre><code class="r">Generate &lt;- function(condition, fixed_objects = NULL) {
     ret &lt;- rnorm(condition$N)    
     ret
 }
 
-Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     whc &lt;- sample(c(0,1,2,3), 1, prob = c(.7, .20, .05, .05))
     if(whc == 0){
        ret &lt;- try(mean(dat), silent=TRUE)
@@ -236,7 +236,7 @@ Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters 
     ret
 }
 
-Summarise &lt;- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
     ret &lt;- c(bias = bias(results, 0))
     ret
 }
@@ -261,9 +261,9 @@ Completed: 100%,   Previous condition time: 0.0,  Total elapsed time: 0.1
 </code></pre>
 
 <pre><code>##    N     bias REPLICATIONS SIM_TIME
-## 1 10 -0.04329          100    0.031
-## 2 20  0.01684          100    0.033
-## 3 30 -0.00669          100    0.031
+## 1 10 -0.04329          100    0.037
+## 2 20  0.01684          100    0.037
+## 3 30 -0.00669          100    0.032
 ##   ERROR_MESSAGE: .Error : Error in t.test.default(&quot;invalid&quot;) : not enough &#39;x&#39; observations\n\n
 ## 1                                                                                            9
 ## 2                                                                                            5

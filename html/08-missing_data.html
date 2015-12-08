@@ -211,7 +211,7 @@ hr {
 
 <pre><code class="r">library(SimDesign)
 
-Generate &lt;- function(condition, fixed_design_elements = NULL) {
+Generate &lt;- function(condition, fixed_objects = NULL) {
     library(mvtnorm)
     cormat &lt;- matrix(.5, 3, 3)
     diag(cormat) &lt;- 1
@@ -220,7 +220,7 @@ Generate &lt;- function(condition, fixed_design_elements = NULL) {
     dat
 }
 
-Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters = NULL) {
+Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     try(r0 &lt;- cor(dat, use = &#39;complete.obs&#39;))
     try(r1 &lt;- cor(dat, use = &#39;pairwise.complete&#39;))
     check_error(r0, r1)
@@ -229,7 +229,7 @@ Analyse &lt;- function(condition, dat, fixed_design_elements = NULL, parameters 
     ret
 }
 
-Summarise &lt;- function(condition, results, fixed_design_elements = NULL, parameters_list = NULL) {
+Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
     obs_bias &lt;- bias(results, parameter = .5)
     obs_RMSE &lt;- RMSE(results, parameter = .5)
     ret &lt;- c(bias=obs_bias, RMSE=obs_RMSE, RE = RE(obs_RMSE))
@@ -249,13 +249,13 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE
 </code></pre>
 
 <pre><code>##     N bias.listwise bias.pairwise RMSE.listwise RMSE.pairwise RE.listwise
-## 1  50     -0.009586     -7.45e-03        0.1173        0.0987           1
-## 2 100     -0.001248     -6.33e-04        0.0795        0.0687           1
-## 3 200      0.000922      4.91e-05        0.0570        0.0480           1
+## 1  50     -0.006325      -0.00373        0.1229        0.1023           1
+## 2 100     -0.002357      -0.00254        0.0831        0.0712           1
+## 3 200     -0.000964      -0.00108        0.0577        0.0490           1
 ##   RE.pairwise REPLICATIONS SIM_TIME
-## 1       0.709         1000    0.759
-## 2       0.746         1000    0.655
-## 3       0.708         1000    1.083
+## 1       0.693         1000    0.917
+## 2       0.733         1000    0.738
+## 3       0.720         1000    1.365
 </code></pre>
 
 <p>Not surprisingly, these results suggest that computing correlations with the pairwise-complete method is more efficient than removing rows in a list-wise fashion, though both approaches results in unbiased estimates when the missing data mechanism is MCAR. The selected removal mechanism appears to be less of an issue as the sample size increases, however in general pairwise complete provides better results. </p>
@@ -264,7 +264,7 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE
 
 <p>This is essentially the same simulation as a above, however the missing data mechanism is selected such that extremely positive values in the data are more likely to be set to NA. This creates a missing not a random effect (a.k.a., non-ignorable missingness).</p>
 
-<pre><code class="r">Generate &lt;- function(condition, fixed_design_elements = NULL) {
+<pre><code class="r">Generate &lt;- function(condition, fixed_objects = NULL) {
     fun &lt;- function(y) ifelse(y &gt; 1, .5, 0)
 
     library(mvtnorm)
@@ -283,13 +283,13 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE
 </code></pre>
 
 <pre><code>##     N bias.listwise bias.pairwise RMSE.listwise RMSE.pairwise RE.listwise
-## 1  50       -0.0731       -0.0578        0.1234        0.1088           1
-## 2 100       -0.0714       -0.0582        0.1013        0.0888           1
-## 3 200       -0.0700       -0.0554        0.0848        0.0709           1
+## 1  50       -0.0753       -0.0613        0.1262        0.1123           1
+## 2 100       -0.0717       -0.0577        0.0994        0.0866           1
+## 3 200       -0.0720       -0.0573        0.0877        0.0741           1
 ##   RE.pairwise REPLICATIONS SIM_TIME
-## 1       0.777         1000    0.782
-## 2       0.769         1000    0.675
-## 3       0.699         1000    1.114
+## 1       0.791         1000     1.00
+## 2       0.758         1000     0.78
+## 3       0.713         1000     1.35
 </code></pre>
 
 <p>In this case we can see the effect of MNAR influencing the bias of the correlation values. This particular missing data mechanism causes the observed parameter estimates to be too lower on average, thereby underestimating the true magnitude of the correlation statistics. </p>
