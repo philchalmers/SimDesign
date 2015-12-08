@@ -32,15 +32,10 @@ influence the detection rates of the independent t-test. Here we study define th
 standard deviations, and investigate their effect when completely crossed.
 
 ```{r conditions}
-sample_sizes <- c(30, 60, 90, 120)
-standard_deviation_ratios <- c(1, 4, 8)
-group_size_ratios <- c(1/2, 1, 2)
-mean_differences <- c(0, 0.5)
-
-Design <- expand.grid(sample_size=sample_sizes,
-                      group_size_ratio=group_size_ratios,
-                      standard_deviation_ratio=standard_deviation_ratios,
-                      mean_difference=mean_differences)
+Design <- expand.grid(sample_size = c(30, 60, 90, 120),
+                      group_size_ratio = c(1/2, 1, 2),
+                      standard_deviation_ratio = c(1, 4, 8),
+                      mean_difference = c(0, 0.5))
 dim(Design)
 head(Design, 3)
 tail(Design, 3)
@@ -69,7 +64,7 @@ variable, and a grouping variable (a `factor` or otherwise).
 
 ```{r}
 Generate <- function(condition, fixed_objects = NULL){
- 
+    
     N <- condition$sample_size
     grs <- condition$group_size_ratio
     sd <- condition$standard_deviation_ratio

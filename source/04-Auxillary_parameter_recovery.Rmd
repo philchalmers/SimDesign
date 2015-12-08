@@ -30,9 +30,8 @@ and population distribution of the latent traits.
 All other parameters will be sampled from some internal generating functions in R. 
 
 ```{r}
-test_length <- c(10, 20, 30)
-distribution <- c('normal', 'bimodal')
-Design <- expand.grid(test_length=test_length, distribution=distribution)
+Design <- expand.grid(test_length = c(10, 20, 30), 
+                      distribution = c('normal', 'bimodal'))
 ```
 
 ### Define the functions

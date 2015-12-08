@@ -79,10 +79,8 @@ First, define the condition combinations that should be investigated. In this ca
 extremely helpful here to create a completely crossed-design for each combination (there are 8 in total).
 
 ```{r}
-sample_sizes <- c(30, 60, 120, 240)
-distributions <- c('normal', 'skewed')
-Design <- expand.grid(sample_size = sample_sizes, 
-                      distribution = distributions)
+Design <- expand.grid(sample_size = c(30, 60, 120, 240), 
+                      distribution = c('norm', 'chi'))
 Design
 ```
 
@@ -98,9 +96,9 @@ possible to pass a `fixed_objects` object to the function for including fixed se
 Generate <- function(condition, fixed_objects = NULL) {
     N <- condition$sample_size
     dist <- condition$distribution
-    if(dist == 'normal'){
+    if(dist == 'norm'){
         dat <- rnorm(N, mean = 3)
-    } else if(dist == 'skewed'){
+    } else if(dist == 'chi'){
         dat <- rchisq(N, df = 3)
     }
     return(dat)

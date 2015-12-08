@@ -25,7 +25,7 @@ Power-curves are useful when researchers are interested in the range of power ef
 library(SimDesign)
 
 Generate <- function(condition, fixed_objects = NULL) {
-    ret <- rnorm(condition$sample_size, condition$mean_diff)
+    ret <- with(condition, rnorm(sample_size, mean_diff)) #wrap in with() rather than using $
     ret
 }
 
@@ -40,7 +40,8 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
 }
 
 ### Define design conditions and number of replications. Here we want a finer range of values for plotting
-Design <- expand.grid(mean_diff = seq(0, 1, by = .1), sample_size = c(10, 20, 30))
+Design <- expand.grid(mean_diff = seq(0, 1, by = .1), 
+                      sample_size = c(10, 20, 30))
 replications <- 2000
 
 ### Run the simulation

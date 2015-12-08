@@ -125,8 +125,9 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     my_analyse_fun <- fixed_objects$my_analyse_fun #explicitly pull out function
     ret <- my_analyse_fun(dat)
     
-    ### analogously, using with()
+    ### analogously, using with() and $
     # ret <- with(fixed_objects, my_analyse_fun(dat))
+    # ret <- fixed_objects$my_analyse_fun(dat)
     ret
 }
 
@@ -143,7 +144,9 @@ replications <- 1000
 SD <- 2
 my_gen_fun <- function(n, sd) rnorm(n, sd = sd)
 my_analyse_fun <- function(x) c(p = t.test(x)$p.value)
-fixed_objects <- list(SD=SD, my_gen_fun=my_gen_fun, my_analyse_fun=my_analyse_fun)
+fixed_objects <- list(SD=SD, 
+                      my_gen_fun=my_gen_fun, 
+                      my_analyse_fun=my_analyse_fun)
 
 ### Run the simulation
 results <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
@@ -165,8 +168,9 @@ results
 Of course, because the `fixed_objects` input can be a list (or any other type of object) then better organization could be used. For instance, we might separate the objects from the functions like so:
 
 ```{r}
-fixed_design <- list(fun=list(my_gen_fun=my_gen_fun, my_analyse_fun=my_analyse_fun),
-                     obj=list(SD=SD))
+fixed_design <- list(fun = list(my_gen_fun=my_gen_fun, 
+                              my_analyse_fun=my_analyse_fun),
+                     obj = list(SD=SD))
 fixed_design$fun$my_gen_fun(5, sd=1)
 fixed_design$obj$SD
 ```

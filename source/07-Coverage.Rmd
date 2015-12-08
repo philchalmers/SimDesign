@@ -28,7 +28,7 @@ set.seed(1234)
 library(SimDesign)
 
 Generate <- function(condition, fixed_objects = NULL) {
-    ret <- rnorm(condition$sample_size, condition$mu)
+    ret <- with(condition, rnorm(sample_size, mu))
     ret
 }
 
@@ -54,7 +54,8 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
 }
 
 ### Define design conditions and number of replications. Here we want a finer range of values for plotting
-Design <- expand.grid(mu = c(0, 5, 10), sample_size = c(10, 20, 30))
+Design <- expand.grid(mu = c(0, 5, 10), 
+                      sample_size = c(10, 20, 30))
 replications <- 10000
 
 ### Run the simulation
@@ -77,7 +78,7 @@ The above simulation called the `ECR()` function within `analyse`, however it is
 library(SimDesign)
 
 Generate <- function(condition, fixed_objects = NULL) {
-    ret <- rnorm(condition$sample_size, condition$mu)
+    ret <- with(condition, rnorm(sample_size, mu))
     ret
 }
 
