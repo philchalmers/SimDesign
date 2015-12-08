@@ -483,7 +483,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                        check.names=FALSE)
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0
-        if(save || save_results) saveRDS(Result_list, tmpfilename)
+        if(save || save_results || save_generate_data) saveRDS(Result_list, tmpfilename)
     }
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     if(verbose)
@@ -528,6 +528,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             message(paste('\nSaving simulation results to file:', filename))
         saveRDS(Final, filename)
     }
-    if(save || save_results) file.remove(tmpfilename)
+    if(save || save_results || save_generate_data) file.remove(tmpfilename)
     return(invisible(Final))
 }
