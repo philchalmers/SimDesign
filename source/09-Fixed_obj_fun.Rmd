@@ -47,18 +47,20 @@ res <- try(parSapply(cl=cl, 1:4, myfun), silent=TRUE)
 print(res)
 ```
 
+Exporting the objects to the cluster fixes the issue. 
+
 ```{r}
 clusterExport(cl=cl, c('obj1', 'obj2'))
 parSapply(cl=cl, 1:4, myfun)
 ```
 
-The same reasoning applies to functions defined in the R workspace as well, including functions defined in R packages. Hence, in order to use functions from other packages they must either be explicitly loaded with `require()` or `library()`, or referenced via their Namespace with the `::` operator (e.g., `mvtnorm::rmvtnorm()`).
+The same reasoning above applies to functions defined in the R workspace as well, including functions defined within external R packages. Hence, in order to use functions from other packages they must either be explicitly loaded with `require()` or `library()` within the distributed code, or referenced via their Namespace with the `::` operator (e.g., `mvtnorm::rmvtnorm()`).
 
 # Exporting functions and objects example (required when running in parallel)
 
 In order to make functions and objects safely visible in `SimDesign` the strategy is very simple: wrap all desired objects and functions into a named list, and pass this to the `fixed_objects` argument. From here, elements can be indexed using the `$` operator, or whatever other method may be convenient.
 
-An alternative approach is simply to define the functions and objects within the respective `SimDesign` functions, that way they will clearly be visible at runtime. The following approach is really only useful when the defined objects and functions contain a large amount of code, and therefore were likely `source()`'ed into the workspace from an external file for ease of readability.
+Note: An alternative approach is simply to define/source the functions and objects within the respective `SimDesign` functions, that way they will clearly be visible at runtime. The following approach is really only useful when the defined objects and functions contain a large amount of code, and therefore were likely initially `source()`'ed into the workspace from an external file (for ease of readability).
 
 ```{r}
 library(SimDesign)
@@ -69,7 +71,8 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
-    ret <- fixed_objects$my_analyse_fun(dat)
+    my_analyse_fun <- fixed_objects$my_analyse_fun
+    ret <- my_analyse_fun(dat)
     ret
 }
 
@@ -103,6 +106,8 @@ results <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixe
 results
 ```
 
+### A note on organization
+
 Of course, because the `fixed_objects` input can be a list (or any other type of object) then better organization could be used. For instance, we might separate the objects from the functions like so:
 
 ```{r}
@@ -112,5 +117,5 @@ fixed_design$fun$my_gen_fun(5, sd=1)
 fixed_design$obj$SD
 ```
 
-Wrapping objects in a `fixed_objects` input has the added simplicity in that the workspace does not get more complicated as the number of terms are added to `fixed_objects` (unless the `clusterExport()` approach, in which the workspace would contain several objects very quickly).
+Wrapping objects in a `fixed_objects` input has the added simplicity in that the workspace does not get more complicated as the number of terms are added to `fixed_objects` (unlike the `clusterExport()` approach which causes the workspace to contain several objects very quickly).
 

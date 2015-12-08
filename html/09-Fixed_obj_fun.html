@@ -85,16 +85,17 @@ print(res)</code></pre>
 ## [1] &quot;try-error&quot;
 ## attr(,&quot;condition&quot;)
 ## &lt;simpleError in checkForRemoteErrors(val): 2 nodes produced errors; first error: object 'obj1' not found&gt;</code></pre>
+<p>Exporting the objects to the cluster fixes the issue.</p>
 <pre class="r"><code>clusterExport(cl=cl, c('obj1', 'obj2'))
 parSapply(cl=cl, 1:4, myfun)</code></pre>
 <pre><code>## [1] 30 30 30 30</code></pre>
-<p>The same reasoning applies to functions defined in the R workspace as well, including functions defined in R packages. Hence, in order to use functions from other packages they must either be explicitly loaded with <code>require()</code> or <code>library()</code>, or referenced via their Namespace with the <code>::</code> operator (e.g., <code>mvtnorm::rmvtnorm()</code>).</p>
+<p>The same reasoning above applies to functions defined in the R workspace as well, including functions defined within external R packages. Hence, in order to use functions from other packages they must either be explicitly loaded with <code>require()</code> or <code>library()</code> within the distributed code, or referenced via their Namespace with the <code>::</code> operator (e.g., <code>mvtnorm::rmvtnorm()</code>).</p>
 </div>
 </div>
 <div id="exporting-functions-and-objects-example-required-when-running-in-parallel" class="section level1">
 <h1>Exporting functions and objects example (required when running in parallel)</h1>
 <p>In order to make functions and objects safely visible in <code>SimDesign</code> the strategy is very simple: wrap all desired objects and functions into a named list, and pass this to the <code>fixed_objects</code> argument. From here, elements can be indexed using the <code>$</code> operator, or whatever other method may be convenient.</p>
-<p>An alternative approach is simply to define the functions and objects within the respective <code>SimDesign</code> functions, that way they will clearly be visible at runtime. The following approach is really only useful when the defined objects and functions contain a large amount of code, and therefore were likely <code>source()</code>’ed into the workspace from an external file for ease of readability.</p>
+<p>Note: An alternative approach is simply to define/source the functions and objects within the respective <code>SimDesign</code> functions, that way they will clearly be visible at runtime. The following approach is really only useful when the defined objects and functions contain a large amount of code, and therefore were likely initially <code>source()</code>’ed into the workspace from an external file (for ease of readability).</p>
 <pre class="r"><code>library(SimDesign)
 
 Generate &lt;- function(condition, fixed_objects = NULL) {
@@ -103,7 +104,8 @@ Generate &lt;- function(condition, fixed_objects = NULL) {
 }
 
 Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
-    ret &lt;- fixed_objects$my_analyse_fun(dat)
+    my_analyse_fun &lt;- fixed_objects$my_analyse_fun
+    ret &lt;- my_analyse_fun(dat)
     ret
 }
 
@@ -127,18 +129,20 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE, fixed_objects=f
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
 results</code></pre>
 <pre><code>##    N     p REPLICATIONS SIM_TIME
-## 1 10 0.055         1000    0.224
-## 2 20 0.065         1000    0.222
-## 3 30 0.051         1000    0.222</code></pre>
+## 1 10 0.055         1000    0.196
+## 2 20 0.065         1000    0.200
+## 3 30 0.051         1000    0.203</code></pre>
 <p>By placing objects and functions in a list and passing this to <code>fixed_objects</code>, the objects are safely made available to all relevant functions. Furthermore, running this code in parallel is also valid.</p>
 <pre class="r"><code>results &lt;- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
                          parallel = TRUE)
 results</code></pre>
 <pre><code>##    N     p REPLICATIONS SIM_TIME
-## 1 10 0.041         1000    0.495
-## 2 20 0.041         1000    0.108
-## 3 30 0.051         1000    0.111</code></pre>
+## 1 10 0.054         1000    0.375
+## 2 20 0.052         1000    0.149
+## 3 30 0.049         1000    0.152</code></pre>
+<div id="a-note-on-organization" class="section level3">
+<h3>A note on organization</h3>
 <p>Of course, because the <code>fixed_objects</code> input can be a list (or any other type of object) then better organization could be used. For instance, we might separate the objects from the functions like so:</p>
 <pre class="r"><code>fixed_design &lt;- list(fun=list(my_gen_fun=my_gen_fun, my_analyse_fun=my_analyse_fun),
                      obj=list(SD=SD))
@@ -146,7 +150,8 @@ fixed_design$fun$my_gen_fun(5, sd=1)</code></pre>
 <pre><code>## [1] -0.537  0.357 -0.176  0.109 -1.304</code></pre>
 <pre class="r"><code>fixed_design$obj$SD</code></pre>
 <pre><code>## [1] 2</code></pre>
-<p>Wrapping objects in a <code>fixed_objects</code> input has the added simplicity in that the workspace does not get more complicated as the number of terms are added to <code>fixed_objects</code> (unless the <code>clusterExport()</code> approach, in which the workspace would contain several objects very quickly).</p>
+<p>Wrapping objects in a <code>fixed_objects</code> input has the added simplicity in that the workspace does not get more complicated as the number of terms are added to <code>fixed_objects</code> (unlike the <code>clusterExport()</code> approach which causes the workspace to contain several objects very quickly).</p>
+</div>
 </div>
 
 
