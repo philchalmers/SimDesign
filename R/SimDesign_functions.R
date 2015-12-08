@@ -71,7 +71,7 @@ SimDesign_functions <- function(filename = NULL, comments = TRUE, singlefile = F
     TAIL <- function(){
         LINE()
         if(comments) cat('\n### Run the simulation\n')
-        cat('\nresults <- runSimulation(design=Design, replications=Replications, ')
+        cat('\nresults <- runSimulation(design=Design, replications=1000, ')
         cat('\n    generate=Generate, analyse=Analyse, summarise=Summarise, edit=\'none\')')
         cat('\n\n')
     }
