@@ -10,7 +10,7 @@
 # @param results_filename the file name used to store results in
 #
 Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI, seed,
-                     save_results, save_results_dirname, results_filename, max_errors,
+                     save_results, save_results_dirname, max_errors,
                      save_generate_data, save_generate_data_dirname)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
@@ -62,14 +62,12 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                             condition$ID))
     }
     if(save_results){
-        tmpfilename <- paste0(save_results_dirname, '/', results_filename, 'ROWID-',
-                              condition$ID, '.rds')
+        tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
         if(file.exists(tmpfilename)){
             warning('save_results filename already exists, creating new file name. Consider changing save_results_dirname',
-                    ' input to avoid this, or remove obsolete save_results files from the directory',
+                    ' to avoid this, or remove obsolete save_results files from the directory',
                     call.=FALSE)
-            tmp <- paste0(save_results_dirname, '/', results_filename, 'ROWID-',
-                                         condition$ID)
+            tmp <- paste0(save_results_dirname, '/results-row_', condition$ID)
             tmpcount <- 1L
             while(file.exists(tmpfilename)){
                 tmpfilename <- paste0(tmp, '-', tmpcount, '.rds')

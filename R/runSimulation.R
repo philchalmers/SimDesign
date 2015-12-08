@@ -151,10 +151,6 @@
 #'   Default is the system name with
 #'   the number of replications and 'Final' appended to the string
 #'
-#' @param results_filename the general name of the .rds file to save individual simulation results
-#'   to (before calling the \code{\link{summarise}} function). Default is the system name with '_results_'
-#'   and the row ID information from \code{design} appended
-#'
 #' @param tmpfilename the name of the temporary file, default is the system name with 'tmpsim.rds'
 #'   appended at the end. This file will be
 #'   read-in if it is in the working directory, and the simulation will continue where at the last
@@ -380,13 +376,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           max_errors = 50, include_errors = TRUE, MPI = FALSE, seed = NULL,
                           compname = Sys.info()['nodename'],
                           filename = paste0(compname,'_Final_', replications),
-                          results_filename = paste0(compname, '_results_'),
                           tmpfilename = paste0(compname, '_tmpsim.rds'),
                           save_results_dirname = 'SimDesign_results',
                           save_generate_data_dirname = 'SimDesign_generate_data',
                           ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
 {
-    filename <- paste0(filename, '.rds')
     stopifnot(!missing(generate) || !missing(analyse) || !missing(summarise))
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise)
     stopifnot(!missing(design))
@@ -467,7 +461,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                         round((i-1)/(nrow(design))*100), '%', time1 - time0, sum(stored_time)))
         time0 <- proc.time()[3]
         if(save_generate_data)
-            dir.create(paste0(save_generate_data_dirname, '/design-row_', i), showWarnings = FALSE)
+            dir.create(paste0(save_generate_data_dirname, '/design-row-', i), showWarnings = FALSE)
         Result_list[[i]] <- data.frame(c(as.list(design[i, ]),
                                          as.list(Analysis(Functions=Functions,
                                                           condition=design[i,],
@@ -476,7 +470,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                           cl=cl, MPI=MPI, seed=seed,
                                                           save_results=save_results,
                                                           save_results_dirname=save_results_dirname,
-                                                          results_filename=results_filename,
                                                           save_generate_data=save_generate_data,
                                                           save_generate_data_dirname=save_generate_data_dirname,
                                                           max_errors=max_errors))),
@@ -502,18 +495,19 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     #save file
     files <- dir()
     filename0 <- filename
-    count <- 2L
+    count <- 1L
     # create a new file name if old one exists, and throw warning
     while(TRUE){
+        filename <- paste0(filename, '.rds')
         if(filename %in% files){
-            filename <- paste0(count, '_', filename0)
+            filename <- paste0(filename0, '-', count)
             count <- count + 1L
         } else break
     }
-    if(filename0 != filename)
+    if(count > 1L)
         if(verbose && save)
-            message(paste0('\nWARNING:\n', filename0, ' existed in the working directory already.
-                           A new unique name was created.\n'))
+            message(paste0('\nWARNING:\n', filename0, ' existed in the working directory.
+                           Using a unique file name instead.\n'))
     class(Final) <- c('SimDesign', 'data.frame')
     dn <- colnames(design)
     dn <- dn[dn != 'ID']

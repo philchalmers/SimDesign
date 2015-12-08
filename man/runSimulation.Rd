@@ -9,8 +9,7 @@ runSimulation(design, replications, generate, analyse, summarise,
   save_results = FALSE, save_generate_data = FALSE, max_errors = 50,
   include_errors = TRUE, MPI = FALSE, seed = NULL,
   compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
-  replications), results_filename = paste0(compname, "_results_"),
-  tmpfilename = paste0(compname, "_tmpsim.rds"),
+  replications), tmpfilename = paste0(compname, "_tmpsim.rds"),
   save_results_dirname = "SimDesign_results",
   save_generate_data_dirname = "SimDesign_generate_data",
   ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
@@ -91,10 +90,6 @@ may be resumed on another computer by changing the name of the node to match the
 \item{filename}{the name of the .rds file to save the final simulation results to.
 Default is the system name with
 the number of replications and 'Final' appended to the string}
-
-\item{results_filename}{the general name of the .rds file to save individual simulation results
-to (before calling the \code{\link{summarise}} function). Default is the system name with '_results_'
-and the row ID information from \code{design} appended}
 
 \item{tmpfilename}{the name of the temporary file, default is the system name with 'tmpsim.rds'
 appended at the end. This file will be

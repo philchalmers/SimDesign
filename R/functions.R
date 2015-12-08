@@ -199,8 +199,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             stop(paste0('generate function threw an error. Please make sure the function does not throw errors.',
                         '\n\nError message was: ', simlist), call.=FALSE)
         if(save_generate_data){
-            filename_stem <- paste0(save_generate_data_dirname, '/design-row_', condition$ID,
-                                    '/generate_data_')
+            filename_stem <- paste0(save_generate_data_dirname, '/design-row-', condition$ID,
+                                    '/generate-data-')
             filename <- paste0(filename_stem, index, '.rds')
             count <- 1L
             while(file.exists(filename)){
