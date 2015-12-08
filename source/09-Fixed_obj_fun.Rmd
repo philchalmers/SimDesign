@@ -63,6 +63,17 @@ The following example demonstraes how to run a simulation which looks for the fu
 ```{r}
 library(SimDesign)
 
+### Define design conditions and number of replications
+Design <- expand.grid(N = c(10, 20, 30))
+replications <- 1000
+
+# define custom functions and objects (or use source() to read these in from an external file)
+SD <- 2
+my_gen_fun <- function(n, sd) rnorm(n, sd = sd)
+my_analyse_fun <- function(x) c(p = t.test(x)$p.value)
+
+#--------------------------------------------------------------------
+
 Generate <- function(condition, fixed_objects = NULL) {
     ret <- my_gen_fun(condition$N, sd=SD)
     ret
@@ -78,14 +89,7 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
     ret
 }
 
-### Define design conditions and number of replications
-Design <- expand.grid(N = c(10, 20, 30))
-replications <- 1000
-
-# define custom functions and objects (or use source() to read these in from an external file)
-SD <- 2
-my_gen_fun <- function(n, sd) rnorm(n, sd = sd)
-my_analyse_fun <- function(x) c(p = t.test(x)$p.value)
+#--------------------------------------------------------------------
 
 ### Run the simulation
 results <- runSimulation(Design, replications, verbose=FALSE, 
@@ -112,6 +116,21 @@ Note: An alternative approach is simply to define/source the functions and objec
 
 ```{r}
 library(SimDesign)
+#SimDesign_functions(comments = FALSE)
+
+### Define design conditions and number of replications
+Design <- expand.grid(N = c(10, 20, 30))
+replications <- 1000
+
+# define custom functions and objects (or use source() to read these in from an external file)
+SD <- 2
+my_gen_fun <- function(n, sd) rnorm(n, sd = sd)
+my_analyse_fun <- function(x) c(p = t.test(x)$p.value)
+fixed_objects <- list(SD=SD, 
+                      my_gen_fun=my_gen_fun, 
+                      my_analyse_fun=my_analyse_fun)
+
+#---------------------------------------------------------------------------
 
 Generate <- function(condition, fixed_objects = NULL) {
     ret <- with(fixed_objects, my_gen_fun(condition$N, sd=SD))
@@ -136,17 +155,7 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
     ret
 }
 
-### Define design conditions and number of replications
-Design <- expand.grid(N = c(10, 20, 30))
-replications <- 1000
-
-# define custom functions and objects (or use source() to read these in from an external file)
-SD <- 2
-my_gen_fun <- function(n, sd) rnorm(n, sd = sd)
-my_analyse_fun <- function(x) c(p = t.test(x)$p.value)
-fixed_objects <- list(SD=SD, 
-                      my_gen_fun=my_gen_fun, 
-                      my_analyse_fun=my_analyse_fun)
+#---------------------------------------------------------------------------
 
 ### Run the simulation
 results <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,

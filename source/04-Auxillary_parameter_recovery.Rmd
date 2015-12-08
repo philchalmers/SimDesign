@@ -30,6 +30,9 @@ and population distribution of the latent traits.
 All other parameters will be sampled from some internal generating functions in R. 
 
 ```{r}
+library(SimDesign)
+# SimDesign_functions(comments = FALSE)
+
 Design <- expand.grid(test_length = c(10, 20, 30), 
                       distribution = c('normal', 'bimodal'))
 ```
@@ -37,11 +40,6 @@ Design <- expand.grid(test_length = c(10, 20, 30),
 ### Define the functions
 
 As usual, define the functions of interest. Here we make sure that `mirt` is loaded in when required.
-
-```{r}
-library(SimDesign)
-# SimDesign_functions()
-```
 
 ```{r}
 Generate <- function(condition, fixed_objects = NULL) {

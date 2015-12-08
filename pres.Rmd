@@ -361,14 +361,14 @@ In the lingo of R, **design** is some pre-defined object to be indexed and acted
 # The `SimDesign` package
 
 ```{r eval=FALSE}
+Design <- data.frame(...) 
+
 Generate <- function(...) ...
 Analyse <- function(...) ...
 Summarise <- function(...) ...
 
-Design <- data.frame(...)
-Replications <- 1000
-
-results <- runSimulation(Design, Replications, 
+results <- runSimulation(design = Design, 
+                         replications = 1000, 
                          generate = Generate, 
                          analyse = Analyse, 
                          summerise = Summarise)

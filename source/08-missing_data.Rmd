@@ -28,6 +28,12 @@ The first simulation defined here is simply a missing at random scheme where 20%
 
 ```{r}
 library(SimDesign)
+#SimDesign_functions(comments = FALSE)
+
+### Define design conditions
+Design <- expand.grid(N = c(50, 100, 200))
+
+#--------------------------------------------------------------------------
 
 Generate <- function(condition, fixed_objects = NULL) {
     library(mvtnorm)
@@ -54,12 +60,10 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
     ret
 }
 
-### Define design conditions and number of replications. Here we want a finer range of values for plotting
-Design <- expand.grid(N = c(50, 100, 200))
-replications <- 1000
+#--------------------------------------------------------------------------
 
 ### Run the simulation
-results <- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE,
+results <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
 ```
 

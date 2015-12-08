@@ -56,6 +56,9 @@ of space (could be hundreds of lines), therefore passing a list object to `runSi
 convinient. 
 
 ```{r}
+library(SimDesign)
+# SimDesign_functions()
+
 Design <- expand.grid(sample_size = c(250, 500, 1000), 
                       nitems = c(10,20))
 
@@ -84,11 +87,6 @@ As usual, define the functions of interest. Here we make sure that `lavaan` and 
 are required by calling a suitable `library()` call to make their functions available (required when 
 running simulations in parallel). Here we only collect information on the slope parameters, mainly because they
 are the most interesting to study anyway (intercepts become more important in IRT methods).
-
-```{r}
-library(SimDesign)
-# SimDesign_functions()
-```
 
 ```{r}
 Generate <- function(condition, fixed_objects = NULL) {

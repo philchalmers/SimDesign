@@ -32,6 +32,9 @@ influence the detection rates of the independent t-test. Here we study define th
 standard deviations, and investigate their effect when completely crossed.
 
 ```{r conditions}
+library(SimDesign)
+# SimDesign_functions()
+
 Design <- expand.grid(sample_size = c(30, 60, 90, 120),
                       group_size_ratio = c(1/2, 1, 2),
                       standard_deviation_ratio = c(1, 4, 8),
@@ -50,14 +53,6 @@ could be switched around as it really depends on how the `Generate()` function u
 (the interpretation could have been that group 1 was *smaller* when `group_size_ratio == .5` rather than larger). 
 
 ### Define the functions
-
-Again, it's usually good to start by editing template functions from `SimDesign_functions()` to ensure that
-all arguments are defined. Below this is simply commented out.
-
-```{r}
-library(SimDesign)
-# SimDesign_functions()
-```
 
 Begin by defining a data generation function for returning a `data.frame` with two columns: the dependent 
 variable, and a grouping variable (a `factor` or otherwise).
@@ -135,7 +130,7 @@ set.seed(1234)
 
 
 ```{r cache=TRUE}
-Final <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
+results <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
                        generate = Generate, analyse = Analyse, summarise = Summarise)
 ```
 
@@ -145,11 +140,11 @@ Usually it is a good idea to split up analyses into Type I error and power data,
 design conditions into `factor`s if necessary. More specifically, Power rates really should only be interpreted when the Type I errors are well behaved (liberal detection rates naturally will result in more powerful tests, while conservative detection rates will induce lower power).
 
 ```{r}
-head(Final)
-for(i in 1:4) Final[,i] <- factor(Final[,i])
-Final$REPLICATIONS <- Final$SIM_TIME <- NULL
-TypeI <- subset(Final, mean_difference == 0)
-Power <- subset(Final, mean_difference != 0)
+head(results)
+for(i in 1:4) results[,i] <- factor(results[,i])
+results$REPLICATIONS <- results$SIM_TIME <- NULL
+TypeI <- subset(results, mean_difference == 0)
+Power <- subset(results, mean_difference != 0)
 ```
 
 Lets start off by looking at some descriptive tables, and performing simple ANOVA analyses with effect sizes

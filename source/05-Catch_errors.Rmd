@@ -24,7 +24,7 @@ As usual, define the functions of interest.
 
 ```{r}
 library(SimDesign)
-# SimDesign_functions()
+# SimDesign_functions(comments=FALSE)
 
 Design <- data.frame(N = c(10,20,30))
 ```

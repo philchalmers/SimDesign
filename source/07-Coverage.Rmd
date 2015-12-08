@@ -26,6 +26,13 @@ set.seed(1234)
 
 ```{r}
 library(SimDesign)
+#SimDesign_functions(comments = FALSE)
+
+### Define design conditions. Here we want a finer range of values for plotting
+Design <- expand.grid(mu = c(0, 5, 10), 
+                      sample_size = c(10, 20, 30))
+
+#---------------------------------------------------------------------
 
 Generate <- function(condition, fixed_objects = NULL) {
     ret <- with(condition, rnorm(sample_size, mu))
@@ -53,13 +60,10 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
     ret
 }
 
-### Define design conditions and number of replications. Here we want a finer range of values for plotting
-Design <- expand.grid(mu = c(0, 5, 10), 
-                      sample_size = c(10, 20, 30))
-replications <- 10000
+#---------------------------------------------------------------------
 
 ### Run the simulation
-results <- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE,
+results <- runSimulation(Design, replications=10000, verbose=FALSE, parallel = TRUE,
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
 ```
 
@@ -76,6 +80,13 @@ The above simulation called the `ECR()` function within `analyse`, however it is
 
 ```{r eval=FALSE}
 library(SimDesign)
+#SimDesign_functions(comments = FALSE)
+
+### Define design conditions. Here we want a finer range of values for plotting
+Design <- expand.grid(mu = c(0, 5, 10), 
+                      sample_size = c(10, 20, 30))
+
+#-----------------------------------------------------------------
 
 Generate <- function(condition, fixed_objects = NULL) {
     ret <- with(condition, rnorm(sample_size, mu))
@@ -104,13 +115,11 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
     ret
 }
 
-### Define design conditions and number of replications. Here we want a finer range of values for plotting
-Design <- expand.grid(mu = c(0, 5, 10), sample_size = c(10, 20, 30))
-replications <- 10000
+#-----------------------------------------------------------------
 
 ### Run the simulation
-results <- runSimulation(Design, replications, verbose=FALSE, parallel = FALSE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='summarise')
+results <- runSimulation(Design, replications=10000, verbose=FALSE, parallel = FALSE,
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
 ```
 
 

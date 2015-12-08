@@ -64,6 +64,13 @@ design/execution and required user-defined functions, respectively.
 SimDesign_functions('mysim')
 ```
 
+Alternatively, for smaller simulations you may only want to use one file, and if you'd prefer not to 
+have the default comments included then these can be achieved with the `singlefile` and `comments` arguments, respectively.
+
+```{r eval=FALSE}
+SimDesign_functions('mysim', singlefile = TRUE, comments = FALSE)
+```
+
 # Simulation: Determine estimator efficiency
 
 As a toy example, let's consider how the following question can be investigated with `SimDesign`: 
