@@ -59,8 +59,10 @@ convinient.
 library(SimDesign)
 # SimDesign_functions()
 
-Design <- expand.grid(sample_size = c(250, 500, 1000), 
-                      nitems = c(10,20))
+sample_sizes <- c(250, 500, 1000)
+nitems <- c(10, 20)
+Design <- expand.grid(sample_size = sample_sizes, 
+                      nitems = nitems)
 
 # create list of additional parameters which are fixed across conditions
 set.seed(1)

@@ -211,9 +211,16 @@ hr {
 <h3>Define the functions</h3>
 
 <pre><code class="r">library(SimDesign)
+#SimDesign_functions(comments = FALSE)
+
+### Define design conditions. Here we want a finer range of values for plotting
+Design &lt;- expand.grid(mu = c(0, 5, 10), 
+                      sample_size = c(10, 20, 30))
+
+#---------------------------------------------------------------------
 
 Generate &lt;- function(condition, fixed_objects = NULL) {
-    ret &lt;- rnorm(condition$sample_size, condition$mu)
+    ret &lt;- with(condition, rnorm(sample_size, mu))
     ret
 }
 
@@ -238,12 +245,10 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_li
     ret
 }
 
-### Define design conditions and number of replications. Here we want a finer range of values for plotting
-Design &lt;- expand.grid(mu = c(0, 5, 10), sample_size = c(10, 20, 30))
-replications &lt;- 10000
+#---------------------------------------------------------------------
 
 ### Run the simulation
-results &lt;- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE,
+results &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel = TRUE,
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit=&#39;none&#39;)
 </code></pre>
 
@@ -251,15 +256,15 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE
 </code></pre>
 
 <pre><code>##   mu sample_size  t_CI  z_CI REPLICATIONS SIM_TIME
-## 1  0          10 0.946 0.914        10000    1.487
-## 2  5          10 0.948 0.913        10000    1.055
-## 3 10          10 0.953 0.921        10000    1.032
-## 4  0          20 0.952 0.937        10000    1.096
-## 5  5          20 0.952 0.937        10000    1.037
-## 6 10          20 0.953 0.937        10000    0.965
-## 7  0          30 0.949 0.938        10000    1.073
-## 8  5          30 0.948 0.938        10000    1.152
-## 9 10          30 0.949 0.941        10000    1.007
+## 1  0          10 0.951 0.920        10000    1.452
+## 2  5          10 0.952 0.919        10000    1.086
+## 3 10          10 0.953 0.922        10000    1.038
+## 4  0          20 0.948 0.933        10000    1.191
+## 5  5          20 0.952 0.937        10000    1.008
+## 6 10          20 0.950 0.933        10000    1.069
+## 7  0          30 0.947 0.938        10000    0.986
+## 8  5          30 0.948 0.938        10000    1.030
+## 9 10          30 0.950 0.941        10000    1.135
 </code></pre>
 
 <p>From these results it&#39;s clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distriubtion CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.</p>
@@ -269,9 +274,16 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE
 <p>The above simulation called the <code>ECR()</code> function within <code>analyse</code>, however it is entirely possible to use this function within the <code>summarise</code> block by simply supplying matricies of confidence intervals instead.</p>
 
 <pre><code class="r">library(SimDesign)
+#SimDesign_functions(comments = FALSE)
+
+### Define design conditions. Here we want a finer range of values for plotting
+Design &lt;- expand.grid(mu = c(0, 5, 10), 
+                      sample_size = c(10, 20, 30))
+
+#-----------------------------------------------------------------
 
 Generate &lt;- function(condition, fixed_objects = NULL) {
-    ret &lt;- rnorm(condition$sample_size, condition$mu)
+    ret &lt;- with(condition, rnorm(sample_size, mu))
     ret
 }
 
@@ -297,13 +309,11 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_li
     ret
 }
 
-### Define design conditions and number of replications. Here we want a finer range of values for plotting
-Design &lt;- expand.grid(mu = c(0, 5, 10), sample_size = c(10, 20, 30))
-replications &lt;- 10000
+#-----------------------------------------------------------------
 
 ### Run the simulation
-results &lt;- runSimulation(Design, replications, verbose=FALSE, parallel = FALSE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, edit=&#39;summarise&#39;)
+results &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel = FALSE,
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit=&#39;none&#39;)
 </code></pre>
 
 <p>Many secondary function in <code>SimDesign</code> have this type of flexibilty, therefore it&#39;s generally useful to refer to the documentation to help think about easier ways to summarise your results.</p>

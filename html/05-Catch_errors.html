@@ -210,7 +210,7 @@ hr {
 <p>As usual, define the functions of interest. </p>
 
 <pre><code class="r">library(SimDesign)
-# SimDesign_functions()
+# SimDesign_functions(comments=FALSE)
 
 Design &lt;- data.frame(N = c(10,20,30))
 </code></pre>
@@ -261,9 +261,9 @@ Completed: 100%,   Previous condition time: 0.0,  Total elapsed time: 0.1
 </code></pre>
 
 <pre><code>##    N     bias REPLICATIONS SIM_TIME
-## 1 10 -0.04329          100    0.037
-## 2 20  0.01684          100    0.037
-## 3 30 -0.00669          100    0.032
+## 1 10 -0.04329          100    0.042
+## 2 20  0.01684          100    0.041
+## 3 30 -0.00669          100    0.037
 ##   ERROR_MESSAGE: .Error : Error in t.test.default(&quot;invalid&quot;) : not enough &#39;x&#39; observations\n\n
 ## 1                                                                                            9
 ## 2                                                                                            5

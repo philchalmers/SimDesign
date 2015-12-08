@@ -211,9 +211,16 @@ hr {
 <h3>Define the functions</h3>
 
 <pre><code class="r">library(SimDesign)
+#SimDesign_functions(comments = FALSE)
+
+### Define design conditions. Here we want a finer range of values for plotting
+Design &lt;- expand.grid(mean_diff = seq(0, 1, by = .1), 
+                      sample_size = c(10, 20, 30))
+
+#--------------------------------------------------------------------
 
 Generate &lt;- function(condition, fixed_objects = NULL) {
-    ret &lt;- rnorm(condition$sample_size, condition$mean_diff)
+    ret &lt;- with(condition, rnorm(sample_size, mean_diff)) #wrap in with() rather than using $
     ret
 }
 
@@ -227,12 +234,10 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_li
     ret
 }
 
-### Define design conditions and number of replications. Here we want a finer range of values for plotting
-Design &lt;- expand.grid(mean_diff = seq(0, 1, by = .1), sample_size = c(10, 20, 30))
-replications &lt;- 2000
+#--------------------------------------------------------------------
 
 ### Run the simulation
-results &lt;- runSimulation(Design, replications, verbose=FALSE,
+results &lt;- runSimulation(Design, replications=2000, verbose=FALSE,
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit=&#39;none&#39;)
 </code></pre>
 
@@ -240,39 +245,39 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE,
 </code></pre>
 
 <pre><code>##    mean_diff sample_size      p REPLICATIONS SIM_TIME
-## 1        0.0          10 0.0440         2000    0.486
-## 2        0.1          10 0.0610         2000    0.538
-## 3        0.2          10 0.0780         2000    0.476
-## 4        0.3          10 0.1380         2000    0.523
-## 5        0.4          10 0.2025         2000    0.480
-## 6        0.5          10 0.2940         2000    0.504
-## 7        0.6          10 0.3985         2000    0.493
-## 8        0.7          10 0.4805         2000    0.502
-## 9        0.8          10 0.6290         2000    0.506
-## 10       0.9          10 0.7100         2000    0.497
-## 11       1.0          10 0.8010         2000    0.534
-## 12       0.0          20 0.0550         2000    0.502
-## 13       0.1          20 0.0735         2000    0.542
-## 14       0.2          20 0.1365         2000    0.526
-## 15       0.3          20 0.2455         2000    0.676
-## 16       0.4          20 0.4090         2000    0.501
-## 17       0.5          20 0.5650         2000    0.480
-## 18       0.6          20 0.7205         2000    0.454
-## 19       0.7          20 0.8415         2000    0.443
-## 20       0.8          20 0.9265         2000    0.467
-## 21       0.9          20 0.9685         2000    0.456
-## 22       1.0          20 0.9905         2000    0.501
-## 23       0.0          30 0.0480         2000    0.513
-## 24       0.1          30 0.0840         2000    0.541
-## 25       0.2          30 0.1975         2000    0.505
-## 26       0.3          30 0.3820         2000    0.478
-## 27       0.4          30 0.5630         2000    0.472
-## 28       0.5          30 0.7620         2000    0.479
-## 29       0.6          30 0.8855         2000    0.488
-## 30       0.7          30 0.9525         2000    0.484
+## 1        0.0          10 0.0440         2000    0.467
+## 2        0.1          10 0.0610         2000    0.448
+## 3        0.2          10 0.0780         2000    0.461
+## 4        0.3          10 0.1380         2000    0.462
+## 5        0.4          10 0.2025         2000    0.450
+## 6        0.5          10 0.2940         2000    0.567
+## 7        0.6          10 0.3985         2000    0.423
+## 8        0.7          10 0.4805         2000    0.424
+## 9        0.8          10 0.6290         2000    0.423
+## 10       0.9          10 0.7100         2000    0.425
+## 11       1.0          10 0.8010         2000    0.454
+## 12       0.0          20 0.0550         2000    0.448
+## 13       0.1          20 0.0735         2000    0.447
+## 14       0.2          20 0.1365         2000    0.447
+## 15       0.3          20 0.2455         2000    0.450
+## 16       0.4          20 0.4090         2000    0.462
+## 17       0.5          20 0.5650         2000    0.459
+## 18       0.6          20 0.7205         2000    0.460
+## 19       0.7          20 0.8415         2000    0.462
+## 20       0.8          20 0.9265         2000    0.491
+## 21       0.9          20 0.9685         2000    0.503
+## 22       1.0          20 0.9905         2000    0.497
+## 23       0.0          30 0.0480         2000    0.459
+## 24       0.1          30 0.0840         2000    0.469
+## 25       0.2          30 0.1975         2000    0.457
+## 26       0.3          30 0.3820         2000    0.480
+## 27       0.4          30 0.5630         2000    0.467
+## 28       0.5          30 0.7620         2000    0.464
+## 29       0.6          30 0.8855         2000    0.466
+## 30       0.7          30 0.9525         2000    0.474
 ## 31       0.8          30 0.9915         2000    0.486
-## 32       0.9          30 0.9985         2000    0.488
-## 33       1.0          30 1.0000         2000    0.490
+## 32       0.9          30 0.9985         2000    0.482
+## 33       1.0          30 1.0000         2000    0.478
 </code></pre>
 
 <p>A power curve is created by placing the detection rates on a \(y\)-axis and including different factors on the x-axis and other aesthetics (shading, colours, etc). Here we use <code>ggplot2</code> to construct suitable power-curves.</p>
@@ -305,7 +310,7 @@ pwr.t.test(d=0.5, n=30, sig.level=0.05, type=&quot;one.sample&quot;, alternative
 </code></pre>
 
 <pre><code>##    mean_diff sample_size     p REPLICATIONS SIM_TIME
-## 28       0.5          30 0.762         2000    0.479
+## 28       0.5          30 0.762         2000    0.464
 </code></pre>
 
 <pre><code class="r">pwr.t.test(d=0.5, n=10, sig.level=0.05, type=&quot;one.sample&quot;, alternative=&quot;two.sided&quot;)
@@ -325,7 +330,7 @@ pwr.t.test(d=0.5, n=30, sig.level=0.05, type=&quot;one.sample&quot;, alternative
 </code></pre>
 
 <pre><code>##   mean_diff sample_size     p REPLICATIONS SIM_TIME
-## 6       0.5          10 0.294         2000    0.504
+## 6       0.5          10 0.294         2000    0.567
 </code></pre>
 
 </body>

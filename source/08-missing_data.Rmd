@@ -89,7 +89,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     dat
 }
 
-results <- runSimulation(Design, replications, verbose=FALSE, parallel = TRUE,
+results <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
 ```
 
