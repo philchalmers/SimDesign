@@ -24,10 +24,11 @@ when defining your simulation.
 \examples{
 
 SimDesign_functions()
+SimDesign_functions(comments=FALSE) #without comments
 
 \dontrun{
 
-# write output files
+# write output to two files
 SimDesign_functions('mysim')
 
 # write output files to a single file without comments
