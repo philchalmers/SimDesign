@@ -43,8 +43,8 @@ This behavior is indeed a bit strange, but it's one of R's quirks. Unfortunately
 ```{r}
 library(parallel)
 cl <- makeCluster(2)
-res <- try(parSapply(cl=cl, 1:4, myfun), silent=TRUE)
-print(res)
+res <- try(parSapply(cl=cl, 1:4, myfun))
+res
 ```
 
 Exporting the objects to the cluster fixes the issue. 
@@ -56,9 +56,57 @@ parSapply(cl=cl, 1:4, myfun)
 
 The same reasoning above applies to functions defined in the R workspace as well, including functions defined within external R packages. Hence, in order to use functions from other packages they must either be explicitly loaded with `require()` or `library()` within the distributed code, or referenced via their Namespace with the `::` operator (e.g., `mvtnorm::rmvtnorm()`).
 
+# Using functions from the workspace (cannot be run in parallel)
+
+The following example demonstraes how to run a simulation which looks for the functions defined in the R workspace. However, this will throw errors when the `parallel = TRUE` flag is used because these objects are not visiable across all nodes.
+
+```{r}
+library(SimDesign)
+
+Generate <- function(condition, fixed_objects = NULL) {
+    ret <- my_gen_fun(condition$N, sd=SD)
+    ret
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+    ret <- my_analyse_fun(dat)
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+    ret <- EDR(results, alpha = .05)
+    ret
+}
+
+### Define design conditions and number of replications
+Design <- expand.grid(N = c(10, 20, 30))
+replications <- 1000
+
+# define custom functions and objects (or use source() to read these in from an external file)
+SD <- 2
+my_gen_fun <- function(n, sd) rnorm(n, sd = sd)
+my_analyse_fun <- function(x) c(p = t.test(x)$p.value)
+
+### Run the simulation
+results <- runSimulation(Design, replications, verbose=FALSE, 
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
+results
+```
+
+Below demonstrates the consequences of calling workspace functions though.  
+
+```{r}
+results <- try(runSimulation(Design, replications, verbose=FALSE, 
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
+                         parallel = TRUE))
+results
+```
+
+Fortunately, `SimDesign` has built-in fail-safe utilities which cause the simulation to terminate quickly and suggest where the problem occured. 
+
 # Exporting functions and objects example (required when running in parallel)
 
-In order to make functions and objects safely visible in `SimDesign` the strategy is very simple: wrap all desired objects and functions into a named list, and pass this to the `fixed_objects` argument. From here, elements can be indexed using the `$` operator, or whatever other method may be convenient.
+In order to make functions and objects safely visible in `SimDesign` the strategy is very simple: wrap all desired objects and functions into a named list, and pass this to the `fixed_objects` argument. From here, elements can be indexed using the `$` operator or `with()` function, or whatever other method may be convenient.
 
 Note: An alternative approach is simply to define/source the functions and objects within the respective `SimDesign` functions, that way they will clearly be visible at runtime. The following approach is really only useful when the defined objects and functions contain a large amount of code, and therefore were likely initially `source()`'ed into the workspace from an external file (for ease of readability).
 
@@ -66,13 +114,19 @@ Note: An alternative approach is simply to define/source the functions and objec
 library(SimDesign)
 
 Generate <- function(condition, fixed_objects = NULL) {
-    ret <- fixed_objects$my_gen_fun(condition$N, sd=fixed_objects$SD)
+    ret <- with(fixed_objects, my_gen_fun(condition$N, sd=SD))
+    
+    ### equivalent approach with $ operator
+    # ret <- fixed_objects$my_gen_fun(condition$N, sd=fixed_objects$SD)
     ret
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
-    my_analyse_fun <- fixed_objects$my_analyse_fun
+    my_analyse_fun <- fixed_objects$my_analyse_fun #explicitly pull out function
     ret <- my_analyse_fun(dat)
+    
+    ### analogously, using with()
+    # ret <- with(fixed_objects, my_analyse_fun(dat))
     ret
 }
 
