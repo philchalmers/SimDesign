@@ -148,8 +148,7 @@
 #' @param ncores number of cores to be used in parallel execution. Default uses all available
 #'
 #' @param filename the name of the .rds file to save the final simulation results to.
-#'   Default is the system name with
-#'   the number of replications and 'Final' appended to the string
+#'   Default is the system name with the number of replications and 'Final' appended to the string
 #'
 #' @param tmpfilename the name of the temporary file, default is the system name with 'tmpsim.rds'
 #'   appended at the end. This file will be
@@ -450,10 +449,18 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         Result_list <- readRDS(tmpfilename)
         start <- min(which(sapply(Result_list, is.null)))
     }
-    if(save_results)
-        dir.create(save_results_dirname, showWarnings = FALSE)
-    if(save_generate_data)
-        dir.create(save_generate_data_dirname, showWarnings = FALSE)
+    if(save_results){
+        if(dir.exists(save_results_dirname) && !file.exists(tmpfilename))
+            stop(save_results_dirname, ' directory already exists. ',
+                    'Please fix by modifying the save_results_dirname input.', call.=FALSE)
+        dir.create(save_results_dirname, showWarnings = !file.exists(tmpfilename))
+    }
+    if(save_generate_data){
+        if(dir.exists(save_generate_data_dirname) && !file.exists(tmpfilename))
+            stop(save_generate_data_dirname, ' directory already exists. ',
+                 'Please fix by modifying the save_generate_data_dirname input.', call.=FALSE)
+        dir.create(save_generate_data_dirname, showWarnings = !file.exists(tmpfilename))
+    }
     for(i in start:nrow(design)){
         stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
         if(verbose)

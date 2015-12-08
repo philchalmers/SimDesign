@@ -88,8 +88,7 @@ but in the event that a node breaks down while running a simulation the results 
 may be resumed on another computer by changing the name of the node to match the broken computer}
 
 \item{filename}{the name of the .rds file to save the final simulation results to.
-Default is the system name with
-the number of replications and 'Final' appended to the string}
+Default is the system name with the number of replications and 'Final' appended to the string}
 
 \item{tmpfilename}{the name of the temporary file, default is the system name with 'tmpsim.rds'
 appended at the end. This file will be

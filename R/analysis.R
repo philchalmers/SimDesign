@@ -63,17 +63,6 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     }
     if(save_results){
         tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
-        if(file.exists(tmpfilename)){
-            warning('save_results filename already exists, creating new file name. Consider changing save_results_dirname',
-                    ' to avoid this, or remove obsolete save_results files from the directory',
-                    call.=FALSE)
-            tmp <- paste0(save_results_dirname, '/results-row_', condition$ID)
-            tmpcount <- 1L
-            while(file.exists(tmpfilename)){
-                tmpfilename <- paste0(tmp, '-', tmpcount, '.rds')
-                tmpcount <- tmpcount + 1L
-            }
-        }
         saveRDS(list(condition=condition, results=results, errors=try_errors), tmpfilename)
     }
     sim_results <- Functions$summarise(results=results, parameters_list=parameters,
