@@ -32,3 +32,11 @@ check_error <- function(...){
         if(is(object[[i]], 'try-error'))
             stop(gsub('Error : ', '', object[[i]][1L]), call.=FALSE)
 }
+
+# return a character vector of functions defined in .GlobalEnv
+parent_env_fun <- function(){
+    nms <- ls(envir = globalenv())
+    is_fun <- sapply(nms, function(x, envir) is.function(get(x, envir=envir)),
+                     envir = globalenv())
+    return(nms[is_fun])
+}

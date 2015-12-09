@@ -7,14 +7,13 @@
 #' generated data across conditions and replications) are discarded. For longer simulations, however,
 #' it is recommended to use \code{save = TRUE} and/or \code{save_results = TRUE} to temporarily save the
 #' simulation state and to write results to separate external .rds files, respectively.
-#' Supports parallel and cluster computing, global and local debugging, error handling, and is
-#' designed to be cross-platform.
+#' Supports parallel and cluster computing, global and local debugging, error handling (including fail-safe
+#' stopping when functions fail too often, even across nodes), and is designed to be cross-platform.
 #'
 #' For a skeleton version of the work-flow
 #' which may be useful when initially defining a simulation, see \code{\link{SimDesign_functions}}.
 #' Additional examples can be found on the package wiki, located at
 #' \url{https://github.com/philchalmers/SimDesign/wiki}.
-#'
 #'
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
 #'
@@ -39,6 +38,14 @@
 #' was used, and, if \code{include_errors = TRUE},
 #' columns containing the number of replications due to \code{try()} errors where the error messages
 #' represent the names of the columns prefixed with a \code{ERROR_MESSAGE} string.
+#'
+#' Note that when running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE})
+#' R objects defined in the global environment will not be visible across nodes. Hence, you may see errors
+#' such as \code{Error: object 'something' not found}. To avoid this simply pass additional objects to the
+#' \code{fixed_objects} input (usually it's convenient to supply a named list of these objects).
+#' That being said, \emph{custom functions defined in the global environment are exported across
+#' nodes automatically}. This makes it convenient when writing code because custom functions will
+#' always be available across nodes.
 #'
 #' @section Storing and resuming temporary results:
 #'
@@ -96,11 +103,10 @@
 #' @param replications number of replication to perform per condition (i.e., each row in \code{design}).
 #'   Must be greater than 0
 #'
-#' @param fixed_objects (optional) an object (usually a list) containing additional objects and functions
-#'   defined by the user that will remain fixed across conditions. This is useful when including
-#'   user defined function not available in installed packages, when including
-#'   long fixed vectors of population parameters, when including data
-#'   which should be used across all conditions and replications (e.g., including a fixed design matrix
+#' @param fixed_objects (optional) an object (usually a list) containing additional user-defined objects
+#'   that should remain fixed across conditions. This is useful when including
+#'   long fixed vectors of population parameters, data
+#'   that should be used across all conditions and replications (e.g., including a fixed design matrix
 #'   for linear regression), or simply can be used to control constant global elements such as sample size
 #'
 #' @param parallel logical; use parallel processing from the \code{parallel} package over each
@@ -433,10 +439,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             on.exit(undebug(Functions[[edit]]))
         }
     }
+    export_funs <- parent_env_fun()
     cl <- NULL
     if(parallel){
         cl <- parallel::makeCluster(ncores)
         on.exit(parallel::stopCluster(cl))
+        parallel::clusterExport(cl=cl, export_funs)
     }
     start <- 1L
     Result_list <- vector('list', nrow(design))
@@ -479,7 +487,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                           save_results_dirname=save_results_dirname,
                                                           save_generate_data=save_generate_data,
                                                           save_generate_data_dirname=save_generate_data_dirname,
-                                                          max_errors=max_errors))),
+                                                          max_errors=max_errors,
+                                                          export_funs=export_funs))),
                                        check.names=FALSE)
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0

@@ -11,7 +11,8 @@
 #
 Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI, seed,
                      save_results, save_results_dirname, max_errors,
-                     save_generate_data, save_generate_data_dirname)
+                     save_generate_data, save_generate_data_dirname,
+                     export_funs)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -27,7 +28,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     } else {
         if(MPI){
             i <- 1L
-            cell_results <- foreach(i=1L:replications) %dopar%
+            cell_results <- foreach(i=1L:replications, .export=export_funs) %dopar%
                 mainsim(i, condition=condition, generate=Functions$generate,
                      analyse=Functions$analyse, fixed_objects=fixed_objects,
                      max_errors=max_errors, save_generate_data=save_generate_data,
