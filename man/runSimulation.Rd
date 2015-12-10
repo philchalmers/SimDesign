@@ -123,6 +123,12 @@ Default is \code{'SimDesign_generate_data'}}
 
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 }
+\value{
+a \code{data.frame} (also of class \code{'SimDesign'})
+  with the original \code{design} conditions in the left-most columns,
+  simulation results in the middle columns, additional information (such as REPLICATIONS and SIM_TIME),
+  to the right of the results, and ERROR_MESSAGES in the right-more columns
+}
 \description{
 This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
 and the number of replications. Results can be saved as temporary files in case of interruptions

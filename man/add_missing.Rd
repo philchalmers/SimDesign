@@ -28,11 +28,11 @@ Default method replaces input values with a MCAR scheme (where on average 10\% o
 replaced with \code{NA}s). MAR and MNAR are supported by replacing the default \code{FUN} argument.
 }
 \details{
-\describe{
-  Given an input vector y, and other relavent variables
-  inside (X) and outside (Z) the data-set, the three types of missingness are:
+Given an input vector y, and other relavent variables
+inside (X) and outside (Z) the data-set, the three types of missingness are:
 
-\item{MCAR}{Missing completely at random (MCAR). This is realized by randomly sampling the values of the
+\describe{
+  \item{MCAR}{Missing completely at random (MCAR). This is realized by randomly sampling the values of the
     input vector (y) irrespective of the possible values in X and Z.
     Therefore missing values are randomly sampled and do not depend on any data characteristics and
     are truely random}

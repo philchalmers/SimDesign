@@ -83,10 +83,10 @@ bias <- function(estimate, parameter = NULL, relative = FALSE){
 #'   If \code{NULL} then it will be assumed that the \code{estimate} input is in a deviation
 #'   form (therefore \code{sqrt(mean(estimate^2))} will be returned)
 #'
-#' @param type type of deviation to compute. Can be 'RMSE' (default) for the root mean square-error,
-#'   'NRMSE' for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
-#'   'NRMSE_SD' for the normalized RMSE with the standard deviation (RMSE / sd(estimate)),
-#'   or 'CV' for the coefficient of variation
+#' @param type type of deviation to compute. Can be \code{'RMSE'} (default) for the root mean square-error,
+#'   \code{'NRMSE'} for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
+#'   \code{'NRMSE_SD'} for the normalized RMSE with the standard deviation (RMSE / sd(estimate)),
+#'   or \code{'CV'} for the coefficient of variation
 #'
 #' @return returns a \code{numeric} vector indicating the overall average deviation in the estimates
 #'
@@ -162,9 +162,9 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE'){
 #'   If \code{NULL}, then it will be assumed that the \code{estimate} input is in a deviation
 #'   form (therefore \code{mean(abs(estimate))} will be returned)
 #'
-#' @param type type of deviation to compute. Can be 'MAE' (default) for the mean absolute error,
-#'   'NMSE' for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
-#'   'NMSE_SD' for the normalized MAE by the standard deviation (MAE / sd(estimate)),
+#' @param type type of deviation to compute. Can be \code{'MAE'} (default) for the mean absolute error,
+#'   \code{'NMSE'} for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
+#'   \code{'NMSE_SD'} for the normalized MAE by the standard deviation (MAE / sd(estimate)),
 #'
 #' @return returns a numeric vector indicating the overall mean absolute error in the estimates
 #'

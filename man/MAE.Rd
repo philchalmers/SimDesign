@@ -17,9 +17,9 @@ recycled for each column.
 If \code{NULL}, then it will be assumed that the \code{estimate} input is in a deviation
 form (therefore \code{mean(abs(estimate))} will be returned)}
 
-\item{type}{type of deviation to compute. Can be 'MAE' (default) for the mean absolute error,
-'NMSE' for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
-'NMSE_SD' for the normalized MAE by the standard deviation (MAE / sd(estimate)),}
+\item{type}{type of deviation to compute. Can be \code{'MAE'} (default) for the mean absolute error,
+\code{'NMSE'} for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
+\code{'NMSE_SD'} for the normalized MAE by the standard deviation (MAE / sd(estimate)),}
 }
 \value{
 returns a numeric vector indicating the overall mean absolute error in the estimates

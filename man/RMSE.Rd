@@ -17,10 +17,10 @@ the value will be recycled for each column.
 If \code{NULL} then it will be assumed that the \code{estimate} input is in a deviation
 form (therefore \code{sqrt(mean(estimate^2))} will be returned)}
 
-\item{type}{type of deviation to compute. Can be 'RMSE' (default) for the root mean square-error,
-'NRMSE' for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
-'NRMSE_SD' for the normalized RMSE with the standard deviation (RMSE / sd(estimate)),
-or 'CV' for the coefficient of variation}
+\item{type}{type of deviation to compute. Can be \code{'RMSE'} (default) for the root mean square-error,
+\code{'NRMSE'} for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
+\code{'NRMSE_SD'} for the normalized RMSE with the standard deviation (RMSE / sd(estimate)),
+or \code{'CV'} for the coefficient of variation}
 }
 \value{
 returns a \code{numeric} vector indicating the overall average deviation in the estimates

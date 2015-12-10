@@ -197,6 +197,12 @@
 #'
 #' @param verbose logical; print messages to the R console? Default is \code{TRUE}
 #'
+#'
+#' @return a \code{data.frame} (also of class \code{'SimDesign'})
+#'   with the original \code{design} conditions in the left-most columns,
+#'   simulation results in the middle columns, additional information (such as REPLICATIONS and SIM_TIME),
+#'   to the right of the results, and ERROR_MESSAGES in the right-more columns
+#'
 #' @aliases runSimulation
 #'
 #' @seealso \code{\link{generate}}, \code{\link{analyse}}, \code{\link{summarise}},
