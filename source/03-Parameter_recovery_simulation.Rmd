@@ -71,7 +71,6 @@ pars_10 <- rbind(a = round(rlnorm(10, .3, .5)/1.702, 2),
 pars_20 <- rbind(a = round(rlnorm(20, .3, .5)/1.702, 2),
                  d = round(rnorm(20, 0, .5)/1.702, 2))
 (pars <- list(ten=pars_10, twenty=pars_20))
-pars$P_ogive <- P_ogive
 ```
 
 ```{r eval=FALSE}
@@ -105,7 +104,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     colnames(dat) <- paste0('item_', 1:nitems)
     Theta <- rnorm(N)
     for(j in 1:nitems){
-        p <- fixed_objects$P_ogive(a[j], d[j], Theta)
+        p <- P_ogive(a[j], d[j], Theta)
         for(i in 1:N)
             dat[i,j] <- sample(c(1,0), 1, prob = c(p[i], 1 - p[i]))
     }
