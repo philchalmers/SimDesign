@@ -8,20 +8,20 @@ summarise(condition, results, fixed_objects = NULL, parameters_list = NULL)
 }
 \arguments{
 \item{condition}{a single row from the \code{design} input from \code{\link{runSimulation}}
-(as a data.frame), indicating the simulation conditions}
+(as a \code{data.frame}), indicating the simulation conditions}
 
-\item{results}{a data.frame (if \code{analyse} returned a numeric vector) or a list (if
-\code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
+\item{results}{a \code{data.frame} (if \code{analyse} returned a numeric vector) or a \code{list}
+(if \code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
 where each cell is stored in a unique row/list element}
 
 \item{fixed_objects}{object passed down from \code{\link{runSimulation}}}
 
 \item{parameters_list}{an (optional) list containing all the 'parameters' elements generated
-from \code{\link{generate}}, where each repetition is stored in a unique element. If a list was
-not returned from \code{\link{generate}} then this will be NULL}
+from \code{\link{generate}}, where each repetition is stored in a unique element. If a \code{list}
+was not returned from \code{\link{generate}} then this will be \code{NULL}}
 }
 \value{
-must return a named numeric vector with the desired meta-simulation results
+must return a named \code{numeric} vector with the desired meta-simulation results
 }
 \description{
 This collapses the simulation results within each condition to composite
@@ -30,7 +30,7 @@ estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 \examples{
 \dontrun{
 
-mysummarise <- function(condition, results, fixed_conditoins = NULL, parameters_list = NULL){
+mysummarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL){
 
     #convert to matrix for convenience (if helpful)
     cell_results <- do.call(rbind, results)
@@ -55,7 +55,7 @@ mysummarise <- function(condition, results, fixed_conditoins = NULL, parameters_
 
 }
 \seealso{
-\code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}}, \code{\link{ECR}},
-  \code{\link{MAE}}
+\code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}},
+  \code{\link{ECR}}, \code{\link{MAE}}
 }
 

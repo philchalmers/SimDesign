@@ -1,12 +1,12 @@
 #' Collapse separate simulation files into a single result
 #'
-#' This function grabs all .rds files in the working directory and aggregates them into a single
-#' data.frame object.
+#' This function grabs all \code{.rds} files in the working directory and aggregates them into a single
+#' \code{data.frame} object.
 #'
-#' @param files a character vector containing the names of the simulation files. If NULL, all files
-#'   in the working directory ending in .rds will be used
+#' @param files a \code{character} vector containing the names of the simulation files. If \code{NULL},
+#'   all files in the working directory ending in \code{.rds} will be used
 #'
-#' @return a data.frame with the (weighted) average of the simulation results
+#' @return a \code{data.frame} with the (weighted) average of the simulation results
 #'
 #' @aliases aggregate_simulations
 #'

@@ -7,15 +7,15 @@
 RE(x, MSE = FALSE)
 }
 \arguments{
-\item{x}{a vector or matrix of root mean square error values (see \code{\link{RMSE}}), where the first
-element/row will be used as the reference. Otherwise, the object could contain MSE values if the flag
-\code{MSE = TRUE} is also included}
+\item{x}{a \code{numeric} vector of root mean square error values (see \code{\link{RMSE}}),
+where the first element will be used as the reference. Otherwise, the object could contain
+MSE values if the flag \code{MSE = TRUE} is also included}
 
 \item{MSE}{logical; are the input value mean squared errors instead of root mean square errors?}
 }
 \value{
-returns a vector/matrix of ratios indicating the relative efficiency compared to the first
-  estimator (which by default will be equal to 1). Values less than 1 indicate better efficiency, while
+returns a \code{vector} of variance ratios indicating the relative efficiency compared
+  to the first estimator. Values less than 1 indicate better efficiency, while
   values greater than 1 indicate worse efficiency
 }
 \description{

@@ -2,14 +2,15 @@
 #'
 #' Generate data from a single row in the \code{design} input (see \code{\link{runSimulation}}).
 #'
-#' @param condition a single row from the design input (as a data.frame), indicating the
+#' @param condition a single row from the \code{design} input (as a \code{data.frame}), indicating the
 #'   simulation conditions
 #'
 #' @param fixed_objects object passed down from \code{\link{runSimulation}}
 #'
-#' @return returns a single object containing the data to be analysed (usually a vector, matrix, or data.frame),
-#'   or a list with a \code{'dat'} and \code{'parameters'} element. If a list is returned, the \code{'dat'}
-#'   element should be the observed data object while the
+#' @return returns a single object containing the data to be analysed (usually a
+#'   \code{vector}, \code{matrix}, or \code{data.frame}),
+#'   or a list with a the elements \code{'dat'} and \code{'parameters'}. If a list is returned
+#'   the \code{'dat'} element should be the observed data object while the
 #'   \code{'parameters'} element should be a named list containing the simulated parameters
 #'   (if there are any. Otherwise, this could just be an empty list)
 #'
@@ -47,26 +48,30 @@ generate <- function(condition, fixed_objects = NULL) NULL
 #'
 #' Computes all relevant test statistics, parameter estimates, detection rates, and so on.
 #' This is the computational heavy lifting portion of the Monte Carlo simulation.
-#' In some cases, it may be easier to change
-#' the output to a named list containing different parameter configurations (i.e., when
+#'
+#' In some cases, it may be easier to change the output to a named \code{list} containing
+#' different parameter configurations (e.g., when
 #' determining RMSE values for a large set of population parameters).
 #'
-#' Be sure to make heavy use
-#' of \code{\link{try}} combinations and throw a \code{\link{stop}}/\code{\link{check_error}}
-#' if an iterative function fails
-#' to converge. This will cause the function to stop, and \code{\link{generate}} will be called again
+#' Also, be sure to make heavy use of \code{\link{try}} combinations and throw
+#' a \code{\link{stop}}/\code{\link{check_error}} if an iterative function fails to converge.
+#' This will cause the function to halt, and \code{\link{generate}} will be called again
 #' to obtain a different dataset.
 #'
-#' @param dat the 'dat' object returned from the \code{\link{generate}} function (usually a data.frame, matrix,
-#'   or vector) if a list was returned, otherwise just the raw object defined from \code{\link{generate}}
+#' @param dat the \code{dat} object returned from the \code{\link{generate}} function
+#'   (usually a \code{data.frame}, \code{matrix}, or \code{vector}).
+#'
 #' @param parameters the (optional) list object named 'parameters' returned from the
-#'   \code{\link{generate}} function when a list is returned. Otherwise, this will be an empty list
-#' @param condition a single row from the design input (as a data.frame), indicating the
+#'   \code{\link{generate}} function when a list is returned. Otherwise, this will be an just an
+#'   empty list
+#'
+#' @param condition a single row from the design input (as a \code{data.frame}), indicating the
 #'   simulation conditions
+#'
 #' @param fixed_objects object passed down from \code{\link{runSimulation}}
 #'
-#' @return returns a named numeric vector with the values of interest (e.g., p-values,
-#'   effects sizes, etc), or a list containing values of interest (e.g., separate matrix
+#' @return returns a named \code{numeric} vector with the values of interest (e.g., p-values,
+#'   effects sizes, etc), or a \code{list} containing values of interest (e.g., separate matrix
 #'   and vector of parameter estimates corresponding to elements in \code{parameters})
 #'
 #' @seealso \code{\link{try}}, \code{\link{check_error}}, \code{\link{stop}}
@@ -110,27 +115,27 @@ analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) NUL
 #' This collapses the simulation results within each condition to composite
 #' estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 #'
-#' @param results a data.frame (if \code{analyse} returned a numeric vector) or a list (if
-#'   \code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
+#' @param results a \code{data.frame} (if \code{analyse} returned a numeric vector) or a \code{list}
+#'   (if \code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
 #'   where each cell is stored in a unique row/list element
 #' @param parameters_list an (optional) list containing all the 'parameters' elements generated
-#'   from \code{\link{generate}}, where each repetition is stored in a unique element. If a list was
-#'   not returned from \code{\link{generate}} then this will be NULL
+#'   from \code{\link{generate}}, where each repetition is stored in a unique element. If a \code{list}
+#'   was not returned from \code{\link{generate}} then this will be \code{NULL}
 #' @param condition a single row from the \code{design} input from \code{\link{runSimulation}}
-#'   (as a data.frame), indicating the simulation conditions
+#'   (as a \code{data.frame}), indicating the simulation conditions
 #' @param fixed_objects object passed down from \code{\link{runSimulation}}
 #'
 #' @aliases summarise
 #'
-#' @return must return a named numeric vector with the desired meta-simulation results
+#' @return must return a named \code{numeric} vector with the desired meta-simulation results
 #'
-#' @seealso \code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}}, \code{\link{ECR}},
-#'   \code{\link{MAE}}
+#' @seealso \code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}},
+#'   \code{\link{ECR}}, \code{\link{MAE}}
 #'
 #' @examples
 #' \dontrun{
 #'
-#' mysummarise <- function(condition, results, fixed_conditoins = NULL, parameters_list = NULL){
+#' mysummarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL){
 #'
 #'     #convert to matrix for convenience (if helpful)
 #'     cell_results <- do.call(rbind, results)

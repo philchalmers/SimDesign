@@ -1,8 +1,9 @@
 #' Check if object contains an error and stop flow
 #'
-#' Check if the supplied object, which has previously been wrapped in a \code{\link{try}} function,
-#' contains an error. If so, this function will throw an error to stop the work-flow. This function
-#' works sequentially, therefore the first object to demonstrate a try-error in input will generate the error.
+#' Check if the supplied object(s), which have previously been wrapped in a \code{\link{try}} function,
+#' contain any errors. If so, this function will throw an error to stop the work-flow. This function
+#' works sequentially, therefore the first object to demonstrate a \code{try-error} in the inputs
+#' arguments will be the first to throw an error.
 #'
 #' @param ... objects that have been returned from a \code{\link{try}} call
 #'

@@ -7,9 +7,9 @@
 EDR(p, alpha)
 }
 \arguments{
-\item{p}{a vector or matrix/data.frame of p-values from the desired statistical estimator. If a matrix,
-each statistic must be organized by column where the number of rows is equal to the number
-of replications}
+\item{p}{a \code{numeric} vector or \code{matrix}/\code{data.frame} of p-values from the
+desired statistical estimator. If a \code{matrix}, each statistic must be organized by
+column, where the number of rows is equal to the number of replications}
 
 \item{alpha}{the nominal detection rate to be studied (typical values are .10, .05, and .01)}
 }

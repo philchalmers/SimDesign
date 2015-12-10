@@ -14,9 +14,8 @@ The tools provided control the structure and back-end of the Monte Carlo simulat
 by utilizing a generate-analyse-summarise strategy. The functions
 control common simulation issues such as re-simulating non-convergent results,
 support parallel back-end computations, save and restore temporary files,
-aggregate results across independent nodes, and provide native support for debugging..
-The primary function for
-organizing the simulations is \code{\link{runSimulation}}.
+aggregate results across independent nodes, and provide native support for debugging.
+The primary function for organizing the simulations is \code{\link{runSimulation}}.
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}

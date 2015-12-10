@@ -30,7 +30,8 @@ See \code{\link{generate}} for details}
 \item{summarise}{user-defined summary function to be used after all the replications have completed.
 See \code{\link{summarise}} for details}
 
-\item{fixed_objects}{(optional) an object (usually a list) containing additional user-defined objects
+\item{fixed_objects}{(optional) an object (usually a \code{list})
+containing additional user-defined objects
 that should remain fixed across conditions. This is useful when including
 long fixed vectors of population parameters, data
 that should be used across all conditions and replications (e.g., including a fixed design matrix
@@ -46,41 +47,42 @@ for linear regression), or simply can be used to control constant global element
   \code{psych::describe()})}
 
 \item{save}{logical; save the final simulation to the hard-drive? This is useful
-for simulations which require an extended amount of time. When TRUE, a temp file will be created
+for simulations which require an extended amount of time. When \code{TRUE}, a temp file will be created
 in the working directory which allows the simulation state to be saved and recovered (in case
-of power outages, crashes, etc). Default is FALSE}
+of power outages, crashes, etc). Default is \code{FALSE}}
 
-\item{save_results}{logical; save the results returned from \code{\link{analyse}} to external .rds files
-located in the defined \code{save_results_dirname} directory/folder?
+\item{save_results}{logical; save the results returned from \code{\link{analyse}} to external
+\code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
 Use this if you would like to keep track of the individual parameters returned from the analyses.
 Each saved object will contain a list of three elements containing the condition (row from \code{design}),
-results (as a list or matrix), and try-errors. When TRUE, a temp file will be used to track the simulation
-state (in case of power outages, crashes, etc). Default is FALSE}
+results (as a \code{list} or \code{matrix}), and try-errors. When \code{TRUE}, a temp file will be used to track the simulation
+state (in case of power outages, crashes, etc). Default is \code{FALSE}}
 
-\item{save_generate_data}{logical; save the data returned from \code{\link{generate}} to external .rds files
+\item{save_generate_data}{logical; save the data returned from \code{\link{generate}} to external \code{.rds} files
 located in the defined \code{save_generate_data_dirname} directory/folder?
-It is generally recommended to leave this argument as FALSE because saving datasets will often consume
+It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
 a large amount of disk space, and by and large saving data is not required or recommended for simulations.
-Default is FALSE}
+Default is \code{FALSE}}
 
 \item{max_errors}{the simulation will terminate when more than this number of errors are thrown in any
 given condition. The purpose of this is to indicate that likely something problematic is going
 wrong in the generate-analyse phases and should be inspected. Default is 50}
 
 \item{include_errors}{logical; include information about which error how often they occurred from
-\code{try()} chunks or \code{\link{check_error}}? If TRUE, this information will be stacked at the end
+\code{try()} chunks or \code{\link{check_error}}? If \code{TRUE}, this information will be stacked at the end
 of the returned simulation results with the name of the specific error used as the column name in the
-data.frame object, and the number of occurrences included as the value for each condition}
+data.frame object, and the number of occurrences included as the value for each condition.
+Default is \code{TRUE}}
 
-\item{MPI}{logical; use the \code{doMPI} package to run simulation in parallel on
-a cluster? Default is FALSE}
+\item{MPI}{logical; use the \code{foreach} package in a form usable by MPI to run simulation
+in parallel on a cluster? Default is \code{FALSE}}
 
 \item{seed}{a vector of integers to be used for reproducibility.
 The length of the vector must be equal the number of rows in \code{design}.
 This argument calls \code{\link{set.seed}} or
 \code{\link{clusterSetRNGStream}} for each condition, respectively,
 but will not be run when \code{MPI = TRUE}.
-Default is NULL, indicating that no seed is set for each condition}
+Default is \code{NULL}, indicating that no seed is set for each condition}
 
 \item{compname}{name of the computer running the simulation. Normally this doesn't need to be modified,
 but in the event that a node breaks down while running a simulation the results from the tmp files
@@ -98,13 +100,13 @@ This file will be deleted when the simulation is complete}
 \item{save_results_dirname}{a string indicating the name of the folder to save results objects to
 when \code{save_results = TRUE}. If a directory/folder does not exist
 in the current working directory then one will be created automatically.
-Default is 'SimDesign_results'}
+Default is \code{'SimDesign_results'}}
 
 \item{save_generate_data_dirname}{a string indicating the name of the folder to save data objects to
 when \code{save_generate_data = TRUE}. If a directory/folder does not exist
 in the current working directory then one will be created automatically. Within this folder nested
 directories will be created associated with each row in \code{design}.
-Default is 'SimDesign_generate_data'}
+Default is \code{'SimDesign_generate_data'}}
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
@@ -119,17 +121,18 @@ Default is 'SimDesign_generate_data'}
   debugging at specific lines (note: parallel computation flags will automatically be disabled
   when a \code{browser()} is detected)}
 
-\item{verbose}{logical; print messages to the R console?}
+\item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 }
 \description{
 This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
 and the number of replications. Results can be saved as temporary files in case of interruptions
 and may be restored by rerunning the exact function calls again, provided that the respective temp
 file can be found in the working directory. To conserve RAM, temporary objects (such as
-generated data across conditions and replications) are discarded. For longer simulations, however,
-it is recommended to use \code{save = TRUE} and/or \code{save_results = TRUE} to temporarily save the
-simulation state and to write results to separate external .rds files, respectively.
-Supports parallel and cluster computing, global and local debugging, error handling (including fail-safe
+generated data across conditions and replications) are discarded; however, these can be saved to the
+hard-disk by passing the appropriate flags. For longer simulations,
+it is recommended to use \code{save = TRUE} to temporarily save the
+simulation state. Function supports parallel and cluster computing,
+global and local debugging, error handling (including fail-safe
 stopping when functions fail too often, even across nodes), and is designed to be cross-platform.
 }
 \details{
@@ -163,12 +166,12 @@ columns containing the number of replications due to \code{try()} errors where t
 represent the names of the columns prefixed with a \code{ERROR_MESSAGE} string.
 
 Note that when running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE})
-R objects defined in the global environment will not be visible across nodes. Hence, you may see errors
-such as \code{Error: object 'something' not found}. To avoid this simply pass additional objects to the
+R objects defined in the global environment will \emph{not} be visible across nodes. Hence, you may see errors
+such as \code{Error: object 'something' not found}. To avoid this, simply pass additional objects to the
 \code{fixed_objects} input (usually it's convenient to supply a named list of these objects).
-That being said, \emph{custom functions defined in the global environment are exported across
+Fortunately, however, \emph{custom functions defined in the global environment are exported across
 nodes automatically}. This makes it convenient when writing code because custom functions will
-always be available across nodes.
+always be available across nodes if they are visiable in the R workspace.
 }
 \section{Storing and resuming temporary results}{
 
@@ -178,7 +181,7 @@ then the original code in
 the main source file need only be rerun again to resume the simulation.
 The saved temp file will be read into the function, and the simulation will continue where it left
 off before the simulation was terminated. Upon completion, a data.frame with the simulation
-will be returned in the R session and a '.rds' file will be saved to the hard-drive (with the
+will be returned in the R session and a \code{.rds} file will be saved to the hard-drive (with the
 file name corresponding to the \code{filename} argument below). To save the complete list of results returned
 from \code{\link{analyse}} to unique files use \code{save_results = TRUE}.
 }
@@ -209,7 +212,7 @@ aggregating the results using the \code{\link{aggregate_simulations}} function.
 
 For instance, if you have two computers available and wanted 500 replications you
 could pass \code{replications = 300} to one computer and \code{replications = 200} to the other along
-with a \code{save = TRUE} argument. This will create two distinct .rds files which can be
+with a \code{save = TRUE} argument. This will create two distinct \code{.rds} files which can be
 combined later with the \code{\link{aggregate_simulations}} function. The benefit of this approach over
 MPI is that computers need not be linked over a LAN network, and should the need arise the temporary
 simulation results can be migrated to another computer in case of a complete hardware failure by modifying

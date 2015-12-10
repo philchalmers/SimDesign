@@ -7,15 +7,16 @@
 generate(condition, fixed_objects = NULL)
 }
 \arguments{
-\item{condition}{a single row from the design input (as a data.frame), indicating the
+\item{condition}{a single row from the \code{design} input (as a \code{data.frame}), indicating the
 simulation conditions}
 
 \item{fixed_objects}{object passed down from \code{\link{runSimulation}}}
 }
 \value{
-returns a single object containing the data to be analysed (usually a vector, matrix, or data.frame),
-  or a list with a \code{'dat'} and \code{'parameters'} element. If a list is returned, the \code{'dat'}
-  element should be the observed data object while the
+returns a single object containing the data to be analysed (usually a
+  \code{vector}, \code{matrix}, or \code{data.frame}),
+  or a list with a the elements \code{'dat'} and \code{'parameters'}. If a list is returned
+  the \code{'dat'} element should be the observed data object while the
   \code{'parameters'} element should be a named list containing the simulated parameters
   (if there are any. Otherwise, this could just be an empty list)
 }

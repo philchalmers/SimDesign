@@ -7,23 +7,23 @@
 RMSE(estimate, parameter = NULL, type = "RMSE")
 }
 \arguments{
-\item{estimate}{a numeric vector or matrix/data.frame of parameter estimates. If a vector,
-the length is equal to the number of replications. If a matrix/data.frame,
-the number of rows must equal the number of replications}
+\item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame} of parameter estimates.
+If a vector, the length is equal to the number of replications. If a
+\code{matrix}/\code{data.frame}, the number of rows must equal the number of replications}
 
-\item{parameter}{a numeric scalar/vector indicating the fixed parameter values.
-If a single value is supplied and \code{estimate} is a matrix/data.frame then the value will be
-recycled for each column.
-If NULL, then it will be assumed that the \code{estimate} input is in a deviation
+\item{parameter}{a \code{numeric} scalar/vector indicating the fixed parameter values.
+If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame} then
+the value will be recycled for each column.
+If \code{NULL} then it will be assumed that the \code{estimate} input is in a deviation
 form (therefore \code{sqrt(mean(estimate^2))} will be returned)}
 
 \item{type}{type of deviation to compute. Can be 'RMSE' (default) for the root mean square-error,
 'NRMSE' for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
-'NRMSE_SD' for the normalized RMSE with the standard deviation (RMSE / sd(estimate)), or 'CV' for the coefficient of
-variation}
+'NRMSE_SD' for the normalized RMSE with the standard deviation (RMSE / sd(estimate)),
+or 'CV' for the coefficient of variation}
 }
 \value{
-returns a numeric vector indicating the overall average deviation in the estimates
+returns a \code{numeric} vector indicating the overall average deviation in the estimates
 }
 \description{
 Computes the average deviation (root mean square error; also known as the root mean square deviation)

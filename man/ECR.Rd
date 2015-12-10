@@ -7,8 +7,9 @@
 ECR(CIs, parameter)
 }
 \arguments{
-\item{CIs}{a matrix of confidence interval values for a given parameter value, where the first
-column indicates the lower confidence interval and the second column the upper confidence interval. If a
+\item{CIs}{a \code{numeric} vector or \code{matrix} of confidence interval values for a
+given parameter value, where the first element/column indicates the lower confidence interval
+and the second element/column the upper confidence interval. If a
 vector of length 2 is passed instead then the returned value will be either a 1 or 0 to indicate
 whether the parameter value was or was not within the interval, respectively}
 

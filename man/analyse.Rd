@@ -7,34 +7,35 @@
 analyse(condition, dat, fixed_objects = NULL, parameters = NULL)
 }
 \arguments{
-\item{condition}{a single row from the design input (as a data.frame), indicating the
+\item{condition}{a single row from the design input (as a \code{data.frame}), indicating the
 simulation conditions}
 
-\item{dat}{the 'dat' object returned from the \code{\link{generate}} function (usually a data.frame, matrix,
-or vector) if a list was returned, otherwise just the raw object defined from \code{\link{generate}}}
+\item{dat}{the \code{dat} object returned from the \code{\link{generate}} function
+(usually a \code{data.frame}, \code{matrix}, or \code{vector}).}
 
 \item{fixed_objects}{object passed down from \code{\link{runSimulation}}}
 
 \item{parameters}{the (optional) list object named 'parameters' returned from the
-\code{\link{generate}} function when a list is returned. Otherwise, this will be an empty list}
+\code{\link{generate}} function when a list is returned. Otherwise, this will be an just an
+empty list}
 }
 \value{
-returns a named numeric vector with the values of interest (e.g., p-values,
-  effects sizes, etc), or a list containing values of interest (e.g., separate matrix
+returns a named \code{numeric} vector with the values of interest (e.g., p-values,
+  effects sizes, etc), or a \code{list} containing values of interest (e.g., separate matrix
   and vector of parameter estimates corresponding to elements in \code{parameters})
 }
 \description{
 Computes all relevant test statistics, parameter estimates, detection rates, and so on.
 This is the computational heavy lifting portion of the Monte Carlo simulation.
-In some cases, it may be easier to change
-the output to a named list containing different parameter configurations (i.e., when
-determining RMSE values for a large set of population parameters).
 }
 \details{
-Be sure to make heavy use
-of \code{\link{try}} combinations and throw a \code{\link{stop}}/\code{\link{check_error}}
-if an iterative function fails
-to converge. This will cause the function to stop, and \code{\link{generate}} will be called again
+In some cases, it may be easier to change the output to a named \code{list} containing
+different parameter configurations (e.g., when
+determining RMSE values for a large set of population parameters).
+
+Also, be sure to make heavy use of \code{\link{try}} combinations and throw
+a \code{\link{stop}}/\code{\link{check_error}} if an iterative function fails to converge.
+This will cause the function to halt, and \code{\link{generate}} will be called again
 to obtain a different dataset.
 }
 \examples{

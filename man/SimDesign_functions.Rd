@@ -9,12 +9,13 @@ SimDesign_functions(filename = NULL, comments = TRUE, singlefile = FALSE)
 \arguments{
 \item{filename}{a character vector indicating whether the output should be saved to two respective files
 containing the simulation design and the functional components, respectively. Using this option
-is generally the recommended approach when designing simulations}
+is generally the recommended approach when beginning to write a Monte Carlo simulation}
 
-\item{comments}{logical; include helpful comments?}
+\item{comments}{logical; include helpful comments? Default is \code{TRUE}}
 
-\item{singlefile}{logical; when \code{filename} is included, put output in one files? When FALSE the
-output is saved to two seperate files containing the functions and design defintiions}
+\item{singlefile}{logical; when \code{filename} is included, put output in one files? When \code{FALSE} the
+output is saved to two seperate files containing the functions and design definitions. Default is
+\code{FALSE}}
 }
 \description{
 This function prints skeleton versions of the required functions and work-flow required

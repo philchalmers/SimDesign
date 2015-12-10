@@ -4,19 +4,21 @@
 #' Accepts estimate and parameter values, as well as estimate values which are in deviation form.
 #' If relative bias is requested the \code{estimate} and \code{parameter} inputs are both required.
 #'
-#' @param estimate a numeric vector or matrix/data.frame of parameter estimates. If a vector,
-#'   the length is equal to the number of replications. If a matrix/data.frame,
+#' @param estimate a \code{numeric} vector or \code{matrix}/\code{data.frame}
+#'   of parameter estimates. If a vector,
+#'   the length is equal to the number of replications. If a \code{matrix}/\code{data.frame},
 #'   the number of rows must equal the number of replications
 #'
-#' @param parameter a numeric scalar/vector indicating the fixed parameters.
-#'   If a single value is supplied and \code{estimate} is a matrix/data.frame then the value will be
-#'   recycled for each column.
-#'   If NULL, then it will be assumed that the \code{estimate} input is in a deviation
+#' @param parameter a \code{numeric} scalar/vector indicating the fixed parameters.
+#'   If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame}
+#'   then the value will be recycled for each column.
+#'   If \code{NULL} then it will be assumed that the \code{estimate} input is in a deviation
 #'   form (therefore \code{mean(estimate))} will be returned)
 #'
-#' @param relative logical; compute the relative bias statistic? Default is FALSE
+#' @param relative logical; compute the relative bias statistic (i.e., divide the bias by the value
+#'   in \code{parameter})? Default is \code{FALSE}
 #'
-#' @return returns a numeric vector indicating the overall (relative) bias in the estimates
+#' @return returns a \code{numeric} vector indicating the overall (relative) bias in the estimates
 #'
 #' @seealso \code{\link{RMSE}}
 #'
@@ -71,22 +73,22 @@ bias <- function(estimate, parameter = NULL, relative = FALSE){
 #' of a sample estimate from the parameter value. Accepts estimate and parameter values,
 #' as well as estimate values which are in deviation form.
 #'
-#' @param estimate a numeric vector or matrix/data.frame of parameter estimates. If a vector,
-#'   the length is equal to the number of replications. If a matrix/data.frame,
-#'   the number of rows must equal the number of replications
+#' @param estimate a \code{numeric} vector or \code{matrix}/\code{data.frame} of parameter estimates.
+#'   If a vector, the length is equal to the number of replications. If a
+#'   \code{matrix}/\code{data.frame}, the number of rows must equal the number of replications
 #'
-#' @param parameter a numeric scalar/vector indicating the fixed parameter values.
-#'   If a single value is supplied and \code{estimate} is a matrix/data.frame then the value will be
-#'   recycled for each column.
-#'   If NULL, then it will be assumed that the \code{estimate} input is in a deviation
+#' @param parameter a \code{numeric} scalar/vector indicating the fixed parameter values.
+#'   If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame} then
+#'   the value will be recycled for each column.
+#'   If \code{NULL} then it will be assumed that the \code{estimate} input is in a deviation
 #'   form (therefore \code{sqrt(mean(estimate^2))} will be returned)
 #'
 #' @param type type of deviation to compute. Can be 'RMSE' (default) for the root mean square-error,
 #'   'NRMSE' for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
-#'   'NRMSE_SD' for the normalized RMSE with the standard deviation (RMSE / sd(estimate)), or 'CV' for the coefficient of
-#'   variation
+#'   'NRMSE_SD' for the normalized RMSE with the standard deviation (RMSE / sd(estimate)),
+#'   or 'CV' for the coefficient of variation
 #'
-#' @return returns a numeric vector indicating the overall average deviation in the estimates
+#' @return returns a \code{numeric} vector indicating the overall average deviation in the estimates
 #'
 #' @aliases RMSE
 #'
@@ -148,17 +150,16 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE'){
 #' Compute the mean absolute error
 #'
 #' Computes the average absolute deviation of a sample estimate from the parameter value.
-#' Accepts estimate and parameter values,
-#' as well as estimate values which are in deviation form.
+#' Accepts estimate and parameter values, as well as estimate values which are in deviation form.
 #'
-#' @param estimate a numeric vector or matrix/data.frame of parameter estimates. If a vector,
-#'   the length is equal to the number of replications. If a matrix/data.frame,
-#'   the number of rows must equal the number of replications
+#' @param estimate a \code{numeric} vector or \code{matrix}/\code{data.frame} of parameter estimates.
+#'   If a vector, the length is equal to the number of replications. If a
+#'   \code{matrix}/\code{data.frame} the number of rows must equal the number of replications
 #'
-#' @param parameter a numeric scalar/vector indicating the fixed parameter values.
-#'   If a single value is supplied and \code{estimate} is a matrix/data.frame then the value will be
+#' @param parameter a \code{numeric} scalar/vector indicating the fixed parameter values.
+#'   If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame} then the value will be
 #'   recycled for each column.
-#'   If NULL, then it will be assumed that the \code{estimate} input is in a deviation
+#'   If \code{NULL}, then it will be assumed that the \code{estimate} input is in a deviation
 #'   form (therefore \code{mean(abs(estimate))} will be returned)
 #'
 #' @param type type of deviation to compute. Can be 'MAE' (default) for the mean absolute error,
@@ -220,13 +221,14 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
 #'
 #' Computes the relative efficiency given the RMSE (default) or MSE values for multiple estimators.
 #'
-#' @param x a vector or matrix of root mean square error values (see \code{\link{RMSE}}), where the first
-#'  element/row will be used as the reference. Otherwise, the object could contain MSE values if the flag
-#'  \code{MSE = TRUE} is also included
+#' @param x a \code{numeric} vector of root mean square error values (see \code{\link{RMSE}}),
+#'  where the first element will be used as the reference. Otherwise, the object could contain
+#'  MSE values if the flag \code{MSE = TRUE} is also included
+#'
 #' @param MSE logical; are the input value mean squared errors instead of root mean square errors?
 #'
-#' @return returns a vector/matrix of ratios indicating the relative efficiency compared to the first
-#'   estimator (which by default will be equal to 1). Values less than 1 indicate better efficiency, while
+#' @return returns a \code{vector} of variance ratios indicating the relative efficiency compared
+#'   to the first estimator. Values less than 1 indicate better efficiency, while
 #'   values greater than 1 indicate worse efficiency
 #'
 #' @aliases RE
@@ -262,9 +264,9 @@ RE <- function(x, MSE = FALSE){
 #' Computes the detection rate for determining empirical Type I error and power rates using information
 #' from p-values.
 #'
-#' @param p a vector or matrix/data.frame of p-values from the desired statistical estimator. If a matrix,
-#'   each statistic must be organized by column where the number of rows is equal to the number
-#'   of replications
+#' @param p a \code{numeric} vector or \code{matrix}/\code{data.frame} of p-values from the
+#'   desired statistical estimator. If a \code{matrix}, each statistic must be organized by
+#'   column, where the number of rows is equal to the number of replications
 #'
 #' @param alpha the nominal detection rate to be studied (typical values are .10, .05, and .01)
 #'
@@ -300,8 +302,9 @@ EDR <- function(p, alpha){
 #' from the confidence intervals. Note that using \code{1 - ECR(CIs, parameter)} will provide the empirical
 #' detection rate.
 #'
-#' @param CIs a matrix of confidence interval values for a given parameter value, where the first
-#'   column indicates the lower confidence interval and the second column the upper confidence interval. If a
+#' @param CIs a \code{numeric} vector or \code{matrix} of confidence interval values for a
+#'   given parameter value, where the first element/column indicates the lower confidence interval
+#'   and the second element/column the upper confidence interval. If a
 #'   vector of length 2 is passed instead then the returned value will be either a 1 or 0 to indicate
 #'   whether the parameter value was or was not within the interval, respectively
 #'

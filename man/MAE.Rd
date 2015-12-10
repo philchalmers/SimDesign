@@ -7,14 +7,14 @@
 MAE(estimate, parameter = NULL, type = "MAE")
 }
 \arguments{
-\item{estimate}{a numeric vector or matrix/data.frame of parameter estimates. If a vector,
-the length is equal to the number of replications. If a matrix/data.frame,
-the number of rows must equal the number of replications}
+\item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame} of parameter estimates.
+If a vector, the length is equal to the number of replications. If a
+\code{matrix}/\code{data.frame} the number of rows must equal the number of replications}
 
-\item{parameter}{a numeric scalar/vector indicating the fixed parameter values.
-If a single value is supplied and \code{estimate} is a matrix/data.frame then the value will be
+\item{parameter}{a \code{numeric} scalar/vector indicating the fixed parameter values.
+If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame} then the value will be
 recycled for each column.
-If NULL, then it will be assumed that the \code{estimate} input is in a deviation
+If \code{NULL}, then it will be assumed that the \code{estimate} input is in a deviation
 form (therefore \code{mean(abs(estimate))} will be returned)}
 
 \item{type}{type of deviation to compute. Can be 'MAE' (default) for the mean absolute error,
@@ -26,8 +26,7 @@ returns a numeric vector indicating the overall mean absolute error in the estim
 }
 \description{
 Computes the average absolute deviation of a sample estimate from the parameter value.
-Accepts estimate and parameter values,
-as well as estimate values which are in deviation form.
+Accepts estimate and parameter values, as well as estimate values which are in deviation form.
 }
 \examples{
 
