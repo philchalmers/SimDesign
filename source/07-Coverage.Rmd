@@ -28,6 +28,15 @@ set.seed(1234)
 library(SimDesign)
 #SimDesign_functions(comments = FALSE)
 
+# z-test confidence intervals function
+z.CI <- function(dat, alpha = .05){
+    xbar <- mean(dat)
+    SE <- sd(dat) / sqrt(length(dat))
+    z <- abs(qnorm(alpha/2))
+    CI <- c(xbar - z * SE, xbar + z * SE)
+    CI
+}
+
 ### Define design conditions. Here we want a finer range of values for plotting
 Design <- expand.grid(mu = c(0, 5, 10), 
                       sample_size = c(10, 20, 30))
@@ -40,13 +49,6 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
-    z.CI <- function(dat, alpha = .05){
-        xbar <- mean(dat)
-        SE <- sd(dat) / sqrt(length(dat))
-        z <- abs(qnorm(alpha/2))
-        CI <- c(xbar - z * SE, xbar + z * SE)
-        CI
-    }                                    
     t_test <- t.test(dat)
     t_CI <- t_test$conf.int
     z_CI <- z.CI(dat)
