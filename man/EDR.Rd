@@ -4,14 +4,15 @@
 \alias{EDR}
 \title{Compute the empirical detection rate for Type I errors and Power}
 \usage{
-EDR(p, alpha)
+EDR(p, alpha = 0.05)
 }
 \arguments{
 \item{p}{a \code{numeric} vector or \code{matrix}/\code{data.frame} of p-values from the
 desired statistical estimator. If a \code{matrix}, each statistic must be organized by
 column, where the number of rows is equal to the number of replications}
 
-\item{alpha}{the nominal detection rate to be studied (typical values are .10, .05, and .01)}
+\item{alpha}{the nominal detection rate to be studied (typical values are .10, .05, and .01). Default
+is .05}
 }
 \description{
 Computes the detection rate for determining empirical Type I error and power rates using information
@@ -25,7 +26,8 @@ for(i in 1:100){
    rates[i] <- t.test(dat)$p.value
 }
 
-EDR(rates, alpha = .05)
+EDR(rates)
+EDR(rates, alpha = .01)
 
 }
 \seealso{
