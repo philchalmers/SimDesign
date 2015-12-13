@@ -268,7 +268,8 @@ RE <- function(x, MSE = FALSE){
 #'   desired statistical estimator. If a \code{matrix}, each statistic must be organized by
 #'   column, where the number of rows is equal to the number of replications
 #'
-#' @param alpha the nominal detection rate to be studied (typical values are .10, .05, and .01)
+#' @param alpha the nominal detection rate to be studied (typical values are .10, .05, and .01). Default
+#'   is .05
 #'
 #' @aliases EDR
 #'
@@ -284,9 +285,10 @@ RE <- function(x, MSE = FALSE){
 #'    rates[i] <- t.test(dat)$p.value
 #' }
 #'
-#' EDR(rates, alpha = .05)
+#' EDR(rates)
+#' EDR(rates, alpha = .01)
 #'
-EDR <- function(p, alpha){
+EDR <- function(p, alpha = .05){
     stopifnot(all(p <= 1 && p >= 0))
     stopifnot(length(alpha) == 1L)
     stopifnot(alpha <= 1 && alpha >= 0)
