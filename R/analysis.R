@@ -71,6 +71,6 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
 
     if(!is.vector(sim_results) || is.null(names(sim_results)))
         stop('summarise() must return a named vector', call.=FALSE)
-    sim_results <- c(sim_results, 'ERROR_MESSAGE: '=try_errors)
+    sim_results <- c(sim_results, 'REPLICATIONS'=replications, 'ERROR_MESSAGE: '=try_errors)
     return(sim_results)
 }

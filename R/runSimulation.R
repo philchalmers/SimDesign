@@ -514,8 +514,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     TRY_ERRORS <- Final[,pick, drop=FALSE]
     Final <- Final[,!pick, drop=FALSE]
     Final <- if(include_errors){
-        data.frame(Final, REPLICATIONS=replications, SIM_TIME, TRY_ERRORS, check.names=FALSE)
-    } else data.frame(Final, REPLICATIONS=replications, SIM_TIME, check.names=FALSE)
+        data.frame(Final, SIM_TIME, TRY_ERRORS, check.names=FALSE)
+    } else data.frame(Final, SIM_TIME, check.names=FALSE)
     if(!is.null(seed)) Final$SEED <- seed
     #save file
     files <- dir()
