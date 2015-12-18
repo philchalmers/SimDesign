@@ -11,11 +11,6 @@
 #' global and local debugging, error handling (including fail-safe
 #' stopping when functions fail too often, even across nodes), and is designed to be cross-platform.
 #'
-#' For a skeleton version of the work-flow
-#' which may be useful when initially defining a simulation, see \code{\link{SimDesign_functions}}.
-#' Additional examples can be found on the package wiki, located at
-#' \url{https://github.com/philchalmers/SimDesign/wiki}.
-#'
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
 #'
 #' \describe{
@@ -32,6 +27,12 @@
 #'      and generating suitable plots and tables}
 #' }
 #'
+#' For a skeleton version of the work-flow which may be useful when initially defining a simulation,
+#' see \code{\link{SimDesign_functions}}. This function will write the template of the simulation
+#' to one/two files so that modifying the respective functions and objects can begin immediately and
+#' with minimal error. This means that you can focus on your Monte Carlo simulation right away rather
+#' than worry about the administrative work required to organize the code.
+#'
 #' Additional information for each condition are also returned:
 #' \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
@@ -47,6 +48,9 @@
 #' Fortunately, however, \emph{custom functions defined in the global environment are exported across
 #' nodes automatically}. This makes it convenient when writing code because custom functions will
 #' always be available across nodes if they are visiable in the R workspace.
+#'
+#' Additional examples, presentation files, and tutorials can be found on the package wiki located at
+#' \url{https://github.com/philchalmers/SimDesign/wiki}.
 #'
 #' @section Storing and resuming temporary results:
 #'
