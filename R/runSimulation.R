@@ -470,7 +470,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(parallel){
         cl <- parallel::makeCluster(ncores)
         on.exit(parallel::stopCluster(cl))
-        parallel::clusterExport(cl=cl, export_funs)
+        parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
     }
     start <- 1L
     Result_list <- vector('list', nrow(design))

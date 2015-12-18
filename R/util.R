@@ -36,8 +36,8 @@ check_error <- function(...){
 
 # return a character vector of functions defined in .GlobalEnv
 parent_env_fun <- function(){
-    nms <- ls(envir = globalenv())
+    nms <- ls(envir = parent.frame(2L))
     is_fun <- sapply(nms, function(x, envir) is.function(get(x, envir=envir)),
-                     envir = globalenv())
+                     envir = parent.frame(2L))
     return(nms[is_fun])
 }
