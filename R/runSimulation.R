@@ -136,13 +136,11 @@
 #' @param save_generate_data_dirname a string indicating the name of the folder to save data objects to
 #'   when \code{save_generate_data = TRUE}. If a directory/folder does not exist
 #'   in the current working directory then one will be created automatically. Within this folder nested
-#'   directories will be created associated with each row in \code{design}.
-#'   Default is \code{'SimDesign_generate_data'}
+#'   directories will be created associated with each row in \code{design}
 #'
 #' @param save_results_dirname a string indicating the name of the folder to save results objects to
 #'   when \code{save_results = TRUE}. If a directory/folder does not exist
-#'   in the current working directory then one will be created automatically.
-#'   Default is \code{'SimDesign_results'}
+#'   in the current working directory then one will be created automatically
 #'
 #' @param include_errors logical; include information about which error how often they occurred from
 #'   \code{try()} chunks or \code{\link{check_error}}? If \code{TRUE}, this information will be stacked at the end
@@ -156,8 +154,7 @@
 #'
 #' @param ncores number of cores to be used in parallel execution. Default uses all available
 #'
-#' @param filename the name of the .rds file to save the final simulation results to.
-#'   Default is the system name with the number of replications and 'Final' appended to the string
+#' @param filename the name of the .rds file to save the final simulation results to
 #'
 #' @param tmpfilename the name of the temporary file, default is the system name with 'tmpsim.rds'
 #'   appended at the end. This file will be
@@ -385,15 +382,15 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          fixed_objects = NULL, parallel = FALSE,
+                          fixed_objects = NULL, parallel = FALSE, ncores = parallel::detectCores(),
                           save = FALSE, save_results = FALSE, save_generate_data = FALSE,
                           max_errors = 50, include_errors = TRUE, MPI = FALSE, seed = NULL,
                           compname = Sys.info()['nodename'],
-                          filename = paste0(compname,'_Final_', replications),
-                          tmpfilename = paste0(compname, '_tmpsim.rds'),
-                          save_results_dirname = 'SimDesign_results',
-                          save_generate_data_dirname = 'SimDesign_generate_data',
-                          ncores = parallel::detectCores(), edit = 'none', verbose = TRUE)
+                          filename = paste0('SimDesign-Final_', compname, '.rds'),
+                          tmpfilename = paste0('SIMDESIGN-TEMPFILE_', compname, '.rds'),
+                          save_results_dirname = paste0('SimDesign-results_', compname),
+                          save_generate_data_dirname = paste0('SimDesign-generate-data_', compname),
+                          edit = 'none', verbose = TRUE)
 {
     stopifnot(!missing(generate) || !missing(analyse) || !missing(summarise))
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise)

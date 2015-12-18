@@ -134,12 +134,14 @@ test_that('SimDesign', {
 
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, verbose=FALSE,
                          replications = 2, parallel=FALSE, save_results = TRUE, max_errors = Inf)
-    expect_true(dir.exists('SimDesign_results'))
-    files <- dir('SimDesign_results/')
+    compname = Sys.info()["nodename"]
+    DIR <- paste0("SimDesign-results_", compname)
+    expect_true(dir.exists(DIR))
+    files <- dir(DIR)
     expect_equal(length(files), 8L)
-    x <- readRDS(paste0('SimDesign_results/', files[1]))
+    x <- readRDS(paste0(DIR, '/', files[1]))
     expect_true(all(names(x) %in% c('condition', 'results', 'errors')))
-    system('rm -r SimDesign_results')
+    system(paste0('rm -r ', DIR))
 
     # error test
     mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){

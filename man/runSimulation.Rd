@@ -5,14 +5,15 @@
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
-  fixed_objects = NULL, parallel = FALSE, save = FALSE,
-  save_results = FALSE, save_generate_data = FALSE, max_errors = 50,
-  include_errors = TRUE, MPI = FALSE, seed = NULL,
-  compname = Sys.info()["nodename"], filename = paste0(compname, "_Final_",
-  replications), tmpfilename = paste0(compname, "_tmpsim.rds"),
-  save_results_dirname = "SimDesign_results",
-  save_generate_data_dirname = "SimDesign_generate_data",
-  ncores = parallel::detectCores(), edit = "none", verbose = TRUE)
+  fixed_objects = NULL, parallel = FALSE,
+  ncores = parallel::detectCores(), save = FALSE, save_results = FALSE,
+  save_generate_data = FALSE, max_errors = 50, include_errors = TRUE,
+  MPI = FALSE, seed = NULL, compname = Sys.info()["nodename"],
+  filename = paste0("SimDesign-Final_", compname, ".rds"),
+  tmpfilename = paste0("SIMDESIGN-TEMPFILE_", compname, ".rds"),
+  save_results_dirname = paste0("SimDesign-results_", compname),
+  save_generate_data_dirname = paste0("SimDesign-generate-data_", compname),
+  edit = "none", verbose = TRUE)
 }
 \arguments{
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
@@ -45,6 +46,8 @@ for linear regression), or simply can be used to control constant global element
   the respective defined functions with a \code{library()} or \code{require()} call, or b) use the
   \code{::} operator to locate the public functions that are not visible in the R session (e.g.,
   \code{psych::describe()})}
+
+\item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
 \item{save}{logical; save the final simulation to the hard-drive? This is useful
 for simulations which require an extended amount of time. When \code{TRUE}, a temp file will be created
@@ -88,8 +91,7 @@ Default is \code{NULL}, indicating that no seed is set for each condition}
 but in the event that a node breaks down while running a simulation the results from the tmp files
 may be resumed on another computer by changing the name of the node to match the broken computer}
 
-\item{filename}{the name of the .rds file to save the final simulation results to.
-Default is the system name with the number of replications and 'Final' appended to the string}
+\item{filename}{the name of the .rds file to save the final simulation results to}
 
 \item{tmpfilename}{the name of the temporary file, default is the system name with 'tmpsim.rds'
 appended at the end. This file will be
@@ -99,16 +101,12 @@ This file will be deleted when the simulation is complete}
 
 \item{save_results_dirname}{a string indicating the name of the folder to save results objects to
 when \code{save_results = TRUE}. If a directory/folder does not exist
-in the current working directory then one will be created automatically.
-Default is \code{'SimDesign_results'}}
+in the current working directory then one will be created automatically}
 
 \item{save_generate_data_dirname}{a string indicating the name of the folder to save data objects to
 when \code{save_generate_data = TRUE}. If a directory/folder does not exist
 in the current working directory then one will be created automatically. Within this folder nested
-directories will be created associated with each row in \code{design}.
-Default is \code{'SimDesign_generate_data'}}
-
-\item{ncores}{number of cores to be used in parallel execution. Default uses all available}
+directories will be created associated with each row in \code{design}}
 
 \item{edit}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
   General options are \code{'none'} (default) and \code{'all'}, which are used
