@@ -80,6 +80,7 @@
 #'   \item{\code{registerDoMPI(cl)}}{}
 #'   \item{\code{Final <- runSimulation(design=Design, replications=1000,
 #'     generate=Generate, analyse=Analyse, summarise=Summarise, MPI=TRUE)}}{}
+#'   \item{\code{saveRDS(Final, 'mysimulation.rds') # alternatively, pass save=TRUE above}}{}
 #'   \item{\code{closeCluster(cl)}}{}
 #'   \item{\code{mpi.quit()}}{}
 #' }
@@ -352,7 +353,7 @@
 #' # library(doMPI)
 #' # cl <- startMPIcluster()
 #' # registerDoMPI(cl)
-#' # Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
+#' # Final <- runSimulation(design=Design, replications=1000, MPI=TRUE, save=TRUE,
 #' #                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' # closeCluster(cl)
 #' # mpi.quit()
