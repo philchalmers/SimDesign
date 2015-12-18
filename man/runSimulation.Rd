@@ -200,11 +200,26 @@ from \code{\link{analyse}} to unique files use \code{save_results = TRUE}.
 If the package is installed across a cluster of computers, and all the computers are accessible on
 the same LAN network, then the package may be run within the MPI paradigm. This simply
 requires that the computers be setup using the usual MPI requirements (typically, running some flavor
-of Linux, have password-less openSSH access, addresses have been added to the \code{/etc/hosts} file, etc).
-To setup the R code for an MPI cluster one need only add the argument \code{MPI = TRUE} and submit the
-files using the suitable BASH commands.
+of Linux, have password-less open-SSH access, addresses have been added to the \code{/etc/hosts} file, etc).
 
-For instances, if the following code is run on the master node through a terminal then 16 processes
+To setup the R code for an MPI cluster one need only add the argument \code{MPI = TRUE},
+wrap the appropriate MPI directives around \code{runSimulation}, and submit the
+files using the suitable BASH commands to execute the \code{mpirun} tool. For example,
+
+\describe{
+  \item{\code{library(doMPI)}}{}
+  \item{\code{cl <- startMPIcluster()}}{}
+  \item{\code{registerDoMPI(cl)}}{}
+  \item{\code{Final <- runSimulation(design=Design, replications=1000,
+    generate=Generate, analyse=Analyse, summarise=Summarise, MPI=TRUE)}}{}
+  \item{\code{closeCluster(cl)}}{}
+  \item{\code{mpi.quit()}}{}
+}
+
+This file (or files if the simulation script is broken up) needs to be uploaded to the master node,
+and a BASH call to \code{mpirun}
+is then used to distribute the work across slaves. For instance, if the following BASH command
+is run on the master node then 16 processes
 will be summoned (1 master, 15 slaves) across the computers named localhost, slave1, and slave2.
 
 \code{mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R}
