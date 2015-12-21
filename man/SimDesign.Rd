@@ -9,11 +9,11 @@
 Structure for Organizing Monte Carlo Simulation Designs
 }
 \details{
-Provides tools to help organize Monte Carlo simulations in R.
-The tools provided control the structure and back-end of the Monte Carlo simulations
-by utilizing a generate-analyse-summarise strategy. The functions
-control common simulation issues such as re-simulating non-convergent results,
-support parallel back-end computations, save and restore temporary files,
+Provides tools to help organize Monte Carlo simulations in R. The package
+controls the structure and back-end of Monte Carlo simulations
+by utilizing a general generate-analyse-summarise strategy. The functions provided control common
+simulation issues such as re-simulating non-convergent results, support parallel
+back-end and MPI distributed computations, save and restore temporary files,
 aggregate results across independent nodes, and provide native support for debugging.
 The primary function for organizing the simulations is \code{\link{runSimulation}}.
 }
