@@ -5,13 +5,13 @@
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
-  fixed_objects = NULL, parallel = FALSE,
-  ncores = parallel::detectCores(), packages = NULL, save = FALSE,
+  fixed_objects = NULL, parallel = FALSE, packages = NULL,
+  ncores = parallel::detectCores(), MPI = FALSE, save = FALSE,
   save_results = FALSE, save_generate_data = FALSE, max_errors = 50,
-  include_errors = TRUE, MPI = FALSE, seed = NULL,
-  compname = Sys.info()["nodename"], filename = paste0("SimDesign-Final_",
-  compname, ".rds"), tmpfilename = paste0("SIMDESIGN-TEMPFILE_", compname,
-  ".rds"), save_results_dirname = paste0("SimDesign-results_", compname),
+  include_errors = TRUE, seed = NULL, compname = Sys.info()["nodename"],
+  filename = paste0("SimDesign-Final_", compname, ".rds"),
+  tmpfilename = paste0("SIMDESIGN-TEMPFILE_", compname, ".rds"),
+  save_results_dirname = paste0("SimDesign-results_", compname),
   save_generate_data_dirname = paste0("SimDesign-generate-data_", compname),
   edit = "none", verbose = TRUE)
 }
@@ -39,22 +39,20 @@ that should be used across all conditions and replications (e.g., including a fi
 for linear regression), or simply can be used to control constant global elements such as sample size}
 
 \item{parallel}{logical; use parallel processing from the \code{parallel} package over each
-  unique condition?
+unique condition?}
 
-  NOTE: When using packages other than the basic packages which are attached by default (e.g., \code{stats},
-  \code{graphics}, \code{utils}, etc) then you must either a) explicitly load the packages within
-  the respective defined functions with a \code{library()} or \code{require()} call, or b) use the
-  \code{::} operator to locate the public functions that are not visible in the R session (e.g.,
-  \code{psych::describe()})}
+\item{packages}{a character vector of external packages to be used during the simulation (e.g.,
+\code{c('MASS', 'mvtnorm', 'simsem')} ). Use this input when \code{parallel = TRUE} or
+\code{MPI = TRUE} to use non-standard functions from additional packages,
+otherwise the functions must be made available by using explicit
+\code{\link{library}} or \code{\link{require}} calls within the provided simulation functions.
+Alternatively, functions can be called explicitly without attaching the package with \code{::}
+(e.g., \code{mvtnorm::rmvnorm()})}
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
-\item{packages}{a character vector of external packages to be used during the simulation (e.g.,
-\code{c('MASS', 'mvtnorm', 'simsem')} ). Use this input when using \code{parallel = TRUE} or
-\code{MPI = TRUE}, otherwise the packages will have to be loaded within the functions by calling
-a suitable \code{\link{library}} or \code{\link{require}} call must be used,
-or functions can be called explicitly without attaching the package with \code{::}
-(e.g., \code{mvtnorm::rmvnorm()})}
+\item{MPI}{logical; use the \code{foreach} package in a form usable by MPI to run simulation
+in parallel on a cluster? Default is \code{FALSE}}
 
 \item{save}{logical; save the final simulation to the hard-drive? This is useful
 for simulations which require an extended amount of time. When \code{TRUE}, a temp file will be created
@@ -83,9 +81,6 @@ wrong in the generate-analyse phases and should be inspected. Default is 50}
 of the returned simulation results with the name of the specific error used as the column name in the
 data.frame object, and the number of occurrences included as the value for each condition.
 Default is \code{TRUE}}
-
-\item{MPI}{logical; use the \code{foreach} package in a form usable by MPI to run simulation
-in parallel on a cluster? Default is \code{FALSE}}
 
 \item{seed}{a vector of integers to be used for reproducibility.
 The length of the vector must be equal the number of rows in \code{design}.
