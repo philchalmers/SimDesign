@@ -167,5 +167,30 @@ test_that('SimDesign', {
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
 
+
+    mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
+        c(ret = 1)
+    }
+    mygenerate <- function(condition, fixed_objects = NULL){
+        rmvnorm(5, sigma = matrix(1))
+    }
+    mycollect <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+        colMeans(results)
+    }
+    expect_error(runSimulation(Design, replications = 1,
+                               generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                               parallel=FALSE, save=FALSE, verbose = FALSE))
+    expect_error(runSimulation(Design, replications = 1, ncores=2,
+                               generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                               parallel=TRUE, save=FALSE, verbose = FALSE))
+    out <- runSimulation(Design, replications = 1, packages = 'mvtnorm',
+                         generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                         parallel=FALSE, save=FALSE, verbose = FALSE)
+    out2 <- runSimulation(Design, replications = 1, packages = 'mvtnorm',
+                         generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                         parallel=TRUE, save=FALSE, verbose = FALSE)
+    expect_is(out, 'SimDesign')
+    expect_is(out2, 'SimDesign')
+
 })
 

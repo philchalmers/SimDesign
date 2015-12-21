@@ -6,12 +6,12 @@
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, parallel = FALSE,
-  ncores = parallel::detectCores(), save = FALSE, save_results = FALSE,
-  save_generate_data = FALSE, max_errors = 50, include_errors = TRUE,
-  MPI = FALSE, seed = NULL, compname = Sys.info()["nodename"],
-  filename = paste0("SimDesign-Final_", compname, ".rds"),
-  tmpfilename = paste0("SIMDESIGN-TEMPFILE_", compname, ".rds"),
-  save_results_dirname = paste0("SimDesign-results_", compname),
+  ncores = parallel::detectCores(), packages = NULL, save = FALSE,
+  save_results = FALSE, save_generate_data = FALSE, max_errors = 50,
+  include_errors = TRUE, MPI = FALSE, seed = NULL,
+  compname = Sys.info()["nodename"], filename = paste0("SimDesign-Final_",
+  compname, ".rds"), tmpfilename = paste0("SIMDESIGN-TEMPFILE_", compname,
+  ".rds"), save_results_dirname = paste0("SimDesign-results_", compname),
   save_generate_data_dirname = paste0("SimDesign-generate-data_", compname),
   edit = "none", verbose = TRUE)
 }
@@ -48,6 +48,13 @@ for linear regression), or simply can be used to control constant global element
   \code{psych::describe()})}
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
+
+\item{packages}{a character vector of external packages to be used during the simulation (e.g.,
+\code{c('MASS', 'mvtnorm', 'simsem')} ). Use this input when using \code{parallel = TRUE} or
+\code{MPI = TRUE}, otherwise the packages will have to be loaded within the functions by calling
+a suitable \code{\link{library}} or \code{\link{require}} call must be used,
+or functions can be called explicitly without attaching the package with \code{::}
+(e.g., \code{mvtnorm::rmvnorm()})}
 
 \item{save}{logical; save the final simulation to the hard-drive? This is useful
 for simulations which require an extended amount of time. When \code{TRUE}, a temp file will be created

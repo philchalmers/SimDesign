@@ -41,3 +41,10 @@ parent_env_fun <- function(){
                      envir = parent.frame(2L))
     return(nms[is_fun])
 }
+
+load_packages <- function(packages){
+    if(!is.null(packages))
+        for(pack in packages)
+            library(substitute(pack), character.only = TRUE)
+    invisible()
+}

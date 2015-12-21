@@ -192,16 +192,16 @@ summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
 #
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors,
-                    save_generate_data, save_generate_data_dirname){
+                    save_generate_data, save_generate_data_dirname, packages = NULL){
 
-    require('SimDesign') #this is required if SimDesign functions are called (e.g., bias(), RMSE())
+    load_packages(packages)
     try_error <- character()
 
     while(TRUE){
 
         simlist <- try(generate(condition=condition, fixed_objects=fixed_objects), TRUE)
         if(is(simlist, 'try-error'))
-            stop(paste0('generate function threw an error. Please make sure the function does not throw errors.',
+            stop(paste0('generate function threw an error.',
                         '\n\nError message was: ', simlist), call.=FALSE)
         if(save_generate_data){
             filename_stem <- paste0(save_generate_data_dirname, '/design-row-', condition$ID,
@@ -226,7 +226,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             try_error <- c(try_error, res[1L])
             if(length(try_error) == max_errors)
                 stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
-                            ' consecutive errors. Please fix.\n\nLast error message was \n', res[1L]), call.=FALSE)
+                            ' consecutive errors. \n\nLast error message was \n', res[1L]), call.=FALSE)
             next
         }
         if(!is.list(res) && !is.numeric(res))

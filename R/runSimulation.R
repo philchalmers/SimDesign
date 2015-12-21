@@ -140,6 +140,13 @@
 #'   \code{::} operator to locate the public functions that are not visible in the R session (e.g.,
 #'   \code{psych::describe()})
 #'
+#' @param packages a character vector of external packages to be used during the simulation (e.g.,
+#'   \code{c('MASS', 'mvtnorm', 'simsem')} ). Use this input when using \code{parallel = TRUE} or
+#'   \code{MPI = TRUE}, otherwise the packages will have to be loaded within the functions by calling
+#'   a suitable \code{\link{library}} or \code{\link{require}} call must be used,
+#'   or functions can be called explicitly without attaching the package with \code{::}
+#'   (e.g., \code{mvtnorm::rmvnorm()})
+#'
 #' @param save_results logical; save the results returned from \code{\link{analyse}} to external
 #'   \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
 #'   Use this if you would like to keep track of the individual parameters returned from the analyses.
@@ -403,7 +410,7 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, parallel = FALSE, ncores = parallel::detectCores(),
-                          save = FALSE, save_results = FALSE, save_generate_data = FALSE,
+                          packages = NULL, save = FALSE, save_results = FALSE, save_generate_data = FALSE,
                           max_errors = 50, include_errors = TRUE, MPI = FALSE, seed = NULL,
                           compname = Sys.info()['nodename'],
                           filename = paste0('SimDesign-Final_', compname, '.rds'),
@@ -432,6 +439,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         parallel <- FALSE
         verbose <- FALSE
     }
+    packages <- c('SimDesign', packages)
     for(i in 1L:length(Functions)){
         tmp <- deparse(substitute(Functions[[i]]))
         if(any(grepl('browser\\(', tmp))){
@@ -513,7 +521,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                           save_results_dirname=save_results_dirname,
                                                           save_generate_data=save_generate_data,
                                                           save_generate_data_dirname=save_generate_data_dirname,
-                                                          max_errors=max_errors,
+                                                          max_errors=max_errors, packages=packages,
                                                           export_funs=export_funs))),
                                        check.names=FALSE)
         time1 <- proc.time()[3]

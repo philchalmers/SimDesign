@@ -12,7 +12,7 @@
 Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI, seed,
                      save_results, save_results_dirname, max_errors,
                      save_generate_data, save_generate_data_dirname,
-                     export_funs)
+                     export_funs, packages)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -22,7 +22,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                generate=Functions$generate,
                                analyse=Functions$analyse,
                                fixed_objects=fixed_objects,
-                               max_errors=max_errors,
+                               max_errors=max_errors, packages=packages,
                                save_generate_data=save_generate_data,
                                save_generate_data_dirname=save_generate_data_dirname)
     } else {
@@ -32,13 +32,13 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                 mainsim(i, condition=condition, generate=Functions$generate,
                      analyse=Functions$analyse, fixed_objects=fixed_objects,
                      max_errors=max_errors, save_generate_data=save_generate_data,
-                     save_generate_data_dirname=save_generate_data_dirname)
+                     save_generate_data_dirname=save_generate_data_dirname, packages=packages)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
             cell_results <- parallel::parLapply(cl, 1L:replications, mainsim,
                                                 condition=condition, generate=Functions$generate,
                                                 analyse=Functions$analyse,
-                                                fixed_objects=fixed_objects,
+                                                fixed_objects=fixed_objects, packages=packages,
                                                 max_errors=max_errors, save_generate_data=save_generate_data,
                                                 save_generate_data_dirname=save_generate_data_dirname)
         }
