@@ -13,7 +13,7 @@ simulation conditions}
 \item{fixed_objects}{object passed down from \code{\link{runSimulation}}}
 }
 \value{
-returns a single object containing the data to be analysed (usually a
+returns a single object containing the data to be analyzed (usually a
   \code{vector}, \code{matrix}, or \code{data.frame}),
   or a list with a the elements \code{'dat'} and \code{'parameters'}. If a list is returned
   the \code{'dat'} element should be the observed data object while the

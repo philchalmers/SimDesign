@@ -47,7 +47,7 @@
 #' \code{fixed_objects} input (usually it's convenient to supply a named list of these objects).
 #' Fortunately, however, \emph{custom functions defined in the global environment are exported across
 #' nodes automatically}. This makes it convenient when writing code because custom functions will
-#' always be available across nodes if they are visiable in the R workspace.
+#' always be available across nodes if they are visible in the R workspace.
 #'
 #' Additional examples, presentation files, and tutorials can be found on the package wiki located at
 #' \url{https://github.com/philchalmers/SimDesign/wiki}.
@@ -93,7 +93,7 @@
 #'
 #' \code{mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R}
 #'
-#' @section Poor man's cluster computing for indedependent nodes:
+#' @section Poor man's cluster computing for independent nodes:
 #'
 #' In the event that you do not have access to a Beowulf-type cluster but have multiple personal
 #' computers, then the simulation code can be manually distributed across each independent computer instead.
@@ -176,7 +176,7 @@
 #'
 #' @param ncores number of cores to be used in parallel execution. Default uses all available
 #'
-#' @param filename the name of the .rds file to save the final simulation results to
+#' @param filename the name of the \code{.rds} file to save the final simulation results to
 #'
 #' @param tmpfilename the name of the temporary file, default is the system name with 'tmpsim.rds'
 #'   appended at the end. This file will be

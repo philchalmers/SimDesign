@@ -93,7 +93,7 @@ Default is \code{NULL}, indicating that no seed is set for each condition}
 but in the event that a node breaks down while running a simulation the results from the tmp files
 may be resumed on another computer by changing the name of the node to match the broken computer}
 
-\item{filename}{the name of the .rds file to save the final simulation results to}
+\item{filename}{the name of the \code{.rds} file to save the final simulation results to}
 
 \item{tmpfilename}{the name of the temporary file, default is the system name with 'tmpsim.rds'
 appended at the end. This file will be
@@ -178,7 +178,7 @@ such as \code{Error: object 'something' not found}. To avoid this, simply pass a
 \code{fixed_objects} input (usually it's convenient to supply a named list of these objects).
 Fortunately, however, \emph{custom functions defined in the global environment are exported across
 nodes automatically}. This makes it convenient when writing code because custom functions will
-always be available across nodes if they are visiable in the R workspace.
+always be available across nodes if they are visible in the R workspace.
 
 Additional examples, presentation files, and tutorials can be found on the package wiki located at
 \url{https://github.com/philchalmers/SimDesign/wiki}.
@@ -228,7 +228,7 @@ will be summoned (1 master, 15 slaves) across the computers named localhost, sla
 \code{mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R}
 }
 
-\section{Poor man's cluster computing for indedependent nodes}{
+\section{Poor man's cluster computing for independent nodes}{
 
 
 In the event that you do not have access to a Beowulf-type cluster but have multiple personal

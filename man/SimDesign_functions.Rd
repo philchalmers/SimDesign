@@ -14,7 +14,7 @@ is generally the recommended approach when beginning to write a Monte Carlo simu
 \item{comments}{logical; include helpful comments? Default is \code{TRUE}}
 
 \item{singlefile}{logical; when \code{filename} is included, put output in one files? When \code{FALSE} the
-output is saved to two seperate files containing the functions and design definitions. Default is
+output is saved to two separate files containing the functions and design definitions. Default is
 \code{FALSE}}
 }
 \description{
