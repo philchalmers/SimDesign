@@ -69,6 +69,7 @@ img {
 <div id="define-the-functions" class="section level3">
 <h3>Define the functions</h3>
 <p>The first simulation defined here is simply a missing at random scheme where 20% of the observation are missing. Three sample size conditions are studied to determine the effect of list-wise versus pairwise removal of missing data when computing correlation coefficients.</p>
+<p>Notice that in <code>Generate()</code> there is a call to <code>rmvnorm()</code> from the <code>mvtnorm</code> package. In order for this function to be available across different cores you can either put a <code>library()</code>/<code>require()</code> call above the desired functions, use <code>mvtnorm::rmvnorm()</code> to call the function without loading the package directly, or pass <code>'mvtnorm'</code> to the <code>packages</code> argument in <code>runSimulation()</code>. The last option is used in the simulation below.</p>
 <pre class="r"><code>library(SimDesign)
 #SimDesign_functions(comments = FALSE)
 
@@ -78,7 +79,6 @@ Design &lt;- expand.grid(N = c(50, 100, 200))
 #--------------------------------------------------------------------------
 
 Generate &lt;- function(condition, fixed_objects = NULL) {
-    library(mvtnorm)
     cormat &lt;- matrix(.5, 3, 3)
     diag(cormat) &lt;- 1
     dat &lt;- rmvnorm(condition$N, sigma = cormat)
@@ -106,16 +106,17 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_li
 
 ### Run the simulation
 results &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')</code></pre>
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
+                         packages = 'mvtnorm')</code></pre>
 <pre class="r"><code>print(results)</code></pre>
 <pre><code>##     N bias.listwise bias.pairwise RMSE.listwise RMSE.pairwise RE.listwise
-## 1  50      -0.00363      -0.00128        0.1169        0.0982           1
-## 2 100      -0.00342      -0.00316        0.0815        0.0692           1
-## 3 200      -0.00158      -0.00147        0.0569        0.0489           1
+## 1  50     -1.12e-02     -0.008407        0.1267        0.1055           1
+## 2 100      8.98e-05     -0.000422        0.0832        0.0705           1
+## 3 200     -2.47e-03     -0.002067        0.0591        0.0504           1
 ##   RE.pairwise REPLICATIONS SIM_TIME
-## 1       0.705         1000    0.852
-## 2       0.721         1000    0.771
-## 3       0.738         1000    1.229</code></pre>
+## 1       0.694         1000     1.02
+## 2       0.717         1000     1.04
+## 3       0.727         1000     1.73</code></pre>
 <p>Not surprisingly, these results suggest that computing correlations with the pairwise-complete method is more efficient than removing rows in a list-wise fashion, though both approaches results in unbiased estimates when the missing data mechanism is MCAR. The selected removal mechanism appears to be less of an issue as the sample size increases, however in general pairwise complete provides better results.</p>
 </div>
 <div id="mnar-as-the-missing-data-mechanism" class="section level2">
@@ -123,8 +124,6 @@ results &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel =
 <p>This is essentially the same simulation as a above, however the missing data mechanism is selected such that extremely positive values in the data are more likely to be set to NA. This creates a missing not a random effect (a.k.a., non-ignorable missingness).</p>
 <pre class="r"><code>Generate &lt;- function(condition, fixed_objects = NULL) {
     fun &lt;- function(y) ifelse(y &gt; 1, .5, 0)
-    
-    library(mvtnorm)
     cormat &lt;- matrix(.5, 3, 3)
     diag(cormat) &lt;- 1
     dat &lt;- rmvnorm(condition$N, sigma = cormat)
@@ -133,16 +132,17 @@ results &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel =
 }
 
 results &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')</code></pre>
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
+                         packages = 'mvtnorm')</code></pre>
 <pre class="r"><code>print(results)</code></pre>
 <pre><code>##     N bias.listwise bias.pairwise RMSE.listwise RMSE.pairwise RE.listwise
-## 1  50       -0.0759       -0.0601        0.1267        0.1111           1
-## 2 100       -0.0722       -0.0574        0.1010        0.0879           1
-## 3 200       -0.0730       -0.0577        0.0888        0.0744           1
+## 1  50       -0.0716       -0.0578        0.1202        0.1078           1
+## 2 100       -0.0767       -0.0613        0.1049        0.0906           1
+## 3 200       -0.0727       -0.0578        0.0889        0.0749           1
 ##   RE.pairwise REPLICATIONS SIM_TIME
-## 1       0.768         1000    0.904
-## 2       0.758         1000    0.775
-## 3       0.702         1000    1.239</code></pre>
+## 1       0.806         1000     1.06
+## 2       0.747         1000     1.11
+## 3       0.709         1000     1.81</code></pre>
 <p>In this case we can see the effect of MNAR influencing the bias of the correlation values. This particular missing data mechanism causes the observed parameter estimates to be too lower on average, thereby underestimating the true magnitude of the correlation statistics.</p>
 </div>
 </div>

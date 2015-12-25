@@ -26,6 +26,12 @@ set.seed(1234)
 
 The first simulation defined here is simply a missing at random scheme where 20% of the observation are missing. Three sample size conditions are studied to determine the effect of list-wise versus pairwise removal of missing data when computing correlation coefficients.
 
+Notice that in `Generate()` there is a call to `rmvnorm()` from the `mvtnorm` package. In order for this
+function to be available across different cores you can either put a `library()`/`require()` call above
+the desired functions, use `mvtnorm::rmvnorm()` to call the function without loading the package directly,
+or pass `'mvtnorm'` to the `packages` argument in `runSimulation()`. The last option is used in the 
+simulation below.
+
 ```{r}
 library(SimDesign)
 #SimDesign_functions(comments = FALSE)
@@ -36,7 +42,6 @@ Design <- expand.grid(N = c(50, 100, 200))
 #--------------------------------------------------------------------------
 
 Generate <- function(condition, fixed_objects = NULL) {
-    library(mvtnorm)
     cormat <- matrix(.5, 3, 3)
     diag(cormat) <- 1
     dat <- rmvnorm(condition$N, sigma = cormat)
@@ -64,7 +69,8 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
 
 ### Run the simulation
 results <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
+                         packages = 'mvtnorm')
 ```
 
 ```{r}
@@ -80,8 +86,6 @@ This is essentially the same simulation as a above, however the missing data mec
 ```{r}
 Generate <- function(condition, fixed_objects = NULL) {
     fun <- function(y) ifelse(y > 1, .5, 0)
-    
-    library(mvtnorm)
     cormat <- matrix(.5, 3, 3)
     diag(cormat) <- 1
     dat <- rmvnorm(condition$N, sigma = cormat)
@@ -90,7 +94,8 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 results <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
+                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
+                         packages = 'mvtnorm')
 ```
 
 ```{r}
