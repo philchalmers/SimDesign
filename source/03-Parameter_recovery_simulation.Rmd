@@ -118,18 +118,18 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     nitems <- condition$nitems
 
     # (optional) could use better starting values from fixed_objects here too
-    mod <- try(mirt(dat, 1L, verbose=FALSE), silent=TRUE)
-    check_error(mod)
-    if(!extract.mirt(mod, 'converged')) stop('mirt did not converge')
+    mod <- mirt(dat, 1L, verbose=FALSE)
+    if(!extract.mirt(mod, 'converged')) 
+        stop('mirt did not converge', call.=FALSE)
     cfs <- coef(mod, simplify = TRUE, digits = Inf)
     FIML_as <- cfs$items[,1L] / 1.702
 
     lavmod <- paste0('F =~ ', paste0('NA*', colnames(dat)[1L], ' + '),
                      paste0(colnames(dat)[-1L], collapse = ' + '),
                      '\nF ~~ 1*F')
-    lmod <- try(sem(lavmod, dat, ordered = colnames(dat)))
-    check_error(lmod)
-    if(!lavInspect(lmod, 'converged')) stop('lavaan did not converge')
+    lmod <- sem(lavmod, dat, ordered = colnames(dat))
+    if(!lavInspect(lmod, 'converged')) 
+        stop('lavaan did not converge', call.=FALSE)
     cfs2 <- coef(lmod)
     DWLS_alpha <- cfs2[1L:nitems]
     const <- sqrt(1 - DWLS_alpha^2)
@@ -153,6 +153,11 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
     return(ret)
 }
 ```
+
+Notice that a manual error is throw whenever `lavaan` or `mirt` objects reach their maximum number of 
+iterations. This is required because the objects themselves do not throw error messages, but the 
+data should be redrawn anyway to ensure that the simulation only contains models which have sucessfully
+converged.
 
 ### Run the simulation
 

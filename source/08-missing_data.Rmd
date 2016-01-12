@@ -50,9 +50,8 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
-    try(r0 <- cor(dat, use = 'complete.obs'))
-    try(r1 <- cor(dat, use = 'pairwise.complete'))
-    check_error(r0, r1)
+    r0 <- cor(dat, use = 'complete.obs')
+    r1 <- cor(dat, use = 'pairwise.complete')
     pick <- lower.tri(r0)
     ret <- c(listwise=mean(r0[pick]), pairwise=mean(r1[pick]))
     ret
