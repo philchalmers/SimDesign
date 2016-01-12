@@ -12,7 +12,7 @@ Description: Provides tools to help organize Monte Carlo simulations in R. The p
     aggregate results across independent nodes, and provide native support for debugging.
 VignetteBuilder: knitr
 Depends:
-    R (>= 3.2.1)
+    R (>= 3.0.2)
 Imports:
     foreach,
     methods,
