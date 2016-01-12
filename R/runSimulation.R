@@ -164,8 +164,8 @@
 #'   when \code{save_results = TRUE}. If a directory/folder does not exist
 #'   in the current working directory then one will be created automatically
 #'
-#' @param include_errors logical; include information about which error how often they occurred from
-#'   \code{try()} chunks or \code{\link{check_error}}? If \code{TRUE}, this information will be stacked at the end
+#' @param include_errors logical; include information about which error how often they occurred?
+#'   If \code{TRUE}, this information will be stacked at the end
 #'   of the returned simulation results with the name of the specific error used as the column name in the
 #'   data.frame object, and the number of occurrences included as the value for each condition.
 #'   Default is \code{TRUE}
@@ -282,11 +282,8 @@
 #'     mygreatfunction <- function(x) print('Do some stuff')
 #'
 #'     #wrap computational statistics in try() statements to control estimation problems
-#'     welch <- try(t.test(DV ~ group, dat), silent=TRUE)
-#'     ind <- try(t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
-#'
-#'     # check if any errors occurred. This will re-draw the data
-#'     check_error(welch, ind)
+#'     welch <- t.test(DV ~ group, dat)
+#'     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
 #'
 #'     # In this function the p values for the t-tests are returned,
 #'     #  and make sure to name each element, for future reference

@@ -31,12 +31,8 @@ test_that('SimDesign', {
         require(stats)
 
         #wrap computational statistics in try() statements to control estimation problems
-        welch <- try(t.test(DV ~ group, dat), silent=TRUE)
-        ind <- try(stats::t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
-
-        # check if error, and if so stop and return an 'error'. This will re-draw the data
-        check_error(welch)
-        if(is(ind, 'try-error')) stop('Independent t-test error message')
+        welch <- t.test(DV ~ group, dat)
+        ind <- stats::t.test(DV ~ group, dat, var.equal=TRUE)
 
         # In this function the p values for the t-tests are returned,
         #  and make sure to name each element, for future reference
@@ -95,17 +91,12 @@ test_that('SimDesign', {
         # require packages/define functions if needed, or better yet index with the :: operator
         require(stats)
 
-        if(runif(1, 0, 1) < .9) return(try(suppressWarnings(t.test('char')), silent=TRUE))
-        if(runif(1, 0, 1) < .9) check_error(try(suppressWarnings(aov('char')), silent=TRUE))
+        if(runif(1, 0, 1) < .9) suppressWarnings(t.test('char'))
+        if(runif(1, 0, 1) < .9) suppressWarnings(aov('char'))
 
         #wrap computational statistics in try() statements to control estimation problems
-        welch <- try(t.test(DV ~ group, dat), silent=TRUE)
-        ind <- try(stats::t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
-
-        # check if error, and if so stop and return an 'error'. This will re-draw the data
-        check_error(welch)
-        if(is(ind, 'try-error')) stop('Independent t-test error message')
-
+        welch <- t.test(DV ~ group, dat)
+        ind <- stats::t.test(DV ~ group, dat, var.equal=TRUE)
 
         # In this function the p values for the t-tests are returned,
         #  and make sure to name each element, for future reference

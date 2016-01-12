@@ -53,10 +53,13 @@ generate <- function(condition, fixed_objects = NULL) NULL
 #' different parameter configurations (e.g., when
 #' determining RMSE values for a large set of population parameters).
 #'
-#' Also, be sure to make heavy use of \code{\link{try}} combinations and throw
-#' a \code{\link{stop}}/\code{\link{check_error}} if an iterative function fails to converge.
-#' This will cause the function to halt, and \code{\link{generate}} will be called again
-#' to obtain a different dataset.
+#' The use of \code{\link{try}} functions is generally not required because the function
+#' is internally wrapped in a \code{\link{try}} call. Therefore, if a function stops early
+#' then this will cause the function to halt iternally, the message which triggered the \code{\link{stop}}
+#' will be recorded, and \code{\link{generate}} will be called again to obtain a different dataset.
+#' That being said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
+#' should be redrawn for other reasons (e.g., a model terminated correctly but the maximum number of
+#' iterations were reached).
 #'
 #' @param dat the \code{dat} object returned from the \code{\link{generate}} function
 #'   (usually a \code{data.frame}, \code{matrix}, or \code{vector}).
@@ -74,7 +77,7 @@ generate <- function(condition, fixed_objects = NULL) NULL
 #'   effects sizes, etc), or a \code{list} containing values of interest (e.g., separate matrix
 #'   and vector of parameter estimates corresponding to elements in \code{parameters})
 #'
-#' @seealso \code{\link{try}}, \code{\link{check_error}}, \code{\link{stop}}
+#' @seealso \code{\link{stop}}
 #' @aliases analyse
 #'
 #' @examples
@@ -87,12 +90,8 @@ generate <- function(condition, fixed_objects = NULL) NULL
 #'     mygreatfunction <- function(x) print('Do some stuff')
 #'
 #'     #wrap computational statistics in try() statements to control estimation problems
-#'     welch <- try(t.test(DV ~ group, dat), silent=TRUE)
-#'     ind <- try(stats::t.test(DV ~ group, dat, var.equal=TRUE), silent=TRUE)
-#'
-#'     # check if error, and if so stop and return an 'error'. This will re-draw the data
-#'     if(is(welch, 'try-error')) stop('Welch error message')
-#'     if(is(ind, 'try-error')) stop('Independent t-test error message')
+#'     welch <- t.test(DV ~ group, dat)
+#'     ind <- stats::t.test(DV ~ group, dat, var.equal=TRUE)
 #'
 #'     # In this function the p values for the t-tests are returned,
 #'     #  and make sure to name each element, for future reference
