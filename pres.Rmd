@@ -66,7 +66,7 @@ For population parameter $\psi$ (given some pre-specified conditions), let $\hat
 - Say that we had a number of randomly sampled datasets from this population. For each dataset, we could compute $\hat{\psi}_1 = f(D_1)$, $\hat{\psi}_2 = f(D_2)$, $\ldots$, $\hat{\psi}_R = f(D_R)$.
 - Under the Central Limit Theorem, as the number of random samples $R \rightarrow \infty$ then 
   $\psi \equiv E[f(D)]$.
-- Therefore, given our finite datasets we could use the approximatation $\psi \approx \frac{1}{R} \sum_{r=1}^R f(D_r)$ when $R$ is large enough.
+- Therefore, given our finite datasets we could use the approximation $\psi \approx \frac{1}{R} \sum_{r=1}^R f(D_r)$ when $R$ is large enough.
 
 # Reasoning of MCSs
 
@@ -330,7 +330,7 @@ head(res[['270']][['chi']])
 # Features Which Should be Considered
 
 - Saving/resuming temporary simulation state in case of power-outages/crashes
-- Re-drawing data when analysis functions fail (but tracking how functions failed)
+- Automatically re-drawing data when analysis functions fail (but tracking how functions failed)
 - Outputting files to completely save analysis results (and making sure to do this uniquely)
 - Making efficient use of RAM (e.g., discarding data objects, avoiding large empty storage objects)
 - Parallel computation support, including support on larger clusters or across independent nodes/computers
@@ -388,9 +388,21 @@ results <- runSimulation(design = Design,
 
 The `SimDesign` package contains a selection of convenience functions as well.
 
-- `check_error()`: accepts input objects that have been wrapped in a `try()` statement to throw an error.
 - `bias()`, `RMSE()`, and `RE()`: bias, RMSE, and RE. Accepts statistics in deviation form if that happens to be easier.
 - `ECR()` and `EDR()`: empirical coverage and detection rates.
+
+# The `SimDesign` package
+
+One important feature in `SimDesign` is that the internal functions are wrapped within `try()` calls 
+automatically. Hence, if an routine fails within any of the respective functions (i.e., a `stop()` 
+call is thrown) then `SimDesign` will silently deal with the error while also tracking what the error 
+message was.
+
+- Error messages are appended into the returned `data.frame` object with the number of times they occurred
+- Users may throw their own `stop()` calls if useful (e.g., when a model converges but not before
+  the number of iterations were reached)
+- `SimDesign` has built-in safety termination when more than 50 consecutive errors are thrown. This
+  avoids simulations getting stuck in infinite loops, even when running code across different cores
 
 # The `SimDesign` package
 

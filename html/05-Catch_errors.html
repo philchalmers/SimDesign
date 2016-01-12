@@ -203,7 +203,9 @@ hr {
 <body>
 <h1>Catch Errors</h1>
 
-<p>Error catching is an important thing to consider when creating Monte Carlo simulations. Sometimes, iterative algorithms will &#39;fail to converge&#39; or crash for other reasons (e.g., sparse data). This is why wrapping sensitive functions in a <code>try()</code> block is so important. Below we demonstrate what happens when errors are thrown and caught, and how this information is tracked in the returned object.</p>
+<p>Error catching is an important thing to consider when creating Monte Carlo simulations. Sometimes, iterative algorithms will &#39;fail to converge&#39; or crash for other reasons (e.g., sparse data). However,
+<code>SimDesign</code> makes this process much easier because the internal functions are wrapped in a <code>try</code> block
+already, therefore the simulation will not terminate unexpectedly. Below we demonstrate what happens when errors are thrown and caught, and how this information is tracked in the returned object.</p>
 
 <h3>Define the functions</h3>
 
@@ -223,15 +225,14 @@ Design &lt;- data.frame(N = c(10,20,30))
 Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     whc &lt;- sample(c(0,1,2,3), 1, prob = c(.7, .20, .05, .05))
     if(whc == 0){
-       ret &lt;- try(mean(dat), silent=TRUE)
+       ret &lt;- mean(dat)
     } else if(whc == 1){
-        ret &lt;- try(t.test(), silent=TRUE) # missing arguments
+        ret &lt;- t.test() # missing arguments
     } else if(whc == 2){
-        # invalid arguments, but error thrown by check_error()
-        ret &lt;- try(suppressWarnings(t.test(&#39;invalid&#39;)), silent=TRUE) 
-        check_error(ret)
+        ret &lt;- suppressWarnings(t.test(&#39;invalid&#39;)) # invalid arguments
     } else if(whc == 3){
-        stop(&#39;Manual error thrown&#39;, call.=FALSE) # throw error manually
+        # throw error manually but suppress the &#39;where&#39; part of stop() (less verbose)
+        stop(&#39;Manual error thrown&#39;, call.=FALSE) 
     }
     ret
 }
@@ -242,7 +243,9 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_li
 }
 </code></pre>
 
-<p>The above simulation is just an example of how errors may be caught with <code>try()</code> blocks or manually thrown with the <code>stop()</code> or <code>check_error()</code> functions. </p>
+<p>The above simulation is just an example of how errors are tracked in <code>SimDesign</code>, as well as how to 
+throw a manual error in case the data should be re-drawn (e.g., when a model converges but fails to 
+do so before some number of predefined iterations). </p>
 
 <h3>Run the simulation</h3>
 
@@ -261,32 +264,33 @@ Completed: 100%,   Previous condition time: 0.0,  Total elapsed time: 0.1
 </code></pre>
 
 <pre><code>##    N     bias REPLICATIONS SIM_TIME
-## 1 10 -0.04329          100    0.042
-## 2 20  0.01684          100    0.041
-## 3 30 -0.00669          100    0.037
-##   ERROR_MESSAGE: .Error : Error in t.test.default(&quot;invalid&quot;) : not enough &#39;x&#39; observations\n\n
-## 1                                                                                            9
-## 2                                                                                            5
-## 3                                                                                            4
+## 1 10 -0.04329          100    0.028
+## 2 20  0.01684          100    0.030
+## 3 30 -0.00669          100    0.028
 ##   ERROR_MESSAGE: .Error in t.test.default() : argument &quot;x&quot; is missing, with no default\n
 ## 1                                                                                     22
 ## 2                                                                                     38
 ## 3                                                                                     30
+##   ERROR_MESSAGE: .Error in t.test.default(&quot;invalid&quot;) : not enough &#39;x&#39; observations\n
+## 1                                                                                  9
+## 2                                                                                  5
+## 3                                                                                  4
 ##   ERROR_MESSAGE: .Error : Manual error thrown\n
 ## 1                                             5
 ## 2                                            10
 ## 3                                             9
 </code></pre>
 
-<p>What you&#39;ll immediately notice from this output object is that the name of the error thrown, and the function from which the error was thrown, are appended as additional columns in the output with the prefix <code>ERROR_MESSAGE:</code>. Furthermore, the frequency in which the error occurred are also included for each design condition (here the <code>t.test.default()</code> error, where no inputs were supplied, occurred more often than the manually thrown error as well as the invalid-input error thrown by <code>check_error()</code>). </p>
+<p>What you&#39;ll immediately notice from this output object is that the name of the error thrown, and the function from which the error was thrown, are appended as additional columns in the output with the prefix <code>ERROR_MESSAGE:</code>. Furthermore, the frequency in which the error occurred are also included for each design condition (here the <code>t.test.default()</code> error, where no inputs were supplied, occurred more often than the manually thrown error as well as the invalid-input error). </p>
 
-<p>The <code>check_error()</code> function, however, has the added benifit that it can throw errors for multiple input objects. Therefore, passing something like <code>check_error(mod1, mod2, mod3)</code> will throw a stuitable stop message
-if any of the objects have witnessed an error. As well, <code>SimDesign</code> has a safety built-in with <code>max_errors</code> argument. If more than 50 errors are consecutively returned (the default) then the simulation will be haulted because this generally indicates a major problem is occuring.</p>
+<p>Finally, <code>SimDesign</code> has a safety built-in feature controlled by with <code>max_errors</code> argument to avoid
+getting stuck in infinite loops. By default if more than 50 errors are consecutively returned then the simulation will be haulted and the final error 
+message will be returned. This saftey feature is built-in because too many consecutive <code>stop()</code> calls generally indicates a major problem in the simulation code.</p>
 
 <h3>What to do</h3>
 
 <p>If errors occur too often then these design conditions should either be extracted out of the simulation or further inspected to determine if they can be fixed (e.g., providing better starting values, increasing convergence criteria/number of iterations, etc). The use of the debugging features may be useful to track
-down issues here as well. For example, add the line <code>if(is(object, &#39;try-error&#39;)) browser()</code> to jump into the location/replication where the object unexpectedly witnessed an error, and try to disern why the error occured.</p>
+down issues here as well. For example, wrap the prolbematic objects in a <code>try()</code> call and add the line <code>if(is(object, &#39;try-error&#39;)) browser()</code> to jump into the location/replication where the object unexpectedly witnessed an error, and attempt to disern why the error occured and how to fix it.</p>
 
 </body>
 
