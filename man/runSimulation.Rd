@@ -7,13 +7,9 @@
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, parallel = FALSE, packages = NULL,
   ncores = parallel::detectCores(), MPI = FALSE, save = FALSE,
-  save_results = FALSE, save_generate_data = FALSE, max_errors = 50,
-  include_errors = TRUE, seed = NULL, compname = Sys.info()["nodename"],
-  filename = paste0("SimDesign-Final_", compname, ".rds"),
-  tmpfilename = paste0("SIMDESIGN-TEMPFILE_", compname, ".rds"),
-  save_results_dirname = paste0("SimDesign-results_", compname),
-  save_generate_data_dirname = paste0("SimDesign-generate-data_", compname),
-  edit = "none", verbose = TRUE)
+  save_results = FALSE, save_generate_data = FALSE,
+  filename = "SimDesign-Final", max_errors = 50, include_errors = TRUE,
+  seed = NULL, save_details = list(), edit = "none", verbose = TRUE)
 }
 \arguments{
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
@@ -72,6 +68,9 @@ It is generally recommended to leave this argument as \code{FALSE} because savin
 a large amount of disk space, and by and large saving data is not required or recommended for simulations.
 Default is \code{FALSE}}
 
+\item{filename}{the name of the \code{.rds} file to save the final simulation results to when
+\code{save = TRUE}. Default is 'SimDesign-Final'}
+
 \item{max_errors}{the simulation will terminate when more than this number of errors are thrown in any
 given condition. The purpose of this is to indicate that likely something problematic is going
 wrong in the generate-analyse phases and should be inspected. Default is 50}
@@ -89,26 +88,35 @@ This argument calls \code{\link{set.seed}} or
 but will not be run when \code{MPI = TRUE}.
 Default is \code{NULL}, indicating that no seed is set for each condition}
 
-\item{compname}{name of the computer running the simulation. Normally this doesn't need to be modified,
-but in the event that a node breaks down while running a simulation the results from the tmp files
-may be resumed on another computer by changing the name of the node to match the broken computer}
+\item{save_details}{a list pertaining to information about how and where files should be saved
+  when \code{save}, \code{save_results}, or \code{save_generate_data} are triggered.
 
-\item{filename}{the name of the \code{.rds} file to save the final simulation results to}
+  \describe{
 
-\item{tmpfilename}{the name of the temporary file, default is the system name with 'tmpsim.rds'
-appended at the end. This file will be
-read-in if it is in the working directory, and the simulation will continue where at the last
-point this file was saved (useful in case of power outages or broken nodes).
-This file will be deleted when the simulation is complete}
+    \item{\code{compname}}{name of the computer running the simulation. Normally this doesn't need
+      to be modified, but in the event that a node breaks down while running a simulation the
+      results from the tmp files may be resumed on another computer by changing the name of the
+      node to match the broken computer. Default is \code{unname(Sys.info()['nodename'])}}
 
-\item{save_results_dirname}{a string indicating the name of the folder to save results objects to
-when \code{save_results = TRUE}. If a directory/folder does not exist
-in the current working directory then one will be created automatically}
+    \item{\code{tmpfilename}}{the name of the temporary \code{.rds} file when any of the save flags are used.
+       This file will be read-in if it is in the working directory, and the simulation will continue where
+       at the last point this file was saved
+       (useful in case of power outages or broken nodes). Finally, this file will be deleted when the
+       simulation is complete. Default is the system name (\code{compname}) appended
+       to \code{'SIMDESIGN-TEMPFILE_'}}
 
-\item{save_generate_data_dirname}{a string indicating the name of the folder to save data objects to
-when \code{save_generate_data = TRUE}. If a directory/folder does not exist
-in the current working directory then one will be created automatically. Within this folder nested
-directories will be created associated with each row in \code{design}}
+    \item{\code{save_results_dirname}}{a string indicating the name of the folder to save
+      results objects to when \code{save_results = TRUE}. If a directory/folder does not exist
+      in the current working directory then one will be created automatically. Default is
+      \code{'SimDesign-results_'} with the associated \code{compname} appended}
+
+    \item{\code{save_generate_data_dirname}}{a string indicating the name of the folder to save
+      data objects to when \code{save_generate_data = TRUE}. If a directory/folder does not exist
+      in the current working directory then one will be created automatically.
+      Within this folder nested directories will be created associated with each row in \code{design}.
+      Default is \code{'SimDesign-generate-data_'} with the \code{compname} appended}
+
+  }}
 
 \item{edit}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
   General options are \code{'none'} (default) and \code{'all'}, which are used
@@ -242,8 +250,8 @@ with a \code{save = TRUE} argument. This will create two distinct \code{.rds} fi
 combined later with the \code{\link{aggregate_simulations}} function. The benefit of this approach over
 MPI is that computers need not be linked over a LAN network, and should the need arise the temporary
 simulation results can be migrated to another computer in case of a complete hardware failure by modifying
-the suitable \code{compname} input (or, if the \code{filename} and \code{tmpfilename} were modified,
-matching those files as well).
+the suitable \code{compname} input to \code{save_details} (or, if the \code{filename} and \code{tmpfilename}
+were modified, matching those files as well).
 }
 \examples{
 

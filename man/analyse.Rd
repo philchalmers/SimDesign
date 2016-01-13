@@ -65,6 +65,6 @@ myanalyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
 }
 }
 \seealso{
-\code{\link{try}}, \code{\link{check_error}}, \code{\link{stop}}
+\code{\link{stop}}
 }
 
