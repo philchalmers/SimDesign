@@ -93,6 +93,7 @@ test_that('SimDesign', {
 
         if(runif(1, 0, 1) < .9) suppressWarnings(t.test('char'))
         if(runif(1, 0, 1) < .9) suppressWarnings(aov('char'))
+        if(runif(1, 0, 1) < .2) stop('my error')
 
         #wrap computational statistics in try() statements to control estimation problems
         welch <- t.test(DV ~ group, dat)
@@ -136,7 +137,7 @@ test_that('SimDesign', {
 
     # error test
     mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
-        stop('this error', call. = FALSE)
+        stop('this error')
     }
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))

@@ -46,6 +46,9 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
 
     try_errors <- lapply(cell_results, function(x) attr(x, 'try_errors'))
     try_errors <- table(do.call(c, try_errors))
+    names(try_errors) <-
+        gsub('Error in analyse\\(dat = simlist\\$dat, parameters = simlist\\$parameters, condition = condition,  : \\n  ',
+             replacement = 'Manual Error : ', names(try_errors))
     for(i in 1L:length(cell_results))
         attr(cell_results[[i]], 'try_errors') <- NULL
 

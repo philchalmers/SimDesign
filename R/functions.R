@@ -223,9 +223,13 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')){
             try_error <- c(try_error, res[1L])
-            if(length(try_error) == max_errors)
+            if(length(try_error) == max_errors){
+                res[1L] <-
+                    gsub('Error in analyse\\(dat = simlist\\$dat, parameters = simlist\\$parameters, condition = condition,  : \\n  ',
+                         replacement = 'Manual Error : ', res[1L])
                 stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
-                            ' consecutive errors. \n\nLast error message was \n', res[1L]), call.=FALSE)
+                            ' consecutive errors. \n\nLast error message was: \n\n  ', res[1L]), call.=FALSE)
+            }
             next
         }
         if(!is.list(res) && !is.numeric(res))
