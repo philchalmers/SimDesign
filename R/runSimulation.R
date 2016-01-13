@@ -496,8 +496,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     time0 <- time1 <- proc.time()[3]
     files <- dir()
     if(!MPI && any(files == tmpfilename)){
+        replications <- Result_list[[1L]]$REPLICATIONS
         if(verbose)
-            message(paste('Resuming simulation from the temporary results found in:', tmpfilename))
+            message(sprintf('Resuming simulation from %s file with %i replications.',
+                            tmpfilename, replications))
         Result_list <- readRDS(tmpfilename)
         start <- min(which(sapply(Result_list, is.null)))
     }
