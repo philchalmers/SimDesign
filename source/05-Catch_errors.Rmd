@@ -46,8 +46,8 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     } else if(whc == 2){
         ret <- suppressWarnings(t.test('invalid')) # invalid arguments
     } else if(whc == 3){
-        # throw error manually but suppress the 'where' part of stop() (less verbose)
-        stop('Manual error thrown', call.=FALSE) 
+        # throw error manually 
+        stop('Manual error thrown') 
     }
     ret
 }

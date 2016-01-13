@@ -119,8 +119,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
 
     # (optional) could use better starting values from fixed_objects here too
     mod <- mirt(dat, 1L, verbose=FALSE)
-    if(!extract.mirt(mod, 'converged')) 
-        stop('mirt did not converge', call.=FALSE)
+    if(!extract.mirt(mod, 'converged')) stop('mirt did not converge')
     cfs <- coef(mod, simplify = TRUE, digits = Inf)
     FIML_as <- cfs$items[,1L] / 1.702
 
@@ -128,8 +127,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
                      paste0(colnames(dat)[-1L], collapse = ' + '),
                      '\nF ~~ 1*F')
     lmod <- sem(lavmod, dat, ordered = colnames(dat))
-    if(!lavInspect(lmod, 'converged')) 
-        stop('lavaan did not converge', call.=FALSE)
+    if(!lavInspect(lmod, 'converged')) stop('lavaan did not converge')
     cfs2 <- coef(lmod)
     DWLS_alpha <- cfs2[1L:nitems]
     const <- sqrt(1 - DWLS_alpha^2)
