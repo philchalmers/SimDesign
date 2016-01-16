@@ -496,11 +496,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     time0 <- time1 <- proc.time()[3]
     files <- dir()
     if(!MPI && any(files == tmpfilename)){
-        replications <- Result_list[[1L]]$REPLICATIONS
         if(verbose)
             message(sprintf('Resuming simulation from %s file with %i replications.',
                             tmpfilename, replications))
         Result_list <- readRDS(tmpfilename)
+        if(!is.null(Result_list[[1L]]$REPLICATIONS))
+            replications <- Result_list[[1L]]$REPLICATIONS
         start <- min(which(sapply(Result_list, is.null)))
     }
     if(save_results){
