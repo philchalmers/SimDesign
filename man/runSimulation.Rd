@@ -7,9 +7,9 @@
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, parallel = FALSE, packages = NULL,
   ncores = parallel::detectCores(), MPI = FALSE, save = FALSE,
-  save_results = FALSE, save_generate_data = FALSE,
-  filename = "SimDesign-Final", max_errors = 50, include_errors = TRUE,
-  seed = NULL, save_details = list(), edit = "none", verbose = TRUE)
+  save_results = FALSE, save_generate_data = FALSE, filename = NULL,
+  max_errors = 50, include_errors = TRUE, seed = NULL,
+  save_details = list(), edit = "none", verbose = TRUE)
 }
 \arguments{
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
@@ -50,10 +50,12 @@ Alternatively, functions can be called explicitly without attaching the package 
 \item{MPI}{logical; use the \code{foreach} package in a form usable by MPI to run simulation
 in parallel on a cluster? Default is \code{FALSE}}
 
-\item{save}{logical; save the final simulation to the hard-drive? This is useful
-for simulations which require an extended amount of time. When \code{TRUE}, a temp file will be created
-in the working directory which allows the simulation state to be saved and recovered (in case
-of power outages, crashes, etc). Default is \code{FALSE}}
+\item{save}{logical; save the simulation state to the hard-drive? This is useful
+for simulations which require an extended amount of time. When \code{TRUE}, a temp file
+will be created in the working directory which allows the simulation state to be saved
+and recovered (in case of power outages, crashes, etc). To recover you simulation at the last known
+location simply rerun the same code you used to initially define the simulation and the object
+will automatically be detected and read-in. Default is \code{FALSE}}
 
 \item{save_results}{logical; save the results returned from \code{\link{analyse}} to external
 \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
@@ -68,8 +70,11 @@ It is generally recommended to leave this argument as \code{FALSE} because savin
 a large amount of disk space, and by and large saving data is not required or recommended for simulations.
 Default is \code{FALSE}}
 
-\item{filename}{the name of the \code{.rds} file to save the final simulation results to when
-\code{save = TRUE}. Default is 'SimDesign-Final'}
+\item{filename}{the name of the \code{.rds} file to save the final simulation results to.
+When \code{NULL} the final simulation object is not saved to the drive. As well,
+if the same file name already exists in the working directy at the time of saving then a new
+file will be generated instead and a warning will be thrown. This helps avoid accidentally overwritting
+existing files. Default is \code{NULL}}
 
 \item{max_errors}{the simulation will terminate when more than this number of errors are thrown in any
 given condition. The purpose of this is to indicate that likely something problematic is going
@@ -199,8 +204,9 @@ then the original code in
 the main source file need only be rerun again to resume the simulation.
 The saved temp file will be read into the function, and the simulation will continue where it left
 off before the simulation was terminated. Upon completion, a data.frame with the simulation
-will be returned in the R session and a \code{.rds} file will be saved to the hard-drive (with the
-file name corresponding to the \code{filename} argument below). To save the complete list of results returned
+will be returned in the R session. If specified, an \code{.rds} file may also be saved
+to the hard-drive if a suitable \code{filename} argument was included.
+Finally, to save the complete list of results returned
 from \code{\link{analyse}} to unique files use \code{save_results = TRUE}.
 }
 
@@ -220,9 +226,9 @@ files using the suitable BASH commands to execute the \code{mpirun} tool. For ex
   \item{\code{library(doMPI)}}{}
   \item{\code{cl <- startMPIcluster()}}{}
   \item{\code{registerDoMPI(cl)}}{}
-  \item{\code{Final <- runSimulation(design=Design, replications=1000,
+  \item{\code{Final <- runSimulation(design=Design, replications=1000, save=TRUE,
     generate=Generate, analyse=Analyse, summarise=Summarise, MPI=TRUE)}}{}
-  \item{\code{saveRDS(Final, 'mysimulation.rds') # alternatively, pass save=TRUE above}}{}
+  \item{\code{saveRDS(Final, 'mysimulation.rds') # alternatively, pass a filename argument}}{}
   \item{\code{closeCluster(cl)}}{}
   \item{\code{mpi.quit()}}{}
 }
@@ -246,7 +252,8 @@ aggregating the results using the \code{\link{aggregate_simulations}} function.
 
 For instance, if you have two computers available and wanted 500 replications you
 could pass \code{replications = 300} to one computer and \code{replications = 200} to the other along
-with a \code{save = TRUE} argument. This will create two distinct \code{.rds} files which can be
+with a \code{filename} argument (or simply saving the final objects as \code{.rds} files manually).
+This will create two distinct \code{.rds} files which can be
 combined later with the \code{\link{aggregate_simulations}} function. The benefit of this approach over
 MPI is that computers need not be linked over a LAN network, and should the need arise the temporary
 simulation results can be migrated to another computer in case of a complete hardware failure by modifying
@@ -343,6 +350,12 @@ Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
 head(Final)
 View(Final)
 
+## save results to a file upon completion (not run)
+# runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
+#               generate=Generate, analyse=Analyse, summarise=Summarise)
+
+
+
 ## Debug the generate function. See ?browser for help on debugging
 ##   Type help to see available commands (e.g., n, c, where, ...),
 ##   ls() to see what has been defined, and type Q to quit the debugger
@@ -378,6 +391,7 @@ runSimulation(design=Design, replications=1000,
 # registerDoMPI(cl)
 # Final <- runSimulation(design=Design, replications=1000, MPI=TRUE, save=TRUE,
 #                        generate=Generate, analyse=Analyse, summarise=Summarise)
+# saveRDS(Final, 'mysim.rds')
 # closeCluster(cl)
 # mpi.quit()
 

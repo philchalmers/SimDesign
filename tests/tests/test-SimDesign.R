@@ -77,7 +77,7 @@ test_that('SimDesign', {
     expect_is(Final, 'data.frame')
 
     # aggregate test
-    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, filename='file',
                            replications = 2, parallel=FALSE, save=TRUE, verbose = FALSE)
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile', verbose = FALSE)
@@ -114,10 +114,10 @@ test_that('SimDesign', {
 
     # aggregate test
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                         replications = 2, parallel=FALSE, save=TRUE, include_errors = TRUE,
+                         replications = 2, parallel=FALSE, filename='this', include_errors = TRUE,
                          max_errors=Inf, verbose = FALSE)
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, max_errors=Inf,
-                         replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile',
+                         replications = 2, parallel=FALSE, filename = 'newfile',
                          include_errors = TRUE, verbose = FALSE)
     Final <- aggregate_simulations()
     expect_is(Final, 'data.frame')
