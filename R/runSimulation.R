@@ -168,12 +168,16 @@
 #'
 #'   \describe{
 #'
+#'     \item{\code{safe}}{logical; trigger whether safe-saving should be performed. When \code{TRUE} files
+#'       will never be over-written accidentelly, and where apppropriate the program will either stop or generate
+#'       new files with unique names. Default is \code{TRUE}}
+#'
 #'     \item{\code{compname}}{name of the computer running the simulation. Normally this doesn't need
 #'       to be modified, but in the event that a node breaks down while running a simulation the
 #'       results from the tmp files may be resumed on another computer by changing the name of the
 #'       node to match the broken computer. Default is \code{unname(Sys.info()['nodename'])}}
 #'
-#'     \item{\code{tmpfilename}}{the name of the temporary \code{.rds} file when any of the save flags are used.
+#'     \item{\code{tmpfilename}}{the name of the temporary \code{.rds} file when any of the \code{save} flag is used.
 #'        This file will be read-in if it is in the working directory, and the simulation will continue where
 #'        at the last point this file was saved
 #'        (useful in case of power outages or broken nodes). Finally, this file will be deleted when the
@@ -437,10 +441,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!all(names(save_results) %in%
             c('compname', 'tmpfilename', 'save_results_dirname', 'save_generate_data_dirname')))
         stop('save_details contains elements that are not supported', call.=FALSE)
-    compname <- save_details$compname; tmpfilename <- save_details$tempfilename
+    compname <- save_details$compname; tmpfilename <- save_details$tempfilename; safe <- save_details$safe
     save_results_dirname <- save_details$save_results_dirname
     save_generate_data_dirname <- save_details$save_generate_data_dirname
     if(is.null(compname)) compname <- Sys.info()['nodename']
+    if(is.null(safe)) safe <- TRUE
     if(is.null(tmpfilename)) tmpfilename <- paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')
     if(is.null(save_results_dirname)) save_results_dirname <- paste0('SimDesign-results_', compname)
     if(is.null(save_generate_data_dirname)) save_generate_data_dirname <- paste0('SimDesign-generate-data_', compname)
@@ -519,13 +524,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         start <- min(which(sapply(Result_list, is.null)))
     }
     if(save_results){
-        if(dir.exists(save_results_dirname) && !file.exists(tmpfilename))
+        if(safe && dir.exists(save_results_dirname) && !file.exists(tmpfilename))
             stop(save_results_dirname, ' directory already exists. ',
                     'Please fix by modifying the save_results_dirname input.', call.=FALSE)
         dir.create(save_results_dirname, showWarnings = !file.exists(tmpfilename))
     }
     if(save_generate_data){
-        if(dir.exists(save_generate_data_dirname) && !file.exists(tmpfilename))
+        if(safe && dir.exists(save_generate_data_dirname) && !file.exists(tmpfilename))
             stop(save_generate_data_dirname, ' directory already exists. ',
                  'Please fix by modifying the save_generate_data_dirname input.', call.=FALSE)
         dir.create(save_generate_data_dirname, showWarnings = !file.exists(tmpfilename))
@@ -569,7 +574,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         data.frame(Final, SIM_TIME, TRY_ERRORS, check.names=FALSE)
     } else data.frame(Final, SIM_TIME, check.names=FALSE)
     if(!is.null(seed)) Final$SEED <- seed
-    if(!is.null(filename)){ #save file
+    if(!is.null(filename) && safe){ #save file
         files <- dir()
         filename0 <- filename
         count <- 1L

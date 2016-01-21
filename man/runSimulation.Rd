@@ -98,12 +98,16 @@ Default is \code{NULL}, indicating that no seed is set for each condition}
 
   \describe{
 
+    \item{\code{safe}}{logical; trigger whether safe-saving should be performed. When \code{TRUE} files
+      will never be over-written accidentelly, and where apppropriate the program will either stop or generate
+      new files with unique names. Default is \code{TRUE}}
+
     \item{\code{compname}}{name of the computer running the simulation. Normally this doesn't need
       to be modified, but in the event that a node breaks down while running a simulation the
       results from the tmp files may be resumed on another computer by changing the name of the
       node to match the broken computer. Default is \code{unname(Sys.info()['nodename'])}}
 
-    \item{\code{tmpfilename}}{the name of the temporary \code{.rds} file when any of the save flags are used.
+    \item{\code{tmpfilename}}{the name of the temporary \code{.rds} file when any of the \code{save} flag is used.
        This file will be read-in if it is in the working directory, and the simulation will continue where
        at the last point this file was saved
        (useful in case of power outages or broken nodes). Finally, this file will be deleted when the
