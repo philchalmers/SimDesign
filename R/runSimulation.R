@@ -136,6 +136,10 @@
 #' @param parallel logical; use parallel processing from the \code{parallel} package over each
 #'   unique condition?
 #'
+#' @param cl cluster object defined by \code{\link{makeCluster}} to be used when \code{parallel = TRUE}.
+#'   If \code{NULL} a local cluster object will be defined which selectes the maximum number cores available
+#'   and will be removed when the simulation is complete
+#'
 #' @param packages a character vector of external packages to be used during the simulation (e.g.,
 #'   \code{c('MASS', 'mvtnorm', 'simsem')} ). Use this input when \code{parallel = TRUE} or
 #'   \code{MPI = TRUE} to use non-standard functions from additional packages,
@@ -388,6 +392,22 @@
 #' # mpi.quit()
 #'
 #'
+#' ## Similarly, run simulation on a network linked via ssh
+#' ##  (two way passwordless ssh must be made between between master and slave nodes)
+#' ##
+#' ## define IP adresses, including primary IP
+#' # primary <- '192.168.2.20'
+#' # IPs <- list(
+#' #     list(host=primary, user='phil', ncore=8),
+#' #     list(host='192.168.2.17', user='phil', ncore=8)
+#' # )
+#' # spec <- lapply(IPs, function(IP)
+#' #                    rep(list(list(host=IP$host, user=IP$user)), IP$ncore))
+#' # spec <- unlist(spec, recursive=FALSE)
+#' #
+#' # cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)
+#' # Final <- runSimulation(design=Design, replications=1000, parallel = TRUE, save=TRUE,
+#' #                        generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Step 4 --- Post-analysis: Create a new R file for analyzing the Final data.frame with R based
@@ -435,7 +455,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           ncores = parallel::detectCores(), MPI = FALSE,
                           save = FALSE, save_results = FALSE, save_generate_data = FALSE,
                           filename = NULL, max_errors = 50, include_errors = TRUE,
-                          seed = NULL, save_details = list(), edit = 'none', verbose = TRUE)
+                          cl = NULL, seed = NULL, save_details = list(), edit = 'none',
+                          verbose = TRUE)
 {
     stopifnot(!missing(generate) || !missing(analyse) || !missing(summarise))
     if(!all(names(save_results) %in%
@@ -503,10 +524,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         }
     }
     export_funs <- parent_env_fun()
-    cl <- NULL
     if(parallel){
-        cl <- parallel::makeCluster(ncores)
-        on.exit(parallel::stopCluster(cl))
+        if(is.null(cl)){
+            cl <- parallel::makeCluster(ncores)
+            on.exit(parallel::stopCluster(cl))
+        }
         parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
     }
     start <- 1L

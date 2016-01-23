@@ -8,7 +8,7 @@ runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, parallel = FALSE, packages = NULL,
   ncores = parallel::detectCores(), MPI = FALSE, save = FALSE,
   save_results = FALSE, save_generate_data = FALSE, filename = NULL,
-  max_errors = 50, include_errors = TRUE, seed = NULL,
+  max_errors = 50, include_errors = TRUE, cl = NULL, seed = NULL,
   save_details = list(), edit = "none", verbose = TRUE)
 }
 \arguments{
@@ -85,6 +85,10 @@ If \code{TRUE}, this information will be stacked at the end
 of the returned simulation results with the name of the specific error used as the column name in the
 data.frame object, and the number of occurrences included as the value for each condition.
 Default is \code{TRUE}}
+
+\item{cl}{cluster object defined by \code{\link{makeCluster}} to be used when \code{parallel = TRUE}.
+If \code{NULL} a local cluster object will be defined which selectes the maximum number cores available
+and will be removed when the simulation is complete}
 
 \item{seed}{a vector of integers to be used for reproducibility.
 The length of the vector must be equal the number of rows in \code{design}.
@@ -400,6 +404,22 @@ runSimulation(design=Design, replications=1000,
 # mpi.quit()
 
 
+## Similarly, run simulation on a network linked via ssh
+##  (two way passwordless ssh must be made between between master and slave nodes)
+##
+## define IP adresses, including primary IP
+# primary <- '192.168.2.20'
+# IPs <- list(
+#     list(host=primary, user='phil', ncore=8),
+#     list(host='192.168.2.17', user='phil', ncore=8)
+# )
+# spec <- lapply(IPs, function(IP)
+#                    rep(list(list(host=IP$host, user=IP$user)), IP$ncore))
+# spec <- unlist(spec, recursive=FALSE)
+#
+# cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)
+# Final <- runSimulation(design=Design, replications=1000, parallel = TRUE, save=TRUE,
+#                        generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 # Step 4 --- Post-analysis: Create a new R file for analyzing the Final data.frame with R based

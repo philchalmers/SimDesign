@@ -1,10 +1,10 @@
 Package: SimDesign
 Title: Structure for Organizing Monte Carlo Simulation Designs
-Version: 0.6
+Version: 0.6.1
 Date: 2016-01-21
 Authors@R: person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com",
            role = c("aut", "cre"))
-Description: Provides tools to help safely and efficiently organize Monte Carlo simulations in R. 
+Description: Provides tools to help safely and efficiently organize Monte Carlo simulations in R.
     The package controls the structure and back-end of Monte Carlo simulations
     by utilizing a general generate-analyse-summarise strategy. The functions provided control
     common simulation issues such as re-simulating non-convergent results, support parallel
