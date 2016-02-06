@@ -393,7 +393,7 @@
 #'
 #'
 #' ## Similarly, run simulation on a network linked via ssh
-#' ##  (two way passwordless ssh must be made between between master and slave nodes)
+#' ##  (two way passwordless ssh must be made between master and slave nodes)
 #' ##
 #' ## define IP adresses, including primary IP
 #' # primary <- '192.168.2.20'
