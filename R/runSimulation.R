@@ -98,15 +98,17 @@
 #'
 #' @section Network computing:
 #'
-#' If you access to a set of computers which can be linked via secure-shell (ssh) on the same LAN network then
-#' Network computing may be a viable option. This is similar to MPI computing, except more localized and requires
-#' initial hands-on access to the master and slave nodes. The setup generally requires that the master node
-#' has \code{SimDesign} installed, and the slave nodes have all the required R packages pre-installed. Finally,
-#' the master node must be able to have ssh access to the slave nodes, and each slave node must have ssh access
-#' with the master node.
+#' If you access have to a set of computers which can be linked via secure-shell (ssh) on the same LAN network then
+#' Network computing may be a viable option. This is similar to MPI computing except more localized and requires
+#' more hands-on access to the master and slave nodes. The setup generally requires that the master node
+#' has \code{SimDesign} installed, and the slave/master nodes have all the required R packages pre-installed (
+#' Unix utilities such as \code{dsh} are good for this). Finally,
+#' the master node must be able to have ssh access to the slave nodes, each slave node must have ssh access
+#' with the master node, and a cluster object from the \code{parallel} package must be defined.
 #'
-#' Setup for network computing is generally straightforward and only requires the specification of a) the respective
-#' IP addresses, b) the user name (if different from the master node's user name). For instance, using the following
+#' Setup for network computing is generally straightforward and controlled
+#' than MPI computating in that it only requires the specification of a) the respective
+#' IP addresses, and b) the user name (if different from the master node's user name). For instance, using the following
 #' code the master node (primary) will spawn 7 slaves and 1 master while a separate computer on the network
 #' will spawn an additional 6 slaves. Information will be collected on the master node, which is also where the files
 #' and objects will be saved (if requested).
@@ -117,11 +119,13 @@
 #'   \item{\code{spec <- lapply(IPs, function(IP) rep(list(list(host=IP$host, user=IP$user)), IP$ncore))}}{}
 #'   \item{\code{spec <- unlist(spec, recursive=FALSE)}}{}
 #'   \item{\code{cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)}}{}
+#'   \item{\code{Final <- runSimulation(..., cl=cl)}}{}
+#'   \item{\code{parallel::stopCluster(cl)}}{}
 #' }
 #'
-#' The object \code{cl} is then passed to \code{runSimulation} and the computations will be distributed across the
-#' IP addresses defined in \code{cl}. Finally, it's usually good practice to use \code{parallel::stopCluster(cl)}
-#' when all the simulations are said and done.
+#' The object \code{cl} is passed to \code{runSimulation} and the computations are distributed across the
+#' IP addresses. Finally, it's usually good practice to use \code{parallel::stopCluster(cl)}
+#' when all the simulations are said and done, which is what the above code shows.
 #'
 #' @section Poor man's cluster computing for independent nodes:
 #'
@@ -140,6 +144,12 @@
 #' the suitable \code{compname} input to \code{save_details} (or, if the \code{filename} and \code{tmpfilename}
 #' were modified, matching those files as well).
 #'
+#' Note that this is also a
+#' useful tactic if the MPI or Newtwork computing options require you to submit smaller jobs for time constraint reasons,
+#' where fewer replications/nodes are requested. After all the jobs are completed and saved to their
+#' respective files the \code{\link{aggregate_simulations}}
+#' can then collapse the files as if the simulations were run all at once.
+#'
 #' @param design a \code{data.frame} object containing the Monte Carlo simulation conditions to
 #'   be studied, where each row represents a unique condition
 #'
@@ -150,7 +160,9 @@
 #'   \code{\link{generate}}. See \code{\link{analyse}} for details
 #'
 #' @param summarise user-defined summary function to be used after all the replications have completed.
-#'    See \code{\link{summarise}} for details
+#'    If you only care to save the results from \code{analyse} then simply have this function return
+#'    some arbitrary placeholder (e.g., \code{return(c('result'=0))}) and set \code{save} and \code{save_results}
+#'    to \code{TRUE}. See \code{\link{summarise}} for details
 #'
 #' @param replications number of replication to perform per condition (i.e., each row in \code{design}).
 #'   Must be greater than 0
