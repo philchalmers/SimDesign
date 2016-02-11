@@ -66,10 +66,12 @@
 #'
 #' @section Cluster computing:
 #'
-#' If the package is installed across a cluster of computers, and all the computers are accessible on
-#' the same LAN network, then the package may be run within the MPI paradigm. This simply
+#' SimDesign code may also be released to a computing system which supports cluster computations using
+#' the Message Passing Interface (MPI) form. This simply
 #' requires that the computers be setup using the usual MPI requirements (typically, running some flavor
 #' of Linux, have password-less open-SSH access, addresses have been added to the \code{/etc/hosts} file, etc).
+#' More generally though, these resources are widely available through professional
+#' organizations dedicated to super-computing.
 #'
 #' To setup the R code for an MPI cluster one need only add the argument \code{MPI = TRUE},
 #' wrap the appropriate MPI directives around \code{runSimulation}, and submit the
@@ -93,6 +95,33 @@
 #' will be summoned (1 master, 15 slaves) across the computers named localhost, slave1, and slave2.
 #'
 #' \code{mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R}
+#'
+#' @section Network computing:
+#'
+#' If you access to a set of computers which can be linked via secure-shell (ssh) on the same LAN network then
+#' Network computing may be a viable option. This is similar to MPI computing, except more localized and requires
+#' initial hands-on access to the master and slave nodes. The setup generally requires that the master node
+#' has \code{SimDesign} installed, and the slave nodes have all the required R packages pre-installed. Finally,
+#' the master node must be able to have ssh access to the slave nodes, and each slave node must have ssh access
+#' with the master node.
+#'
+#' Setup for network computing is generally straightforward and only requires the specification of a) the respective
+#' IP addresses, b) the user name (if different from the master node's user name). For instance, using the following
+#' code the master node (primary) will spawn 7 slaves and 1 master while a separate computer on the network
+#' will spawn an additional 6 slaves. Information will be collected on the master node, which is also where the files
+#' and objects will be saved (if requested).
+#'
+#' \describe{
+#'   \item{\code{primary <- '192.168.2.1'}}{}
+#'   \item{\code{IPs <- list(list(host=primary, user='myname', ncore=8), list(host='192.168.2.2', user='myname', ncore=6))}}{}
+#'   \item{\code{spec <- lapply(IPs, function(IP) rep(list(list(host=IP$host, user=IP$user)), IP$ncore))}}{}
+#'   \item{\code{spec <- unlist(spec, recursive=FALSE)}}{}
+#'   \item{\code{cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)}}{}
+#' }
+#'
+#' The object \code{cl} is then passed to \code{runSimulation} and the computations will be distributed across the
+#' IP addresses defined in \code{cl}. Finally, it's usually good practice to use \code{parallel::stopCluster(cl)}
+#' when all the simulations are said and done.
 #'
 #' @section Poor man's cluster computing for independent nodes:
 #'
