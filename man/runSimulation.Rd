@@ -8,8 +8,8 @@ runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, parallel = FALSE, packages = NULL,
   ncores = parallel::detectCores(), MPI = FALSE, save = FALSE,
   save_results = FALSE, save_generate_data = FALSE, filename = NULL,
-  max_errors = 50, include_errors = TRUE, cl = NULL, seed = NULL,
-  save_details = list(), edit = "none", verbose = TRUE)
+  max_errors = 50, cl = NULL, seed = NULL, save_details = list(),
+  edit = "none", verbose = TRUE)
 }
 \arguments{
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
@@ -81,12 +81,6 @@ existing files. Default is \code{NULL}}
 \item{max_errors}{the simulation will terminate when more than this number of errors are thrown in any
 given condition. The purpose of this is to indicate that likely something problematic is going
 wrong in the generate-analyse phases and should be inspected. Default is 50}
-
-\item{include_errors}{logical; include information about which error how often they occurred?
-If \code{TRUE}, this information will be stacked at the end
-of the returned simulation results with the name of the specific error used as the column name in the
-data.frame object, and the number of occurrences included as the value for each condition.
-Default is \code{TRUE}}
 
 \item{cl}{cluster object defined by \code{\link{makeCluster}} to be used when \code{parallel = TRUE}.
 If \code{NULL} a local cluster object will be defined which selectes the maximum number cores available
@@ -191,9 +185,9 @@ Additional information for each condition are also returned:
 \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 all the Monte Carlo replications for each respective condition, \code{SEED} if the \code{seed} argument
-was used, and, if \code{include_errors = TRUE},
-columns containing the number of replications due to \code{try()} errors where the error messages
-represent the names of the columns prefixed with a \code{ERROR_MESSAGE} string.
+was used, columns containing the number of replications due to \code{try()} errors where the error messages
+represent the names of the columns prefixed with a \code{ERROR:} string, and
+columns containing the number of warnings prefixed with a \code{WARNING:} string.
 
 Note that when running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE})
 R objects defined in the global environment will \emph{not} be visible across nodes. Hence, you may see errors

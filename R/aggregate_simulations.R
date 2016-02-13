@@ -33,11 +33,11 @@ aggregate_simulations <- function(files = NULL){
     readin <- vector('list', length(filenames))
     for(i in 1:length(filenames))
         readin[[i]] <- readRDS(filenames[i])
-    errors <- lapply(readin, function(x) x[ ,grepl('ERROR_MESSAGE', colnames(x)), drop=FALSE])
+    errors <- lapply(readin, function(x) x[ ,grepl('ERROR', colnames(x)), drop=FALSE])
     nms <- unique(do.call(c, lapply(errors, function(x) colnames(x))))
     try_errors <- as.data.frame(matrix(0, nrow(readin[[1L]]), length(nms)))
     names(try_errors) <- nms
-    readin <- lapply(readin, function(x) x[ ,!grepl('ERROR_MESSAGE', colnames(x)), drop=FALSE])
+    readin <- lapply(readin, function(x) x[ ,!grepl('ERROR', colnames(x)), drop=FALSE])
     if(length(unique(sapply(readin, ncol))) > 1L)
         stop('Number of columns in the replications not equal')
     ret <- readin[[1L]]

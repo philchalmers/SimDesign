@@ -37,9 +37,9 @@
 #' \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 #' all the Monte Carlo replications for each respective condition, \code{SEED} if the \code{seed} argument
-#' was used, and, if \code{include_errors = TRUE},
-#' columns containing the number of replications due to \code{try()} errors where the error messages
-#' represent the names of the columns prefixed with a \code{ERROR_MESSAGE} string.
+#' was used, columns containing the number of replications due to \code{try()} errors where the error messages
+#' represent the names of the columns prefixed with a \code{ERROR:} string, and
+#' columns containing the number of warnings prefixed with a \code{WARNING:} string.
 #'
 #' Note that when running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE})
 #' R objects defined in the global environment will \emph{not} be visible across nodes. Hence, you may see errors
@@ -242,11 +242,6 @@
 #'
 #'   }
 #'
-#' @param include_errors logical; include information about which error how often they occurred?
-#'   If \code{TRUE}, this information will be stacked at the end
-#'   of the returned simulation results with the name of the specific error used as the column name in the
-#'   data.frame object, and the number of occurrences included as the value for each condition.
-#'   Default is \code{TRUE}
 #'
 #' @param max_errors the simulation will terminate when more than this number of errors are thrown in any
 #'   given condition. The purpose of this is to indicate that likely something problematic is going
@@ -495,7 +490,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, parallel = FALSE, packages = NULL,
                           ncores = parallel::detectCores(), MPI = FALSE,
                           save = FALSE, save_results = FALSE, save_generate_data = FALSE,
-                          filename = NULL, max_errors = 50, include_errors = TRUE,
+                          filename = NULL, max_errors = 50,
                           cl = NULL, seed = NULL, save_details = list(), edit = 'none',
                           verbose = TRUE)
 {
@@ -630,12 +625,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
     Final$SIM_TIME <- Final$ID <- NULL
-    pick <- grepl('ERROR_MESSAGE', names(Final))
-    TRY_ERRORS <- Final[,pick, drop=FALSE]
-    Final <- Final[,!pick, drop=FALSE]
-    Final <- if(include_errors){
-        data.frame(Final, SIM_TIME, TRY_ERRORS, check.names=FALSE)
-    } else data.frame(Final, SIM_TIME, check.names=FALSE)
+    Final <- data.frame(Final, SIM_TIME, check.names=FALSE)
     if(!is.null(seed)) Final$SEED <- seed
     if(!is.null(filename) && safe){ #save file
         files <- dir()
@@ -657,16 +647,17 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     class(Final) <- c('SimDesign', 'data.frame')
     dn <- colnames(design)
     dn <- dn[dn != 'ID']
-    ten <- colnames(Final)[grepl('ERROR_MESSAGE:', colnames(Final))]
+    ten <- colnames(Final)[grepl('ERROR:', colnames(Final))]
+    wen <- colnames(Final)[grepl('WARNING:', colnames(Final))]
     en <- c('REPLICATIONS', 'SIM_TIME')
     if(!is.null(seed)) en <- c(en, 'SEED')
-    sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten))]
-    attr(Final, 'design_names') <- list(design=dn, sim=sn, extra=en, errors=ten)
+    sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen))]
+    attr(Final, 'design_names') <- list(design=dn, sim=sn, extra=en, errors=ten, warnings=wen)
     if(!is.null(filename)){ #save file
         if(verbose)
             message(paste('\nSaving simulation results to file:', filename))
         saveRDS(Final, filename)
     }
     if(save || save_results || save_generate_data) file.remove(tmpfilename)
-    return(invisible(Final))
+    return(Final)
 }

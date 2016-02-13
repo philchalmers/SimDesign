@@ -217,8 +217,18 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         if(length(names(simlist)) > 1L)
             if(!all(names(simlist) %in% c('dat', 'parameters')))
                 stop('generate() did not return a list with elements \'dat\' and \'parameters\'', call.=FALSE)
-        res <- try(analyse(dat=simlist$dat, parameters=simlist$parameters, condition=condition,
-                           fixed_objects=fixed_objects), silent=TRUE)
+        Warnings <- NULL
+        wHandler <- function(w) {
+            Warnings <<- c(Warnings, list(w))
+            invokeRestart("muffleWarning")
+        }
+        res <- try(withCallingHandlers(analyse(dat=simlist$dat, parameters=simlist$parameters, condition=condition,
+                           fixed_objects=fixed_objects), warning=wHandler), silent=TRUE)
+        if(!is.null(Warnings)){
+            Warnings <- sapply(1L:length(Warnings), function(i, Warnings) {
+                paste0('Warning in ', deparse(Warnings[[i]]$call), ' : ', Warnings[[i]]$message)
+            }, Warnings)
+        }
 
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')){
@@ -237,6 +247,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
 
         ret <- list(result=res, parameters=simlist$parameters)
         attr(ret, 'try_errors') <- try_error
+        attr(ret, 'warnings') <- Warnings
         return(ret)
     }
 }

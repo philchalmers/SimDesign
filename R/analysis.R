@@ -49,8 +49,10 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     names(try_errors) <-
         gsub('Error in analyse\\(dat = simlist\\$dat, parameters = simlist\\$parameters, condition = condition,  : \\n  ',
              replacement = 'Manual Error : ', names(try_errors))
+    warnings <- lapply(cell_results, function(x) attr(x, 'warnings'))
+    warnings <- table(do.call(c, warnings))
     for(i in 1L:length(cell_results))
-        attr(cell_results[[i]], 'try_errors') <- NULL
+        attr(cell_results[[i]], 'try_errors') <- attr(cell_results[[i]], 'warnings') <- NULL
 
     # split lists up
     results <- lapply(cell_results, function(x) x$result)
@@ -76,6 +78,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
 
     if(!is.vector(sim_results) || is.null(names(sim_results)))
         stop('summarise() must return a named vector', call.=FALSE)
-    sim_results <- c(sim_results, 'REPLICATIONS'=replications, 'ERROR_MESSAGE: '=try_errors)
+    sim_results <- c(sim_results, 'REPLICATIONS'=replications, 'ERROR: '=try_errors,
+                     'WARNING: '=warnings)
     return(sim_results)
 }

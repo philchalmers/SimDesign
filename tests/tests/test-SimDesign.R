@@ -91,8 +91,8 @@ test_that('SimDesign', {
         # require packages/define functions if needed, or better yet index with the :: operator
         require(stats)
 
-        if(runif(1, 0, 1) < .9) suppressWarnings(t.test('char'))
-        if(runif(1, 0, 1) < .9) suppressWarnings(aov('char'))
+        if(runif(1, 0, 1) < .9) t.test('char')
+        if(runif(1, 0, 1) < .9) aov('char')
         if(runif(1, 0, 1) < .2) stop('my error')
 
         #wrap computational statistics in try() statements to control estimation problems
@@ -108,17 +108,17 @@ test_that('SimDesign', {
     }
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 2, verbose = FALSE, include_errors = TRUE, max_errors = Inf)
+                           replications = 2, verbose = FALSE, max_errors = Inf)
     expect_is(Final, 'data.frame')
-    expect_true(any(grepl('ERROR_MESSAGE', names(Final))))
+    expect_true(any(grepl('ERROR:', names(Final))))
 
     # aggregate test
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                         replications = 2, parallel=FALSE, filename='this', include_errors = TRUE,
+                         replications = 2, parallel=FALSE, filename='this',
                          max_errors=Inf, verbose = FALSE)
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, max_errors=Inf,
                          replications = 2, parallel=FALSE, filename = 'newfile',
-                         include_errors = TRUE, verbose = FALSE)
+                         verbose = FALSE)
     Final <- aggregate_simulations()
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
@@ -183,6 +183,21 @@ test_that('SimDesign', {
                          parallel=TRUE, save=FALSE, verbose = FALSE)
     expect_is(out, 'SimDesign')
     expect_is(out2, 'SimDesign')
+
+    # warnings
+    mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
+        if(sample(c(FALSE, TRUE), 1)) log(-1)
+        if(sample(c(FALSE, TRUE), 1)) log(-2)
+        c(ret = 1)
+    }
+    results <- runSimulation(Design, replications = 1, packages = 'mvtnorm',
+                  generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                  parallel=FALSE, save=FALSE, verbose = FALSE)
+    expect_true(any(grepl('WARNING:', names(results))))
+    results <- runSimulation(Design, replications = 1, packages = 'mvtnorm',
+                  generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                  parallel=TRUE, save=FALSE, verbose = FALSE)
+    expect_true(any(grepl('WARNING:', names(results))))
 
 })
 
