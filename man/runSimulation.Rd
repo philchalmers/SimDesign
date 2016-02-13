@@ -144,7 +144,7 @@ Default is \code{NULL}, indicating that no seed is set for each condition}
 a \code{data.frame} (also of class \code{'SimDesign'})
   with the original \code{design} conditions in the left-most columns,
   simulation results in the middle columns, additional information (such as REPLICATIONS and SIM_TIME),
-  to the right of the results, and ERROR_MESSAGE's in the right-most columns
+  to the right of the results, and ERROR/WARNING's in the right-most columns
 }
 \description{
 This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
