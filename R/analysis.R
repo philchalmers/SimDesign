@@ -66,7 +66,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         if(any(is.na(results) | is.nan(results)))
             message(sprintf('WARNING: analyse() returned NA or NaN values from row %i in Design',
                             condition$ID))
-        if(length(unique(colnames(results))) != ncol(results))
+        if(length(unique(colnames(results))) != ncol(results) && ncol(results) > 1L)
             stop('Vector of results returned from analyse must have unique names', call.=FALSE)
     }
     if(save_results){
