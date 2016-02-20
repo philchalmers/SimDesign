@@ -1,64 +1,71 @@
 #' Run a Monte Carlo simulation given a data.frame of conditions and simulation functions
 #'
-#' This function runs a Monte Carlo simulation study given the simulation functions, the design conditions,
-#' and the number of replications. Results can be saved as temporary files in case of interruptions
-#' and may be restored by rerunning the exact function calls again, provided that the respective temp
+#' This function runs a Monte Carlo simulation study given a set of predefined simulation functions,
+#' design conditions, and number of replications. Results can be saved as temporary files in case of interruptions
+#' and may be restored by re-running \code{runSimulation}, provided that the respective temp
 #' file can be found in the working directory. To conserve RAM, temporary objects (such as
-#' generated data across conditions and replications) are discarded; however, these can be saved to the
-#' hard-disk by passing the appropriate flags. For longer simulations,
+#' data generated across conditions and replications) are discarded; however, these can be saved to the
+#' hard-disk by passing the appropriate flags. For longer simulations
 #' it is recommended to use \code{save = TRUE} to temporarily save the
-#' simulation state. Function supports parallel and cluster computing,
+#' simulation state and also use the \code{save_results} flag to write the analysis results
+#' the to hard-disc. \code{runSimulation} supports parallel and cluster computing,
 #' global and local debugging, error handling (including fail-safe
-#' stopping when functions fail too often, even across nodes), and is designed to be cross-platform.
+#' stopping when functions fail too often, even across nodes), and tracking of error and warning messages.
 #'
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
 #'
 #' \describe{
-#'    \item{1)}{Define a suitable \code{design} data.frame. This is often expedited by using the
+#'    \item{1)}{Define a suitable \code{design} data.frame object containing fixed conditional
+#'       information about the Monte Carlo simulations. This is often expedited by using the
 #'       \code{\link{expand.grid}} function}
-#'    \item{2)}{Define the three step functions to simulate the data (\code{\link{generate}}),
+#'    \item{2)}{Define the three step functions to generate the data (\code{\link{generate}}),
 #'       analyse the generated data by computing the respective parameter estimates, detection rates,
 #'       etc (\code{\link{analyse}}), and finally summarise the results across the total
 #'       number of replications (\code{\link{summarise}})
 #'    }
-#'    \item{3)}{Pass the above objects to the \code{runSimulation} function, and define the
-#'       number of replications with the \code{replications} input}
+#'    \item{3)}{Pass the above objects to the \code{runSimulation} function, and declare the
+#'       number of replications to perform with the \code{replications} input}
 #'    \item{4)}{Analyze the output from \code{runSimulation}, possibly using ANOVA techniques
 #'      and generating suitable plots and tables}
 #' }
 #'
-#' For a skeleton version of the work-flow which may be useful when initially defining a simulation,
-#' see \code{\link{SimDesign_functions}}. This function will write the template of the simulation
-#' to one/two files so that modifying the respective functions and objects can begin immediately and
-#' with minimal error. This means that you can focus on your Monte Carlo simulation right away rather
-#' than worry about the administrative work required to organize the code.
+#' For a skeleton version of the work-flow, which is often useful when initially defining a simulation,
+#' see \code{\link{SimDesign_functions}}. This function will write template simulation code
+#' to one/two files so that modifying the required functions and objects can begin immediately
+#' with minimal error. This means that you can focus on your Monte Carlo simulation immediately rather
+#' than worrying about the administrative code-work required to organize the simulation work-flow.
 #'
-#' Additional information for each condition are also returned:
-#' \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
+#' Additional information for each condition are also contained in the \code{data.frame} object returned by
+#' \code{runSimulation}: \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
-#' all the Monte Carlo replications for each respective condition, \code{SEED} if the \code{seed} argument
+#' all the Monte Carlo replications for each respective design condition, \code{SEED} if the \code{seed} argument
 #' was used, columns containing the number of replications due to \code{try()} errors where the error messages
 #' represent the names of the columns prefixed with a \code{ERROR:} string, and
 #' columns containing the number of warnings prefixed with a \code{WARNING:} string.
 #'
-#' Note that when running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE})
-#' R objects defined in the global environment will \emph{not} be visible across nodes. Hence, you may see errors
-#' such as \code{Error: object 'something' not found}. To avoid this, simply pass additional objects to the
+#' Additional examples, presentation files, and tutorials can be found on the package wiki located at
+#' \url{https://github.com/philchalmers/SimDesign/wiki}.
+#'
+#' @section A note on parallel computing:
+#'
+#' When running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE})
+#' R objects defined in the global environment will generally \emph{not} be visible across nodes.
+#' Hence, you may see errors such as \code{Error: object 'something' not found} if you try to use an object
+#' that is defined in the workspace but is not passed to \code{runSimulation}.
+#' To avoid this type or error, simply pass additional objects to the
 #' \code{fixed_objects} input (usually it's convenient to supply a named list of these objects).
 #' Fortunately, however, \emph{custom functions defined in the global environment are exported across
 #' nodes automatically}. This makes it convenient when writing code because custom functions will
-#' always be available across nodes if they are visible in the R workspace.
-#'
-#' Additional examples, presentation files, and tutorials can be found on the package wiki located at
-#' \url{https://github.com/philchalmers/SimDesign/wiki}.
+#' always be available across nodes if they are visible in the R workspace. As well, note the
+#' \code{packages} input to declare packages which must be loaded via \code{library()} in order to make
+#' specific non-based R functions available across nodes.
 #'
 #' @section Storing and resuming temporary results:
 #'
 #' In the event of a computer crash, power outage, etc, if \code{save = TRUE} was used
-#' then the original code in
-#' the main source file need only be rerun again to resume the simulation.
-#' The saved temp file will be read into the function, and the simulation will continue where it left
-#' off before the simulation was terminated. Upon completion, a data.frame with the simulation
+#' then the original code used to execute \code{runSimulation()} need only be re-run to resume the simulation.
+#' The saved temp file will be read into the function automatically, and the simulation will continue where it left
+#' off before the simulation state was terminated. Upon completion, a \code{data.frame} with the simulation
 #' will be returned in the R session. If specified, an \code{.rds} file may also be saved
 #' to the hard-drive if a suitable \code{filename} argument was included.
 #' Finally, to save the complete list of results returned
@@ -66,8 +73,8 @@
 #'
 #' @section Cluster computing:
 #'
-#' SimDesign code may also be released to a computing system which supports cluster computations using
-#' the Message Passing Interface (MPI) form. This simply
+#' SimDesign code may be released to a computing system which supports parallel cluster computations using
+#' the industry standard Message Passing Interface (MPI) form. This simply
 #' requires that the computers be setup using the usual MPI requirements (typically, running some flavor
 #' of Linux, have password-less open-SSH access, addresses have been added to the \code{/etc/hosts} file, etc).
 #' More generally though, these resources are widely available through professional
@@ -88,10 +95,9 @@
 #'   \item{\code{mpi.quit()}}{}
 #' }
 #'
-#' This file (or files if the simulation script is broken up) needs to be uploaded to the master node,
-#' and a BASH call to \code{mpirun}
-#' is then used to distribute the work across slaves. For instance, if the following BASH command
-#' is run on the master node then 16 processes
+#' This file (or files if the simulation script is broken up) must be uploaded to the master node
+#' so that a BASH call to \code{mpirun} can be used to distribute the work across slaves.
+#' For instance, if the following BASH command is run on the master node then 16 processes
 #' will be summoned (1 master, 15 slaves) across the computers named localhost, slave1, and slave2.
 #'
 #' \code{mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R}
@@ -99,19 +105,23 @@
 #' @section Network computing:
 #'
 #' If you access have to a set of computers which can be linked via secure-shell (ssh) on the same LAN network then
-#' Network computing may be a viable option. This is similar to MPI computing except more localized and requires
-#' more hands-on access to the master and slave nodes. The setup generally requires that the master node
-#' has \code{SimDesign} installed, and the slave/master nodes have all the required R packages pre-installed (
-#' Unix utilities such as \code{dsh} are good for this). Finally,
-#' the master node must be able to have ssh access to the slave nodes, each slave node must have ssh access
-#' with the master node, and a cluster object from the \code{parallel} package must be defined.
+#' Network computing (a.k.a., a Beowulf cluster) may be a viable and useful option.
+#' This approach is similar to MPI computing approach
+#' except that it offers more localized control and requires more hands-on administrative access to the master
+#' and slave nodes. The setup generally requires that the master node
+#' has \code{SimDesign} installed and the slave/master nodes have all the required R packages pre-installed
+#' (Unix utilities such as \code{dsh} are very useful for this purpose). Finally,
+#' the master node must have ssh access to the slave nodes, each slave node must have ssh access
+#' with the master node, and a cluster object (\code{cl}) from the \code{parallel} package must be defined on the
+#' master node.
 #'
-#' Setup for network computing is generally straightforward and controlled
-#' than MPI computating in that it only requires the specification of a) the respective
-#' IP addresses, and b) the user name (if different from the master node's user name). For instance, using the following
-#' code the master node (primary) will spawn 7 slaves and 1 master while a separate computer on the network
-#' will spawn an additional 6 slaves. Information will be collected on the master node, which is also where the files
-#' and objects will be saved (if requested).
+#' Setup for network computing is generally more straightforward and controlled
+#' than the setup for MPI jobs in that it only requires the specification of a) the respective
+#' IP addresses, and b) the user name (if different from the master node's user name. Otherwise only a) is required).
+#' For instance, using the following code the master node (primary) will spawn 7 slaves and 1 master,
+#' while a separate computer on the network with the associated IP address will spawn an additional 6 slaves.
+#' Information will be collected on the master node, which is also where the files
+#' and objects will be saved using the \code{save} inputs (if requested).
 #'
 #' \describe{
 #'   \item{\code{primary <- '192.168.2.1'}}{}
@@ -123,32 +133,38 @@
 #'   \item{\code{parallel::stopCluster(cl)}}{}
 #' }
 #'
-#' The object \code{cl} is passed to \code{runSimulation} and the computations are distributed across the
+#' The object \code{cl} is passed to \code{runSimulation} on the master node
+#' and the computations are distributed across the respective
 #' IP addresses. Finally, it's usually good practice to use \code{parallel::stopCluster(cl)}
-#' when all the simulations are said and done, which is what the above code shows.
+#' when all the simulations are said and done to release the communication between the computers,
+#' which is what the above code shows.
 #'
 #' @section Poor man's cluster computing for independent nodes:
 #'
-#' In the event that you do not have access to a Beowulf-type cluster but have multiple personal
-#' computers, then the simulation code can be manually distributed across each independent computer instead.
-#' This simply requires passing a smaller value to the \code{replications} argument on each computer, and later
+#' In the event that you do not have access to a Beowulf-type cluster (described in the section on
+#' "Network Computing") but have multiple personal
+#' computers then the simulation code can be manually distributed across each independent computer instead.
+#' This simply requires passing a smaller value to the \code{replications} argument on each computer and later
 #' aggregating the results using the \code{\link{aggregate_simulations}} function.
 #'
-#' For instance, if you have two computers available and wanted 500 replications you
+#' For instance, if you have two computers available on different networks and wanted a total of 500 replications you
 #' could pass \code{replications = 300} to one computer and \code{replications = 200} to the other along
 #' with a \code{filename} argument (or simply saving the final objects as \code{.rds} files manually).
 #' This will create two distinct \code{.rds} files which can be
 #' combined later with the \code{\link{aggregate_simulations}} function. The benefit of this approach over
-#' MPI is that computers need not be linked over a LAN network, and should the need arise the temporary
+#' MPI or setting up a Beowulf cluster is that computers need not be linked over a LAN network,
+#' and should the need arise the temporary
 #' simulation results can be migrated to another computer in case of a complete hardware failure by modifying
 #' the suitable \code{compname} input to \code{save_details} (or, if the \code{filename} and \code{tmpfilename}
-#' were modified, matching those files as well).
+#' were modified, matching those files accordingly).
 #'
-#' Note that this is also a
-#' useful tactic if the MPI or Newtwork computing options require you to submit smaller jobs for time constraint reasons,
-#' where fewer replications/nodes are requested. After all the jobs are completed and saved to their
+#' Note that this is also a useful tactic if the MPI or Network computing options require you to
+#' submit smaller jobs due to time and resource constraint-related reasons,
+#' where fewer replications/nodes should be requested. After all the jobs are completed and saved to their
 #' respective files the \code{\link{aggregate_simulations}}
-#' can then collapse the files as if the simulations were run all at once.
+#' can then collapse the files as if the simulations were run all at once. Hence, SimDesign makes submitting
+#' smaller jobs to super-computing resources considerably less error prone then managing a number of smaller
+#' jobs manually.
 #'
 #' @param design a \code{data.frame} object containing the Monte Carlo simulation conditions to
 #'   be studied, where each row represents a unique condition
@@ -159,9 +175,11 @@
 #' @param analyse user-defined computation function which acts on the data generated from
 #'   \code{\link{generate}}. See \code{\link{analyse}} for details
 #'
-#' @param summarise user-defined summary function to be used after all the replications have completed.
-#'    If you only care to save the results from \code{analyse} then simply have this function return
-#'    some arbitrary placeholder (e.g., \code{return(c('result'=0))}) and set \code{save} and \code{save_results}
+#' @param summarise user-defined summary function to be used after all the replications have completed within
+#'    each \code{design} condition.
+#'
+#'    Note that if you only care to save the results from \code{analyse} then simply have this function return
+#'    some arbitrary placeholder (e.g., \code{return(c('result'=0))}) and set \code{save_results}
 #'    to \code{TRUE}. See \code{\link{summarise}} for details
 #'
 #' @param replications number of replication to perform per condition (i.e., each row in \code{design}).
@@ -170,7 +188,7 @@
 #' @param fixed_objects (optional) an object (usually a \code{list})
 #'   containing additional user-defined objects
 #'   that should remain fixed across conditions. This is useful when including
-#'   long fixed vectors of population parameters, data
+#'   long fixed vectors/matrices of population parameters, data
 #'   that should be used across all conditions and replications (e.g., including a fixed design matrix
 #'   for linear regression), or simply can be used to control constant global elements such as sample size
 #'
@@ -178,8 +196,8 @@
 #'   unique condition?
 #'
 #' @param cl cluster object defined by \code{\link{makeCluster}} to be used when \code{parallel = TRUE}.
-#'   If \code{NULL} a local cluster object will be defined which selectes the maximum number cores available
-#'   and will be removed when the simulation is complete
+#'   If \code{NULL} a local cluster object will be defined which selects the maximum number cores available
+#'   and will be stop the cluster when the simulation is complete
 #'
 #' @param packages a character vector of external packages to be used during the simulation (e.g.,
 #'   \code{c('MASS', 'mvtnorm', 'simsem')} ). Use this input when \code{parallel = TRUE} or
@@ -194,18 +212,20 @@
 #'   Use this if you would like to keep track of the individual parameters returned from the analyses.
 #'   Each saved object will contain a list of three elements containing the condition (row from \code{design}),
 #'   results (as a \code{list} or \code{matrix}), and try-errors. When \code{TRUE}, a temp file will be used to track the simulation
-#'   state (in case of power outages, crashes, etc). Default is \code{FALSE}
+#'   state (in case of power outages, crashes, etc). When \code{TRUE} the \code{save} flag will also be
+#'   set to \code{TRUE} to better track the save-state. Default is \code{FALSE}
 #'
 #' @param save_generate_data logical; save the data returned from \code{\link{generate}} to external \code{.rds} files
 #'   located in the defined \code{save_generate_data_dirname} directory/folder?
 #'   It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
 #'   a large amount of disk space, and by and large saving data is not required or recommended for simulations.
-#'   Default is \code{FALSE}
+#'   When \code{TRUE} the \code{save} flag will also be set to \code{TRUE} to better track 
+#'   the save-state. Default is \code{FALSE}
 #'
-#' @param filename the name of the \code{.rds} file to save the final simulation results to.
+#' @param filename (optional) the name of the \code{.rds} file to save the final simulation results to.
 #'   When \code{NULL} the final simulation object is not saved to the drive. As well,
-#'   if the same file name already exists in the working directy at the time of saving then a new
-#'   file will be generated instead and a warning will be thrown. This helps avoid accidentally overwritting
+#'   if the same file name already exists in the working directly at the time of saving then a new
+#'   file will be generated instead and a warning will be thrown; this helps avoid accidentally overwriting
 #'   existing files. Default is \code{NULL}
 #'
 #' @param save_details a list pertaining to information about how and where files should be saved
@@ -214,23 +234,23 @@
 #'   \describe{
 #'
 #'     \item{\code{safe}}{logical; trigger whether safe-saving should be performed. When \code{TRUE} files
-#'       will never be over-written accidentelly, and where apppropriate the program will either stop or generate
+#'       will never be overwritten accidentally, and where appropriate the program will either stop or generate
 #'       new files with unique names. Default is \code{TRUE}}
 #'
 #'     \item{\code{compname}}{name of the computer running the simulation. Normally this doesn't need
-#'       to be modified, but in the event that a node breaks down while running a simulation the
-#'       results from the tmp files may be resumed on another computer by changing the name of the
-#'       node to match the broken computer. Default is \code{unname(Sys.info()['nodename'])}}
+#'       to be modified, but in the event that a manual node breaks down while running a simulation the
+#'       results from the temp files may be resumed on another computer by changing the name of the
+#'       node to match the broken computer. Default is the result of evaluating \code{unname(Sys.info()['nodename'])}}
 #'
 #'     \item{\code{tmpfilename}}{the name of the temporary \code{.rds} file when any of the \code{save} flag is used.
-#'        This file will be read-in if it is in the working directory, and the simulation will continue where
+#'        This file will be read-in if it is in the working directory and the simulation will continue 
 #'        at the last point this file was saved
 #'        (useful in case of power outages or broken nodes). Finally, this file will be deleted when the
 #'        simulation is complete. Default is the system name (\code{compname}) appended
 #'        to \code{'SIMDESIGN-TEMPFILE_'}}
 #'
 #'     \item{\code{save_results_dirname}}{a string indicating the name of the folder to save
-#'       results objects to when \code{save_results = TRUE}. If a directory/folder does not exist
+#'       result objects to when \code{save_results = TRUE}. If a directory/folder does not exist
 #'       in the current working directory then one will be created automatically. Default is
 #'       \code{'SimDesign-results_'} with the associated \code{compname} appended}
 #'
@@ -242,8 +262,7 @@
 #'
 #'   }
 #'
-#'
-#' @param max_errors the simulation will terminate when more than this number of errors are thrown in any
+#' @param max_errors the simulation will terminate when more than this number of constitutive errors are thrown in any
 #'   given condition. The purpose of this is to indicate that likely something problematic is going
 #'   wrong in the generate-analyse phases and should be inspected. Default is 50
 #'
@@ -429,9 +448,9 @@
 #'
 #'
 #' ## Similarly, run simulation on a network linked via ssh
-#' ##  (two way passwordless ssh must be made between master and slave nodes)
+#' ##  (two way ssh key-paired connection must be possible between master and slave nodes)
 #' ##
-#' ## define IP adresses, including primary IP
+#' ## define IP addresses, including primary IP
 #' # primary <- '192.168.2.20'
 #' # IPs <- list(
 #' #     list(host=primary, user='phil', ncore=8),
@@ -582,12 +601,14 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         start <- min(which(sapply(Result_list, is.null)))
     }
     if(save_results){
+        save <- TRUE
         if(safe && dir.exists(save_results_dirname) && !file.exists(tmpfilename))
             stop(save_results_dirname, ' directory already exists. ',
                     'Please fix by modifying the save_results_dirname input.', call.=FALSE)
         dir.create(save_results_dirname, showWarnings = !file.exists(tmpfilename))
     }
     if(save_generate_data){
+        save <- TRUE
         if(safe && dir.exists(save_generate_data_dirname) && !file.exists(tmpfilename))
             stop(save_generate_data_dirname, ' directory already exists. ',
                  'Please fix by modifying the save_generate_data_dirname input.', call.=FALSE)
