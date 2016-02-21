@@ -258,15 +258,15 @@ results &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel 
 </code></pre>
 
 <pre><code>##   mu sample_size  t_CI  z_CI REPLICATIONS SIM_TIME
-## 1  0          10 0.950 0.919        10000     2.57
-## 2  5          10 0.954 0.922        10000     2.29
-## 3 10          10 0.951 0.920        10000     1.97
-## 4  0          20 0.950 0.935        10000     2.80
-## 5  5          20 0.948 0.933        10000     2.50
-## 6 10          20 0.953 0.936        10000     1.97
-## 7  0          30 0.949 0.939        10000     1.89
-## 8  5          30 0.950 0.940        10000     2.14
-## 9 10          30 0.949 0.939        10000     1.90
+## 1  0          10 0.950 0.919        10000    1.340
+## 2  5          10 0.948 0.916        10000    0.951
+## 3 10          10 0.952 0.918        10000    0.980
+## 4  0          20 0.949 0.933        10000    1.059
+## 5  5          20 0.950 0.933        10000    0.923
+## 6 10          20 0.949 0.936        10000    0.913
+## 7  0          30 0.952 0.942        10000    0.954
+## 8  5          30 0.952 0.944        10000    0.986
+## 9 10          30 0.952 0.942        10000    0.989
 </code></pre>
 
 <p>From these results it&#39;s clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distriubtion CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.</p>
