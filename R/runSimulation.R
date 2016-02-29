@@ -311,7 +311,7 @@
 #' @aliases runSimulation
 #'
 #' @seealso \code{\link{generate}}, \code{\link{analyse}}, \code{\link{summarise}},
-#'   \code{\link{SimDesign_functions}}
+#'   \code{\link{SimDesign_functions}}, \code{\link{SimAnova}}
 #'
 #' @export runSimulation
 #'

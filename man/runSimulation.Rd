@@ -527,6 +527,6 @@ ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation
 }
 \seealso{
 \code{\link{generate}}, \code{\link{analyse}}, \code{\link{summarise}},
-  \code{\link{SimDesign_functions}}
+  \code{\link{SimDesign_functions}}, \code{\link{SimAnova}}
 }
 

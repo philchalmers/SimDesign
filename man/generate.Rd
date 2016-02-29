@@ -18,7 +18,9 @@ returns a single object containing the data to be analyzed (usually a
   or a list with a the elements \code{'dat'} and \code{'parameters'}. If a list is returned
   the \code{'dat'} element should be the observed data object while the
   \code{'parameters'} element should be a named list containing the simulated parameters
-  (if there are any. Otherwise, this could just be an empty list)
+  (if there are any. Otherwise, this could just be an empty list), model formulations (like
+  you might find in the \code{simsem} package), or any other objects that would be useful
+  in the \code{\code{analyse}} or \code{\code{sumarise}} functions
 }
 \description{
 Generate data from a single row in the \code{design} input (see \code{\link{runSimulation}}).
