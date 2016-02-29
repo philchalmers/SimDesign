@@ -14,9 +14,9 @@
 #'   \code{'parameters'} element should be a named list containing the simulated parameters
 #'   (if there are any. Otherwise, this could just be an empty list), model formulations (like
 #'   you might find in the \code{simsem} package), or any other objects that would be useful
-#'   in the \code{\code{analyse}} or \code{\code{sumarise}} functions
+#'   in the \code{\code{Analyse}} or \code{\code{sumarise}} functions
 #'
-#' @aliases generate
+#' @aliases Generate
 #'
 #' @seealso \code{\link{add_missing}}
 #'
@@ -42,7 +42,7 @@
 #'
 #' }
 #'
-generate <- function(condition, fixed_objects = NULL) NULL
+Generate <- function(condition, fixed_objects = NULL) NULL
 
 #=================================================================================================#
 
@@ -58,16 +58,16 @@ generate <- function(condition, fixed_objects = NULL) NULL
 #' The use of \code{\link{try}} functions is generally not required because the function
 #' is internally wrapped in a \code{\link{try}} call. Therefore, if a function stops early
 #' then this will cause the function to halt iternally, the message which triggered the \code{\link{stop}}
-#' will be recorded, and \code{\link{generate}} will be called again to obtain a different dataset.
+#' will be recorded, and \code{\link{Generate}} will be called again to obtain a different dataset.
 #' That being said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
 #' should be redrawn for other reasons (e.g., a model terminated correctly but the maximum number of
 #' iterations were reached).
 #'
-#' @param dat the \code{dat} object returned from the \code{\link{generate}} function
+#' @param dat the \code{dat} object returned from the \code{\link{Generate}} function
 #'   (usually a \code{data.frame}, \code{matrix}, or \code{vector}).
 #'
 #' @param parameters the (optional) list object named 'parameters' returned from the
-#'   \code{\link{generate}} function when a list is returned. Otherwise, this will be an just an
+#'   \code{\link{Generate}} function when a list is returned. Otherwise, this will be an just an
 #'   empty list
 #'
 #' @param condition a single row from the design input (as a \code{data.frame}), indicating the
@@ -80,7 +80,7 @@ generate <- function(condition, fixed_objects = NULL) NULL
 #'   and vector of parameter estimates corresponding to elements in \code{parameters})
 #'
 #' @seealso \code{\link{stop}}
-#' @aliases analyse
+#' @aliases Analyse
 #'
 #' @examples
 #' \dontrun{
@@ -104,7 +104,7 @@ generate <- function(condition, fixed_objects = NULL) NULL
 #' }
 #'
 #' }
-analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) NULL
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) NULL
 
 
 
@@ -116,17 +116,17 @@ analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) NUL
 #' This collapses the simulation results within each condition to composite
 #' estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 #'
-#' @param results a \code{data.frame} (if \code{analyse} returned a numeric vector) or a \code{list}
-#'   (if \code{analyse} returned a list) containing the simulation results from \code{\link{analyse}},
+#' @param results a \code{data.frame} (if \code{Analyse} returned a numeric vector) or a \code{list}
+#'   (if \code{Analyse} returned a list) containing the simulation results from \code{\link{Analyse}},
 #'   where each cell is stored in a unique row/list element
 #' @param parameters_list an (optional) list containing all the 'parameters' elements generated
-#'   from \code{\link{generate}}, where each repetition is stored in a unique element. If a \code{list}
-#'   was not returned from \code{\link{generate}} then this will be \code{NULL}
+#'   from \code{\link{Generate}}, where each repetition is stored in a unique element. If a \code{list}
+#'   was not returned from \code{\link{Generate}} then this will be \code{NULL}
 #' @param condition a single row from the \code{design} input from \code{\link{runSimulation}}
 #'   (as a \code{data.frame}), indicating the simulation conditions
 #' @param fixed_objects object passed down from \code{\link{runSimulation}}
 #'
-#' @aliases summarise
+#' @aliases Summarise
 #'
 #' @return must return a named \code{numeric} vector with the desired meta-simulation results
 #'
@@ -159,7 +159,8 @@ analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) NUL
 #'
 #' }
 #'
-summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) NULL
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) NULL
+
 
 #=================================================================================================#
 
@@ -175,11 +176,11 @@ summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
 # @param condition a single row from the design input (as a data.frame), indicating the
 #   simulation conditions
 # @param fixed_objects object passed down from \code{\link{runSimulation}}
-# @param generate the \code{\link{generate}} function defined above (required for parallel computing)
-# @param analyse the \code{\link{analyse}} function defined above (required for parallel computing)
+# @param generate the \code{\link{Generate}} function defined above (required for parallel computing)
+# @param analyse the \code{\link{Analyse}} function defined above (required for parallel computing)
 #
 # @return must return a named list with the 'result' and 'parameters' elements for the
-#   computational results and \code{parameters} from \code{\link{generate}}
+#   computational results and \code{parameters} from \code{\link{Generate}}
 #
 # @aliases main
 #

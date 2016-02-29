@@ -19,17 +19,17 @@ be studied, where each row represents a unique condition}
 Must be greater than 0}
 
 \item{generate}{user-defined data and parameter generating function.
-See \code{\link{generate}} for details}
+See \code{\link{Generate}} for details}
 
 \item{analyse}{user-defined computation function which acts on the data generated from
-\code{\link{generate}}. See \code{\link{analyse}} for details}
+\code{\link{Generate}}. See \code{\link{Analyse}} for details}
 
 \item{summarise}{user-defined summary function to be used after all the replications have completed within
    each \code{design} condition.
 
-   Note that if you only care to save the results from \code{analyse} then simply have this function return
+   Note that if you only care to save the results from \code{Analyse} then simply have this function return
    some arbitrary placeholder (e.g., \code{return(c('result'=0))}) and set \code{save_results}
-   to \code{TRUE}. See \code{\link{summarise}} for details}
+   to \code{TRUE}. See \code{\link{Summarise}} for details}
 
 \item{fixed_objects}{(optional) an object (usually a \code{list})
 containing additional user-defined objects
@@ -61,7 +61,7 @@ and recovered (in case of power outages, crashes, etc). To recover you simulatio
 location simply rerun the same code you used to initially define the simulation and the object
 will automatically be detected and read-in. Default is \code{FALSE}}
 
-\item{save_results}{logical; save the results returned from \code{\link{analyse}} to external
+\item{save_results}{logical; save the results returned from \code{\link{Analyse}} to external
 \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
 Use this if you would like to keep track of the individual parameters returned from the analyses.
 Each saved object will contain a list of three elements containing the condition (row from \code{design}),
@@ -69,7 +69,7 @@ results (as a \code{list} or \code{matrix}), and try-errors. When \code{TRUE}, a
 state (in case of power outages, crashes, etc). When \code{TRUE} the \code{save} flag will also be
 set to \code{TRUE} to better track the save-state. Default is \code{FALSE}}
 
-\item{save_generate_data}{logical; save the data returned from \code{\link{generate}} to external \code{.rds} files
+\item{save_generate_data}{logical; save the data returned from \code{\link{Generate}} to external \code{.rds} files
 located in the defined \code{save_generate_data_dirname} directory/folder?
 It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
 a large amount of disk space, and by and large saving data is not required or recommended for simulations.
@@ -174,10 +174,10 @@ The strategy for organizing the Monte Carlo simulation work-flow is to
    \item{1)}{Define a suitable \code{design} data.frame object containing fixed conditional
       information about the Monte Carlo simulations. This is often expedited by using the
       \code{\link{expand.grid}} function}
-   \item{2)}{Define the three step functions to generate the data (\code{\link{generate}}),
+   \item{2)}{Define the three step functions to generate the data (\code{\link{Generate}}),
       analyse the generated data by computing the respective parameter estimates, detection rates,
-      etc (\code{\link{analyse}}), and finally summarise the results across the total
-      number of replications (\code{\link{summarise}})
+      etc (\code{\link{Analyse}}), and finally summarise the results across the total
+      number of replications (\code{\link{Summarise}})
    }
    \item{3)}{Pass the above objects to the \code{runSimulation} function, and declare the
       number of replications to perform with the \code{replications} input}
@@ -228,7 +228,7 @@ off before the simulation state was terminated. Upon completion, a \code{data.fr
 will be returned in the R session. If specified, an \code{.rds} file may also be saved
 to the hard-drive if a suitable \code{filename} argument was included.
 Finally, to save the complete list of results returned
-from \code{\link{analyse}} to unique files use \code{save_results = TRUE}.
+from \code{\link{Analyse}} to unique files use \code{save_results = TRUE}.
 }
 
 \section{Cluster computing}{
@@ -352,7 +352,7 @@ head(Design)
 # skeleton functions to be edited
 SimDesign_functions()
 
-# help(generate)
+# help(Generate)
 Generate <- function(condition, fixed_objects = NULL){
 
     #require packages/define functions if needed, or better yet index with the :: operator
@@ -375,8 +375,7 @@ Generate <- function(condition, fixed_objects = NULL){
     return(dat)
 }
 
-# help(analyse)
-
+# help(Analyse)
 Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
 
     # require packages/define functions if needed, or better yet index with the :: operator
@@ -394,8 +393,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
     return(ret)
 }
 
-# help(summarise)
-
+# help(Summarise)
 Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL){
 
     #find results of interest here (e.g., alpha < .1, .05, .01)
@@ -491,9 +489,9 @@ runSimulation(design=Design, replications=1000,
 
 library(dplyr)
 Final2 <- tbl_df(Final)
-Final2 \%>\% dplyr::summarise(mean(lessthan.05.welch), mean(lessthan.05.independent))
+Final2 \%>\% summarise(mean(lessthan.05.welch), mean(lessthan.05.independent))
 Final2 \%>\% group_by(standard_deviation_ratio) \%>\%
-   dplyr::summarise(mean(lessthan.05.welch), mean(lessthan.05.independent))
+   summarise(mean(lessthan.05.welch), mean(lessthan.05.independent))
 
 # quick ANOVA analysis method
 SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
@@ -526,7 +524,7 @@ ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation
 
 }
 \seealso{
-\code{\link{generate}}, \code{\link{analyse}}, \code{\link{summarise}},
+\code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
   \code{\link{SimDesign_functions}}, \code{\link{SimAnova}}
 }
 
