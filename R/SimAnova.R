@@ -26,11 +26,12 @@
 #' \dontrun{
 #'
 #' # Given 'Final' object from runSimulation() example, inspect 2 way interactions
-#' Final[1:3] <- lapply(Final[1:3], factor)
-#' SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
+#' SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
+#'     Final)
 #'
-#' #error, doesn't work on full table
-#' SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^3, Final)
+#' #error, doesn't work on full tables
+#' SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^3,
+#'   Final)
 #'
 #' SimAnova(lessthan.05.independent ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
 #'   Final)

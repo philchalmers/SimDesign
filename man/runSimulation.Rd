@@ -8,8 +8,8 @@ runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, parallel = FALSE, packages = NULL,
   ncores = parallel::detectCores(), MPI = FALSE, save = FALSE,
   save_results = FALSE, save_generate_data = FALSE, filename = NULL,
-  max_errors = 50, cl = NULL, seed = NULL, save_details = list(),
-  edit = "none", verbose = TRUE)
+  max_errors = 50, as.factor = TRUE, cl = NULL, seed = NULL,
+  save_details = list(), edit = "none", verbose = TRUE)
 }
 \arguments{
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
@@ -73,7 +73,7 @@ set to \code{TRUE} to better track the save-state. Default is \code{FALSE}}
 located in the defined \code{save_generate_data_dirname} directory/folder?
 It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
 a large amount of disk space, and by and large saving data is not required or recommended for simulations.
-When \code{TRUE} the \code{save} flag will also be set to \code{TRUE} to better track 
+When \code{TRUE} the \code{save} flag will also be set to \code{TRUE} to better track
 the save-state. Default is \code{FALSE}}
 
 \item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to.
@@ -85,6 +85,10 @@ existing files. Default is \code{NULL}}
 \item{max_errors}{the simulation will terminate when more than this number of constitutive errors are thrown in any
 given condition. The purpose of this is to indicate that likely something problematic is going
 wrong in the generate-analyse phases and should be inspected. Default is 50}
+
+\item{as.factor}{logical; coerce the input \code{design} elements into \code{factor}s when the
+simulation is complete? If the columns inputs are numeric then these will be treated
+as \code{ordered}. Default is \code{TRUE}}
 
 \item{cl}{cluster object defined by \code{\link{makeCluster}} to be used when \code{parallel = TRUE}.
 If \code{NULL} a local cluster object will be defined which selects the maximum number cores available
@@ -112,7 +116,7 @@ Default is \code{NULL}, indicating that no seed is set for each condition}
       node to match the broken computer. Default is the result of evaluating \code{unname(Sys.info()['nodename'])}}
 
     \item{\code{tmpfilename}}{the name of the temporary \code{.rds} file when any of the \code{save} flag is used.
-       This file will be read-in if it is in the working directory and the simulation will continue 
+       This file will be read-in if it is in the working directory and the simulation will continue
        at the last point this file was saved
        (useful in case of power outages or broken nodes). Finally, this file will be deleted when the
        simulation is complete. Default is the system name (\code{compname}) appended
@@ -485,19 +489,18 @@ runSimulation(design=Design, replications=1000,
 # regression stuff, so use the lm() function to find main effects, interactions, plots, etc.
 # This is where you get to be a data analyst!
 
-psych::describe(Final)
-psych::describeBy(Final, group = Final$standard_deviation_ratio)
+library(dplyr)
+Final2 <- tbl_df(Final)
+Final2 \%>\% dplyr::summarise(mean(lessthan.05.welch), mean(lessthan.05.independent))
+Final2 \%>\% group_by(standard_deviation_ratio) \%>\%
+   dplyr::summarise(mean(lessthan.05.welch), mean(lessthan.05.independent))
 
-# make into factors (if helpful)
-Final$f_gsr <- with(Final, factor(group_size_ratio))
-Final$f_sdr <- with(Final, factor(standard_deviation_ratio))
+# quick ANOVA analysis method
+SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
+   Final)
 
-#lm analysis (might want to change DV to a logit for better stability)
-mod <- lm(lessthan.05.welch ~ f_gsr * f_sdr, Final)
-car::Anova(mod)
-
-mod2 <- lm(lessthan.05.independent ~ f_gsr * f_sdr, Final)
-car::Anova(mod2)
+SimAnova(lessthan.05.independent ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
+   Final)
 
 # make some plots
 library(ggplot2)
