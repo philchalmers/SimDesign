@@ -4,16 +4,21 @@
 \alias{SimAnova}
 \title{Function for decomposing the simulation into ANOVA-based effect sizes}
 \usage{
-SimAnova(formula, dat, rates = TRUE)
+SimAnova(formula, dat, rates = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{formula}{}
+\item{formula}{an R formula generally of the form suitable for \code{\link{lm}} or
+\code{\link{aov}}. However, if the dependent variable (left size of the equation) is ommited
+then all the dependent variables in the simulation will be used and the result will return
+a list of analyses}
 
-\item{dat}{an object returned from \code{\link{runSimulation}}}
+\item{dat}{an object returned from \code{\link{runSimulation}} of class \code{'SimDesign'}}
 
 \item{rates}{logical; does the dependent variable consist of rates (e.g., returned from
 \code{\link{ECR}} or \code{\link{EDR}})? Default is TRUE, which will use the logit of the DV
 to help stabalize the proportions when computing the parameters and effect sizes}
+
+\item{verbose}{logical; print the \code{R^2} value to the console?}
 }
 \value{
 returns a single object containing the data to be analyzed (usually a
@@ -42,6 +47,9 @@ SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviatio
 
 SimAnova(lessthan.05.independent ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
   Final)
+
+# run all DVs at once using the same formula
+SimAnova(~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
 
 }
 

@@ -5,13 +5,18 @@
 #' indications of observable simulation effects, therefore use these results as exploratory rather
 #' than inferential tools.
 #'
-#' @param formula
+#' @param formula an R formula generally of the form suitable for \code{\link{lm}} or
+#'   \code{\link{aov}}. However, if the dependent variable (left size of the equation) is ommited
+#'   then all the dependent variables in the simulation will be used and the result will return
+#'   a list of analyses
 #'
-#' @param dat an object returned from \code{\link{runSimulation}}
+#' @param dat an object returned from \code{\link{runSimulation}} of class \code{'SimDesign'}
 #'
 #' @param rates logical; does the dependent variable consist of rates (e.g., returned from
 #'   \code{\link{ECR}} or \code{\link{EDR}})? Default is TRUE, which will use the logit of the DV
 #'   to help stabalize the proportions when computing the parameters and effect sizes
+#'
+#' @param verbose logical; print the \code{R^2} value to the console?
 #'
 #' @return returns a single object containing the data to be analyzed (usually a
 #'   \code{vector}, \code{matrix}, or \code{data.frame}),
@@ -21,6 +26,7 @@
 #'   (if there are any. Otherwise, this could just be an empty list)
 #'
 #' @aliases SimAnova
+#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -36,9 +42,12 @@
 #' SimAnova(lessthan.05.independent ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
 #'   Final)
 #'
+#' # run all DVs at once using the same formula
+#' SimAnova(~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
+#'
 #' }
 #'
-SimAnova <- function(formula, dat, rates = TRUE){
+SimAnova <- function(formula, dat, rates = TRUE, verbose = TRUE){
 
     # function borrowed and edited from lrs::etaSquared. Feb 29, 2016
     etaSquared2 <- function (x, type = 2, anova = FALSE)
@@ -119,6 +128,18 @@ SimAnova <- function(formula, dat, rates = TRUE){
         return(E)
     }
 
+    if(length(as.list(formula)) == 2L){
+        ys <- attributes(dat)$design_names$sim
+        ret <- vector('list', length(ys))
+        names(ret) <- ys
+        for(i in 1L:length(ys)){
+            f2 <- update.formula(formula, as.formula(paste0(ys[[i]], ' ~ .')))
+            ret[[i]] <- SimAnova(formula=f2, dat=dat, rates=rates, verbose=FALSE)
+            attr(ret[[i]], 'R^2') <- 1 - ret[[i]]$eta.sq[[nrow(ret[[i]])]]
+        }
+        return(ret)
+    }
+
     dat2 <- model.frame(formula, dat)
     if(rates){
         dat2[,1] <- suppressWarnings(qlogis(dat2[,1]))
@@ -127,6 +148,6 @@ SimAnova <- function(formula, dat, rates = TRUE){
     }
     mod <- lm(formula, dat2)
     so <- summary(mod)
-    cat('\nR^2 = ', round(so$r.squared, 3), '\n\n')
+    if(verbose) cat('\nR^2 = ', round(so$r.squared, 3), '\n\n')
     return(etaSquared2(mod, type = 2, anova = TRUE))
 }
