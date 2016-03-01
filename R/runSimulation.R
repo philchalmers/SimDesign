@@ -26,7 +26,7 @@
 #'    \item{3)}{Pass the above objects to the \code{runSimulation} function, and declare the
 #'       number of replications to perform with the \code{replications} input}
 #'    \item{4)}{Analyze the output from \code{runSimulation}, possibly using ANOVA techniques
-#'      and generating suitable plots and tables}
+#'      (\code{\link{SimAnova}}) and generating suitable plots and tables}
 #' }
 #'
 #' For a skeleton version of the work-flow, which is often useful when initially defining a simulation,
@@ -483,6 +483,9 @@
 #'
 #' SimAnova(lessthan.05.independent ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
 #'    Final)
+#'
+#' # or both at the same time
+#' SimAnova( ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
 #'
 #' # make some plots
 #' library(ggplot2)
