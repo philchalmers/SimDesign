@@ -4,21 +4,20 @@
 \alias{SimAnova}
 \title{Function for decomposing the simulation into ANOVA-based effect sizes}
 \usage{
-SimAnova(formula, dat, rates = TRUE, verbose = TRUE)
+SimAnova(formula, dat, rates = TRUE)
 }
 \arguments{
 \item{formula}{an R formula generally of the form suitable for \code{\link{lm}} or
 \code{\link{aov}}. However, if the dependent variable (left size of the equation) is ommited
 then all the dependent variables in the simulation will be used and the result will return
-a list of analyses}
+a list of analyses, and if the right side of the fomula is a dot (.) then all design
+variables will be included with their full interactions}
 
 \item{dat}{an object returned from \code{\link{runSimulation}} of class \code{'SimDesign'}}
 
 \item{rates}{logical; does the dependent variable consist of rates (e.g., returned from
 \code{\link{ECR}} or \code{\link{EDR}})? Default is TRUE, which will use the logit of the DV
 to help stabalize the proportions when computing the parameters and effect sizes}
-
-\item{verbose}{logical; print the \code{R^2} value to the console?}
 }
 \value{
 returns a single object containing the data to be analyzed (usually a
@@ -32,7 +31,8 @@ returns a single object containing the data to be analyzed (usually a
 Given the results from a simulation with \code{\link{runSimulation}} form an ANOVA table (without
 p-values) indicating the effect sizes based on the eta-squared statistic. These provide approximate
 indications of observable simulation effects, therefore use these results as exploratory rather
-than inferential tools.
+than inferential tools (i.e., the p-values returned are generally meaningless but do serve as a
+relative detection mechanism).
 }
 \examples{
 \dontrun{
@@ -41,15 +41,15 @@ than inferential tools.
 SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
     Final)
 
-#error, doesn't work on full tables
+# Full three way interactions
 SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^3,
   Final)
 
-SimAnova(lessthan.05.independent ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
-  Final)
+# equivalent to this (all IV interactions)
+SimAnova(lessthan.05.independent ~ ., Final)
 
 # run all DVs at once using the same formula
-SimAnova(~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
+SimAnova(~ ., Final)
 
 }
 

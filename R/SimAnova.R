@@ -3,20 +3,20 @@
 #' Given the results from a simulation with \code{\link{runSimulation}} form an ANOVA table (without
 #' p-values) indicating the effect sizes based on the eta-squared statistic. These provide approximate
 #' indications of observable simulation effects, therefore use these results as exploratory rather
-#' than inferential tools.
+#' than inferential tools (i.e., the p-values returned are generally meaningless but do serve as a
+#' relative detection mechanism).
 #'
 #' @param formula an R formula generally of the form suitable for \code{\link{lm}} or
 #'   \code{\link{aov}}. However, if the dependent variable (left size of the equation) is ommited
 #'   then all the dependent variables in the simulation will be used and the result will return
-#'   a list of analyses
+#'   a list of analyses, and if the right side of the fomula is a dot (.) then all design
+#'   variables will be included with their full interactions
 #'
 #' @param dat an object returned from \code{\link{runSimulation}} of class \code{'SimDesign'}
 #'
 #' @param rates logical; does the dependent variable consist of rates (e.g., returned from
 #'   \code{\link{ECR}} or \code{\link{EDR}})? Default is TRUE, which will use the logit of the DV
 #'   to help stabalize the proportions when computing the parameters and effect sizes
-#'
-#' @param verbose logical; print the \code{R^2} value to the console?
 #'
 #' @return returns a single object containing the data to be analyzed (usually a
 #'   \code{vector}, \code{matrix}, or \code{data.frame}),
@@ -35,19 +35,19 @@
 #' SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
 #'     Final)
 #'
-#' #error, doesn't work on full tables
+#' # Full three way interactions
 #' SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^3,
 #'   Final)
 #'
-#' SimAnova(lessthan.05.independent ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
-#'   Final)
+#' # equivalent to this (all IV interactions)
+#' SimAnova(lessthan.05.independent ~ ., Final)
 #'
 #' # run all DVs at once using the same formula
-#' SimAnova(~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
+#' SimAnova(~ ., Final)
 #'
 #' }
 #'
-SimAnova <- function(formula, dat, rates = TRUE, verbose = TRUE){
+SimAnova <- function(formula, dat, rates = TRUE){
 
     # function borrowed and edited from lrs::etaSquared. Feb 29, 2016
     etaSquared2 <- function (x, type = 2, anova = FALSE)
@@ -120,7 +120,7 @@ SimAnova <- function(formula, dat, rates = TRUE, verbose = TRUE){
                          "MS", "F", "p")
         rownames(E) <- rownames(ss)
         rownames(E)[k] <- "Residuals"
-        siglevel <- cbind(E[,'p'] < .05, E[,'p'] < .01, E[,'p'] < .001)
+        siglevel <- cbind(E[,'p'] < .01, E[,'p'] < .001, E[,'p'] < .0001)
         siglevel <- apply(siglevel, 1, function(x) c('.', '*', '**', '***')[sum(x) + 1L])
         siglevel[length(siglevel)] <- ' '
         E <- data.frame(round(E[,-c(1:2)], 3), sig=siglevel,
@@ -128,26 +128,28 @@ SimAnova <- function(formula, dat, rates = TRUE, verbose = TRUE){
         return(E)
     }
 
+    lst <- lapply(as.list(formula), as.character)
+    if(any(sapply(lst, function(x) all(x == '.')))){
+        new <- as.formula(paste0('~', paste0(attr(dat, 'design_names')$design, collapse = '*')))
+        formula <- update.formula(formula, new)
+    }
     if(length(as.list(formula)) == 2L){
         ys <- attributes(dat)$design_names$sim
         ret <- vector('list', length(ys))
         names(ret) <- ys
         for(i in 1L:length(ys)){
             f2 <- update.formula(formula, as.formula(paste0(ys[[i]], ' ~ .')))
-            ret[[i]] <- SimAnova(formula=f2, dat=dat, rates=rates, verbose=FALSE)
-            attr(ret[[i]], 'R^2') <- 1 - ret[[i]]$eta.sq[[nrow(ret[[i]])]]
+            ret[[i]] <- SimAnova(formula=f2, dat=dat, rates=rates)
         }
         return(ret)
     }
 
-    dat2 <- model.frame(formula, dat)
+    dat2 <- model.frame(formula, rbind(dat, dat))
     if(rates){
         dat2[,1] <- suppressWarnings(qlogis(dat2[,1]))
         dat2[dat2[,1] == Inf, 1] <- max(dat2[,1])
         dat2[dat2[,1] == -Inf, 1] <- min(dat2[,1])
     }
     mod <- lm(formula, dat2)
-    so <- summary(mod)
-    if(verbose) cat('\nR^2 = ', round(so$r.squared, 3), '\n\n')
     return(etaSquared2(mod, type = 2, anova = TRUE))
 }

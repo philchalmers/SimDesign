@@ -477,15 +477,12 @@
 #' Final2 %>% group_by(standard_deviation_ratio) %>%
 #'    summarise(mean(lessthan.05.welch), mean(lessthan.05.independent))
 #'
-#' # quick ANOVA analysis method
-#' SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
-#'    Final)
+#' # quick ANOVA analysis method with all interactions
+#' SimAnova( ~ ., Final)
 #'
-#' SimAnova(lessthan.05.independent ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
-#'    Final)
-#'
-#' # or both at the same time
-#' SimAnova( ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
+#' # or more specific anovas
+#' SimAnova(lessthan.05.independent ~ (group_size_ratio + standard_deviation_ratio)^2,
+#'     Final)
 #'
 #' # make some plots
 #' library(ggplot2)
