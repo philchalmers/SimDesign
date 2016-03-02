@@ -490,11 +490,11 @@ runSimulation(design=Design, replications=1000,
 library(dplyr)
 Final2 <- tbl_df(Final)
 Final2 \%>\% summarise(mean(lessthan.05.welch), mean(lessthan.05.independent))
-Final2 \%>\% group_by(standard_deviation_ratio) \%>\%
+Final2 \%>\% group_by(standard_deviation_ratio, group_size_ratio) \%>\%
    summarise(mean(lessthan.05.welch), mean(lessthan.05.independent))
 
-# quick ANOVA analysis method with all interactions
-SimAnova( ~ ., Final)
+# quick ANOVA analysis method with all two-way interactions
+SimAnova( ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
 
 # or more specific anovas
 SimAnova(lessthan.05.independent ~ (group_size_ratio + standard_deviation_ratio)^2,
