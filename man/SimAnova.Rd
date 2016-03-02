@@ -50,6 +50,7 @@ SimAnova(lessthan.05.independent ~ ., Final)
 
 # run all DVs at once using the same formula
 SimAnova(~ ., Final)
+SimAnova(~  group_size_ratio*standard_deviation_ratio, Final)
 
 }
 
