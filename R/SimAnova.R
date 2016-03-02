@@ -18,6 +18,11 @@
 #'   \code{\link{ECR}} or \code{\link{EDR}})? Default is TRUE, which will use the logit of the DV
 #'   to help stabalize the proportions when computing the parameters and effect sizes
 #'
+#' @param adjust logical; adjust the data so that full interaction terms are possible? Default is
+#'   TRUE, indicating that the input data has been replaced by \code{rbind(dat, dat)} and the
+#'   degrees of freedom has been adjusted accordingly. Note that this flag has no effect on the
+#'   effect sizes returned
+#'
 #' @return returns a single object containing the data to be analyzed (usually a
 #'   \code{vector}, \code{matrix}, or \code{data.frame}),
 #'   or a list with a the elements \code{'dat'} and \code{'parameters'}. If a list is returned
@@ -48,10 +53,10 @@
 #'
 #' }
 #'
-SimAnova <- function(formula, dat, rates = TRUE){
+SimAnova <- function(formula, dat, rates = TRUE, adjust = TRUE){
 
     # function borrowed and edited from lrs::etaSquared. Feb 29, 2016
-    etaSquared <- function (x)
+    etaSquared <- function (x, adjust)
     {
         ss.tot <- sum((x$model[, 1] - mean(x$model[, 1]))^2)
         ss.res <- sum((x$residuals)^2)
@@ -79,7 +84,7 @@ SimAnova <- function(formula, dat, rates = TRUE){
         k <- length(ss)
         eta2p[k] <- NA
         df <- anova(x)[, "Df"]
-        df[length(df)] <- df[length(df)]/2
+        if(adjust) df[length(df)] <- df[length(df)]/2
         ms <- ss/df
         Fval <- ms/ms[k]
         p <- 1 - pf(Fval, df, rep.int(df[k], k))
@@ -113,12 +118,13 @@ SimAnova <- function(formula, dat, rates = TRUE){
         return(ret)
     }
 
-    dat2 <- model.frame(formula, rbind(dat, dat))
+    if(adjust) dat <- rbind(dat, dat)
+    dat2 <- model.frame(formula, dat)
     if(rates){
         dat2[,1] <- suppressWarnings(qlogis(dat2[,1]))
         dat2[dat2[,1] == Inf, 1] <- max(dat2[,1])
         dat2[dat2[,1] == -Inf, 1] <- min(dat2[,1])
     }
     mod <- lm(formula, dat2)
-    return(etaSquared(mod))
+    return(etaSquared(mod, adjust=adjust))
 }

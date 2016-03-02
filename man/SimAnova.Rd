@@ -4,7 +4,7 @@
 \alias{SimAnova}
 \title{Function for decomposing the simulation into ANOVA-based effect sizes}
 \usage{
-SimAnova(formula, dat, rates = TRUE)
+SimAnova(formula, dat, rates = TRUE, adjust = TRUE)
 }
 \arguments{
 \item{formula}{an R formula generally of the form suitable for \code{\link{lm}} or
@@ -18,6 +18,11 @@ variables will be included with their full interactions}
 \item{rates}{logical; does the dependent variable consist of rates (e.g., returned from
 \code{\link{ECR}} or \code{\link{EDR}})? Default is TRUE, which will use the logit of the DV
 to help stabalize the proportions when computing the parameters and effect sizes}
+
+\item{adjust}{logical; adjust the data so that full interaction terms are possible? Default is
+TRUE, indicating that the input data has been replaced by \code{rbind(dat, dat)} and the
+degrees of freedom has been adjusted accordingly. Note that this flag has no effect on the
+effect sizes returned}
 }
 \value{
 returns a single object containing the data to be analyzed (usually a
