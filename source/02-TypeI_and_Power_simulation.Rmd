@@ -140,7 +140,6 @@ design conditions into `factor`s if necessary. More specifically, Power rates re
 
 ```{r}
 head(results)
-for(i in 1:4) results[,i] <- factor(results[,i])
 results$REPLICATIONS <- results$SIM_TIME <- NULL
 TypeI <- subset(results, mean_difference == 0)
 Power <- subset(results, mean_difference != 0)
@@ -171,20 +170,14 @@ to use ANOVAs to help pinpoint where the sources of variation occurred.
 The one catch with ANOVAs is that there must be within-group variability, therefore something in our design must be marginalized. In this case, we will marginalize sample size because Type I error rates really shouldn't be influenced by $N$. After inspecting the previous table though, the assumption that $N$ does not affect the results is probably a good one.
 
 ```{r}
-library(lsr)
-mod_TypeI_ind <- lm(alpha.05.independent ~ group_size_ratio * standard_deviation_ratio, 
-                    TypeI)
-car::Anova(mod_TypeI_ind)
-etaSquared(mod_TypeI_ind)
+SimAnova(alpha.05.independent ~ sample_size, TypeI)
+SimAnova(alpha.05.independent ~ group_size_ratio * standard_deviation_ratio, TypeI)
 ```
 
 After examining the effect sizes for the independent t-test, there appears to be an interaction effect between `group_size_ratio` and `standard_deviation_ratio`. To help visualize this effect we create box-plots while continuing to marginlize over the sample size (otherwise, we would have to use point estimates for scatter plots). 
 
 ```{r}
-mod_TypeI_welch <- lm(alpha.05.welch ~ group_size_ratio * standard_deviation_ratio, 
-                    TypeI)
-car::Anova(mod_TypeI_welch)
-etaSquared(mod_TypeI_welch)
+SimAnova(alpha.05.welch ~ group_size_ratio * standard_deviation_ratio, TypeI)
 ```
 
 ```{r}

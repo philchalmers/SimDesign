@@ -1,7 +1,7 @@
 all: vignettes move clean
 
 vignettes:
-	Rscript -e "setwd('source');library('knitr');files=dir();for(file in files) knit2html(file)"	
+	Rscript -e "setwd('source');library('rmarkdown');files=dir();for(file in files) render(file)"
 
 move:
 	mv -f source/*.html html/
