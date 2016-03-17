@@ -7,7 +7,8 @@ move:
 	mv -f source/*.html html/
 
 clean:
-	$(RM) -r source/cache/;
+	$(RM) -r source/*_cache/;
+	$(RM) -r source/*_files/;
 	$(RM) -r source/figure/;
 	$(RM) source/*.md;
 	$(RM) source/*.txt;
