@@ -33,7 +33,7 @@ standard deviations, and investigate their effect when completely crossed.
 
 ```{r conditions}
 library(SimDesign)
-# SimDesign_functions()
+# SimFunctions()
 
 Design <- expand.grid(sample_size = c(30, 60, 90, 120),
                       group_size_ratio = c(1/2, 1, 2),

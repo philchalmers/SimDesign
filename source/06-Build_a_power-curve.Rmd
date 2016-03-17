@@ -23,7 +23,7 @@ Power-curves are useful when researchers are interested in the range of power ef
 
 ```{r}
 library(SimDesign)
-#SimDesign_functions(comments = FALSE)
+#SimFunctions(comments = FALSE)
 
 ### Define design conditions. Here we want a finer range of values for plotting
 Design <- expand.grid(mean_diff = seq(0, 1, by = .1), 

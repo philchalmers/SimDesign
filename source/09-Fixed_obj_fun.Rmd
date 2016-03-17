@@ -64,7 +64,7 @@ Note: An alternative approach is simply to define/source the objects within the 
 
 ```{r}
 library(SimDesign)
-#SimDesign_functions(comments = FALSE)
+#SimFunctions(comments = FALSE)
 
 ### Define design conditions and number of replications
 Design <- expand.grid(N = c(10, 20, 30))

@@ -57,7 +57,7 @@ convinient.
 
 ```{r}
 library(SimDesign)
-# SimDesign_functions()
+# SimFunctions()
 
 sample_sizes <- c(250, 500, 1000)
 nitems <- c(10, 20)

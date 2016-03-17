@@ -46,29 +46,29 @@ options(digits = 2)
 ```
 
 After loading the `SimDesign` package, we begin by defining the required user-constructed functions. To expedite this process,
-a call to `SimDesign_functions()` will create a template to be filled in, where all the necessary functional arguments have been pre-assigned. The documentation of each argument can be found in the respective 
+a call to `SimFunctions()` will create a template to be filled in, where all the necessary functional arguments have been pre-assigned. The documentation of each argument can be found in the respective 
 R help files, however there organization is very simple conceptually.
 
 To begin, the following code should be copied and saved to an external source (i.e., text) file.
 
 ```{r comment=NA}
 library(SimDesign)
-SimDesign_functions()
+SimFunctions()
 ```
 
-Alternatively, if you are lazy or just don't like copy-and-pasting, `SimDesign_functions()` can write the output to two separate files
+Alternatively, if you are lazy or just don't like copy-and-pasting, `SimFunctions()` can write the output to two separate files
 by providing a `filename` argument. The following creates two files (`mysim.R` and `mysim-functions.R`) containing the simulation
 design/execution and required user-defined functions, respectively.
 
 ```{r eval=FALSE}
-SimDesign_functions('mysim')
+SimFunctions('mysim')
 ```
 
 Alternatively, for smaller simulations you may only want to use one file, and if you'd prefer not to 
 have the default comments included then these can be achieved with the `singlefile` and `comments` arguments, respectively.
 
 ```{r eval=FALSE}
-SimDesign_functions('mysim', singlefile = TRUE, comments = FALSE)
+SimFunctions('mysim', singlefile = TRUE, comments = FALSE)
 ```
 
 # Simulation: Determine estimator efficiency

@@ -26,7 +26,7 @@ set.seed(1234)
 
 ```{r}
 library(SimDesign)
-#SimDesign_functions(comments = FALSE)
+#SimFunctions(comments = FALSE)
 
 # z-test confidence intervals function
 z.CI <- function(dat, alpha = .05){
@@ -82,7 +82,7 @@ The above simulation called the `ECR()` function within `analyse`, however it is
 
 ```{r eval=FALSE}
 library(SimDesign)
-#SimDesign_functions(comments = FALSE)
+#SimFunctions(comments = FALSE)
 
 ### Define design conditions. Here we want a finer range of values for plotting
 Design <- expand.grid(mu = c(0, 5, 10), 
