@@ -74,7 +74,9 @@ located in the defined \code{save_generate_data_dirname} directory/folder?
 It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
 a large amount of disk space, and by and large saving data is not required or recommended for simulations.
 When \code{TRUE} the \code{save} flag will also be set to \code{TRUE} to better track
-the save-state. Default is \code{FALSE}}
+the save-state. However, in pilot studies saving the data files may be useful for debugging
+purposes (in which case the objects can be arbitrarily read in and re-analysed).
+Default is \code{FALSE}}
 
 \item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to.
 When \code{NULL} the final simulation object is not saved to the drive. As well,
@@ -525,6 +527,6 @@ ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation
 }
 \seealso{
 \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
-  \code{\link{SimDesign_functions}}, \code{\link{SimAnova}}
+  \code{\link{SimDesign_functions}}, \code{\link{SimClean}}, \code{\link{SimAnova}}
 }
 

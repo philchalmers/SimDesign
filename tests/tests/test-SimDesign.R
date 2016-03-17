@@ -133,7 +133,7 @@ test_that('SimDesign', {
     expect_equal(length(files), 8L)
     x <- readRDS(paste0(DIR, '/', files[1]))
     expect_true(all(names(x) %in% c('condition', 'results', 'errors')))
-    system(paste0('rm -r ', DIR))
+    SimClean(results = TRUE)
 
     # error test
     mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
