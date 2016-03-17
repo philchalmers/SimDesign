@@ -21,9 +21,9 @@ returns a single object containing the data to be analyzed (usually a
   \code{'parameters'} element should be a named list containing the simulated parameters
   (if there are any. Otherwise, this could just be an empty list),
   or any other objects that would be useful
-  in the \code{\link{Analyse}} and \code{\link{Sumarise}} functions. If, on the other hand,
+  in the \code{\link{Analyse}} and \code{\link{Summarise}} functions. If, on the other hand,
   the objects are only useful in the \code{\link{Analyse}} function and NOT
-  \code{\link{Sumarise}} then simply adding \code{\link{attributes}} to the returned object
+  \code{\link{Summarise}} then simply adding \code{\link{attributes}} to the returned object
   is sufficent (and requires less RAM)
 }
 \description{
