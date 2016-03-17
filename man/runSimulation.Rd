@@ -188,7 +188,7 @@ The strategy for organizing the Monte Carlo simulation work-flow is to
 }
 
 For a skeleton version of the work-flow, which is often useful when initially defining a simulation,
-see \code{\link{SimDesign_functions}}. This function will write template simulation code
+see \code{\link{SimFunctions}}. This function will write template simulation code
 to one/two files so that modifying the required functions and objects can begin immediately
 with minimal error. This means that you can focus on your Monte Carlo simulation immediately rather
 than worrying about the administrative code-work required to organize the simulation work-flow.
@@ -352,7 +352,7 @@ head(Design)
 #### Step 2 --- Define generate, analyse, and summarise functions
 
 # skeleton functions to be edited
-SimDesign_functions()
+SimFunctions()
 
 # help(Generate)
 Generate <- function(condition, fixed_objects = NULL){
@@ -527,6 +527,6 @@ ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation
 }
 \seealso{
 \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
-  \code{\link{SimDesign_functions}}, \code{\link{SimClean}}, \code{\link{SimAnova}}
+  \code{\link{SimFunctions}}, \code{\link{SimClean}}, \code{\link{SimAnova}}
 }
 
