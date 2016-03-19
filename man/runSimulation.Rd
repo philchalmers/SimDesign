@@ -7,9 +7,10 @@
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, parallel = FALSE, packages = NULL,
   ncores = parallel::detectCores(), MPI = FALSE, save = FALSE,
-  save_results = FALSE, save_generate_data = FALSE, filename = NULL,
-  max_errors = 50, as.factor = TRUE, cl = NULL, seed = NULL,
-  save_details = list(), edit = "none", verbose = TRUE)
+  save_results = FALSE, save_seeds = FALSE, save_generate_data = FALSE,
+  filename = NULL, load_seed = NULL, max_errors = 50, as.factor = TRUE,
+  cl = NULL, seed = NULL, save_details = list(), edit = "none",
+  verbose = TRUE)
 }
 \arguments{
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
@@ -69,6 +70,14 @@ results (as a \code{list} or \code{matrix}), and try-errors. When \code{TRUE}, a
 state (in case of power outages, crashes, etc). When \code{TRUE} the \code{save} flag will also be
 set to \code{TRUE} to better track the save-state. Default is \code{FALSE}}
 
+\item{save_seeds}{logical; save the \code{.Random.seed} states prior to performing each replication into
+\code{.rds} files located in the defined \code{save_seeds_dirname} directory/folder?
+Use this if you would like to keep track of the simulation state within each replication and design
+condition. Primarily, this is useful for completely replicating any cell in the simulation if need be,
+especially when tracking down hard-to-find errors and bugs. As well, see the \code{load_seed} input
+to load a given \code{.Random.seed} to exactly replicate the generated data and analysis state (handy
+for debugging). Default is \code{FALSE}}
+
 \item{save_generate_data}{logical; save the data returned from \code{\link{Generate}} to external \code{.rds} files
 located in the defined \code{save_generate_data_dirname} directory/folder?
 It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
@@ -83,6 +92,12 @@ When \code{NULL} the final simulation object is not saved to the drive. As well,
 if the same file name already exists in the working directly at the time of saving then a new
 file will be generated instead and a warning will be thrown; this helps avoid accidentally overwriting
 existing files. Default is \code{NULL}}
+
+\item{load_seed}{a character object indicating which file to load from when the \code{.Random.seed}s have
+be saved (after a run with \code{save_seeds = TRUE}). E.g., \code{load_seed = 'design-row-2/seed-1'}
+will load the first seed in the second row of the \code{design} input. Note that it is important NOT
+to modify the \code{design} input object, otherwise the path may not point to the correct saved location.
+Default is \code{NULL}}
 
 \item{max_errors}{the simulation will terminate when more than this number of constitutive errors are thrown in any
 given condition. The purpose of this is to indicate that likely something problematic is going
@@ -128,6 +143,11 @@ Default is \code{NULL}, indicating that no seed is set for each condition}
       result objects to when \code{save_results = TRUE}. If a directory/folder does not exist
       in the current working directory then one will be created automatically. Default is
       \code{'SimDesign-results_'} with the associated \code{compname} appended}
+
+    \item{\code{save_seeds_dirname}}{a string indicating the name of the folder to save
+      \code{.Random.seed} objects to when \code{save_seeds = TRUE}. If a directory/folder does not exist
+      in the current working directory then one will be created automatically. Default is
+      \code{'SimDesign-seeds_'} with the associated \code{compname} appended}
 
     \item{\code{save_generate_data_dirname}}{a string indicating the name of the folder to save
       data objects to when \code{save_generate_data = TRUE}. If a directory/folder does not exist

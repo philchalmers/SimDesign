@@ -12,7 +12,7 @@
 Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI, seed,
                      save_results, save_results_dirname, max_errors,
                      save_generate_data, save_generate_data_dirname,
-                     export_funs, packages)
+                     save_seeds, save_seeds_dirname, load_seed, export_funs, packages)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -24,23 +24,27 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                fixed_objects=fixed_objects,
                                max_errors=max_errors, packages=packages,
                                save_generate_data=save_generate_data,
-                               save_generate_data_dirname=save_generate_data_dirname)
+                               save_generate_data_dirname=save_generate_data_dirname,
+                               save_seeds=save_seeds, load_seed=load_seed,
+                               save_seeds_dirname=save_seeds_dirname)
     } else {
         if(MPI){
             i <- 1L
             cell_results <- foreach(i=1L:replications, .export=export_funs) %dopar%
                 mainsim(i, condition=condition, generate=Functions$generate,
-                     analyse=Functions$analyse, fixed_objects=fixed_objects,
+                     analyse=Functions$analyse, fixed_objects=fixed_objects, load_seed=load_seed,
                      max_errors=max_errors, save_generate_data=save_generate_data,
-                     save_generate_data_dirname=save_generate_data_dirname, packages=packages)
+                     save_generate_data_dirname=save_generate_data_dirname, packages=packages,
+                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
             cell_results <- parallel::parLapply(cl, 1L:replications, mainsim,
                                                 condition=condition, generate=Functions$generate,
-                                                analyse=Functions$analyse,
+                                                analyse=Functions$analyse, load_seed=load_seed,
                                                 fixed_objects=fixed_objects, packages=packages,
                                                 max_errors=max_errors, save_generate_data=save_generate_data,
-                                                save_generate_data_dirname=save_generate_data_dirname)
+                                                save_generate_data_dirname=save_generate_data_dirname,
+                                                save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname)
         }
     }
 

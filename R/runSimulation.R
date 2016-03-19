@@ -219,6 +219,14 @@
 #'   state (in case of power outages, crashes, etc). When \code{TRUE} the \code{save} flag will also be
 #'   set to \code{TRUE} to better track the save-state. Default is \code{FALSE}
 #'
+#' @param save_seeds logical; save the \code{.Random.seed} states prior to performing each replication into
+#'   \code{.rds} files located in the defined \code{save_seeds_dirname} directory/folder?
+#'   Use this if you would like to keep track of the simulation state within each replication and design
+#'   condition. Primarily, this is useful for completely replicating any cell in the simulation if need be,
+#'   especially when tracking down hard-to-find errors and bugs. As well, see the \code{load_seed} input
+#'   to load a given \code{.Random.seed} to exactly replicate the generated data and analysis state (handy
+#'   for debugging). Default is \code{FALSE}
+#'
 #' @param save_generate_data logical; save the data returned from \code{\link{Generate}} to external \code{.rds} files
 #'   located in the defined \code{save_generate_data_dirname} directory/folder?
 #'   It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
@@ -227,6 +235,12 @@
 #'   the save-state. However, in pilot studies saving the data files may be useful for debugging
 #'   purposes (in which case the objects can be arbitrarily read in and re-analysed).
 #'   Default is \code{FALSE}
+#'
+#' @param load_seed a character object indicating which file to load from when the \code{.Random.seed}s have
+#'   be saved (after a run with \code{save_seeds = TRUE}). E.g., \code{load_seed = 'design-row-2/seed-1'}
+#'   will load the first seed in the second row of the \code{design} input. Note that it is important NOT
+#'   to modify the \code{design} input object, otherwise the path may not point to the correct saved location.
+#'   Default is \code{NULL}
 #'
 #' @param filename (optional) the name of the \code{.rds} file to save the final simulation results to.
 #'   When \code{NULL} the final simulation object is not saved to the drive. As well,
@@ -259,6 +273,11 @@
 #'       result objects to when \code{save_results = TRUE}. If a directory/folder does not exist
 #'       in the current working directory then one will be created automatically. Default is
 #'       \code{'SimDesign-results_'} with the associated \code{compname} appended}
+#'
+#'     \item{\code{save_seeds_dirname}}{a string indicating the name of the folder to save
+#'       \code{.Random.seed} objects to when \code{save_seeds = TRUE}. If a directory/folder does not exist
+#'       in the current working directory then one will be created automatically. Default is
+#'       \code{'SimDesign-seeds_'} with the associated \code{compname} appended}
 #'
 #'     \item{\code{save_generate_data_dirname}}{a string indicating the name of the folder to save
 #'       data objects to when \code{save_generate_data = TRUE}. If a directory/folder does not exist
@@ -511,8 +530,9 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, parallel = FALSE, packages = NULL,
                           ncores = parallel::detectCores(), MPI = FALSE,
-                          save = FALSE, save_results = FALSE, save_generate_data = FALSE,
-                          filename = NULL, max_errors = 50, as.factor = TRUE,
+                          save = FALSE, save_results = FALSE, save_seeds = FALSE,
+                          save_generate_data = FALSE,
+                          filename = NULL, load_seed = NULL, max_errors = 50, as.factor = TRUE,
                           cl = NULL, seed = NULL, save_details = list(), edit = 'none',
                           verbose = TRUE)
 {
@@ -521,13 +541,14 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             c('compname', 'tmpfilename', 'save_results_dirname', 'save_generate_data_dirname')))
         stop('save_details contains elements that are not supported', call.=FALSE)
     compname <- save_details$compname; tmpfilename <- save_details$tempfilename; safe <- save_details$safe
-    save_results_dirname <- save_details$save_results_dirname
+    save_results_dirname <- save_details$save_results_dirname; save_seeds_dirname <- save_details$save_seeds_dirname
     save_generate_data_dirname <- save_details$save_generate_data_dirname
     if(is.null(compname)) compname <- Sys.info()['nodename']
     if(is.null(safe)) safe <- TRUE
     if(is.null(tmpfilename)) tmpfilename <- paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')
     if(is.null(save_results_dirname)) save_results_dirname <- paste0('SimDesign-results_', compname)
     if(is.null(save_generate_data_dirname)) save_generate_data_dirname <- paste0('SimDesign-generate-data_', compname)
+    if(is.null(save_seeds_dirname)) save_seeds_dirname <- paste0('SimDesign-seeds_', compname)
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise)
     stopifnot(!missing(design))
     stopifnot(!missing(replications))
@@ -542,6 +563,15 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           summarise = c('results', 'parameters_list', 'condition', 'fixed_objects'))
         if(!all(truefms %in% fms))
             stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
+    }
+    start <- 1L; end <- nrow(design)
+    if(!is.null(load_seed)){
+        save <- save_results <- save_generate_data <- save_seeds <- parallel <- MPI <- FALSE
+        replications <- 1L
+        load_seed2 <- gsub('design-row-', '', load_seed)
+        start <- end <- as.numeric(gsub('/.*', '', load_seed2))
+        if(!grepl('*\\.rds', load_seed)) load_seed <- paste0(load_seed, '.rds')
+        load_seed <- paste0(save_seeds_dirname, '/', load_seed)
     }
     if(MPI){
         parallel <- FALSE
@@ -589,12 +619,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         }
         parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
     }
-    start <- 1L
     Result_list <- vector('list', nrow(design))
     names(Result_list) <- rownames(design)
     time0 <- time1 <- proc.time()[3]
     files <- dir()
-    if(!MPI && any(files == tmpfilename)){
+    if(!MPI && any(files == tmpfilename) && !is.null(load_seed)){
         if(verbose)
             message(sprintf('Resuming simulation from %s file with %i replications.',
                             tmpfilename, replications))
@@ -610,6 +639,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                     'Please fix by modifying the save_results_dirname input.', call.=FALSE)
         dir.create(save_results_dirname, showWarnings = !file.exists(tmpfilename))
     }
+    if(save_seeds){
+        save <- TRUE
+        if(safe && dir.exists(save_seeds_dirname) && !file.exists(tmpfilename))
+            stop(save_seeds_dirname, ' directory already exists. ',
+                 'Please fix by modifying the save_seeds_dirname input.', call.=FALSE)
+        dir.create(save_seeds_dirname, showWarnings = !file.exists(tmpfilename))
+    }
     if(save_generate_data){
         save <- TRUE
         if(safe && dir.exists(save_generate_data_dirname) && !file.exists(tmpfilename))
@@ -617,7 +653,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                  'Please fix by modifying the save_generate_data_dirname input.', call.=FALSE)
         dir.create(save_generate_data_dirname, showWarnings = !file.exists(tmpfilename))
     }
-    for(i in start:nrow(design)){
+    for(i in start:end){
         stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
         if(verbose)
             cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
@@ -625,6 +661,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         time0 <- proc.time()[3]
         if(save_generate_data)
             dir.create(paste0(save_generate_data_dirname, '/design-row-', i), showWarnings = FALSE)
+        if(save_seeds)
+            dir.create(paste0(save_seeds_dirname, '/design-row-', i), showWarnings = FALSE)
         Result_list[[i]] <- data.frame(c(as.list(design[i, ]),
                                          as.list(Analysis(Functions=Functions,
                                                           condition=design[i,],
@@ -635,8 +673,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                           save_results_dirname=save_results_dirname,
                                                           save_generate_data=save_generate_data,
                                                           save_generate_data_dirname=save_generate_data_dirname,
+                                                          save_seeds=save_seeds,
+                                                          save_seeds_dirname=save_seeds_dirname,
                                                           max_errors=max_errors, packages=packages,
-                                                          export_funs=export_funs))),
+                                                          load_seed=load_seed, export_funs=export_funs))),
                                        check.names=FALSE)
         time1 <- proc.time()[3]
         Result_list[[i]]$SIM_TIME <- time1 - time0

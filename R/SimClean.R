@@ -10,6 +10,9 @@
 #' @param results logical; remove the \code{.rds} results files
 #'   saved when passing \code{save_results = TRUE}?
 #'
+#' @param seeds logical; remove the \code{.rds} seed files
+#'   saved when passing \code{save_seeds = TRUE}?
+#'
 #' @param temp logical; remove the temporary file saved when passing \code{save = TRUE}?
 #'
 #' @param save_details a list pertaining to information about how and where files were saved
@@ -32,11 +35,13 @@
 #' SimClean(results = TRUE, save_details = list(save_results_dirname = 'mydir'))
 #'
 #' }
-SimClean <- function(generate_data = FALSE, results = FALSE, temp = FALSE, save_details = list()){
-    if(!any(generate_data, results, temp))
+SimClean <- function(generate_data = FALSE, results = FALSE, seeds = FALSE, temp = FALSE,
+                     save_details = list()){
+    if(!any(generate_data, results, temp, seeds))
         stop('None of the saved objects/directories have been selected for removal')
     compname <- save_details$compname; tmpfilename <- save_details$tempfilename
     save_results_dirname <- save_details$save_results_dirname
+    save_seeds_dirname <- save_details$save_seeds_dirname
     save_generate_data_dirname <- save_details$save_generate_data_dirname
     if(is.null(compname)) compname <- Sys.info()['nodename']
     if(is.null(tmpfilename))
@@ -45,8 +50,10 @@ SimClean <- function(generate_data = FALSE, results = FALSE, temp = FALSE, save_
         save_results_dirname <- paste0('SimDesign-results_', compname)
     if(is.null(save_generate_data_dirname))
         save_generate_data_dirname <- paste0('SimDesign-generate-data_', compname)
+    if(is.null(save_seeds_dirname)) save_seeds_dirname <- paste0('SimDesign-seeds_', compname)
     if(generate_data) unlink(save_generate_data_dirname, recursive = TRUE, force = TRUE)
     if(results) unlink(save_results_dirname, recursive = TRUE, force = TRUE)
+    if(seeds) unlink(save_seeds_dirname, recursive = TRUE, force = TRUE)
     if(temp) file.remove(tmpfilename)
     invisible(NULL)
 }

@@ -213,13 +213,27 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
 #
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors,
-                    save_generate_data, save_generate_data_dirname, packages = NULL){
+                    save_generate_data, save_generate_data_dirname,
+                    save_seeds, save_seeds_dirname, load_seed, packages = NULL){
 
     load_packages(packages)
     try_error <- character()
 
     while(TRUE){
 
+        current_Random.seed <- .Random.seed
+        if(save_seeds){
+            filename_stem <- paste0(save_seeds_dirname, '/design-row-', condition$ID,
+                                    '/seed-')
+            filename <- paste0(filename_stem, index, '.rds')
+            count <- 1L
+            while(file.exists(filename)){
+                filename <- paste0(filename_stem, index, '-', count, '.rds')
+                count <- count + 1L
+            }
+            saveRDS(current_Random.seed, filename)
+        }
+        if(!is.null(load_seed)) .Random.seed <<- readRDS(load_seed)
         simlist <- try(generate(condition=condition, fixed_objects=fixed_objects), TRUE)
         if(is(simlist, 'try-error'))
             stop(paste0('generate function threw an error.',

@@ -4,8 +4,8 @@
 \alias{SimClean}
 \title{Removes/cleans files and folders that have been saved}
 \usage{
-SimClean(generate_data = FALSE, results = FALSE, temp = FALSE,
-  save_details = list())
+SimClean(generate_data = FALSE, results = FALSE, seeds = FALSE,
+  temp = FALSE, save_details = list())
 }
 \arguments{
 \item{generate_data}{logical; remove the \code{.rds} data-set files
@@ -13,6 +13,9 @@ saved when passing \code{save_generate_data = TRUE}?}
 
 \item{results}{logical; remove the \code{.rds} results files
 saved when passing \code{save_results = TRUE}?}
+
+\item{seeds}{logical; remove the \code{.rds} seed files
+saved when passing \code{save_seeds = TRUE}?}
 
 \item{temp}{logical; remove the temporary file saved when passing \code{save = TRUE}?}
 

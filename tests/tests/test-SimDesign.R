@@ -86,6 +86,15 @@ test_that('SimDesign', {
     expect_true(all(Final$REPLICATIONS == 4L))
     system('rm *.rds')
 
+    # seeds
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, verbose=FALSE,
+                         replications = 2, parallel=FALSE, save_seeds=TRUE, max_errors = Inf)
+    load_seed <- paste0('design-row-1/seed-1')
+    tmp2 <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, verbose=FALSE,
+                         replications = 2, parallel=FALSE, load_seed = load_seed)
+    expect_equal(tmp[1, ]$bias.random_number, tmp2[1, ]$bias.random_number, tollerance = 1e-4)
+    SimClean(seeds = TRUE)
+
     mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
 
         # require packages/define functions if needed, or better yet index with the :: operator
