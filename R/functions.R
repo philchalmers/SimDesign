@@ -221,19 +221,20 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
 
     while(TRUE){
 
-        current_Random.seed <- .Random.seed
+        current_Random.seed <- .GlobalEnv$.Random.seed
         if(save_seeds){
             filename_stem <- paste0(save_seeds_dirname, '/design-row-', condition$ID,
                                     '/seed-')
-            filename <- paste0(filename_stem, index, '.rds')
+            filename <- paste0(filename_stem, index)
             count <- 1L
             while(file.exists(filename)){
-                filename <- paste0(filename_stem, index, '-', count, '.rds')
+                filename <- paste0(filename_stem, index, '-', count)
                 count <- count + 1L
             }
-            saveRDS(current_Random.seed, filename)
+            write(current_Random.seed, filename, sep = ' ')
         }
-        if(!is.null(load_seed)) .Random.seed <<- readRDS(load_seed)
+        if(!is.null(load_seed))
+            .GlobalEnv$.Random.seed <- as.integer(scan(load_seed, sep = ' ', quiet = TRUE))
         simlist <- try(generate(condition=condition, fixed_objects=fixed_objects), TRUE)
         if(is(simlist, 'try-error'))
             stop(paste0('generate function threw an error.',

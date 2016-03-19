@@ -220,7 +220,7 @@
 #'   set to \code{TRUE} to better track the save-state. Default is \code{FALSE}
 #'
 #' @param save_seeds logical; save the \code{.Random.seed} states prior to performing each replication into
-#'   \code{.rds} files located in the defined \code{save_seeds_dirname} directory/folder?
+#'   \code{.txt} files located in the defined \code{save_seeds_dirname} directory/folder?
 #'   Use this if you would like to keep track of the simulation state within each replication and design
 #'   condition. Primarily, this is useful for completely replicating any cell in the simulation if need be,
 #'   especially when tracking down hard-to-find errors and bugs. As well, see the \code{load_seed} input
@@ -570,7 +570,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         replications <- 1L
         load_seed2 <- gsub('design-row-', '', load_seed)
         start <- end <- as.numeric(gsub('/.*', '', load_seed2))
-        if(!grepl('*\\.rds', load_seed)) load_seed <- paste0(load_seed, '.rds')
         load_seed <- paste0(save_seeds_dirname, '/', load_seed)
     }
     if(MPI){

@@ -88,7 +88,7 @@ test_that('SimDesign', {
 
     # seeds
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, verbose=FALSE,
-                         replications = 2, parallel=FALSE, save_seeds=TRUE, max_errors = Inf)
+                         replications = 1, parallel=FALSE, save_seeds=TRUE, max_errors = Inf)
     load_seed <- paste0('design-row-1/seed-1')
     tmp2 <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, verbose=FALSE,
                          replications = 2, parallel=FALSE, load_seed = load_seed)
