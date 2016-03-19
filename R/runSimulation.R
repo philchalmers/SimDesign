@@ -579,6 +579,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     packages <- c('SimDesign', packages)
     for(i in 1L:length(Functions)){
+        if(names(Functions)[i] == 'summarise') next
         tmp <- deparse(substitute(Functions[[i]]))
         if(any(grepl('browser\\(', tmp))){
             if(verbose && parallel)
@@ -595,7 +596,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(is.null(design$ID)){
         design <- data.frame(ID=1L:nrow(design), design)
     } else stopifnot(length(unique(design$ID)) == nrow(design))
-    if(edit != 'none'){
+    if(edit != 'none' && edit != 'summarise'){
         parallel <- MPI <- FALSE
         if(edit == 'recover'){
             old_recover <- getOption('error')
@@ -728,6 +729,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             message(paste('\nSaving simulation results to file:', filename))
         saveRDS(Final, filename)
     }
-    if(save || save_results || save_generate_data) file.remove(tmpfilename)
+    if(save || save_results || save_generate_data || save_seeds) file.remove(tmpfilename)
     return(Final)
 }
