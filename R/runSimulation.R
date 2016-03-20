@@ -39,8 +39,8 @@
 #' \code{runSimulation}: \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 #' all the Monte Carlo replications for each respective design condition, \code{SEED} if the \code{seed} argument
-#' was used, columns containing the number of replications due to \code{try()} errors where the error messages
-#' represent the names of the columns prefixed with a \code{ERROR:} string, and
+#' was used, columns containing the number of replications which had to be re-run due to errors (where the error messages
+#' represent the names of the columns prefixed with a \code{ERROR:} string), and
 #' columns containing the number of warnings prefixed with a \code{WARNING:} string.
 #'
 #' Additional examples, presentation files, and tutorials can be found on the package wiki located at
@@ -220,7 +220,7 @@
 #'   set to \code{TRUE} to better track the save-state. Default is \code{FALSE}
 #'
 #' @param save_seeds logical; save the \code{.Random.seed} states prior to performing each replication into
-#'   \code{.txt} files located in the defined \code{save_seeds_dirname} directory/folder?
+#'   plain text files located in the defined \code{save_seeds_dirname} directory/folder?
 #'   Use this if you would like to keep track of the simulation state within each replication and design
 #'   condition. Primarily, this is useful for completely replicating any cell in the simulation if need be,
 #'   especially when tracking down hard-to-find errors and bugs. As well, see the \code{load_seed} input
@@ -233,7 +233,7 @@
 #'   a large amount of disk space, and by and large saving data is not required or recommended for simulations.
 #'   When \code{TRUE} the \code{save} flag will also be set to \code{TRUE} to better track
 #'   the save-state. However, in pilot studies saving the data files may be useful for debugging
-#'   purposes (in which case the objects can be arbitrarily read in and re-analysed).
+#'   purposes (in which case the objects can be arbitrarily read in and re-analyzed).
 #'   Default is \code{FALSE}
 #'
 #' @param load_seed a character object indicating which file to load from when the \code{.Random.seed}s have
