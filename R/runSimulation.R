@@ -688,8 +688,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                     100, '%', time1 - time0, sum(stored_time)))
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
-    Final$SIM_TIME <- Final$ID <- NULL
-    Final <- data.frame(Final, SIM_TIME, check.names=FALSE)
+    REPLICATIONS <- Final$REPLICATIONS
+    Final$SIM_TIME <- Final$ID <- Final$REPLICATIONS <- NULL
+    Final <- data.frame(Final, REPLICATIONS, SIM_TIME, check.names=FALSE)
     if(!is.null(seed)) Final$SEED <- seed
     if(!is.null(filename) && safe){ #save file
         files <- dir()
