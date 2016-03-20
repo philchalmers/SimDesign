@@ -237,14 +237,14 @@ Design</code></pre>
     generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 Completed: 0%,   Previous condition time: 0.0,  Total elapsed time: 0.0 
-Completed: 12%,   Previous condition time: 0.2,  Total elapsed time: 0.2 
+Completed: 12%,   Previous condition time: 0.3,  Total elapsed time: 0.3 
 Completed: 25%,   Previous condition time: 0.3,  Total elapsed time: 0.5 
 Completed: 38%,   Previous condition time: 0.3,  Total elapsed time: 0.8 
-Completed: 50%,   Previous condition time: 0.3,  Total elapsed time: 1.0 
-Completed: 62%,   Previous condition time: 0.3,  Total elapsed time: 1.3 
-Completed: 75%,   Previous condition time: 0.3,  Total elapsed time: 1.6 
-Completed: 88%,   Previous condition time: 0.3,  Total elapsed time: 1.9 
-Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 2.2</code></pre>
+Completed: 50%,   Previous condition time: 0.3,  Total elapsed time: 1.1 
+Completed: 62%,   Previous condition time: 0.3,  Total elapsed time: 1.4 
+Completed: 75%,   Previous condition time: 0.3,  Total elapsed time: 1.7 
+Completed: 88%,   Previous condition time: 0.3,  Total elapsed time: 2.0 
+Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 2.3</code></pre>
 <pre class="r"><code>results</code></pre>
 <pre><code>##   sample_size distribution bias.mean_no_trim bias.mean_trim.1
 ## 1          30         norm           0.00082         -0.00018
@@ -274,14 +274,14 @@ Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 2.2</code>
 ## 7            0.530        0.67               1            3.2
 ## 8            0.515        0.65               1            6.2
 ##   RE.mean_trim.2 RE.median REPLICATIONS SIM_TIME
-## 1            1.2       1.5         1000     0.23
-## 2            1.1       1.5         1000     0.26
-## 3            1.2       1.6         1000     0.26
-## 4            1.1       1.5         1000     0.29
-## 5            2.0       3.2         1000     0.25
-## 6            3.0       4.8         1000     0.26
-## 7            5.5       8.7         1000     0.30
-## 8           11.4      18.3         1000     0.30</code></pre>
+## 1            1.2       1.5         1000     0.26
+## 2            1.1       1.5         1000     0.27
+## 3            1.2       1.6         1000     0.28
+## 4            1.1       1.5         1000     0.31
+## 5            2.0       3.2         1000     0.28
+## 6            3.0       4.8         1000     0.29
+## 7            5.5       8.7         1000     0.33
+## 8           11.4      18.3         1000     0.33</code></pre>
 <p>As can be seen from the printed results, each result from the <code>Summarise()</code> function has been paired with the respective conditions, statistics have been properly named, and two additional columns have been appended to the results: <code>REPLICATIONS</code>, which indicates how many time the conditions were performed, and <code>SIM_TIME</code> indicating the time (in seconds) it took to completely finish the respective conditions. A call to <code>View()</code> in the R console may also be a nice way to sift through the <code>results</code> object.</p>
 </div>
 <div id="interpret-the-results" class="section level3">
