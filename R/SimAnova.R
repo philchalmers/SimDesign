@@ -1,11 +1,11 @@
 #' Function for decomposing the simulation into ANOVA-based effect sizes
 #'
 #' Given the results from a simulation with \code{\link{runSimulation}} form an ANOVA table (without
-#' p-values) indicating the effect sizes based on the eta-squared statistic. These provide approximate
-#' indications of observable simulation effects, therefore use these results are generally useful
+#' p-values) with effect sizes based on the eta-squared statistic. These results provide approximate
+#' indications of observable simulation effects, therefore these ANOVA-based results are generally useful
 #' as exploratory rather than inferential tools.
 #'
-#' @param formula an R formula generally of the form suitable for \code{\link{lm}} or
+#' @param formula an R formula generally of a form suitable for \code{\link{lm}} or
 #'   \code{\link{aov}}. However, if the dependent variable (left size of the equation) is ommited
 #'   then all the dependent variables in the simulation will be used and the result will return
 #'   a list of analyses
@@ -14,14 +14,8 @@
 #'
 #' @param rates logical; does the dependent variable consist of rates (e.g., returned from
 #'   \code{\link{ECR}} or \code{\link{EDR}})? Default is TRUE, which will use the logit of the DV
-#'   to help stabalize the proportions when computing the parameters and effect sizes
-#'
-#' @return returns a single object containing the data to be analyzed (usually a
-#'   \code{vector}, \code{matrix}, or \code{data.frame}),
-#'   or a list with a the elements \code{'dat'} and \code{'parameters'}. If a list is returned
-#'   the \code{'dat'} element should be the observed data object while the
-#'   \code{'parameters'} element should be a named list containing the simulated parameters
-#'   (if there are any. Otherwise, this could just be an empty list)
+#'   to help stabalize the proportion-based summary statistics when computing the parameters and
+#'   effect sizes
 #'
 #' @aliases SimAnova
 #' @export

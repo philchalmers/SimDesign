@@ -14,7 +14,7 @@ saved when passing \code{save_generate_data = TRUE}?}
 \item{results}{logical; remove the \code{.rds} results files
 saved when passing \code{save_results = TRUE}?}
 
-\item{seeds}{logical; remove the \code{.rds} seed files
+\item{seeds}{logical; remove the seed files
 saved when passing \code{save_seeds = TRUE}?}
 
 \item{temp}{logical; remove the temporary file saved when passing \code{save = TRUE}?}
@@ -24,7 +24,7 @@ saved when passing \code{save_seeds = TRUE}?}
 }
 \description{
 This function is mainly used in pilot studies where results and datasets have been temporarily saved
-by \code{\link{runSimulation}} but should be removed prior to continuing with the full
+by \code{\link{runSimulation}} but should be removed before beginning the full
 Monte Carlo simulation (e.g., remove files and folders which contained bugs/biased results).
 }
 \examples{

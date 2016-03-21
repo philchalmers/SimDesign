@@ -22,8 +22,12 @@ output is saved to two separate files containing the functions and design defini
 }
 \description{
 This function prints skeleton versions of the required functions and work-flow required
-to run simulations, complete with the correct inputs and class of outputs. Use this at the start
-when defining your simulation. The function \code{SimDesign_functions} is deprecated and will be
+to run simulations, complete with the correct inputs, class of outputs, and option comments to
+help with the initial definitions. Use this at the start
+when defining your simulation.
+}
+\details{
+The function \code{SimDesign_functions} is deprecated and will be
 removed in a future release.
 }
 \examples{

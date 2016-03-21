@@ -1,7 +1,7 @@
 #' Removes/cleans files and folders that have been saved
 #'
 #' This function is mainly used in pilot studies where results and datasets have been temporarily saved
-#' by \code{\link{runSimulation}} but should be removed prior to continuing with the full
+#' by \code{\link{runSimulation}} but should be removed before beginning the full
 #' Monte Carlo simulation (e.g., remove files and folders which contained bugs/biased results).
 #'
 #' @param generate_data logical; remove the \code{.rds} data-set files
@@ -10,7 +10,7 @@
 #' @param results logical; remove the \code{.rds} results files
 #'   saved when passing \code{save_results = TRUE}?
 #'
-#' @param seeds logical; remove the \code{.rds} seed files
+#' @param seeds logical; remove the seed files
 #'   saved when passing \code{save_seeds = TRUE}?
 #'
 #' @param temp logical; remove the temporary file saved when passing \code{save = TRUE}?
