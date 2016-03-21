@@ -4,6 +4,10 @@
 #' by \code{\link{runSimulation}} but should be removed before beginning the full
 #' Monte Carlo simulation (e.g., remove files and folders which contained bugs/biased results).
 #'
+#' @param ... one or more character objects indicating which files to remove. Used to remove
+#'   \code{.rds} files which were saved with \code{\link{saveRDS}} or when using the \code{save}
+#'   and \code{filename} inputs to \code{\link{runSimulation}}
+#'
 #' @param generate_data logical; remove the \code{.rds} data-set files
 #'   saved when passing \code{save_generate_data = TRUE}?
 #'
@@ -25,6 +29,9 @@
 #' @examples
 #' \dontrun{
 #'
+#' # remove file called 'results.rds'
+#' SimClean('results.rds')
+#'
 #' # remove default temp file
 #' SimClean(temp = TRUE)
 #'
@@ -35,10 +42,8 @@
 #' SimClean(results = TRUE, save_details = list(save_results_dirname = 'mydir'))
 #'
 #' }
-SimClean <- function(generate_data = FALSE, results = FALSE, seeds = FALSE, temp = FALSE,
+SimClean <- function(..., generate_data = FALSE, results = FALSE, seeds = FALSE, temp = FALSE,
                      save_details = list()){
-    if(!any(generate_data, results, temp, seeds))
-        stop('None of the saved objects/directories have been selected for removal')
     compname <- save_details$compname; tmpfilename <- save_details$tempfilename
     save_results_dirname <- save_details$save_results_dirname
     save_seeds_dirname <- save_details$save_seeds_dirname
@@ -50,6 +55,8 @@ SimClean <- function(generate_data = FALSE, results = FALSE, seeds = FALSE, temp
         save_results_dirname <- paste0('SimDesign-results_', compname)
     if(is.null(save_generate_data_dirname))
         save_generate_data_dirname <- paste0('SimDesign-generate-data_', compname)
+    files <- list(...)
+    if(length(files)) file.remove(...)
     if(is.null(save_seeds_dirname)) save_seeds_dirname <- paste0('SimDesign-seeds_', compname)
     if(generate_data) unlink(save_generate_data_dirname, recursive = TRUE, force = TRUE)
     if(results) unlink(save_results_dirname, recursive = TRUE, force = TRUE)

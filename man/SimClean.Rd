@@ -4,10 +4,14 @@
 \alias{SimClean}
 \title{Removes/cleans files and folders that have been saved}
 \usage{
-SimClean(generate_data = FALSE, results = FALSE, seeds = FALSE,
+SimClean(..., generate_data = FALSE, results = FALSE, seeds = FALSE,
   temp = FALSE, save_details = list())
 }
 \arguments{
+\item{...}{one or more character objects indicating which files to remove. Used to remove
+\code{.rds} files which were saved with \code{\link{saveRDS}} or when using the \code{save}
+and \code{filename} inputs to \code{\link{runSimulation}}}
+
 \item{generate_data}{logical; remove the \code{.rds} data-set files
 saved when passing \code{save_generate_data = TRUE}?}
 
@@ -29,6 +33,9 @@ Monte Carlo simulation (e.g., remove files and folders which contained bugs/bias
 }
 \examples{
 \dontrun{
+
+# remove file called 'results.rds'
+SimClean('results.rds')
 
 # remove default temp file
 SimClean(temp = TRUE)

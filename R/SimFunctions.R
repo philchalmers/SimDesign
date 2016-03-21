@@ -82,6 +82,10 @@ SimFunctions <- function(filename = NULL, comments = TRUE, singlefile = FALSE){
     }
 
     #main
+    if(!is.null(filename)){
+        if(file.exists(paste0(filename, '.R')))
+            stop('File already exists! Please rename input or rename/remve existing files', call.=FALSE)
+    }
     if(is.null(filename) || singlefile){
         if(singlefile)
             if(!is.null(filename)) sink(paste0(filename, '.R'))
