@@ -3,11 +3,11 @@
 #' This function runs a Monte Carlo simulation study given a set of predefined simulation functions,
 #' design conditions, and number of replications. Results can be saved as temporary files in case of interruptions
 #' and may be restored by re-running \code{runSimulation}, provided that the respective temp
-#' file can be found in the working directory. \code{runSimulation} supports parallel 
+#' file can be found in the working directory. \code{runSimulation} supports parallel
 #' and cluster computing, global and local debugging, error handling (including fail-safe
 #' stopping when functions fail too often, even across nodes), and tracking of error and warning messages.
 #' For convenience, all functions available in the R workspace are exported across all computational nodes
-#' so that they are more easily accessible (however, all other R objects are not and must be passed to the 
+#' so that they are more easily accessible (however, all other R objects are not and must be passed to the
 #' \code{fixed_objects} input).
 #'
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
@@ -46,11 +46,11 @@
 #' hard-disk by passing the appropriate flags. For longer simulations
 #' it is recommended to use \code{save = TRUE} to temporarily save the
 #' simulation state and \code{save_results} flag to write the analysis results
-#' the to hard-disc. The generated data can be saved by passing 
-#' \code{save_generate_data =TRUE}, however it is often more memory efficient to use the 
+#' the to hard-disc. The generated data can be saved by passing
+#' \code{save_generate_data =TRUE}, however it is often more memory efficient to use the
 #' \code{save_seeds} option instead to only save R's \code{.Random.seed} state instead (still
-#' allowing for complete reproducibility). Finally, when the Monte Carlo simulation is complete 
-#' it is recommended to write the results to a hard-drive as well, particularly with the 
+#' allowing for complete reproducibility). Finally, when the Monte Carlo simulation is complete
+#' it is recommended to write the results to a hard-drive as well, particularly with the
 #' \code{\link{saveRDS}} function (for reasons that are more obvious in the parallel computation
 #' descriptions below).
 #'
@@ -242,7 +242,7 @@
 #'   located in the defined \code{save_generate_data_dirname} directory/folder?
 #'   It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
 #'   a large amount of disk space, and by and large saving data is not required or recommended for simulations.
-#'   A more space-friendly version is available when using the \code{save_seed} flag. 
+#'   A more space-friendly version is available when using the \code{save_seed} flag.
 #'   Finally, when set to \code{TRUE} the \code{save} flag will also be set to \code{TRUE} to better track
 #'   the save-state. Default is \code{FALSE}
 #'
@@ -333,11 +333,11 @@
 #'
 #' @param verbose logical; print messages to the R console? Default is \code{TRUE}
 #'
-#'
 #' @return a \code{data.frame} (also of class \code{'SimDesign'})
 #'   with the original \code{design} conditions in the left-most columns,
-#'   simulation results in the middle columns, additional information (such as REPLICATIONS and SIM_TIME),
-#'   to the right of the results, and ERROR/WARNING's in the right-most columns
+#'   simulation results and ERROR/WARNING's (if applicable) in the middle columns,
+#'   and additional information (such as REPLICATIONS, SIM_TIME, and SEEDS) in the right-most
+#'   columns.
 #'
 #' @aliases runSimulation
 #'
@@ -540,9 +540,9 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, parallel = FALSE, packages = NULL,
                           ncores = parallel::detectCores(), MPI = FALSE,
-                          save = FALSE, save_results = FALSE, save_seeds = FALSE,                          
+                          save = FALSE, save_results = FALSE, save_seeds = FALSE,
                           filename = NULL, load_seed = NULL, max_errors = 50, as.factor = TRUE,
-                          cl = NULL, seed = NULL, save_details = list(), 
+                          cl = NULL, seed = NULL, save_details = list(),
                           save_generate_data = FALSE, edit = 'none', verbose = TRUE)
 {
     stopifnot(!missing(generate) || !missing(analyse) || !missing(summarise))
