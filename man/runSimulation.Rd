@@ -7,10 +7,10 @@
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, parallel = FALSE, packages = NULL,
   ncores = parallel::detectCores(), MPI = FALSE, save = FALSE,
-  save_results = FALSE, save_seeds = FALSE, save_generate_data = FALSE,
-  filename = NULL, load_seed = NULL, max_errors = 50, as.factor = TRUE,
-  cl = NULL, seed = NULL, save_details = list(), edit = "none",
-  verbose = TRUE)
+  save_results = FALSE, save_seeds = FALSE, filename = NULL,
+  load_seed = NULL, max_errors = 50, as.factor = TRUE, cl = NULL,
+  seed = NULL, save_details = list(), save_generate_data = FALSE,
+  edit = "none", verbose = TRUE)
 }
 \arguments{
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
@@ -77,15 +77,6 @@ condition. Primarily, this is useful for completely replicating any cell in the 
 especially when tracking down hard-to-find errors and bugs. As well, see the \code{load_seed} input
 to load a given \code{.Random.seed} to exactly replicate the generated data and analysis state (handy
 for debugging). Default is \code{FALSE}}
-
-\item{save_generate_data}{logical; save the data returned from \code{\link{Generate}} to external \code{.rds} files
-located in the defined \code{save_generate_data_dirname} directory/folder?
-It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
-a large amount of disk space, and by and large saving data is not required or recommended for simulations.
-When \code{TRUE} the \code{save} flag will also be set to \code{TRUE} to better track
-the save-state. However, in pilot studies saving the data files may be useful for debugging
-purposes (in which case the objects can be arbitrarily read in and re-analyzed).
-Default is \code{FALSE}}
 
 \item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to.
 When \code{NULL} the final simulation object is not saved to the drive. As well,
@@ -157,6 +148,14 @@ Default is \code{NULL}, indicating that no seed is set for each condition}
 
   }}
 
+\item{save_generate_data}{logical; save the data returned from \code{\link{Generate}} to external \code{.rds} files
+located in the defined \code{save_generate_data_dirname} directory/folder?
+It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
+a large amount of disk space, and by and large saving data is not required or recommended for simulations.
+A more space-friendly version is available when using the \code{save_seed} flag. 
+Finally, when set to \code{TRUE} the \code{save} flag will also be set to \code{TRUE} to better track
+the save-state. Default is \code{FALSE}}
+
 \item{edit}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
   General options are \code{'none'} (default) and \code{'all'}, which are used
   to disable debugging and to debug all the user defined functions, respectively.
@@ -180,14 +179,12 @@ a \code{data.frame} (also of class \code{'SimDesign'})
 This function runs a Monte Carlo simulation study given a set of predefined simulation functions,
 design conditions, and number of replications. Results can be saved as temporary files in case of interruptions
 and may be restored by re-running \code{runSimulation}, provided that the respective temp
-file can be found in the working directory. To conserve RAM, temporary objects (such as
-data generated across conditions and replications) are discarded; however, these can be saved to the
-hard-disk by passing the appropriate flags. For longer simulations
-it is recommended to use \code{save = TRUE} to temporarily save the
-simulation state and also use the \code{save_results} flag to write the analysis results
-the to hard-disc. \code{runSimulation} supports parallel and cluster computing,
-global and local debugging, error handling (including fail-safe
+file can be found in the working directory. \code{runSimulation} supports parallel 
+and cluster computing, global and local debugging, error handling (including fail-safe
 stopping when functions fail too often, even across nodes), and tracking of error and warning messages.
+For convenience, all functions available in the R workspace are exported across all computational nodes
+so that they are more easily accessible (however, all other R objects are not and must be passed to the 
+\code{fixed_objects} input).
 }
 \details{
 The strategy for organizing the Monte Carlo simulation work-flow is to
@@ -220,6 +217,19 @@ all the Monte Carlo replications for each respective design condition, \code{SEE
 was used, columns containing the number of replications which had to be re-run due to errors (where the error messages
 represent the names of the columns prefixed with a \code{ERROR:} string), and
 columns containing the number of warnings prefixed with a \code{WARNING:} string.
+
+To conserve RAM, temporary objects (such as
+data generated across conditions and replications) are discarded; however, these can be saved to the
+hard-disk by passing the appropriate flags. For longer simulations
+it is recommended to use \code{save = TRUE} to temporarily save the
+simulation state and \code{save_results} flag to write the analysis results
+the to hard-disc. The generated data can be saved by passing 
+\code{save_generate_data =TRUE}, however it is often more memory efficient to use the 
+\code{save_seeds} option instead to only save R's \code{.Random.seed} state instead (still
+allowing for complete reproducibility). Finally, when the Monte Carlo simulation is complete 
+it is recommended to write the results to a hard-drive as well, particularly with the 
+\code{\link{saveRDS}} function (for reasons that are more obvious in the parallel computation
+descriptions below).
 
 Additional examples, presentation files, and tutorials can be found on the package wiki located at
 \url{https://github.com/philchalmers/SimDesign/wiki}.
