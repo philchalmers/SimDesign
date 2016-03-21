@@ -17,22 +17,26 @@
 #'   to help stabalize the proportion-based summary statistics when computing the parameters and
 #'   effect sizes
 #'
+#' @param subset an optional argument to be passed to \code{\link{subset}} with the same name. Used to
+#'   subset the results object while preserving the associated attributes
+#'
 #' @aliases SimAnova
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #'
-#' # Given 'Final' object from runSimulation() example, inspect 2 way interactions
-#' SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
-#'     Final)
+#' data(BF_sim)
+#'
+#' # all results (not usually good to mix Power and Type I results together)
+#' SimAnova(alpha.05.F ~ (groups_equal + distribution)^2, BF_sim)
+#'
+#' # only use anova for Type I error conditions
+#' SimAnova(alpha.05.F ~ (groups_equal + distribution)^2, BF_sim, subset = var_ratio == 1)
 #'
 #' # run all DVs at once using the same formula
-#' SimAnova(~  group_size_ratio*standard_deviation_ratio, Final)
+#' SimAnova(~ groups_equal * distribution, BF_sim, subset = var_ratio == 1)
 #'
-#' }
-#'
-SimAnova <- function(formula, dat, rates = TRUE){
+SimAnova <- function(formula, dat, subset = NULL, rates = TRUE){
 
     # function borrowed and edited from lrs::etaSquared. Feb 29, 2016
     etaSquared <- function (x)
@@ -80,11 +84,13 @@ SimAnova <- function(formula, dat, rates = TRUE){
         return(E)
     }
 
-    # lst <- lapply(as.list(formula), as.character)
-    # if(any(sapply(lst, function(x) all(x == '.')))){
-    #     new <- as.formula(paste0('~', paste0(attr(dat, 'design_names')$design, collapse = '*')))
-    #     formula <- update.formula(formula, new)
-    # }
+    if(!missing(subset)){
+        atts <- attr(dat, 'design_names')
+        e <- substitute(subset)
+        r <- eval(e, dat, parent.frame())
+        dat <- dat[r, , drop=FALSE]
+        attr(dat, 'design_names') <- atts
+    }
     if(length(as.list(formula)) == 2L){
         ys <- attributes(dat)$design_names$sim
         ret <- vector('list', length(ys))

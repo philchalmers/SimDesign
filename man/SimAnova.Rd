@@ -4,7 +4,7 @@
 \alias{SimAnova}
 \title{Function for decomposing the simulation into ANOVA-based effect sizes}
 \usage{
-SimAnova(formula, dat, rates = TRUE)
+SimAnova(formula, dat, subset = NULL, rates = TRUE)
 }
 \arguments{
 \item{formula}{an R formula generally of a form suitable for \code{\link{lm}} or
@@ -13,6 +13,9 @@ then all the dependent variables in the simulation will be used and the result w
 a list of analyses}
 
 \item{dat}{an object returned from \code{\link{runSimulation}} of class \code{'SimDesign'}}
+
+\item{subset}{an optional argument to be passed to \code{\link{subset}} with the same name. Used to
+subset the results object while preserving the associated attributes}
 
 \item{rates}{logical; does the dependent variable consist of rates (e.g., returned from
 \code{\link{ECR}} or \code{\link{EDR}})? Default is TRUE, which will use the logit of the DV
@@ -26,16 +29,17 @@ indications of observable simulation effects, therefore these ANOVA-based result
 as exploratory rather than inferential tools.
 }
 \examples{
-\dontrun{
 
-# Given 'Final' object from runSimulation() example, inspect 2 way interactions
-SimAnova(lessthan.05.welch ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2,
-    Final)
+data(BF_sim)
+
+# all results (not usually good to mix Power and Type I results together)
+SimAnova(alpha.05.F ~ (groups_equal + distribution)^2, BF_sim)
+
+# only use anova for Type I error conditions
+SimAnova(alpha.05.F ~ (groups_equal + distribution)^2, BF_sim, subset = var_ratio == 1)
 
 # run all DVs at once using the same formula
-SimAnova(~  group_size_ratio*standard_deviation_ratio, Final)
-
-}
+SimAnova(~ groups_equal * distribution, BF_sim, subset = var_ratio == 1)
 
 }
 
