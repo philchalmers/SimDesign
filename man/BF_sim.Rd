@@ -16,6 +16,9 @@ simulation. Code for this simulation is available of the wiki
 \dontrun{
 data(BF_sim)
 head(BF_sim)
+
+#Type I errors
+subset(BF_sim, var_ratio == 1)
 }
 }
 \author{

@@ -16,6 +16,9 @@ Code for this simulation is available on the wiki (\url{https://github.com/philc
 \dontrun{
 data(BF_sim_alternative)
 head(BF_sim_alternative)
+
+#' #Type I errors
+subset(BF_sim_alternative, var_ratio == 1)
 }
 }
 \author{

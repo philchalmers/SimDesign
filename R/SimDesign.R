@@ -40,6 +40,9 @@ NULL
 #' \dontrun{
 #' data(BF_sim)
 #' head(BF_sim)
+#'
+#' #Type I errors
+#' subset(BF_sim, var_ratio == 1)
 #' }
 NULL
 
@@ -63,5 +66,8 @@ NULL
 #' \dontrun{
 #' data(BF_sim_alternative)
 #' head(BF_sim_alternative)
+#'
+#' #' #Type I errors
+#' subset(BF_sim_alternative, var_ratio == 1)
 #' }
 NULL
