@@ -18,3 +18,50 @@
 #' @importFrom utils recover
 #' @keywords package
 NULL
+
+
+#' Example simulation from Brown and Forsythe (1974)
+#'
+#' Example results from the Brown and Forsythe (1974) article on robust estimators for
+#' variance ratio tests. Statistical tests are organized by columns and the unique design conditoins
+#' are organized by rows. See \code{\link{BF_sim_alternative}} for an alternative form of the same
+#' simulation. Code for this simulation is available of the wiki
+#' (\url{https://github.com/philchalmers/SimDesign/wiki}).
+#'
+#' @name BF_sim
+#' @docType data
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#' @references
+#' Brown, M. B. and Forsythe, A. B. (1974). Robust tests for the equality of variances.
+#'   \emph{Journal of the American Statistical Association, 69}(346), 364--367.
+#' @keywords data
+#' @examples
+#'
+#' \dontrun{
+#' data(BF_sim)
+#' head(BF_sim)
+#' }
+NULL
+
+#' (Alternative) Example simulation from Brown and Forsythe (1974)
+#'
+#' Example results from the Brown and Forsythe (1974) article on robust estimators for
+#' variance ratio tests. Statistical tests and distributions are organized by columns
+#' and the unique design conditoins are organized by rows. See \code{\link{BF_sim}} for an alternative
+#' form of the same simulation where distributions are also included in the rows.
+#' Code for this simulation is available on the wiki (\url{https://github.com/philchalmers/SimDesign/wiki}).
+#'
+#' @name BF_sim_alternative
+#' @docType data
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#' @references
+#' Brown, M. B. and Forsythe, A. B. (1974). Robust tests for the equality of variances.
+#'   \emph{Journal of the American Statistical Association, 69}(346), 364--367.
+#' @keywords data
+#' @examples
+#'
+#' \dontrun{
+#' data(BF_sim_alternative)
+#' head(BF_sim_alternative)
+#' }
+NULL
