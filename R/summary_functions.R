@@ -312,6 +312,11 @@ EDR <- function(p, alpha = .05){
 #'
 #' @param parameter a numeric scalar indicating the fixed parameter value
 #'
+#' @param tails logical; when TRUE returns a vector of length 2 to indicate the proportion of times
+#'   the parameter was lower or higher than the supplied interval, respectively. This is mainly only
+#'   useful when the coverage region is not expected to be symmetric, and therefore is generally not
+#'   required. Note that \code{1 - sum(ECR(CIs, parameter, tails=TRUE)) == ECR(CIs, parameter)}
+#'
 #' @aliases ECR
 #'
 #' @seealso \code{\link{EDR}}
@@ -327,13 +332,15 @@ EDR <- function(p, alpha = .05){
 #' }
 #'
 #' ECR(CIs, 0)
+#' ECR(CIs, 0, tails = TRUE)
 #'
 #' # single vector input
 #' CI <- c(-1, 1)
 #' ECR(CI, 0)
 #' ECR(CI, 2)
+#' ECR(CI, 2, tails = TRUE)
 #'
-ECR <- function(CIs, parameter){
+ECR <- function(CIs, parameter, tails = FALSE){
     if(length(CIs) == 2L) CIs <- matrix(CIs, 1L, 2L)
     stopifnot(is.matrix(CIs))
     stopifnot(length(parameter) == 1L)
@@ -341,6 +348,9 @@ ECR <- function(CIs, parameter){
         warning('First column not less than second. Temporarily switching')
         CIs <- cbind(CIs[,2L], CIs[,1L])
     }
-    mean(CIs[,1L] <= parameter & parameter <= CIs[,2L])
+    ret <- if(tails){
+        c(mean(CIs[,1L] >= parameter), mean(parameter >= CIs[,2L]))
+    } else mean(CIs[,1L] <= parameter & parameter <= CIs[,2L])
+    ret
 }
 

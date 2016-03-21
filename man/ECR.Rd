@@ -4,7 +4,7 @@
 \alias{ECR}
 \title{Compute the empirical coverage rate for Type I errors and Power}
 \usage{
-ECR(CIs, parameter)
+ECR(CIs, parameter, tails = FALSE)
 }
 \arguments{
 \item{CIs}{a \code{numeric} vector or \code{matrix} of confidence interval values for a
@@ -14,6 +14,11 @@ vector of length 2 is passed instead then the returned value will be either a 1 
 whether the parameter value was or was not within the interval, respectively}
 
 \item{parameter}{a numeric scalar indicating the fixed parameter value}
+
+\item{tails}{logical; when TRUE returns a vector of length 2 to indicate the proportion of times
+the parameter was lower or higher than the supplied interval, respectively. This is mainly only
+useful when the coverage region is not expected to be symmetric, and therefore is generally not
+required. Note that \code{1 - sum(ECR(CIs, parameter, tails=TRUE)) == ECR(CIs, parameter)}}
 }
 \description{
 Computes the detection rate for determining empirical Type I error and power rates using information
@@ -29,11 +34,13 @@ for(i in 1:100){
 }
 
 ECR(CIs, 0)
+ECR(CIs, 0, tails = TRUE)
 
 # single vector input
 CI <- c(-1, 1)
 ECR(CI, 0)
 ECR(CI, 2)
+ECR(CI, 2, tails = TRUE)
 
 }
 \seealso{
