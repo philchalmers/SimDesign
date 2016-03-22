@@ -12,9 +12,8 @@
 #' @docType package
 #' @title Structure for Organizing Monte Carlo Simulation Designs
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
-#' @import foreach methods parallel
+#' @import foreach methods parallel stats
 #' @importFrom plyr rbind.fill
-#' @importFrom stats na.omit sd
 #' @importFrom utils recover
 #' @keywords package
 NULL
