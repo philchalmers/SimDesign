@@ -76,6 +76,18 @@ test_that('SimDesign', {
                            replications = parallel::detectCores(), parallel=TRUE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
+    #seeds
+    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
+                           replications = parallel::detectCores(), parallel=TRUE, save=FALSE, verbose = FALSE)
+    Final2 <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
+                           replications = parallel::detectCores(), parallel=TRUE, save=FALSE, verbose = FALSE)
+    expect_equal(Final$bias.random_number, Final2$bias.random_number, tolerance=1e-6)
+    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
+                           replications = parallel::detectCores(), parallel=FALSE, save=FALSE, verbose = FALSE)
+    Final2 <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
+                            replications = parallel::detectCores(), parallel=FALSE, save=FALSE, verbose = FALSE)
+    expect_equal(Final$bias.random_number, Final2$bias.random_number, tolerance=1e-6)
+
     # aggregate test
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, filename='file',
                            replications = 2, parallel=FALSE, save=TRUE, verbose = FALSE)
