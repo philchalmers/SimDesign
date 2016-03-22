@@ -349,7 +349,7 @@ ECR <- function(CIs, parameter, tails = FALSE){
         CIs <- cbind(CIs[,2L], CIs[,1L])
     }
     ret <- if(tails){
-        c(mean(CIs[,1L] >= parameter), mean(parameter >= CIs[,2L]))
+        c(mean(CIs[,1L] > parameter), mean(parameter > CIs[,2L]))
     } else mean(CIs[,1L] <= parameter & parameter <= CIs[,2L])
     ret
 }
