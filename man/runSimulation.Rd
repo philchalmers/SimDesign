@@ -2,6 +2,7 @@
 % Please edit documentation in R/runSimulation.R
 \name{runSimulation}
 \alias{runSimulation}
+\alias{summary.SimDesign}
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
@@ -11,6 +12,8 @@ runSimulation(design, replications, generate, analyse, summarise,
   max_errors = 50, as.factor = TRUE, cl = NULL, seed = NULL,
   filename = NULL, save_details = list(), save_generate_data = FALSE,
   edit = "none", verbose = TRUE)
+
+\method{summary}{SimDesign}(object, ...)
 }
 \arguments{
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
@@ -168,6 +171,8 @@ the save-state. Default is \code{FALSE}}
   when a \code{browser()} is detected)}
 
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
+
+\item{object}{SimDesign object returned from \code{\link{runSimulation}}}
 }
 \value{
 a \code{data.frame} (also of class \code{'SimDesign'})

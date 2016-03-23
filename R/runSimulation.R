@@ -743,6 +743,17 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!is.null(seed)) en <- c(en, 'SEED')
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen))]
     attr(Final, 'design_names') <- list(design=dn, sim=sn, extra=en, errors=ten, warnings=wen)
+    if(length(packages) > 1L){
+        pack <- packages[packages != 'SimDesign']
+        versions <- character(length(pack))
+        for(i in 1:length(pack))
+            versions[i] <- as.character(packageVersion(pack[i]))
+        pack_vers <- data.frame(packages=pack, versions=versions)
+    } else pack_vers <- NULL
+    attr(Final, 'extra_info') <- list(sessionInfo = sessionInfo(), packages=pack_vers,
+                                      ncores = if(parallel) length(cl) else if(MPI) NA else 1,
+                                      number_of_conditions = nrow(design),
+                                      date_completed = date(), total_elapsed_time = sum(Final$SIM_TIME))
     if(!is.null(filename)){ #save file
         if(verbose)
             message(paste('\nSaving simulation results to file:', filename))
@@ -750,4 +761,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(save || save_results || save_generate_data || save_seeds) file.remove(tmpfilename)
     return(Final)
+}
+
+#' @rdname runSimulation
+#' @param object SimDesign object returned from \code{\link{runSimulation}}
+#' @param ... additional arguments
+#' @export
+summary.SimDesign <- function(object, ...){
+    ret <- attr(object, 'extra_info')
+    ret
 }
