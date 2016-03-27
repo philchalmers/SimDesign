@@ -173,6 +173,8 @@ the save-state. Default is \code{FALSE}}
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 
 \item{object}{SimDesign object returned from \code{\link{runSimulation}}}
+
+\item{...}{additional arguments}
 }
 \value{
 a \code{data.frame} (also of class \code{'SimDesign'})
