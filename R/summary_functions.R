@@ -86,7 +86,10 @@ bias <- function(estimate, parameter = NULL, relative = FALSE){
 #' @param type type of deviation to compute. Can be \code{'RMSE'} (default) for the root mean square-error,
 #'   \code{'NRMSE'} for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
 #'   \code{'NRMSE_SD'} for the normalized RMSE with the standard deviation (RMSE / sd(estimate)),
-#'   or \code{'CV'} for the coefficient of variation
+#'   \code{'CV'} for the coefficient of variation, or \code{'RMSLE'} for the root mean-square log-error
+#'
+#' @param MSE logical; return the mean square error equivalent of the results instead of the root
+#'   mean-square error (in other words, the result is squred)? Default is \code{FALSE}
 #'
 #' @return returns a \code{numeric} vector indicating the overall average deviation in the estimates
 #'
@@ -111,6 +114,7 @@ bias <- function(estimate, parameter = NULL, relative = FALSE){
 #' RMSE(dev, type = 'NRMSE')
 #' RMSE(dev, pop, type = 'NRMSE_SD')
 #' RMSE(samp, pop, type = 'CV')
+#' RMSE(samp, pop, type = 'RMSLE')
 #'
 #' # matrix input
 #' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
@@ -120,7 +124,7 @@ bias <- function(estimate, parameter = NULL, relative = FALSE){
 #' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 #' RMSE(df, parameter = c(2,2))
 #'
-RMSE <- function(estimate, parameter = NULL, type = 'RMSE'){
+RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
     if(is.vector(estimate)){
         nms <- names(estimate)
         estimate <- matrix(estimate)
@@ -140,7 +144,11 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE'){
         ret <- ret / diff
     } else if(type == 'CV'){
         ret <- ret / colMeans(estimate)
-    }
+    } else if(type == 'RMSLE'){
+        ret <- sqrt(colMeans(t(t(log(estimate + 1)) - log(parameter + 1))^2))
+    } else if(type != 'RMSE')
+        stop('type argument not supported')
+    if(!MSE) ret <- ret^2
     ret
 }
 
