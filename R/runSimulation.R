@@ -601,8 +601,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         tmp <- deparse(substitute(Functions[[i]]))
         if(any(grepl('browser\\(', tmp))){
             if(verbose && parallel)
-                message('A browser() call was detected. Parallel processing will be disabled while visible')
-            parallel <- MPI <- FALSE
+                message('A browser() call was detected.
+                        Parallel processing/object saving will be disabled while visible')
+            save <- save_results <- save_generate_data <- save_seeds <- parallel <- MPI <- FALSE
         }
     }
     if(!is.data.frame(design))
@@ -614,6 +615,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(is.null(design$ID)){
         design <- data.frame(ID=1L:nrow(design), design)
     } else stopifnot(length(unique(design$ID)) == nrow(design))
+    if(edit != 'none')
+        save <- save_results <- save_generate_data <- save_seeds <- FALSE
     if(edit != 'none' && edit != 'summarise'){
         parallel <- MPI <- FALSE
         if(edit == 'recover'){
