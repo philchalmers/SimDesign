@@ -657,8 +657,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(save_results){
         save <- TRUE
         if(safe && dir.exists(save_results_dirname) && !file.exists(tmpfilename))
-            stop(save_results_dirname, ' directory already exists. ',
-                    'Please fix by modifying the save_results_dirname input.', call.=FALSE)
+            if(length(dir(save_results_dirname)))
+                stop(save_results_dirname, ' directory already exists. ',
+                        'Please fix by modifying the save_results_dirname input.', call.=FALSE)
         dir.create(save_results_dirname, showWarnings = !file.exists(tmpfilename))
     }
     if(save_seeds){
