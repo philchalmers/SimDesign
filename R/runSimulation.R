@@ -768,6 +768,37 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
 }
 
 #' @rdname runSimulation
+#' @param x SimDesign object returned from \code{\link{runSimulation}}
+#' @param errors logical; print the errors (if applicable)? Default is \code{TRUE}
+#' @param warnings logical; print the warnings (if applicable)? Default is \code{TRUE}
+#' @param reps logical; print the replications?
+#' @param time logical; print the SIM_TIME?
+#' @export
+print.SimDesign <- function(x, errors = TRUE, warnings = TRUE, reps = TRUE, time = TRUE, ...){
+    att <- attr(x, 'design_names')
+    if(!errors) x <- x[,!(names(x) %in% att$errors), drop=FALSE]
+    if(!warnings) x <- x[,!(names(x) %in% att$warnings), drop=FALSE]
+    if(!time) x$SIM_TIME <- NULL
+    if(!reps) x$REPLICATIONS <- NULL
+    class(x) <- 'data.frame'
+    x
+}
+
+#' @rdname runSimulation
+#' @export
+head.SimDesign <- function(x, ...){
+    x <- print(x, ...)
+    head(x, ...)
+}
+
+#' @rdname runSimulation
+#' @export
+tail.SimDesign <- function(x, ...){
+    x <- print(x, ...)
+    tail(x, ...)
+}
+
+#' @rdname runSimulation
 #' @param object SimDesign object returned from \code{\link{runSimulation}}
 #' @param ... additional arguments
 #' @export
