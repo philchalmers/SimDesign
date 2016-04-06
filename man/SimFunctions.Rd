@@ -7,7 +7,7 @@
 \usage{
 SimFunctions(filename = NULL, comments = FALSE, singlefile = FALSE)
 
-SimDesign_functions(filename = NULL, comments = TRUE, singlefile = FALSE)
+SimDesign_functions(filename = NULL, comments = FALSE, singlefile = FALSE)
 }
 \arguments{
 \item{filename}{a character vector indicating whether the output should be saved to two respective files

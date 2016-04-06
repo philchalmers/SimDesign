@@ -107,5 +107,5 @@ SimFunctions <- function(filename = NULL, comments = FALSE, singlefile = FALSE){
 
 #' @rdname SimFunctions
 #' @export
-SimDesign_functions <- function(filename = NULL, comments = TRUE, singlefile = FALSE)
+SimDesign_functions <- function(filename = NULL, comments = FALSE, singlefile = FALSE)
     .Deprecated('SimFunctions')
