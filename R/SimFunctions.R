@@ -12,7 +12,7 @@
 #'   containing the simulation design and the functional components, respectively. Using this option
 #'   is generally the recommended approach when beginning to write a Monte Carlo simulation
 #'
-#' @param comments logical; include helpful comments? Default is \code{TRUE}
+#' @param comments logical; include helpful comments? Default is \code{FALSE}
 #'
 #' @param singlefile logical; when \code{filename} is included, put output in one files? When \code{FALSE} the
 #'   output is saved to two separate files containing the functions and design definitions. Default is
@@ -25,18 +25,18 @@
 #' @examples
 #'
 #' SimFunctions()
-#' SimFunctions(comments=FALSE) #without comments
+#' SimFunctions(comments = TRUE) #with helpful comments
 #'
 #'\dontrun{
 #'
-#' # write output to two files
-#' SimFunctions('mysim')
+#' # write output to two files and include helpful comments
+#' SimFunctions('mysim', comments = TRUE)
 #'
 #' # write output files to a single file without comments
-#' SimFunctions('mysim', comments = FALSE, singlefile = TRUE)
+#' SimFunctions('mysim', singlefile = TRUE)
 #' }
 #'
-SimFunctions <- function(filename = NULL, comments = TRUE, singlefile = FALSE){
+SimFunctions <- function(filename = NULL, comments = FALSE, singlefile = FALSE){
     LINE <- function()
         cat('#-------------------------------------------------------------------\n')
     HEAD <- function(){
