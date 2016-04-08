@@ -781,7 +781,7 @@ print.SimDesign <- function(x, errors = TRUE, warnings = TRUE, reps = TRUE, time
     if(!time) x$SIM_TIME <- NULL
     if(!reps) x$REPLICATIONS <- NULL
     class(x) <- 'data.frame'
-    x
+    print(x)
 }
 
 #' @rdname runSimulation
