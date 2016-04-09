@@ -615,10 +615,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(is.null(design$ID)){
         design <- data.frame(ID=1L:nrow(design), design)
     } else stopifnot(length(unique(design$ID)) == nrow(design))
-    if(edit != 'none')
+    if(edit != 'none'){
         save <- save_results <- save_generate_data <- save_seeds <- FALSE
-    if(edit != 'none' && edit != 'summarise'){
-        parallel <- MPI <- FALSE
+        if(!(edit %in% 'summarise')) parallel <- MPI <- FALSE
         if(edit == 'recover'){
             old_recover <- getOption('error')
             options(error = utils::recover)
