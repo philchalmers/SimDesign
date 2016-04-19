@@ -652,6 +652,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(!is.null(Result_list[[1L]]$REPLICATIONS))
             replications <- Result_list[[1L]]$REPLICATIONS
         start <- min(which(sapply(Result_list, is.null)))
+        time0 <- time1 - Result_list[[start-1L]]$SIM_TIME
     }
     if(save_results){
         save <- TRUE
