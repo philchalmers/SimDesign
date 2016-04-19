@@ -48,13 +48,17 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         }
     }
 
-    try_errors <- lapply(cell_results, function(x) attr(x, 'try_errors'))
-    try_errors <- table(do.call(c, try_errors))
+    try_errors <- do.call(c, lapply(cell_results, function(x) attr(x, 'try_errors')))
+    try_errors <- if(length(try_errors)){
+        table(try_errors[!is.na(try_errors)])
+    } else table(try_errors)
     names(try_errors) <-
         gsub('Error in analyse\\(dat = simlist\\$dat, parameters = simlist\\$parameters, condition = condition,  : \\n  ',
              replacement = 'Manual Error : ', names(try_errors))
-    warnings <- lapply(cell_results, function(x) attr(x, 'warnings'))
-    warnings <- table(do.call(c, warnings))
+    warnings <- do.call(c, lapply(cell_results, function(x) attr(x, 'warnings')))
+    warnings <- if(length(warnings)){
+        table(warnings[!is.na(warnings)])
+    } else table(warnings)
     for(i in 1L:length(cell_results))
         attr(cell_results[[i]], 'try_errors') <- attr(cell_results[[i]], 'warnings') <- NULL
 
