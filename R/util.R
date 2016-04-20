@@ -12,3 +12,7 @@ load_packages <- function(packages){
             library(substitute(pack), character.only = TRUE)
     invisible()
 }
+
+get_packages <- function(packages){
+    sapply(packages, function(x) as.character(packageVersion(x)))
+}

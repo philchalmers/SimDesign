@@ -680,6 +680,19 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                  'Please fix by modifying the save_generate_data_dirname input.', call.=FALSE)
         dir.create(save_generate_data_dirname, showWarnings = !file.exists(tmpfilename))
     }
+    if(safe && parallel){
+        # this is great because it also primes the pipes
+        tmp <- packages[packages != 'SimDesign']
+        if(!length(tmp)) tmp <- 'stats'
+        for(i in 1:length(tmp)){
+            packs <- try(table(parallel::parSapply(cl, rep(tmp[i], each=length(cl)*2),
+                                                   get_packages)))
+            if(tmp[i] == 'stats') next
+            if(length(packs) > 1L)
+                message(sprintf('Warning message:\nVersions of %s differ across clusters: %s',
+                                tmp[i], paste0(names(packs), collapse = ', ')))
+        }
+    }
     for(i in start:end){
         stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
         if(verbose)
