@@ -352,7 +352,8 @@ Setup for network computing is generally more straightforward and controlled
 than the setup for MPI jobs in that it only requires the specification of a) the respective
 IP addresses, and b) the user name (if different from the master node's user name. Otherwise only a) is required).
 However, on Linux I have found it is also imporant to include relavent information about the host names
-and IP addresses in the \code{/etc/hosts} file on the master and slave nodes.
+and IP addresses in the \code{/etc/hosts} file on the master and slave nodes, and to ensure that
+the selected port (passed to \code{\makeCluster}) on the master node is not hindered by a firewall.
 
 As an example, using the following code the master node (primary) will spawn 7 slaves and 1 master,
 while a separate computer on the network with the associated IP address will spawn an additional 6 slaves.
