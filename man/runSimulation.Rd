@@ -38,12 +38,11 @@ See \code{\link{Generate}} for details}
 \item{analyse}{user-defined computation function which acts on the data generated from
 \code{\link{Generate}}. See \code{\link{Analyse}} for details}
 
-\item{summarise}{user-defined summary function to be used after all the replications have completed within
-   each \code{design} condition.
-
-   Note that if you only care to save the results from \code{Analyse} then simply have this function return
-   some arbitrary placeholder (e.g., \code{return(c('result'=0))}) and set \code{save_results}
-   to \code{TRUE}. See \code{\link{Summarise}} for details}
+\item{summarise}{(optional but recommended) user-defined summary function to be used
+after all the replications have completed within each \code{design} condition. Ommiting this function
+will return a list of matrices containing only the results returned form \code{\link{Analyse}}.
+Ommiting this function is only recommended for didactic purposes because it leaves out a large amount of
+information and generally is not as flexible internally}
 
 \item{fixed_objects}{(optional) an object (usually a \code{list})
 containing additional user-defined objects
@@ -484,8 +483,13 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
 #### Step 3 --- Collect results by looping over the rows in design
 
 # test to see if it works and for debugging
-Final <- runSimulation(design=Design, replications=5, parallel=FALSE,
+Final <- runSimulation(design=Design, replications=5,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
+
+# didactic demonstration when summarise function is not supplied (returns list of matricies)
+Final2 <- runSimulation(design=Design, replications=5,
+                       generate=Generate, analyse=Analyse)
+print(Final2[1:3])
 
 \dontrun{
 # complete run with 1000 replications per condition
