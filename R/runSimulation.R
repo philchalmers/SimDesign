@@ -581,6 +581,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) results
         summarise_asis <- TRUE
         save_results <- save_generate_data <- FALSE
+        stored_time <- 0
     }
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise)
     stopifnot(!missing(design))
@@ -710,6 +711,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     for(i in start:end){
         if(summarise_asis){
+            if(verbose)
+                cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
+                            round((i-1)/(nrow(design))*100), '%', time1 - time0, sum(stored_time)))
+            time0 <- proc.time()[3]
             Result_list[[i]] <- Analysis(Functions=Functions,
                                          condition=design[i,],
                                          replications=replications,
@@ -723,6 +728,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          save_seeds_dirname=save_seeds_dirname,
                                          max_errors=max_errors, packages=packages,
                                          load_seed=load_seed, export_funs=export_funs)
+            time1 <- proc.time()[3]
+            stored_time <- stored_time + (time1 - time0)
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
@@ -754,6 +761,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         }
     }
     if(summarise_asis){
+        if(verbose)
+            cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
+                        100, '%', time1 - time0, sum(stored_time)))
         design$ID <- NULL
         nms <- colnames(design)
         nms2 <- matrix(character(0), nrow(design), ncol(design))
