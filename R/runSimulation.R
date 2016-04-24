@@ -850,20 +850,22 @@ print.SimDesign <- function(x, errors = TRUE, warnings = TRUE, reps = TRUE, time
     if(!time) x$SIM_TIME <- NULL
     if(!reps) x$REPLICATIONS <- NULL
     class(x) <- 'data.frame'
-    print(x)
+    ldots <- list(...)
+    if(is.null(ldots$print)) print(x)
+    else return(x)
 }
 
 #' @rdname runSimulation
 #' @export
 head.SimDesign <- function(x, ...){
-    class(x) <- 'data.frame'
+    x <- print(x, print = FALSE, ...)
     head(x, ...)
 }
 
 #' @rdname runSimulation
 #' @export
 tail.SimDesign <- function(x, ...){
-    class(x) <- 'data.frame'
+    x <- print(x, print = FALSE, ...)
     tail(x, ...)
 }
 
