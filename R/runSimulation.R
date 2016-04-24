@@ -439,6 +439,7 @@
 #' # test to see if it works and for debugging
 #' Final <- runSimulation(design=Design, replications=5,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
+#' head(Final)
 #'
 #' # didactic demonstration when summarise function is not supplied (returns list of matricies)
 #' Final2 <- runSimulation(design=Design, replications=5,
@@ -855,14 +856,14 @@ print.SimDesign <- function(x, errors = TRUE, warnings = TRUE, reps = TRUE, time
 #' @rdname runSimulation
 #' @export
 head.SimDesign <- function(x, ...){
-    x <- print(x, ...)
+    class(x) <- 'data.frame'
     head(x, ...)
 }
 
 #' @rdname runSimulation
 #' @export
 tail.SimDesign <- function(x, ...){
-    x <- print(x, ...)
+    class(x) <- 'data.frame'
     tail(x, ...)
 }
 

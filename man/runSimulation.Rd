@@ -485,6 +485,7 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
 # test to see if it works and for debugging
 Final <- runSimulation(design=Design, replications=5,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
+head(Final)
 
 # didactic demonstration when summarise function is not supplied (returns list of matricies)
 Final2 <- runSimulation(design=Design, replications=5,
