@@ -18,6 +18,8 @@
 #'   output is saved to two separate files containing the functions and design definitions. Default is
 #'   \code{FALSE}
 #'
+#' @param summarise include \code{summarise} function? Default is \code{TRUE}
+#'
 #' @aliases SimFunctions
 #'
 #' @export SimFunctions
@@ -36,7 +38,7 @@
 #' SimFunctions('mysim', singlefile = TRUE)
 #' }
 #'
-SimFunctions <- function(filename = NULL, comments = FALSE, singlefile = FALSE){
+SimFunctions <- function(filename = NULL, comments = FALSE, singlefile = FALSE, summarise = TRUE){
     LINE <- function()
         cat('#-------------------------------------------------------------------\n')
     HEAD <- function(){
@@ -67,17 +69,20 @@ SimFunctions <- function(filename = NULL, comments = FALSE, singlefile = FALSE){
         if(comments) cat('\n    # Return a named vector or list')
         cat('\n    ret <- c(stat1 = NaN, stat2 = NaN)\n    ret\n}')
         cat('\n\n')
-        cat('Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {')
-        if(comments) cat('\n    # Summarise the simulation results ...\n')
-        if(comments) cat('\n    # Return a named vector of results')
-        cat('\n    ret <- c(bias = NaN, RMSE = NaN)\n    ret\n}\n\n')
+        if(summarise){
+            cat('Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {')
+            if(comments) cat('\n    # Summarise the simulation results ...\n')
+            if(comments) cat('\n    # Return a named vector of results')
+            cat('\n    ret <- c(bias = NaN, RMSE = NaN)\n    ret\n}\n\n')
+        }
     }
 
     TAIL <- function(){
         LINE()
         if(comments) cat('\n### Run the simulation\n')
         cat('\nresults <- runSimulation(design=Design, replications=1000, ')
-        cat('\n    generate=Generate, analyse=Analyse, summarise=Summarise, edit=\'none\')')
+        cat(sprintf('\n    generate=Generate, analyse=Analyse, %sedit=\'none\')',
+                    if(summarise) 'summarise=Summarise, ' else ''))
         cat('\n\n')
     }
 

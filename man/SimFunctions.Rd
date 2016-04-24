@@ -5,7 +5,8 @@
 \alias{SimFunctions}
 \title{Skeleton functions for simulations}
 \usage{
-SimFunctions(filename = NULL, comments = FALSE, singlefile = FALSE)
+SimFunctions(filename = NULL, comments = FALSE, singlefile = FALSE,
+  summarise = TRUE)
 
 SimDesign_functions(filename = NULL, comments = FALSE, singlefile = FALSE)
 }
@@ -19,6 +20,8 @@ is generally the recommended approach when beginning to write a Monte Carlo simu
 \item{singlefile}{logical; when \code{filename} is included, put output in one files? When \code{FALSE} the
 output is saved to two separate files containing the functions and design definitions. Default is
 \code{FALSE}}
+
+\item{summarise}{include \code{summarise} function? Default is \code{TRUE}}
 }
 \description{
 This function prints skeleton versions of the required functions and work-flow required
