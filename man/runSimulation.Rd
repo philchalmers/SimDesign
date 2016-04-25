@@ -40,7 +40,8 @@ See \code{\link{Generate}} for details}
 
 \item{summarise}{(optional but recommended) user-defined summary function to be used
 after all the replications have completed within each \code{design} condition. Ommiting this function
-will return a list of matrices containing only the results returned form \code{\link{Analyse}}.
+will return a list of matrices (or a single matrix, if only one row in \code{design} is supplied)
+containing only the results returned form \code{\link{Analyse}}.
 Ommiting this function is only recommended for didactic purposes because it leaves out a large amount of
 information and generally is not as flexible internally}
 
@@ -491,6 +492,12 @@ head(Final)
 Final2 <- runSimulation(design=Design, replications=5,
                        generate=Generate, analyse=Analyse)
 print(Final2[1:3])
+
+# or a single condition
+Final3 <- runSimulation(design=Design[1, ], replications=5,
+                       generate=Generate, analyse=Analyse)
+Final3
+
 
 \dontrun{
 # complete run with 1000 replications per condition

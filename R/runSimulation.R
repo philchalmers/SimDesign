@@ -201,7 +201,8 @@
 #'
 #' @param summarise (optional but recommended) user-defined summary function to be used
 #'   after all the replications have completed within each \code{design} condition. Ommiting this function
-#'   will return a list of matrices containing only the results returned form \code{\link{Analyse}}.
+#'   will return a list of matrices (or a single matrix, if only one row in \code{design} is supplied)
+#'   containing only the results returned form \code{\link{Analyse}}.
 #'   Ommiting this function is only recommended for didactic purposes because it leaves out a large amount of
 #'   information and generally is not as flexible internally
 #'
@@ -445,6 +446,12 @@
 #' Final2 <- runSimulation(design=Design, replications=5,
 #'                        generate=Generate, analyse=Analyse)
 #' print(Final2[1:3])
+#'
+#' # or a single condition
+#' Final3 <- runSimulation(design=Design[1, ], replications=5,
+#'                        generate=Generate, analyse=Analyse)
+#' Final3
+#'
 #'
 #' \dontrun{
 #' # complete run with 1000 replications per condition
@@ -772,6 +779,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             nms2[,i] <- paste0(nms[i], '=', design[,i], if(i < ncol(design)) '; ')
         nms2 <- apply(nms2, 1, paste0, collapse='')
         names(Result_list) <- nms2
+        if(nrow(design) == 1L) Result_list <- Result_list[[1L]]
         return(Result_list)
     }
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
