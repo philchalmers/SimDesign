@@ -184,8 +184,8 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE, fixed_objects=f
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
 results</code></pre>
 <pre><code>##    N     p REPLICATIONS SIM_TIME
-## 1 10 0.041         1000    0.274
-## 2 20 0.052         1000    0.270
+## 1 10 0.041         1000    0.310
+## 2 20 0.052         1000    0.284
 ## 3 30 0.061         1000    0.279</code></pre>
 <p>By placing objects in a list and passing this to <code>fixed_objects</code>, the objects are safely made available to all relevant functions. Furthermore, running this code in parallel is also valid. Remember, this is only required for R objects NOT user-defined functions.</p>
 <pre class="r"><code>results &lt;- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
@@ -193,9 +193,9 @@ results</code></pre>
                          parallel = TRUE)
 results</code></pre>
 <pre><code>##    N     p REPLICATIONS SIM_TIME
-## 1 10 0.039         1000    0.457
-## 2 20 0.045         1000    0.115
-## 3 30 0.048         1000    0.110</code></pre>
+## 1 10 0.044         1000    0.142
+## 2 20 0.058         1000    0.118
+## 3 30 0.041         1000    0.127</code></pre>
 </div>
 
 
