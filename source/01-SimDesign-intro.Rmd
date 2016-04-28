@@ -64,12 +64,14 @@ design/execution and required user-defined functions, respectively.
 SimFunctions('mysim')
 ```
 
-Alternatively, for smaller simulations you may only want to use one file, and if you'd prefer not to 
-have the default comments included then these can be achieved with the `singlefile` and `comments` arguments, respectively.
+Alternatively, for smaller simulations you may only want to use one file, and if you'd prefer to 
+have helpful comments included then these can be achieved with the `singlefile` and `comments` arguments, respectively.
 
 ```{r eval=FALSE}
-SimFunctions('mysim', singlefile = TRUE, comments = FALSE)
+SimFunctions('mysim', singlefile = TRUE, comments = TRUE)
 ```
+
+Personally, I find keeping the design and functions separate when writing real-world simulations, though there are some other reasons to keep them separate. First, when debugging code (either through the `edit` arguments or by explicitly using `browser()` calls) GUIs such as `Rstudio` are usually better at tracking the debugged functions. As a good amount of your time will initially be spent debugging, it's good to make this as painless as possible. Second, it's easier and more fluid to simply `source()` (keyboard shortcut `ctrl + shift + s`) the file containing functions and not worry that you might accidentally start running your simulation. Finally, the structure is just more readable, especially when you return sometime in the future after you've long forgotten what you've done. In the design file you can describe the simulation study more thoroughly with comments and generally outline the specifics of how the simulation is to be run, while the functions file simply contains the underlying mechanics and cogs required to run the simulation machine. 
 
 # Simulation: Determine estimator efficiency
 
@@ -108,7 +110,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     } else if(dist == 'chi'){
         dat <- rchisq(N, df = 3)
     }
-    return(dat)
+    dat
 }
 ```
 
@@ -124,7 +126,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     med <- median(dat)
     
     ret <- c(mean_no_trim=M0, mean_trim.1=M1, mean_trim.2=M2, median=med)
-    return(ret)
+    ret
 }
 ```
 
@@ -144,7 +146,7 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
     obs_bias <- bias(results, parameter = 3)
     obs_RMSE <- RMSE(results, parameter = 3)
     ret <- c(bias=obs_bias, RMSE=obs_RMSE, RE=RE(obs_RMSE))
-    return(ret)
+    ret
 }
 ```
 
