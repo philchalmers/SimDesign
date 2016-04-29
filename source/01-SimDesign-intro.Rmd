@@ -191,7 +191,7 @@ and `SIM_TIME` indicating
 the time (in seconds) it took to completely finish the respective conditions. A call to `View()` in the 
 R console may also be a nice way to sift through the `results` object.
 
-### Interpret the results
+### Interpreting the results
 
 In this case visually inspecting the simulation table is enough to understand what is occurring, though for
 other Monte Carlo simulations use of ANOVAs, marginalized tables, and graphics should be used to capture the
@@ -215,3 +215,53 @@ population mean. This isn't surprising, because the trimmed mean is after all ma
 population trimmed mean, and the median is making inferences about, well, the median. Only when the
 distributions under investigation are symmetric will the statistics be able to make the same inferences about
 the mean of the population.
+
+# Conceptual walk-through of what runSimulation() is doing
+
+The following is a conceptual breakdown of what `runSimulation()` is actually doing behind the
+scenes. Here we demonstrate the results from the first condition (row 1 of `Design`) to show
+what each function returns. 
+
+A single replication in a Monte Carlo simulation results in the following objects:
+
+```{r, include=FALSE}
+set.seed(1)
+```
+
+```{r}
+(condition <- Design[1, ])
+dat <- Generate(condition)
+dat
+
+res <- Analyse(condition, dat)
+res
+```
+
+We can see here that `Generate()` returns a `numeric` vector which is accepted by `Analyse()`. The `Analyse()` function then completes the analysis portion using the generated data, and returns a 
+named vector with the observed parameter estimates. Of course, this is only a single replication and therefore is not really meaningful in the grand scheme of things, so it must be repeated a number of times.
+
+```{r}
+# repeat 1000x
+results <- matrix(0, 1000, 4)
+colnames(results) <- names(res)
+for(i in 1:1000){
+    dat <- Generate(condition)
+    res <- Analyse(condition, dat)
+    results[i, ] <- res
+}
+head(results)
+```
+
+The matrix stored in `results` contains 1000 parameter estimates returned from each statistic. 
+After this is obtained we can move on to summarising the output through the `Summarise()` function
+to obtain average estimates, their associated sampling error, their efficiency, and so on.
+
+```{r}
+Summarise(condition, results) 
+```
+
+This scheme is then repeated for each row in the `Design` object until the entire simulation study
+is complete. 
+
+Of course, `runSimulation()` does much more than this conceptual outline which is why it exists. Namely, errors and warnings are controlled and tracked, data is re-drawn when needed, parallel processing is supported, debugging is easier with the `edit` input, temporary and full results can be saved to external files, the simulation state can be saved/restored, contains build-in saftey features, and more. The point, however, is that you as the user do not need to be bogged down with the nitty-gritty details of setting up the simulation work-flow/features and instead can focus all your time on the important generate-analyse-summarise steps needed to get your results.
+

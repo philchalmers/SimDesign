@@ -227,11 +227,11 @@ Completed: 0%,   Previous condition time: 0.0,  Total elapsed time: 0.0
 Completed: 12%,   Previous condition time: 0.3,  Total elapsed time: 0.3 
 Completed: 25%,   Previous condition time: 0.3,  Total elapsed time: 0.5 
 Completed: 38%,   Previous condition time: 0.3,  Total elapsed time: 0.8 
-Completed: 50%,   Previous condition time: 0.3,  Total elapsed time: 1.1 
+Completed: 50%,   Previous condition time: 0.3,  Total elapsed time: 1.2 
 Completed: 62%,   Previous condition time: 0.3,  Total elapsed time: 1.4 
-Completed: 75%,   Previous condition time: 0.3,  Total elapsed time: 1.7 
-Completed: 88%,   Previous condition time: 0.3,  Total elapsed time: 2.0 
-Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 2.3</code></pre>
+Completed: 75%,   Previous condition time: 0.3,  Total elapsed time: 1.8 
+Completed: 88%,   Previous condition time: 0.3,  Total elapsed time: 2.1 
+Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 2.4</code></pre>
 <pre class="r"><code>results</code></pre>
 <pre><code>##   sample_size distribution bias.mean_no_trim bias.mean_trim.1
 ## 1          30         norm           0.00082         -0.00018
@@ -262,17 +262,17 @@ Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 2.3</code>
 ## 8           0.2657      0.4259               1           38.2
 ##   RE.mean_trim.2 RE.median REPLICATIONS SIM_TIME
 ## 1            1.3       2.4         1000     0.26
-## 2            1.2       2.3         1000     0.27
-## 3            1.3       2.6         1000     0.28
+## 2            1.2       2.3         1000     0.28
+## 3            1.3       2.6         1000     0.29
 ## 4            1.2       2.3         1000     0.32
-## 5            4.1      10.0         1000     0.28
-## 6            9.2      23.5         1000     0.32
-## 7           30.6      76.0         1000     0.29
-## 8          129.9     333.7         1000     0.33</code></pre>
+## 5            4.1      10.0         1000     0.29
+## 6            9.2      23.5         1000     0.33
+## 7           30.6      76.0         1000     0.30
+## 8          129.9     333.7         1000     0.34</code></pre>
 <p>As can be seen from the printed results, each result from the <code>Summarise()</code> function has been paired with the respective conditions, statistics have been properly named, and two additional columns have been appended to the results: <code>REPLICATIONS</code>, which indicates how many time the conditions were performed, and <code>SIM_TIME</code> indicating the time (in seconds) it took to completely finish the respective conditions. A call to <code>View()</code> in the R console may also be a nice way to sift through the <code>results</code> object.</p>
 </div>
-<div id="interpret-the-results" class="section level3">
-<h3>Interpret the results</h3>
+<div id="interpreting-the-results" class="section level3">
+<h3>Interpreting the results</h3>
 <p>In this case visually inspecting the simulation table is enough to understand what is occurring, though for other Monte Carlo simulations use of ANOVAs, marginalized tables, and graphics should be used to capture the essentially phenomenon in the results. Monte Carlo simulations are just like collecting data for experiments, so be an analyst and present your data as though it were data collected from the real world.</p>
 <p>In this particular simulation, it is readily clear that using the un-adjusted mean will adequately recover the population mean with little bias. The precision also seems to increase as sample sizes increase, which is indicated by the decreasing RMSE statistics. Generally, trimming causes less efficiency in the estimates, where greater amounts of trimming result in even less efficiency, and using the median as a proxy to estimate the mean is the least effective method. This can be seen rather clearly in the following table, which prints the relative efficiency of the estimators:</p>
 <pre class="r"><code>REs &lt;- results[,grepl('RE\\.', colnames(results))]
@@ -297,6 +297,50 @@ data.frame(Design, REs)</code></pre>
 ## 8     333.7</code></pre>
 <p>Finally, when the <span class="math inline">\(\chi^2\)</span> distribution was investigated only the un-adjusted mean accurately portrayed the population mean. This isn’t surprising, because the trimmed mean is after all making inferences about the population trimmed mean, and the median is making inferences about, well, the median. Only when the distributions under investigation are symmetric will the statistics be able to make the same inferences about the mean of the population.</p>
 </div>
+</div>
+<div id="conceptual-walk-through-of-what-runsimulation-is-doing" class="section level1">
+<h1>Conceptual walk-through of what runSimulation() is doing</h1>
+<p>The following is a conceptual breakdown of what <code>runSimulation()</code> is actually doing behind the scenes. Here we demonstrate the results from the first condition (row 1 of <code>Design</code>) to show what each function returns.</p>
+<p>A single replication in a Monte Carlo simulation results in the following objects:</p>
+<pre class="r"><code>(condition &lt;- Design[1, ])</code></pre>
+<pre><code>##   sample_size distribution
+## 1          30         norm</code></pre>
+<pre class="r"><code>dat &lt;- Generate(condition)
+dat</code></pre>
+<pre><code>##  [1] 2.37 3.18 2.16 4.60 3.33 2.18 3.49 3.74 3.58 2.69 4.51 3.39 2.38 0.79
+## [15] 4.12 2.96 2.98 3.94 3.82 3.59 3.92 3.78 3.07 1.01 3.62 2.94 2.84 1.53
+## [29] 2.52 3.42</code></pre>
+<pre class="r"><code>res &lt;- Analyse(condition, dat)
+res</code></pre>
+<pre><code>## mean_no_trim  mean_trim.1  mean_trim.2       median 
+##          3.1          3.2          3.2          3.3</code></pre>
+<p>We can see here that <code>Generate()</code> returns a <code>numeric</code> vector which is accepted by <code>Analyse()</code>. The <code>Analyse()</code> function then completes the analysis portion using the generated data, and returns a named vector with the observed parameter estimates. Of course, this is only a single replication and therefore is not really meaningful in the grand scheme of things, so it must be repeated a number of times.</p>
+<pre class="r"><code># repeat 1000x
+results &lt;- matrix(0, 1000, 4)
+colnames(results) &lt;- names(res)
+for(i in 1:1000){
+    dat &lt;- Generate(condition)
+    res &lt;- Analyse(condition, dat)
+    results[i, ] &lt;- res
+}
+head(results)</code></pre>
+<pre><code>##      mean_no_trim mean_trim.1 mean_trim.2 median
+## [1,]          3.1         3.1         3.1    2.9
+## [2,]          3.1         3.1         3.1    3.1
+## [3,]          3.1         3.1         3.0    2.8
+## [4,]          2.7         2.6         2.6    2.7
+## [5,]          3.2         3.2         3.2    3.0
+## [6,]          3.1         3.1         3.0    3.1</code></pre>
+<p>The matrix stored in <code>results</code> contains 1000 parameter estimates returned from each statistic. After this is obtained we can move on to summarising the output through the <code>Summarise()</code> function to obtain average estimates, their associated sampling error, their efficiency, and so on.</p>
+<pre class="r"><code>Summarise(condition, results) </code></pre>
+<pre><code>## bias.mean_no_trim  bias.mean_trim.1  bias.mean_trim.2       bias.median 
+##           -0.0011           -0.0031           -0.0035           -0.0037 
+## RMSE.mean_no_trim  RMSE.mean_trim.1  RMSE.mean_trim.2       RMSE.median 
+##            0.0302            0.0316            0.0346            0.0461 
+##   RE.mean_no_trim    RE.mean_trim.1    RE.mean_trim.2         RE.median 
+##            1.0000            1.0905            1.3053            2.3179</code></pre>
+<p>This scheme is then repeated for each row in the <code>Design</code> object until the entire simulation study is complete.</p>
+<p>Of course, <code>runSimulation()</code> does much more than this conceptual outline which is why it exists. Namely, errors and warnings are controlled and tracked, data is re-drawn when needed, parallel processing is supported, debugging is easier with the <code>edit</code> input, temporary and full results can be saved to external files, the simulation state can be saved/restored, contains build-in saftey features, and more. The point, however, is that you as the user do not need to be bogged down with the nitty-gritty details of setting up the simulation work-flow/features and instead can focus all your time on the important generate-analyse-summarise steps needed to get your results.</p>
 </div>
 
 
