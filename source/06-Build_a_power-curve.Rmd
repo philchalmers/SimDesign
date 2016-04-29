@@ -48,12 +48,16 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
 
 #--------------------------------------------------------------------
 
-### Run the simulation
-results <- runSimulation(Design, replications=2000, verbose=FALSE,
+### Run the simulation (using all available cores)
+results <- runSimulation(Design, replications=10000, verbose=FALSE, parallel=TRUE,
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
 ```
 
 ```{r}
+# summary of simulation object
+summary(results)
+
+# print results
 print(results)
 ```
 
@@ -61,7 +65,7 @@ A power curve is created by placing the detection rates on a $y$-axis and includ
 
 ```{r fig.align='center'}
 library(ggplot2)
-ggplot(results, aes(mean_diff, p, colour = factor(sample_size))) + geom_point() + geom_line() +
+ggplot(results, aes(mean_diff, p, colour=sample_size, group=sample_size)) + geom_point() + geom_line() +
     xlab('Mean Difference') + ylab('Detection Rate') + ggtitle('Empirical Power Curves') +
     scale_color_discrete('N')
 ```
