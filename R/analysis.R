@@ -81,7 +81,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     }
     if(save_results){
         tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
-        saveRDS(list(condition=condition, results=results, errors=try_errors), tmpfilename)
+        saveRDS(list(condition=condition, results=results, errors=try_errors, warnings=warnings),
+                tmpfilename)
     }
     sim_results <- Functions$summarise(results=results, parameters_list=parameters,
                            condition=condition, fixed_objects=fixed_objects)
