@@ -1,0 +1,149 @@
+%\VignetteIndexEntry{SimDesign}
+%\VignetteEngine{knitr::knitr}
+---
+title: "SimDesign"
+author: "Phil Chalmers"
+date: "September 22, 2015"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+```{r include=FALSE}
+options(digits = 3)
+```
+
+# Saving Results
+
+Unsurprisingly, you may want to save your results to your hard disk in case of power outages or random system crashes to allow restarting at the interrupted location, save more complete versions of the analysis results in case you want to inspect the complete simulation results at a later time, store the R seeds for debugging and replication purposes, and so on. This document demonstrates various ways in which `SimDesign` saves output to hard disks. 
+
+As usual, define the functions of interest. 
+
+```{r}
+library(SimDesign)
+# SimFunctions()
+
+Design <- data.frame(N = c(10,20,30))
+```
+
+```{r}
+Generate <- function(condition, fixed_objects = NULL) {
+    dat <- rnorm(condition$N)    
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+    ret <- c(p = t.test(dat)$p.value)
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+    ret <- EDR(results, alpha = .05)
+    ret
+}
+```
+
+```{r include=FALSE}
+set.seed(1)
+```
+
+This is a very simple simulation that takes very little time to complete, however it will be used to show the basic saving concepts suppoerted in `SimDesign`. Note that more detailed information is located in the `runSimulation` documentation.
+
+# save
+
+The `save` flag triggers whether temporary results should be saved to the hard-disk in case of power outages and crashes. When this flag is used results can easily be restored automatically and the simulation can continue where it left off after the hardware problems have been dealt with. In fact, no modifications in the code required because `runSimulation()` will automatically detect temporary files to resume from (so long as they are resumed from the same computer node; otherwise see the `save_details` list).
+
+As a simple example, say that in the $N=30$ condition something went terribly wrong and the simulation crashed. However, the first two design conditions are perfectly fine. The `save` flag is very helpful here because the state is not lost and the results are still useful. Finally, supplying a `filename` argument will safely save the aggregate simulation results to the hard-drive for future reference; however, this won't be called until the simulation is complete.
+
+```{r eval=FALSE}
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+    if(condition$N == 30) stop('Danger Will Robinson!')
+    ret <- c(p = t.test(dat)$p.value)
+    ret
+}
+
+result <- runSimulation(Design, replications = 1000, save=TRUE, filename='my-simple-sim',
+                       generate=Generate, analyse=Analyse, summarise=Summarise)
+```
+
+```{r echo=FALSE}
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+    if(condition$N == 30) stop('Danger Will Robinson!')
+    ret <- c(p = t.test(dat)$p.value)
+    ret
+}
+
+result <- try(runSimulation(Design, replications = 1000, save=TRUE, filename='my-simple-sim',
+                       generate=Generate, analyse=Analyse, summarise=Summarise), silent = TRUE)
+message('Row 3 in design was terminated because it had 50 consecutive errors. \n
+Last error message was: \n\nManual Error : Danger Will Robinson!')
+```
+
+Check that temporary file exists. 
+
+```{r}
+files <- dir()
+files[grepl('SIMDESIGN', files)]
+```
+
+Notice here that the simulation stopped at 67% because the third design condition threw too many consecutive errors (this is a built-in fail-safe in `SimDesign`). However, after we fix this portion of the code the simulation can be restarted at the previous state and continue on as normal. Therefore, no time is lost.
+
+```{r}
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+    ret <- c(p = t.test(dat)$p.value)
+    ret
+}
+
+result <- runSimulation(Design, replications = 1000, save=TRUE, filename='my-simple-sim',
+                       generate=Generate, analyse=Analyse, summarise=Summarise)
+```
+
+Check which files exist. 
+
+```{r}
+files <- dir()
+files[grepl('SIMDESIGN', files)]
+files[grepl('my-simp', files)]
+```
+
+
+```{r include=FALSE}
+SimClean('my-simple-sim.rds')
+```
+
+Notice that when complete, the temporary file is removed from the hard-drive.
+
+# save_results
+
+Continuing on, the `save_results` argument will output the elements which are passed to `Summarise()` to separate `.rds` files containing all the analysis results. Note that when using `save_results` the `save` flag is automatically set to `TRUE` to ensure that the simulation state is correctly tracked.
+
+```{r}
+results <- runSimulation(Design, replications = 1000, save_results=TRUE,
+              generate=Generate, analyse=Analyse, summarise=Summarise)
+dir <- dir()
+directory <- dir[grepl('SimDesign-results', dir)]
+dir(directory)
+```
+
+Here we can see that three `.rds` files have been saved to the folder with the computer node name and a prefixed `'SimDesign-results'` character string. Each `.rds` file contains the respective simulation results (including errors and warnings), which can be read in with `readRDS()`.
+
+```{r}
+row1 <- readRDS(paste0(directory, '/results-row-1.rds'))
+str(row1)
+
+row1$condition
+head(row1$results)
+```
+
+Should the need arise to remove the results directory then the `SimClean()` function is the easiest way to remove unwanted files and directories. 
+
+```{r}
+SimClean(results = TRUE)
+```
+
+# My recommendations
+
+My general recommendation when running simulations is to use the `save_results = TRUE` flag when your simulation is finally ready for run time, and to supply a `filename = 'some_simulation_name'` (particularly for simulations which take a long time to finish). This will save all the results from the input `Analysis()` function which was passed to `Summarise()` and save a final file to your hard-drive (but with the built-in safety feature that it will never over-write previously saved files). Hence, you'll be able to inspect all the elements manually if the need were to arise (e.g., to inspect `ECR(res1, alpha = .01)` instead of the `ECR(results, alpha = .05)` which may have only been used in the `Summarise()` function). 
+
+Finally, if you are worried about reproducibility then the `seed` and `save_seeds` are the arguments you should utilize. `seed` sets the global seed for each design row, while `save_seed` writes the `.Random.seed` state to the hard-disk for complete reproducibility within each design condition (note that all seeds can be saved in parallel or when running simulations on single cores). If `save_seed` were used then the exact simulation state can be reloaded to the generated data by passing the specific saved seed file to `load_seed`. This also makes tracking down hard-to-find bugs within each design condition much easier. 
