@@ -201,7 +201,7 @@ dir(directory)</code></pre>
 <p>Here we can see that three <code>.rds</code> files have been saved to the folder with the computer node name and a prefixed <code>'SimDesign-results'</code> character string. Each <code>.rds</code> file contains the respective simulation results (including errors and warnings), which can be read in with <code>readRDS()</code>.</p>
 <pre class="r"><code>row1 &lt;- readRDS(paste0(directory, '/results-row-1.rds'))
 str(row1)</code></pre>
-<pre><code>## List of 3
+<pre><code>## List of 4
 ##  $ condition:'data.frame':   1 obs. of  2 variables:
 ##   ..$ ID: int 1
 ##   ..$ N : num 10
@@ -211,7 +211,10 @@ str(row1)</code></pre>
 ##   .. ..$ : chr &quot;p&quot;
 ##  $ errors   : 'table' int[0 (1d)] 
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 1
-##   .. ..$ : NULL</code></pre>
+##   .. ..$ : NULL
+##  $ warnings : 'table' int[0 (1d)] 
+##   ..- attr(*, &quot;dimnames&quot;)=List of 1
+##   .. ..$ warnings: NULL</code></pre>
 <pre class="r"><code>row1$condition</code></pre>
 <pre><code>##   ID  N
 ## 1  1 10</code></pre>
