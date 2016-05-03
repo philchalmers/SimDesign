@@ -171,7 +171,7 @@ test_that('SimDesign', {
     files <- dir(DIR)
     expect_equal(length(files), 8L)
     x <- readRDS(paste0(DIR, '/', files[1]))
-    expect_true(all(names(x) %in% c('condition', 'results', 'errors')))
+    expect_true(all(names(x) %in% c('condition', 'results', 'errors', 'warnings')))
     SimClean(results = TRUE)
 
     # error test
