@@ -31,7 +31,7 @@ set.seed(1)
 median_diff <- function(DV, group){
     meds <- tapply(DV, group, median) 
     IQR <- IQR(DV)
-    abs(meds[1] - meds[2]) / IQR
+    unname(abs(meds[1] - meds[2]) / IQR)
 }
 dat <- data.frame(DV = rnorm(100), group = rep(c('Group 1', 'Group 2'), each = 50))
 with(dat, median_diff(DV, group))
@@ -59,11 +59,12 @@ median_parametric_boot <- function(dat, fun, R = 1000, verbose = FALSE, ...){
         ret
     }
 
+    # no summarise function provided because design only contains 1 row. Returns a matrix
     results <- runSimulation(design=Design, replications=R, generate=Generate, analyse=Analyse, 
                              fixed_objects=fixed_objects, verbose=verbose, ...)
     
     # empirical p-value
-    ret <- c(p = unname(colMeans(observed < results)))
+    ret <- c(p = colMeans(observed < results))
     ret
 }
 ```
