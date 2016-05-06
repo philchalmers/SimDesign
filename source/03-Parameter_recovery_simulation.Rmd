@@ -84,8 +84,7 @@ rbind(F=load20, h2=load20^2)
 
 ### Define the functions
 
-As usual, define the functions of interest. Here we make sure that `lavaan` and `mirt` are loaded in when they
-are required by calling a suitable `library()` call to make their functions available (required when 
+As usual, define the functions of interest. Here we make sure that `lavaan` and `mirt` are loaded by passing them to the `packages` argument (required when 
 running simulations in parallel). Here we only collect information on the slope parameters, mainly because they
 are the most interesting to study anyway (intercepts become more important in IRT methods).
 
@@ -108,13 +107,10 @@ Generate <- function(condition, fixed_objects = NULL) {
         for(i in 1:N)
             dat[i,j] <- sample(c(1,0), 1, prob = c(p[i], 1 - p[i]))
     }
-    return(as.data.frame(dat))
+    as.data.frame(dat) #data.frame works nicer with lavaan
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
-
-    library(mirt)
-    library(lavaan)
     nitems <- condition$nitems
 
     # (optional) could use better starting values from fixed_objects here too
@@ -133,11 +129,11 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     const <- sqrt(1 - DWLS_alpha^2)
     DWLS_as <- DWLS_alpha / const
 
-    return(c(FIML_as=unname(FIML_as), DWLS_as=unname(DWLS_as)))
+    ret <- c(FIML_as=unname(FIML_as), DWLS_as=unname(DWLS_as))
+    ret
 }
 
 Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
-
     nitems <- condition$nitems
     nitems_name <- ifelse(nitems == 10, 'ten', 'twenty')
 
@@ -148,7 +144,7 @@ Summarise <- function(condition, results, fixed_objects = NULL, parameters_list 
     obt_bias <- bias(results, pop)
     obt_RMSE <- RMSE(results, pop)
     ret <- c(bias=obt_bias, RMSE=obt_RMSE)
-    return(ret)
+    ret
 }
 ```
 
@@ -165,9 +161,9 @@ initial run, and the function will automatically detect whether any temp files a
 simulation at the previously saved location.
 
 ```{r cache=TRUE}
-res <- runSimulation(Design, replications = 100, verbose = FALSE, save = TRUE,
-                     generate=Generate, analyse=Analyse, summarise=Summarise, parallel = TRUE,
-                     fixed_objects=pars)
+res <- runSimulation(Design, replications=100, verbose=FALSE, save=TRUE, parallel=TRUE,
+                     generate=Generate, analyse=Analyse, summarise=Summarise, 
+                     packages=c('mirt', 'lavaan'), fixed_objects=pars)
 ```
 
 ### Analyze the results
