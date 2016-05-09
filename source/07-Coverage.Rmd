@@ -75,6 +75,8 @@ print(results)
 
 From these results it's clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distriubtion CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.
 
+Note that the `ECR()` function was used within the `Analyse()` function rather than in `Summarise()`. When
+only the three values are supplied (CIs + population value) then `ECR()` will return either a 1 if the population value was within the CI or 0 if it was not. Hence, in the `Summarise()` function all that is required to obtain the coverage estimate is to find the mean of these 1's and 0's. The next section demonstrates how to use `ECR()` in the `Summarise()` instead, and it's really a matter of preference which style you prefer.
 
 ## An Alternative Form
 
@@ -88,6 +90,14 @@ library(SimDesign)
 Design <- expand.grid(mu = c(0, 5, 10), 
                       sample_size = c(10, 20, 30))
 
+z.CI <- function(dat, alpha = .05){
+	xbar <- mean(dat)
+	SE <- sd(dat) / sqrt(length(dat))
+	z <- abs(qnorm(alpha/2))
+	CI <- c(xbar - z * SE, xbar + z * SE)
+	CI
+} 
+
 #-----------------------------------------------------------------
 
 Generate <- function(condition, fixed_objects = NULL) {
@@ -96,13 +106,6 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
-    z.CI <- function(dat, alpha = .05){
-        xbar <- mean(dat)
-        SE <- sd(dat) / sqrt(length(dat))
-        z <- abs(qnorm(alpha/2))
-        CI <- c(xbar - z * SE, xbar + z * SE)
-        CI
-    }                                    
     t_test <- t.test(dat)
     t_CI <- t_test$conf.int
     z_CI <- z.CI(dat)
