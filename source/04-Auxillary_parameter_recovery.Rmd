@@ -43,12 +43,8 @@ As usual, define the functions of interest. Here we make sure that `mirt` is loa
 
 ```{r}
 Generate <- function(condition, fixed_objects = NULL) {
-    
-    library(mirt) #for simdata() function
     nitems <- condition$test_length
     N <- 300
-        
-    #source in for convience (otherwise, these could be manually define in the source code)
     a <- matrix(rlnorm(nitems, .2, .3))
     d <- matrix(rnorm(nitems, 0, .5))
     
@@ -65,9 +61,7 @@ Generate <- function(condition, fixed_objects = NULL) {
 
 Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     
-    library(mirt)
-    
-    bimodal_prior <- function(Theta, ...) as.numeric(dnorm(Theta, -1, 0.5) + dnorm(Theta, 1, 0.5))
+	bimodal_prior <- function(Theta, ...) as.numeric(dnorm(Theta, -1, 0.5) + dnorm(Theta, 1, 0.5))
     
     # assign population values for complete model
     sv <- mirt(dat, 1, pars = 'values')
@@ -137,12 +131,12 @@ set.seed(1234)
 ```
 
 ```{r cache=TRUE}
-result <- runSimulation(Design, replications = 100, parallel = TRUE,
+result <- runSimulation(Design, replications = 100, parallel = TRUE, packages = 'mirt',
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
 
 ```{r}
-print(result)
+print(result, time=FALSE, reps=FALSE)
 ```
 
 ### Analyze the results
