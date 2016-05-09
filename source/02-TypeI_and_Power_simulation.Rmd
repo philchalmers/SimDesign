@@ -59,12 +59,10 @@ variable, and a grouping variable (a `factor` or otherwise).
 
 ```{r}
 Generate <- function(condition, fixed_objects = NULL){
-    
     N <- condition$sample_size
     grs <- condition$group_size_ratio
     sd <- condition$standard_deviation_ratio
     md <- condition$mean_difference
-    
     if(grs < 1){
         N2 <- N / (1/grs + 1)
         N1 <- N - N2
@@ -75,8 +73,7 @@ Generate <- function(condition, fixed_objects = NULL){
     group1 <- rnorm(N1)
     group2 <- rnorm(N2, mean=md, sd=sd)
     dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
-    
-    return(dat)
+    dat
 }
 ```
 
@@ -86,14 +83,10 @@ containing the dependent variable and grouping information.
 
 ```{r}
 Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
-    
-    require(stats)
-
     welch <- t.test(DV ~ group, dat)
     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
-
     ret <- c(welch=welch$p.value, independent=ind$p.value)
-    return(ret)
+    ret
 }
 ```
 
@@ -103,11 +96,9 @@ Finally, after the number of replications defined in `replications` has been com
 
 ```{r}
 Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL){
-    
     alpha.05 <- EDR(results, alpha = .05)
     ret <- c(alpha.05=alpha.05)
-    
-    return(ret)
+    ret
 }
 ```
 
