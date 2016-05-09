@@ -814,6 +814,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     dn <- dn[dn != 'ID']
     if(as.factor){
         Final[dn] <- lapply(Final[dn], function(x){
+            if(is.list(x)) return(x)
             if(is.numeric(x)) return(ordered(x))
                 else return(factor(x))
             })
