@@ -748,7 +748,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 dir.create(paste0(save_generate_data_dirname, '/design-row-', i), showWarnings = FALSE)
             if(save_seeds)
                 dir.create(paste0(save_seeds_dirname, '/design-row-', i), showWarnings = FALSE)
-            Result_list[[i]] <- data.frame(c(as.list(design[i, ]),
+            Result_list[[i]] <- data.frame(design[i, ],
                                              as.list(Analysis(Functions=Functions,
                                                               condition=design[i,],
                                                               replications=replications,
@@ -761,7 +761,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                               save_seeds=save_seeds, summarise_asis=summarise_asis,
                                                               save_seeds_dirname=save_seeds_dirname,
                                                               max_errors=max_errors, packages=packages,
-                                                              load_seed=load_seed, export_funs=export_funs))),
+                                                              load_seed=load_seed, export_funs=export_funs)),
                                            check.names=FALSE)
             time1 <- proc.time()[3]
             Result_list[[i]]$SIM_TIME <- time1 - time0
