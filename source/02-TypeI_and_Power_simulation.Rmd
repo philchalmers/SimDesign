@@ -96,8 +96,7 @@ Finally, after the number of replications defined in `replications` has been com
 
 ```{r}
 Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL){
-    alpha.05 <- EDR(results, alpha = .05)
-    ret <- c(alpha.05=alpha.05)
+    ret <- EDR(results, alpha = .05)
     ret
 }
 ```
@@ -161,26 +160,26 @@ to use ANOVAs to help pinpoint where the sources of variation occurred.
 The one catch with ANOVAs is that there must be within-group variability, therefore something in our design must be marginalized. In this case, we will marginalize sample size because Type I error rates really shouldn't be influenced by $N$. After inspecting the previous table though, the assumption that $N$ does not affect the results is probably a good one.
 
 ```{r}
-SimAnova(alpha.05.independent ~ sample_size, TypeI)
-SimAnova(alpha.05.independent ~ group_size_ratio * standard_deviation_ratio, TypeI)
+SimAnova(independent ~ sample_size, TypeI)
+SimAnova(independent ~ group_size_ratio * standard_deviation_ratio, TypeI)
 ```
 
 After examining the effect sizes for the independent t-test, there appears to be an interaction effect between `group_size_ratio` and `standard_deviation_ratio`. To help visualize this effect we create box-plots while continuing to marginlize over the sample size (otherwise, we would have to use point estimates for scatter plots). 
 
 ```{r}
-SimAnova(alpha.05.welch ~ group_size_ratio * standard_deviation_ratio, TypeI)
+SimAnova(welch ~ group_size_ratio * standard_deviation_ratio, TypeI)
 ```
 
 ```{r}
 library(ggplot2)
 
 #welch
-gg <- ggplot(TypeI, aes(group_size_ratio, alpha.05.welch, fill = standard_deviation_ratio))
+gg <- ggplot(TypeI, aes(group_size_ratio, welch, fill = standard_deviation_ratio))
 gg + geom_boxplot() + facet_wrap(~standard_deviation_ratio) + ylim(c(0,0.2)) + 
     geom_hline(yintercept = .075, colour = 'red') + geom_hline(yintercept = .025, colour = 'red')
 
 #independent
-gg <- ggplot(TypeI, aes(group_size_ratio, alpha.05.independent, fill = standard_deviation_ratio))
+gg <- ggplot(TypeI, aes(group_size_ratio, independent, fill = standard_deviation_ratio))
 gg + geom_boxplot() + facet_wrap(~standard_deviation_ratio) + ylim(c(0,0.2)) + 
     geom_hline(yintercept = .075, colour = 'red') + geom_hline(yintercept = .025, colour = 'red')
 ```
@@ -189,3 +188,66 @@ What is immediately obvious from these figures is that the Welch test performs f
 
 However, when the second group contained a larger variance AND a larger sample size than the first group the detection rates became more conservative. The converse was true when larger variances were paired with smaller sample sizes compared to the first group, where the detection rates became progressively more liberal as both the ratio of sample sizes increase and the ratio of standard deviations increased.
 
+# An alternative approach
+
+The following is the same simulation design as above, however the approach is slightly different. Because the `design` input object is a `data.frame` object it is technically possible to include `list`s as factors as well to be passed to `expand.grid()`, thereby creating a fully-crossed simulation design with the `list` inputs. This may be peferable to some users if, for example, you would rather explicitly include grouping distributions in `design` rather than using scalars like 1/2, 1, and 2.
+
+Consider the following design definition:
+
+```{r}
+library(SimDesign)
+# SimFunctions()
+
+Design <- expand.grid(sample_size = c(30, 60, 90, 120),
+                      group_sizes = list(c(1/3, 2/3),
+                      						c(1/2, 1/2),
+                      						c(2/3, 1/3)),
+                      standard_deviations = list(c(1, 1),
+                      						   c(1, 4),
+                      						   c(1, 8)),
+                      means = list(c(0, 0), c(0, 0.5)))
+dim(Design)
+head(Design)
+```
+
+Notice that there are still 72 conditions to be investigated, however now each element in `Design$group_sizes`, `Design$standard_deviation`, and `Design$means` are vectors rather than a scalars. E.g.,
+
+```{r}
+sapply(Design, class)
+Design[1,]
+Design$group_sizes[[1]]
+```
+
+Hence, all elements are explicitly defined for each group rather than indexed and manipulated as in the previous example. The remainder of the simulation code is as follows (not that in this case only the `Generate()` function needed to be modified):
+
+```{r}
+Generate <- function(condition, fixed_objects = NULL){
+    N <- with(condition, sample_size)
+    Ns <- N * with(condition, group_sizes[[1]])
+    N1 <- Ns[1]; N2 <- Ns[2]
+    sd <- with(condition, standard_deviations[[1]])
+    m <- with(condition, means[[1]])
+    group1 <- rnorm(N1, mean=m[1], sd=sd[1])
+    group2 <- rnorm(N2, mean=m[2], sd=sd[2])
+    dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
+    welch <- t.test(DV ~ group, dat)
+    ind <- t.test(DV ~ group, dat, var.equal=TRUE)
+    ret <- c(welch=welch$p.value, independent=ind$p.value)
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL){
+    ret <- EDR(results, alpha = .05)
+    ret
+}
+
+#---------------------------------------------------
+
+results <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel=TRUE,
+                       generate = Generate, analyse = Analyse, summarise = Summarise)
+head(results, reps=FALSE, time=FALSE)
+```
