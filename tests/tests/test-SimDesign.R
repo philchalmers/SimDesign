@@ -238,5 +238,17 @@ test_that('SimDesign', {
                   parallel=TRUE, save=FALSE, verbose = FALSE)
     expect_true(any(grepl('WARNING:', names(results))))
 
+    # NAs
+    mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
+        ret <- c(ret = sample(c(NA, 1), 1, prob = c(.1, .9)))
+        ret
+    }
+
+    results <- runSimulation(Design, replications = 10, packages = 'mvtnorm', seed=1:nrow(Design),
+                             generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                             parallel=FALSE, save=FALSE, verbose = FALSE)
+    expect_equal(names(results)[5], "ERROR: .Error : The following return NA/NaN and required redrawing: ret\n")
+    expect_equal(results[,5], c(NA, NA, NA, 2, 1, 3, NA, 2))
+
 })
 

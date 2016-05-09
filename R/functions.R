@@ -266,6 +266,12 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                 paste0('Warning in ', deparse(Warnings[[i]]$call), ' : ', Warnings[[i]]$message)
             }, Warnings)
         }
+        if(any(is.na(res))){
+            NA_names <- names(res)[is.na(res)]
+            res <- try(stop(sprintf('The following return NA/NaN and required redrawing: %s',
+                                    paste(NA_names, sep=',')),
+                            call.=FALSE), silent=TRUE)
+        }
 
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')){
