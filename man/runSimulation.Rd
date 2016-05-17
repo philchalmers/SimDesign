@@ -9,12 +9,12 @@
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
-  fixed_objects = NULL, parallel = FALSE, packages = NULL,
-  ncores = parallel::detectCores(), MPI = FALSE, save = FALSE,
+  fixed_objects = NULL, packages = NULL, filename = NULL, save = FALSE,
   save_results = FALSE, save_seeds = FALSE, load_seed = NULL,
-  max_errors = 50, as.factor = TRUE, cl = NULL, seed = NULL,
-  filename = NULL, save_details = list(), save_generate_data = FALSE,
-  edit = "none", verbose = TRUE)
+  seed = NULL, parallel = FALSE, ncores = parallel::detectCores(),
+  cl = NULL, MPI = FALSE, max_errors = 50, as.factor = TRUE,
+  save_generate_data = FALSE, save_details = list(), edit = "none",
+  verbose = TRUE)
 
 \method{print}{SimDesign}(x, errors = TRUE, warnings = TRUE, reps = TRUE,
   time = TRUE, ...)
@@ -52,9 +52,6 @@ long fixed vectors/matrices of population parameters, data
 that should be used across all conditions and replications (e.g., including a fixed design matrix
 for linear regression), or simply can be used to control constant global elements such as sample size}
 
-\item{parallel}{logical; use parallel processing from the \code{parallel} package over each
-unique condition?}
-
 \item{packages}{a character vector of external packages to be used during the simulation (e.g.,
 \code{c('MASS', 'mvtnorm', 'simsem')} ). Use this input when \code{parallel = TRUE} or
 \code{MPI = TRUE} to use non-standard functions from additional packages,
@@ -63,10 +60,11 @@ otherwise the functions must be made available by using explicit
 Alternatively, functions can be called explicitly without attaching the package with \code{::}
 (e.g., \code{mvtnorm::rmvnorm()})}
 
-\item{ncores}{number of cores to be used in parallel execution. Default uses all available}
-
-\item{MPI}{logical; use the \code{foreach} package in a form usable by MPI to run simulation
-in parallel on a cluster? Default is \code{FALSE}}
+\item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to.
+When \code{NULL} the final simulation object is not saved to the drive. As well,
+if the same file name already exists in the working directly at the time of saving then a new
+file will be generated instead and a warning will be thrown; this helps avoid accidentally overwriting
+existing files. Default is \code{NULL}}
 
 \item{save}{logical; save the simulation state to the hard-drive? This is useful
 for simulations which require an extended amount of time. When \code{TRUE}, a temp file
@@ -97,6 +95,25 @@ will load the first seed in the second row of the \code{design} input. Note that
 to modify the \code{design} input object, otherwise the path may not point to the correct saved location.
 Default is \code{NULL}}
 
+\item{seed}{a vector of integers to be used for reproducibility.
+The length of the vector must be equal the number of rows in \code{design}.
+This argument calls \code{\link{set.seed}} or
+\code{\link{clusterSetRNGStream}} for each condition, respectively,
+but will not be run when \code{MPI = TRUE}.
+Default is \code{NULL}, indicating that no seed is set for each condition}
+
+\item{parallel}{logical; use parallel processing from the \code{parallel} package over each
+unique condition?}
+
+\item{ncores}{number of cores to be used in parallel execution. Default uses all available}
+
+\item{cl}{cluster object defined by \code{\link{makeCluster}} to be used when \code{parallel = TRUE}.
+If \code{NULL} a local cluster object will be defined which selects the maximum number cores available
+and will be stop the cluster when the simulation is complete}
+
+\item{MPI}{logical; use the \code{foreach} package in a form usable by MPI to run simulation
+in parallel on a cluster? Default is \code{FALSE}}
+
 \item{max_errors}{the simulation will terminate when more than this number of constitutive errors are thrown in any
 given condition. The purpose of this is to indicate that likely something problematic is going
 wrong in the generate-analyse phases and should be inspected. Default is 50}
@@ -105,22 +122,13 @@ wrong in the generate-analyse phases and should be inspected. Default is 50}
 simulation is complete? If the columns inputs are numeric then these will be treated
 as \code{ordered}. Default is \code{TRUE}}
 
-\item{cl}{cluster object defined by \code{\link{makeCluster}} to be used when \code{parallel = TRUE}.
-If \code{NULL} a local cluster object will be defined which selects the maximum number cores available
-and will be stop the cluster when the simulation is complete}
-
-\item{seed}{a vector of integers to be used for reproducibility.
-The length of the vector must be equal the number of rows in \code{design}.
-This argument calls \code{\link{set.seed}} or
-\code{\link{clusterSetRNGStream}} for each condition, respectively,
-but will not be run when \code{MPI = TRUE}.
-Default is \code{NULL}, indicating that no seed is set for each condition}
-
-\item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to.
-When \code{NULL} the final simulation object is not saved to the drive. As well,
-if the same file name already exists in the working directly at the time of saving then a new
-file will be generated instead and a warning will be thrown; this helps avoid accidentally overwriting
-existing files. Default is \code{NULL}}
+\item{save_generate_data}{logical; save the data returned from \code{\link{Generate}} to external \code{.rds} files
+located in the defined \code{save_generate_data_dirname} directory/folder?
+It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
+a large amount of disk space, and by and large saving data is not required or recommended for simulations.
+A more space-friendly version is available when using the \code{save_seed} flag.
+Finally, when set to \code{TRUE} the \code{save} flag will also be set to \code{TRUE} to better track
+the save-state. Default is \code{FALSE}}
 
 \item{save_details}{a list pertaining to information about how and where files should be saved
   when \code{save}, \code{save_results}, or \code{save_generate_data} are triggered.
@@ -160,14 +168,6 @@ existing files. Default is \code{NULL}}
       Default is \code{'SimDesign-generate-data_'} with the \code{compname} appended}
 
   }}
-
-\item{save_generate_data}{logical; save the data returned from \code{\link{Generate}} to external \code{.rds} files
-located in the defined \code{save_generate_data_dirname} directory/folder?
-It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
-a large amount of disk space, and by and large saving data is not required or recommended for simulations.
-A more space-friendly version is available when using the \code{save_seed} flag.
-Finally, when set to \code{TRUE} the \code{save} flag will also be set to \code{TRUE} to better track
-the save-state. Default is \code{FALSE}}
 
 \item{edit}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
   General options are \code{'none'} (default) and \code{'all'}, which are used

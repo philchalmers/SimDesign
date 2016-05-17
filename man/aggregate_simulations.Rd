@@ -22,6 +22,10 @@ This function grabs all \code{.rds} files in the working directory and aggregate
 
 setwd('my_working_directory')
 
+## run simulations to save the .rds files (or move them to the working directory)
+# runSimulation(..., filename='file1')
+# runSimulation(..., filename='file2')
+
 final <- aggregate_simulations()
 head(final)
 

@@ -564,12 +564,12 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          fixed_objects = NULL, parallel = FALSE, packages = NULL,
-                          ncores = parallel::detectCores(), MPI = FALSE,
-                          save = FALSE, save_results = FALSE, save_seeds = FALSE,
-                          load_seed = NULL, max_errors = 50, as.factor = TRUE,
-                          cl = NULL, seed = NULL, filename = NULL, save_details = list(),
-                          save_generate_data = FALSE, edit = 'none', verbose = TRUE)
+                          fixed_objects = NULL, packages = NULL,
+                          filename = NULL, save = FALSE, save_results = FALSE, save_seeds = FALSE,
+                          load_seed = NULL, seed = NULL,
+                          parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
+                          max_errors = 50, as.factor = TRUE, save_generate_data = FALSE,
+                          save_details = list(), edit = 'none', verbose = TRUE)
 {
     stopifnot(!missing(generate) || !missing(analyse))
     if(!all(names(save_results) %in%
