@@ -584,6 +584,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(is.null(save_results_dirname)) save_results_dirname <- paste0('SimDesign-results_', compname)
     if(is.null(save_generate_data_dirname)) save_generate_data_dirname <- paste0('SimDesign-generate-data_', compname)
     if(is.null(save_seeds_dirname)) save_seeds_dirname <- paste0('SimDesign-seeds_', compname)
+    if(!is.null(filename)){
+        if(grepl('\\.rds', filename))
+            filename <- gsub('\\.rds', '', filename)
+    }
     summarise_asis <- FALSE
     if(missing(summarise)){
         summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) results
