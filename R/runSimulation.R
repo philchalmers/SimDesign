@@ -678,6 +678,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         Result_list <- readRDS(tmpfilename)
         if(!is.null(Result_list[[1L]]$REPLICATIONS))
             replications <- Result_list[[1L]]$REPLICATIONS
+        if(nrow(design) != length(Result_list))
+            stop("Number of rows in design input not equal to the length of temp .rds file. Simulations conditions
+                 are not identical. Either fix design object or consider removing temp file and re-running")
         start <- min(which(sapply(Result_list, is.null)))
         time0 <- time1 - Result_list[[start-1L]]$SIM_TIME
     }
