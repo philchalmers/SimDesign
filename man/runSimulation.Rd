@@ -16,8 +16,7 @@ runSimulation(design, replications, generate, analyse, summarise,
   save_generate_data = FALSE, save_details = list(), edit = "none",
   verbose = TRUE)
 
-\method{print}{SimDesign}(x, results.only = FALSE, errors = TRUE,
-  warnings = TRUE, reps = TRUE, time = TRUE, ...)
+\method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE, ...)
 
 \method{head}{SimDesign}(x, ...)
 
@@ -184,18 +183,12 @@ the save-state. Default is \code{FALSE}}
 
 \item{x}{SimDesign object returned from \code{\link{runSimulation}}}
 
-\item{results.only}{logical; return only the simulation results without any other information?
-This may be useful if you wish to append the original (unfactorized) design \code{data.frame}
-to the simulation results with \code{cbind(design, print(x, results.only = TRUE))}.
+\item{drop.extras}{logical; don't print information about warnings, errors, simulation time, and replications?
 Default is \code{FALSE}}
 
-\item{errors}{logical; print the errors (if applicable)? Default is \code{TRUE}}
-
-\item{warnings}{logical; print the warnings (if applicable)? Default is \code{TRUE}}
-
-\item{reps}{logical; print the replications?}
-
-\item{time}{logical; print the SIM_TIME?}
+\item{drop.design}{logical; don't include information about the (potentially factorized) simulation design?
+This may be useful if you wish to \code{cbind()} the original design \code{data.frame} to the simulation
+results instead of using the auto-factorized version. Default is \code{FALSE}}
 
 \item{...}{additional arguments}
 
