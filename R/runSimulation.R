@@ -881,6 +881,7 @@ print.SimDesign <- function(x, results.only = FALSE, errors = TRUE, warnings = T
 #' @export
 head.SimDesign <- function(x, ...){
     x <- print(x, print = FALSE, ...)
+    class(x) <- 'data.frame'
     head(x, ...)
 }
 
@@ -888,6 +889,7 @@ head.SimDesign <- function(x, ...){
 #' @export
 tail.SimDesign <- function(x, ...){
     x <- print(x, print = FALSE, ...)
+    class(x) <- 'data.frame'
     tail(x, ...)
 }
 
