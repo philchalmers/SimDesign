@@ -250,5 +250,32 @@ test_that('SimDesign', {
     expect_equal(names(results)[5], "ERROR: .Error : The following return NA/NaN and required redrawing: ret\n")
     expect_equal(results[,5], c(NA, NA, NA, 2, 1, 3, NA, 2))
 
+    #data.frame test
+    mysim <- function(condition, fixed_objects = NULL){
+        N1 <- condition$sample_sizes_group1
+        N2 <- condition$sample_sizes_group2
+        sd <- condition$standard_deviations
+        group1 <- rnorm(N1)
+        group2 <- rnorm(N2, sd=sd)
+        dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
+        dat
+    }
+
+    mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
+        welch <- t.test(DV ~ group, dat)
+        ind <- stats::t.test(DV ~ group, dat, var.equal=TRUE)
+        ret <- data.frame(welch = welch$p.value, independent = ind$p.value)
+        ret
+    }
+
+    mycollect <-  function(condition, results, fixed_objects = NULL, parameters_list = NULL){
+        ret <- EDR(results, alpha = .05)
+        ret
+    }
+
+    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                           replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
+    expect_is(Final, 'data.frame')
+
 })
 

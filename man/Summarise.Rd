@@ -21,7 +21,8 @@ from \code{\link{Generate}}, where each repetition is stored in a unique element
 was not returned from \code{\link{Generate}} then this will be \code{NULL}}
 }
 \value{
-must return a named \code{numeric} vector with the desired meta-simulation results
+must return a named \code{numeric} vector or \code{data.frame}
+  with the desired meta-simulation results
 }
 \description{
 This collapses the simulation results within each condition to composite

@@ -94,9 +94,10 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #'
 #' @param fixed_objects object passed down from \code{\link{runSimulation}}
 #'
-#' @return returns a named \code{numeric} vector with the values of interest (e.g., p-values,
-#'   effects sizes, etc), or a \code{list} containing values of interest (e.g., separate matrix
-#'   and vector of parameter estimates corresponding to elements in \code{parameters})
+#' @return returns a named \code{numeric} vector or \code{data.frame} with the values of interest
+#'   (e.g., p-values, effects sizes, etc), or a \code{list} containing values of interest
+#'   (e.g., separate matrix and vector of parameter estimates corresponding to elements in
+#'   \code{parameters})
 #'
 #' @seealso \code{\link{stop}}
 #' @aliases Analyse
@@ -147,7 +148,8 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) NUL
 #'
 #' @aliases Summarise
 #'
-#' @return must return a named \code{numeric} vector with the desired meta-simulation results
+#' @return must return a named \code{numeric} vector or \code{data.frame}
+#'   with the desired meta-simulation results
 #'
 #' @seealso \code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}},
 #'   \code{\link{ECR}}, \code{\link{MAE}}

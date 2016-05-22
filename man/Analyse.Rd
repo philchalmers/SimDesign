@@ -20,9 +20,10 @@ simulation conditions}
 empty list}
 }
 \value{
-returns a named \code{numeric} vector with the values of interest (e.g., p-values,
-  effects sizes, etc), or a \code{list} containing values of interest (e.g., separate matrix
-  and vector of parameter estimates corresponding to elements in \code{parameters})
+returns a named \code{numeric} vector or \code{data.frame} with the values of interest
+  (e.g., p-values, effects sizes, etc), or a \code{list} containing values of interest
+  (e.g., separate matrix and vector of parameter estimates corresponding to elements in
+  \code{parameters})
 }
 \description{
 Computes all relevant test statistics, parameter estimates, detection rates, and so on.
