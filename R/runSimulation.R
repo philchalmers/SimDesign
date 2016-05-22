@@ -854,13 +854,19 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
 
 #' @rdname runSimulation
 #' @param x SimDesign object returned from \code{\link{runSimulation}}
+#' @param results.only logical; return only the simulation results without any other information?
+#'   This may be useful if you wish to append the original (unfactorized) design \code{data.frame}
+#'   to the simulation results with \code{cbind(design, print(x, results.only = TRUE))}.
+#'   Default is \code{FALSE}
 #' @param errors logical; print the errors (if applicable)? Default is \code{TRUE}
 #' @param warnings logical; print the warnings (if applicable)? Default is \code{TRUE}
 #' @param reps logical; print the replications?
 #' @param time logical; print the SIM_TIME?
 #' @export
-print.SimDesign <- function(x, errors = TRUE, warnings = TRUE, reps = TRUE, time = TRUE, ...){
+print.SimDesign <- function(x, results.only = FALSE, errors = TRUE, warnings = TRUE,
+                            reps = TRUE, time = TRUE, ...){
     att <- attr(x, 'design_names')
+    if(results.only) return(x[ ,att$sim, drop=FALSE])
     if(!errors) x <- x[,!(names(x) %in% att$errors), drop=FALSE]
     if(!warnings) x <- x[,!(names(x) %in% att$warnings), drop=FALSE]
     if(!time) x$SIM_TIME <- NULL

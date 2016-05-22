@@ -16,8 +16,8 @@ runSimulation(design, replications, generate, analyse, summarise,
   save_generate_data = FALSE, save_details = list(), edit = "none",
   verbose = TRUE)
 
-\method{print}{SimDesign}(x, errors = TRUE, warnings = TRUE, reps = TRUE,
-  time = TRUE, ...)
+\method{print}{SimDesign}(x, results.only = FALSE, errors = TRUE,
+  warnings = TRUE, reps = TRUE, time = TRUE, ...)
 
 \method{head}{SimDesign}(x, ...)
 
@@ -183,6 +183,11 @@ the save-state. Default is \code{FALSE}}
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 
 \item{x}{SimDesign object returned from \code{\link{runSimulation}}}
+
+\item{results.only}{logical; return only the simulation results without any other information?
+This may be useful if you wish to append the original (unfactorized) design \code{data.frame}
+to the simulation results with \code{cbind(design, print(x, results.only = TRUE))}.
+Default is \code{FALSE}}
 
 \item{errors}{logical; print the errors (if applicable)? Default is \code{TRUE}}
 
