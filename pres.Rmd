@@ -39,7 +39,7 @@ Numerical experiments using data randomly sampled from a selection of probabilit
 
 - Given some design condition under investigation, generate some data, analyse said data, repeat $R$ times, and summarise the obtained results
 - Requires computers to perform these experiments, usually with a good general purpose/statistical programming language (R, SAS, python, C++)
-- General setup is *embarrassingly parallel*. Makes these experiments ideal for modern super-computers or user-built Beowulf clusters
+- General setup is *embarrassingly parallel*. Makes these experiments ideal for modern super-computers, user-built Beowulf clusters, or even computers on completely different networks
 
 # Why should we care?
     
@@ -400,7 +400,7 @@ message was.
 
 - Error messages are appended into the returned `data.frame` object with the number of times they occurred
 - Users may throw their own `stop()` calls if useful (e.g., when a model converges but not before
-  the number of iterations were reached)
+  the maximum number of iterations were reached)
 - `SimDesign` has built-in safety termination when more than 50 consecutive errors are thrown. This
   avoids simulations getting stuck in infinite loops, even when running code across different cores
 
@@ -410,8 +410,8 @@ Thankfully, the package allows some initial hand-holding to get you started. Sim
 
 ```{r eval=FALSE}
 library(SimDesign)
-SimDesign_functions()
-SimDesign_functions('my-awesome-simulation')
+SimFunctions()
+SimFunctions('my-awesome-simulation')
 ```
 
 # The `SimDesign` package
@@ -471,12 +471,14 @@ MCSs are important to quantitative researchers, so it's important to understand 
 # The `SimDesign` package
 
 - `aggregate_simulations()`: when saving results on independent nodes (using only a fraction of the total `replication` number) this function aggregates the saved files into one weighted simulation result. 
-- For instance:
 
 ```{r eval = FALSE}
-runSimulation(..., replications = 500, save = TRUE)
-runSimulation(..., replications = 500, save = TRUE)
-Full <- aggregate_simulations()
+runSimulation(..., replications = 500, 
+              filename = 'file1')
+runSimulation(..., replications = 500, 
+              filename = 'file2')
+# reads-in .rds files in working directory
+Full <- aggregate_simulations() 
 ```
 
 For nodes linked on a LAN network (i.e., a Beowulf cluster) then the setup simply requires passing the argument `MPI = TRUE`. See the example in `help(runSimulation)`.
