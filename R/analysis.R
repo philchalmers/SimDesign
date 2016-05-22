@@ -71,10 +71,11 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     else parameters <- NULL
 
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
-    if(!is.list(results[[1L]])){
+    if(!is.list(results[[1L]]) || is.data.frame(results[[1L]])){
         results <- do.call(rbind, results)
         if(length(unique(colnames(results))) != ncol(results) && ncol(results) > 1L)
             stop('Vector of results returned from analyse must have unique names', call.=FALSE)
+        rownames(results) <- NULL
     }
     if(save_results){
         tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
