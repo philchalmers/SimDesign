@@ -6,7 +6,13 @@
 #' @param files a \code{character} vector containing the names of the simulation files. If \code{NULL},
 #'   all files in the working directory ending in \code{.rds} will be used
 #'
-#' @return a \code{data.frame} with the (weighted) average of the simulation results
+#' @param dirs a \code{character} vector containing the names of the \code{save_results} directories to be
+#'   aggregated. A new folder will be created and placed in the \code{results_dirname} output folder
+#'
+#' @param results_dirname the new directory to place the aggregated results files
+#'
+#' @return if \code{files} is used the function returns a \code{data.frame} with the (weighted) average
+#'   of the simulation results. Otherwise, if \code{dirs} is used, the function returns NULL
 #'
 #' @aliases aggregate_simulations
 #'
@@ -29,7 +35,37 @@
 #' saveRDS(final, 'my_final_simulation.rds')
 #'
 #' }
-aggregate_simulations <- function(files = NULL){
+aggregate_simulations <- function(files = NULL, dirs = NULL, results_dirname = 'SimDesign_aggregate_results'){
+    if(!is.null(dirs)){
+        if(!all(sapply(dirs, dir.exists))) stop('One or more directories not found')
+        files <- lapply(dirs, function(x) dir(x))
+        if(!all(sapply(files, function(x) all(x == files[[1L]]))))
+            stop('File names are not all the same')
+        files <- files[[1L]]
+        ndirs <- length(dirs)
+        dir.create(results_dirname)
+        for(f in files){
+            readin <- lapply(1:ndirs, function(x) readRDS(paste0(dirs[x], '/', f)))
+            ret <- readin[[1L]]
+            collapse <- !is.list(ret$results) || is.data.frame(ret$results)
+            results <- lapply(readin, function(x) x$results)
+            if(collapse){
+                ret$results <- do.call(rbind, results)
+            } else {
+                ret$results <- unname(do.call(c, results))
+            }
+            tmp <- do.call(c, lapply(readin, function(x) x$warnings))
+            nms <- names(tmp)
+            if(length(nms))
+                ret$warnings <- table(do.call(c, lapply(1:length(nms), function(x) rep(nms[x], each = tmp[x]))))
+            tmp <- do.call(c, lapply(readin, function(x) x$errors))
+            nms <- names(tmp)
+            if(length(nms))
+                ret$errors <- table(do.call(c, lapply(1:length(nms), function(x) rep(nms[x], each = tmp[x]))))
+            saveRDS(ret, paste0(results_dirname, '/', f))
+        }
+        return(invisible(NULL))
+    }
     filenames <- dir()
     filenames <- filenames[grepl('*\\.rds', tolower(filenames))]
     if(!length(filenames)) stop('There are no .rds files in the working directory')

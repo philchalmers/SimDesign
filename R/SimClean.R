@@ -8,6 +8,8 @@
 #'   \code{.rds} files which were saved with \code{\link{saveRDS}} or when using the \code{save}
 #'   and \code{filename} inputs to \code{\link{runSimulation}}
 #'
+#' @param dirs a character vector indiciating which directories to remove
+#'
 #' @param generate_data logical; remove the \code{.rds} data-set files
 #'   saved when passing \code{save_generate_data = TRUE}?
 #'
@@ -42,8 +44,8 @@
 #' SimClean(results = TRUE, save_details = list(save_results_dirname = 'mydir'))
 #'
 #' }
-SimClean <- function(..., generate_data = FALSE, results = FALSE, seeds = FALSE, temp = FALSE,
-                     save_details = list()){
+SimClean <- function(..., dirs = NULL, generate_data = FALSE, results = FALSE,
+                     seeds = FALSE, temp = FALSE, save_details = list()){
     compname <- save_details$compname; tmpfilename <- save_details$tempfilename
     save_results_dirname <- save_details$save_results_dirname
     save_seeds_dirname <- save_details$save_seeds_dirname
@@ -57,6 +59,8 @@ SimClean <- function(..., generate_data = FALSE, results = FALSE, seeds = FALSE,
         save_generate_data_dirname <- paste0('SimDesign-generate-data_', compname)
     files <- list(...)
     if(length(files)) file.remove(...)
+    if(!is.null(dirs))
+        for(d in dirs) unlink(d, recursive = TRUE, force = TRUE)
     if(is.null(save_seeds_dirname)) save_seeds_dirname <- paste0('SimDesign-seeds_', compname)
     if(generate_data) unlink(save_generate_data_dirname, recursive = TRUE, force = TRUE)
     if(results) unlink(save_results_dirname, recursive = TRUE, force = TRUE)

@@ -4,14 +4,21 @@
 \alias{aggregate_simulations}
 \title{Collapse separate simulation files into a single result}
 \usage{
-aggregate_simulations(files = NULL)
+aggregate_simulations(files = NULL, dirs = NULL,
+  results_dirname = "SimDesign_aggregate_results")
 }
 \arguments{
 \item{files}{a \code{character} vector containing the names of the simulation files. If \code{NULL},
 all files in the working directory ending in \code{.rds} will be used}
+
+\item{dirs}{a \code{character} vector containing the names of the \code{save_results} directories to be
+aggregated. A new folder will be created and placed in the \code{results_dirname} output folder}
+
+\item{results_dirname}{the new directory to place the aggregated results files}
 }
 \value{
-a \code{data.frame} with the (weighted) average of the simulation results
+if \code{files} is used the function returns a \code{data.frame} with the (weighted) average
+  of the simulation results. Otherwise, if \code{dirs} is used, the function returns NULL
 }
 \description{
 This function grabs all \code{.rds} files in the working directory and aggregates them into a single

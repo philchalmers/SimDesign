@@ -238,6 +238,32 @@ test_that('SimDesign', {
                   parallel=TRUE, save=FALSE, verbose = FALSE)
     expect_true(any(grepl('WARNING:', names(results))))
 
+    #aggregate different files
+    mycompute2 <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
+        if(sample(c(FALSE, TRUE), 1, prob = c(.9, .1))) stop('error')
+        c(ret = 1)
+    }
+    mycompute3 <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
+        c(ret = 1)
+    }
+    set.seed(1)
+    results <- runSimulation(Design, replications = 2, packages = 'mvtnorm',
+                  generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                  parallel=FALSE, save_results = TRUE, verbose = FALSE,
+                  save_details = list(save_results_dirname = 'dir1'))
+    results <- runSimulation(Design, replications = 2, packages = 'mvtnorm',
+                  generate=mygenerate, analyse=mycompute2, summarise=mycollect,
+                  parallel=FALSE, save_results = TRUE, verbose = FALSE,
+                  save_details = list(save_results_dirname = 'dir2'))
+    results <- runSimulation(Design, replications = 2, packages = 'mvtnorm',
+                             generate=mygenerate, analyse=mycompute3, summarise=mycollect,
+                             parallel=FALSE, save_results = TRUE, verbose = FALSE,
+                             save_details = list(save_results_dirname = 'dir3'))
+    aggregate_simulations(dirs = c('dir1', 'dir2', 'dir3'))
+    expect_true(dir.exists('SimDesign_aggregate_results'))
+    expect_equal(6, nrow(readRDS('SimDesign_aggregate_results/results-row-1.rds')$results))
+    SimClean(dirs = c('SimDesign_aggregate_results','dir1', 'dir2', 'dir3'))
+
     # NAs
     mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
         ret <- c(ret = sample(c(NA, 1), 1, prob = c(.1, .9)))
