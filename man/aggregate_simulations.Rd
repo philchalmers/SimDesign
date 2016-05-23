@@ -22,7 +22,9 @@ if \code{files} is used the function returns a \code{data.frame} with the (weigh
 }
 \description{
 This function grabs all \code{.rds} files in the working directory and aggregates them into a single
-\code{data.frame} object.
+\code{data.frame} object or combines all the saved results directories and combines them into one.
+This is generally useful when results are run piecewise on one node or run independently across
+different nodes/computers which are not on the same network.
 }
 \examples{
 \dontrun{
@@ -34,9 +36,15 @@ setwd('my_working_directory')
 # runSimulation(..., filename='file2')
 
 final <- aggregate_simulations()
-head(final)
-
 saveRDS(final, 'my_final_simulation.rds')
+
+# aggregate saved results
+# runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir1'))
+# runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir2'))
+
+# place new saved results in 'SimDesign_results/' directory by default
+aggregate_simulations(dirs = c('dir1', 'dir2'))
+
 
 }
 }
