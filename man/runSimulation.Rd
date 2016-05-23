@@ -257,22 +257,25 @@ Additional examples, presentation files, and tutorials can be found on the packa
 To conserve RAM, temporary objects (such as data generated across conditions and replications)
 are discarded; however, these can be saved to the hard-disk by passing the appropriate flags.
 For longer simulations it is recommended to use \code{save = TRUE} to temporarily save the
-simulation state, and to use a \code{save_results} flag to write the analysis results
+simulation state, and to use the \code{save_results} flag to write the analysis results
 the to hard-disc.
 
 The generated data can be saved by passing
-\code{save_generate_data=TRUE}, however it is often more memory efficient to use the
+\code{save_generate_data = TRUE}, however it is often more memory efficient to use the
 \code{save_seeds} option instead to only save R's \code{.Random.seed} state instead (still
-allowing for complete reproducibility). Providing a vector of \code{seeds} is also possible to ensure
-that the simulation conditions are completely reproducible under the single/multi-core method selected.
+allowing for complete reproducibility); individual \code{.Random.seed} terms may also be read in with the
+\code{load_seed} input to reproduce the exact simulation state at any given replicaiton. Finally,
+providing a vector of \code{seeds} is also possible to ensure
+that each simulation condition is completely reproducible under the single/multi-core method selected.
 
 Finally, when the Monte Carlo simulation is complete
 it is recommended to write the results to a hard-drive for safe keeping, particularly with the
 \code{filename} argument provided (for reasons that are more obvious in the parallel computation
 descriptions below). Using the \code{filename} argument supplied is much safer than using something
-like \code{\link{saveRDS}} because files will not accidentally be overwritten and instead a new file name
-will be created; this safety against overwriting files is prevalent in many aspects of the package and
-helps to avoid many unrecoverable mistakes.
+like \code{\link{saveRDS}} directly because files will never accidentally be overwritten,
+and instead a new file name will be created when a conflict arises; this type of safety
+is prevalent in many aspects of the package and helps to avoid many unrecoverable (yet surprisingly common)
+mistakes.
 }
 
 \section{Resuming temporary results}{
@@ -297,7 +300,7 @@ Fortunately, however, \emph{custom functions defined in the global environment a
 nodes automatically}. This makes it convenient when writing code because custom functions will
 always be available across nodes if they are visible in the R workspace. As well, note the
 \code{packages} input to declare packages which must be loaded via \code{library()} in order to make
-specific non-based R functions available across nodes.
+specific non-standard R functions available across nodes.
 }
 
 \section{Cluster computing}{
@@ -306,7 +309,7 @@ specific non-based R functions available across nodes.
 SimDesign code may be released to a computing system which supports parallel cluster computations using
 the industry standard Message Passing Interface (MPI) form. This simply
 requires that the computers be setup using the usual MPI requirements (typically, running some flavor
-of Linux, have password-less open-SSH access, addresses have been added to the \code{/etc/hosts} file, etc).
+of Linux, have password-less open-SSH access, IP addresses have been added to the \code{/etc/hosts} file, etc).
 More generally though, these resources are widely available through professional
 organizations dedicated to super-computing.
 
@@ -324,10 +327,11 @@ files using the suitable BASH commands to execute the \code{mpirun} tool. For ex
   \item{\code{mpi.quit()}}{}
 }
 
-This file (or files if the simulation script is broken up) must be uploaded to the master node
+The necessary SimDesign files must be uploaded to the dedicated master node
 so that a BASH call to \code{mpirun} can be used to distribute the work across slaves.
 For instance, if the following BASH command is run on the master node then 16 processes
-will be summoned (1 master, 15 slaves) across the computers named localhost, slave1, and slave2.
+will be summoned (1 master, 15 slaves) across the computers named \code{localhost}, \code{slave1},
+and \code{slave2}.
 
 \code{mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R}
 }
@@ -348,7 +352,8 @@ master node.
 
 Setup for network computing is generally more straightforward and controlled
 than the setup for MPI jobs in that it only requires the specification of a) the respective
-IP addresses, and b) the user name (if different from the master node's user name. Otherwise only a) is required).
+IP addresses within a defined R script, and b) the user name
+(if different from the master node's user name. Otherwise, only a) is required).
 However, on Linux I have found it is also imporant to include relavent information about the host names
 and IP addresses in the \code{/etc/hosts} file on the master and slave nodes, and to ensure that
 the selected port (passed to \code{\link{makeCluster}}) on the master node is not hindered by a firewall.
@@ -387,22 +392,23 @@ aggregating the results using the \code{\link{aggregate_simulations}} function.
 
 For instance, if you have two computers available on different networks and wanted a total of 500 replications you
 could pass \code{replications = 300} to one computer and \code{replications = 200} to the other along
-with a \code{filename} argument (or simply saving the final objects as \code{.rds} files manually).
-This will create two distinct \code{.rds} files which can be
+with a \code{filename} argument (or simply saving the final objects as \code{.rds} files manually after
+\code{runSimulation()} has finished). This will create two distinct \code{.rds} files which can be
 combined later with the \code{\link{aggregate_simulations}} function. The benefit of this approach over
-MPI or setting up a Beowulf cluster is that computers need not be linked over a LAN network,
-and should the need arise the temporary
-simulation results can be migrated to another computer in case of a complete hardware failure by modifying
+MPI or setting up a Beowulf cluster is that computers need not be linked on the same network,
+and, should the need arise, the temporary
+simulation results can be migrated to another computer in case of a complete hardware failure by moving the
+saved temp files to another node, modifying
 the suitable \code{compname} input to \code{save_details} (or, if the \code{filename} and \code{tmpfilename}
-were modified, matching those files accordingly).
+were modified, matching those files accordingly), and resuming the simulation as normal.
 
 Note that this is also a useful tactic if the MPI or Network computing options require you to
 submit smaller jobs due to time and resource constraint-related reasons,
 where fewer replications/nodes should be requested. After all the jobs are completed and saved to their
-respective files the \code{\link{aggregate_simulations}}
+respective files, \code{\link{aggregate_simulations}}
 can then collapse the files as if the simulations were run all at once. Hence, SimDesign makes submitting
-smaller jobs to super-computing resources considerably less error prone then managing a number of smaller
-jobs manually.
+smaller jobs to super-computing resources considerably less error prone than managing a number of smaller
+jobs manually .
 }
 \examples{
 
