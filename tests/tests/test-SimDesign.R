@@ -264,6 +264,26 @@ test_that('SimDesign', {
     expect_equal(6, nrow(readRDS('SimDesign_aggregate_results/results-row-1.rds')$results))
     SimClean(dirs = c('SimDesign_aggregate_results','dir1', 'dir2', 'dir3'))
 
+    mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
+        if(sample(c(FALSE, TRUE), 1, prob = c(.9, .1))) stop('error')
+        list(ret = 1)
+    }
+    mycollect <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+        c(ret=1)
+    }
+    results <- runSimulation(Design, replications = 2, packages = 'mvtnorm',
+                             generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                             parallel=FALSE, save_results = TRUE, verbose = FALSE,
+                             save_details = list(save_results_dirname = 'dir1'))
+    results <- runSimulation(Design, replications = 2, packages = 'mvtnorm',
+                             generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                             parallel=FALSE, save_results = TRUE, verbose = FALSE,
+                             save_details = list(save_results_dirname = 'dir2'))
+    aggregate_simulations(dirs = c('dir1', 'dir2'))
+    expect_true(dir.exists('SimDesign_aggregate_results'))
+    expect_equal(4, length(readRDS('SimDesign_aggregate_results/results-row-1.rds')$results))
+    SimClean(dirs = c('SimDesign_aggregate_results','dir1', 'dir2'))
+
     # NAs
     mycompute <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
         ret <- c(ret = sample(c(NA, 1), 1, prob = c(.1, .9)))

@@ -49,11 +49,7 @@ aggregate_simulations <- function(files = NULL, dirs = NULL, results_dirname = '
             ret <- readin[[1L]]
             collapse <- !is.list(ret$results) || is.data.frame(ret$results)
             results <- lapply(readin, function(x) x$results)
-            if(collapse){
-                ret$results <- do.call(rbind, results)
-            } else {
-                ret$results <- unname(do.call(c, results))
-            }
+            ret$results <- do.call(if(collapse) rbind else c, results)
             tmp <- do.call(c, lapply(readin, function(x) x$warnings))
             nms <- names(tmp)
             if(length(nms))
