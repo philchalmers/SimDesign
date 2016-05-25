@@ -225,9 +225,11 @@
 #' @param parallel logical; use parallel processing from the \code{parallel} package over each
 #'   unique condition?
 #'
-#' @param cl cluster object defined by \code{\link{makeCluster}} to be used when \code{parallel = TRUE}.
-#'   If \code{NULL} a local cluster object will be defined which selects the maximum number cores available
-#'   and will be stop the cluster when the simulation is complete
+#' @param cl cluster object defined by \code{\link{makeCluster}} used to run code in parallel.
+#'   If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
+#'   selects the maximum number cores available
+#'   and will be stop the cluster when the simulation is complete. Note that supplying a \code{cl}
+#'   object will automatically set the \code{parallel} argument to \code{TRUE}
 #'
 #' @param packages a character vector of external packages to be used during the simulation (e.g.,
 #'   \code{c('MASS', 'mvtnorm', 'simsem')} ). Use this input when \code{parallel = TRUE} or
@@ -594,6 +596,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(grepl('\\.rds', filename))
             filename <- gsub('\\.rds', '', filename)
     }
+    if(!is.null(cl)) parallel <- TRUE
     summarise_asis <- FALSE
     if(missing(summarise)){
         summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) results

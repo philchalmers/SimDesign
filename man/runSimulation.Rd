@@ -106,9 +106,11 @@ unique condition?}
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
-\item{cl}{cluster object defined by \code{\link{makeCluster}} to be used when \code{parallel = TRUE}.
-If \code{NULL} a local cluster object will be defined which selects the maximum number cores available
-and will be stop the cluster when the simulation is complete}
+\item{cl}{cluster object defined by \code{\link{makeCluster}} used to run code in parallel.
+If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
+selects the maximum number cores available
+and will be stop the cluster when the simulation is complete. Note that supplying a \code{cl}
+object will automatically set the \code{parallel} argument to \code{TRUE}}
 
 \item{MPI}{logical; use the \code{foreach} package in a form usable by MPI to run simulation
 in parallel on a cluster? Default is \code{FALSE}}
