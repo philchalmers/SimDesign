@@ -296,6 +296,10 @@ RE <- function(x, MSE = FALSE){
 #' EDR(rates)
 #' EDR(rates, alpha = .01)
 #'
+#' # multiple rates at once
+#' rates <- cbind(runif(1000), runif(1000))
+#' EDR(rates)
+#'
 EDR <- function(p, alpha = .05){
     stopifnot(all(p <= 1 && p >= 0))
     stopifnot(length(alpha) == 1L)

@@ -29,6 +29,10 @@ for(i in 1:100){
 EDR(rates)
 EDR(rates, alpha = .01)
 
+# multiple rates at once
+rates <- cbind(runif(1000), runif(1000))
+EDR(rates)
+
 }
 \seealso{
 \code{\link{ECR}}
