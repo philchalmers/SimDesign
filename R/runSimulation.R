@@ -99,7 +99,8 @@
 #' SimDesign code may be released to a computing system which supports parallel cluster computations using
 #' the industry standard Message Passing Interface (MPI) form. This simply
 #' requires that the computers be setup using the usual MPI requirements (typically, running some flavor
-#' of Linux, have password-less open-SSH access, IP addresses have been added to the \code{/etc/hosts} file, etc).
+#' of Linux, have password-less open-SSH access, IP addresses have been added to the \code{/etc/hosts} file
+#' or \code{~/.ssh/config}, etc).
 #' More generally though, these resources are widely available through professional
 #' organizations dedicated to super-computing.
 #'
@@ -121,7 +122,7 @@
 #' so that a BASH call to \code{mpirun} can be used to distribute the work across slaves.
 #' For instance, if the following BASH command is run on the master node then 16 processes
 #' will be summoned (1 master, 15 slaves) across the computers named \code{localhost}, \code{slave1},
-#' and \code{slave2}.
+#' and \code{slave2} in the ssh \code{config} file.
 #'
 #' \code{mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R}
 #'
@@ -157,7 +158,7 @@
 #'   \item{\code{IPs <- list(list(host=primary, user='myname', ncore=8), list(host='192.168.2.2', user='myname', ncore=6))}}{}
 #'   \item{\code{spec <- lapply(IPs, function(IP) rep(list(list(host=IP$host, user=IP$user)), IP$ncore))}}{}
 #'   \item{\code{spec <- unlist(spec, recursive=FALSE)}}{}
-#'   \item{\code{cl <- makeCluster(type='PSOCK', master=primary, spec=spec)}}{}
+#'   \item{\code{cl <- makeCluster(master=primary, spec=spec)}}{}
 #'   \item{\code{Final <- runSimulation(..., cl=cl)}}{}
 #'   \item{\code{stopCluster(cl)}}{}
 #' }
@@ -167,6 +168,25 @@
 #' IP addresses. Finally, it's usually good practice to use \code{stopCluster(cl)}
 #' when all the simulations are said and done to release the communication between the computers,
 #' which is what the above code shows.
+#'
+#' Alternatively, if you have provided suitable names for each respective slave node, as well as the master,
+#' then you can define the \code{cl} object using these instead (rather than supplying the IP addresses in
+#' your R script). This requires that the master node has itself and all the slave nodes defined in the
+#' \code{/etc/hosts} and \code{~/.ssh/config} files, while the slave nodes require themselves and the
+#' master node in the same files (only 2 IP addresses required on each slave).
+#' Following this setup, and assuming the user name is the same accross all nodes,
+#' the \code{cl} object could instead be defined with
+#'
+#' \describe{
+#'   \item{\code{library(parallel)}}{}
+#'   \item{\code{primary <- 'master'}}{}
+#'   \item{\code{IPs <- list(list(host=primary, ncore=8), list(host='slave', ncore=6))}}{}
+#'   \item{\code{spec <- lapply(IPs, function(IP) rep(list(list(host=IP$host)), IP$ncore))}}{}
+#'   \item{\code{spec <- unlist(spec, recursive=FALSE)}}{}
+#'   \item{\code{cl <- makeCluster(master=primary, spec=spec)}}{}
+#'   \item{\code{Final <- runSimulation(..., cl=cl)}}{}
+#'   \item{\code{stopCluster(cl)}}{}
+#' }
 #'
 #' @section Poor man's cluster computing for independent nodes:
 #'
@@ -391,9 +411,6 @@
 #'
 #' # help(Generate)
 #' Generate <- function(condition, fixed_objects = NULL){
-#'
-#'     #require packages/define functions if needed, or better yet index with the :: operator
-#'
 #'     N <- condition$sample_size
 #'     grs <- condition$group_size_ratio
 #'     sd <- condition$standard_deviation_ratio
@@ -414,12 +431,6 @@
 #'
 #' # help(Analyse)
 #' Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
-#'
-#'     # require packages/define functions if needed, or better yet index with the :: operator
-#'     require(stats)
-#'     mygreatfunction <- function(x) print('Do some stuff')
-#'
-#'     #wrap computational statistics in try() statements to control estimation problems
 #'     welch <- t.test(DV ~ group, dat)
 #'     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
 #'
