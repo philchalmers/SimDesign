@@ -401,6 +401,17 @@ the \code{cl} object could instead be defined with
   \item{\code{Final <- runSimulation(..., cl=cl)}}{}
   \item{\code{stopCluster(cl)}}{}
 }
+
+Or, even more succinctly if all communication elements required are identical to the master node,
+
+\describe{
+  \item{\code{library(parallel)}}{}
+  \item{\code{primary <- 'master'}}{}
+  \item{\code{spec <- c(rep(primary, 8), rep('slave', 6))}}{}
+  \item{\code{cl <- makeCluster(master=primary, spec=spec)}}{}
+  \item{\code{Final <- runSimulation(..., cl=cl)}}{}
+  \item{\code{stopCluster(cl)}}{}
+}
 }
 
 \section{Poor man's cluster computing for independent nodes}{
