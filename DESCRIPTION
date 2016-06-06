@@ -26,4 +26,6 @@ Suggests:
     doMPI
 License: GPL (>=2)
 LazyData: true
+URL: https://github.com/philchalmers/SimDesign,
+    https://github.com/philchalmers/SimDesign/wiki
 RoxygenNote: 5.0.1
