@@ -84,8 +84,15 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     }
     sim_results <- Functions$summarise(results=results, parameters_list=parameters,
                            condition=condition, fixed_objects=fixed_objects)
+    if(is.data.frame(sim_results)){
+        if(nrow(sim_results) > 1L)
+            stop('When returning a data.frame in summarise() there should only be 1 row', call.=FALSE)
+        nms <- names(sim_results)
+        sim_results <- as.numeric(sim_results)
+        names(sim_results) <- nms
+    }
     if(!is.vector(sim_results) || is.null(names(sim_results)))
-        stop('summarise() must return a named vector', call.=FALSE)
+        stop('summarise() must return a named vector or data.frame object with 1 row', call.=FALSE)
     sim_results <- c(sim_results, 'REPLICATIONS'=replications, 'ERROR: '=try_errors,
                      'WARNING: '=warnings)
     return(sim_results)

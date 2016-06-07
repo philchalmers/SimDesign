@@ -69,6 +69,7 @@ test_that('SimDesign', {
         lessthan.05 <- EDR(results[,nms], alpha = .05)
 
         # return the results that will be appended to the Design input
+        ret <- data.frame(bias.random_number, RMSD.random_number)
         ret <- c(bias.random_number=bias.random_number,
                  RMSD.random_number=RMSD.random_number,
                  lessthan.05=lessthan.05)
@@ -78,6 +79,22 @@ test_that('SimDesign', {
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
+
+    mycollect <-  function(condition, results, fixed_objects = NULL, parameters_list = NULL){
+
+        # handy functions
+        bias <- function(observed, population) mean(observed - population)
+        RMSD <- function(observed, population) sqrt(mean((observed - population)^2))
+
+        # silly test for bias and RMSD of a random number from 0
+        pop_value <- 0
+        bias.random_number <- bias(sapply(parameters_list, function(x) x$random_number), pop_value)
+        RMSD.random_number <- RMSD(sapply(parameters_list, function(x) x$random_number), pop_value)
+
+        # return the results that will be appended to the Design input
+        ret <- data.frame(bias.random_number, RMSD.random_number)
+        return(ret)
+    }
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
