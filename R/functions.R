@@ -288,8 +288,6 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             }
             next
         }
-        if(is.data.frame(res))
-            if(nrow(res) > 1L) res <- list(res)
         if(!is.list(res) && !is.numeric(res))
             stop('analyse() did not return a list or numeric vector', call.=FALSE)
 
