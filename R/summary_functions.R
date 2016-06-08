@@ -353,6 +353,7 @@ EDR <- function(p, alpha = .05){
 #' ECR(CI, 2, tails = TRUE)
 #'
 ECR <- function(CIs, parameter, tails = FALSE){
+    if(is.data.frame(CIs)) CIs <- as.matrix(CIs)
     if(length(CIs) == 2L) CIs <- matrix(CIs, 1L, 2L)
     stopifnot(is.matrix(CIs))
     stopifnot(length(parameter) == 1L)
