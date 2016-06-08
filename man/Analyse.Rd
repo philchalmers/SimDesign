@@ -23,7 +23,8 @@ empty list}
 returns a named \code{numeric} vector or \code{data.frame} with the values of interest
   (e.g., p-values, effects sizes, etc), or a \code{list} containing values of interest
   (e.g., separate matrix and vector of parameter estimates corresponding to elements in
-  \code{parameters})
+  \code{parameters}). If a \code{data.frame} is returned with more than 1 row then these
+  objects will be wrapped into \code{list} objects
 }
 \description{
 Computes all relevant test statistics, parameter estimates, detection rates, and so on.

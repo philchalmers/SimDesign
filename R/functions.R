@@ -97,7 +97,8 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #' @return returns a named \code{numeric} vector or \code{data.frame} with the values of interest
 #'   (e.g., p-values, effects sizes, etc), or a \code{list} containing values of interest
 #'   (e.g., separate matrix and vector of parameter estimates corresponding to elements in
-#'   \code{parameters})
+#'   \code{parameters}). If a \code{data.frame} is returned with more than 1 row then these
+#'   objects will be wrapped into \code{list} objects
 #'
 #' @seealso \code{\link{stop}}
 #' @aliases Analyse
@@ -287,6 +288,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             }
             next
         }
+        if(is.data.frame(res))
+            if(nrow(res) > 1L) res <- list(res)
         if(!is.list(res) && !is.numeric(res))
             stop('analyse() did not return a list or numeric vector', call.=FALSE)
 
