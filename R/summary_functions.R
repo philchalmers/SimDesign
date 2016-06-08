@@ -301,6 +301,7 @@ RE <- function(x, MSE = FALSE){
 #' EDR(rates)
 #'
 EDR <- function(p, alpha = .05){
+    if(is.data.frame(p)) p <- as.matrix(p)
     stopifnot(all(p <= 1 && p >= 0))
     stopifnot(length(alpha) == 1L)
     stopifnot(alpha <= 1 && alpha >= 0)
