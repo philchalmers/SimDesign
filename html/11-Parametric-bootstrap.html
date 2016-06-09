@@ -7,7 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
 
 <meta name="author" content />
 
@@ -40,25 +40,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 
 
-
-</head>
-
-<body>
-
 <style type="text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-  height: auto;
-}
 h1 {
   font-size: 34px;
 }
@@ -79,6 +61,30 @@ h5 {
 }
 h6 {
   font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type="text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -107,6 +113,7 @@ $(document).ready(function () {
 
 
 <div class="fluid-row" id="header">
+
 
 
 
@@ -142,7 +149,7 @@ with(dat, median_diff(DV, group))</code></pre>
         dat
     }
 
-    Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+    Analyse &lt;- function(condition, dat, fixed_objects = NULL) {
         ret &lt;- with(dat, fixed_objects$fun(DV, group))
         ret
     }
@@ -157,14 +164,13 @@ with(dat, median_diff(DV, group))</code></pre>
 }</code></pre>
 <p>Using this function definition we can pass the necessary elements to obtain a parameterically estimate <span class="math inline">\(p\)</span>-value indicating how likely the observed statistic was to observe given that a suitable emperically generated null hypothesis distribution.</p>
 <pre class="r"><code>median_parametric_boot(dat, median_diff)</code></pre>
-<pre><code>## Loading required package: SimDesign</code></pre>
 <pre><code>##     p 
-## 0.963</code></pre>
+## 0.942</code></pre>
 <p>Furthermore, because additional arguments can be passed through the <code>...</code> input to <code>runSimulation</code> all the extra components available in the package will be present. E.g., defining a parallel cluster and running the code in parallel:</p>
 <pre class="r"><code>cl &lt;- parallel::makeCluster(2)
 median_parametric_boot(dat, median_diff, cl=cl, parallel=TRUE)</code></pre>
-<pre><code>##    p 
-## 0.94</code></pre>
+<pre><code>##     p 
+## 0.943</code></pre>
 </div>
 </div>
 

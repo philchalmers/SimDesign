@@ -7,7 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
 
 <meta name="author" content />
 
@@ -40,25 +40,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 
 
-
-</head>
-
-<body>
-
 <style type="text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-  height: auto;
-}
 h1 {
   font-size: 34px;
 }
@@ -79,6 +61,30 @@ h5 {
 }
 h6 {
   font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type="text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -110,6 +116,7 @@ $(document).ready(function () {
 
 
 
+
 </div>
 
 
@@ -126,12 +133,12 @@ Design &lt;- data.frame(N = c(10,20,30))</code></pre>
     dat
 }
 
-Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+Analyse &lt;- function(condition, dat, fixed_objects = NULL) {
     ret &lt;- c(p = t.test(dat)$p.value)
     ret
 }
 
-Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+Summarise &lt;- function(condition, results, fixed_objects = NULL) {
     ret &lt;- EDR(results, alpha = .05)
     ret
 }</code></pre>
@@ -141,7 +148,7 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_li
 <h1>save</h1>
 <p>The <code>save</code> flag triggers whether temporary results should be saved to the hard-disk in case of power outages and crashes. When this flag is used results can easily be restored automatically and the simulation can continue where it left off after the hardware problems have been dealt with. In fact, no modifications in the code required because <code>runSimulation()</code> will automatically detect temporary files to resume from (so long as they are resumed from the same computer node; otherwise see the <code>save_details</code> list).</p>
 <p>As a simple example, say that in the <span class="math inline">\(N=30\)</span> condition something went terribly wrong and the simulation crashed. However, the first two design conditions are perfectly fine. The <code>save</code> flag is very helpful here because the state is not lost and the results are still useful. Finally, supplying a <code>filename</code> argument will safely save the aggregate simulation results to the hard-drive for future reference; however, this won’t be called until the simulation is complete.</p>
-<pre class="r"><code>Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+<pre class="r"><code>Analyse &lt;- function(condition, dat, fixed_objects = NULL) {
     if(condition$N == 30) stop('Danger Will Robinson!')
     ret &lt;- c(p = t.test(dat)$p.value)
     ret
@@ -163,7 +170,7 @@ Completed: 67%,   Previous condition time: 0.3,  Total elapsed time: 0.5</code><
 files[grepl('SIMDESIGN', files)]</code></pre>
 <pre><code>## [1] &quot;SIMDESIGN-TEMPFILE_ubuntu16-04.rds&quot;</code></pre>
 <p>Notice here that the simulation stopped at 67% because the third design condition threw too many consecutive errors (this is a built-in fail-safe in <code>SimDesign</code>). However, after we fix this portion of the code the simulation can be restarted at the previous state and continue on as normal. Therefore, no time is lost.</p>
-<pre class="r"><code>Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+<pre class="r"><code>Analyse &lt;- function(condition, dat, fixed_objects = NULL) {
     ret &lt;- c(p = t.test(dat)$p.value)
     ret
 }
@@ -192,8 +199,8 @@ files[grepl('SIMDESIGN', files)]</code></pre>
 <pre><code>## 
 Completed: 0%,   Previous condition time: 0.0,  Total elapsed time: 0.0 
 Completed: 33%,   Previous condition time: 0.3,  Total elapsed time: 0.3 
-Completed: 67%,   Previous condition time: 0.3,  Total elapsed time: 0.5 
-Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 0.8</code></pre>
+Completed: 67%,   Previous condition time: 0.3,  Total elapsed time: 0.6 
+Completed: 100%,   Previous condition time: 0.2,  Total elapsed time: 0.8</code></pre>
 <pre class="r"><code>dir &lt;- dir()
 directory &lt;- dir[grepl('SimDesign-results', dir)]
 dir(directory)</code></pre>

@@ -127,7 +127,7 @@ $(document).ready(function () {
 <h3>Define conditions</h3>
 <p>To keep this example simple, we will only investigate the effects of varying the number of items in the test and population distribution of the latent traits. All other parameters will be sampled from some internal generating functions in R.</p>
 <pre class="r"><code>library(SimDesign)
-# SimFunctions(comments = FALSE)
+# SimFunctions()
 
 Design &lt;- expand.grid(test_length = c(10, 20, 30), 
                       distribution = c('normal', 'bimodal'))</code></pre>
@@ -152,38 +152,44 @@ Design &lt;- expand.grid(test_length = c(10, 20, 30),
     ret
 }
 
-Analyse &lt;- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+Analyse &lt;- function(condition, dat, fixed_objects = NULL) {
     
     bimodal_prior &lt;- function(Theta, ...) as.numeric(dnorm(Theta, -1, 0.5) + dnorm(Theta, 1, 0.5))
     
+    # extract
+    data &lt;- dat$dat
+    parameters &lt;- dat$parameters
+    
     # assign population values for complete model
-    sv &lt;- mirt(dat, 1, pars = 'values')
+    sv &lt;- mirt(data, 1, pars = 'values')
     sv$value[sv$name == 'a1'] &lt;- parameters$a
     sv$value[sv$name == 'd'] &lt;- parameters$d
-    mod &lt;- mirt(dat, 1, pars = sv, TOL = NaN)
+    mod &lt;- mirt(data, 1, pars = sv, TOL = NaN)
     
     EAPscore &lt;- fscores(mod, full.scores=TRUE)
     MAPscore &lt;- fscores(mod, method = 'MAP', full.scores=TRUE)
     MLscore &lt;- fscores(mod, method = 'ML', full.scores=TRUE)
     EAPscore_bimodal &lt;- fscores(mod, method = 'EAP', full.scores=TRUE, custom_den = bimodal_prior)
     
-    ret &lt;- list(EAP=EAPscore, MAP=MAPscore, ML=MLscore, EAP_bimodal=EAPscore_bimodal)
+    # return list (also with true Theta's)
+    ret &lt;- list(Theta=parameters$Theta, EAP=EAPscore, MAP=MAPscore, 
+                ML=MLscore, EAP_bimodal=EAPscore_bimodal)
     ret
 }
 
-Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+Summarise &lt;- function(condition, results, fixed_objects = NULL) {
     
     # for ease of calculations, find the difference between the observed and population matricies
     index &lt;- 1:length(results)
-    diff_EAP &lt;- do.call(c, lapply(index, function(ind, obs, pop) obs[[ind]]$EAP - pop[[ind]]$Theta,
-                   obs=results, pop=parameters_list))
-    diff_MAP &lt;- do.call(c, lapply(index, function(ind, obs, pop) obs[[ind]]$MAP - pop[[ind]]$Theta, 
-                   obs=results, pop=parameters_list))
-    diff_ML &lt;- do.call(c, lapply(index, function(ind, obs, pop) obs[[ind]]$ML - pop[[ind]]$Theta, 
-                   obs=results, pop=parameters_list))
+    diff_EAP &lt;- do.call(c, lapply(index, function(ind, res) res[[ind]]$EAP - res[[ind]]$Theta,
+                   res=results))
+    diff_MAP &lt;- do.call(c, lapply(index, function(ind, res) res[[ind]]$MAP - res[[ind]]$Theta, 
+                   res=results))
+    diff_ML &lt;- do.call(c, lapply(index, function(ind, res) res[[ind]]$ML - res[[ind]]$Theta, 
+                   res=results))
     diff_ML &lt;- diff_ML[is.finite(diff_ML)]
-    diff_EAP_bimodal &lt;- do.call(c, lapply(index, function(ind, obs, pop) 
-        obs[[ind]]$EAP_bimodal - pop[[ind]]$Theta, obs=results, pop=parameters_list))
+    diff_EAP_bimodal &lt;- do.call(c, lapply(index, function(ind, res) 
+        res[[ind]]$EAP_bimodal - res[[ind]]$Theta, res=results))
     
     bias_EAP &lt;- bias(diff_EAP)
     bias_MAP &lt;- bias(diff_MAP)
@@ -208,27 +214,27 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL, parameters_li
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 Completed: 0%,   Previous condition time: 0.0,  Total elapsed time: 0.0 
-Completed: 17%,   Previous condition time: 12.5,  Total elapsed time: 12.5 
-Completed: 33%,   Previous condition time: 17.4,  Total elapsed time: 29.9 
-Completed: 50%,   Previous condition time: 20.1,  Total elapsed time: 50.0 
-Completed: 67%,   Previous condition time: 10.1,  Total elapsed time: 60.1 
-Completed: 83%,   Previous condition time: 19.5,  Total elapsed time: 79.6 
-Completed: 100%,   Previous condition time: 24.1,  Total elapsed time: 103.8</code></pre>
+Completed: 17%,   Previous condition time: 13.1,  Total elapsed time: 13.1 
+Completed: 33%,   Previous condition time: 18.1,  Total elapsed time: 31.2 
+Completed: 50%,   Previous condition time: 20.9,  Total elapsed time: 52.2 
+Completed: 67%,   Previous condition time: 11.8,  Total elapsed time: 64.0 
+Completed: 83%,   Previous condition time: 17.9,  Total elapsed time: 81.9 
+Completed: 100%,   Previous condition time: 20.4,  Total elapsed time: 102.3</code></pre>
 <pre class="r"><code>print(result, time=FALSE, reps=FALSE)</code></pre>
-<pre><code>##   test_length distribution  bias_EAP  bias_MAP   bias_ML bias_EAP_bimodal
-## 1          10       normal  0.002451  0.001754  0.000463         0.003451
-## 2          20       normal -0.001452 -0.001324 -0.002446        -0.002989
-## 3          30       normal -0.000333  0.000199 -0.000142        -0.001098
-## 4          10      bimodal -0.003128 -0.002527 -0.003994        -0.004124
-## 5          20      bimodal -0.000724 -0.000352 -0.001042        -0.000738
-## 6          30      bimodal  0.001067  0.000902  0.000763         0.001954
-##   RMSE_EAP RMSE_MAP RMSE_ML RMSE_EAP_bimodal
-## 1    0.266    0.269   0.365           0.2966
-## 2    0.157    0.159   0.218           0.1798
-## 3    0.113    0.114   0.155           0.1297
-## 4    0.227    0.229   0.357           0.2077
-## 5    0.143    0.142   0.238           0.1243
-## 6    0.103    0.102   0.164           0.0887</code></pre>
+<pre><code>##   test_length distribution  bias_EAP  bias_MAP  bias_ML bias_EAP_bimodal
+## 1          10       normal  0.003046  0.001212  0.00511         0.006294
+## 2          20       normal -0.002222 -0.001486 -0.00319        -0.001154
+## 3          30       normal -0.000814 -0.001018 -0.00155         0.000347
+## 4          10      bimodal -0.002754 -0.002392 -0.00299        -0.003823
+## 5          20      bimodal  0.000904  0.000294  0.00205         0.002253
+## 6          30      bimodal -0.001160 -0.000815 -0.00161        -0.000382
+##   RMSE_EAP RMSE_MAP RMSE_ML RMSE_EAP_bimodal REPLICATIONS SIM_TIME
+## 1    0.263    0.266   0.354           0.2946          100     13.1
+## 2    0.157    0.160   0.216           0.1785          100     18.1
+## 3    0.109    0.111   0.150           0.1250          100     20.9
+## 4    0.228    0.229   0.358           0.2082          100     11.8
+## 5    0.138    0.136   0.230           0.1195          100     17.9
+## 6    0.103    0.101   0.160           0.0885          100     20.4</code></pre>
 </div>
 <div id="analyze-the-results" class="section level3">
 <h3>Analyze the results</h3>
