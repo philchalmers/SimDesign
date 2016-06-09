@@ -249,8 +249,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             try_error <- c(try_error, res[1L])
             if(length(try_error) == max_errors){
                 res[1L] <-
-                    gsub('Error in analyse\\(dat = simlist\\$dat, condition = condition,  : \\n  ',
-                         replacement = 'Manual Error : ', res[1L])
+                    gsub('Error in analyse\\(dat = simlist, condition = condition, fixed_objects = fixed_objects) : \\n  ',
+                         replacement = 'Error : ', res[1L])
                 stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
                             ' consecutive errors. \n\nLast error message was: \n\n  ', res[1L]), call.=FALSE)
             }

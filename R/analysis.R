@@ -59,8 +59,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         table(try_errors[!is.na(try_errors)])
     } else table(try_errors)
     names(try_errors) <-
-        gsub('Error in analyse\\(dat = simlist\\$dat, condition = condition,  : \\n  ',
-             replacement = 'Manual Error : ', names(try_errors))
+        gsub('Error in analyse\\(dat = simlist, condition = condition, fixed_objects = fixed_objects) : \\n  ',
+             replacement = 'Error : ', names(try_errors))
     warnings <- do.call(c, lapply(results, function(x) attr(x, 'warnings')))
     warnings <- if(length(warnings)){
         table(warnings[!is.na(warnings)])
