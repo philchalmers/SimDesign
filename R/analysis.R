@@ -19,7 +19,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     #  and number of replications desired
     if(is.null(cl)){
         if(!is.null(seed)) set.seed(seed[condition$ID])
-        cell_results <- lapply(1L:replications, mainsim, condition=condition,
+        results <- lapply(1L:replications, mainsim, condition=condition,
                                generate=Functions$generate,
                                analyse=Functions$analyse,
                                fixed_objects=fixed_objects,
@@ -31,7 +31,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     } else {
         if(MPI){
             i <- 1L
-            cell_results <- foreach(i=1L:replications, .export=export_funs) %dopar%
+            results <- foreach(i=1L:replications, .export=export_funs) %dopar%
                 mainsim(i, condition=condition, generate=Functions$generate,
                      analyse=Functions$analyse, fixed_objects=fixed_objects, load_seed=load_seed,
                      max_errors=max_errors, save_generate_data=save_generate_data,
@@ -39,7 +39,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
-            cell_results <- parallel::parLapply(cl, 1L:replications, mainsim,
+            results <- parallel::parLapply(cl, 1L:replications, mainsim,
                                                 condition=condition, generate=Functions$generate,
                                                 analyse=Functions$analyse, load_seed=load_seed,
                                                 fixed_objects=fixed_objects, packages=packages,
@@ -48,27 +48,25 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                                 save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname)
         }
     }
-    if(summarise_asis)
-        return(do.call(rbind, lapply(cell_results, function(x) x$result)))
-    try_errors <- do.call(c, lapply(cell_results, function(x) attr(x, 'try_errors')))
+    if(summarise_asis){
+        if(is.data.frame(results[[1]])) return(plyr::rbind.fill(results))
+        if(is.list(results[[1L]])) return(results)
+        return(do.call(rbind, results))
+    }
+
+    try_errors <- do.call(c, lapply(results, function(x) attr(x, 'try_errors')))
     try_errors <- if(length(try_errors)){
         table(try_errors[!is.na(try_errors)])
     } else table(try_errors)
     names(try_errors) <-
-        gsub('Error in analyse\\(dat = simlist\\$dat, parameters = simlist\\$parameters, condition = condition,  : \\n  ',
+        gsub('Error in analyse\\(dat = simlist\\$dat, condition = condition,  : \\n  ',
              replacement = 'Manual Error : ', names(try_errors))
-    warnings <- do.call(c, lapply(cell_results, function(x) attr(x, 'warnings')))
+    warnings <- do.call(c, lapply(results, function(x) attr(x, 'warnings')))
     warnings <- if(length(warnings)){
         table(warnings[!is.na(warnings)])
     } else table(warnings)
-    for(i in 1L:length(cell_results))
-        attr(cell_results[[i]], 'try_errors') <- attr(cell_results[[i]], 'warnings') <- NULL
-
-    # split lists up
-    results <- lapply(cell_results, function(x) x$result)
-    if(!is.null(cell_results[[1L]]$parameters))
-        parameters <- lapply(cell_results, function(x) x$parameters)
-    else parameters <- NULL
+    for(i in 1L:length(results))
+        attr(results[[i]], 'try_errors') <- attr(results[[i]], 'warnings') <- NULL
 
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
     if(!is.list(results[[1L]]) ||
@@ -83,7 +81,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         saveRDS(list(condition=condition, results=results, errors=try_errors, warnings=warnings),
                 tmpfilename)
     }
-    sim_results <- Functions$summarise(results=results, parameters_list=parameters,
+    sim_results <- Functions$summarise(results=results,
                            condition=condition, fixed_objects=fixed_objects)
     if(is.data.frame(sim_results)){
         if(nrow(sim_results) > 1L)

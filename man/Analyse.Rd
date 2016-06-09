@@ -4,20 +4,16 @@
 \alias{Analyse}
 \title{Compute estimates and statistics}
 \usage{
-Analyse(condition, dat, fixed_objects = NULL, parameters = NULL)
+Analyse(condition, dat, fixed_objects = NULL)
 }
 \arguments{
 \item{condition}{a single row from the design input (as a \code{data.frame}), indicating the
 simulation conditions}
 
 \item{dat}{the \code{dat} object returned from the \code{\link{Generate}} function
-(usually a \code{data.frame}, \code{matrix}, or \code{vector}).}
+(usually a \code{data.frame}, \code{matrix}, \code{vector}, or \code{list})}
 
 \item{fixed_objects}{object passed down from \code{\link{runSimulation}}}
-
-\item{parameters}{the (optional) list object named 'parameters' returned from the
-\code{\link{Generate}} function when a list is returned. Otherwise, this will be an just an
-empty list}
 }
 \value{
 returns a named \code{numeric} vector or \code{data.frame} with the values of interest
@@ -46,7 +42,7 @@ iterations were reached).
 \examples{
 \dontrun{
 
-myanalyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
+myanalyse <- function(condition, dat, fixed_objects = NULL){
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)

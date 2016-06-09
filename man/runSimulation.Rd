@@ -485,7 +485,7 @@ Generate <- function(condition, fixed_objects = NULL){
 }
 
 # help(Analyse)
-Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
+Analyse <- function(condition, dat, fixed_objects = NULL){
     welch <- t.test(DV ~ group, dat)
     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
 
@@ -497,7 +497,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
 }
 
 # help(Summarise)
-Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL){
+Summarise <- function(condition, results, fixed_objects = NULL){
 
     #find results of interest here (e.g., alpha < .1, .05, .01)
     lessthan.05 <- EDR(results, alpha = .05)
@@ -549,7 +549,7 @@ runSimulation(design=Design, replications=1000,
 
 ## Alternatively, place a browser() within the desired function line to
 ##   jump to a specific location
-Summarise <- function(condition, results, parameters_list = NULL){
+Summarise <- function(condition, results, fixed_objects = NULL){
 
     #find results of interest here (e.g., alpha < .1, .05, .01)
     nms <- c('welch', 'independent')

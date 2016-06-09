@@ -442,7 +442,7 @@
 #' }
 #'
 #' # help(Analyse)
-#' Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL){
+#' Analyse <- function(condition, dat, fixed_objects = NULL){
 #'     welch <- t.test(DV ~ group, dat)
 #'     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
 #'
@@ -454,7 +454,7 @@
 #' }
 #'
 #' # help(Summarise)
-#' Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL){
+#' Summarise <- function(condition, results, fixed_objects = NULL){
 #'
 #'     #find results of interest here (e.g., alpha < .1, .05, .01)
 #'     lessthan.05 <- EDR(results, alpha = .05)
@@ -506,7 +506,7 @@
 #'
 #' ## Alternatively, place a browser() within the desired function line to
 #' ##   jump to a specific location
-#' Summarise <- function(condition, results, parameters_list = NULL){
+#' Summarise <- function(condition, results, fixed_objects = NULL){
 #'
 #'     #find results of interest here (e.g., alpha < .1, .05, .01)
 #'     nms <- c('welch', 'independent')
@@ -622,7 +622,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!is.null(cl)) parallel <- TRUE
     summarise_asis <- FALSE
     if(missing(summarise)){
-        summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) results
+        summarise <- function(condition, results, fixed_objects = NULL) results
         summarise_asis <- TRUE
         save_results <- save_generate_data <- FALSE
         stored_time <- 0
@@ -637,8 +637,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         fms <- names(formals(Functions[[i]]))
         truefms <- switch(i,
                           generate  = c('condition', 'fixed_objects'),
-                          analyse = c('dat', 'parameters', 'condition', 'fixed_objects'),
-                          summarise = c('results', 'parameters_list', 'condition', 'fixed_objects'))
+                          analyse = c('dat', 'condition', 'fixed_objects'),
+                          summarise = c('results', 'condition', 'fixed_objects'))
         if(!all(truefms %in% fms))
             stop(paste0('Function arguments for ', i, ' are not correct.'), call. = FALSE)
     }

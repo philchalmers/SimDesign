@@ -15,16 +15,7 @@ simulation conditions}
 \value{
 returns a single object containing the data to be analyzed (usually a
   \code{vector}, \code{matrix}, or \code{data.frame}),
-  or a list with the elements \code{'dat'} and \code{'parameters'}.
-
-  If a list is returned the \code{'dat'} element should be the observed data object while the
-  \code{'parameters'} element should be a named list containing the simulated parameters
-  (if there are any. Otherwise, this could just be an empty list),
-  or any other objects that would be useful
-  in the \code{\link{Analyse}} and \code{\link{Summarise}} functions. If, on the other hand,
-  the objects are only useful in the \code{\link{Analyse}} function and NOT
-  \code{\link{Summarise}} then simply adding \code{\link{attributes}} to the returned object
-  is sufficent (and requires less RAM)
+  or \code{list})
 }
 \description{
 Generate data from a single row in the \code{design} input (see \code{\link{runSimulation}}).
@@ -45,7 +36,6 @@ mygenerate <- function(condition, fixed_objects = NULL){
     dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
     pars <- list(random_number = rnorm(1)) # just a silly example of a simulated parameter
 
-    #could just use return(dat) if no parameters should be tracked for Summerise
     return(list(dat=dat, parameters=pars))
 }
 
@@ -57,12 +47,9 @@ mygenerate2 <- function(condition, fixed_objects = NULL){
 
 mygenerate3 <- function(condition, fixed_objects = NULL){
     mu <- sample(c(-1,0,1), 1)
-    dat <- rnorm(100, mu)
-    attr(dat, 'mu') <- mu    # store mu as an attribute 'mu'
+    dat <- data.frame(DV = rnorm(100, mu))
     dat
 }
-
-# in the Analyse function, use attr(dat, 'mu') to pull out the mu object for further use
 
 }
 
