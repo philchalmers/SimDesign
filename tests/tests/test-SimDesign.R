@@ -152,10 +152,10 @@ test_that('SimDesign', {
 
     # aggregate test
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                         replications = 2, parallel=FALSE, filename='this',
+                         replications = 2, parallel=FALSE, filename='this', save=TRUE,
                          max_errors=Inf, verbose = FALSE)
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, max_errors=Inf,
-                         replications = 2, parallel=FALSE, filename = 'newfile',
+                         replications = 2, parallel=FALSE, filename = 'newfile', save=TRUE,
                          verbose = FALSE)
     Final <- aggregate_simulations()
     expect_is(Final, 'data.frame')

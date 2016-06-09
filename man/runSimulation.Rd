@@ -9,12 +9,12 @@
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
-  fixed_objects = NULL, packages = NULL, filename = NULL, save = FALSE,
-  save_results = FALSE, save_seeds = FALSE, load_seed = NULL,
-  seed = NULL, parallel = FALSE, ncores = parallel::detectCores(),
-  cl = NULL, MPI = FALSE, max_errors = 50, as.factor = TRUE,
-  save_generate_data = FALSE, save_details = list(), edit = "none",
-  verbose = TRUE)
+  fixed_objects = NULL, packages = NULL, filename = "SimDesign-results",
+  save = FALSE, save_results = FALSE, save_seeds = FALSE,
+  load_seed = NULL, seed = NULL, parallel = FALSE,
+  ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
+  max_errors = 50, as.factor = TRUE, save_generate_data = FALSE,
+  save_details = list(), edit = "none", verbose = TRUE)
 
 \method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE, ...)
 
@@ -59,26 +59,29 @@ otherwise the functions must be made available by using explicit
 Alternatively, functions can be called explicitly without attaching the package with \code{::}
 (e.g., \code{mvtnorm::rmvnorm()})}
 
-\item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to.
-When \code{NULL} the final simulation object is not saved to the drive. As well,
+\item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to
+when \code{save = TRUE}.
+When \code{NULL}, the final simulation object is not saved to the drive. As well,
 if the same file name already exists in the working directly at the time of saving then a new
 file will be generated instead and a warning will be thrown; this helps avoid accidentally overwriting
-existing files. Default is \code{NULL}}
+existing files. Default is \code{'SimDesign-results'}}
 
-\item{save}{logical; save the simulation state to the hard-drive? This is useful
+\item{save}{logical; save the simulation state and final results to the hard-drive? This is useful
 for simulations which require an extended amount of time. When \code{TRUE}, a temp file
 will be created in the working directory which allows the simulation state to be saved
 and recovered (in case of power outages, crashes, etc). To recover you simulation at the last known
 location simply rerun the same code you used to initially define the simulation and the object
-will automatically be detected and read-in. Default is \code{FALSE}}
+will automatically be detected and read-in. Upon completion, and if \code{filename} is not
+\code{NULL}, the final results will also be saved to the working directory. Default is \code{FALSE}}
 
 \item{save_results}{logical; save the results returned from \code{\link{Analyse}} to external
 \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
 Use this if you would like to keep track of the individual parameters returned from the analyses.
 Each saved object will contain a list of three elements containing the condition (row from \code{design}),
 results (as a \code{list} or \code{matrix}), and try-errors. When \code{TRUE}, a temp file will be used to track the simulation
-state (in case of power outages, crashes, etc). When \code{TRUE} the \code{save} flag will also be
-set to \code{TRUE} to better track the save-state. Default is \code{FALSE}}
+state (in case of power outages, crashes, etc). When \code{TRUE}, temporary files will also be saved
+to the working directory (in the same was as when \code{save = TRUE} to better track the state of the simulation.
+Default is \code{FALSE}}
 
 \item{save_seeds}{logical; save the \code{.Random.seed} states prior to performing each replication into
 plain text files located in the defined \code{save_seeds_dirname} directory/folder?
@@ -86,7 +89,9 @@ Use this if you would like to keep track of the simulation state within each rep
 condition. Primarily, this is useful for completely replicating any cell in the simulation if need be,
 especially when tracking down hard-to-find errors and bugs. As well, see the \code{load_seed} input
 to load a given \code{.Random.seed} to exactly replicate the generated data and analysis state (handy
-for debugging). Default is \code{FALSE}}
+for debugging). When \code{TRUE}, temporary files will also be saved
+to the working directory (in the same was as when \code{save = TRUE} to better track the state of the simulation.
+Default is \code{FALSE}}
 
 \item{load_seed}{a character object indicating which file to load from when the \code{.Random.seed}s have
 be saved (after a run with \code{save_seeds = TRUE}). E.g., \code{load_seed = 'design-row-2/seed-1'}
@@ -128,8 +133,9 @@ located in the defined \code{save_generate_data_dirname} directory/folder?
 It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
 a large amount of disk space, and by and large saving data is not required or recommended for simulations.
 A more space-friendly version is available when using the \code{save_seed} flag.
-Finally, when set to \code{TRUE} the \code{save} flag will also be set to \code{TRUE} to better track
-the save-state. Default is \code{FALSE}}
+When \code{TRUE}, temporary files will also be saved
+to the working directory (in the same was as when \code{save = TRUE} to better track the state of the simulation.
+Default is \code{FALSE}}
 
 \item{save_details}{a list pertaining to information about how and where files should be saved
   when \code{save}, \code{save_results}, or \code{save_generate_data} are triggered.
@@ -272,8 +278,9 @@ that each simulation condition is completely reproducible under the single/multi
 
 Finally, when the Monte Carlo simulation is complete
 it is recommended to write the results to a hard-drive for safe keeping, particularly with the
-\code{filename} argument provided (for reasons that are more obvious in the parallel computation
-descriptions below). Using the \code{filename} argument supplied is much safer than using something
+\code{save} and \code{filename} arguments provided (for reasons that are more obvious in the parallel computation
+descriptions below). Using the \code{filename} argument (along with \code{save = TRUE})
+supplied is much safer than using something
 like \code{\link{saveRDS}} directly because files will never accidentally be overwritten,
 and instead a new file name will be created when a conflict arises; this type of safety
 is prevalent in many aspects of the package and helps to avoid many unrecoverable (yet surprisingly common)
@@ -535,7 +542,7 @@ head(Final)
 View(Final)
 
 ## save results to a file upon completion (not run)
-# runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
+# runSimulation(design=Design, replications=1000, parallel=TRUE, save=TRUE, filename = 'mysim',
 #               generate=Generate, analyse=Analyse, summarise=Summarise)
 
 
