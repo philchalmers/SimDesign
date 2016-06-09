@@ -23,7 +23,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL) {
     tests <- function(DV, group, name){
         F_test <- var.test(DV ~ group)$p.value
         Jacknife <- Jacknife_vartest(DV, group)$p.value
@@ -47,7 +47,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
-    ret <- c(alpha.05=EDR(results, alpha = .05))
+Summarise <- function(condition, results, fixed_objects = NULL) {
+    ret <- EDR(results, alpha = .05)
     ret
 }

@@ -49,7 +49,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL) {
     r0 <- cor(dat, use = 'complete.obs')
     r1 <- cor(dat, use = 'pairwise.complete')
     pick <- lower.tri(r0)
@@ -57,7 +57,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_objects = NULL) {
     obs_bias <- bias(results, parameter = .5)
     obs_RMSE <- RMSE(results, parameter = .5)
     ret <- c(bias=obs_bias, RMSE=obs_RMSE, RE = RE(obs_RMSE))

@@ -54,7 +54,7 @@ median_parametric_boot <- function(dat, fun, R = 1000, verbose = FALSE, ...){
         dat
     }
 
-    Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+    Analyse <- function(condition, dat, fixed_objects = NULL) {
         ret <- with(dat, fixed_objects$fun(DV, group))
         ret
     }

@@ -36,12 +36,12 @@ Generate <- function(condition, fixed_objects = NULL) {
     ret
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL) {
     ret <- c(p = t.test(dat)$p.value)
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_objects = NULL) {
     ret <- EDR(results, alpha = .05)
     ret
 }

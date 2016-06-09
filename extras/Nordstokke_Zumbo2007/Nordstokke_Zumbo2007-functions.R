@@ -17,7 +17,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL) {
     BF <- levene.test(dat$DV, dat$group, location = 'median')
     Levene <- levene.test(dat$DV, dat$group, location = 'mean')
     F_test <- var.test(DV ~ group, dat)
@@ -25,7 +25,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_objects = NULL) {
     ret <- EDR(results, alpha = .05)
     ret
 }

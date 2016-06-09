@@ -37,7 +37,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     ret
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL) {
     whc <- sample(c(0,1,2,3), 1, prob = c(.7, .20, .05, .05))
     if(whc == 0){
        ret <- mean(dat)
@@ -52,7 +52,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_objects = NULL) {
     ret <- c(bias = bias(results, 0))
     ret
 }

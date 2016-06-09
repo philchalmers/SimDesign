@@ -33,12 +33,12 @@ Generate <- function(condition, fixed_objects = NULL) {
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL) {
     ret <- c(p = t.test(dat)$p.value)
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL, parameters_list = NULL) {
+Summarise <- function(condition, results, fixed_objects = NULL) {
     ret <- EDR(results, alpha = .05)
     ret
 }
@@ -57,7 +57,7 @@ The `save` flag triggers whether temporary results should be saved to the hard-d
 As a simple example, say that in the $N=30$ condition something went terribly wrong and the simulation crashed. However, the first two design conditions are perfectly fine. The `save` flag is very helpful here because the state is not lost and the results are still useful. Finally, supplying a `filename` argument will safely save the aggregate simulation results to the hard-drive for future reference; however, this won't be called until the simulation is complete.
 
 ```{r eval=FALSE}
-Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL) {
     if(condition$N == 30) stop('Danger Will Robinson!')
     ret <- c(p = t.test(dat)$p.value)
     ret
@@ -68,7 +68,7 @@ result <- runSimulation(Design, replications = 1000, save=TRUE, filename='my-sim
 ```
 
 ```{r echo=FALSE}
-Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL) {
     if(condition$N == 30) stop('Danger Will Robinson!')
     ret <- c(p = t.test(dat)$p.value)
     ret
@@ -90,7 +90,7 @@ files[grepl('SIMDESIGN', files)]
 Notice here that the simulation stopped at 67% because the third design condition threw too many consecutive errors (this is a built-in fail-safe in `SimDesign`). However, after we fix this portion of the code the simulation can be restarted at the previous state and continue on as normal. Therefore, no time is lost.
 
 ```{r}
-Analyse <- function(condition, dat, fixed_objects = NULL, parameters = NULL) {
+Analyse <- function(condition, dat, fixed_objects = NULL) {
     ret <- c(p = t.test(dat)$p.value)
     ret
 }
