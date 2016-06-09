@@ -109,8 +109,3 @@ SimFunctions <- function(filename = NULL, comments = FALSE, singlefile = FALSE, 
     }
     invisible()
 }
-
-#' @rdname SimFunctions
-#' @export
-SimDesign_functions <- function(filename = NULL, comments = FALSE, singlefile = FALSE)
-    .Deprecated('SimFunctions')
