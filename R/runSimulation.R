@@ -647,16 +647,15 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         verbose <- FALSE
     }
     packages <- c('SimDesign', packages)
-    for(i in 1L:length(Functions)){
-        if(names(Functions)[i] == 'summarise') next
-        tmp <- deparse(substitute(Functions[[i]]))
-        if(any(grepl('browser\\(', tmp))){
-            if(verbose && parallel)
-                message('A browser() call was detected.
-                        Parallel processing/object saving will be disabled while visible')
-            save <- save_results <- save_generate_data <- save_seeds <- parallel <- MPI <- FALSE
-        }
+    char_functions <- deparse(substitute(Functions[[i]]))
+    if(any(grepl('browser\\(', char_functions))){
+        if(verbose && parallel)
+            message('A browser() call was detected.
+                    Parallel processing/object saving will be disabled while visible')
+        save <- save_results <- save_generate_data <- save_seeds <- parallel <- MPI <- FALSE
     }
+    if(any(grepl('attach\\(', char_functions)))
+        stop('Did you mean to use Attach() instead of attach()?', call.=FALSE)
     if(!is.data.frame(design))
         stop('design must be a data.frame object', call. = FALSE)
     if(replications < 1L)
