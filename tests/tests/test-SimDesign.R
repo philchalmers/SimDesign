@@ -11,7 +11,9 @@ test_that('SimDesign', {
 
     mysim <- function(condition, fixed_objects = NULL){
 
-        N1 <- condition$sample_sizes_group1
+        attach_condition(condition)
+
+        N1 <- sample_sizes_group1
         N2 <- condition$sample_sizes_group2
         sd <- condition$standard_deviations
 

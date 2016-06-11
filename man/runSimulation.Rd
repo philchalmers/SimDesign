@@ -452,31 +452,26 @@ jobs manually .
 }
 \examples{
 
+# skeleton functions to be saved and edited
+SimFunctions()
+
 #### Step 1 --- Define your conditions under study and create design data.frame
 
 # (use EXPLICIT names, avoid things like N <- 100. That's fine in functions, not here)
-sample_sizes <- c(30, 60, 90, 120)
-standard_deviation_ratios <- c(1, 4, 8)
-group_size_ratios <- c(.5, 1, 2)
-
-Design <- expand.grid(sample_size=sample_sizes,
-                      group_size_ratio=group_size_ratios,
-                      standard_deviation_ratio=standard_deviation_ratios)
+Design <- expand.grid(sample_size = c(30, 60, 90, 120),
+                      group_size_ratio = c(1, 4, 8),
+                      standard_deviation_ratio = c(.5, 1, 2))
 dim(Design)
 head(Design)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 2 --- Define generate, analyse, and summarise functions
 
-# skeleton functions to be edited
-SimFunctions()
-
 # help(Generate)
 Generate <- function(condition, fixed_objects = NULL){
     N <- condition$sample_size
     grs <- condition$group_size_ratio
     sd <- condition$standard_deviation_ratio
-
     if(grs < 1){
         N2 <- N / (1/grs + 1)
         N1 <- N - N2
@@ -487,8 +482,7 @@ Generate <- function(condition, fixed_objects = NULL){
     group1 <- rnorm(N1)
     group2 <- rnorm(N2, sd=sd)
     dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
-
-    return(dat)
+    dat
 }
 
 # help(Analyse)
@@ -499,19 +493,14 @@ Analyse <- function(condition, dat, fixed_objects = NULL){
     # In this function the p values for the t-tests are returned,
     #  and make sure to name each element, for future reference
     ret <- c(welch = welch$p.value, independent = ind$p.value)
-
-    return(ret)
+    ret
 }
 
 # help(Summarise)
 Summarise <- function(condition, results, fixed_objects = NULL){
-
     #find results of interest here (e.g., alpha < .1, .05, .01)
-    lessthan.05 <- EDR(results, alpha = .05)
-
-    # return the results that will be appended to the design input
-    ret <- c(lessthan.05=lessthan.05)
-    return(ret)
+    ret <- EDR(results, alpha = .05)
+    ret
 }
 
 
@@ -557,16 +546,10 @@ runSimulation(design=Design, replications=1000,
 ## Alternatively, place a browser() within the desired function line to
 ##   jump to a specific location
 Summarise <- function(condition, results, fixed_objects = NULL){
-
     #find results of interest here (e.g., alpha < .1, .05, .01)
-    nms <- c('welch', 'independent')
-    lessthan.05 <- EDR(results[,nms], alpha = .05)
-
+    ret <- EDR(results[,nms], alpha = .05)
     browser()
-
-    # return the results that will be appended to the design input
-    ret <- c(lessthan.05=lessthan.05)
-    return(ret)
+    ret
 }
 
 runSimulation(design=Design, replications=1000,
@@ -611,22 +594,22 @@ runSimulation(design=Design, replications=1000,
 
 library(dplyr)
 Final2 <- tbl_df(Final)
-Final2 \%>\% summarise(mean(lessthan.05.welch), mean(lessthan.05.independent))
+Final2 \%>\% summarise(mean(welch), mean(independent))
 Final2 \%>\% group_by(standard_deviation_ratio, group_size_ratio) \%>\%
-   summarise(mean(lessthan.05.welch), mean(lessthan.05.independent))
+   summarise(mean(welch), mean(independent))
 
 # quick ANOVA analysis method with all two-way interactions
 SimAnova( ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
 
 # or more specific anovas
-SimAnova(lessthan.05.independent ~ (group_size_ratio + standard_deviation_ratio)^2,
+SimAnova(independent ~ (group_size_ratio + standard_deviation_ratio)^2,
     Final)
 
 # make some plots
 library(ggplot2)
 library(reshape2)
 welch_ind <- Final[,c('group_size_ratio', "standard_deviation_ratio",
-    "lessthan.05.welch", "lessthan.05.independent")]
+    "welch", "independent")]
 dd <- melt(welch_ind, id.vars = names(welch_ind)[1:2])
 
 ggplot(dd, aes(factor(group_size_ratio), value)) +
@@ -648,6 +631,6 @@ ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation
 \seealso{
 \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
   \code{\link{SimFunctions}}, \code{\link{SimClean}}, \code{\link{SimAnova}},
-  \code{\link{aggregate_simulations}}
+  \code{\link{aggregate_simulations}}, \code{\link{attach_condition}}
 }
 
