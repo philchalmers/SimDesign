@@ -13,7 +13,7 @@
 #'
 #' @aliases Generate
 #'
-#' @seealso \code{\link{add_missing}}, \code{\link{attach_condition}}
+#' @seealso \code{\link{add_missing}}, \code{\link{Attach}}
 #'
 #' @examples
 #' \dontrun{
@@ -33,9 +33,9 @@
 #'     list(dat=dat, parameters=pars)
 #' }
 #'
-#' # similar to above, but using the attach_condition() function instead of indexing
+#' # similar to above, but using the Attach() function instead of indexing
 #' mygenerate <- function(condition, fixed_objects = NULL){
-#'     attach_condition(condition)
+#'     Attach(condition)
 #'     N1 <- sample_sizes_group1
 #'     N2 <- sample_sizes_group2
 #'     sd <- standard_deviations

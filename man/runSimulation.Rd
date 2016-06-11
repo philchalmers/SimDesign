@@ -631,6 +631,6 @@ ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation
 \seealso{
 \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
   \code{\link{SimFunctions}}, \code{\link{SimClean}}, \code{\link{SimAnova}},
-  \code{\link{aggregate_simulations}}, \code{\link{attach_condition}}
+  \code{\link{aggregate_simulations}}, \code{\link{Attach}}
 }
 

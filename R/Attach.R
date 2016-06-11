@@ -14,8 +14,6 @@
 #'
 #' @param condition a \code{data.frame} containing the \code{condition} names
 #'
-#' @aliases attach_condition
-#'
 #' @seealso \code{\link{runSimulation}}, \code{\link{Generate}}
 #'
 #' @export
@@ -23,7 +21,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' # does not use attach_condition
+#' # does not use Attach()
 #' mygenerate <- function(condition, fixed_objects = NULL){
 #'     N1 <- condition$sample_sizes_group1
 #'     N2 <- condition$sample_sizes_group2
@@ -36,9 +34,9 @@
 #'     dat
 #' }
 #'
-#' # similar to above, but using the attach_condition() function instead of indexing
+#' # similar to above, but using the Attach() function instead of indexing
 #' mygenerate <- function(condition, fixed_objects = NULL){
-#'     attach_condition(condition)
+#'     Attach(condition)
 #'     N1 <- sample_sizes_group1
 #'     N2 <- sample_sizes_group2
 #'     sd <- standard_deviations
@@ -50,7 +48,7 @@
 #'     dat
 #' }
 #' }
-attach_condition <- function(condition){
+Attach <- function(condition){
     envir <- as.environment(-1L)
     for(n in names(condition))
         assign(n, condition[[n]], envir = envir)
