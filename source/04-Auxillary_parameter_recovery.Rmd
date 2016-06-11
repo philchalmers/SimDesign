@@ -43,8 +43,9 @@ As usual, define the functions of interest. Here we make sure that `mirt` is loa
 
 ```{r}
 Generate <- function(condition, fixed_objects = NULL) {
-    attach_condition(condition) # attaches condition names for direct reference
-    #notice that test_length can be called directly now because of attach_condition()
+    Attach(condition) # attaches condition names for direct reference
+    
+    #notice that test_length can be called directly now because of Attach()
     a <- matrix(rlnorm(test_length, .2, .3)) 
     d <- matrix(rnorm(test_length, 0, .5))
     N <- 300

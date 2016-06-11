@@ -79,8 +79,9 @@ fixed_objects <- list(SD=SD)
 #---------------------------------------------------------------------------
 
 Generate <- function(condition, fixed_objects = NULL) {
-    attach_condition(condition) # make condition names available (e.g., N)
-    # use with() to use 'SD' instead of 'fixed_objects$SD'
+    Attach(condition) # make condition names available (e.g., N)
+    
+    # further, can use with() to use 'SD' directly instead of 'fixed_objects$SD'
     ret <- with(fixed_objects, my_gen_fun(N, sd=SD))
     ret
 }
