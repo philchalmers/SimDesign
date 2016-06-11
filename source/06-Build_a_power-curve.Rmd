@@ -32,7 +32,7 @@ Design <- expand.grid(mean_diff = seq(0, 1, by = .1),
 #--------------------------------------------------------------------
 
 Generate <- function(condition, fixed_objects = NULL) {
-    ret <- with(condition, rnorm(sample_size, mean_diff)) #wrap in with() rather than using $
+    ret <- with(condition, rnorm(sample_size, mean_diff))
     ret
 }
 

@@ -136,14 +136,15 @@ Design &lt;- expand.grid(test_length = c(10, 20, 30),
 <h3>Define the functions</h3>
 <p>As usual, define the functions of interest. Here we make sure that <code>mirt</code> is loaded in when required.</p>
 <pre class="r"><code>Generate &lt;- function(condition, fixed_objects = NULL) {
-    nitems &lt;- condition$test_length
+    attach_condition(condition) # attaches condition names for direct reference
+    #notice that test_length can be called directly now because of attach_condition()
+    a &lt;- matrix(rlnorm(test_length, .2, .3)) 
+    d &lt;- matrix(rnorm(test_length, 0, .5))
     N &lt;- 300
-    a &lt;- matrix(rlnorm(nitems, .2, .3))
-    d &lt;- matrix(rnorm(nitems, 0, .5))
     
-    if(condition$distribution == 'normal'){
+    if(distribution == 'normal'){
         Theta &lt;- matrix(scale(rnorm(N)))
-    } else if(condition$distribution == 'bimodal'){
+    } else if(distribution == 'bimodal'){
         Theta &lt;- scale(c(rnorm(N/2, 1, 0.5), rnorm(N/2, -1, 0.5)))
     }
     dat &lt;- simdata(a=a, d=d, Theta=Theta, itemtype = 'dich')
@@ -214,27 +215,27 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 Completed: 0%,   Previous condition time: 0.0,  Total elapsed time: 0.0 
-Completed: 17%,   Previous condition time: 12.6,  Total elapsed time: 12.6 
-Completed: 33%,   Previous condition time: 17.2,  Total elapsed time: 29.8 
-Completed: 50%,   Previous condition time: 20.6,  Total elapsed time: 50.4 
-Completed: 67%,   Previous condition time: 10.3,  Total elapsed time: 60.7 
-Completed: 83%,   Previous condition time: 20.6,  Total elapsed time: 81.3 
-Completed: 100%,   Previous condition time: 22.8,  Total elapsed time: 104.1</code></pre>
+Completed: 17%,   Previous condition time: 14.2,  Total elapsed time: 14.2 
+Completed: 33%,   Previous condition time: 20.5,  Total elapsed time: 34.7 
+Completed: 50%,   Previous condition time: 20.7,  Total elapsed time: 55.4 
+Completed: 67%,   Previous condition time: 10.1,  Total elapsed time: 65.5 
+Completed: 83%,   Previous condition time: 17.5,  Total elapsed time: 83.1 
+Completed: 100%,   Previous condition time: 20.4,  Total elapsed time: 103.5</code></pre>
 <pre class="r"><code>print(result, time=FALSE, reps=FALSE)</code></pre>
 <pre><code>##   test_length distribution  bias_EAP  bias_MAP   bias_ML bias_EAP_bimodal
-## 1          10       normal  0.004561  0.004265  0.004468         0.004739
-## 2          20       normal -0.000616 -0.000577 -0.000492        -0.000061
-## 3          30       normal  0.001720  0.001111  0.003913         0.001839
-## 4          10      bimodal -0.000427  0.000835 -0.000477        -0.003503
-## 5          20      bimodal  0.001697  0.001242  0.002942         0.003344
-## 6          30      bimodal  0.001438  0.001209  0.001501         0.002038
+## 1          10       normal  0.001362 -0.000312 -0.001814          0.00337
+## 2          20       normal -0.000599 -0.000729  0.001293         -0.00113
+## 3          30       normal -0.000789 -0.000866 -0.000998          0.00105
+## 4          10      bimodal  0.000298  0.001850  0.002156         -0.00146
+## 5          20      bimodal  0.001584  0.000772  0.003856          0.00184
+## 6          30      bimodal -0.000209 -0.000262 -0.000140          0.00033
 ##   RMSE_EAP RMSE_MAP RMSE_ML RMSE_EAP_bimodal REPLICATIONS SIM_TIME
-## 1    0.257    0.261   0.343           0.2885          100     12.6
-## 2    0.156    0.159   0.216           0.1788          100     17.2
-## 3    0.111    0.112   0.150           0.1278          100     20.6
-## 4    0.230    0.232   0.362           0.2088          100     10.3
-## 5    0.137    0.135   0.231           0.1177          100     20.6
-## 6    0.103    0.102   0.164           0.0896          100     22.8</code></pre>
+## 1    0.263    0.266   0.350           0.2920          100     14.2
+## 2    0.155    0.157   0.214           0.1776          100     20.5
+## 3    0.109    0.111   0.149           0.1250          100     20.7
+## 4    0.230    0.232   0.362           0.2102          100     10.1
+## 5    0.139    0.138   0.232           0.1214          100     17.5
+## 6    0.103    0.101   0.163           0.0885          100     20.4</code></pre>
 </div>
 <div id="analyze-the-results" class="section level3">
 <h3>Analyze the results</h3>

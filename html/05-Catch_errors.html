@@ -131,7 +131,7 @@ $(document).ready(function () {
 
 Design &lt;- data.frame(N = c(10,20,30))</code></pre>
 <pre class="r"><code>Generate &lt;- function(condition, fixed_objects = NULL) {
-    ret &lt;- rnorm(condition$N)    
+    ret &lt;- with(condition, rnorm(N))
     ret
 }
 
@@ -162,7 +162,7 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 Completed: 0%,   Previous condition time: 0.0,  Total elapsed time: 0.0 
-Completed: 33%,   Previous condition time: 0.1,  Total elapsed time: 0.1 
+Completed: 33%,   Previous condition time: 0.0,  Total elapsed time: 0.0 
 Completed: 67%,   Previous condition time: 0.0,  Total elapsed time: 0.1 
 Completed: 100%,   Previous condition time: 0.0,  Total elapsed time: 0.1</code></pre>
 <pre class="r"><code>print(result)</code></pre>
@@ -179,9 +179,9 @@ Completed: 100%,   Previous condition time: 0.0,  Total elapsed time: 0.1</code>
 ## 2                                                                          5
 ## 3                                                                          4
 ##   REPLICATIONS SIM_TIME
-## 1          100    0.050
-## 2          100    0.046
-## 3          100    0.034</code></pre>
+## 1          100    0.037
+## 2          100    0.033
+## 3          100    0.032</code></pre>
 <p>What you’ll immediately notice from this output object is that the name of the error thrown, and the function from which the error was thrown, are included as additional columns in the output with the prefix <code>ERROR:</code>. Furthermore, the frequency in which the error occurred are also included for each design condition (here the <code>t.test.default()</code> error, where no inputs were supplied, occurred more often than the manually thrown error as well as the invalid-input error). This behaviour is also tracked for <code>WARNING</code> messages as well in case there are clues as to why estimation models are having difficulty (or for other reasons whereby the warnings may be more serious).</p>
 <p>Finally, <code>SimDesign</code> has a safety built-in feature controlled by with <code>max_errors</code> argument to avoid getting stuck in infinite loops. By default if more than 50 errors are consecutively returned then the simulation will be haulted and the final error message will be returned. This saftey feature is built-in because too many consecutive <code>stop()</code> calls generally indicates a major problem in the simulation code.</p>
 </div>

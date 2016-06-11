@@ -33,7 +33,7 @@ Design <- data.frame(N = c(10,20,30))
 
 ```{r}
 Generate <- function(condition, fixed_objects = NULL) {
-    ret <- rnorm(condition$N)    
+    ret <- with(condition, rnorm(N))
     ret
 }
 

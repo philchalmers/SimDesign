@@ -43,14 +43,15 @@ As usual, define the functions of interest. Here we make sure that `mirt` is loa
 
 ```{r}
 Generate <- function(condition, fixed_objects = NULL) {
-    nitems <- condition$test_length
+    attach_condition(condition) # attaches condition names for direct reference
+    #notice that test_length can be called directly now because of attach_condition()
+    a <- matrix(rlnorm(test_length, .2, .3)) 
+    d <- matrix(rnorm(test_length, 0, .5))
     N <- 300
-    a <- matrix(rlnorm(nitems, .2, .3))
-    d <- matrix(rnorm(nitems, 0, .5))
     
-    if(condition$distribution == 'normal'){
+    if(distribution == 'normal'){
         Theta <- matrix(scale(rnorm(N)))
-    } else if(condition$distribution == 'bimodal'){
+    } else if(distribution == 'bimodal'){
         Theta <- scale(c(rnorm(N/2, 1, 0.5), rnorm(N/2, -1, 0.5)))
     }
     dat <- simdata(a=a, d=d, Theta=Theta, itemtype = 'dich')

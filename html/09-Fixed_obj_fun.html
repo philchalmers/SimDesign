@@ -169,8 +169,9 @@ fixed_objects &lt;- list(SD=SD)
 #---------------------------------------------------------------------------
 
 Generate &lt;- function(condition, fixed_objects = NULL) {
+    attach_condition(condition) # make condition names available (e.g., N)
     # use with() to use 'SD' instead of 'fixed_objects$SD'
-    ret &lt;- with(fixed_objects, my_gen_fun(condition$N, sd=SD))
+    ret &lt;- with(fixed_objects, my_gen_fun(N, sd=SD))
     ret
 }
 
@@ -191,18 +192,18 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE, fixed_objects=f
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
 results</code></pre>
 <pre><code>##    N     p REPLICATIONS SIM_TIME
-## 1 10 0.041         1000    0.245
-## 2 20 0.052         1000    0.240
-## 3 30 0.061         1000    0.239</code></pre>
+## 1 10 0.041         1000    0.273
+## 2 20 0.052         1000    0.251
+## 3 30 0.061         1000    0.251</code></pre>
 <p>By placing objects in a list and passing this to <code>fixed_objects</code>, the objects are safely made available to all relevant functions. Furthermore, running this code in parallel is also valid. Remember, this is only required for R objects NOT user-defined functions.</p>
 <pre class="r"><code>results &lt;- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
                          parallel = TRUE)
 results</code></pre>
 <pre><code>##    N     p REPLICATIONS SIM_TIME
-## 1 10 0.045         1000    0.069
-## 2 20 0.052         1000    0.111
-## 3 30 0.056         1000    0.125</code></pre>
+## 1 10 0.050         1000    0.074
+## 2 20 0.054         1000    0.117
+## 3 30 0.047         1000    0.162</code></pre>
 </div>
 
 

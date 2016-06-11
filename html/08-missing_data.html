@@ -166,13 +166,13 @@ results &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel =
                          packages = 'mvtnorm')</code></pre>
 <pre class="r"><code>print(results)</code></pre>
 <pre><code>##     N bias.listwise bias.pairwise RMSE.listwise RMSE.pairwise RE.listwise
-## 1  50     -0.011887     -0.009558       0.01460       0.01010           1
-## 2 100      0.000145      0.000735       0.00698       0.00507           1
-## 3 200     -0.001259     -0.000735       0.00362       0.00254           1
+## 1  50      -0.01242     -0.009810       0.01563       0.01069           1
+## 2 100      -0.00313     -0.000847       0.00614       0.00443           1
+## 3 200      -0.00497     -0.003821       0.00340       0.00241           1
 ##   RE.pairwise REPLICATIONS SIM_TIME
-## 1       0.479         1000    0.422
-## 2       0.529         1000    0.636
-## 3       0.492         1000    1.049</code></pre>
+## 1       0.468         1000    0.422
+## 2       0.519         1000    0.639
+## 3       0.501         1000    1.076</code></pre>
 <p>Not surprisingly, these results suggest that computing correlations with the pairwise-complete method is more efficient than removing rows in a list-wise fashion, though both approaches results in unbiased estimates when the missing data mechanism is MCAR. The selected removal mechanism appears to be less of an issue as the sample size increases, however in general pairwise complete provides better results.</p>
 </div>
 <div id="mnar-as-the-missing-data-mechanism" class="section level2">
@@ -192,13 +192,13 @@ results &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel =
                          packages = 'mvtnorm')</code></pre>
 <pre class="r"><code>print(results)</code></pre>
 <pre><code>##     N bias.listwise bias.pairwise RMSE.listwise RMSE.pairwise RE.listwise
-## 1  50       -0.0729       -0.0587       0.01586       0.01234           1
-## 2 100       -0.0734       -0.0594       0.01069       0.00828           1
-## 3 200       -0.0698       -0.0549       0.00743       0.00523           1
+## 1  50       -0.0742       -0.0599       0.01490       0.01187           1
+## 2 100       -0.0752       -0.0601       0.01085       0.00826           1
+## 3 200       -0.0716       -0.0568       0.00756       0.00533           1
 ##   RE.pairwise REPLICATIONS SIM_TIME
-## 1       0.605         1000    0.434
-## 2       0.599         1000    0.639
-## 3       0.496         1000    1.068</code></pre>
+## 1       0.634         1000    0.441
+## 2       0.580         1000    0.654
+## 3       0.497         1000    1.119</code></pre>
 <p>In this case we can see the effect of MNAR influencing the bias of the correlation values. This particular missing data mechanism causes the observed parameter estimates to be too lower on average, thereby underestimating the true magnitude of the correlation statistics.</p>
 </div>
 </div>
