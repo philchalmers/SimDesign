@@ -650,8 +650,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     char_functions <- deparse(substitute(Functions[[i]]))
     if(any(grepl('browser\\(', char_functions))){
         if(verbose && parallel)
-            message('A browser() call was detected.
-                    Parallel processing/object saving will be disabled while visible')
+            message(paste0('A browser() call was detected. Parallel processing/object ',
+                    'saving will be disabled while visible'))
         save <- save_results <- save_generate_data <- save_seeds <- parallel <- MPI <- FALSE
     }
     if(any(grepl('attach\\(', char_functions)))
@@ -702,8 +702,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(!is.null(Result_list[[1L]]$REPLICATIONS))
             replications <- Result_list[[1L]]$REPLICATIONS
         if(nrow(design) != length(Result_list))
-            stop("Number of rows in design input not equal to the length of temp .rds file. Simulations conditions
-                 are not identical. Either fix design object or consider removing temp file and re-running")
+            stop(paste0("Number of rows in design input not equal to the length of temp .rds file.",
+                        "Simulations conditions are not identical. Either fix design object or ",
+                        "consider removing temp file and re-running"))
         start <- min(which(sapply(Result_list, is.null)))
         time0 <- time1 - Result_list[[start-1L]]$SIM_TIME
     }
