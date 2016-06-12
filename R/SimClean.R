@@ -8,7 +8,7 @@
 #'   \code{.rds} files which were saved with \code{\link{saveRDS}} or when using the \code{save}
 #'   and \code{filename} inputs to \code{\link{runSimulation}}
 #'
-#' @param dirs a character vector indiciating which directories to remove
+#' @param dirs a character vector indicating which directories to remove
 #'
 #' @param generate_data logical; remove the \code{.rds} data-set files
 #'   saved when passing \code{save_generate_data = TRUE}?

@@ -6,7 +6,7 @@
 #' as exploratory rather than inferential tools.
 #'
 #' @param formula an R formula generally of a form suitable for \code{\link{lm}} or
-#'   \code{\link{aov}}. However, if the dependent variable (left size of the equation) is ommited
+#'   \code{\link{aov}}. However, if the dependent variable (left size of the equation) is omitted
 #'   then all the dependent variables in the simulation will be used and the result will return
 #'   a list of analyses
 #'
@@ -14,7 +14,7 @@
 #'
 #' @param rates logical; does the dependent variable consist of rates (e.g., returned from
 #'   \code{\link{ECR}} or \code{\link{EDR}})? Default is TRUE, which will use the logit of the DV
-#'   to help stabalize the proportion-based summary statistics when computing the parameters and
+#'   to help stabilize the proportion-based summary statistics when computing the parameters and
 #'   effect sizes
 #'
 #' @param subset an optional argument to be passed to \code{\link{subset}} with the same name. Used to

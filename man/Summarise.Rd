@@ -11,7 +11,7 @@ Summarise(condition, results, fixed_objects = NULL)
 (as a \code{data.frame}), indicating the simulation conditions}
 
 \item{results}{a \code{data.frame} (if \code{Analyse} returned a numeric vector) or a \code{list}
-(if \code{Analyse} returned a list or multirowed data.frame) containing the analysis
+(if \code{Analyse} returned a list or multi-rowed data.frame) containing the analysis
 results from \code{\link{Analyse}},
 where each cell is stored in a unique row/list element}
 
@@ -35,7 +35,7 @@ mysummarise <- function(condition, results, fixed_objects = NULL){
 
     # return the results that will be appended to the design input
     ret <- c(lessthan.05=lessthan.05)
-    return(ret)
+    ret
 }
 
 }

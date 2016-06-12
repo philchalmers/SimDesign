@@ -33,7 +33,7 @@ determining RMSE values for a large set of population parameters).
 
 The use of \code{\link{try}} functions is generally not required because the function
 is internally wrapped in a \code{\link{try}} call. Therefore, if a function stops early
-then this will cause the function to halt iternally, the message which triggered the \code{\link{stop}}
+then this will cause the function to halt internally, the message which triggered the \code{\link{stop}}
 will be recorded, and \code{\link{Generate}} will be called again to obtain a different dataset.
 That being said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
 should be redrawn for other reasons (e.g., a model terminated correctly but the maximum number of

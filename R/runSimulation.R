@@ -16,7 +16,7 @@
 #'    \item{1)}{Define a suitable \code{design} data.frame object containing fixed conditional
 #'       information about the Monte Carlo simulations. This is often expedited by using the
 #'       \code{\link{expand.grid}} function, and if necessary using the \code{\link{subset}}
-#'       function to remove redundent or non-applicable rows}
+#'       function to remove redundant or non-applicable rows}
 #'    \item{2)}{Define the three step functions to generate the data (\code{\link{Generate}}),
 #'       analyse the generated data by computing the respective parameter estimates, detection rates,
 #'       etc (\code{\link{Analyse}}), and finally summarise the results across the total
@@ -60,7 +60,7 @@
 #' \code{save_generate_data = TRUE}, however it is often more memory efficient to use the
 #' \code{save_seeds} option instead to only save R's \code{.Random.seed} state instead (still
 #' allowing for complete reproducibility); individual \code{.Random.seed} terms may also be read in with the
-#' \code{load_seed} input to reproduce the exact simulation state at any given replicaiton. Finally,
+#' \code{load_seed} input to reproduce the exact simulation state at any given replication. Finally,
 #' providing a vector of \code{seeds} is also possible to ensure
 #' that each simulation condition is completely reproducible under the single/multi-core method selected.
 #'
@@ -144,7 +144,7 @@
 #' than the setup for MPI jobs in that it only requires the specification of a) the respective
 #' IP addresses within a defined R script, and b) the user name
 #' (if different from the master node's user name. Otherwise, only a) is required).
-#' However, on Linux I have found it is also imporant to include relavent information about the host names
+#' However, on Linux I have found it is also important to include relevant information about the host names
 #' and IP addresses in the \code{/etc/hosts} file on the master and slave nodes, and to ensure that
 #' the selected port (passed to \code{\link{makeCluster}}) on the master node is not hindered by a firewall.
 #'
@@ -175,7 +175,7 @@
 #' your R script). This requires that the master node has itself and all the slave nodes defined in the
 #' \code{/etc/hosts} and \code{~/.ssh/config} files, while the slave nodes require themselves and the
 #' master node in the same files (only 2 IP addresses required on each slave).
-#' Following this setup, and assuming the user name is the same accross all nodes,
+#' Following this setup, and assuming the user name is the same across all nodes,
 #' the \code{cl} object could instead be defined with
 #'
 #' \describe{
@@ -239,7 +239,7 @@
 #'   \code{\link{Generate}}. See \code{\link{Analyse}} for details
 #'
 #' @param summarise (optional but recommended) user-defined summary function to be used
-#'   after all the replications have completed within each \code{design} condition. Ommiting this function
+#'   after all the replications have completed within each \code{design} condition. Omitting this function
 #'   will return a list of matrices (or a single matrix, if only one row in \code{design} is supplied)
 #'   containing only the results returned form \code{\link{Analyse}}.
 #'   Ommiting this function is only recommended for didactic purposes because it leaves out a large amount of
@@ -469,7 +469,7 @@
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' head(Final)
 #'
-#' # didactic demonstration when summarise function is not supplied (returns list of matricies)
+#' # didactic demonstration when summarise function is not supplied (returns list of matrices)
 #' Final2 <- runSimulation(design=Design, replications=5,
 #'                        generate=Generate, analyse=Analyse)
 #' print(Final2[1:3])

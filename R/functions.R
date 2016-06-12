@@ -76,7 +76,7 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #'
 #' The use of \code{\link{try}} functions is generally not required because the function
 #' is internally wrapped in a \code{\link{try}} call. Therefore, if a function stops early
-#' then this will cause the function to halt iternally, the message which triggered the \code{\link{stop}}
+#' then this will cause the function to halt internally, the message which triggered the \code{\link{stop}}
 #' will be recorded, and \code{\link{Generate}} will be called again to obtain a different dataset.
 #' That being said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
 #' should be redrawn for other reasons (e.g., a model terminated correctly but the maximum number of
@@ -134,7 +134,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #' estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
 #'
 #' @param results a \code{data.frame} (if \code{Analyse} returned a numeric vector) or a \code{list}
-#'   (if \code{Analyse} returned a list or multirowed data.frame) containing the analysis
+#'   (if \code{Analyse} returned a list or multi-rowed data.frame) containing the analysis
 #'   results from \code{\link{Analyse}},
 #'   where each cell is stored in a unique row/list element
 #'
@@ -161,7 +161,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #'
 #'     # return the results that will be appended to the design input
 #'     ret <- c(lessthan.05=lessthan.05)
-#'     return(ret)
+#'     ret
 #' }
 #'
 #' }
