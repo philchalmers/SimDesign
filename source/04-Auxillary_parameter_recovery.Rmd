@@ -88,7 +88,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 
 Summarise <- function(condition, results, fixed_objects = NULL) {
     
-    # for ease of calculations, find the difference between the observed and population matricies
+    # for ease of calculations, find the difference between the observed and population matrices
     index <- 1:length(results)
     diff_EAP <- do.call(c, lapply(index, function(ind, res) res[[ind]]$EAP - res[[ind]]$Theta,
                    res=results))

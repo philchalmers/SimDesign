@@ -22,15 +22,15 @@ theory framework, and limited-information IFA from the structural equation model
 under which circumstances should either method be used? Here we explore a simple one factor test structure
 to determine which approach can recover the item parameters when varying test length and sample size.
 
-Unforunatly, the `mirt` package uses a slightly different parameterization of the IFA problem, implementing 
+Unfortunately, the `mirt` package uses a slightly different parameterization of the IFA problem, implementing 
 a logistic model rather than a normal ogive model. Historically, the response curves have been equated 
 by applying a scaling correction of $D = 1.702$ to help fix this issue, which as can be seen below makes the 
 response curves very similar (as it turns out, logistic models have slightly thicker tails than ogive models).
 
-To give the following simulation the benifit of the doubt, the data will be 
+To give the following simulation the benefit of the doubt, the data will be 
 generated from the normal ogive model (implying that `lavaan` is fitting the correct model) while `mirt`
 is only fitting an approximation to this model by translating the parameters. From this we will see whether
-FIML with a logistic model will better approximate the normal ogive parmaters compared to the limited information
+FIML with a logistic model will better approximate the normal ogive parameters compared to the limited information
 DWLS approach available in `lavaan`.
 
 ```{r}
@@ -53,7 +53,7 @@ Start by defining the conditions to be studied. Because we are interested in a n
 it is often convenient to save long strings of numbers to a single object to be passed to `fixed_objects`.
 Naturally, these could be included in the simulation source code directly, but often will take up a large amount
 of space (could be hundreds of lines), therefore passing a list object to `runSimulation()` may be more 
-convinient. 
+convenient. 
 
 ```{r}
 library(SimDesign)
@@ -74,7 +74,7 @@ pars_20 <- rbind(a = round(rlnorm(20, .3, .5)/1.702, 2),
 ```
 
 ```{r eval=FALSE}
-# The above slopes, when standardized, give the following factor loadings and communalities (not run): 
+# The above slopes, when standardized, give the following factor loadings and commonalities (not run): 
 a10 <- pars_10['a', ]; a20 <- pars_20['a', ]
 load10 <- a10 / sqrt(1 + a10^2)
 load20 <- a20 / sqrt(1 + a20^2)
@@ -150,7 +150,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 Notice that a manual error is throw whenever `lavaan` or `mirt` objects reach their maximum number of 
 iterations. This is required because the objects themselves do not throw error messages, but the 
-data should be redrawn anyway to ensure that the simulation only contains models which have sucessfully
+data should be redrawn anyway to ensure that the simulation only contains models which have successfully
 converged.
 
 ### Run the simulation
@@ -174,7 +174,7 @@ data no one strategy may be the best; you have to use judgment.
 
 For this particular analysis, we can see that the `res` object contains NA values for 
 slope parameters that were not applicable. For ease of 
-manipulating the results it often will be conveinient to subset the results so that these NA's are no
+manipulating the results it often will be convenient to subset the results so that these NA's are no
 longer required.
 
 ```{r}
@@ -217,7 +217,7 @@ sapply(out, colMeans)
 ```
 
 The methods appeared to recover the slope parameters fairly well, became progressively less biased as 
-the sample size incread, and parameters were generally recovered with greater efficiency as $N$ increased 
+the sample size increased, and parameters were generally recovered with greater efficiency as $N$ increased 
 as well. Additionally, there appeared to be an effect relating to the size of the parameters. For IRT parameters,
 very large slopes appeared to be recovered with greater bias compared to the DWLS, though both estimators 
 had more difficulty recovering the more extreme slopes (see the RMSE plot below).

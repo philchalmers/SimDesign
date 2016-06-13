@@ -81,10 +81,10 @@ What you'll immediately notice from this output object is that the name of the e
 why estimation models are having difficulty (or for other reasons whereby the warnings may be more serious).
 
 Finally, `SimDesign` has a safety built-in feature controlled by with `max_errors` argument to avoid
-getting stuck in infinite loops. By default if more than 50 errors are consecutively returned then the simulation will be haulted and the final error 
-message will be returned. This saftey feature is built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code.
+getting stuck in infinite loops. By default if more than 50 errors are consecutively returned then the simulation will be halted and the final error 
+message will be returned. This safety feature is built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code.
 
 ### What to do
 
 If errors occur too often then these design conditions should either be extracted out of the simulation or further inspected to determine if they can be fixed (e.g., providing better starting values, increasing convergence criteria/number of iterations, etc). The use of the debugging features may be useful to track
-down issues here as well. For example, wrap the prolbematic objects in a `try()` call and add the line `if(is(object, 'try-error')) browser()` to jump into the location/replication where the object unexpectedly witnessed an error, and attempt to disern why the error occured and how to fix it.
+down issues here as well. For example, wrap the problematic objects in a `try()` call and add the line `if(is(object, 'try-error')) browser()` to jump into the location/replication where the object unexpectedly witnessed an error, and attempt to discern why the error occurred and how to fix it.

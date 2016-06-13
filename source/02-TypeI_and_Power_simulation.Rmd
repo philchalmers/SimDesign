@@ -59,19 +59,16 @@ variable, and a grouping variable (a `factor` or otherwise).
 
 ```{r}
 Generate <- function(condition, fixed_objects = NULL){
-    N <- condition$sample_size
-    grs <- condition$group_size_ratio
-    sd <- condition$standard_deviation_ratio
-    md <- condition$mean_difference
-    if(grs < 1){
-        N2 <- N / (1/grs + 1)
-        N1 <- N - N2
+    Attach(condition) #makes all elements in condition available
+    if(group_size_ratio < 1){
+        N2 <- sample_size / (1/group_size_ratio + 1)
+        N1 <- sample_size - N2
     } else {
-        N1 <- N / (grs + 1)
-        N2 <- N - N1
+        N1 <- sample_size / (group_size_ratio + 1)
+        N2 <- sample_size - N1
     }
     group1 <- rnorm(N1)
-    group2 <- rnorm(N2, mean=md, sd=sd)
+    group2 <- rnorm(N2, mean=mean_difference, sd=standard_deviation_ratio)
     dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
     dat
 }
@@ -164,7 +161,7 @@ SimAnova(independent ~ sample_size, TypeI)
 SimAnova(independent ~ group_size_ratio * standard_deviation_ratio, TypeI)
 ```
 
-After examining the effect sizes for the independent t-test, there appears to be an interaction effect between `group_size_ratio` and `standard_deviation_ratio`. To help visualize this effect we create box-plots while continuing to marginlize over the sample size (otherwise, we would have to use point estimates for scatter plots). 
+After examining the effect sizes for the independent t-test, there appears to be an interaction effect between `group_size_ratio` and `standard_deviation_ratio`. To help visualize this effect we create box-plots while continuing to marginalize over the sample size (otherwise, we would have to use point estimates for scatter plots). 
 
 ```{r}
 SimAnova(welch ~ group_size_ratio * standard_deviation_ratio, TypeI)
@@ -190,7 +187,7 @@ However, when the second group contained a larger variance AND a larger sample s
 
 # An alternative approach
 
-The following is the same simulation design as above, however the approach is slightly different. Because the `design` input object is a `data.frame` object it is technically possible to include `list`s as factors as well to be passed to `expand.grid()`, thereby creating a fully-crossed simulation design with the `list` inputs. This may be peferable to some users if, for example, you would rather explicitly include grouping distributions in `design` rather than using scalars like 1/2, 1, and 2.
+The following is the same simulation design as above, however the approach is slightly different. Because the `design` input object is a `data.frame` object it is technically possible to include `list`s as factors as well to be passed to `expand.grid()`, thereby creating a fully-crossed simulation design with the `list` inputs. This may be preferable to some users if, for example, you would rather explicitly include grouping distributions in `design` rather than using scalars like 1/2, 1, and 2.
 
 Consider the following design definition:
 

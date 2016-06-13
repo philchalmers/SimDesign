@@ -14,13 +14,13 @@ output:
 options(digits = 3)
 ```
 
-# Parametric boostrap
+# Parametric bootstrap
 
-The parametric boostrap is a type of Monte Carlo simulation method where data is repeatedly generated and analysed based on characteristics from the original data and a specified population of interest. The reason it may be used is to investigate the sampling distirbution of a statistic when no known sampling for exists. In this document we demonstrate how `SimDesign` can be used for parametric boostrapping as well, thereby becoming useful when used within R functions designed for analyses.
+The parametric bootstrap is a type of Monte Carlo simulation method where data is repeatedly generated and analysed based on characteristics from the original data and a specified population of interest. The reason it may be used is to investigate the sampling distribution of a statistic when no known sampling for exists. In this document we demonstrate how `SimDesign` can be used for parametric boostrapping as well, thereby becoming useful when used within R functions designed for analyses.
 
 ## Example
 
-Say that we were intested in an independent t-test type situtation, however we wanted to test whether the medians devide by the inter-quartile range (IQR) would result in a significant effect. As the formula $|M1 - M2| / IQR$ generally has no known sampling distribution we can attempt to simulate one instead if we can make some reasonable assumptions about the population. For instance, say that the null distribution implies that $H_0: |M1 - M2| = 0$, and that the population distribution is normally distributed. 
+Say that we were interested in an independent t-test type situation, however we wanted to test whether the medians divided by the inter-quartile range (IQR) would result in a significant effect. As the formula $|M1 - M2| / IQR$ generally has no known sampling distribution we can attempt to simulate one instead if we can make some reasonable assumptions about the population. For instance, say that the null distribution implies that $H_0: |M1 - M2| = 0$, and that the population distribution is normally distributed. 
 
 ```{r include=FALSE}
 set.seed(1)
@@ -37,7 +37,7 @@ dat <- data.frame(DV = rnorm(100), group = rep(c('Group 1', 'Group 2'), each = 5
 with(dat, median_diff(DV, group))
 ```
 
-The question now is: given the observed statistic, is there evidence indicating that `r with(dat, median_diff(DV, group))` is significantly greater than 0? Using the tools from `SimDesign` we could construct a parametric boostrap method to tests this under the assumption that the population came from a standard normal distribution.
+The question now is: given the observed statistic, is there evidence indicating that `r with(dat, median_diff(DV, group))` is significantly greater than 0? Using the tools from `SimDesign` we could construct a parametric bootstrap method to tests this under the assumption that the population came from a standard normal distribution.
 
 ```{r}
 median_parametric_boot <- function(dat, fun, R = 1000, verbose = FALSE, ...){
@@ -69,7 +69,7 @@ median_parametric_boot <- function(dat, fun, R = 1000, verbose = FALSE, ...){
 }
 ```
 
-Using this function definition we can pass the necessary elements to obtain a parameterically estimate $p$-value indicating how likely the observed statistic was to observe given that a suitable emperically generated null hypothesis distribution. 
+Using this function definition we can pass the necessary elements to obtain a parametrically estimate $p$-value indicating how likely the observed statistic was to observe given that a suitable empirically generated null hypothesis distribution. 
 
 ```{r}
 median_parametric_boot(dat, median_diff)

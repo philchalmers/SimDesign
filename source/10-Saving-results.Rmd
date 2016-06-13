@@ -48,7 +48,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 set.seed(1)
 ```
 
-This is a very simple simulation that takes very little time to complete, however it will be used to show the basic saving concepts suppoerted in `SimDesign`. Note that more detailed information is located in the `runSimulation` documentation.
+This is a very simple simulation that takes very little time to complete, however it will be used to show the basic saving concepts supported in `SimDesign`. Note that more detailed information is located in the `runSimulation` documentation.
 
 # save
 

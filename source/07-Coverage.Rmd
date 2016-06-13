@@ -73,14 +73,14 @@ results <- runSimulation(Design, replications=10000, verbose=FALSE, parallel = T
 print(results)
 ```
 
-From these results it's clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distriubtion CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.
+From these results it's clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distribution CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.
 
 Note that the `ECR()` function was used within the `Analyse()` function rather than in `Summarise()`. When
 only the three values are supplied (CIs + population value) then `ECR()` will return either a 1 if the population value was within the CI or 0 if it was not. Hence, in the `Summarise()` function all that is required to obtain the coverage estimate is to find the mean of these 1's and 0's. The next section demonstrates how to use `ECR()` in the `Summarise()` instead, and it's really a matter of preference which style you prefer.
 
 ## An Alternative Form
 
-The above simulation called the `ECR()` function within `analyse`, however it is entirely possible to use this function within the `summarise` block by simply supplying matricies of confidence intervals instead.
+The above simulation called the `ECR()` function within `analyse`, however it is entirely possible to use this function within the `summarise` block by simply supplying matrices of confidence intervals instead.
 
 ```{r eval=FALSE}
 library(SimDesign)
@@ -128,4 +128,4 @@ results <- runSimulation(Design, replications=10000, verbose=FALSE, parallel = F
 ```
 
 
-Many secondary function in `SimDesign` have this type of flexibilty, therefore it's generally useful to refer to the documentation to help think about easier ways to summarise your results.
+Many secondary function in `SimDesign` have this type of flexibility, therefore it's generally useful to refer to the documentation to help think about easier ways to summarise your results.
