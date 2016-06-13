@@ -181,7 +181,7 @@ Analyse &lt;- function(condition, dat, fixed_objects = NULL) {
 
 Summarise &lt;- function(condition, results, fixed_objects = NULL) {
     
-    # for ease of calculations, find the difference between the observed and population matricies
+    # for ease of calculations, find the difference between the observed and population matrices
     index &lt;- 1:length(results)
     diff_EAP &lt;- do.call(c, lapply(index, function(ind, res) res[[ind]]$EAP - res[[ind]]$Theta,
                    res=results))
@@ -216,27 +216,27 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 Completed: 0%,   Previous condition time: 0.0,  Total elapsed time: 0.0 
-Completed: 17%,   Previous condition time: 12.8,  Total elapsed time: 12.8 
-Completed: 33%,   Previous condition time: 17.0,  Total elapsed time: 29.8 
-Completed: 50%,   Previous condition time: 23.8,  Total elapsed time: 53.6 
-Completed: 67%,   Previous condition time: 11.7,  Total elapsed time: 65.3 
-Completed: 83%,   Previous condition time: 19.9,  Total elapsed time: 85.2 
-Completed: 100%,   Previous condition time: 23.8,  Total elapsed time: 109.0</code></pre>
+Completed: 17%,   Previous condition time: 13.3,  Total elapsed time: 13.3 
+Completed: 33%,   Previous condition time: 17.0,  Total elapsed time: 30.3 
+Completed: 50%,   Previous condition time: 20.0,  Total elapsed time: 50.3 
+Completed: 67%,   Previous condition time: 10.1,  Total elapsed time: 60.5 
+Completed: 83%,   Previous condition time: 17.5,  Total elapsed time: 78.0 
+Completed: 100%,   Previous condition time: 20.4,  Total elapsed time: 98.4</code></pre>
 <pre class="r"><code>print(result, time=FALSE, reps=FALSE)</code></pre>
 <pre><code>##   test_length distribution  bias_EAP  bias_MAP   bias_ML bias_EAP_bimodal
-## 1          10       normal -4.96e-04 -0.000435 -0.000657         -0.00120
-## 2          20       normal  1.52e-03  0.001432  0.003562          0.00248
-## 3          30       normal  4.06e-04  0.000724 -0.001337          0.00043
-## 4          10      bimodal -2.50e-03 -0.002303 -0.004414         -0.00245
-## 5          20      bimodal -2.09e-05 -0.000319  0.000730         -0.00014
-## 6          30      bimodal -1.98e-03 -0.001919 -0.002828         -0.00207
+## 1          10       normal  0.000658 -0.000247  0.002879         0.000324
+## 2          20       normal -0.001398 -0.002133 -0.003383        -0.000525
+## 3          30       normal -0.002078 -0.002050 -0.002656        -0.001992
+## 4          10      bimodal -0.001434 -0.002400 -0.003508        -0.002022
+## 5          20      bimodal -0.001937 -0.001312 -0.002626        -0.001530
+## 6          30      bimodal -0.001071 -0.001047 -0.000926        -0.001093
 ##   RMSE_EAP RMSE_MAP RMSE_ML RMSE_EAP_bimodal REPLICATIONS SIM_TIME
-## 1    0.264    0.267   0.352           0.2958          100     12.8
-## 2    0.156    0.158   0.218           0.1784          100     17.0
-## 3    0.112    0.113   0.152           0.1276          100     23.8
-## 4    0.224    0.226   0.350           0.2035          100     11.7
-## 5    0.139    0.137   0.234           0.1190          100     19.9
-## 6    0.104    0.102   0.163           0.0903          100     23.8</code></pre>
+## 1    0.265    0.269   0.355           0.2968          100     13.3
+## 2    0.154    0.156   0.213           0.1762          100     17.0
+## 3    0.112    0.114   0.155           0.1281          100     20.0
+## 4    0.225    0.226   0.346           0.2041          100     10.1
+## 5    0.140    0.138   0.236           0.1214          100     17.5
+## 6    0.104    0.102   0.164           0.0888          100     20.4</code></pre>
 </div>
 <div id="analyze-the-results" class="section level3">
 <h3>Analyze the results</h3>

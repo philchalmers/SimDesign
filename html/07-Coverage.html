@@ -169,21 +169,21 @@ results &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel 
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')</code></pre>
 <pre class="r"><code>print(results)</code></pre>
 <pre><code>##   mu sample_size  t_CI  z_CI REPLICATIONS SIM_TIME
-## 1  0          10 0.952 0.918        10000    0.942
-## 2  5          10 0.951 0.919        10000    0.899
-## 3 10          10 0.947 0.915        10000    0.950
-## 4  0          20 0.953 0.937        10000    1.032
-## 5  5          20 0.947 0.934        10000    1.037
-## 6 10          20 0.950 0.936        10000    0.900
-## 7  0          30 0.951 0.942        10000    0.921
-## 8  5          30 0.954 0.944        10000    0.971
-## 9 10          30 0.954 0.943        10000    0.948</code></pre>
-<p>From these results it’s clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distriubtion CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.</p>
+## 1  0          10 0.951 0.920        10000    0.919
+## 2  5          10 0.952 0.923        10000    0.897
+## 3 10          10 0.950 0.918        10000    0.907
+## 4  0          20 0.951 0.934        10000    0.952
+## 5  5          20 0.951 0.936        10000    0.960
+## 6 10          20 0.948 0.933        10000    0.880
+## 7  0          30 0.949 0.939        10000    0.876
+## 8  5          30 0.947 0.938        10000    0.961
+## 9 10          30 0.950 0.940        10000    0.890</code></pre>
+<p>From these results it’s clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distribution CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.</p>
 <p>Note that the <code>ECR()</code> function was used within the <code>Analyse()</code> function rather than in <code>Summarise()</code>. When only the three values are supplied (CIs + population value) then <code>ECR()</code> will return either a 1 if the population value was within the CI or 0 if it was not. Hence, in the <code>Summarise()</code> function all that is required to obtain the coverage estimate is to find the mean of these 1’s and 0’s. The next section demonstrates how to use <code>ECR()</code> in the <code>Summarise()</code> instead, and it’s really a matter of preference which style you prefer.</p>
 </div>
 <div id="an-alternative-form" class="section level2">
 <h2>An Alternative Form</h2>
-<p>The above simulation called the <code>ECR()</code> function within <code>analyse</code>, however it is entirely possible to use this function within the <code>summarise</code> block by simply supplying matricies of confidence intervals instead.</p>
+<p>The above simulation called the <code>ECR()</code> function within <code>analyse</code>, however it is entirely possible to use this function within the <code>summarise</code> block by simply supplying matrices of confidence intervals instead.</p>
 <pre class="r"><code>library(SimDesign)
 #SimFunctions(comments = FALSE)
 
@@ -226,7 +226,7 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 ### Run the simulation
 results &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel = FALSE,
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')</code></pre>
-<p>Many secondary function in <code>SimDesign</code> have this type of flexibilty, therefore it’s generally useful to refer to the documentation to help think about easier ways to summarise your results.</p>
+<p>Many secondary function in <code>SimDesign</code> have this type of flexibility, therefore it’s generally useful to refer to the documentation to help think about easier ways to summarise your results.</p>
 </div>
 </div>
 

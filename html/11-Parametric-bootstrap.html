@@ -120,12 +120,12 @@ $(document).ready(function () {
 </div>
 
 
-<div id="parametric-boostrap" class="section level1">
-<h1>Parametric boostrap</h1>
-<p>The parametric boostrap is a type of Monte Carlo simulation method where data is repeatedly generated and analysed based on characteristics from the original data and a specified population of interest. The reason it may be used is to investigate the sampling distirbution of a statistic when no known sampling for exists. In this document we demonstrate how <code>SimDesign</code> can be used for parametric boostrapping as well, thereby becoming useful when used within R functions designed for analyses.</p>
+<div id="parametric-bootstrap" class="section level1">
+<h1>Parametric bootstrap</h1>
+<p>The parametric bootstrap is a type of Monte Carlo simulation method where data is repeatedly generated and analysed based on characteristics from the original data and a specified population of interest. The reason it may be used is to investigate the sampling distribution of a statistic when no known sampling for exists. In this document we demonstrate how <code>SimDesign</code> can be used for parametric boostrapping as well, thereby becoming useful when used within R functions designed for analyses.</p>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>Say that we were intested in an independent t-test type situtation, however we wanted to test whether the medians devide by the inter-quartile range (IQR) would result in a significant effect. As the formula <span class="math inline">\(|M1 - M2| / IQR\)</span> generally has no known sampling distribution we can attempt to simulate one instead if we can make some reasonable assumptions about the population. For instance, say that the null distribution implies that <span class="math inline">\(H_0: |M1 - M2| = 0\)</span>, and that the population distribution is normally distributed.</p>
+<p>Say that we were interested in an independent t-test type situation, however we wanted to test whether the medians divided by the inter-quartile range (IQR) would result in a significant effect. As the formula <span class="math inline">\(|M1 - M2| / IQR\)</span> generally has no known sampling distribution we can attempt to simulate one instead if we can make some reasonable assumptions about the population. For instance, say that the null distribution implies that <span class="math inline">\(H_0: |M1 - M2| = 0\)</span>, and that the population distribution is normally distributed.</p>
 <pre class="r"><code>median_diff &lt;- function(DV, group){
     meds &lt;- tapply(DV, group, median) 
     IQR &lt;- IQR(DV)
@@ -134,7 +134,7 @@ $(document).ready(function () {
 dat &lt;- data.frame(DV = rnorm(100), group = rep(c('Group 1', 'Group 2'), each = 50))
 with(dat, median_diff(DV, group))</code></pre>
 <pre><code>## [1] 0.0129</code></pre>
-<p>The question now is: given the observed statistic, is there evidence indicating that 0.013 is significantly greater than 0? Using the tools from <code>SimDesign</code> we could construct a parametric boostrap method to tests this under the assumption that the population came from a standard normal distribution.</p>
+<p>The question now is: given the observed statistic, is there evidence indicating that 0.013 is significantly greater than 0? Using the tools from <code>SimDesign</code> we could construct a parametric bootstrap method to tests this under the assumption that the population came from a standard normal distribution.</p>
 <pre class="r"><code>median_parametric_boot &lt;- function(dat, fun, R = 1000, verbose = FALSE, ...){
     
     observed &lt;- with(dat, fun(DV, group))
@@ -162,7 +162,7 @@ with(dat, median_diff(DV, group))</code></pre>
     ret &lt;- c(p = colMeans(observed &lt; results))
     ret
 }</code></pre>
-<p>Using this function definition we can pass the necessary elements to obtain a parameterically estimate <span class="math inline">\(p\)</span>-value indicating how likely the observed statistic was to observe given that a suitable emperically generated null hypothesis distribution.</p>
+<p>Using this function definition we can pass the necessary elements to obtain a parametrically estimate <span class="math inline">\(p\)</span>-value indicating how likely the observed statistic was to observe given that a suitable empirically generated null hypothesis distribution.</p>
 <pre class="r"><code>median_parametric_boot(dat, median_diff)</code></pre>
 <pre><code>##     p 
 ## 0.942</code></pre>
@@ -170,7 +170,7 @@ with(dat, median_diff(DV, group))</code></pre>
 <pre class="r"><code>cl &lt;- parallel::makeCluster(2)
 median_parametric_boot(dat, median_diff, cl=cl, parallel=TRUE)</code></pre>
 <pre><code>##     p 
-## 0.945</code></pre>
+## 0.951</code></pre>
 </div>
 </div>
 
