@@ -13,7 +13,9 @@ and the second element/column the upper confidence interval. If a
 vector of length 2 is passed instead then the returned value will be either a 1 or 0 to indicate
 whether the parameter value was or was not within the interval, respectively}
 
-\item{parameter}{a numeric scalar indicating the fixed parameter value}
+\item{parameter}{a numeric scalar indicating the fixed parameter value. Alternative, a \code{numeric}
+vector object with length equal to the number of rows as \code{CIs} (use to compare sets of parameters
+at once)}
 
 \item{tails}{logical; when TRUE returns a vector of length 2 to indicate the proportion of times
 the parameter was lower or higher than the supplied interval, respectively. This is mainly only
@@ -41,6 +43,12 @@ CI <- c(-1, 1)
 ECR(CI, 0)
 ECR(CI, 2)
 ECR(CI, 2, tails = TRUE)
+
+# parameters of the same size as CI
+parameters <- 1:10
+CIs <- cbind(parameters - runif(10), parameters + runif(10))
+parameters <- parameters + rnorm(10)
+ECR(CIs, parameters)
 
 }
 \seealso{

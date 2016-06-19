@@ -47,6 +47,11 @@
 #' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 #' bias(df, parameter = c(2,2))
 #'
+#' # parameters of the same size
+#' parameters <- 1:10
+#' estimates <- parameters + rnorm(10)
+#' bias(estimates, parameters)
+#'
 #'
 bias <- function(estimate, parameter = NULL, relative = FALSE){
     if(is.vector(estimate)){
@@ -124,6 +129,11 @@ bias <- function(estimate, parameter = NULL, relative = FALSE){
 #' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 #' RMSE(df, parameter = c(2,2))
 #'
+#' # parameters of the same size
+#' parameters <- 1:10
+#' estimates <- parameters + rnorm(10)
+#' RMSE(estimates, parameters)
+#'
 RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
     if(is.vector(estimate)){
         nms <- names(estimate)
@@ -200,6 +210,11 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
 #' # same, but with data.frame
 #' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 #' MAE(df, parameter = c(2,2))
+#'
+#' # parameters of the same size
+#' parameters <- 1:10
+#' estimates <- parameters + rnorm(10)
+#' MAE(estimates, parameters)
 #'
 MAE <- function(estimate, parameter = NULL, type = 'MAE'){
     if(is.vector(estimate)){
@@ -323,7 +338,9 @@ EDR <- function(p, alpha = .05){
 #'   vector of length 2 is passed instead then the returned value will be either a 1 or 0 to indicate
 #'   whether the parameter value was or was not within the interval, respectively
 #'
-#' @param parameter a numeric scalar indicating the fixed parameter value
+#' @param parameter a numeric scalar indicating the fixed parameter value. Alternative, a \code{numeric}
+#'    vector object with length equal to the number of rows as \code{CIs} (use to compare sets of parameters
+#'    at once)
 #'
 #' @param tails logical; when TRUE returns a vector of length 2 to indicate the proportion of times
 #'   the parameter was lower or higher than the supplied interval, respectively. This is mainly only
@@ -353,18 +370,24 @@ EDR <- function(p, alpha = .05){
 #' ECR(CI, 2)
 #' ECR(CI, 2, tails = TRUE)
 #'
+#' # parameters of the same size as CI
+#' parameters <- 1:10
+#' CIs <- cbind(parameters - runif(10), parameters + runif(10))
+#' parameters <- parameters + rnorm(10)
+#' ECR(CIs, parameters)
+#'
 ECR <- function(CIs, parameter, tails = FALSE){
     if(is.data.frame(CIs)) CIs <- as.matrix(CIs)
     if(length(CIs) == 2L) CIs <- matrix(CIs, 1L, 2L)
     stopifnot(is.matrix(CIs))
-    stopifnot(length(parameter) == 1L)
+    stopifnot(is.numeric(parameter))
+    if(length(parameter) != 1L) stopifnot(length(parameter) == nrow(CIs))
     if(CIs[1,1] > CIs[1,2]){
         warning('First column not less than second. Temporarily switching')
         CIs <- cbind(CIs[,2L], CIs[,1L])
     }
-    ret <- if(tails){
-        c(mean(CIs[,1L] > parameter), mean(parameter > CIs[,2L]))
-    } else mean(CIs[,1L] <= parameter & parameter <= CIs[,2L])
+    ends <- c(mean(CIs[,1L] > parameter), mean(parameter > CIs[,2L]))
+    ret <- if(tails) ends else 1 - sum(ends)
     ret
 }
 

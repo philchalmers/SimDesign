@@ -56,6 +56,11 @@ RMSE(mat, parameter = 2)
 df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 RMSE(df, parameter = c(2,2))
 
+# parameters of the same size
+parameters <- 1:10
+estimates <- parameters + rnorm(10)
+RMSE(estimates, parameters)
+
 }
 \seealso{
 \code{\link{bias}}
