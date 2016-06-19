@@ -380,7 +380,7 @@ ECR <- function(CIs, parameter, tails = FALSE){
     if(is.data.frame(CIs)) CIs <- as.matrix(CIs)
     if(length(CIs) == 2L) CIs <- matrix(CIs, 1L, 2L)
     stopifnot(is.matrix(CIs))
-    stopifnot(is.numeric(parameter))
+    stopifnot(is.vector(parameter))
     if(length(parameter) != 1L) stopifnot(length(parameter) == nrow(CIs))
     if(CIs[1,1] > CIs[1,2]){
         warning('First column not less than second. Temporarily switching')
