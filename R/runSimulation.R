@@ -708,6 +708,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         start <- min(which(sapply(Result_list, is.null)))
         time0 <- time1 - Result_list[[start-1L]]$SIM_TIME
     }
+    if(file.exists(tmpfilename)){
+        tmp <- attr(Result_list, 'SimDesign_names')
+        save_generate_data_dirname <- tmp['save_generate_data_dirname']
+        save_results_dirname <- tmp['save_results_dirname']
+        save_seeds_dirname <- tmp['save_seeds_dirname']
+    }
     if(save_results){
         save <- TRUE
         if(safe && !file.exists(tmpfilename)){
@@ -728,16 +734,32 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(save_seeds){
         save <- TRUE
-        if(safe && dir.exists(save_seeds_dirname) && !file.exists(tmpfilename))
-            stop(save_seeds_dirname, ' directory already exists. ',
-                 'Please fix by modifying the save_seeds_dirname input.', call.=FALSE)
+        if(safe && !file.exists(tmpfilename)){
+            tmp <- save_seeds_dirname
+            count <- 1L
+            while(dir.exists(save_seeds_dirname)){
+                save_seeds_dirname <- paste0(tmp, '_', count)
+                count <- count + 1L
+            }
+            if(tmp != save_seeds_dirname && verbose)
+                message(sprintf('%s already exists; using %s directory instead',
+                                tmp, save_seeds_dirname))
+        }
         dir.create(save_seeds_dirname, showWarnings = !file.exists(tmpfilename))
     }
     if(save_generate_data){
         save <- TRUE
-        if(safe && dir.exists(save_generate_data_dirname) && !file.exists(tmpfilename))
-            stop(save_generate_data_dirname, ' directory already exists. ',
-                 'Please fix by modifying the save_generate_data_dirname input.', call.=FALSE)
+        if(safe && !file.exists(tmpfilename)){
+            tmp <- save_generate_data_dirname
+            count <- 1L
+            while(dir.exists(save_generate_data_dirname)){
+                save_generate_data_dirname <- paste0(tmp, '_', count)
+                count <- count + 1L
+            }
+            if(tmp != save_generate_data_dirname && verbose)
+                message(sprintf('%s already exists; using %s directory instead',
+                                tmp, save_generate_data_dirname))
+        }
         dir.create(save_generate_data_dirname, showWarnings = !file.exists(tmpfilename))
     }
     if(safe && (parallel || MPI)){
@@ -758,6 +780,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                 tmp[i], paste0(names(packs), collapse = ', ')))
         }
     }
+    attr(Result_list, 'SimDesign_names') <-
+        c(save_generate_data_dirname=save_generate_data_dirname,
+          save_results_dirname=save_results_dirname,
+          save_seeds_dirname=save_seeds_dirname)
     for(i in start:end){
         if(summarise_asis){
             if(verbose)
@@ -806,10 +832,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                            check.names=FALSE)
             time1 <- proc.time()[3]
             Result_list[[i]]$SIM_TIME <- time1 - time0
-            if(save || save_results || save_generate_data){
-                # browser()
-                saveRDS(Result_list, tmpfilename)
-            }
+            if(save || save_results || save_generate_data) saveRDS(Result_list, tmpfilename)
         }
     }
     if(summarise_asis){
@@ -830,6 +853,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(verbose)
         cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
                     100, '%', time1 - time0, sum(stored_time)))
+    attr(Result_list, 'SimDesign_names') <- NULL
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
     REPLICATIONS <- Final$REPLICATIONS
