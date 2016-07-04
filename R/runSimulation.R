@@ -340,7 +340,7 @@
 #'
 #'     \item{\code{save_results_dirname}}{a string indicating the name of the folder to save
 #'       result objects to when \code{save_results = TRUE}. If a directory/folder does not exist
-#'       in the current working directory then one will be created automatically. Default is
+#'       in the current working directory then a unique one will be created automatically. Default is
 #'       \code{'SimDesign-results_'} with the associated \code{compname} appended}
 #'
 #'     \item{\code{save_seeds_dirname}}{a string indicating the name of the folder to save
@@ -710,11 +710,21 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(save_results){
         save <- TRUE
-        if(safe && dir.exists(save_results_dirname) && !file.exists(tmpfilename))
-            if(length(dir(save_results_dirname)))
-                stop(save_results_dirname, ' directory already exists. ',
-                        'Please fix by modifying the save_results_dirname input.', call.=FALSE)
+        if(safe && !file.exists(tmpfilename)){
+            tmp <- save_results_dirname
+            count <- 1L
+            while(dir.exists(save_results_dirname)){
+                save_results_dirname <- paste0(tmp, '_', count)
+                count <- count + 1L
+            }
+            if(tmp != save_results_dirname && verbose)
+                message(sprintf('%s already exists; using %s directory instead',
+                                tmp, save_results_dirname))
+        }
         dir.create(save_results_dirname, showWarnings = !file.exists(tmpfilename))
+        if(length(dir(save_results_dirname)) != (start - 1L))
+            stop('save_results_dirname not starting from correct location according to tempfile',
+                 call.=FALSE)
     }
     if(save_seeds){
         save <- TRUE
@@ -796,7 +806,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                            check.names=FALSE)
             time1 <- proc.time()[3]
             Result_list[[i]]$SIM_TIME <- time1 - time0
-            if(save || save_results || save_generate_data) saveRDS(Result_list, tmpfilename)
+            if(save || save_results || save_generate_data){
+                # browser()
+                saveRDS(Result_list, tmpfilename)
+            }
         }
     }
     if(summarise_asis){
