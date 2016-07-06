@@ -160,7 +160,7 @@ Default is \code{FALSE}}
 
     \item{\code{save_results_dirname}}{a string indicating the name of the folder to save
       result objects to when \code{save_results = TRUE}. If a directory/folder does not exist
-      in the current working directory then one will be created automatically. Default is
+      in the current working directory then a unique one will be created automatically. Default is
       \code{'SimDesign-results_'} with the associated \code{compname} appended}
 
     \item{\code{save_seeds_dirname}}{a string indicating the name of the folder to save

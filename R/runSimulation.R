@@ -716,51 +716,57 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(save_results){
         save <- TRUE
-        if(safe && !file.exists(tmpfilename)){
-            tmp <- save_results_dirname
-            count <- 1L
-            while(dir.exists(save_results_dirname)){
-                save_results_dirname <- paste0(tmp, '_', count)
-                count <- count + 1L
+        if(!file.exists(tmpfilename)){
+            if(safe){
+                tmp <- save_results_dirname
+                count <- 1L
+                while(dir.exists(save_results_dirname)){
+                    save_results_dirname <- paste0(tmp, '_', count)
+                    count <- count + 1L
+                }
+                if(tmp != save_results_dirname && verbose)
+                    message(sprintf('%s already exists; using %s directory instead',
+                                    tmp, save_results_dirname))
             }
-            if(tmp != save_results_dirname && verbose)
-                message(sprintf('%s already exists; using %s directory instead',
-                                tmp, save_results_dirname))
+            dir.create(save_results_dirname)
         }
-        dir.create(save_results_dirname, showWarnings = !file.exists(tmpfilename))
         if(length(dir(save_results_dirname)) != (start - 1L))
             stop('save_results_dirname not starting from correct location according to tempfile',
                  call.=FALSE)
     }
     if(save_seeds){
         save <- TRUE
-        if(safe && !file.exists(tmpfilename)){
-            tmp <- save_seeds_dirname
-            count <- 1L
-            while(dir.exists(save_seeds_dirname)){
-                save_seeds_dirname <- paste0(tmp, '_', count)
-                count <- count + 1L
+        if(!file.exists(tmpfilename)){
+            if(safe){
+                tmp <- save_seeds_dirname
+                count <- 1L
+                while(dir.exists(save_seeds_dirname)){
+                    save_seeds_dirname <- paste0(tmp, '_', count)
+                    count <- count + 1L
+                }
+                if(tmp != save_seeds_dirname && verbose)
+                    message(sprintf('%s already exists; using %s directory instead',
+                                    tmp, save_seeds_dirname))
             }
-            if(tmp != save_seeds_dirname && verbose)
-                message(sprintf('%s already exists; using %s directory instead',
-                                tmp, save_seeds_dirname))
+            dir.create(save_seeds_dirname)
         }
-        dir.create(save_seeds_dirname, showWarnings = !file.exists(tmpfilename))
     }
     if(save_generate_data){
         save <- TRUE
-        if(safe && !file.exists(tmpfilename)){
-            tmp <- save_generate_data_dirname
-            count <- 1L
-            while(dir.exists(save_generate_data_dirname)){
-                save_generate_data_dirname <- paste0(tmp, '_', count)
-                count <- count + 1L
+        if(!file.exists(tmpfilename)){
+            if(safe){
+                tmp <- save_generate_data_dirname
+                count <- 1L
+                while(dir.exists(save_generate_data_dirname)){
+                    save_generate_data_dirname <- paste0(tmp, '_', count)
+                    count <- count + 1L
+                }
+                if(tmp != save_generate_data_dirname && verbose)
+                    message(sprintf('%s already exists; using %s directory instead',
+                                    tmp, save_generate_data_dirname))
             }
-            if(tmp != save_generate_data_dirname && verbose)
-                message(sprintf('%s already exists; using %s directory instead',
-                                tmp, save_generate_data_dirname))
+            dir.create(save_generate_data_dirname)
         }
-        dir.create(save_generate_data_dirname, showWarnings = !file.exists(tmpfilename))
     }
     if(safe && (parallel || MPI)){
         # this is great because it also primes the pipes
