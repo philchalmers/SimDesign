@@ -907,6 +907,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         pack_vers <- data.frame(packages=pack, versions=versions)
     } else pack_vers <- NULL
     attr(Final, 'extra_info') <- list(sessionInfo = sessionInfo(), packages=pack_vers,
+                                      save_info = c(filename=filename,
+                                                    save_generate_data_dirname=save_generate_data_dirname,
+                                                    save_results_dirname=save_results_dirname,
+                                                    save_seeds_dirname=save_seeds_dirname)[
+                                                            c(save, save_generate_data, save_results, save_seeds)],
                                       ncores = if(parallel) length(cl) else if(MPI) NA else 1,
                                       number_of_conditions = nrow(design),
                                       date_completed = date(), total_elapsed_time = sum(Final$SIM_TIME))
