@@ -841,6 +841,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if(save || save_results || save_generate_data) saveRDS(Result_list, tmpfilename)
         }
     }
+    attr(Result_list, 'SimDesign_names') <- NULL
     if(summarise_asis){
         if(verbose)
             cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
@@ -859,7 +860,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(verbose)
         cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
                     100, '%', time1 - time0, sum(stored_time)))
-    attr(Result_list, 'SimDesign_names') <- NULL
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
     REPLICATIONS <- Final$REPLICATIONS
