@@ -469,7 +469,7 @@ head(Design)
 
 # help(Generate)
 Generate <- function(condition, fixed_objects = NULL){
-    N <- condition$sample_size
+    N <- condition$sample_size      # alternatively, could use Attach() to make objects available
     grs <- condition$group_size_ratio
     sd <- condition$standard_deviation_ratio
     if(grs < 1){
@@ -527,7 +527,7 @@ Final3
 # complete run with 1000 replications per condition
 Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
-head(Final)
+head(Final, digits = 3)
 View(Final)
 
 ## save results to a file upon completion (not run)

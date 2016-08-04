@@ -426,7 +426,7 @@
 #'
 #' # help(Generate)
 #' Generate <- function(condition, fixed_objects = NULL){
-#'     N <- condition$sample_size
+#'     N <- condition$sample_size      # alternatively, could use Attach() to make objects available
 #'     grs <- condition$group_size_ratio
 #'     sd <- condition$standard_deviation_ratio
 #'     if(grs < 1){
@@ -484,7 +484,7 @@
 #' # complete run with 1000 replications per condition
 #' Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
-#' head(Final)
+#' head(Final, digits = 3)
 #' View(Final)
 #'
 #' ## save results to a file upon completion (not run)
@@ -938,7 +938,7 @@ print.SimDesign <- function(x, drop.extras = FALSE, drop.design = FALSE, ...){
     if(drop.design) x <- x[ ,!(names(x) %in% att$design), drop=FALSE]
     class(x) <- 'data.frame'
     ldots <- list(...)
-    if(is.null(ldots$print)) print(x)
+    if(is.null(ldots$print)) print(x, ...)
     else return(x)
 }
 
@@ -947,7 +947,7 @@ print.SimDesign <- function(x, drop.extras = FALSE, drop.design = FALSE, ...){
 head.SimDesign <- function(x, ...){
     x <- print(x, print = FALSE, ...)
     class(x) <- 'data.frame'
-    head(x, ...)
+    print(head(x, ...), ...)
 }
 
 #' @rdname runSimulation
@@ -955,7 +955,7 @@ head.SimDesign <- function(x, ...){
 tail.SimDesign <- function(x, ...){
     x <- print(x, print = FALSE, ...)
     class(x) <- 'data.frame'
-    tail(x, ...)
+    print(tail(x, ...), ...)
 }
 
 #' @rdname runSimulation
