@@ -90,6 +90,9 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         sim_results <- as.numeric(sim_results)
         names(sim_results) <- nms
     }
+    if(length(sim_results) == 1L)
+        if(is.null(names(sim_results)))
+            names(sim_results) <- 'value'
     if(!is.vector(sim_results) || is.null(names(sim_results)))
         stop('summarise() must return a named vector or data.frame object with 1 row', call.=FALSE)
     sim_results <- c(sim_results, 'REPLICATIONS'=replications, 'ERROR: '=try_errors,
