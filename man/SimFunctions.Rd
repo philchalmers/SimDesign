@@ -23,8 +23,9 @@ output is saved to two separate files containing the functions and design defini
 \description{
 This function prints skeleton versions of the required functions and work-flow required
 to run simulations, complete with the correct inputs, class of outputs, and option comments to
-help with the initial definitions. Use this at the start
-when defining your simulation.
+help with the initial definitions. Use this at the start when defining your simulation. The
+recommended approach when using the \code{RStudio} IDE is to write the simulation template to two
+separate files for easier debugging/sourcing.
 }
 \details{
 The function \code{SimDesign_functions} is deprecated and will be
@@ -37,11 +38,11 @@ SimFunctions(comments = TRUE) #with helpful comments
 
 \dontrun{
 
-# write output to two files and include helpful comments
-SimFunctions('mysim', comments = TRUE)
+# write output to two files (recommended)
+SimFunctions('mysim')
 
-# write output files to a single file without comments
-SimFunctions('mysim', singlefile = TRUE)
+# write output files to a single file with comments
+SimFunctions('mysim', singlefile = TRUE, comments = TRUE)
 }
 
 }

@@ -2,8 +2,9 @@
 #'
 #' This function prints skeleton versions of the required functions and work-flow required
 #' to run simulations, complete with the correct inputs, class of outputs, and option comments to
-#' help with the initial definitions. Use this at the start
-#' when defining your simulation.
+#' help with the initial definitions. Use this at the start when defining your simulation. The
+#' recommended approach when using the \code{RStudio} IDE is to write the simulation template to two
+#' separate files for easier debugging/sourcing.
 #'
 #' The function \code{SimDesign_functions} is deprecated and will be
 #' removed in a future release.
@@ -31,11 +32,11 @@
 #'
 #'\dontrun{
 #'
-#' # write output to two files and include helpful comments
-#' SimFunctions('mysim', comments = TRUE)
+#' # write output to two files (recommended)
+#' SimFunctions('mysim')
 #'
-#' # write output files to a single file without comments
-#' SimFunctions('mysim', singlefile = TRUE)
+#' # write output files to a single file with comments
+#' SimFunctions('mysim', singlefile = TRUE, comments = TRUE)
 #' }
 #'
 SimFunctions <- function(filename = NULL, comments = FALSE, singlefile = FALSE, summarise = TRUE){
