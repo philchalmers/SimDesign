@@ -619,7 +619,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         stored_time <- 0
     }
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise)
-    stopifnot(!missing(design))
+    dummy_run <- FALSE
+    if(missing(design)){
+        design <- data.frame(dummy_run=NA)
+        dummy_run <- TRUE
+    }
     stopifnot(!missing(replications))
     if(!is.null(seed))
         stopifnot(nrow(design) == length(seed))
@@ -921,6 +925,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         saveRDS(Final, filename)
     }
     if(save || save_results || save_generate_data || save_seeds) file.remove(tmpfilename)
+    if(dummy_run) Final$dummy_run <- NULL
     return(Final)
 }
 

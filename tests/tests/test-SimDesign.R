@@ -324,5 +324,28 @@ test_that('SimDesign', {
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
+    # dummy run with no design
+    Generate <- function(condition, fixed_objects = NULL)
+        rnorm(100, mean = 10)
+    Analyse <- function(condition, dat, fixed_objects = NULL)
+        t.test(dat)$conf.int
+    Analyse2 <- function(condition, dat, fixed_objects = NULL){
+        CIs <- t.test(dat)$conf.int
+        names(CIs) <- c('lower', 'upper')
+        CIs
+    }
+    Summarise <- function(condition, results, fixed_objects = NULL)
+        ECR(results, 10)
+
+    results <- runSimulation(replications = 10, generate = Generate,
+                             analyse=Analyse, verbose=FALSE)
+    expect_is(results, 'matrix')
+    expect_equal(ncol(results), 2L)
+
+    results <- runSimulation(replications = 10, generate = Generate,
+                             analyse=Analyse2, summarise = Summarise, verbose=FALSE)
+    expect_is(results, 'data.frame')
+    expect_equal(ncol(results), 3L)
+
 })
 
