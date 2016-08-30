@@ -347,5 +347,17 @@ test_that('SimDesign', {
     expect_is(results, 'data.frame')
     expect_equal(ncol(results), 3L)
 
+    # dummy run with no design and returning lists
+    Generate <- function(condition, fixed_objects = NULL)
+        rnorm(100, mean = 10)
+    Analyse <- function(condition, dat, fixed_objects = NULL){
+        ret <- list(val1=0, val2=t.test(dat)$conf.int)
+        ret
+    }
+    results <- runSimulation(replications = 10, generate = Generate,
+                             analyse=Analyse, verbose=FALSE)
+    expect_equal(length(results), 10L)
+    expect_equal(length(results[[1L]]), 2L)
+    expect_equal(length(results[[1L]][[2]]), 2L)
 })
 
