@@ -13,6 +13,10 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y openmpi-common openmpi-bin libopenmpi-dev
 
+r_packages:
+  - testthat
+  - mvtnorm
+
 script:
   - make install
   - make check
