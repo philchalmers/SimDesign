@@ -1,3 +1,7 @@
+
+
+[![Travis-CI Build Status](https://travis-ci.org/philchalmers/SimDesign.svg?branch=master)](https://travis-ci.org/philchalmers/SimDesign) [![](http://www.r-pkg.org/badges/version/SimDesign)](http://www.r-pkg.org/pkg/SimDesign) ![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)
+
 # SimDesign
 
 Structure for Organizing Monte Carlo Simulation Designs
