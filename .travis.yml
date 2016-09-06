@@ -9,6 +9,10 @@ notifications:
     on_success: change
     on_failure: change
 
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y openmpi-common
+
 script:
   - make install
   - make check
