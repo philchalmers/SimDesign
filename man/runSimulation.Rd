@@ -219,6 +219,7 @@ stopping when functions fail too often, even across nodes), and tracking of erro
 For convenience, all functions available in the R workspace are exported across all computational nodes
 so that they are more easily accessible (however, other R objects are not, and therefore
 must be passed to the \code{fixed_objects} input to become available across nodes).
+For a didactic presentation of the package refer to Sigal and Chalmers (in press).
 }
 \details{
 The strategy for organizing the Monte Carlo simulation work-flow is to
@@ -627,6 +628,10 @@ ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation
 
 }
 
+}
+\references{
+Sigal, M. J., & Chalmers, R. P. (in press). Play it again: Teaching statistics with Monte
+Carlo simulation. \code{Journal of Statistics Education}.
 }
 \seealso{
 \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},

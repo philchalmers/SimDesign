@@ -5,6 +5,7 @@
 #' help with the initial definitions. Use this at the start when defining your simulation. The
 #' recommended approach when using the \code{RStudio} IDE is to write the simulation template to two
 #' separate files for easier debugging/sourcing.
+#' For a didactic presentation of the package refer to Sigal and Chalmers (in press).
 #'
 #' The function \code{SimDesign_functions} is deprecated and will be
 #' removed in a future release.
@@ -24,6 +25,10 @@
 #' @aliases SimFunctions
 #'
 #' @export SimFunctions
+#'
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (in press). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education}.
 #'
 #' @examples
 #'

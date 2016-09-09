@@ -16,9 +16,14 @@ simulation issues such as re-simulating non-convergent results, support parallel
 back-end and MPI distributed computations, save and restore temporary files,
 aggregate results across independent nodes, and provide native support for debugging.
 The primary function for organizing the simulations is \code{\link{runSimulation}}.
+For a didactic presentation of the package refer to Sigal and Chalmers (in press).
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}
+}
+\references{
+Sigal, M. J., & Chalmers, R. P. (in press). Play it again: Teaching statistics with Monte
+Carlo simulation. \code{Journal of Statistics Education}.
 }
 \keyword{package}
 

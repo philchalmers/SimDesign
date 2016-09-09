@@ -26,6 +26,7 @@ to run simulations, complete with the correct inputs, class of outputs, and opti
 help with the initial definitions. Use this at the start when defining your simulation. The
 recommended approach when using the \code{RStudio} IDE is to write the simulation template to two
 separate files for easier debugging/sourcing.
+For a didactic presentation of the package refer to Sigal and Chalmers (in press).
 }
 \details{
 The function \code{SimDesign_functions} is deprecated and will be
@@ -45,5 +46,9 @@ SimFunctions('mysim')
 SimFunctions('mysim', singlefile = TRUE, comments = TRUE)
 }
 
+}
+\references{
+Sigal, M. J., & Chalmers, R. P. (in press). Play it again: Teaching statistics with Monte
+Carlo simulation. \code{Journal of Statistics Education}.
 }
 

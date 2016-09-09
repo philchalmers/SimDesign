@@ -9,6 +9,7 @@
 #' For convenience, all functions available in the R workspace are exported across all computational nodes
 #' so that they are more easily accessible (however, other R objects are not, and therefore
 #' must be passed to the \code{fixed_objects} input to become available across nodes).
+#' For a didactic presentation of the package refer to Sigal and Chalmers (in press).
 #'
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
 #'
@@ -406,6 +407,10 @@
 #'   \code{\link{aggregate_simulations}}, \code{\link{Attach}}
 #'
 #' @export runSimulation
+#'
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (in press). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education}.
 #'
 #' @examples
 #'
