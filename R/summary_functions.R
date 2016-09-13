@@ -336,7 +336,8 @@ EDR <- function(p, alpha = .05){
 #'   given parameter value, where the first element/column indicates the lower confidence interval
 #'   and the second element/column the upper confidence interval. If a
 #'   vector of length 2 is passed instead then the returned value will be either a 1 or 0 to indicate
-#'   whether the parameter value was or was not within the interval, respectively
+#'   whether the parameter value was or was not within the interval, respectively. Otherwise,
+#'   the input must be a matrix with an even number of columns
 #'
 #' @param parameter a numeric scalar indicating the fixed parameter value. Alternative, a \code{numeric}
 #'    vector object with length equal to the number of rows as \code{CIs} (use to compare sets of parameters
@@ -346,6 +347,9 @@ EDR <- function(p, alpha = .05){
 #'   the parameter was lower or higher than the supplied interval, respectively. This is mainly only
 #'   useful when the coverage region is not expected to be symmetric, and therefore is generally not
 #'   required. Note that \code{1 - sum(ECR(CIs, parameter, tails=TRUE)) == ECR(CIs, parameter)}
+#'
+#' @param names an optional character vector used to name the returned object. Generally useful
+#'   when more than one CI estimate is investigated at once
 #'
 #' @aliases ECR
 #'
@@ -376,9 +380,34 @@ EDR <- function(p, alpha = .05){
 #' parameters <- parameters + rnorm(10)
 #' ECR(CIs, parameters)
 #'
-ECR <- function(CIs, parameter, tails = FALSE){
+#' # ECR() for multiple CI estimates in the same object
+#' parameter <- 10
+#' CIs <- data.frame(lowerCI_1=parameter - runif(10),
+#'                   upperCI_1=parameter + runif(10),
+#'                   lowerCI_2=parameter - runif(10),
+#'                   upperCI_2=parameter + runif(10))
+#' head(CIs)
+#' ECR(CIs, parameter)
+#' ECR(CIs, parameter, tails=TRUE)
+#'
+#' # often a good idea to provide names for the output
+#' ECR(CIs, parameter, names = c('this', 'that'))
+#' ECR(CIs, parameter, tails=TRUE, names = c('this', 'that'))
+#'
+ECR <- function(CIs, parameter, tails = FALSE, names = NULL){
     if(is.data.frame(CIs)) CIs <- as.matrix(CIs)
     if(length(CIs) == 2L) CIs <- matrix(CIs, 1L, 2L)
+    stopifnot(ncol(CIs) %% 2 == 0L)
+    if(ncol(CIs) > 2L){
+        ret <- c()
+        ind <- 1L
+        for(i in seq(1L, ncol(CIs), by=2L)){
+            ret <- c(ret, ECR(CIs[,c(i, i+1L)], parameter=parameter,
+                                  tails=tails, names=names[ind]))
+            ind <- ind + 1L
+        }
+        return(ret)
+    }
     stopifnot(is.matrix(CIs))
     stopifnot(is.vector(parameter))
     if(length(parameter) != 1L) stopifnot(length(parameter) == nrow(CIs))
@@ -387,7 +416,15 @@ ECR <- function(CIs, parameter, tails = FALSE){
         CIs <- cbind(CIs[,2L], CIs[,1L])
     }
     ends <- c(mean(CIs[,1L] > parameter), mean(parameter > CIs[,2L]))
-    ret <- if(tails) ends else 1 - sum(ends)
+    if(tails){
+        ret <- ends
+        if(!is.null(names))
+            names(ret) <- paste0(names, c('_lower', '_upper'))
+    } else {
+        ret <- 1 - sum(ends)
+        if(!is.null(names))
+            names(ret) <- names
+    }
     ret
 }
 

@@ -4,14 +4,15 @@
 \alias{ECR}
 \title{Compute the empirical coverage rate for Type I errors and Power}
 \usage{
-ECR(CIs, parameter, tails = FALSE)
+ECR(CIs, parameter, tails = FALSE, names = NULL)
 }
 \arguments{
 \item{CIs}{a \code{numeric} vector or \code{matrix} of confidence interval values for a
 given parameter value, where the first element/column indicates the lower confidence interval
 and the second element/column the upper confidence interval. If a
 vector of length 2 is passed instead then the returned value will be either a 1 or 0 to indicate
-whether the parameter value was or was not within the interval, respectively}
+whether the parameter value was or was not within the interval, respectively. Otherwise,
+the input must be a matrix with an even number of columns}
 
 \item{parameter}{a numeric scalar indicating the fixed parameter value. Alternative, a \code{numeric}
 vector object with length equal to the number of rows as \code{CIs} (use to compare sets of parameters
@@ -21,6 +22,9 @@ at once)}
 the parameter was lower or higher than the supplied interval, respectively. This is mainly only
 useful when the coverage region is not expected to be symmetric, and therefore is generally not
 required. Note that \code{1 - sum(ECR(CIs, parameter, tails=TRUE)) == ECR(CIs, parameter)}}
+
+\item{names}{an optional character vector used to name the returned object. Generally useful
+when more than one CI estimate is investigated at once}
 }
 \description{
 Computes the detection rate for determining empirical Type I error and power rates using information
@@ -49,6 +53,20 @@ parameters <- 1:10
 CIs <- cbind(parameters - runif(10), parameters + runif(10))
 parameters <- parameters + rnorm(10)
 ECR(CIs, parameters)
+
+# ECR() for multiple CI estimates in the same object
+parameter <- 10
+CIs <- data.frame(lowerCI_1=parameter - runif(10),
+                  upperCI_1=parameter + runif(10),
+                  lowerCI_2=parameter - runif(10),
+                  upperCI_2=parameter + runif(10))
+head(CIs)
+ECR(CIs, parameter)
+ECR(CIs, parameter, tails=TRUE)
+
+# often a good idea to provide names for the output
+ECR(CIs, parameter, names = c('this', 'that'))
+ECR(CIs, parameter, tails=TRUE, names = c('this', 'that'))
 
 }
 \seealso{
