@@ -629,6 +629,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         design <- data.frame(dummy_run=NA)
         dummy_run <- TRUE
     }
+    if(nrow(design) == 1L) verbose <- FALSE
     stopifnot(!missing(replications))
     if(!is.null(seed))
         stopifnot(nrow(design) == length(seed))
