@@ -4,13 +4,15 @@
 \alias{SimFunctions}
 \title{Skeleton functions for simulations}
 \usage{
-SimFunctions(filename = NULL, comments = FALSE, singlefile = FALSE,
-  summarise = TRUE)
+SimFunctions(filename = NULL, dir = getwd(), comments = FALSE,
+  singlefile = FALSE, summarise = TRUE)
 }
 \arguments{
 \item{filename}{a character vector indicating whether the output should be saved to two respective files
 containing the simulation design and the functional components, respectively. Using this option
 is generally the recommended approach when beginning to write a Monte Carlo simulation}
+
+\item{dir}{the directory to write the files to. Default is the working directory}
 
 \item{comments}{logical; include helpful comments? Default is \code{FALSE}}
 
@@ -21,16 +23,12 @@ output is saved to two separate files containing the functions and design defini
 \item{summarise}{include \code{summarise} function? Default is \code{TRUE}}
 }
 \description{
-This function prints skeleton versions of the required functions and work-flow required
-to run simulations, complete with the correct inputs, class of outputs, and option comments to
-help with the initial definitions. Use this at the start when defining your simulation. The
+This function prints skeleton versions of the required SimDesign functions
+to run simulations, complete with the correct inputs, class of outputs, and optional comments to
+help with the initial definitions. Use this at the start of your Monte Carlo simulation study. The
 recommended approach when using the \code{RStudio} IDE is to write the simulation template to two
-separate files for easier debugging/sourcing.
+separate files for easier debugging/sourcing (this is the default when a \code{filename} is passed).
 For a didactic presentation of the package refer to Sigal and Chalmers (in press).
-}
-\details{
-The function \code{SimDesign_functions} is deprecated and will be
-removed in a future release.
 }
 \examples{
 

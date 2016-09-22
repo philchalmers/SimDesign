@@ -1,18 +1,17 @@
 #' Skeleton functions for simulations
 #'
-#' This function prints skeleton versions of the required functions and work-flow required
-#' to run simulations, complete with the correct inputs, class of outputs, and option comments to
-#' help with the initial definitions. Use this at the start when defining your simulation. The
+#' This function prints skeleton versions of the required SimDesign functions
+#' to run simulations, complete with the correct inputs, class of outputs, and optional comments to
+#' help with the initial definitions. Use this at the start of your Monte Carlo simulation study. The
 #' recommended approach when using the \code{RStudio} IDE is to write the simulation template to two
-#' separate files for easier debugging/sourcing.
+#' separate files for easier debugging/sourcing (this is the default when a \code{filename} is passed).
 #' For a didactic presentation of the package refer to Sigal and Chalmers (in press).
-#'
-#' The function \code{SimDesign_functions} is deprecated and will be
-#' removed in a future release.
 #'
 #' @param filename a character vector indicating whether the output should be saved to two respective files
 #'   containing the simulation design and the functional components, respectively. Using this option
 #'   is generally the recommended approach when beginning to write a Monte Carlo simulation
+#'
+#' @param dir the directory to write the files to. Default is the working directory
 #'
 #' @param comments logical; include helpful comments? Default is \code{FALSE}
 #'
@@ -44,7 +43,7 @@
 #' SimFunctions('mysim', singlefile = TRUE, comments = TRUE)
 #' }
 #'
-SimFunctions <- function(filename = NULL, comments = FALSE, singlefile = FALSE, summarise = TRUE){
+SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE, singlefile = FALSE, summarise = TRUE){
     LINE <- function()
         cat('#-------------------------------------------------------------------\n')
     HEAD <- function(){
@@ -56,7 +55,7 @@ SimFunctions <- function(filename = NULL, comments = FALSE, singlefile = FALSE, 
                       condition2 = NA)\n\n')
         if(!is.null(filename) && !singlefile){
             if(comments) cat('### Source in essential functions\n')
-            cat('# setwd(\"', getwd(), '\")', sep='')
+            cat('# setwd(\"', dir, '\")', sep='')
             cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')\n\n', sep='')
         }
     }
@@ -98,13 +97,20 @@ SimFunctions <- function(filename = NULL, comments = FALSE, singlefile = FALSE, 
             stop('File already exists! Please rename input or rename/remove existing files', call.=FALSE)
     }
     if(is.null(filename) || singlefile){
-        if(singlefile)
-            if(!is.null(filename)) sink(paste0(filename, '.R'))
+        if(singlefile){
+            if(!is.null(filename)){
+                cat(sprintf('Writing simulation components to file \"%s\" in \n  directory \"%s\"',
+                            paste0(filename, '.R'), dir))
+                sink(paste0(filename, '.R'))
+            }
+        }
         HEAD()
         FUNCTIONS()
         TAIL()
         if(!is.null(filename)) sink()
     } else {
+        cat(sprintf('Writing simulation components to files to \"%s\" and \"%s\" in \n  directory \"%s\"',
+                    paste0(filename, '.R'), paste0(filename, '-functions.R'), dir))
         sink(paste0(filename, '.R'))
         HEAD()
         TAIL()
