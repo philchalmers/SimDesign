@@ -39,3 +39,13 @@ timeFormater <- function(time, decimals = TRUE){
     else paste0(resTime, sprintf("%02is", sec))
     resTime
 }
+
+print_progress <- function(p, time1, time0, stored_time, progress){
+    if(!progress)
+        cat(sprintf('\rCompleted: %i%s,  Previous condition time: %s,  Total elapsed time: %s ',
+                    round(p * 100), '%', timeFormater(time1 - time0), timeFormater(sum(stored_time))))
+    else
+        cat(sprintf('\nCompleted: %i%s,  Total elapsed time: %s \n',
+                    round(p * 100), '%', timeFormater(sum(stored_time))))
+    invisible()
+}

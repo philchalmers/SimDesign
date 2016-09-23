@@ -598,6 +598,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           max_errors = 50, as.factor = TRUE, save_generate_data = FALSE,
                           save_details = list(), edit = 'none', verbose = TRUE)
 {
+    progress <- FALSE #TODO placeholder
     stopifnot(!missing(generate) || !missing(analyse))
     if(!all(names(save_results) %in%
             c('compname', 'tmpfilename', 'save_results_dirname', 'save_generate_data_dirname')))
@@ -803,9 +804,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     for(i in start:end){
         if(summarise_asis){
             if(verbose)
-                cat(sprintf('\rCompleted: %i%s,   Previous condition time: %s,  Total elapsed time: %s',
-                            round((i-1)/(nrow(design))*100), '%', timeFormater(time1 - time0),
-                            timeFormater(sum(stored_time))))
+                print_progress(round((i-1)/(nrow(design))*100), time1=time1, time0=time0,
+                               stored_time=stored_time, progress=progress)
             time0 <- proc.time()[3]
             Result_list[[i]] <- Analysis(Functions=Functions,
                                          condition=design[i,],
@@ -825,9 +825,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
-                cat(sprintf('\rCompleted: %i%s,   Previous condition time: %s,  Total elapsed time: %s',
-                            round((i-1)/(nrow(design))*100), '%', timeFormater(time1 - time0),
-                            timeFormater(sum(stored_time))))
+                print_progress(round((i-1)/(nrow(design))*100), time1=time1, time0=time0,
+                               stored_time=stored_time, progress=progress)
             time0 <- proc.time()[3]
             if(save_generate_data)
                 dir.create(paste0(save_generate_data_dirname, '/design-row-', i), showWarnings = FALSE)
@@ -856,8 +855,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     attr(Result_list, 'SimDesign_names') <- NULL
     if(summarise_asis){
         if(verbose)
-            cat(sprintf('\rCompleted: %i%s,   Previous condition time: %s,  Total elapsed time: %s ',
-                        100, '%', timeFormater(time1 - time0), timeFormater(sum(stored_time))))
+            print_progress(1, time1=time1, time0=time0,
+                           stored_time=stored_time, progress=progress)
         design$ID <- NULL
         nms <- colnames(design)
         nms2 <- matrix(character(0), nrow(design), ncol(design))
@@ -870,8 +869,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     if(verbose)
-        cat(sprintf('\rCompleted: %i%s,   Previous condition time: %s,  Total elapsed time: %s',
-                    100, '%', timeFormater(time1 - time0), timeFormater(sum(stored_time))))
+        print_progress(1, time1=time1, time0=time0,
+                       stored_time=stored_time, progress=progress)
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
     REPLICATIONS <- Final$REPLICATIONS
