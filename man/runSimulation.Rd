@@ -16,7 +16,8 @@ runSimulation(design, replications, generate, analyse, summarise,
   max_errors = 50, as.factor = TRUE, save_generate_data = FALSE,
   save_details = list(), edit = "none", verbose = TRUE)
 
-\method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE, ...)
+\method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE,
+  format.time = TRUE, ...)
 
 \method{head}{SimDesign}(x, ...)
 
@@ -197,6 +198,9 @@ Default is \code{FALSE}}
 \item{drop.design}{logical; don't include information about the (potentially factorized) simulation design?
 This may be useful if you wish to \code{cbind()} the original design \code{data.frame} to the simulation
 results instead of using the auto-factorized version. Default is \code{FALSE}}
+
+\item{format.time}{logical; format \code{SIM_TIME} into a day/hour/min/sec character vector? Default is
+\code{TRUE}}
 
 \item{...}{additional arguments}
 

@@ -16,3 +16,26 @@ load_packages <- function(packages){
 get_packages <- function(packages){
     sapply(packages, function(x) as.character(packageVersion(x)))
 }
+
+# base-code borrowed and modified from pbapply
+timeFormater <- function(time, decimals = FALSE){
+    dec <- round(time - floor(time), 2)
+    sec <- round(time %% 60)
+    if(decimals) sec <- sec + dec
+    time <- floor(time / 60)
+    minutes <- floor(time %% 60)
+    time <- floor(time / 60)
+    days <- floor(time / 24)
+    time <- floor(time %% 24)
+    hours <- floor(time %% 60)
+    resTime <- ""
+    if (days > 0)
+        resTime <- sprintf("%02id ", days)
+    if (hours > 0 || days > 0)
+        resTime <- paste(resTime, sprintf("%02ih ", hours), sep = "")
+    if (minutes > 0 || hours > 0 || days > 0)
+        resTime <- paste(resTime, sprintf("%02im ", minutes), sep = "")
+    resTime <- if(decimals) paste0(resTime, sprintf("%.2fs", sec))
+    else paste0(resTime, sprintf("%02is", sec))
+    resTime
+}

@@ -803,8 +803,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     for(i in start:end){
         if(summarise_asis){
             if(verbose)
-                cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
-                            round((i-1)/(nrow(design))*100), '%', time1 - time0, sum(stored_time)))
+                cat(sprintf('\rCompleted: %i%s,   Previous condition time: %s,  Total elapsed time: %s',
+                            round((i-1)/(nrow(design))*100), '%', timeFormater(time1 - time0),
+                            timeFormater(sum(stored_time))))
             time0 <- proc.time()[3]
             Result_list[[i]] <- Analysis(Functions=Functions,
                                          condition=design[i,],
@@ -824,8 +825,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
-                cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
-                            round((i-1)/(nrow(design))*100), '%', time1 - time0, sum(stored_time)))
+                cat(sprintf('\rCompleted: %i%s,   Previous condition time: %s,  Total elapsed time: %s',
+                            round((i-1)/(nrow(design))*100), '%', timeFormater(time1 - time0),
+                            timeFormater(sum(stored_time))))
             time0 <- proc.time()[3]
             if(save_generate_data)
                 dir.create(paste0(save_generate_data_dirname, '/design-row-', i), showWarnings = FALSE)
@@ -854,8 +856,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     attr(Result_list, 'SimDesign_names') <- NULL
     if(summarise_asis){
         if(verbose)
-            cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
-                        100, '%', time1 - time0, sum(stored_time)))
+            cat(sprintf('\rCompleted: %i%s,   Previous condition time: %s,  Total elapsed time: %s ',
+                        100, '%', timeFormater(time1 - time0), timeFormater(sum(stored_time))))
         design$ID <- NULL
         nms <- colnames(design)
         nms2 <- matrix(character(0), nrow(design), ncol(design))
@@ -868,8 +870,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     if(verbose)
-        cat(sprintf('\rCompleted: %i%s,   Previous condition time: %.1f,  Total elapsed time: %.1f ',
-                    100, '%', time1 - time0, sum(stored_time)))
+        cat(sprintf('\rCompleted: %i%s,   Previous condition time: %s,  Total elapsed time: %s',
+                    100, '%', timeFormater(time1 - time0), timeFormater(sum(stored_time))))
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
     REPLICATIONS <- Final$REPLICATIONS
@@ -942,12 +944,16 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
 #' @param drop.design logical; don't include information about the (potentially factorized) simulation design?
 #'   This may be useful if you wish to \code{cbind()} the original design \code{data.frame} to the simulation
 #'   results instead of using the auto-factorized version. Default is \code{FALSE}
+#' @param format.time logical; format \code{SIM_TIME} into a day/hour/min/sec character vector? Default is
+#'   \code{TRUE}
 #' @export
-print.SimDesign <- function(x, drop.extras = FALSE, drop.design = FALSE, ...){
+print.SimDesign <- function(x, drop.extras = FALSE, drop.design = FALSE, format.time = TRUE, ...){
     att <- attr(x, 'design_names')
     if(drop.extras) x <- x[ ,c(att$design, att$sim), drop=FALSE]
     if(drop.design) x <- x[ ,!(names(x) %in% att$design), drop=FALSE]
     class(x) <- 'data.frame'
+    if(format.time)
+        x$SIM_TIME <- sapply(x$SIM_TIME, timeFormater, TRUE)
     ldots <- list(...)
     if(is.null(ldots$print)) print(x, ...)
     else return(x)
@@ -975,5 +981,6 @@ tail.SimDesign <- function(x, ...){
 #' @export
 summary.SimDesign <- function(object, ...){
     ret <- attr(object, 'extra_info')
+    ret$total_elapsed_time <- timeFormater(ret$total_elapsed_time, TRUE)
     ret
 }
