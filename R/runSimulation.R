@@ -804,7 +804,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     for(i in start:end){
         if(summarise_asis){
             if(verbose)
-                print_progress(round((i-1)/(nrow(design))*100), time1=time1, time0=time0,
+                print_progress(i, nrow(design), time1=time1, time0=time0,
                                stored_time=stored_time, progress=progress)
             time0 <- proc.time()[3]
             Result_list[[i]] <- Analysis(Functions=Functions,
@@ -825,7 +825,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
-                print_progress(round((i-1)/(nrow(design))*100), time1=time1, time0=time0,
+                print_progress(i, nrow(design), time1=time1, time0=time0,
                                stored_time=stored_time, progress=progress)
             time0 <- proc.time()[3]
             if(save_generate_data)
@@ -855,7 +855,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     attr(Result_list, 'SimDesign_names') <- NULL
     if(summarise_asis){
         if(verbose)
-            print_progress(1, time1=time1, time0=time0,
+            print_progress(nrow(design), nrow(design), time1=time1, time0=time0,
                            stored_time=stored_time, progress=progress)
         design$ID <- NULL
         nms <- colnames(design)
@@ -869,7 +869,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     if(verbose)
-        print_progress(1, time1=time1, time0=time0,
+        print_progress(nrow(design), nrow(design), time1=time1, time0=time0,
                        stored_time=stored_time, progress=progress)
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
