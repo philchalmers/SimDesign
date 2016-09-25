@@ -4,10 +4,14 @@
 \alias{Attach}
 \title{Attach the simulation conditions for easier reference}
 \usage{
-Attach(condition)
+Attach(condition, check = TRUE)
 }
 \arguments{
 \item{condition}{a \code{data.frame} containing the \code{condition} names}
+
+\item{check}{logical; check to see if the function will accidentally replace previously defined
+variables with the same names as in \code{condition}? Default is \code{TRUE}, which will avoid
+this error}
 }
 \description{
 This function accepts the \code{condition} object used to indicate the design conditions

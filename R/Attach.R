@@ -14,6 +14,10 @@
 #'
 #' @param condition a \code{data.frame} containing the \code{condition} names
 #'
+#' @param check logical; check to see if the function will accidentally replace previously defined
+#'   variables with the same names as in \code{condition}? Default is \code{TRUE}, which will avoid
+#'   this error
+#'
 #' @seealso \code{\link{runSimulation}}, \code{\link{Generate}}
 #'
 #' @export
@@ -48,8 +52,12 @@
 #'     dat
 #' }
 #' }
-Attach <- function(condition){
+Attach <- function(condition, check = TRUE){
     envir <- as.environment(-1L)
+    if(check)
+        if(any(ls(envir = envir) %in% names(condition)))
+            stop(sprintf('Using Attach() will mask the previously defined variable(s): %s)',
+                         ls(envir = envir)[ls(envir = envir) %in% names(condition)]), call. = FALSE)
     for(n in names(condition))
         assign(n, condition[[n]], envir = envir)
     invisible()
