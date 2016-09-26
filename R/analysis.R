@@ -13,21 +13,33 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      save_results, save_results_dirname, max_errors,
                      save_generate_data, save_generate_data_dirname,
                      save_seeds, save_seeds_dirname, load_seed, export_funs, packages,
-                     summarise_asis)
+                     summarise_asis, progress)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
     if(is.null(cl)){
         if(!is.null(seed)) set.seed(seed[condition$ID])
-        results <- lapply(1L:replications, mainsim, condition=condition,
-                               generate=Functions$generate,
-                               analyse=Functions$analyse,
-                               fixed_objects=fixed_objects,
-                               max_errors=max_errors, packages=packages,
-                               save_generate_data=save_generate_data,
-                               save_generate_data_dirname=save_generate_data_dirname,
-                               save_seeds=save_seeds, load_seed=load_seed,
-                               save_seeds_dirname=save_seeds_dirname)
+        results <- if(progress){
+            pbapply::pblapply(1L:replications, mainsim, condition=condition,
+                   generate=Functions$generate,
+                   analyse=Functions$analyse,
+                   fixed_objects=fixed_objects,
+                   max_errors=max_errors, packages=packages,
+                   save_generate_data=save_generate_data,
+                   save_generate_data_dirname=save_generate_data_dirname,
+                   save_seeds=save_seeds, load_seed=load_seed,
+                   save_seeds_dirname=save_seeds_dirname)
+        } else {
+            lapply(1L:replications, mainsim, condition=condition,
+                   generate=Functions$generate,
+                   analyse=Functions$analyse,
+                   fixed_objects=fixed_objects,
+                   max_errors=max_errors, packages=packages,
+                   save_generate_data=save_generate_data,
+                   save_generate_data_dirname=save_generate_data_dirname,
+                   save_seeds=save_seeds, load_seed=load_seed,
+                   save_seeds_dirname=save_seeds_dirname)
+        }
     } else {
         if(MPI){
             i <- 1L
@@ -39,13 +51,24 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
-            results <- parallel::parLapply(cl, 1L:replications, mainsim,
-                                                condition=condition, generate=Functions$generate,
-                                                analyse=Functions$analyse, load_seed=load_seed,
-                                                fixed_objects=fixed_objects, packages=packages,
-                                                max_errors=max_errors, save_generate_data=save_generate_data,
-                                                save_generate_data_dirname=save_generate_data_dirname,
-                                                save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname)
+            results <- if(progress){
+                pbapply::pblapply(1L:replications, mainsim,
+                                    condition=condition, generate=Functions$generate,
+                                    analyse=Functions$analyse, load_seed=load_seed,
+                                    fixed_objects=fixed_objects, packages=packages,
+                                    max_errors=max_errors, save_generate_data=save_generate_data,
+                                    save_generate_data_dirname=save_generate_data_dirname,
+                                    save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
+                                  cl=cl)
+            } else {
+                parallel::parLapply(cl, 1L:replications, mainsim,
+                                    condition=condition, generate=Functions$generate,
+                                    analyse=Functions$analyse, load_seed=load_seed,
+                                    fixed_objects=fixed_objects, packages=packages,
+                                    max_errors=max_errors, save_generate_data=save_generate_data,
+                                    save_generate_data_dirname=save_generate_data_dirname,
+                                    save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname)
+            }
         }
     }
     if(summarise_asis){

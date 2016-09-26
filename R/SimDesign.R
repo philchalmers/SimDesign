@@ -15,9 +15,10 @@
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #' @import foreach methods parallel stats
 #' @importFrom plyr rbind.fill
+#' @importFrom pbapply pblapply
 #' @importFrom utils recover packageVersion sessionInfo head tail
 #' @keywords package
-#' @references 
+#' @references
 #' Sigal, M. J., & Chalmers, R. P. (in press). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education}.
 NULL

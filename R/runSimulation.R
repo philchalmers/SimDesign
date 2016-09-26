@@ -392,6 +392,10 @@
 #'   but will not be run when \code{MPI = TRUE}.
 #'   Default is \code{NULL}, indicating that no seed is set for each condition
 #'
+#' @param progress logical; display a progress bar for each simulation condition?
+#'   This is useful when simulations conditions take a long time to run.
+#'   Uses the \code{pbapply} package to display the progress. Default is \code{FALSE}
+#'
 #' @param verbose logical; print messages to the R console? Default is \code{TRUE}
 #'
 #' @return a \code{data.frame} (also of class \code{'SimDesign'})
@@ -596,9 +600,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           load_seed = NULL, seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50, as.factor = TRUE, save_generate_data = FALSE,
-                          save_details = list(), edit = 'none', verbose = TRUE)
+                          save_details = list(), edit = 'none', progress = FALSE, verbose = TRUE)
 {
-    progress <- FALSE #TODO placeholder
     stopifnot(!missing(generate) || !missing(analyse))
     if(!all(names(save_results) %in%
             c('compname', 'tmpfilename', 'save_results_dirname', 'save_generate_data_dirname')))
@@ -801,6 +804,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         c(save_generate_data_dirname=save_generate_data_dirname,
           save_results_dirname=save_results_dirname,
           save_seeds_dirname=save_seeds_dirname)
+    if(progress) verbose <- TRUE
     for(i in start:end){
         if(summarise_asis){
             if(verbose)
@@ -819,7 +823,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          save_seeds=save_seeds, summarise_asis=summarise_asis,
                                          save_seeds_dirname=save_seeds_dirname,
                                          max_errors=max_errors, packages=packages,
-                                         load_seed=load_seed, export_funs=export_funs)
+                                         load_seed=load_seed, export_funs=export_funs,
+                                         progress=progress)
             time1 <- proc.time()[3]
             stored_time <- stored_time + (time1 - time0)
         } else {
@@ -845,7 +850,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                               save_seeds=save_seeds, summarise_asis=summarise_asis,
                                                               save_seeds_dirname=save_seeds_dirname,
                                                               max_errors=max_errors, packages=packages,
-                                                              load_seed=load_seed, export_funs=export_funs)),
+                                                              load_seed=load_seed, export_funs=export_funs,
+                                                              progress=progress)),
                                            check.names=FALSE)
             time1 <- proc.time()[3]
             Result_list[[i]]$SIM_TIME <- time1 - time0

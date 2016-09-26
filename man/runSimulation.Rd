@@ -14,7 +14,8 @@ runSimulation(design, replications, generate, analyse, summarise,
   load_seed = NULL, seed = NULL, parallel = FALSE,
   ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
   max_errors = 50, as.factor = TRUE, save_generate_data = FALSE,
-  save_details = list(), edit = "none", verbose = TRUE)
+  save_details = list(), edit = "none", progress = FALSE,
+  verbose = TRUE)
 
 \method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE,
   format.time = TRUE, ...)
@@ -187,6 +188,10 @@ Default is \code{FALSE}}
   Alternatively, users may place \code{\link{browser}} calls within the respective functions for
   debugging at specific lines (note: parallel computation flags will automatically be disabled
   when a \code{browser()} is detected)}
+
+\item{progress}{logical; display a progress bar for each simulation condition?
+This is useful when simulations conditions take a long time to run.
+Uses the \code{pbapply} package to display the progress. Default is \code{FALSE}}
 
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 
