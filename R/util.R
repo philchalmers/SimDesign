@@ -19,7 +19,9 @@ get_packages <- function(packages){
 
 # base-code borrowed and modified from pbapply
 timeFormater <- function(time, decimals = TRUE){
-    dec <- round(time - floor(time), 2)
+    dec <- time - floor(time)
+    time <- floor(time - dec)
+    dec <- round(dec, 2)
     sec <- round(time %% 60)
     if(decimals) sec <- sec + dec
     time <- floor(time / 60)
