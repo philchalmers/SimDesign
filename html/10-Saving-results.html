@@ -158,8 +158,8 @@ result &lt;- runSimulation(Design, replications = 1000, save=TRUE, filename='my-
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 Design row: 1/3;  Previous condition time: 0.00s;  Total elapsed time: 0.00s 
-Design row: 2/3;  Previous condition time: 0.25s;  Total elapsed time: 0.25s 
-Design row: 3/3;  Previous condition time: 0.26s;  Total elapsed time: 1.51s</code></pre>
+Design row: 2/3;  Previous condition time: 0.28s;  Total elapsed time: 0.28s 
+Design row: 3/3;  Previous condition time: 0.29s;  Total elapsed time: 0.57s</code></pre>
 <pre><code>## Row 3 in design was terminated because it had 50 consecutive errors. 
 ## 
 ## Last error message was: 
@@ -179,9 +179,9 @@ result &lt;- runSimulation(Design, replications = 1000, save=TRUE, filename='my-
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## Resuming simulation from SIMDESIGN-TEMPFILE_ubuntu16-04.rds file with 1000 replications.</code></pre>
 <pre><code>## 
-Design row: 3/3;  Previous condition time: 0.26s;  Total elapsed time: 1.51s</code></pre>
+Design row: 3/3;  Previous condition time: 0.29s;  Total elapsed time: 0.57s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 1.75s</code></pre>
+## Simulation complete. Total execution time: 0.83s</code></pre>
 <pre><code>## 
 ## Saving simulation results to file: my-simple-sim.rds</code></pre>
 <p>Check which files exist.</p>
@@ -200,9 +200,9 @@ files[grepl('SIMDESIGN', files)]</code></pre>
 <pre><code>## 
 Design row: 1/3;  Previous condition time: 0.00s;  Total elapsed time: 0.00s 
 Design row: 2/3;  Previous condition time: 0.25s;  Total elapsed time: 0.25s 
-Design row: 3/3;  Previous condition time: 0.24s;  Total elapsed time: 0.49s</code></pre>
+Design row: 3/3;  Previous condition time: 0.26s;  Total elapsed time: 0.51s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 1.74s</code></pre>
+## Simulation complete. Total execution time: 0.78s</code></pre>
 <pre class="r"><code>dir &lt;- dir()
 directory &lt;- dir[grepl('SimDesign-results', dir)]
 dir(directory)</code></pre>
