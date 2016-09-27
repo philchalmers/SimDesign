@@ -114,9 +114,8 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 }
 
 Summarise <- function(condition, results, fixed_objects = NULL) {
-    ret <- sapply(c(1,3), function(x, results, pop) ECR(results[,c(x, x+1L)], parameter = pop), 
-        results = results, pop = condition$mu)
-    names(ret) <- c('t_CI', 'z_CI')
+    ret <- ECR(results, parameter = condition$mu, 
+               names = c('t_CI', 'z_CI'))
     ret
 }
 
