@@ -875,8 +875,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     if(verbose)
-        print_progress(nrow(design), nrow(design), time1=time1, time0=time0,
-                       stored_time=stored_time, progress=progress)
+        message('\nSimulation complete. Total execution time: ', timeFormater(sum(stored_time)))
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
     REPLICATIONS <- Final$REPLICATIONS
