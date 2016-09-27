@@ -169,15 +169,15 @@ results &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel 
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')</code></pre>
 <pre class="r"><code>print(results)</code></pre>
 <pre><code>##   mu sample_size  t_CI  z_CI REPLICATIONS SIM_TIME
-## 1  0          10 0.951 0.920        10000    0.952
-## 2  5          10 0.951 0.918        10000    0.990
-## 3 10          10 0.951 0.917        10000    0.916
-## 4  0          20 0.949 0.933        10000    0.995
-## 5  5          20 0.950 0.936        10000    0.918
-## 6 10          20 0.948 0.933        10000    0.900
-## 7  0          30 0.951 0.941        10000    0.909
-## 8  5          30 0.948 0.937        10000    0.909
-## 9 10          30 0.951 0.943        10000    0.928</code></pre>
+## 1  0          10 0.950 0.914        10000    1.01s
+## 2  5          10 0.950 0.916        10000    1.99s
+## 3 10          10 0.953 0.920        10000    1.00s
+## 4  0          20 0.949 0.933        10000    1.05s
+## 5  5          20 0.946 0.930        10000    1.95s
+## 6 10          20 0.948 0.935        10000    1.98s
+## 7  0          30 0.946 0.937        10000    1.98s
+## 8  5          30 0.953 0.942        10000    1.09s
+## 9 10          30 0.952 0.942        10000    1.98s</code></pre>
 <p>From these results it’s clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distribution CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.</p>
 <p>Note that the <code>ECR()</code> function was used within the <code>Analyse()</code> function rather than in <code>Summarise()</code>. When only the three values are supplied (CIs + population value) then <code>ECR()</code> will return either a 1 if the population value was within the CI or 0 if it was not. Hence, in the <code>Summarise()</code> function all that is required to obtain the coverage estimate is to find the mean of these 1’s and 0’s. The next section demonstrates how to use <code>ECR()</code> in the <code>Summarise()</code> instead, and it’s really a matter of preference which style you prefer.</p>
 </div>

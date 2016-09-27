@@ -132,8 +132,9 @@ $(document).ready(function () {
 <p>Each operation above represents the essential components of the <code>SimDesign</code> package. The <strong>design</strong> component is represented by a <code>data.frame</code> object containing the simulation conditions to be investigated, while <strong>generate</strong>, <strong>analyse</strong>, and <strong>summarise</strong> represent user defined functions which comprise the three steps in the simulation. Each of these components are constructed and passed to the <code>runSimulation()</code> function where the simulation steps are evaluated, ultimately returning a <code>data.frame</code> object containing the simulation results.</p>
 <p>After loading the <code>SimDesign</code> package, we begin by defining the required user-constructed functions. To expedite this process, a call to <code>SimFunctions()</code> will create a template to be filled in, where all the necessary functional arguments have been pre-assigned. The documentation of each argument can be found in the respective R help files, however there organization is very simple conceptually.</p>
 <p>To begin, the following code should be copied and saved to an external source (i.e., text) file.</p>
-<pre class="r"><code>library(SimDesign)
-SimFunctions()</code></pre>
+<pre class="r"><code>library(SimDesign)</code></pre>
+<pre><code>See ?SimFunctions to get started with SimDesign</code></pre>
+<pre class="r"><code>SimFunctions()</code></pre>
 <pre><code>#-------------------------------------------------------------------
 
 library(SimDesign)
@@ -230,15 +231,15 @@ Design</code></pre>
 <pre class="r"><code>results &lt;- runSimulation(Design, replications = 1000, 
     generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
-Completed: 0%,   Previous condition time: 0.0,  Total elapsed time: 0.0 
-Completed: 12%,   Previous condition time: 0.2,  Total elapsed time: 0.2 
-Completed: 25%,   Previous condition time: 0.2,  Total elapsed time: 0.5 
-Completed: 38%,   Previous condition time: 0.3,  Total elapsed time: 0.7 
-Completed: 50%,   Previous condition time: 0.3,  Total elapsed time: 1.0 
-Completed: 62%,   Previous condition time: 0.3,  Total elapsed time: 1.3 
-Completed: 75%,   Previous condition time: 0.3,  Total elapsed time: 1.6 
-Completed: 88%,   Previous condition time: 0.3,  Total elapsed time: 1.8 
-Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 2.1</code></pre>
+Design row: 1/8;  Previous condition time: 0.00s;  Total elapsed time: 0.00s 
+Design row: 2/8;  Previous condition time: 0.24s;  Total elapsed time: 0.24s 
+Design row: 3/8;  Previous condition time: 0.25s;  Total elapsed time: 0.48s 
+Design row: 4/8;  Previous condition time: 0.26s;  Total elapsed time: 1.74s 
+Design row: 5/8;  Previous condition time: 0.28s;  Total elapsed time: 1.02s 
+Design row: 6/8;  Previous condition time: 0.29s;  Total elapsed time: 1.30s 
+Design row: 7/8;  Previous condition time: 0.26s;  Total elapsed time: 2.56s 
+Design row: 8/8;  Previous condition time: 0.27s;  Total elapsed time: 2.83s 
+Design row: 8/8;  Previous condition time: 0.30s;  Total elapsed time: 2.13s</code></pre>
 <pre class="r"><code>results</code></pre>
 <pre><code>##   sample_size distribution bias.mean_no_trim bias.mean_trim.1
 ## 1          30         norm           0.00082         -0.00018
@@ -268,14 +269,14 @@ Completed: 100%,   Previous condition time: 0.3,  Total elapsed time: 2.1</code>
 ## 7           0.2811      0.4430               1           10.2
 ## 8           0.2657      0.4259               1           38.2
 ##   RE.mean_trim.2 RE.median REPLICATIONS SIM_TIME
-## 1            1.3       2.4         1000     0.24
-## 2            1.2       2.3         1000     0.24
-## 3            1.3       2.6         1000     0.26
-## 4            1.2       2.3         1000     0.28
-## 5            4.1      10.0         1000     0.26
-## 6            9.2      23.5         1000     0.29
-## 7           30.6      76.0         1000     0.27
-## 8          129.9     333.7         1000     0.31</code></pre>
+## 1            1.3       2.4         1000    0.24s
+## 2            1.2       2.3         1000    0.25s
+## 3            1.3       2.6         1000    0.26s
+## 4            1.2       2.3         1000    0.28s
+## 5            4.1      10.0         1000    0.29s
+## 6            9.2      23.5         1000    0.26s
+## 7           30.6      76.0         1000    0.27s
+## 8          129.9     333.7         1000    0.30s</code></pre>
 <p>As can be seen from the printed results, each result from the <code>Summarise()</code> function has been paired with the respective conditions, statistics have been properly named, and two additional columns have been appended to the results: <code>REPLICATIONS</code>, which indicates how many time the conditions were performed, and <code>SIM_TIME</code> indicating the time (in seconds) it took to completely finish the respective conditions. A call to <code>View()</code> in the R console may also be a nice way to sift through the <code>results</code> object.</p>
 </div>
 <div id="interpreting-the-results" class="section level3">
