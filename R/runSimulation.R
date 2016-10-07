@@ -284,7 +284,8 @@
 #'   results (as a \code{list} or \code{matrix}), and try-errors. When \code{TRUE}, a temp file will be used to track the simulation
 #'   state (in case of power outages, crashes, etc). When \code{TRUE}, temporary files will also be saved
 #'   to the working directory (in the same was as when \code{save = TRUE} to better track the state of the simulation.
-#'   Default is \code{FALSE}
+#'   See \code{\link{SimResults}} for an example of how to read these \code{.rds} files back into R
+#'   after the simulation is complete. Default is \code{FALSE}
 #'
 #' @param save_seeds logical; save the \code{.Random.seed} states prior to performing each replication into
 #'   plain text files located in the defined \code{save_seeds_dirname} directory/folder?
@@ -407,7 +408,7 @@
 #' @aliases runSimulation
 #'
 #' @seealso \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
-#'   \code{\link{SimFunctions}}, \code{\link{SimClean}}, \code{\link{SimAnova}},
+#'   \code{\link{SimFunctions}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
 #'   \code{\link{aggregate_simulations}}, \code{\link{Attach}}
 #'
 #' @export runSimulation
