@@ -167,15 +167,22 @@ test_that('SimDesign', {
     expect_true(all(Final$REPLICATIONS == 4L))
     SimClean(dir()[grepl('\\.rds', dir())])
 
-    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, verbose=FALSE,
+    #results
+    tmp <- runSimulation(rbind(Design, Design), generate=mysim, analyse=mycompute, summarise=mycollect, verbose=FALSE,
                          replications = 2, parallel=FALSE, save_results = TRUE, max_errors = Inf)
     compname = Sys.info()["nodename"]
     DIR <- paste0("SimDesign-results_", compname)
     expect_true(dir.exists(DIR))
     files <- dir(DIR)
-    expect_equal(length(files), 8L)
+    expect_equal(length(files), 16L)
     x <- readRDS(paste0(DIR, '/', files[1]))
     expect_true(all(names(x) %in% c('condition', 'results', 'errors', 'warnings')))
+    row1 <- SimResults(tmp, 1)
+    expect_is(row1, 'list')
+    expect_equal(length(row1), 4)
+    row1to5 <- SimResults(tmp, 1:5)
+    expect_is(row1to5, 'list')
+    expect_equal(length(row1to5), 5)
     SimClean(results = TRUE)
 
     # error test
