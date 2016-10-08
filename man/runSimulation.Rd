@@ -463,12 +463,93 @@ jobs manually .
 }
 \examples{
 
+#-------------------------------------------------------------------------------
+# Example 1: Sampling distribution of mean
+
+# This example demonstrate some of the simpler uses of SimDesign,
+# particularly for classroom settings. The only factor varied in this simulation
+# is sample size.
+
 # skeleton functions to be saved and edited
 SimFunctions()
 
 #### Step 1 --- Define your conditions under study and create design data.frame
 
-# (use EXPLICIT names, avoid things like N <- 100. That's fine in functions, not here)
+Design <- data.frame(N = c(10, 20, 30))
+
+#~~~~~~~~~~~~~~~~~~~~~~~~
+#### Step 2 --- Define generate, analyse, and summarise functions
+
+# help(Generate)
+Generate <- function(condition, fixed_objects = NULL){
+    dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
+    dat
+}
+
+# help(Analyse)
+Analyse <- function(condition, dat, fixed_objects = NULL){
+    ret <- mean(dat) # mean of the sample data vector
+    ret
+}
+
+# help(Summarise)
+Summarise <- function(condition, results, fixed_objects = NULL){
+    ret <- c(mu=mean(results), SE=sd(results)) # mean and SD summary of the sample means
+    ret
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~
+#### Step 3 --- Collect results by looping over the rows in design
+
+# run the simulation
+Final <- runSimulation(design=Design, replications=1000,
+                       generate=Generate, analyse=Analyse, summarise=Summarise)
+Final
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~
+#### Extras
+# compare SEs estimates to the true SEs from the formula sigma/sqrt(N)
+5 / sqrt(Design$N)
+
+# To store the results from the analyse function either
+#   a) omit a definition of of summarise(), or
+#   b) pass save_results = TRUE to runSimulation() and read the results in with SimResults()
+
+# e.g., the a) approach
+results <- runSimulation(design=Design, replications=1000,
+                       generate=Generate, analyse=Analyse)
+str(results)
+head(results[[1]])
+
+# or b) approach
+Final <- runSimulation(design=Design, replications=1000, save_results=TRUE,
+                       generate=Generate, analyse=Analyse, summarise=Summarise)
+results <- SimResults(Final)
+str(results)
+head(results[[1]]$results)
+
+# remove the saved results from the hard-drive if you no longer want them
+SimClean(results = TRUE)
+
+
+
+
+#-------------------------------------------------------------------------------
+# Example 2: t-test and Welch test when varying sample size, group sizes, and SDs
+
+# skeleton functions to be saved and edited
+SimFunctions()
+
+\dontrun{
+# in real-world simulations it's often better/easier to save
+# these functions directly to your hard-drive with
+SimFunctions('my-simulation')
+}
+
+#### Step 1 --- Define your conditions under study and create design data.frame
+
 Design <- expand.grid(sample_size = c(30, 60, 90, 120),
                       group_size_ratio = c(1, 4, 8),
                       standard_deviation_ratio = c(.5, 1, 2))
@@ -478,7 +559,6 @@ head(Design)
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 2 --- Define generate, analyse, and summarise functions
 
-# help(Generate)
 Generate <- function(condition, fixed_objects = NULL){
     N <- condition$sample_size      # alternatively, could use Attach() to make objects available
     grs <- condition$group_size_ratio
@@ -496,7 +576,6 @@ Generate <- function(condition, fixed_objects = NULL){
     dat
 }
 
-# help(Analyse)
 Analyse <- function(condition, dat, fixed_objects = NULL){
     welch <- t.test(DV ~ group, dat)
     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
@@ -507,7 +586,6 @@ Analyse <- function(condition, dat, fixed_objects = NULL){
     ret
 }
 
-# help(Summarise)
 Summarise <- function(condition, results, fixed_objects = NULL){
     #find results of interest here (e.g., alpha < .1, .05, .01)
     ret <- EDR(results, alpha = .05)
@@ -518,21 +596,10 @@ Summarise <- function(condition, results, fixed_objects = NULL){
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 3 --- Collect results by looping over the rows in design
 
-# test to see if it works and for debugging
+# first, test to see if it works
 Final <- runSimulation(design=Design, replications=5,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 head(Final)
-
-# didactic demonstration when summarise function is not supplied (returns list of matrices)
-Final2 <- runSimulation(design=Design, replications=5,
-                       generate=Generate, analyse=Analyse)
-print(Final2[1:3])
-
-# or a single condition
-Final3 <- runSimulation(design=Design[1, ], replications=5,
-                       generate=Generate, analyse=Analyse)
-Final3
-
 
 \dontrun{
 # complete run with 1000 replications per condition
@@ -541,9 +608,9 @@ Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
 head(Final, digits = 3)
 View(Final)
 
-## save results to a file upon completion (not run)
-# runSimulation(design=Design, replications=1000, parallel=TRUE, save=TRUE, filename = 'mysim',
-#               generate=Generate, analyse=Analyse, summarise=Summarise)
+## save final results to a file upon completion (not run)
+runSimulation(design=Design, replications=1000, parallel=TRUE, save=TRUE, filename = 'mysim',
+              generate=Generate, analyse=Analyse, summarise=Summarise)
 
 
 
@@ -599,9 +666,9 @@ runSimulation(design=Design, replications=1000,
 #                        generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
-# Step 4 --- Post-analysis: Create a new R file for analyzing the Final data.frame with R based
-# regression stuff, so use the lm() function to find main effects, interactions, plots, etc.
-# This is where you get to be a data analyst!
+###### Post-analysis: Analyze the results via functions like lm() or SimAnova(), and create
+###### tables(dplyr) or plots (ggplot2) to help visualize the results.
+###### This is where you get to be a data analyst!
 
 library(dplyr)
 Final2 <- tbl_df(Final)
