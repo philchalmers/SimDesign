@@ -122,8 +122,8 @@ $(document).ready(function () {
 
 <div id="comparison-of-for-loop-and-simdesign-code" class="section level1">
 <h1>Comparison of For-Loop and SimDesign code</h1>
-<p>This is an example taken from the tutorial article: “Conducting Simulation Studies in the R Programming Environment” in <em>Tutorials in Quantitative Methods for Psychology</em> (2013, Vol. 9(2), p. 43-60) by Kevin A. Hallgren. While the majority of the article seems to be good at explaining the mechanics of performing Monte Carlo simulations in R, the implementation uses the for loop strategy, and demonstrates very nicely why for loops make coding simulations very difficult to read and modify.</p>
-<p>The following is the code from Appendix A regarding how Sobel’s test for mediation performs. However, to save space the comments have been removed. Furthermore, the original code itself actually contained typographical errors, which I have commented on below. For further details about the simulation see the original article.</p>
+<p>This is an example taken from the tutorial article: “Conducting Simulation Studies in the R Programming Environment” in <em>Tutorials in Quantitative Methods for Psychology</em> (2013, Vol. 9(2), p. 43-60) by Kevin A. Hallgren. While the majority of the article seems to be good at explaining the mechanics of performing Monte Carlo simulations in R, the implementation unforuntatly used the <code>for</code> loop strategy, and demonstrates very nicely why <code>for</code> loops make coding simulations very difficult to read, modify, and debug.</p>
+<p>The following is the code from Appendix A regarding how Sobel’s test for mediation performs. However, to save space the comments have been removed. As well, the original code itself actually contained typographical errors (a phenomonon Sigal and Chalmers, in press, argued happens quite often with this strategy) which I have commented on below. For further details about the simulation see the original article.</p>
 </div>
 <div id="simulation-using-for-loops" class="section level1">
 <h1>Simulation Using For-Loops</h1>
@@ -173,7 +173,7 @@ d = data.frame(d)
 # the following line was added to determine the computation time
 time1 &lt;- Sys.time()
 time1 - time0</code></pre>
-<pre><code>## Time difference of 13.1 mins</code></pre>
+<pre><code>## Time difference of 8.99 mins</code></pre>
 <pre class="r"><code>head(d)</code></pre>
 <pre><code>##   iteration    a    b   cp   N model Sobel_z
 ## 1         1 -0.3 -0.3 -0.2 100     1  1.7836
@@ -220,12 +220,15 @@ Generate &lt;- function(condition, fixed_objects = NULL) {
 }
 
 Analyse &lt;- function(condition, dat, fixed_objects = NULL) {
-    ret &lt;- with(dat, sobel_test_p(X, M, Y))
+    Attach(dat)
+    XMY &lt;- sobel_test_p(X, M, Y)
+    XYM &lt;- sobel_test_p(X, Y, M)
+    ret &lt;- c(XMY=XMY, XYM=XYM)
     ret
 }
 
 Summarise &lt;- function(condition, results, fixed_objects = NULL) {
-    ret &lt;- c('EDR' = EDR(results[,'p'], alpha = .05))
+    ret &lt;- EDR(results[,c('XMY.p', 'XYM.p')], alpha = .05)
     ret
 }
 
@@ -237,124 +240,124 @@ results &lt;- runSimulation(design=Design, replications=1000, save_results=TRUE,
     generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')</code></pre>
 <pre><code>## 
 Design row: 1/54;  Previous condition time: 0.00s;  Total elapsed time: 0.00s 
-Design row: 2/54;  Previous condition time: 2.13s;  Total elapsed time: 2.13s 
-Design row: 3/54;  Previous condition time: 2.37s;  Total elapsed time: 4.50s 
-Design row: 4/54;  Previous condition time: 2.12s;  Total elapsed time: 6.62s 
-Design row: 5/54;  Previous condition time: 2.38s;  Total elapsed time: 9.00s 
-Design row: 6/54;  Previous condition time: 2.12s;  Total elapsed time: 11.12s 
-Design row: 7/54;  Previous condition time: 2.37s;  Total elapsed time: 13.49s 
-Design row: 8/54;  Previous condition time: 2.14s;  Total elapsed time: 15.63s 
-Design row: 9/54;  Previous condition time: 2.37s;  Total elapsed time: 17.99s 
-Design row: 10/54;  Previous condition time: 2.14s;  Total elapsed time: 20.13s 
-Design row: 11/54;  Previous condition time: 2.39s;  Total elapsed time: 22.52s 
-Design row: 12/54;  Previous condition time: 2.12s;  Total elapsed time: 24.64s 
-Design row: 13/54;  Previous condition time: 2.37s;  Total elapsed time: 27.02s 
-Design row: 14/54;  Previous condition time: 2.11s;  Total elapsed time: 29.13s 
-Design row: 15/54;  Previous condition time: 2.39s;  Total elapsed time: 31.52s 
-Design row: 16/54;  Previous condition time: 2.15s;  Total elapsed time: 33.67s 
-Design row: 17/54;  Previous condition time: 2.42s;  Total elapsed time: 36.09s 
-Design row: 18/54;  Previous condition time: 2.13s;  Total elapsed time: 38.22s 
-Design row: 19/54;  Previous condition time: 2.43s;  Total elapsed time: 40.65s 
-Design row: 20/54;  Previous condition time: 2.13s;  Total elapsed time: 42.78s 
-Design row: 21/54;  Previous condition time: 2.46s;  Total elapsed time: 45.24s 
-Design row: 22/54;  Previous condition time: 2.11s;  Total elapsed time: 47.35s 
-Design row: 23/54;  Previous condition time: 2.43s;  Total elapsed time: 49.78s 
-Design row: 24/54;  Previous condition time: 2.14s;  Total elapsed time: 51.92s 
-Design row: 25/54;  Previous condition time: 2.42s;  Total elapsed time: 54.34s 
-Design row: 26/54;  Previous condition time: 2.16s;  Total elapsed time: 56.50s 
-Design row: 27/54;  Previous condition time: 2.41s;  Total elapsed time: 58.91s 
-Design row: 28/54;  Previous condition time: 2.15s;  Total elapsed time: 01m 1.06s 
-Design row: 29/54;  Previous condition time: 2.40s;  Total elapsed time: 01m 3.46s 
-Design row: 30/54;  Previous condition time: 2.16s;  Total elapsed time: 01m 5.61s 
-Design row: 31/54;  Previous condition time: 2.41s;  Total elapsed time: 01m 8.02s 
-Design row: 32/54;  Previous condition time: 2.16s;  Total elapsed time: 01m 10.18s 
-Design row: 33/54;  Previous condition time: 2.40s;  Total elapsed time: 01m 12.59s 
-Design row: 34/54;  Previous condition time: 2.18s;  Total elapsed time: 01m 14.76s 
-Design row: 35/54;  Previous condition time: 2.38s;  Total elapsed time: 01m 17.15s 
-Design row: 36/54;  Previous condition time: 2.15s;  Total elapsed time: 01m 19.30s 
-Design row: 37/54;  Previous condition time: 2.43s;  Total elapsed time: 01m 21.73s 
-Design row: 38/54;  Previous condition time: 2.15s;  Total elapsed time: 01m 23.88s 
-Design row: 39/54;  Previous condition time: 2.42s;  Total elapsed time: 01m 26.29s 
-Design row: 40/54;  Previous condition time: 2.13s;  Total elapsed time: 01m 28.43s 
-Design row: 41/54;  Previous condition time: 2.42s;  Total elapsed time: 01m 30.85s 
-Design row: 42/54;  Previous condition time: 2.13s;  Total elapsed time: 01m 32.98s 
-Design row: 43/54;  Previous condition time: 2.42s;  Total elapsed time: 01m 35.39s 
-Design row: 44/54;  Previous condition time: 2.12s;  Total elapsed time: 01m 37.51s 
-Design row: 45/54;  Previous condition time: 2.42s;  Total elapsed time: 01m 39.94s 
-Design row: 46/54;  Previous condition time: 2.12s;  Total elapsed time: 01m 42.05s 
-Design row: 47/54;  Previous condition time: 2.44s;  Total elapsed time: 01m 44.50s 
-Design row: 48/54;  Previous condition time: 2.11s;  Total elapsed time: 01m 46.60s 
-Design row: 49/54;  Previous condition time: 2.40s;  Total elapsed time: 01m 49.01s 
-Design row: 50/54;  Previous condition time: 2.13s;  Total elapsed time: 01m 51.13s 
-Design row: 51/54;  Previous condition time: 2.40s;  Total elapsed time: 01m 53.54s 
-Design row: 52/54;  Previous condition time: 2.13s;  Total elapsed time: 01m 55.67s 
-Design row: 53/54;  Previous condition time: 2.40s;  Total elapsed time: 01m 58.08s 
-Design row: 54/54;  Previous condition time: 2.14s;  Total elapsed time: 02m 0.22s</code></pre>
+Design row: 2/54;  Previous condition time: 4.16s;  Total elapsed time: 4.16s 
+Design row: 3/54;  Previous condition time: 4.82s;  Total elapsed time: 8.98s 
+Design row: 4/54;  Previous condition time: 4.38s;  Total elapsed time: 13.36s 
+Design row: 5/54;  Previous condition time: 4.73s;  Total elapsed time: 18.09s 
+Design row: 6/54;  Previous condition time: 4.13s;  Total elapsed time: 22.22s 
+Design row: 7/54;  Previous condition time: 4.76s;  Total elapsed time: 26.98s 
+Design row: 8/54;  Previous condition time: 4.27s;  Total elapsed time: 31.25s 
+Design row: 9/54;  Previous condition time: 4.84s;  Total elapsed time: 36.09s 
+Design row: 10/54;  Previous condition time: 4.17s;  Total elapsed time: 40.27s 
+Design row: 11/54;  Previous condition time: 4.65s;  Total elapsed time: 44.91s 
+Design row: 12/54;  Previous condition time: 4.33s;  Total elapsed time: 49.25s 
+Design row: 13/54;  Previous condition time: 5.11s;  Total elapsed time: 54.36s 
+Design row: 14/54;  Previous condition time: 4.74s;  Total elapsed time: 59.09s 
+Design row: 15/54;  Previous condition time: 5.18s;  Total elapsed time: 01m 4.27s 
+Design row: 16/54;  Previous condition time: 4.51s;  Total elapsed time: 01m 8.78s 
+Design row: 17/54;  Previous condition time: 4.89s;  Total elapsed time: 01m 13.67s 
+Design row: 18/54;  Previous condition time: 4.24s;  Total elapsed time: 01m 17.91s 
+Design row: 19/54;  Previous condition time: 4.73s;  Total elapsed time: 01m 22.63s 
+Design row: 20/54;  Previous condition time: 4.39s;  Total elapsed time: 01m 27.02s 
+Design row: 21/54;  Previous condition time: 5.02s;  Total elapsed time: 01m 32.04s 
+Design row: 22/54;  Previous condition time: 4.38s;  Total elapsed time: 01m 36.42s 
+Design row: 23/54;  Previous condition time: 5.01s;  Total elapsed time: 01m 41.43s 
+Design row: 24/54;  Previous condition time: 4.25s;  Total elapsed time: 01m 45.68s 
+Design row: 25/54;  Previous condition time: 4.77s;  Total elapsed time: 01m 50.44s 
+Design row: 26/54;  Previous condition time: 4.25s;  Total elapsed time: 01m 54.70s 
+Design row: 27/54;  Previous condition time: 4.79s;  Total elapsed time: 01m 59.49s 
+Design row: 28/54;  Previous condition time: 4.23s;  Total elapsed time: 02m 3.72s 
+Design row: 29/54;  Previous condition time: 4.75s;  Total elapsed time: 02m 8.47s 
+Design row: 30/54;  Previous condition time: 4.19s;  Total elapsed time: 02m 12.66s 
+Design row: 31/54;  Previous condition time: 4.65s;  Total elapsed time: 02m 17.31s 
+Design row: 32/54;  Previous condition time: 4.12s;  Total elapsed time: 02m 21.44s 
+Design row: 33/54;  Previous condition time: 4.82s;  Total elapsed time: 02m 26.25s 
+Design row: 34/54;  Previous condition time: 4.14s;  Total elapsed time: 02m 30.40s 
+Design row: 35/54;  Previous condition time: 4.63s;  Total elapsed time: 02m 35.03s 
+Design row: 36/54;  Previous condition time: 4.12s;  Total elapsed time: 02m 39.15s 
+Design row: 37/54;  Previous condition time: 4.64s;  Total elapsed time: 02m 43.80s 
+Design row: 38/54;  Previous condition time: 4.20s;  Total elapsed time: 02m 48.00s 
+Design row: 39/54;  Previous condition time: 4.69s;  Total elapsed time: 02m 52.69s 
+Design row: 40/54;  Previous condition time: 4.12s;  Total elapsed time: 02m 56.81s 
+Design row: 41/54;  Previous condition time: 4.64s;  Total elapsed time: 03m 1.45s 
+Design row: 42/54;  Previous condition time: 4.13s;  Total elapsed time: 03m 5.57s 
+Design row: 43/54;  Previous condition time: 4.65s;  Total elapsed time: 03m 10.23s 
+Design row: 44/54;  Previous condition time: 4.35s;  Total elapsed time: 03m 14.58s 
+Design row: 45/54;  Previous condition time: 4.72s;  Total elapsed time: 03m 19.30s 
+Design row: 46/54;  Previous condition time: 4.34s;  Total elapsed time: 03m 23.64s 
+Design row: 47/54;  Previous condition time: 5.06s;  Total elapsed time: 03m 28.70s 
+Design row: 48/54;  Previous condition time: 4.38s;  Total elapsed time: 03m 33.09s 
+Design row: 49/54;  Previous condition time: 4.67s;  Total elapsed time: 03m 37.76s 
+Design row: 50/54;  Previous condition time: 4.60s;  Total elapsed time: 03m 42.36s 
+Design row: 51/54;  Previous condition time: 4.93s;  Total elapsed time: 03m 47.29s 
+Design row: 52/54;  Previous condition time: 4.13s;  Total elapsed time: 03m 51.42s 
+Design row: 53/54;  Previous condition time: 4.70s;  Total elapsed time: 03m 56.12s 
+Design row: 54/54;  Previous condition time: 4.14s;  Total elapsed time: 04m 0.26s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 02m 2.60s</code></pre>
+## Simulation complete. Total execution time: 04m 4.92s</code></pre>
 <pre class="r"><code>print(results)</code></pre>
-<pre><code>##      N    a    b   cp   EDR REPLICATIONS SIM_TIME
-## 1  100 -0.3 -0.3 -0.2 0.488         1000     2.13
-## 2  300 -0.3 -0.3 -0.2 0.996         1000     2.37
-## 3  100    0 -0.3 -0.2 0.012         1000     2.12
-## 4  300    0 -0.3 -0.2 0.024         1000     2.38
-## 5  100  0.3 -0.3 -0.2 0.513         1000     2.12
-## 6  300  0.3 -0.3 -0.2 0.996         1000     2.37
-## 7  100 -0.3    0 -0.2 0.017         1000     2.14
-## 8  300 -0.3    0 -0.2 0.035         1000     2.37
-## 9  100    0    0 -0.2 0.001         1000     2.14
-## 10 300    0    0 -0.2 0.001         1000     2.39
-## 11 100  0.3    0 -0.2 0.022         1000     2.12
-## 12 300  0.3    0 -0.2 0.039         1000     2.37
-## 13 100 -0.3  0.3 -0.2 0.502         1000     2.11
-## 14 300 -0.3  0.3 -0.2 0.996         1000     2.39
-## 15 100    0  0.3 -0.2 0.019         1000     2.15
-## 16 300    0  0.3 -0.2 0.035         1000     2.42
-## 17 100  0.3  0.3 -0.2 0.493         1000     2.13
-## 18 300  0.3  0.3 -0.2 0.993         1000     2.43
-## 19 100 -0.3 -0.3    0 0.480         1000     2.13
-## 20 300 -0.3 -0.3    0 0.998         1000     2.46
-## 21 100    0 -0.3    0 0.008         1000     2.11
-## 22 300    0 -0.3    0 0.031         1000     2.43
-## 23 100  0.3 -0.3    0 0.502         1000     2.14
-## 24 300  0.3 -0.3    0 0.998         1000     2.42
-## 25 100 -0.3    0    0 0.005         1000     2.16
-## 26 300 -0.3    0    0 0.040         1000     2.41
-## 27 100    0    0    0 0.000         1000     2.15
-## 28 300    0    0    0 0.000         1000     2.40
-## 29 100  0.3    0    0 0.009         1000     2.16
-## 30 300  0.3    0    0 0.031         1000     2.41
-## 31 100 -0.3  0.3    0 0.507         1000     2.16
-## 32 300 -0.3  0.3    0 0.998         1000     2.40
-## 33 100    0  0.3    0 0.013         1000     2.18
-## 34 300    0  0.3    0 0.044         1000     2.38
-## 35 100  0.3  0.3    0 0.494         1000     2.15
-## 36 300  0.3  0.3    0 0.997         1000     2.43
-## 37 100 -0.3 -0.3  0.2 0.516         1000     2.15
-## 38 300 -0.3 -0.3  0.2 0.997         1000     2.42
-## 39 100    0 -0.3  0.2 0.020         1000     2.13
-## 40 300    0 -0.3  0.2 0.042         1000     2.42
-## 41 100  0.3 -0.3  0.2 0.487         1000     2.13
-## 42 300  0.3 -0.3  0.2 1.000         1000     2.42
-## 43 100 -0.3    0  0.2 0.014         1000     2.12
-## 44 300 -0.3    0  0.2 0.032         1000     2.42
-## 45 100    0    0  0.2 0.002         1000     2.12
-## 46 300    0    0  0.2 0.000         1000     2.44
-## 47 100  0.3    0  0.2 0.012         1000     2.11
-## 48 300  0.3    0  0.2 0.037         1000     2.40
-## 49 100 -0.3  0.3  0.2 0.483         1000     2.13
-## 50 300 -0.3  0.3  0.2 1.000         1000     2.40
-## 51 100    0  0.3  0.2 0.009         1000     2.13
-## 52 300    0  0.3  0.2 0.036         1000     2.40
-## 53 100  0.3  0.3  0.2 0.494         1000     2.14
-## 54 300  0.3  0.3  0.2 0.998         1000     2.38</code></pre>
-<p>To see all the results from <code>Design[1,]</code>, for example, inspect the object returned from <code>SimResults()</code>.</p>
+<pre><code>##      N    a    b   cp XMY.p XYM.p REPLICATIONS SIM_TIME
+## 1  100 -0.3 -0.3 -0.2 0.488 0.060         1000     4.16
+## 2  300 -0.3 -0.3 -0.2 0.996 0.391         1000     4.82
+## 3  100    0 -0.3 -0.2 0.012 0.185         1000     4.38
+## 4  300    0 -0.3 -0.2 0.024 0.876         1000     4.73
+## 5  100  0.3 -0.3 -0.2 0.513 0.410         1000     4.13
+## 6  300  0.3 -0.3 -0.2 0.996 0.994         1000     4.76
+## 7  100 -0.3    0 -0.2 0.017 0.005         1000     4.27
+## 8  300 -0.3    0 -0.2 0.035 0.014         1000     4.84
+## 9  100    0    0 -0.2 0.001 0.007         1000     4.17
+## 10 300    0    0 -0.2 0.001 0.016         1000     4.65
+## 11 100  0.3    0 -0.2 0.022 0.004         1000     4.33
+## 12 300  0.3    0 -0.2 0.039 0.019         1000     5.11
+## 13 100 -0.3  0.3 -0.2 0.502 0.422         1000     4.74
+## 14 300 -0.3  0.3 -0.2 0.996 0.991         1000     5.18
+## 15 100    0  0.3 -0.2 0.019 0.185         1000     4.51
+## 16 300    0  0.3 -0.2 0.035 0.856         1000     4.89
+## 17 100  0.3  0.3 -0.2 0.493 0.054         1000     4.24
+## 18 300  0.3  0.3 -0.2 0.993 0.339         1000     4.73
+## 19 100 -0.3 -0.3    0 0.480 0.042         1000     4.39
+## 20 300 -0.3 -0.3    0 0.998 0.250         1000     5.02
+## 21 100    0 -0.3    0 0.008 0.012         1000     4.38
+## 22 300    0 -0.3    0 0.031 0.039         1000     5.01
+## 23 100  0.3 -0.3    0 0.502 0.037         1000     4.25
+## 24 300  0.3 -0.3    0 0.998 0.270         1000     4.77
+## 25 100 -0.3    0    0 0.005 0.000         1000     4.25
+## 26 300 -0.3    0    0 0.040 0.000         1000     4.79
+## 27 100    0    0    0 0.000 0.000         1000     4.23
+## 28 300    0    0    0 0.000 0.000         1000     4.75
+## 29 100  0.3    0    0 0.009 0.000         1000     4.19
+## 30 300  0.3    0    0 0.031 0.000         1000     4.65
+## 31 100 -0.3  0.3    0 0.507 0.039         1000     4.12
+## 32 300 -0.3  0.3    0 0.998 0.274         1000     4.82
+## 33 100    0  0.3    0 0.013 0.008         1000     4.14
+## 34 300    0  0.3    0 0.044 0.023         1000     4.63
+## 35 100  0.3  0.3    0 0.494 0.047         1000     4.12
+## 36 300  0.3  0.3    0 0.997 0.250         1000     4.64
+## 37 100 -0.3 -0.3  0.2 0.516 0.434         1000     4.20
+## 38 300 -0.3 -0.3  0.2 0.997 0.992         1000     4.69
+## 39 100    0 -0.3  0.2 0.020 0.217         1000     4.12
+## 40 300    0 -0.3  0.2 0.042 0.871         1000     4.64
+## 41 100  0.3 -0.3  0.2 0.487 0.058         1000     4.13
+## 42 300  0.3 -0.3  0.2 1.000 0.351         1000     4.65
+## 43 100 -0.3    0  0.2 0.014 0.002         1000     4.35
+## 44 300 -0.3    0  0.2 0.032 0.016         1000     4.72
+## 45 100    0    0  0.2 0.002 0.008         1000     4.34
+## 46 300    0    0  0.2 0.000 0.015         1000     5.06
+## 47 100  0.3    0  0.2 0.012 0.003         1000     4.38
+## 48 300  0.3    0  0.2 0.037 0.021         1000     4.67
+## 49 100 -0.3  0.3  0.2 0.483 0.050         1000     4.60
+## 50 300 -0.3  0.3  0.2 1.000 0.383         1000     4.93
+## 51 100    0  0.3  0.2 0.009 0.188         1000     4.13
+## 52 300    0  0.3  0.2 0.036 0.859         1000     4.70
+## 53 100  0.3  0.3  0.2 0.494 0.445         1000     4.14
+## 54 300  0.3  0.3  0.2 0.998 0.996         1000     4.66</code></pre>
+<p>To see all the analyis results from <code>Design[1,]</code>, for example, inspect the object returned from <code>SimResults()</code>.</p>
 <pre class="r"><code>row1 &lt;- SimResults(results, 1)</code></pre>
 </div>
 <div id="comparison" class="section level1">
 <h1>Comparison</h1>
-<p>There are a few interesting things to note about this example. First, <code>SimDesign</code> considerably faster than the for-loop strategy (approximately 6x) despite the fact it is technically doing more computations in the Sobel test function and summarise steps. This is without runnning the simulation in parallel as well, which would decrease the simulations times by a factor proportional to the number of cores available (and, unlike the for-loop code, only requires adding a <code>parallel = TRUE</code> flag).</p>
-<p>Additionally, the code itself is less error prone, the generation/analysis componenets are isolated better, the output is saved to external .rds files in order to inspect the results at a later time, is more memory efficient, …, the list goes on. All this <em>despite the fact that the working code is nearly identical</em>.</p>
+<p>There are a few interesting things to note about this comparison example. First, <code>SimDesign</code> is faster than the for-loop strategy despite the fact it is technically doing more computations in the new Sobel test function and summarise steps. This is without runnning the <code>SimDesign</code> simulation code in parallel too, which would decrease the simulations times by a factor proportional to the number of cores available (and, unlike the for-loop code, only requires adding a <code>parallel = TRUE</code> flag). Furthermore, the current state of the <code>for</code> loop code unforunately cannot be used with parallel computations without a large amount of re-writing, because the object <code>d</code> is being updated across each replications (therefore, the objects between each replication condition are not strictly independent).</p>
+<p>Additionally, the code itself is much less error prone and safer in case error arise, the generation/analysis componenets are isolated better, the output is saved to external <code>.rds</code> files in order to inspect the results at a later time, thereby being more memory efficient, the codebase and results are generally more readable, …, the list goes on. All this <em>despite the fact that the working code is nearly identical</em>.</p>
 </div>
 
 
