@@ -688,6 +688,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             filename <- gsub('\\.rds', '', filename)
     }
     if(!is.null(cl)) parallel <- TRUE
+    edit <- tolower(edit)
     summarise_asis <- FALSE
     if(missing(summarise)){
         summarise <- function(condition, results, fixed_objects = NULL) results
