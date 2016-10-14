@@ -1,0 +1,97 @@
+%\VignetteIndexEntry{SimDesign}
+%\VignetteEngine{knitr::knitr}
+---
+title: "SimDesign"
+author: "Phil Chalmers"
+date: "September 22, 2015"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+```{r include=FALSE}
+options(digits = 3)
+```
+
+# Simulation with mirtCAT
+
+Example simulation for computerized adaptive testing with the `mirtCAT` package. Use of `SimDesign` for this
+package demonstrates a different type of parallelization, whereby the work is distributed within the `analysis`
+step rather than across all replications. This showcases how within-function parallelization can be utilized for 
+code which has already been optimized for simulations, but still needs an 'outer-shell' to collect the simulation
+results. Currently requires `mirtCAT` version 1.1.4 or higher.
+
+This study explored two major design conditions: size of the item bank, and the magnitude of the discimination parameter. Just for didactic purposes the discrimination parameters were all set equal, however real studies will
+call for more intimate control of the properties of the item bank.
+
+```{r}
+library(SimDesign)
+library(mirtCAT)
+library(parallel)
+
+Design <- expand.grid(nitems = c(100, 300, 500),
+					  discrimination = c(.5, 1.5))
+cl <- makeCluster(detectCores())
+fo <- list(cl=cl, 
+		   design=list(min_SEM = .25, min_items = 10, max_items = 50))
+
+#-------------------------------------------------------------------
+
+Generate <- function(condition, fixed_objects = NULL) {
+	Attach(condition)
+    Theta <- matrix(rnorm(1000))
+	a <- matrix(rep(discrimination, nitems))
+	d <- rnorm(nitems)
+	pars <- data.frame(a1 = a, d = d, g = 0.2)
+	mirt_object <- generate.mirt_object(pars, '3PL')
+	responses <- generate_pattern(mirt_object, Theta = Theta)
+    list(mirt_object=mirt_object, responses=responses)
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL) {
+	ret <- with(fixed_objects, 
+				mirtCAT(mo = dat$mirt_object, local_pattern = dat$responses,
+						start_item = 'MI', method = 'EAP',
+						criteria = 'MI', design = design, cl = cl))
+    ret
+}
+
+#-------------------------------------------------------------------
+
+# only 1 replication
+results <- runSimulation(design=Design, replications=1, seed = 1:nrow(Design),
+    generate=Generate, analyse=Analyse, fixed_objects=fo, edit='none')
+```
+
+
+```{r}
+names(results)
+
+# person 100 from the first condition
+plot(results$`nitems=100; discrimination=0.5`[[1]][[100]], SE = 1.96)
+
+# person 50 from the last condition
+plot(results$`nitems=500; discrimination=1.5`[[1]][[50]], SE = 1.96)
+
+diff <- lapply(results, function(x){
+	sapply(x[[1]], function(y){
+		so <- summary(y)
+		so$final_estimates[1,] - so$true_thetas
+	})
+})
+
+nitems_answered <- lapply(results, function(x){
+	sapply(x[[1]], function(y){
+		so <- summary(y)
+		length(so$items_answered)
+	})
+})
+
+meta_stats <- data.frame(Design, bias=sapply(diff, bias), RMSE=sapply(diff, RMSE), 
+						 nitems_answered=sapply(nitems_answered, mean), row.names = NULL)
+meta_stats
+```
+
+From this simple summary we can see that not only did the conditions with larger discrimination parameters
+provide better accuracy, but the CATs were actually terminated before the maximum 50 item cutoff. 
