@@ -939,6 +939,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             nms2[,i] <- paste0(nms[i], '=', design[,i], if(i < ncol(design)) '; ')
         nms2 <- apply(nms2, 1, paste0, collapse='')
         names(Result_list) <- nms2
+        if(is.list(Result_list[[1L]][[1L]]))
+            for(i in 1L:length(Result_list))
+                attr(Result_list[[i]][[1L]], 'try_errors') <- NULL
         if(nrow(design) == 1L) Result_list <- Result_list[[1L]]
         return(Result_list)
     }
