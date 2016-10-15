@@ -239,12 +239,13 @@
 #' @param analyse user-defined computation function which acts on the data generated from
 #'   \code{\link{Generate}}. See \code{\link{Analyse}} for details
 #'
-#' @param summarise (optional but recommended) user-defined summary function to be used
+#' @param summarise optional (but recommended) user-defined summary function to be used
 #'   after all the replications have completed within each \code{design} condition. Omitting this function
 #'   will return a list of matrices (or a single matrix, if only one row in \code{design} is supplied)
-#'   containing only the results returned form \code{\link{Analyse}}.
+#'   or more general objects (such as lists) containing the results returned form \code{\link{Analyse}}.
 #'   Ommiting this function is only recommended for didactic purposes because it leaves out a large amount of
-#'   information and generally is not as flexible internally
+#'   information (e.g., try-errors, warning messages, etc) and generally is not as flexible internally. See
+#'   the \code{save_results} option for a better alternative to storing the Generate-Analyse results
 #'
 #' @param replications number of replication to perform per condition (i.e., each row in \code{design}).
 #'   Must be greater than 0
