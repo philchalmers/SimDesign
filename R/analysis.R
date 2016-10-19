@@ -72,7 +72,11 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         }
     }
     if(summarise_asis){
-        if(is.data.frame(results[[1]])) return(plyr::rbind.fill(results))
+        if(is.data.frame(results[[1]]) && nrow(results[[1]]) == 1L){
+            return(plyr::rbind.fill(results))
+        } else if(is.data.frame(results[[1]]) && nrow(results[[1]]) > 1L){
+            return(results)
+        }
         if(is.list(results[[1L]])) return(results)
         return(do.call(rbind, results))
     }
