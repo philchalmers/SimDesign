@@ -18,6 +18,22 @@
 #'
 #' @export
 #'
+#' @return the returned result is either a nested list (when \code{length(which) > 1}) or a single list
+#'   (when \code{length(which) == 1}) containing the simulation results. Each read-in result refers to
+#'   a list of 4 elements:
+#'   \describe{
+#'     \item{\code{condition}}{the associate row (ID) and conditions from the
+#'       respective \code{design} object}
+#'     \item{\code{results}}{the object with returned from the \code{analyse} function, potentially
+#'       simplified into a matrix or data.frame}
+#'     \item{\code{errors}}{a table containing the message and number of errors that caused
+#'       the generate-analyse steps to be rerun. These should be inspected carefully as they
+#'       could indicate validity issues with the simulation that should be noted}
+#'     \item{\code{warnings}}{a table containing the message and number of non-fatal warnings
+#'       which arose from the analyse step. These should be inspected carefully as they
+#'       could indicate validity issues with the simulation that should be noted}
+#'   }
+#'
 #' @examples
 #'
 #' \dontrun{
