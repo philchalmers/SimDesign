@@ -95,6 +95,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -216,28 +217,28 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 Design row: 1/6;  Previous condition time: 0.00s;  Total elapsed time: 0.00s 
-Design row: 2/6;  Previous condition time: 13.60s;  Total elapsed time: 13.60s 
-Design row: 3/6;  Previous condition time: 19.06s;  Total elapsed time: 32.66s 
-Design row: 4/6;  Previous condition time: 22.20s;  Total elapsed time: 54.86s 
-Design row: 5/6;  Previous condition time: 11.06s;  Total elapsed time: 01m 5.92s 
-Design row: 6/6;  Previous condition time: 20.06s;  Total elapsed time: 01m 25.98s</code></pre>
+Design row: 2/6;  Previous condition time: 15.25s;  Total elapsed time: 15.25s 
+Design row: 3/6;  Previous condition time: 20.50s;  Total elapsed time: 35.75s 
+Design row: 4/6;  Previous condition time: 22.75s;  Total elapsed time: 58.51s 
+Design row: 5/6;  Previous condition time: 10.14s;  Total elapsed time: 01m 8.65s 
+Design row: 6/6;  Previous condition time: 17.81s;  Total elapsed time: 01m 26.45s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 01m 47.00s</code></pre>
+## Simulation complete. Total execution time: 01m 47.71s</code></pre>
 <pre class="r"><code>print(result, time=FALSE, reps=FALSE)</code></pre>
-<pre><code>##   test_length distribution  bias_EAP  bias_MAP  bias_ML bias_EAP_bimodal
-## 1          10       normal -0.000263 -0.000572 -0.00125          0.00038
-## 2          20       normal -0.002504 -0.001304 -0.00500         -0.00229
-## 3          30       normal -0.001560 -0.001676 -0.00247         -0.00112
-## 4          10      bimodal -0.001927 -0.001257 -0.00250         -0.00230
-## 5          20      bimodal -0.003594 -0.003365 -0.00594         -0.00210
-## 6          30      bimodal  0.001817  0.001747  0.00238          0.00148
+<pre><code>##   test_length distribution  bias_EAP  bias_MAP   bias_ML bias_EAP_bimodal
+## 1          10       normal -7.56e-05 -0.000629 -0.002896         5.48e-05
+## 2          20       normal -1.40e-03 -0.000708 -0.000883        -2.65e-03
+## 3          30       normal -8.36e-04 -0.000795 -0.000378        -1.16e-03
+## 4          10      bimodal -9.69e-04 -0.001341 -0.003955        -1.25e-03
+## 5          20      bimodal  2.72e-04  0.001015 -0.001822        -3.31e-04
+## 6          30      bimodal -3.27e-03 -0.003153 -0.003765        -1.04e-03
 ##   RMSE_EAP RMSE_MAP RMSE_ML RMSE_EAP_bimodal REPLICATIONS SIM_TIME
-## 1    0.262    0.266   0.360           0.2945          100   13.60s
-## 2    0.156    0.157   0.215           0.1779          100   19.06s
-## 3    0.111    0.112   0.153           0.1272          100   22.20s
-## 4    0.226    0.228   0.348           0.2060          100   11.06s
-## 5    0.141    0.139   0.233           0.1211          100   20.06s
-## 6    0.105    0.103   0.163           0.0904          100   21.02s</code></pre>
+## 1    0.270    0.273   0.371           0.3027          100   15.25s
+## 2    0.159    0.161   0.217           0.1823          100   20.50s
+## 3    0.110    0.111   0.151           0.1262          100   22.75s
+## 4    0.232    0.233   0.361           0.2130          100   10.14s
+## 5    0.139    0.138   0.235           0.1193          100   17.81s
+## 6    0.103    0.101   0.161           0.0883          100   21.26s</code></pre>
 </div>
 <div id="analyze-the-results" class="section level3">
 <h3>Analyze the results</h3>
@@ -258,6 +259,7 @@ Design row: 6/6;  Previous condition time: 20.06s;  Total elapsed time: 01m 25.9
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 

@@ -95,6 +95,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -166,14 +167,16 @@ for (N in N_list){
             }
         }
     }
-}
-colnames(d) = c(&quot;iteration&quot;, &quot;a&quot;, &quot;b&quot;, &quot;cp&quot;, &quot;N&quot;, &quot;model&quot;, &quot;Sobel_z&quot;)
+}</code></pre>
+<pre><code>## Warning: closing unused connection 6 (&lt;-localhost:11265)</code></pre>
+<pre><code>## Warning: closing unused connection 5 (&lt;-localhost:11265)</code></pre>
+<pre class="r"><code>colnames(d) = c(&quot;iteration&quot;, &quot;a&quot;, &quot;b&quot;, &quot;cp&quot;, &quot;N&quot;, &quot;model&quot;, &quot;Sobel_z&quot;)
 d = data.frame(d)
 
 # the following line was added to determine the computation time
 time1 &lt;- Sys.time()
 time1 - time0</code></pre>
-<pre><code>## Time difference of 8.99 mins</code></pre>
+<pre><code>## Time difference of 9.22 mins</code></pre>
 <pre class="r"><code>head(d)</code></pre>
 <pre><code>##   iteration    a    b   cp   N model Sobel_z
 ## 1         1 -0.3 -0.3 -0.2 100     1  1.7836
@@ -201,9 +204,9 @@ sobel_test_p &lt;- function(X, M, Y){
 
 #-------------------------------------------------------------------
 
-library(SimDesign)</code></pre>
-<pre><code>## See ?SimFunctions to get started with SimDesign</code></pre>
-<pre class="r"><code>Design &lt;- expand.grid(N = c(100, 300),
+library(SimDesign)
+
+Design &lt;- expand.grid(N = c(100, 300),
                       a = c(-.3, 0, .3),
                       b = c(-.3, 0, .3),
                       cp = c(-.2, 0, .2))
@@ -240,117 +243,117 @@ results &lt;- runSimulation(design=Design, replications=1000, save_results=TRUE,
     generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')</code></pre>
 <pre><code>## 
 Design row: 1/54;  Previous condition time: 0.00s;  Total elapsed time: 0.00s 
-Design row: 2/54;  Previous condition time: 4.16s;  Total elapsed time: 4.16s 
-Design row: 3/54;  Previous condition time: 4.82s;  Total elapsed time: 8.98s 
-Design row: 4/54;  Previous condition time: 4.38s;  Total elapsed time: 13.36s 
-Design row: 5/54;  Previous condition time: 4.73s;  Total elapsed time: 18.09s 
-Design row: 6/54;  Previous condition time: 4.13s;  Total elapsed time: 22.22s 
-Design row: 7/54;  Previous condition time: 4.76s;  Total elapsed time: 26.98s 
-Design row: 8/54;  Previous condition time: 4.27s;  Total elapsed time: 31.25s 
-Design row: 9/54;  Previous condition time: 4.84s;  Total elapsed time: 36.09s 
-Design row: 10/54;  Previous condition time: 4.17s;  Total elapsed time: 40.27s 
-Design row: 11/54;  Previous condition time: 4.65s;  Total elapsed time: 44.91s 
-Design row: 12/54;  Previous condition time: 4.33s;  Total elapsed time: 49.25s 
-Design row: 13/54;  Previous condition time: 5.11s;  Total elapsed time: 54.36s 
-Design row: 14/54;  Previous condition time: 4.74s;  Total elapsed time: 59.09s 
-Design row: 15/54;  Previous condition time: 5.18s;  Total elapsed time: 01m 4.27s 
-Design row: 16/54;  Previous condition time: 4.51s;  Total elapsed time: 01m 8.78s 
-Design row: 17/54;  Previous condition time: 4.89s;  Total elapsed time: 01m 13.67s 
-Design row: 18/54;  Previous condition time: 4.24s;  Total elapsed time: 01m 17.91s 
-Design row: 19/54;  Previous condition time: 4.73s;  Total elapsed time: 01m 22.63s 
-Design row: 20/54;  Previous condition time: 4.39s;  Total elapsed time: 01m 27.02s 
-Design row: 21/54;  Previous condition time: 5.02s;  Total elapsed time: 01m 32.04s 
-Design row: 22/54;  Previous condition time: 4.38s;  Total elapsed time: 01m 36.42s 
-Design row: 23/54;  Previous condition time: 5.01s;  Total elapsed time: 01m 41.43s 
-Design row: 24/54;  Previous condition time: 4.25s;  Total elapsed time: 01m 45.68s 
-Design row: 25/54;  Previous condition time: 4.77s;  Total elapsed time: 01m 50.44s 
-Design row: 26/54;  Previous condition time: 4.25s;  Total elapsed time: 01m 54.70s 
-Design row: 27/54;  Previous condition time: 4.79s;  Total elapsed time: 01m 59.49s 
-Design row: 28/54;  Previous condition time: 4.23s;  Total elapsed time: 02m 3.72s 
-Design row: 29/54;  Previous condition time: 4.75s;  Total elapsed time: 02m 8.47s 
-Design row: 30/54;  Previous condition time: 4.19s;  Total elapsed time: 02m 12.66s 
-Design row: 31/54;  Previous condition time: 4.65s;  Total elapsed time: 02m 17.31s 
-Design row: 32/54;  Previous condition time: 4.12s;  Total elapsed time: 02m 21.44s 
-Design row: 33/54;  Previous condition time: 4.82s;  Total elapsed time: 02m 26.25s 
-Design row: 34/54;  Previous condition time: 4.14s;  Total elapsed time: 02m 30.40s 
-Design row: 35/54;  Previous condition time: 4.63s;  Total elapsed time: 02m 35.03s 
-Design row: 36/54;  Previous condition time: 4.12s;  Total elapsed time: 02m 39.15s 
-Design row: 37/54;  Previous condition time: 4.64s;  Total elapsed time: 02m 43.80s 
-Design row: 38/54;  Previous condition time: 4.20s;  Total elapsed time: 02m 48.00s 
-Design row: 39/54;  Previous condition time: 4.69s;  Total elapsed time: 02m 52.69s 
-Design row: 40/54;  Previous condition time: 4.12s;  Total elapsed time: 02m 56.81s 
-Design row: 41/54;  Previous condition time: 4.64s;  Total elapsed time: 03m 1.45s 
-Design row: 42/54;  Previous condition time: 4.13s;  Total elapsed time: 03m 5.57s 
-Design row: 43/54;  Previous condition time: 4.65s;  Total elapsed time: 03m 10.23s 
-Design row: 44/54;  Previous condition time: 4.35s;  Total elapsed time: 03m 14.58s 
-Design row: 45/54;  Previous condition time: 4.72s;  Total elapsed time: 03m 19.30s 
-Design row: 46/54;  Previous condition time: 4.34s;  Total elapsed time: 03m 23.64s 
-Design row: 47/54;  Previous condition time: 5.06s;  Total elapsed time: 03m 28.70s 
-Design row: 48/54;  Previous condition time: 4.38s;  Total elapsed time: 03m 33.09s 
-Design row: 49/54;  Previous condition time: 4.67s;  Total elapsed time: 03m 37.76s 
-Design row: 50/54;  Previous condition time: 4.60s;  Total elapsed time: 03m 42.36s 
-Design row: 51/54;  Previous condition time: 4.93s;  Total elapsed time: 03m 47.29s 
-Design row: 52/54;  Previous condition time: 4.13s;  Total elapsed time: 03m 51.42s 
-Design row: 53/54;  Previous condition time: 4.70s;  Total elapsed time: 03m 56.12s 
-Design row: 54/54;  Previous condition time: 4.14s;  Total elapsed time: 04m 0.26s</code></pre>
+Design row: 2/54;  Previous condition time: 4.02s;  Total elapsed time: 4.02s 
+Design row: 3/54;  Previous condition time: 4.55s;  Total elapsed time: 8.57s 
+Design row: 4/54;  Previous condition time: 4.04s;  Total elapsed time: 12.61s 
+Design row: 5/54;  Previous condition time: 4.58s;  Total elapsed time: 17.19s 
+Design row: 6/54;  Previous condition time: 4.28s;  Total elapsed time: 21.47s 
+Design row: 7/54;  Previous condition time: 5.10s;  Total elapsed time: 26.57s 
+Design row: 8/54;  Previous condition time: 4.53s;  Total elapsed time: 31.10s 
+Design row: 9/54;  Previous condition time: 5.02s;  Total elapsed time: 36.11s 
+Design row: 10/54;  Previous condition time: 4.31s;  Total elapsed time: 40.42s 
+Design row: 11/54;  Previous condition time: 4.75s;  Total elapsed time: 45.18s 
+Design row: 12/54;  Previous condition time: 4.48s;  Total elapsed time: 49.66s 
+Design row: 13/54;  Previous condition time: 4.71s;  Total elapsed time: 54.36s 
+Design row: 14/54;  Previous condition time: 4.43s;  Total elapsed time: 58.79s 
+Design row: 15/54;  Previous condition time: 4.83s;  Total elapsed time: 01m 3.62s 
+Design row: 16/54;  Previous condition time: 4.20s;  Total elapsed time: 01m 7.82s 
+Design row: 17/54;  Previous condition time: 4.70s;  Total elapsed time: 01m 12.52s 
+Design row: 18/54;  Previous condition time: 4.04s;  Total elapsed time: 01m 16.57s 
+Design row: 19/54;  Previous condition time: 4.82s;  Total elapsed time: 01m 21.38s 
+Design row: 20/54;  Previous condition time: 4.17s;  Total elapsed time: 01m 25.55s 
+Design row: 21/54;  Previous condition time: 4.78s;  Total elapsed time: 01m 30.33s 
+Design row: 22/54;  Previous condition time: 4.24s;  Total elapsed time: 01m 34.57s 
+Design row: 23/54;  Previous condition time: 5.03s;  Total elapsed time: 01m 39.59s 
+Design row: 24/54;  Previous condition time: 4.24s;  Total elapsed time: 01m 43.84s 
+Design row: 25/54;  Previous condition time: 4.73s;  Total elapsed time: 01m 48.57s 
+Design row: 26/54;  Previous condition time: 4.06s;  Total elapsed time: 01m 52.63s 
+Design row: 27/54;  Previous condition time: 4.92s;  Total elapsed time: 01m 57.55s 
+Design row: 28/54;  Previous condition time: 4.12s;  Total elapsed time: 02m 1.67s 
+Design row: 29/54;  Previous condition time: 4.53s;  Total elapsed time: 02m 6.20s 
+Design row: 30/54;  Previous condition time: 4.05s;  Total elapsed time: 02m 10.25s 
+Design row: 31/54;  Previous condition time: 4.66s;  Total elapsed time: 02m 14.91s 
+Design row: 32/54;  Previous condition time: 4.18s;  Total elapsed time: 02m 19.09s 
+Design row: 33/54;  Previous condition time: 4.56s;  Total elapsed time: 02m 23.65s 
+Design row: 34/54;  Previous condition time: 4.15s;  Total elapsed time: 02m 27.80s 
+Design row: 35/54;  Previous condition time: 4.61s;  Total elapsed time: 02m 32.41s 
+Design row: 36/54;  Previous condition time: 4.16s;  Total elapsed time: 02m 36.57s 
+Design row: 37/54;  Previous condition time: 4.58s;  Total elapsed time: 02m 41.15s 
+Design row: 38/54;  Previous condition time: 4.06s;  Total elapsed time: 02m 45.21s 
+Design row: 39/54;  Previous condition time: 4.57s;  Total elapsed time: 02m 49.78s 
+Design row: 40/54;  Previous condition time: 4.09s;  Total elapsed time: 02m 53.87s 
+Design row: 41/54;  Previous condition time: 4.81s;  Total elapsed time: 02m 58.68s 
+Design row: 42/54;  Previous condition time: 4.35s;  Total elapsed time: 03m 3.03s 
+Design row: 43/54;  Previous condition time: 4.72s;  Total elapsed time: 03m 7.76s 
+Design row: 44/54;  Previous condition time: 4.54s;  Total elapsed time: 03m 12.29s 
+Design row: 45/54;  Previous condition time: 4.77s;  Total elapsed time: 03m 17.06s 
+Design row: 46/54;  Previous condition time: 4.01s;  Total elapsed time: 03m 21.08s 
+Design row: 47/54;  Previous condition time: 4.72s;  Total elapsed time: 03m 25.80s 
+Design row: 48/54;  Previous condition time: 4.07s;  Total elapsed time: 03m 29.87s 
+Design row: 49/54;  Previous condition time: 4.56s;  Total elapsed time: 03m 34.43s 
+Design row: 50/54;  Previous condition time: 4.06s;  Total elapsed time: 03m 38.49s 
+Design row: 51/54;  Previous condition time: 4.55s;  Total elapsed time: 03m 43.03s 
+Design row: 52/54;  Previous condition time: 4.05s;  Total elapsed time: 03m 47.08s 
+Design row: 53/54;  Previous condition time: 4.75s;  Total elapsed time: 03m 51.83s 
+Design row: 54/54;  Previous condition time: 4.20s;  Total elapsed time: 03m 56.03s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 04m 4.92s</code></pre>
+## Simulation complete. Total execution time: 04m 0.84s</code></pre>
 <pre class="r"><code>print(results)</code></pre>
 <pre><code>##      N    a    b   cp XMY.p XYM.p REPLICATIONS SIM_TIME
-## 1  100 -0.3 -0.3 -0.2 0.488 0.060         1000     4.16
-## 2  300 -0.3 -0.3 -0.2 0.996 0.391         1000     4.82
-## 3  100    0 -0.3 -0.2 0.012 0.185         1000     4.38
-## 4  300    0 -0.3 -0.2 0.024 0.876         1000     4.73
-## 5  100  0.3 -0.3 -0.2 0.513 0.410         1000     4.13
-## 6  300  0.3 -0.3 -0.2 0.996 0.994         1000     4.76
-## 7  100 -0.3    0 -0.2 0.017 0.005         1000     4.27
-## 8  300 -0.3    0 -0.2 0.035 0.014         1000     4.84
-## 9  100    0    0 -0.2 0.001 0.007         1000     4.17
-## 10 300    0    0 -0.2 0.001 0.016         1000     4.65
-## 11 100  0.3    0 -0.2 0.022 0.004         1000     4.33
-## 12 300  0.3    0 -0.2 0.039 0.019         1000     5.11
-## 13 100 -0.3  0.3 -0.2 0.502 0.422         1000     4.74
-## 14 300 -0.3  0.3 -0.2 0.996 0.991         1000     5.18
-## 15 100    0  0.3 -0.2 0.019 0.185         1000     4.51
-## 16 300    0  0.3 -0.2 0.035 0.856         1000     4.89
-## 17 100  0.3  0.3 -0.2 0.493 0.054         1000     4.24
-## 18 300  0.3  0.3 -0.2 0.993 0.339         1000     4.73
-## 19 100 -0.3 -0.3    0 0.480 0.042         1000     4.39
-## 20 300 -0.3 -0.3    0 0.998 0.250         1000     5.02
-## 21 100    0 -0.3    0 0.008 0.012         1000     4.38
-## 22 300    0 -0.3    0 0.031 0.039         1000     5.01
-## 23 100  0.3 -0.3    0 0.502 0.037         1000     4.25
-## 24 300  0.3 -0.3    0 0.998 0.270         1000     4.77
-## 25 100 -0.3    0    0 0.005 0.000         1000     4.25
-## 26 300 -0.3    0    0 0.040 0.000         1000     4.79
-## 27 100    0    0    0 0.000 0.000         1000     4.23
-## 28 300    0    0    0 0.000 0.000         1000     4.75
-## 29 100  0.3    0    0 0.009 0.000         1000     4.19
-## 30 300  0.3    0    0 0.031 0.000         1000     4.65
-## 31 100 -0.3  0.3    0 0.507 0.039         1000     4.12
-## 32 300 -0.3  0.3    0 0.998 0.274         1000     4.82
-## 33 100    0  0.3    0 0.013 0.008         1000     4.14
-## 34 300    0  0.3    0 0.044 0.023         1000     4.63
-## 35 100  0.3  0.3    0 0.494 0.047         1000     4.12
-## 36 300  0.3  0.3    0 0.997 0.250         1000     4.64
-## 37 100 -0.3 -0.3  0.2 0.516 0.434         1000     4.20
-## 38 300 -0.3 -0.3  0.2 0.997 0.992         1000     4.69
-## 39 100    0 -0.3  0.2 0.020 0.217         1000     4.12
-## 40 300    0 -0.3  0.2 0.042 0.871         1000     4.64
-## 41 100  0.3 -0.3  0.2 0.487 0.058         1000     4.13
-## 42 300  0.3 -0.3  0.2 1.000 0.351         1000     4.65
-## 43 100 -0.3    0  0.2 0.014 0.002         1000     4.35
-## 44 300 -0.3    0  0.2 0.032 0.016         1000     4.72
-## 45 100    0    0  0.2 0.002 0.008         1000     4.34
-## 46 300    0    0  0.2 0.000 0.015         1000     5.06
-## 47 100  0.3    0  0.2 0.012 0.003         1000     4.38
-## 48 300  0.3    0  0.2 0.037 0.021         1000     4.67
-## 49 100 -0.3  0.3  0.2 0.483 0.050         1000     4.60
-## 50 300 -0.3  0.3  0.2 1.000 0.383         1000     4.93
-## 51 100    0  0.3  0.2 0.009 0.188         1000     4.13
-## 52 300    0  0.3  0.2 0.036 0.859         1000     4.70
-## 53 100  0.3  0.3  0.2 0.494 0.445         1000     4.14
-## 54 300  0.3  0.3  0.2 0.998 0.996         1000     4.66</code></pre>
+## 1  100 -0.3 -0.3 -0.2 0.475 0.058         1000    4.02s
+## 2  300 -0.3 -0.3 -0.2 0.997 0.374         1000    4.55s
+## 3  100    0 -0.3 -0.2 0.017 0.195         1000    4.04s
+## 4  300    0 -0.3 -0.2 0.027 0.849         1000    4.58s
+## 5  100  0.3 -0.3 -0.2 0.501 0.437         1000    4.28s
+## 6  300  0.3 -0.3 -0.2 0.997 0.995         1000    5.10s
+## 7  100 -0.3    0 -0.2 0.015 0.004         1000    4.53s
+## 8  300 -0.3    0 -0.2 0.038 0.024         1000    5.02s
+## 9  100    0    0 -0.2 0.000 0.003         1000    4.31s
+## 10 300    0    0 -0.2 0.000 0.022         1000    4.75s
+## 11 100  0.3    0 -0.2 0.011 0.001         1000    4.48s
+## 12 300  0.3    0 -0.2 0.035 0.025         1000    4.71s
+## 13 100 -0.3  0.3 -0.2 0.498 0.414         1000    4.43s
+## 14 300 -0.3  0.3 -0.2 0.993 0.991         1000    4.83s
+## 15 100    0  0.3 -0.2 0.013 0.201         1000    4.20s
+## 16 300    0  0.3 -0.2 0.042 0.876         1000    4.70s
+## 17 100  0.3  0.3 -0.2 0.494 0.055         1000    4.04s
+## 18 300  0.3  0.3 -0.2 0.996 0.379         1000    4.82s
+## 19 100 -0.3 -0.3    0 0.519 0.053         1000    4.17s
+## 20 300 -0.3 -0.3    0 0.995 0.271         1000    4.78s
+## 21 100    0 -0.3    0 0.015 0.014         1000    4.24s
+## 22 300    0 -0.3    0 0.027 0.031         1000    5.03s
+## 23 100  0.3 -0.3    0 0.510 0.040         1000    4.24s
+## 24 300  0.3 -0.3    0 0.994 0.258         1000    4.73s
+## 25 100 -0.3    0    0 0.012 0.000         1000    4.06s
+## 26 300 -0.3    0    0 0.026 0.000         1000    4.92s
+## 27 100    0    0    0 0.000 0.000         1000    4.12s
+## 28 300    0    0    0 0.000 0.000         1000    4.53s
+## 29 100  0.3    0    0 0.015 0.000         1000    4.05s
+## 30 300  0.3    0    0 0.033 0.000         1000    4.66s
+## 31 100 -0.3  0.3    0 0.485 0.043         1000    4.18s
+## 32 300 -0.3  0.3    0 0.999 0.247         1000    4.56s
+## 33 100    0  0.3    0 0.007 0.015         1000    4.15s
+## 34 300    0  0.3    0 0.031 0.038         1000    4.61s
+## 35 100  0.3  0.3    0 0.492 0.045         1000    4.16s
+## 36 300  0.3  0.3    0 0.997 0.245         1000    4.58s
+## 37 100 -0.3 -0.3  0.2 0.495 0.441         1000    4.06s
+## 38 300 -0.3 -0.3  0.2 0.998 0.989         1000    4.57s
+## 39 100    0 -0.3  0.2 0.012 0.164         1000    4.09s
+## 40 300    0 -0.3  0.2 0.040 0.857         1000    4.81s
+## 41 100  0.3 -0.3  0.2 0.480 0.062         1000    4.35s
+## 42 300  0.3 -0.3  0.2 0.997 0.378         1000    4.72s
+## 43 100 -0.3    0  0.2 0.012 0.009         1000    4.54s
+## 44 300 -0.3    0  0.2 0.034 0.013         1000    4.77s
+## 45 100    0    0  0.2 0.000 0.004         1000    4.01s
+## 46 300    0    0  0.2 0.000 0.021         1000    4.72s
+## 47 100  0.3    0  0.2 0.007 0.002         1000    4.07s
+## 48 300  0.3    0  0.2 0.034 0.022         1000    4.56s
+## 49 100 -0.3  0.3  0.2 0.492 0.053         1000    4.06s
+## 50 300 -0.3  0.3  0.2 0.997 0.399         1000    4.55s
+## 51 100    0  0.3  0.2 0.015 0.196         1000    4.05s
+## 52 300    0  0.3  0.2 0.031 0.861         1000    4.75s
+## 53 100  0.3  0.3  0.2 0.482 0.444         1000    4.20s
+## 54 300  0.3  0.3  0.2 0.997 0.993         1000    4.81s</code></pre>
 <p>To see all the analyis results from <code>Design[1,]</code>, for example, inspect the object returned from <code>SimResults()</code>.</p>
 <pre class="r"><code>row1 &lt;- SimResults(results, 1)</code></pre>
 </div>
@@ -371,6 +374,7 @@ Design row: 54/54;  Previous condition time: 4.14s;  Total elapsed time: 04m 0.2
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 

@@ -95,6 +95,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -170,7 +171,7 @@ with(dat, median_diff(DV, group))</code></pre>
 <pre class="r"><code>cl &lt;- parallel::makeCluster(2)
 median_parametric_boot(dat, median_diff, cl=cl, parallel=TRUE)</code></pre>
 <pre><code>##     p 
-## 0.944</code></pre>
+## 0.948</code></pre>
 </div>
 </div>
 
@@ -185,6 +186,7 @@ median_parametric_boot(dat, median_diff, cl=cl, parallel=TRUE)</code></pre>
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 

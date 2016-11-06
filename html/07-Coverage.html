@@ -95,6 +95,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -125,9 +126,8 @@ $(document).ready(function () {
 <p>Coverage relates to how well a proposed confidence interval captures the population parameters. For instance, given some desired nominal error rate, say, <span class="math inline">\(\alpha = .05\)</span>, does the confidence interval mean based on a t-test capture the population mean across 95% of the time across random samples? Intervals that are too narrow (i.e., less than the nominal coverage rate) are generally termed ‘liberal’, while those that are too wide (i.e., greater than the nominal coverage rate) are considered ‘conservative’. In the example below we evaluate whether the z or t-distribution is a suitable candidate to capture the population mean across different sample sizes.</p>
 <div id="define-the-functions" class="section level3">
 <h3>Define the functions</h3>
-<pre class="r"><code>library(SimDesign)</code></pre>
-<pre><code>## See ?SimFunctions to get started with SimDesign</code></pre>
-<pre class="r"><code>#SimFunctions(comments = FALSE)
+<pre class="r"><code>library(SimDesign)
+#SimFunctions(comments = FALSE)
 
 # z-test confidence intervals function
 z.CI &lt;- function(dat, alpha = .05){
@@ -170,15 +170,15 @@ results &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel 
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')</code></pre>
 <pre class="r"><code>print(results)</code></pre>
 <pre><code>##   mu sample_size  t_CI  z_CI REPLICATIONS SIM_TIME
-## 1  0          10 0.947 0.914        10000    1.00s
-## 2  5          10 0.951 0.916        10000    1.03s
-## 3 10          10 0.952 0.919        10000    1.01s
-## 4  0          20 0.952 0.935        10000    1.05s
-## 5  5          20 0.951 0.935        10000    0.97s
-## 6 10          20 0.948 0.931        10000    1.01s
-## 7  0          30 0.951 0.941        10000    0.97s
-## 8  5          30 0.953 0.945        10000    0.97s
-## 9 10          30 0.948 0.938        10000    1.00s</code></pre>
+## 1  0          10 0.953 0.919        10000    1.02s
+## 2  5          10 0.949 0.920        10000    1.01s
+## 3 10          10 0.950 0.915        10000    1.12s
+## 4  0          20 0.944 0.930        10000    1.09s
+## 5  5          20 0.948 0.934        10000    1.03s
+## 6 10          20 0.948 0.933        10000    1.07s
+## 7  0          30 0.953 0.944        10000    1.00s
+## 8  5          30 0.950 0.942        10000    1.03s
+## 9 10          30 0.950 0.940        10000    1.02s</code></pre>
 <p>From these results it’s clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distribution CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.</p>
 <p>Note that the <code>ECR()</code> function was used within the <code>Analyse()</code> function rather than in <code>Summarise()</code>. When only the three values are supplied (CIs + population value) then <code>ECR()</code> will return either a 1 if the population value was within the CI or 0 if it was not. Hence, in the <code>Summarise()</code> function all that is required to obtain the coverage estimate is to find the mean of these 1’s and 0’s. The next section demonstrates how to use <code>ECR()</code> in the <code>Summarise()</code> instead, and it’s really a matter of preference which style you prefer.</p>
 </div>
@@ -241,6 +241,7 @@ results &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel 
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 

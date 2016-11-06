@@ -95,6 +95,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -124,12 +125,12 @@ $(document).ready(function () {
 <h1>Simulation with mirtCAT</h1>
 <p>Example simulation for computerized adaptive testing with the <code>mirtCAT</code> package. Use of <code>SimDesign</code> for this package demonstrates a different type of parallelization, whereby the work is distributed within the <code>analysis</code> step rather than across all replications. This showcases how within-function parallelization can be utilized for code which has already been optimized for simulations, but still needs an ‘outer-shell’ to collect the simulation results. Currently requires <code>mirtCAT</code> version 1.1.4 or higher.</p>
 <p>This study explored two major design conditions: size of the item bank, and the magnitude of the discimination parameter. Just for didactic purposes the discrimination parameters were all set equal, however real studies will call for more intimate control of the properties of the item bank.</p>
-<pre class="r"><code>library(SimDesign)</code></pre>
-<pre><code>## See ?SimFunctions to get started with SimDesign</code></pre>
-<pre class="r"><code>library(mirtCAT)</code></pre>
+<pre class="r"><code>library(SimDesign)
+library(mirtCAT)</code></pre>
 <pre><code>## Loading required package: mirt</code></pre>
 <pre><code>## Loading required package: stats4</code></pre>
 <pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## Loading required package: methods</code></pre>
 <pre><code>## Loading required package: shiny</code></pre>
 <pre class="r"><code>library(parallel)
 
@@ -167,12 +168,12 @@ results &lt;- runSimulation(design=Design, replications=1, seed = 1:nrow(Design)
     generate=Generate, analyse=Analyse, fixed_objects=fo, edit='none')</code></pre>
 <pre><code>## 
 Design row: 1/6;  Previous condition time: 0.00s;  Total elapsed time: 0.00s 
-Design row: 2/6;  Previous condition time: 52.45s;  Total elapsed time: 52.45s 
-Design row: 3/6;  Previous condition time: 55.92s;  Total elapsed time: 01m 48.37s 
-Design row: 4/6;  Previous condition time: 01m 0.95s;  Total elapsed time: 02m 49.33s 
-Design row: 5/6;  Previous condition time: 46.90s;  Total elapsed time: 03m 36.23s 
-Design row: 6/6;  Previous condition time: 51.30s;  Total elapsed time: 04m 27.53s 
-Design row: 6/6;  Previous condition time: 57.13s;  Total elapsed time: 05m 24.66s</code></pre>
+Design row: 2/6;  Previous condition time: 55.33s;  Total elapsed time: 55.33s 
+Design row: 3/6;  Previous condition time: 59.18s;  Total elapsed time: 01m 54.50s 
+Design row: 4/6;  Previous condition time: 01m 5.35s;  Total elapsed time: 02m 59.86s 
+Design row: 5/6;  Previous condition time: 47.45s;  Total elapsed time: 03m 47.31s 
+Design row: 6/6;  Previous condition time: 50.74s;  Total elapsed time: 04m 38.04s 
+Design row: 6/6;  Previous condition time: 57.19s;  Total elapsed time: 05m 35.23s</code></pre>
 <pre class="r"><code>names(results)</code></pre>
 <pre><code>## [1] &quot;nitems=100; discrimination=0.5&quot; &quot;nitems=300; discrimination=0.5&quot;
 ## [3] &quot;nitems=500; discrimination=0.5&quot; &quot;nitems=100; discrimination=1.5&quot;
@@ -221,6 +222,7 @@ meta_stats</code></pre>
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 

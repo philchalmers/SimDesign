@@ -95,6 +95,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -193,18 +194,18 @@ results &lt;- runSimulation(Design, replications, verbose=FALSE, fixed_objects=f
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
 results</code></pre>
 <pre><code>##    N     p REPLICATIONS SIM_TIME
-## 1 10 0.041         1000    0.32s
-## 2 20 0.052         1000    0.34s
-## 3 30 0.061         1000    0.26s</code></pre>
+## 1 10 0.041         1000    0.29s
+## 2 20 0.052         1000    0.28s
+## 3 30 0.061         1000    0.28s</code></pre>
 <p>By placing objects in a list and passing this to <code>fixed_objects</code>, the objects are safely made available to all relevant functions. Furthermore, running this code in parallel is also valid. Remember, this is only required for R objects NOT user-defined functions.</p>
 <pre class="r"><code>results &lt;- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
                          parallel = TRUE)
 results</code></pre>
 <pre><code>##    N     p REPLICATIONS SIM_TIME
-## 1 10 0.055         1000    0.09s
-## 2 20 0.063         1000    0.11s
-## 3 30 0.055         1000    0.12s</code></pre>
+## 1 10 0.048         1000    0.08s
+## 2 20 0.054         1000    0.12s
+## 3 30 0.050         1000    0.12s</code></pre>
 </div>
 
 
@@ -218,6 +219,7 @@ results</code></pre>
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 
