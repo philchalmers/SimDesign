@@ -1,6 +1,6 @@
 
 
-[![Travis-CI Build Status](https://travis-ci.org/philchalmers/SimDesign.svg?branch=master)](https://travis-ci.org/philchalmers/SimDesign) [![](http://www.r-pkg.org/badges/version/SimDesign)](http://www.r-pkg.org/pkg/SimDesign) [![](http://cranlogs.r-pkg.org/badges/grand-total/SimDesign)](http://cran.rstudio.com/web/packages/SimDesign/index.html)
+[![Travis-CI Build Status](https://travis-ci.org/philchalmers/SimDesign.svg?branch=master)](https://travis-ci.org/philchalmers/SimDesign) [![](http://www.r-pkg.org/badges/version/SimDesign)](http://www.r-pkg.org/pkg/SimDesign) [![](http://cranlogs.r-pkg.org/badges/grand-total/SimDesign)](https://CRAN.R-project.org/package=SimDesign)
 
 
 # SimDesign
