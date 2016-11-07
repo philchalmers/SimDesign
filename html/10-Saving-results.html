@@ -125,8 +125,9 @@ $(document).ready(function () {
 <h1>Saving Results</h1>
 <p>Unsurprisingly, you may want to save your results to your hard disk in case of power outages or random system crashes to allow restarting at the interrupted location, save more complete versions of the analysis results in case you want to inspect the complete simulation results at a later time, store the R seeds for debugging and replication purposes, and so on. This document demonstrates various ways in which <code>SimDesign</code> saves output to hard disks.</p>
 <p>As usual, define the functions of interest.</p>
-<pre class="r"><code>library(SimDesign)
-# SimFunctions()
+<pre class="r"><code>library(SimDesign)</code></pre>
+<pre><code>## See ?SimFunctions to get started with SimDesign</code></pre>
+<pre class="r"><code># SimFunctions()
 
 Design &lt;- data.frame(N = c(10,20,30))</code></pre>
 <pre class="r"><code>Generate &lt;- function(condition, fixed_objects = NULL) {
@@ -159,8 +160,8 @@ result &lt;- runSimulation(Design, replications = 1000, save=TRUE, filename='my-
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 Design row: 1/3;  Previous condition time: 0.00s;  Total elapsed time: 0.00s 
-Design row: 2/3;  Previous condition time: 0.28s;  Total elapsed time: 0.28s 
-Design row: 3/3;  Previous condition time: 0.28s;  Total elapsed time: 0.56s</code></pre>
+Design row: 2/3;  Previous condition time: 0.24s;  Total elapsed time: 0.24s 
+Design row: 3/3;  Previous condition time: 0.25s;  Total elapsed time: 0.49s</code></pre>
 <pre><code>## Row 3 in design was terminated because it had 50 consecutive errors. 
 ## 
 ## Last error message was: 
@@ -180,9 +181,9 @@ result &lt;- runSimulation(Design, replications = 1000, save=TRUE, filename='my-
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## Resuming simulation from SIMDESIGN-TEMPFILE_ubuntu16-04.rds file with 1000 replications.</code></pre>
 <pre><code>## 
-Design row: 3/3;  Previous condition time: 0.28s;  Total elapsed time: 0.56s</code></pre>
+Design row: 3/3;  Previous condition time: 0.25s;  Total elapsed time: 0.49s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 0.82s</code></pre>
+## Simulation complete. Total execution time: 0.72s</code></pre>
 <pre><code>## 
 ## Saving simulation results to file: my-simple-sim.rds</code></pre>
 <p>Check which files exist.</p>
@@ -200,15 +201,15 @@ files[grepl('SIMDESIGN', files)]</code></pre>
               generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 Design row: 1/3;  Previous condition time: 0.00s;  Total elapsed time: 0.00s 
-Design row: 2/3;  Previous condition time: 0.28s;  Total elapsed time: 0.28s 
-Design row: 3/3;  Previous condition time: 0.26s;  Total elapsed time: 0.54s</code></pre>
+Design row: 2/3;  Previous condition time: 0.24s;  Total elapsed time: 0.24s 
+Design row: 3/3;  Previous condition time: 0.27s;  Total elapsed time: 0.50s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 0.82s</code></pre>
+## Simulation complete. Total execution time: 0.73s</code></pre>
 <pre class="r"><code>dir &lt;- dir()
 directory &lt;- dir[grepl('SimDesign-results', dir)]
 dir(directory)</code></pre>
 <pre><code>## [1] &quot;results-row-1.rds&quot; &quot;results-row-2.rds&quot; &quot;results-row-3.rds&quot;</code></pre>
-<p>Here we can see that three <code>.rds</code> files have been saved to the folder with the computer node name and a prefixed <code>'SimDesign-results'</code> character string. Each <code>.rds</code> file contains the respective simulation results (including errors and warnings), which can be read in with <code>readRDS()</code>.</p>
+<p>Here we can see that three <code>.rds</code> files have been saved to the folder with the computer node name and a prefixed <code>'SimDesign-results'</code> character string. Each <code>.rds</code> file contains the respective simulation results (including errors and warnings), which can be read in directly with <code>readRDS()</code></p>
 <pre class="r"><code>row1 &lt;- readRDS(paste0(directory, '/results-row-1.rds'))
 str(row1)</code></pre>
 <pre><code>## List of 4
@@ -236,6 +237,69 @@ str(row1)</code></pre>
 ## [4,] 0.1799
 ## [5,] 0.0112
 ## [6,] 0.4158</code></pre>
+<p>or, equivalently, with the <code>SimResults()</code> function</p>
+<pre class="r"><code>row1 &lt;- SimResults(results, 1)
+str(row1)</code></pre>
+<pre><code>## List of 4
+##  $ condition:'data.frame':   1 obs. of  2 variables:
+##   ..$ ID: int 1
+##   ..$ N : num 10
+##  $ results  : num [1:1000, 1] 0.1137 0.3116 0.7713 0.1799 0.0112 ...
+##   ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. ..$ : NULL
+##   .. ..$ : chr &quot;p&quot;
+##  $ errors   : 'table' int[0 (1d)] 
+##   ..- attr(*, &quot;dimnames&quot;)=List of 1
+##   .. ..$ : NULL
+##  $ warnings : 'table' int[0 (1d)] 
+##   ..- attr(*, &quot;dimnames&quot;)=List of 1
+##   .. ..$ warnings: NULL</code></pre>
+<p>The <code>SimResults()</code> function has the added benifit that it can read in all simulation results at once, or simply hand pick which ones should be inspected. For example, here is how all the saved results can be inspected:</p>
+<pre class="r"><code>input &lt;- SimResults(results)
+str(input)</code></pre>
+<pre><code>## List of 3
+##  $ :List of 4
+##   ..$ condition:'data.frame':    1 obs. of  2 variables:
+##   .. ..$ ID: int 1
+##   .. ..$ N : num 10
+##   ..$ results  : num [1:1000, 1] 0.1137 0.3116 0.7713 0.1799 0.0112 ...
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. ..$ : NULL
+##   .. .. ..$ : chr &quot;p&quot;
+##   ..$ errors   : 'table' int[0 (1d)] 
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 1
+##   .. .. ..$ : NULL
+##   ..$ warnings : 'table' int[0 (1d)] 
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 1
+##   .. .. ..$ warnings: NULL
+##  $ :List of 4
+##   ..$ condition:'data.frame':    1 obs. of  2 variables:
+##   .. ..$ ID: int 2
+##   .. ..$ N : num 20
+##   ..$ results  : num [1:1000, 1] 0.779 0.269 0.285 0.424 0.259 ...
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. ..$ : NULL
+##   .. .. ..$ : chr &quot;p&quot;
+##   ..$ errors   : 'table' int[0 (1d)] 
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 1
+##   .. .. ..$ : NULL
+##   ..$ warnings : 'table' int[0 (1d)] 
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 1
+##   .. .. ..$ warnings: NULL
+##  $ :List of 4
+##   ..$ condition:'data.frame':    1 obs. of  2 variables:
+##   .. ..$ ID: int 3
+##   .. ..$ N : num 30
+##   ..$ results  : num [1:1000, 1] 0.00922 0.91427 0.89915 0.87311 0.09021 ...
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. ..$ : NULL
+##   .. .. ..$ : chr &quot;p&quot;
+##   ..$ errors   : 'table' int[0 (1d)] 
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 1
+##   .. .. ..$ : NULL
+##   ..$ warnings : 'table' int[0 (1d)] 
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 1
+##   .. .. ..$ warnings: NULL</code></pre>
 <p>Should the need arise to remove the results directory then the <code>SimClean()</code> function is the easiest way to remove unwanted files and directories.</p>
 <pre class="r"><code>SimClean(results = TRUE)</code></pre>
 </div>

@@ -126,7 +126,7 @@ directory <- dir[grepl('SimDesign-results', dir)]
 dir(directory)
 ```
 
-Here we can see that three `.rds` files have been saved to the folder with the computer node name and a prefixed `'SimDesign-results'` character string. Each `.rds` file contains the respective simulation results (including errors and warnings), which can be read in with `readRDS()`.
+Here we can see that three `.rds` files have been saved to the folder with the computer node name and a prefixed `'SimDesign-results'` character string. Each `.rds` file contains the respective simulation results (including errors and warnings), which can be read in directly with `readRDS()`
 
 ```{r}
 row1 <- readRDS(paste0(directory, '/results-row-1.rds'))
@@ -135,6 +135,23 @@ str(row1)
 row1$condition
 head(row1$results)
 ```
+
+or, equivalently, with the `SimResults()` function
+
+```{r}
+row1 <- SimResults(results, 1)
+str(row1)
+```
+
+The `SimResults()` function has the added benifit that it can read in all simulation 
+results at once, or simply hand pick which ones should be inspected. For example,
+here is how all the saved results can be inspected:
+
+```{r}
+input <- SimResults(results)
+str(input)
+```
+
 
 Should the need arise to remove the results directory then the `SimClean()` function is the easiest way to remove unwanted files and directories. 
 
