@@ -5,7 +5,7 @@
 \title{Skeleton functions for simulations}
 \usage{
 SimFunctions(filename = NULL, dir = getwd(), comments = FALSE,
-  singlefile = FALSE, summarise = TRUE)
+  singlefile = TRUE, summarise = TRUE)
 }
 \arguments{
 \item{filename}{a character vector indicating whether the output should be saved to two respective files
@@ -17,8 +17,9 @@ is generally the recommended approach when beginning to write a Monte Carlo simu
 \item{comments}{logical; include helpful comments? Default is \code{FALSE}}
 
 \item{singlefile}{logical; when \code{filename} is included, put output in one files? When \code{FALSE} the
-output is saved to two separate files containing the functions and design definitions. Default is
-\code{FALSE}}
+output is saved to two separate files containing the functions and design definitions. The two-file format
+often makes organization and debugging slightly easier, especially for larger Monte Carlo simulations.
+Default is \code{TRUE}}
 
 \item{summarise}{include \code{summarise} function? Default is \code{TRUE}}
 }
@@ -26,9 +27,10 @@ output is saved to two separate files containing the functions and design defini
 This function prints skeleton versions of the required SimDesign functions
 to run simulations, complete with the correct inputs, class of outputs, and optional comments to
 help with the initial definitions. Use this at the start of your Monte Carlo simulation study. The
-recommended approach when using the \code{RStudio} IDE is to write the simulation template to two
-separate files for easier debugging/sourcing (this is the default when a \code{filename} is passed).
-For a didactic presentation of the package refer to Sigal and Chalmers (in press).
+recommended approach is to save the template to the hard-drive by passing a suitable file name.
+However, for larger simulations, as well as when using the \code{RStudio}, two
+separate files will often be easier for debugging/sourcing the simulation code (achieved by passing
+\code{singlefile = FALSE}. For a didactic presentation of the package refer to Sigal and Chalmers (in press).
 }
 \examples{
 
@@ -37,11 +39,11 @@ SimFunctions(comments = TRUE) #with helpful comments
 
 \dontrun{
 
-# write output to two files (recommended)
-SimFunctions('mysim')
+# write output to two files (recommended for larger MCSs)
+SimFunctions('mysim', singlefile = FALSE)
 
 # write output files to a single file with comments
-SimFunctions('mysim', singlefile = TRUE, comments = TRUE)
+SimFunctions('mysim', comments = TRUE)
 }
 
 }
