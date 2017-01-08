@@ -675,7 +675,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!all(names(save_results) %in%
             c('compname', 'tmpfilename', 'save_results_dirname', 'save_generate_data_dirname')))
         stop('save_details contains elements that are not supported', call.=FALSE)
-    compname <- save_details$compname; tmpfilename <- save_details$tempfilename; safe <- save_details$safe
+    compname <- save_details$compname; tmpfilename <- save_details$tmpfilename; safe <- save_details$safe
     save_results_dirname <- save_details$save_results_dirname; save_seeds_dirname <- save_details$save_seeds_dirname
     save_generate_data_dirname <- save_details$save_generate_data_dirname
     if(is.null(compname)) compname <- Sys.info()['nodename']

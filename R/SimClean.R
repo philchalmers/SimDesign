@@ -46,7 +46,7 @@
 #' }
 SimClean <- function(..., dirs = NULL, generate_data = FALSE, results = FALSE,
                      seeds = FALSE, temp = FALSE, save_details = list()){
-    compname <- save_details$compname; tmpfilename <- save_details$tempfilename
+    compname <- save_details$compname; tmpfilename <- save_details$tmpfilename
     save_results_dirname <- save_details$save_results_dirname
     save_seeds_dirname <- save_details$save_seeds_dirname
     save_generate_data_dirname <- save_details$save_generate_data_dirname

@@ -371,5 +371,29 @@ test_that('SimDesign', {
     expect_equal(length(results), 10L)
     expect_equal(length(results[[1L]]), 2L)
     expect_equal(length(results[[1L]][[2]]), 2L)
+
+    # stop and resume
+    Design <- data.frame(N=c(10, 20))
+    Generate <- function(condition, fixed_objects = NULL)
+        rnorm(condition$N, mean = 10)
+    Analyse1 <- function(condition, dat, fixed_objects = NULL){
+        Attach(condition)
+        if(N == 20) stop('Oh no, not 20!')
+        mean(dat)
+    }
+    Analyse2 <- function(condition, dat, fixed_objects = NULL)
+        mean(dat)
+
+    Summarise <- function(condition, results, fixed_objects = NULL)
+        bias(results, 0)
+    expect_error(runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile.rds'),
+                  generate=Generate, analyse=Analyse1, summarise=Summarise, verbose=FALSE))
+    expect_true('thisfile.rds' %in% dir())
+    SimClean('thisfile.rds')
+    results <- runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile'),
+                               generate=Generate, analyse=Analyse2, summarise=Summarise, filename = 'thatfile', verbose=FALSE)
+    expect_true('thatfile.rds' %in% dir())
+    SimClean('thatfile.rds')
+
 })
 
