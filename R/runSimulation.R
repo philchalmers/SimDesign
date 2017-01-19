@@ -925,6 +925,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                            check.names=FALSE)
             time1 <- proc.time()[3]
             Result_list[[i]]$SIM_TIME <- time1 - time0
+            Result_list[[i]]$COMPLETED <- date()
             if(save || save_results || save_generate_data) saveRDS(Result_list, tmpfilename)
         }
     }
@@ -951,9 +952,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         message('\nSimulation complete. Total execution time: ', timeFormater(sum(stored_time)))
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
+    COMPLETED <- Final$COMPLETED
     REPLICATIONS <- Final$REPLICATIONS
-    Final$SIM_TIME <- Final$ID <- Final$REPLICATIONS <- NULL
-    Final <- data.frame(Final, REPLICATIONS, SIM_TIME, check.names=FALSE)
+    Final$SIM_TIME <- Final$ID <- Final$REPLICATIONS <- Final$COMPLETED <-NULL
+    Final <- data.frame(Final, REPLICATIONS, SIM_TIME, COMPLETED, check.names=FALSE)
     if(!is.null(seed)) Final$SEED <- seed
     if(!is.null(filename) && safe){ #save file
         files <- dir()
@@ -984,7 +986,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     ten <- colnames(Final)[grepl('ERROR:', colnames(Final))]
     wen <- colnames(Final)[grepl('WARNING:', colnames(Final))]
-    en <- c('REPLICATIONS', 'SIM_TIME')
+    en <- c('REPLICATIONS', 'SIM_TIME', 'COMPLETED')
     if(!is.null(seed)) en <- c(en, 'SEED')
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen))]
     attr(Final, 'design_names') <- list(design=dn, sim=sn, extra=en, errors=ten, warnings=wen)
