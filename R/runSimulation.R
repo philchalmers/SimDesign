@@ -41,7 +41,9 @@
 #' Additional information for each condition are also contained in the \code{data.frame} object returned by
 #' \code{runSimulation}: \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
-#' all the Monte Carlo replications for each respective design condition, \code{SEED} if the \code{seed} argument
+#' all the Monte Carlo replications for each respective design condition,
+#' \code{COMPLETED} to indicate the date in which the given simulation condition completed,
+#' \code{SEED} if the \code{seed} argument
 #' was used, columns containing the number of replications which had to be re-run due to errors (where the error messages
 #' represent the names of the columns prefixed with a \code{ERROR:} string), and
 #' columns containing the number of warnings prefixed with a \code{WARNING:} string.
@@ -403,7 +405,7 @@
 #' @return a \code{data.frame} (also of class \code{'SimDesign'})
 #'   with the original \code{design} conditions in the left-most columns,
 #'   simulation results and ERROR/WARNING's (if applicable) in the middle columns,
-#'   and additional information (such as REPLICATIONS, SIM_TIME, and SEED) in the right-most
+#'   and additional information (such as REPLICATIONS, SIM_TIME, COMPLETED, and SEED) in the right-most
 #'   columns.
 #'
 #' @aliases runSimulation
