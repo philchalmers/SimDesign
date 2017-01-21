@@ -5,10 +5,12 @@
 #' generated is generally basic, but allows the user to edit the saved files to customize
 #' the GUI as they see fit.
 #'
-#' @param filename an optional name of a text file to save the server and UI components.
+#' @param filename an optional name of a text file to save the server and UI components (e.g., 'mysimGUI.R').
 #'   If ommitted, the code will be printed to the R console instead
 #'
 #' @param dir the directory to write the files to. Default is the working directory
+#'
+#' @param design \code{design} object from \code{\link{runSimulation}}
 #'
 #' @param ... arguments to be passed to \code{\link{runSimulation}}. Note that the
 #'   \code{design} object is not used directly, and instead provides options to be
@@ -63,65 +65,95 @@
 #' #                       generate=Generate, analyse=Analyse, summarise=Summarise)
 #'
 #' # print code to console
-#' SimShiny(design=Design, generate=Generate, analyse=Analyse, summarise=Summarise)
+#' SimShiny(design=Design, generate=Generate, analyse=Analyse,
+#'          summarise=Summarise, verbose=FALSE)
 #'
 #' # save shiny code to file
-#' SimShiny('shinySim.R', design=Design, generate=Generate, analyse=Analyse, summarise=Summarise)
+#' SimShiny('app.R', design=Design, generate=Generate, analyse=Analyse,
+#'          summarise=Summarise, verbose=FALSE)
+#'
+#' # run the application
+#' source('app.R')
+#' shinyApp(server=server, ui=ui)
+#'
 #' }
-SimShiny <- function(filename = NULL, dir = getwd(), ...){
+SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
     UI_CONDITION <- function(condition, name){
         cond <- unique(condition)
         is_numeric <- is.numeric(cond)
-        cat(sprintf('      selectInput("%s", "Select condition:"\n', name))
+        cat(sprintf('      selectInput("%s", "Select %s:",\n', name, name))
         cat(sprintf('        choices = c(%s)),\n\n',
                     if(is_numeric) paste0(cond, collapse = ',')
                     else paste0('"', cond, '"', collapse = ',')))
         invisible()
     }
 
-    UI_OUTPUT <- function(){
-        cat('#-------------------------------------------------------------------\n')
-    }
-
-    if(!is.null(filename)){
-        if(file.exists(paste0(filename, '.R')))
-            stop('File already exists! Please rename input or rename/remove existing files', call.=FALSE)
-    }
     if(!is.null(filename)){
         cat(sprintf('Writing SimShiny components to file \"%s\" in \n  directory \"%s\"',
-                    paste0(filename, '.R'), dir))
-        sink(paste0(filename, '.R'))
+                    filename, dir))
+        sink(filename)
     }
-    dots <- list(...)
-    design <- dots$design
     nms <- names(design)
+    dots <- list(...)
+    inputs <- cbind(names(dots), '=', names(dots))
+    pick <- inputs[!(inputs[,1] %in% c('generate', 'analyse', 'summarise')), 1L]
+    if(length(pick)){
+        for(i in 1:length(pick))
+            inputs[which(pick[i] == inputs[,1]), 3] <- as.character(dots[pick[i]][[1L]])
+    }
+    inputs <- paste0(apply(inputs, 1, paste0, collapse=''), collapse=', \n                    ')
+    design_is_numeric <- sapply(design, is.numeric)
+
+    #functions
+    Functions <- dots[c('generate', 'analyse', 'summarise')]
+    for(i in 1L:3L){
+        if(!is.null(Functions[[i]])){
+            output <- capture.output(print(Functions[[i]]))
+            output <- paste0(output, '\n', collapse='')
+            cat(sprintf('%s <- %s\n', names(Functions[i]), output))
+        }
+    }
 
     #ui
-    cat('library(shiny)\n\nui <- fluidPage(\n\n')
+    cat('#---------------------------------------------------------\n')
+    cat('library(shiny)\n\n')
+    cat(sprintf('design_is_numeric <- c(%s)\n\n',
+                paste0(design_is_numeric, collapse=',')))
+    cat('ui <- fluidPage(\n\n')
     cat('  titlePanel("Simulation"),\n\n')
     cat('  sidebarLayout(\n')
     cat('    sidebarPanel(\n')
+    cat('      numericInput("reps", "Number of replications:", 0),\n\n')
     for(i in 1L:ncol(design))
         UI_CONDITION(design[,i], name=nms[i])
     cat('      submitButton("Run Simulation")\n')
     cat('    ),\n\n')
     cat('    mainPanel(\n')
-    cat('      h4("Results"),\n')
     cat('      tableOutput("results")\n')
     cat('    )\n')
     cat('  )\n')
+    cat(')\n')
 
     # #server
-    # cat('\n\nserver <- function(input, output) {')
-    # for(i in 1L:ncol(design)){
-    #     CONDITION(design[,i], name=nms[i])
-    # }
-    # browser()
-
-
-
-    # cat('}\n\n')
-
+    cat('\nserver <- function(input, output) {\n\n')
+    cat('  Design <- reactive({\n')
+    cat(sprintf('    df <- data.frame(%s, stringsAsFactors = FALSE)\n',
+                paste0('input$', nms, collapse=',\n      ')))
+    cat(sprintf('    names(df) <- c(%s)\n', paste0('"', nms, '"', collapse=',\n      ')))
+    cat('    for(i in 1L:length(df)) if(design_is_numeric[i]) df[,i] <- as.numeric(df[,i])\n')
+    cat('    df\n')
+    cat('  })\n\n')
+    cat('  output$results <- renderTable({\n')
+    cat('    reps <- input$reps\n')
+    cat('    if(reps > 0){\n')
+    cat('         res <- as.data.frame(runSimulation(design=Design(), replications=reps,\n')
+    cat(sprintf('                    %s))\n', inputs))
+    cat('         res <- res[,(ncol(Design())+1):ncol(res)]\n')
+    cat('         res$REPLICATIONS <- NULL\n')
+    cat('         return(res)\n')
+    cat('    } else return(NULL)\n')
+    cat('  })\n')
+    cat('}\n\n')
 
     if(!is.null(filename)) sink()
     invisible()

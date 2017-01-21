@@ -1031,11 +1031,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
 #' @export
 print.SimDesign <- function(x, drop.extras = FALSE, drop.design = FALSE, format.time = TRUE, ...){
     att <- attr(x, 'design_names')
+    if(format.time)
+        x$SIM_TIME <- sapply(x$SIM_TIME, timeFormater, TRUE)
     if(drop.extras) x <- x[ ,c(att$design, att$sim), drop=FALSE]
     if(drop.design) x <- x[ ,!(names(x) %in% att$design), drop=FALSE]
     class(x) <- 'data.frame'
-    if(format.time)
-        x$SIM_TIME <- sapply(x$SIM_TIME, timeFormater, TRUE)
     ldots <- list(...)
     if(is.null(ldots$print)) print(x, ...)
     else return(x)
