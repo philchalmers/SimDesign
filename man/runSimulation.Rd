@@ -716,6 +716,6 @@ Carlo simulation. \code{Journal of Statistics Education}.
 \seealso{
 \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
   \code{\link{SimFunctions}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
-  \code{\link{aggregate_simulations}}, \code{\link{Attach}}
+  \code{\link{aggregate_simulations}}, \code{\link{Attach}}, \code{\link{SimShiny}}
 }
 
