@@ -16,7 +16,7 @@
 #' @import foreach methods parallel stats
 #' @importFrom plyr rbind.fill
 #' @importFrom pbapply pblapply
-#' @importFrom utils recover packageVersion sessionInfo head tail
+#' @importFrom utils recover packageVersion sessionInfo head tail capture.output
 #' @keywords package
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (in press). Play it again: Teaching statistics with Monte
