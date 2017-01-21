@@ -8,7 +8,7 @@ SimShiny(filename = NULL, dir = getwd(), design, ...)
 }
 \arguments{
 \item{filename}{an optional name of a text file to save the server and UI components (e.g., 'mysimGUI.R').
-If ommitted, the code will be printed to the R console instead}
+If omitted, the code will be printed to the R console instead}
 
 \item{dir}{the directory to write the files to. Default is the working directory}
 
@@ -19,10 +19,10 @@ If ommitted, the code will be printed to the R console instead}
 selected in the GUI}
 }
 \description{
-This function generates suitble code from the \code{shiny} package to create simple
-web-interfaces for performing single condition Monte Carlo simulations interactively. The template
-generated is generally basic, but allows the user to edit the saved files to customize
-the GUI as they see fit.
+This function generates suitable stand-alone code from the \code{shiny} package to create simple
+web-interfaces for performing single condition Monte Carlo simulations. The template
+generated is relatively minimalistic, but allows the user to quickly and easily 
+edit the saved files to customize the associated shiny elements as they see fit.
 }
 \examples{
 \dontrun{
