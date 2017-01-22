@@ -21,7 +21,7 @@ selected in the GUI}
 \description{
 This function generates suitable stand-alone code from the \code{shiny} package to create simple
 web-interfaces for performing single condition Monte Carlo simulations. The template
-generated is relatively minimalistic, but allows the user to quickly and easily 
+generated is relatively minimalistic, but allows the user to quickly and easily
 edit the saved files to customize the associated shiny elements as they see fit.
 }
 \examples{
@@ -77,8 +77,8 @@ SimShiny('app.R', design=Design, generate=Generate, analyse=Analyse,
          summarise=Summarise, verbose=FALSE)
 
 # run the application
-source('app.R')
-shinyApp(server=server, ui=ui)
+runApp()
+runApp(launch.browser = TRUE) # in web-browser
 
 }
 }

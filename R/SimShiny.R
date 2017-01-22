@@ -2,7 +2,7 @@
 #'
 #' This function generates suitable stand-alone code from the \code{shiny} package to create simple
 #' web-interfaces for performing single condition Monte Carlo simulations. The template
-#' generated is relatively minimalistic, but allows the user to quickly and easily 
+#' generated is relatively minimalistic, but allows the user to quickly and easily
 #' edit the saved files to customize the associated shiny elements as they see fit.
 #'
 #' @param filename an optional name of a text file to save the server and UI components (e.g., 'mysimGUI.R').
@@ -73,8 +73,8 @@
 #'          summarise=Summarise, verbose=FALSE)
 #'
 #' # run the application
-#' source('app.R')
-#' shinyApp(server=server, ui=ui)
+#' runApp()
+#' runApp(launch.browser = TRUE) # in web-browser
 #'
 #' }
 SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
@@ -154,6 +154,8 @@ SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
     cat('    } else return(NULL)\n')
     cat('  }, digits = 3)\n')
     cat('}\n\n')
+
+    cat('shinyApp(ui=ui, server=server)\n\n')
 
     if(!is.null(filename)) sink()
     invisible()
