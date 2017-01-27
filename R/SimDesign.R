@@ -7,7 +7,7 @@
 #' back-end and MPI distributed computations, save and restore temporary files,
 #' aggregate results across independent nodes, and provide native support for debugging.
 #' The primary function for organizing the simulations is \code{\link{runSimulation}}.
-#' For a didactic presentation of the package refer to Sigal and Chalmers (in press).
+#' For a didactic presentation of the package refer to Sigal and Chalmers (2016).
 #'
 #' @name SimDesign
 #' @docType package
@@ -19,8 +19,8 @@
 #' @importFrom utils recover packageVersion sessionInfo head tail capture.output
 #' @keywords package
 #' @references
-#' Sigal, M. J., & Chalmers, R. P. (in press). Play it again: Teaching statistics with Monte
-#' Carlo simulation. \code{Journal of Statistics Education}.
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 NULL
 
 

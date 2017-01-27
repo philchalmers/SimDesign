@@ -6,7 +6,7 @@
 #' recommended approach is to save the template to the hard-drive by passing a suitable file name.
 #' However, for larger simulations, as well as when using the \code{RStudio}, two
 #' separate files will often be easier for debugging/sourcing the simulation code (achieved by passing
-#' \code{singlefile = FALSE}. For a didactic presentation of the package refer to Sigal and Chalmers (in press).
+#' \code{singlefile = FALSE}. For a didactic presentation of the package refer to Sigal and Chalmers (2016).
 #'
 #' @param filename a character vector indicating whether the output should be saved to two respective files
 #'   containing the simulation design and the functional components, respectively. Using this option
@@ -28,8 +28,8 @@
 #' @export SimFunctions
 #'
 #' @references
-#' Sigal, M. J., & Chalmers, R. P. (in press). Play it again: Teaching statistics with Monte
-#' Carlo simulation. \code{Journal of Statistics Education}.
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 #'
 #' @examples
 #'
