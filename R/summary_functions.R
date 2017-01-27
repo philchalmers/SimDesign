@@ -281,6 +281,58 @@ RE <- function(x, MSE = FALSE){
 }
 
 
+#' Compute the relative difference
+#'
+#' Computes the relative difference statistic of the form \code{(est - pop)/ pop}, which
+#' is equivalent to the form \code{est/pop - 1}. If matricies are supplied then
+#' an equivalent matrix variant will be used of the form
+#' \code{(est - pop) * solve(pop)}. Values closer to 0 indicate better
+#' relative parameter recovery.
+#'
+#' @param est a \code{numeric} vector or matrix containing the parameter estimates
+#'
+#' @param pop a \code{numeric} vector or matrix containing the true parameter values. Must be
+#'   of the same dimensions as \code{est}
+#'
+#' @param as.vector logical; always wrap the result in a \code{\link{as.vector}} function
+#'   before returning?
+#'
+#' @return returns a \code{vector} or \code{matrix} depending on the inputs and whether
+#'   \code{as.vector} was used
+#'
+#' @aliases RD
+#'
+#' @export RD
+#'
+#' @examples
+#'
+#' # vector
+#' pop <- seq(1, 100, length.out=9)
+#' est1 <- pop + rnorm(9, 0, .2)
+#' (rds <- RD(est1, pop))
+#' summary(rds)
+#'
+#' # matrix
+#' pop <- matrix(c(1:8, 10), 3, 3)
+#' est2 <- pop + rnorm(9, 0, .2)
+#' RD(est2, pop, as.vector = FALSE)
+#' (rds <- RD(est2, pop))
+#' summary(rds)
+#'
+#'
+RD <- function(est, pop, as.vector = TRUE){
+    if(is.matrix(est)){
+        slv <- try(solve(pop), TRUE)
+        if(is(slv, 'try-error'))
+            stop('pop matrix could not be inverted')
+        ret <- (est - pop) %*% slv
+        if(as.vector) ret <- as.vector(ret)
+    } else {
+        ret <- (est - pop) / pop
+    }
+    ret
+}
+
 
 #' Compute the empirical detection rate for Type I errors and Power
 #'
