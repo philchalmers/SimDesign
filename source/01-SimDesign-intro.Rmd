@@ -56,22 +56,22 @@ library(SimDesign)
 SimFunctions()
 ```
 
-Alternatively, if you are lazy or just don't like copy-and-pasting, `SimFunctions()` can write the output to two separate files
-by providing a `filename` argument. The following creates two files (`mysim.R` and `mysim-functions.R`) containing the simulation
-design/execution and required user-defined functions, respectively.
+Alternatively, if you are lazy or just don't like copy-and-pasting, `SimFunctions()` can write the output to a file
+by providing a `filename` argument. The following creates a file (`mysim.R`) containing the simulation
+design/execution and required user-defined functions.
 
 ```{r eval=FALSE}
 SimFunctions('mysim')
 ```
 
-Alternatively, for smaller simulations you may only want to use one file, and if you'd prefer to 
+Alternatively, for larger simulations you may want to use two files, and if you'd prefer to 
 have helpful comments included then these can be achieved with the `singlefile` and `comments` arguments, respectively.
 
 ```{r eval=FALSE}
-SimFunctions('mysim', singlefile = TRUE, comments = TRUE)
+SimFunctions('mysim', singlefile = FALSE, comments = TRUE)
 ```
 
-Personally, I find keeping the design and functions separate when writing real-world simulations, though there are some other reasons to keep them separate. First, when debugging code (either through the `edit` arguments or by explicitly using `browser()` calls) GUIs such as `Rstudio` are usually better at tracking the debugged functions. As a good amount of your time will initially be spent debugging, it's good to make this as painless as possible. Second, it's easier and more fluid to simply `source()` (keyboard shortcut `ctrl + shift + s`) the file containing functions and not worry that you might accidentally start running your simulation. Finally, the structure is just more readable, especially when you return sometime in the future after you've long forgotten what you've done. In the design file you can describe the simulation study more thoroughly with comments and generally outline the specifics of how the simulation is to be run, while the functions file simply contains the underlying mechanics and cogs required to run the simulation machine. 
+Personally, I find keeping the design and functions separate when writing real-world simulations, though there are some other reasons to keep them separate. For example, when debugging code (either through the `edit` arguments or by explicitly using `browser()` calls) GUIs such as `Rstudio` are usually better at tracking the debugged functions. As a good amount of your time will initially be spent debugging, it's good to make this as painless as possible. Second, it's easier and more fluid to simply `source()` (keyboard shortcut `ctrl + shift + s`) the file containing functions and not worry that you might accidentally start running your simulation; though this is a matter of preference. Finally, the structure may be more readable, especially when you return sometime in the future after you've long forgotten what you've done. In the design file you can describe the simulation study more thoroughly with comments and generally outline the specifics of how the simulation is to be run, while the functions file simply contains the underlying mechanics and cogs required to run the simulation machine. 
 
 # Simulation: Determine estimator efficiency
 
@@ -177,8 +177,8 @@ set.seed(1234)
 ```
 
 ```{r, cache=TRUE}
-results <- runSimulation(Design, replications = 1000, 
-    generate=Generate, analyse=Analyse, summarise=Summarise)
+results <- runSimulation(Design, replications = 1000, generate=Generate, 
+                         analyse=Analyse, summarise=Summarise)
 results
 ```
 
