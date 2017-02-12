@@ -127,7 +127,7 @@ design conditions into `factor`s if necessary. More specifically, Power rates re
 
 ```{r}
 head(results)
-results$REPLICATIONS <- results$SIM_TIME <- NULL
+results$REPLICATIONS <- results$SIM_TIME <- results$COMPLETED <- NULL
 TypeI <- subset(results, mean_difference == 0)
 Power <- subset(results, mean_difference != 0)
 ```
