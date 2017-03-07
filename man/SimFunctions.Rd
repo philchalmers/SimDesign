@@ -30,7 +30,7 @@ help with the initial definitions. Use this at the start of your Monte Carlo sim
 recommended approach is to save the template to the hard-drive by passing a suitable file name.
 However, for larger simulations, as well as when using the \code{RStudio}, two
 separate files will often be easier for debugging/sourcing the simulation code (achieved by passing
-\code{singlefile = FALSE}. For a didactic presentation of the package refer to Sigal and Chalmers (2016).
+\code{singlefile = FALSE}). For a didactic presentation of the package refer to Sigal and Chalmers (2016).
 }
 \examples{
 
