@@ -649,17 +649,17 @@
 #'     "welch", "independent")]
 #' dd <- melt(welch_ind, id.vars = names(welch_ind)[1:2])
 #'
-#' ggplot(dd, aes(factor(group_size_ratio), value)) +
+#' ggplot(dd, aes(factor(group_size_ratio), value)) + geom_boxplot() +
 #'     geom_abline(intercept=0.05, slope=0, col = 'red') +
 #'     geom_abline(intercept=0.075, slope=0, col = 'red', linetype='dotted') +
 #'     geom_abline(intercept=0.025, slope=0, col = 'red', linetype='dotted') +
-#'     geom_boxplot() + facet_wrap(~variable)
+#'     facet_wrap(~variable)
 #'
 #' ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation_ratio))) +
-#'     geom_abline(intercept=0.05, slope=0, col = 'red') +
+#'     geom_boxplot() + geom_abline(intercept=0.05, slope=0, col = 'red') +
 #'     geom_abline(intercept=0.075, slope=0, col = 'red', linetype='dotted') +
 #'     geom_abline(intercept=0.025, slope=0, col = 'red', linetype='dotted') +
-#'     geom_boxplot() + facet_grid(variable~standard_deviation_ratio) +
+#'     facet_grid(variable~standard_deviation_ratio) +
 #'     theme(legend.position = 'none')
 #'
 #' }

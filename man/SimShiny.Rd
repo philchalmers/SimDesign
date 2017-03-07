@@ -77,8 +77,8 @@ SimShiny('app.R', design=Design, generate=Generate, analyse=Analyse,
          summarise=Summarise, verbose=FALSE)
 
 # run the application
-runApp()
-runApp(launch.browser = TRUE) # in web-browser
+shiny::runApp()
+shiny::runApp(launch.browser = TRUE) # in web-browser
 
 }
 }

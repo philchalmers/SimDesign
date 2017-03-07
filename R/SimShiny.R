@@ -73,8 +73,8 @@
 #'          summarise=Summarise, verbose=FALSE)
 #'
 #' # run the application
-#' runApp()
-#' runApp(launch.browser = TRUE) # in web-browser
+#' shiny::runApp()
+#' shiny::runApp(launch.browser = TRUE) # in web-browser
 #'
 #' }
 SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
