@@ -976,7 +976,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 message(paste0('\nWARNING:\n', filename0, ' existed in the working directory.
                                Using a unique file name instead.\n'))
     }
-    class(Final) <- c('SimDesign', 'data.frame')
     dn <- colnames(design)
     dn <- dn[dn != 'ID']
     if(as.factor){
@@ -1016,6 +1015,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(save || save_results || save_generate_data || save_seeds) file.remove(tmpfilename)
     if(dummy_run) Final$dummy_run <- NULL
+    class(Final) <- c('SimDesign', 'data.frame')
     return(Final)
 }
 
@@ -1065,4 +1065,27 @@ summary.SimDesign <- function(object, ...){
     ret <- attr(object, 'extra_info')
     ret$total_elapsed_time <- timeFormater(ret$total_elapsed_time, TRUE)
     ret
+}
+
+#' @rdname runSimulation
+#' @export
+as.data.frame.SimDesign <- function(x, ...){
+    class(x) <- 'data.frame'
+    x
+}
+
+#' @export
+"[<-.SimDesign"  <- function(x, i, j, value){
+    x <- as.data.frame(x)
+    x[i, j] <- value
+    class(x) <- c('SimDesign', 'data.frame')
+    x
+}
+
+#' @export
+"[[<-.SimDesign"  <- function(x, i, j, value){
+    x <- as.data.frame(x)
+    x[[i,j]] <- value
+    class(x) <- c('SimDesign', 'data.frame')
+    x
 }

@@ -56,4 +56,3 @@ MAE(estimates, parameters)
 \seealso{
 RMSE
 }
-

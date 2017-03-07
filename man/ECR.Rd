@@ -72,4 +72,3 @@ ECR(CIs, parameter, tails=TRUE, names = c('this', 'that'))
 \seealso{
 \code{\link{EDR}}
 }
-

@@ -42,4 +42,3 @@ SimAnova(alpha.05.F ~ (groups_equal + distribution)^2, BF_sim, subset = var_rati
 SimAnova(~ groups_equal * distribution, BF_sim, subset = var_ratio == 1)
 
 }
-

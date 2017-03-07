@@ -21,12 +21,11 @@ head(BF_sim_alternative)
 subset(BF_sim_alternative, var_ratio == 1)
 }
 }
-\author{
-Phil Chalmers \email{rphilip.chalmers@gmail.com}
-}
 \references{
 Brown, M. B. and Forsythe, A. B. (1974). Robust tests for the equality of variances.
   \emph{Journal of the American Statistical Association, 69}(346), 364--367.
 }
+\author{
+Phil Chalmers \email{rphilip.chalmers@gmail.com}
+}
 \keyword{data}
-

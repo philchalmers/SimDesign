@@ -70,4 +70,3 @@ mygenerate3 <- function(condition, fixed_objects = NULL){
 \seealso{
 \code{\link{add_missing}}, \code{\link{Attach}}
 }
-

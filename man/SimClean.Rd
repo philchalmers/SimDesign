@@ -53,4 +53,3 @@ SimClean(results = TRUE, save_details = list(save_results_dirname = 'mydir'))
 \seealso{
 \code{\link{runSimulation}}
 }
-

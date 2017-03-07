@@ -85,4 +85,3 @@ runApp(launch.browser = TRUE) # in web-browser
 \seealso{
 \code{\link{runSimulation}}
 }
-

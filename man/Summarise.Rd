@@ -45,4 +45,3 @@ mysummarise <- function(condition, results, fixed_objects = NULL){
 \code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}},
   \code{\link{ECR}}, \code{\link{MAE}}
 }
-

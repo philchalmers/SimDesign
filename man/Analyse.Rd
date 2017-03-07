@@ -65,4 +65,3 @@ myanalyse <- function(condition, dat, fixed_objects = NULL){
 \seealso{
 \code{\link{stop}}
 }
-

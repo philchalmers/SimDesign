@@ -61,4 +61,3 @@ mygenerate <- function(condition, fixed_objects = NULL){
 \seealso{
 \code{\link{runSimulation}}, \code{\link{Generate}}
 }
-

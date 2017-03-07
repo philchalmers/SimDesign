@@ -60,4 +60,3 @@ bias(estimates, parameters)
 \seealso{
 \code{\link{RMSE}}
 }
-

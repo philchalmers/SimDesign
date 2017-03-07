@@ -90,4 +90,3 @@ ymiss <- add_missing(y, fun=fun)
 tail(cbind(y, ymiss), 10)
 
 }
-

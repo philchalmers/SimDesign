@@ -51,4 +51,3 @@ aggregate_simulations(dirs = c('dir1', 'dir2'))
 \seealso{
 \code{\link{runSimulation}}
 }
-

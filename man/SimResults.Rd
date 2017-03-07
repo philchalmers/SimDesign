@@ -58,4 +58,3 @@ rows_all <- SimResults(results)
 
 }
 }
-

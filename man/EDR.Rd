@@ -37,4 +37,3 @@ EDR(rates)
 \seealso{
 \code{\link{ECR}}
 }
-

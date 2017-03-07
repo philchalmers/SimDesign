@@ -36,4 +36,3 @@ mse <- c(RMSE1, RMSE2)^2
 RE(mse, MSE = TRUE)
 
 }
-
