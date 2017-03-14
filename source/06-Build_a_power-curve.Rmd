@@ -80,3 +80,45 @@ pwr.t.test(d=0.5, n=10, sig.level=0.05, type="one.sample", alternative="two.side
 subset(results, mean_diff == .5 & sample_size == 10)
 ```
 
+# Power-curve function estimation
+
+An alternative approach to estimating power curves is to obtain an approximate power function through parametric estimation. This involves estimating the same condition design while varying exactly one axillary condition, potentially with a smaller number of replications, and then fitting the observed proportions using a logistic response function. This is illustrated below. 
+
+```{r}
+library(SimDesign)
+#SimFunctions(comments = FALSE)
+
+### Find out parametric power curve for mean_diff = 0.3
+Design <- expand.grid(mean_diff = 0.3, 
+                      sample_size = 5:200)
+
+#--------------------------------------------------------------------
+
+Generate <- function(condition, fixed_objects = NULL) {
+    ret <- with(condition, rnorm(sample_size, mean_diff))
+    ret
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL) {
+    ret <- c(reject = t.test(dat)$p.value < .05) 
+    as.numeric(ret)
+}
+
+#--------------------------------------------------------------------
+
+### Run the simulation (note not summarise function)
+results <- runSimulation(Design, replications=50, verbose=FALSE, parallel=FALSE,
+                         generate=Generate, analyse=Analyse, edit='none')
+```
+
+```{r}
+res <- do.call(rbind, results)
+head(res)
+tail(res)
+
+IV <- rep(Design$sample_size, each=50)
+(mod <- glm(res ~ IV, family = binomial))
+plot(IV, plogis(predict(mod)), ylim = c(0,1),
+	 type = 'l', xlab = 'Sample size', ylab = 'Power', main = 'Mean difference = 0.3')
+```
+
