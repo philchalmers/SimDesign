@@ -54,11 +54,12 @@
 #'
 #'
 bias <- function(estimate, parameter = NULL, relative = FALSE){
+    if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
     if(is.vector(estimate)){
         nms <- names(estimate)
         estimate <- matrix(estimate)
         colnames(estimate) <- nms
-    } else if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
+    }
     stopifnot(is.matrix(estimate))
     n_col <- ncol(estimate)
     if(relative) stopifnot(!is.null(parameter))
@@ -135,11 +136,12 @@ bias <- function(estimate, parameter = NULL, relative = FALSE){
 #' RMSE(estimates, parameters)
 #'
 RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
+    if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
     if(is.vector(estimate)){
         nms <- names(estimate)
         estimate <- matrix(estimate)
         colnames(estimate) <- nms
-    } else if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
+    }
     stopifnot(is.matrix(estimate))
     n_col <- ncol(estimate)
     if(is.null(parameter)) parameter <- 0
@@ -217,11 +219,12 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
 #' MAE(estimates, parameters)
 #'
 MAE <- function(estimate, parameter = NULL, type = 'MAE'){
+    if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
     if(is.vector(estimate)){
         nms <- names(estimate)
         estimate <- matrix(estimate)
         colnames(estimate) <- nms
-    } else if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
+    }
     stopifnot(is.matrix(estimate))
     n_col <- ncol(estimate)
     if(is.null(parameter)) parameter <- 0
