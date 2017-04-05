@@ -246,9 +246,10 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         res <- try(withCallingHandlers(analyse(dat=simlist, condition=condition,
                            fixed_objects=fixed_objects), warning=wHandler), silent=TRUE)
         if(!is.null(Warnings)){
-            Warnings <- sapply(1L:length(Warnings), function(i, Warnings) {
-                paste0('Warning in ', deparse(Warnings[[i]]$call), ' : ', Warnings[[i]]$message)
-            }, Warnings)
+            Warnings <- sapply(1L:length(Warnings), function(i, warn) {
+                paste0('Warning in ', paste0(deparse(warn[[i]]$call), collapse = ''),
+                       ' : ', warn[[i]]$message)
+            }, warn=Warnings)
         }
         if(any(is.na(res))){
             NA_names <- names(res)[is.na(res)]
