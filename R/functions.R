@@ -9,7 +9,7 @@
 #'
 #' @return returns a single object containing the data to be analyzed (usually a
 #'   \code{vector}, \code{matrix}, or \code{data.frame}),
-#'   or \code{list})
+#'   or \code{list}
 #'
 #' @aliases Generate
 #'
@@ -67,19 +67,19 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 
 #' Compute estimates and statistics
 #'
-#' Computes all relevant test statistics, parameter estimates, detection rates, and so on.
+#' Compute all relevant test statistics, parameter estimates, detection rates, and so on.
 #' This is the computational heavy lifting portion of the Monte Carlo simulation.
 #'
 #' In some cases, it may be easier to change the output to a named \code{list} containing
 #' different parameter configurations (e.g., when
 #' determining RMSE values for a large set of population parameters).
 #'
-#' The use of \code{\link{try}} functions is generally not required because the function
+#' The use of \code{\link{try}} functions is generally not required in this function because \code{Analyse}
 #' is internally wrapped in a \code{\link{try}} call. Therefore, if a function stops early
 #' then this will cause the function to halt internally, the message which triggered the \code{\link{stop}}
 #' will be recorded, and \code{\link{Generate}} will be called again to obtain a different dataset.
-#' That being said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
-#' should be redrawn for other reasons (e.g., a model terminated correctly but the maximum number of
+#' That said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
+#' should be re-drawn for other reasons (e.g., an estimated model terminated correctly but the maximum number of
 #' iterations were reached).
 #'
 #' @param dat the \code{dat} object returned from the \code{\link{Generate}} function
@@ -94,7 +94,7 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #'   (e.g., p-values, effects sizes, etc), or a \code{list} containing values of interest
 #'   (e.g., separate matrix and vector of parameter estimates corresponding to elements in
 #'   \code{parameters}). If a \code{data.frame} is returned with more than 1 row then these
-#'   objects will be wrapped into \code{list} objects
+#'   objects will be wrapped into suitable \code{list} objects
 #'
 #' @seealso \code{\link{stop}}
 #' @aliases Analyse
@@ -131,7 +131,8 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #' Summarise simulated data using various population comparison statistics
 #'
 #' This collapses the simulation results within each condition to composite
-#' estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
+#' estimates such as RMSE, bias, Type I error rates, coverage rates, etc. See the
+#' \code{See Also} section below for useful functions to be used within \code{Summarise}.
 #'
 #' @param results a \code{data.frame} (if \code{Analyse} returned a numeric vector) or a \code{list}
 #'   (if \code{Analyse} returned a list or multi-rowed data.frame) containing the analysis

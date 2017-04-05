@@ -15,7 +15,7 @@ simulation conditions}
 \value{
 returns a single object containing the data to be analyzed (usually a
   \code{vector}, \code{matrix}, or \code{data.frame}),
-  or \code{list})
+  or \code{list}
 }
 \description{
 Generate data from a single row in the \code{design} input (see \code{\link{runSimulation}}).

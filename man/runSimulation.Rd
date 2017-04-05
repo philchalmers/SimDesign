@@ -31,7 +31,7 @@ runSimulation(design, replications, generate, analyse, summarise,
 }
 \arguments{
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
-be studied, where each row represents a unique condition}
+be studied, where each row represents a unique condition and each column a factor to be varied}
 
 \item{replications}{number of replication to perform per condition (i.e., each row in \code{design}).
 Must be greater than 0}
@@ -45,50 +45,53 @@ See \code{\link{Generate}} for details}
 \item{summarise}{optional (but recommended) user-defined summary function to be used
 after all the replications have completed within each \code{design} condition. Omitting this function
 will return a list of matrices (or a single matrix, if only one row in \code{design} is supplied)
-or more general objects (such as lists) containing the results returned form \code{\link{Analyse}}.
+or, for more general objects (such as lists), a list containing the results returned form \code{\link{Analyse}}.
 Ommiting this function is only recommended for didactic purposes because it leaves out a large amount of
-information (e.g., try-errors, warning messages, etc) and generally is not as flexible internally. See
+information (e.g., try-errors, warning messages, etc), can witness memory related issues,
+and generally is not as flexible internally. See
 the \code{save_results} option for a better alternative to storing the Generate-Analyse results}
 
-\item{fixed_objects}{(optional) an object (usually a \code{list})
+\item{fixed_objects}{(optional) an object (usually a named \code{list})
 containing additional user-defined objects
 that should remain fixed across conditions. This is useful when including
 long fixed vectors/matrices of population parameters, data
 that should be used across all conditions and replications (e.g., including a fixed design matrix
-for linear regression), or simply can be used to control constant global elements such as sample size}
+for linear regression), or simply control constant global elements such as sample size}
 
 \item{packages}{a character vector of external packages to be used during the simulation (e.g.,
 \code{c('MASS', 'mvtnorm', 'simsem')} ). Use this input when \code{parallel = TRUE} or
 \code{MPI = TRUE} to use non-standard functions from additional packages,
 otherwise the functions must be made available by using explicit
 \code{\link{library}} or \code{\link{require}} calls within the provided simulation functions.
-Alternatively, functions can be called explicitly without attaching the package with \code{::}
+Alternatively, functions can be called explicitly without attaching the package with the \code{::} operator
 (e.g., \code{mvtnorm::rmvnorm()})}
 
 \item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to
-when \code{save = TRUE}.
-When \code{NULL}, the final simulation object is not saved to the drive. As well,
-if the same file name already exists in the working directly at the time of saving then a new
-file will be generated instead and a warning will be thrown; this helps avoid accidentally overwriting
+when \code{save = TRUE}. If the same file name already exists in the working
+directly at the time of saving then a new
+file will be generated instead and a warning will be thrown. This helps to avoid accidentally overwriting
 existing files. Default is \code{'SimDesign-results'}}
 
 \item{save}{logical; save the simulation state and final results to the hard-drive? This is useful
 for simulations which require an extended amount of time. When \code{TRUE}, a temp file
 will be created in the working directory which allows the simulation state to be saved
-and recovered (in case of power outages, crashes, etc). To recover you simulation at the last known
-location simply rerun the same code you used to initially define the simulation and the object
-will automatically be detected and read-in. Upon completion, and if \code{filename} is not
-\code{NULL}, the final results will also be saved to the working directory. Default is \code{FALSE}}
+and recovered (in case of power outages, crashes, etc). To recover your simulation at the last known
+location simply re-run the code you used to initially define the simulation and the external file
+will automatically be detected and read-in. Upon completion, the final results will
+be saved to the working directory, and the temp file will be removed. Default is \code{FALSE}}
 
 \item{save_results}{logical; save the results returned from \code{\link{Analyse}} to external
-\code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
-Use this if you would like to keep track of the individual parameters returned from the analyses.
-Each saved object will contain a list of three elements containing the condition (row from \code{design}),
-results (as a \code{list} or \code{matrix}), and try-errors. When \code{TRUE}, a temp file will be used to track the simulation
-state (in case of power outages, crashes, etc). When \code{TRUE}, temporary files will also be saved
-to the working directory (in the same was as when \code{save = TRUE} to better track the state of the simulation.
-See \code{\link{SimResults}} for an example of how to read these \code{.rds} files back into R
-after the simulation is complete. Default is \code{FALSE}}
+  \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
+  Use this if you would like to keep track of the individual parameters returned from the analyses.
+  Each saved object will contain a list of three elements containing the condition (row from \code{design}),
+  results (as a \code{list} or \code{matrix}), and try-errors. When \code{TRUE}, a temp file will be used to track the simulation
+  state (in case of power outages, crashes, etc). When \code{TRUE}, temporary files will also be saved
+  to the working directory (in the same way as when \code{save = TRUE}).
+  See \code{\link{SimResults}} for an example of how to read these \code{.rds} files back into R
+  after the simulation is complete. Default is \code{FALSE}.
+
+  WARNING: saving results to your hard-drive can fill up space very quickly for larger simulations. Be sure to
+  test this option using a smaller number of replications before the full Monte Carlo simulation is performed.}
 
 \item{save_seeds}{logical; save the \code{.Random.seed} states prior to performing each replication into
 plain text files located in the defined \code{save_seeds_dirname} directory/folder?
@@ -97,11 +100,11 @@ condition. Primarily, this is useful for completely replicating any cell in the 
 especially when tracking down hard-to-find errors and bugs. As well, see the \code{load_seed} input
 to load a given \code{.Random.seed} to exactly replicate the generated data and analysis state (handy
 for debugging). When \code{TRUE}, temporary files will also be saved
-to the working directory (in the same was as when \code{save = TRUE} to better track the state of the simulation.
+to the working directory (in the same way as when \code{save = TRUE}).
 Default is \code{FALSE}}
 
 \item{load_seed}{a character object indicating which file to load from when the \code{.Random.seed}s have
-be saved (after a run with \code{save_seeds = TRUE}). E.g., \code{load_seed = 'design-row-2/seed-1'}
+be saved (after a call with \code{save_seeds = TRUE}). E.g., \code{load_seed = 'design-row-2/seed-1'}
 will load the first seed in the second row of the \code{design} input. Note that it is important NOT
 to modify the \code{design} input object, otherwise the path may not point to the correct saved location.
 Default is \code{NULL}}
@@ -127,8 +130,8 @@ object will automatically set the \code{parallel} argument to \code{TRUE}}
 \item{MPI}{logical; use the \code{foreach} package in a form usable by MPI to run simulation
 in parallel on a cluster? Default is \code{FALSE}}
 
-\item{max_errors}{the simulation will terminate when more than this number of constitutive errors are thrown in any
-given condition. The purpose of this is to indicate that likely something problematic is going
+\item{max_errors}{the simulation will terminate when more than this number of consecutive errors are thrown in any
+given condition. The purpose of this is to indicate that something fatally problematic is likely going
 wrong in the generate-analyse phases and should be inspected. Default is 50}
 
 \item{as.factor}{logical; coerce the input \code{design} elements into \code{factor}s when the
@@ -136,16 +139,17 @@ simulation is complete? If the columns inputs are numeric then these will be tre
 as \code{ordered}. Default is \code{TRUE}}
 
 \item{save_generate_data}{logical; save the data returned from \code{\link{Generate}} to external \code{.rds} files
-located in the defined \code{save_generate_data_dirname} directory/folder?
-It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
-a large amount of disk space, and by and large saving data is not required or recommended for simulations.
-A more space-friendly version is available when using the \code{save_seed} flag.
-When \code{TRUE}, temporary files will also be saved
-to the working directory (in the same was as when \code{save = TRUE} to better track the state of the simulation.
-Default is \code{FALSE}}
+  located in the defined \code{save_generate_data_dirname} directory/folder?
+  When \code{TRUE}, temporary files will also be saved to the working directory
+  (in the same way as when \code{save = TRUE}). Default is \code{FALSE}
 
-\item{save_details}{a list pertaining to information about how and where files should be saved
-  when \code{save}, \code{save_results}, or \code{save_generate_data} are triggered.
+  WARNING: saving data to your hard-drive can fill up space very quickly for larger simulations. Be sure to
+  test this option using a smaller number of replications before the full Monte Carlo simulation is performed.
+  It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
+  a needless amount of disk space, and by-and-large saving data is not required for simulations.}
+
+\item{save_details}{a list pertaining to information regarding how and where files should be saved
+  when the \code{save}, \code{save_results}, or \code{save_generate_data} flags are triggered.
 
   \describe{
 
@@ -158,7 +162,7 @@ Default is \code{FALSE}}
       results from the temp files may be resumed on another computer by changing the name of the
       node to match the broken computer. Default is the result of evaluating \code{unname(Sys.info()['nodename'])}}
 
-    \item{\code{tmpfilename}}{the name of the temporary \code{.rds} file when any of the \code{save} flag is used.
+    \item{\code{tmpfilename}}{the name of the temporary \code{.rds} file when any of the \code{save} flags are used.
        This file will be read-in if it is in the working directory and the simulation will continue
        at the last point this file was saved
        (useful in case of power outages or broken nodes). Finally, this file will be deleted when the
@@ -233,7 +237,9 @@ stopping when functions fail too often, even across nodes), and tracking of erro
 For convenience, all functions available in the R workspace are exported across all computational nodes
 so that they are more easily accessible (however, other R objects are not, and therefore
 must be passed to the \code{fixed_objects} input to become available across nodes).
-For a didactic presentation of the package refer to Sigal and Chalmers (2016).
+For a didactic presentation of the package refer to Sigal and Chalmers (2016), and see the associated
+wiki on Github (\url{https://github.com/philchalmers/SimDesign/wiki})
+for other tutorial material, examples, and applications of \code{SimDesign} to real-world simulations.
 }
 \details{
 The strategy for organizing the Monte Carlo simulation work-flow is to
@@ -354,7 +360,7 @@ files using the suitable BASH commands to execute the \code{mpirun} tool. For ex
   \item{\code{mpi.quit()}}{}
 }
 
-The necessary SimDesign files must be uploaded to the dedicated master node
+The necessary \code{SimDesign} files must be uploaded to the dedicated master node
 so that a BASH call to \code{mpirun} can be used to distribute the work across slaves.
 For instance, if the following BASH command is run on the master node then 16 processes
 will be summoned (1 master, 15 slaves) across the computers named \code{localhost}, \code{slave1},

@@ -20,10 +20,10 @@ returns a named \code{numeric} vector or \code{data.frame} with the values of in
   (e.g., p-values, effects sizes, etc), or a \code{list} containing values of interest
   (e.g., separate matrix and vector of parameter estimates corresponding to elements in
   \code{parameters}). If a \code{data.frame} is returned with more than 1 row then these
-  objects will be wrapped into \code{list} objects
+  objects will be wrapped into suitable \code{list} objects
 }
 \description{
-Computes all relevant test statistics, parameter estimates, detection rates, and so on.
+Compute all relevant test statistics, parameter estimates, detection rates, and so on.
 This is the computational heavy lifting portion of the Monte Carlo simulation.
 }
 \details{
@@ -31,12 +31,12 @@ In some cases, it may be easier to change the output to a named \code{list} cont
 different parameter configurations (e.g., when
 determining RMSE values for a large set of population parameters).
 
-The use of \code{\link{try}} functions is generally not required because the function
+The use of \code{\link{try}} functions is generally not required in this function because \code{Analyse}
 is internally wrapped in a \code{\link{try}} call. Therefore, if a function stops early
 then this will cause the function to halt internally, the message which triggered the \code{\link{stop}}
 will be recorded, and \code{\link{Generate}} will be called again to obtain a different dataset.
-That being said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
-should be redrawn for other reasons (e.g., a model terminated correctly but the maximum number of
+That said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
+should be re-drawn for other reasons (e.g., an estimated model terminated correctly but the maximum number of
 iterations were reached).
 }
 \examples{

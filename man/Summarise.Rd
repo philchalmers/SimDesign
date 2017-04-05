@@ -23,7 +23,8 @@ must return a named \code{numeric} vector or \code{data.frame}
 }
 \description{
 This collapses the simulation results within each condition to composite
-estimates such as RMSE, bias, Type I error rates, coverage rates, etc.
+estimates such as RMSE, bias, Type I error rates, coverage rates, etc. See the
+\code{See Also} section below for useful functions to be used within \code{Summarise}.
 }
 \examples{
 \dontrun{
