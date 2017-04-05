@@ -30,7 +30,11 @@ help with the initial definitions. Use this at the start of your Monte Carlo sim
 recommended approach is to save the template to the hard-drive by passing a suitable file name.
 However, for larger simulations, as well as when using the \code{RStudio}, two
 separate files will often be easier for debugging/sourcing the simulation code (achieved by passing
-\code{singlefile = FALSE}). For a didactic presentation of the package refer to Sigal and Chalmers (2016).
+\code{singlefile = FALSE}).
+For a didactic presentation of the package refer to Sigal and Chalmers
+(2016; \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}), and see the associated
+wiki on Github (\url{https://github.com/philchalmers/SimDesign/wiki})
+for other tutorial material, examples, and applications of \code{SimDesign} to real-world simulations.
 }
 \examples{
 
@@ -50,4 +54,5 @@ SimFunctions('mysim', comments = TRUE)
 \references{
 Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+DOI: 10.1080/10691898.2016.1246953
 }
