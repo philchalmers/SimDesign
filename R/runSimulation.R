@@ -872,7 +872,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                 tmp[i], paste0(names(packs), collapse = ', ')))
         }
     }
-    attr(Result_list, 'SimDesign_names') <-
+    if(is.null(attr(Result_list, 'SimDesign_names')))
+        attr(Result_list, 'SimDesign_names') <-
         c(save_generate_data_dirname=save_generate_data_dirname,
           save_results_dirname=save_results_dirname,
           save_seeds_dirname=save_seeds_dirname)
