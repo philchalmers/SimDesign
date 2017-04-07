@@ -21,7 +21,8 @@
 #'       information about the Monte Carlo simulations. This is often expedited by using the
 #'       \code{\link{expand.grid}} function, and if necessary using the \code{\link{subset}}
 #'       function to remove redundant or non-applicable rows}
-#'    \item{2)}{Define the three step functions to generate the data (\code{\link{Generate}}),
+#'    \item{2)}{Define the three step functions to generate the data (\code{\link{Generate}}; see also
+#'       \url{https://CRAN.R-project.org/view=Distributions} for a list of distributions in R),
 #'       analyse the generated data by computing the respective parameter estimates, detection rates,
 #'       etc (\code{\link{Analyse}}), and finally summarise the results across the total
 #'       number of replications (\code{\link{Summarise}}). Note that these functions can be

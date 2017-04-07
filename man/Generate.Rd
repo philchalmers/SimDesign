@@ -18,7 +18,10 @@ returns a single object containing the data to be analyzed (usually a
   or \code{list}
 }
 \description{
-Generate data from a single row in the \code{design} input (see \code{\link{runSimulation}}).
+Generate data from a single row in the \code{design} input (see \code{\link{runSimulation}}). R contains
+numerous approaches to generate data, some of which are contained in the base package, however the majority
+can be found in external packages. See CRAN's list of possible distributions here:
+\url{https://CRAN.R-project.org/view=Distributions}
 }
 \examples{
 \dontrun{
