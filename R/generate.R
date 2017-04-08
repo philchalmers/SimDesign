@@ -398,9 +398,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 
             eqs <- c(eq.18, eq.22, eq.B1, eq.B2, eq.B3, eq.B4)
             obj <- sum(eqs^2)
-
             obj
-
         }
 
         OPT <- list()
@@ -409,18 +407,14 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
         while(ntry+1 < control[["max.ntry"]]){
 
             ntry <- ntry + 1
-            start <- rnorm(6, sd = .5)
-            opt <- nlminb(start = start, objective = obj.fun, scale = 10,
+            start <- sapply(c(.5, .25, .1, .01, .001, .0001), function(x) rnorm(1, sd = x))
+            opt <- nlminb(start = start, objective = obj.fun,
                           lower = -2, upper = 2,
-                          control = list(trace = F, abs.tol = 1e-20, rel.tol = 1e-15, eval.max = 1e6, iter.max = 1e6),
+                          control = list(abs.tol = 1e-20, rel.tol = 1e-15, eval.max = 1e6, iter.max = 1e6),
                           gam = gam)
-            #print(opt$objective)
             if(opt$convergence == 0 && opt$objective <= control[["obj.tol"]]){
                 cnt <- cnt + 1
                 OPT[[cnt]] <- opt
-                if(control[["trace"]]){
-                    #cat(cnt, "/", ntry, "\n", sep="")
-                }
             }
 
 
@@ -430,27 +424,20 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
         }
 
         if(length(OPT) == 0){
-            return(NULL)
             stop(paste0("cannot find the coefficients of polynomial after ", control[["max.ntry"]], " attempts"))
         }
 
         min.obj <- 1e20
         idx <- -1
         for(i in 1:length(OPT)){
-            #print(OPT[[i]]$objective)
             if(OPT[[i]]$objective < min.obj){
                 min.obj <- OPT[[i]]$objective
                 idx <- i
             }
         }
-        if(control[["trace"]]){
-            #cat("minimum objective: ", min.obj, "\n", sep="")
-        }
 
         coeff <- OPT[[idx]]$par
         list(coeff = coeff, min.obj = min.obj)
-
-
     }
 
     headrick02.corr.match <- function(poly.coeff, corr){
@@ -489,7 +476,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
                 l <- l + 1
                 rho.Y <- corr[i, j]
                 opt <- nlminb(start = rho.Y, objective = obj.fun2, scale = 10, lower = -1, upper = 1,
-                              control = list(trace = F, abs.tol = 1e-20, eval.max = 1e5, iter.max = 1e3),
+                              control = list(abs.tol = 1e-20, eval.max = 1e5, iter.max = 1e3),
                               c0 = c0, c1 = c1, c2 = c2, c3 = c3, c4 = c4, c5 = c5, i = i, j = j, rho.Y = rho.Y)
                 if(opt$convergence == 0){
                     inter.corr[i, j] <- opt$par
