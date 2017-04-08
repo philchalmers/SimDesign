@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate.R
 \name{rValeMaurelli}
 \alias{rValeMaurelli}
-\title{Generate Non-normal Distributions with Vale & Maurelli (1983) method}
+\title{Generate Non-normal Distributions with Vale & Maurelli's (1983) method}
 \usage{
 rValeMaurelli(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
   skew = rep(0, nrow(sigma)), kurt = rep(0, nrow(sigma)))
@@ -19,8 +19,9 @@ rValeMaurelli(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 \item{kurt}{a vector of k elements for the kurtosis of the variables}
 }
 \description{
-Generate multivariate non-normal distributions using the method described by Vale & Maurelli (1983). If only
-a single variable is generated then this function is equivalent to the method described by Fleishman (1978).
+Generate multivariate non-normal distributions using the third-order method described
+by Vale & Maurelli (1983). If only a single variable is generated then this function
+is equivalent to the method described by Fleishman (1978).
 }
 \details{
 This function is primarily a wrapper for the code written by Cengiz Zopluoglu (last edited April 20, 2011)

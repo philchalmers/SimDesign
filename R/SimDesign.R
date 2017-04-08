@@ -19,6 +19,7 @@
 #' @import foreach methods parallel stats
 #' @importFrom plyr rbind.fill
 #' @importFrom pbapply pblapply
+#' @importFrom MASS mvrnorm
 #' @importFrom utils recover packageVersion sessionInfo head tail capture.output
 #' @keywords package
 #' @references
