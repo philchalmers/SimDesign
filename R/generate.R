@@ -251,38 +251,6 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
     kurtosis <- kurt
     replication <- 1
 
-    # f_skew <- function(x){
-    #
-    #     sd.x <- sd(x)
-    #     mu3.x <- mean((x-mean(x))^3)
-    #     mu3.x/sd.x^3
-    #
-    # }
-    #
-    # f_kurt <- function(x){
-    #
-    #     sd.x <- sd(x)
-    #     mu4 <- mean((x-mean(x))^4)
-    #     mu4/sd.x^4 - 3
-    #
-    # }
-    #
-    #
-    # f_gamma3 <- function(x){
-    #     sd.x <- sd(x)
-    #     mu3 <- mean((x-mean(x))^3)
-    #     mu5 <- mean((x-mean(x))^5)
-    #     mu5/sd.x^5-10*mu3/sd.x^3
-    # }
-    #
-    # f_gamma4 <- function(x){
-    #     sd.x <- sd(x)
-    #     mu3 <- mean((x-mean(x))^3)
-    #     mu4 <- mean((x-mean(x))^4)
-    #     mu6 <- mean((x-mean(x))^6)
-    #     mu6/sd.x^6-15*mu4/sd.x^4 + 45-10*mu3^2/sd.x^3-15
-    # }
-
     headrick02.poly.coeff <- function(skewness, kurtosis, gam3, gam4, control = list(trace = T, max.ntry = 10, obj.tol = 1e-10, n.valid.sol = 2)){
 
         gam1 <- skewness
@@ -502,12 +470,6 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 
     ##setting up
 
-    #   if (! file.exists("compiled.txt")){
-    # 	print("Error: compiled.txt not found. Please change the working directory and try again.")
-    # 	return
-    #   }
-
-
     if(!is.null(control[["seed"]])){
         set.seed(control[["seed"]])
     }
@@ -588,12 +550,6 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
     gam4_fit = rep(0,k)
     gam3_fit = rep(0,k)
 
-    # compiled = try(read.table("compiled.txt", header = T), TRUE)
-    # if(!is(compiled, 'try-error')){
-    #     colnames(compiled) <- c('g1', 'g2', 'tol', 'g3', 'g4', paste0('c', 0:5))
-    # } else {
-    #     matched <- matrix(0)[-1L,, drop=FALSE]
-    # }
     if(!is.null(coefs)){
         colnames(coefs) <- c('g1', 'g2', 'tol', 'g3', 'g4', paste0('c', 0:5))
         compiled <- coefs
@@ -647,19 +603,6 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
                     else if(j3==upper+1 && j==upper){
                         # input = "y"
                         stop("No solutions found after ", iterations," iterations")
-                        # input = readline()
-                        # while(input!="y" && input !="n" && input != "Y" && input != "N"){
-                        #     cat("Invalid input. Please try again.\n")
-                        #     input = readline()
-                        # }
-                        # if(input=="y" || input == "Y"){
-                        #     j3 = 1
-                        #     j = j + 1
-                        #     upper = upper + step_size
-                        # }
-                        # if(input == "n" || input == "N"){
-                        #     break
-                        # }
                     }
                 }
             }
@@ -670,7 +613,6 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
                 curr.coeff = poly.coeff$coeff
                 curr.obj = poly.coeff$min.obj
                 to_append = matrix(c(skewness[i],kurtosis[i],curr.obj,gam3_fit[i], gam4_fit[i], curr.coeff), nrow=1)
-                # write.table(to_append, "compiled.txt",append = T, row.names = F, col.names = F)
             }
 
             if (is.null(poly.coeff)){
@@ -708,7 +650,6 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
                 curr.coeff = poly.coeff$coeff
                 curr.obj = poly.coeff$min.obj
                 to_append = matrix(c(skewness[i],kurtosis[i],curr.obj,gam3_fit[i], gam4_fit[i], curr.coeff), nrow=1)
-                # write.table(to_append, "compiled.txt",append = T, row.names = F, col.names = F)
             }
         }
         }
@@ -767,14 +708,6 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
     c3 <- as.vector(coeff[4,], mode = "numeric")
     c4 <- as.vector(coeff[5,], mode = "numeric")
     c5 <- as.vector(coeff[6,], mode = "numeric")
-    # library("MASS")
-
-    # obs.mean = NULL
-    # obs.sd = NULL
-    # obs.skew = NULL
-    # obs.kurt = NULL
-    # obs.gam3 = NULL
-    # obs.gam4 = NULL
 
     for (replica in 1:replication){
         ## Generate intermediate normal distribution with desired intermediate correlation
@@ -792,52 +725,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
             Y[, i] <- mean[i] + sd[i]*(c0[i] + c1[i] * Z[, i] + c2[i] * Z2[, i] +
                                            c3[i] * Z3[, i] + c4[i] * Z4[, i] + c5[i] * Z5[, i])
         }
-
-        # obs.mean = rbind(obs.mean, apply(Y, 2, mean))
-        # obs.sd = rbind(obs.sd, apply(Y, 2, sd))
-        # obs.skew = rbind(obs.skew, apply(Y, 2, f_skew))
-        # obs.kurt = rbind(obs.kurt, apply(Y, 2, f_kurt))
-        # obs.gam3 = rbind(obs.gam3, apply(Y, 2, f_gamma3))
-        # obs.gam4 = rbind(obs.gam4, apply(Y, 2, f_gamma4))
     }
-
-
-    # obs.moments <- data.frame(mean = apply(obs.mean, 2, mean), sd = apply(obs.sd, 2, mean), skewness = apply(obs.skew, 2, mean),
-    #                           kurtosis = apply(obs.kurt, 2, mean), gam3 = apply(obs.gam3,2,mean), gam4 = apply(obs.gam4,2,mean))
-    # obs.moments.sd <- data.frame(mean = apply(obs.mean, 2, sd), sd = apply(obs.sd, 2, sd), skewness = apply(obs.skew, 2, sd),
-    #                              kurtosis = apply(obs.kurt, 2, sd), gam3 = apply(obs.gam3,2,sd), gam4 = apply(obs.gam4,2,sd))
-    # rownames(obs.moments) <- paste0("Y", 1:nrow(obs.moments))
-    # rownames(obs.moments.sd) <- paste0("Y", 1:nrow(obs.moments.sd))
-    #
-    # obs.corr <- cor(Y)
-    # rownames(obs.corr) <- paste0("Y", 1:nrow(obs.corr))
-    # colnames(obs.corr) <- paste0("Y ", 1:ncol(obs.corr))
-    #
-    # if (replication>1){
-    #     obs.corr = NULL
-    # }
-
-    # if (control[["trace"]]){
-    #     cat("\nDesired moments:\n")
-    #     print(desired.moments)
-    #
-    #     cat("\nSampling moments:\n")
-    #     print(obs.moments)
-    #
-    #     if (replication >1){
-    #         cat("\nSampling moment standard deviations:\n")
-    #         print(obs.moments.sd)
-    #     }
-    #
-    #     if(replication == 1){
-    #         cat("\nDesired correlation matrix:\n")
-    #         print(corr)
-    #
-    #         cat("\nSampling correlation matrix:\n")
-    #         print(obs.corr)
-    #     }
-    #     cat("\nTotal time elapsed ", as.numeric(Sys.time()-start, units="secs"), " seconds.\n", sep="")
-    # }
 
     if(return_coefs) return(data.frame(skew=skew, kurt=kurt, conv.tol=summary.poly.coeff[1L,],
                                        gam3=gam3, gam4=gam4, t(summary.poly.coeff)[,-1L]))
