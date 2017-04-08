@@ -7,7 +7,7 @@
 rHeadrick(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
   skew = rep(0, nrow(sigma)), kurt = rep(0, nrow(sigma)), gam3 = NaN,
   gam4 = NaN, return_coefs = FALSE, coefs = NULL, control = list(seed =
-  NULL, trace = FALSE, max.ntry = 5, obj.tol = 1e-10, n.valid.sol = 1))
+  NULL, trace = FALSE, max.ntry = 15, obj.tol = 1e-10, n.valid.sol = 1))
 }
 \arguments{
 \item{n}{sample size}

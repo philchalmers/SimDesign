@@ -282,7 +282,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
                       skew = rep(0, nrow(sigma)), kurt = rep(0, nrow(sigma)),
                       gam3 = NaN, gam4=NaN, return_coefs = FALSE, coefs = NULL,
                       control = list(seed = NULL, trace = FALSE,
-                                     max.ntry = 5, obj.tol = 1e-10, n.valid.sol = 1)){
+                                     max.ntry = 15, obj.tol = 1e-10, n.valid.sol = 1)){
 
     sd <- diag(sigma)
     corr <- cov2cor(sigma)
@@ -290,7 +290,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
     kurtosis <- kurt
     replication <- 1
 
-    headrick02.poly.coeff <- function(skewness, kurtosis, gam3, gam4, control = list(trace = T, max.ntry = 10, obj.tol = 1e-10, n.valid.sol = 2)){
+    headrick02.poly.coeff <- function(skewness, kurtosis, gam3, gam4, control){
 
         gam1 <- skewness
         gam2 <- kurtosis
@@ -408,8 +408,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 
             ntry <- ntry + 1
             start <- sapply(c(.5, .25, .1, .01, .001, .0001), function(x) rnorm(1, sd = x))
-            opt <- nlminb(start = start, objective = obj.fun,
-                          lower = -2, upper = 2,
+            opt <- nlminb(start = start, objective = obj.fun, lower = -2, upper = 2,
                           control = list(abs.tol = 1e-20, rel.tol = 1e-15, eval.max = 1e6, iter.max = 1e6),
                           gam = gam)
             if(opt$convergence == 0 && opt$objective <= control[["obj.tol"]]){
@@ -475,7 +474,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
             for(j in (i+1):k){
                 l <- l + 1
                 rho.Y <- corr[i, j]
-                opt <- nlminb(start = rho.Y, objective = obj.fun2, scale = 10, lower = -1, upper = 1,
+                opt <- nlminb(start = rho.Y, objective = obj.fun2, lower = -1, upper = 1,
                               control = list(abs.tol = 1e-20, eval.max = 1e5, iter.max = 1e3),
                               c0 = c0, c1 = c1, c2 = c2, c3 = c3, c4 = c4, c5 = c5, i = i, j = j, rho.Y = rho.Y)
                 if(opt$convergence == 0){
