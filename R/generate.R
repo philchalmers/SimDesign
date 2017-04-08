@@ -1,50 +1,73 @@
 #' Generate data with the g-and-h distribution
 #'
-#' The g-and-h distriubtion is of the form \code{G(p,g,h,a,b) = a + b * exp((g*Zp)-1)/g * exp((h*Zp^2)/2)},
-#' and can be used to generate several different types of univariate distribution functions.
+#' Generate non-normal distributions using the multivariate g-and-h distribution. Can be used to
+#' generate several different classes of univariate and multivariate distributions.
 #'
 #' @param n sample size
-#' @param g the g parameter which controls the skew of a distribution in terms of both direction
+#' @param g the g parameter(s) which control the skew of a distribution in terms of both direction
 #'   and magnitude
-#' @param h the h parameter which controls the tail weight or elongation of a distribution and
+#' @param h the h parameter(s) which control the tail weight or elongation of a distribution and
 #'   is positively related with kurtosis
-#' @param a location parameter
-#' @param b scale parameter (must be positive)
+#' @param mean a vector of k elements for the mean of the variables
+#' @param sigma desired k x k covariance matrix between bivariate non-normal variables
 #'
 #' @author Phil Chalmers
 #' @export
 #' @examples
 #'
 #' set.seed(1)
-#' norm <- rgh(10000,1e-5,0)
+#'
+#' # univariate
+#' norm <- rmgh(10000,1e-5,0)
 #' hist(norm)
 #'
-#' skew <- rgh(10000,1/2,0)
+#' skew <- rmgh(10000,1/2,0)
 #' hist(skew)
 #'
-#' neg_skew_platykurtic <- rgh(10000,-1,-1/2)
+#' neg_skew_platykurtic <- rmgh(10000,-1,-1/2)
 #' hist(neg_skew_platykurtic)
 #'
-rgh <- function(n, g, h, a=0, b=1) {
-    stopifnot(b >= 0)
-    qgh <- function(q, g, h, a, b) {
-        Zp <- qnorm(q)
-        ret <- if(g == 0) a + b*Zp
-        else a + b * (exp(g * Zp) - 1) / g * exp((h * Zp^2 / 2))
-        ret
+#' # multivariate
+#' sigma <- matrix(c(2,1,1,4), 2)
+#' mean <- c(-1, 1)
+#' twovar <- rmgh(10000, c(-1/2, 1/2), c(0,0),
+#'     mean=mean, sigma=sigma)
+#' hist(twovar[,1])
+#' hist(twovar[,2])
+#' plot(twovar)
+#'
+rmgh <- function(n, g, h, mean = rep(0, length(g)), sigma = diag(length(mean))) {
+    stopifnot(!missing(n))
+    if(length(sigma) == 1L) sigma <- as.matrix(sigma)
+    stopifnot(length(g) == length(h) && length(g) == length(mean))
+    stopifnot(is.matrix(sigma))
+    if (!isSymmetric(sigma, tol = sqrt(.Machine$double.eps),
+                     check.attributes = FALSE)) {
+        stop("sigma must be a symmetric matrix")
     }
-    q <- runif(n)
-    qgh(q, g, h, a, b)
+    qgh <- function(q, g, h, mean, csigma) {
+        gh <- sapply(1L:length(g), function(ind, q, g, h){
+            ret <- if(g[ind] == 0) q[,ind]
+            else (exp(g[ind] * q[,ind]) - 1) / g[ind] *
+                exp((h[ind] * q[,ind]^2 / 2))
+            ret
+        }, q=q, g=g, h=h)
+        t(csigma %*% t(gh) + mean)
+    }
+    q <- matrix(rnorm(n*ncol(sigma)), ncol=ncol(sigma))
+    csigma <- t(chol(sigma))
+    qgh(q, g, h, mean, csigma)
 }
 
-#' Generate Non-normal Distributions with Vale & Maurelli's (1983) method
+#' Generate non-normal data with Vale & Maurelli's (1983) method
 #'
-#' Generate multivariate non-normal distributions using the third-order method described
+#' Generate multivariate non-normal distributions using the third-order polynomial method described
 #' by Vale & Maurelli (1983). If only a single variable is generated then this function
 #' is equivalent to the method described by Fleishman (1978).
 #'
-#' This function is primarily a wrapper for the code written by Cengiz Zopluoglu (last edited April 20, 2011)
-#' with some slight modifications.
+#' This function is loosly based on the code written by Cengiz Zopluoglu (last edited April 20, 2011).
+#' However, the optimization for solving the polynomial coefficients and the correlation parameters
+#' have been improved significantly, and now errors will be thrown when the roots cannot be found.
 #'
 #' @param n sample size
 #' @param mean a vector of k elements for the mean of the variables
@@ -67,7 +90,7 @@ rgh <- function(n, g, h, a=0, b=1) {
 #' set.seed(1)
 #'
 #' # univariate with skew
-#' nonnormal <- rValeMaurelli(10000, mean=10, sigma=5, skew=1)
+#' nonnormal <- rValeMaurelli(10000, mean=10, sigma=5, skew=1, kurt=3)
 #' # psych::describe(nonnormal)
 #'
 #' # multivariate with skew and kurtosis
@@ -99,20 +122,15 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
     stopifnot(ncol(sigma) == length(kurt))
     sds <- sqrt(diag(sigma))
     cor <- cov2cor(sigma)
-	#Internal Function to compute the a,b,c,d for a variable given the skewness and
-	#kurtosis. Use Newton-Raphson Iteration with a Jacobian matrix to solve the system of
-	#non-linear equations. Equation 2,3, and 4 in Vale&Maurelli(1983)
     k <- ncol(cor)
-	tol=.00001
-	constant <- function(sk,ku,start){ #Start Internal Function 1
-		#sk , desired skewness
-		#ku , desired kurtosis
-		#start, starting values for the iteratin, based on Fleishman(1978) using c(1,0,0)
-		#is reasonable
-		start=c(1,0,0)
-		max.iter <- 500
+    for (i in 1:k){
+        if (kurt[i] <= skew[i]^2 - 2){
+            stop("Error: the ", i," th component of kurtosis is not bigger than skewness squared minus 2.\n")
+        }
+    }
+	constant <- function(sk,ku,start){
 		F <- function(x){
-			F <- matrix(0,nrow=3)
+			F <- numeric(3)
 			b=x[1]
 			c=x[2]
 			d=x[3]
@@ -121,38 +139,14 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 			F[3]=24*(b*d+c^2*(1+b^2+28*b*d)+d^2*(12+48*b*d+141*c^2+225*d^2))-ku
 			F
 		}
-		J <- function(x){
-			b=x[1]
-			c=x[2]
-			d=x[3]
-			j=matrix(0,ncol=3,nrow=3)
-			j[1,1]= 2*b+6*d
-			j[1,2]= 4*c
-			j[1,3]= 6*b+30*d
-			j[2,1]= 4*b*c+48*c*d
-			j[2,2]= 2*b^2+48*b*d+210*d^2+4
-			j[2,3]= 48*b*c+420*c*d
-			j[3,1]=24*d+48*c^2*b
-			j[3,2]=48*c+48*c*b^2+1344*c*b*d+6768*c*d^2
-			j[3,3]=24*b+672*c^2*b+576*d+3456*b*d^2+6768*d*c^2+21600*d^3
-			j
+		obj.fun <- function(par){
+		    sum(F(par)^2)
 		}
-		x0 <- start
-		fx <- F(x0)
-		jx <- J(x0)
-		d <- solve(J(x0))%*%F(x0)
-		iter <- 0
-		d=det(J(x0))
-		if (identical(all.equal(d,0),TRUE))
-		{cat("Jacobian has no inverse. Try a different initial point.","\n")
-			break}
-		while((abs(d)> tol) && (iter < max.iter)) {
-			x0 <- x0-solve(J(x0))%*%F(x0)
-			d <- solve(J(x0))%*%F(x0)
-			fx <- F(x0)
-			jx <- J(x0)
-			iter <- iter+1
-		}
+		opt <- nlminb(start = start, objective = obj.fun,
+		              control = list(abs.tol = 1e-20, rel.tol = 1e-15, eval.max = 1e6, iter.max = 1e6))
+		if(opt$converge != 0 || opt$objective > 1e-5)
+		    stop('optimizer could not find suitable solution for c0, c1, and c2')
+        x0 <- opt$par
 		x0
 	} #End internal function 1
 	#Compute the constants a,b,c, and d for each variable with a desired skewness and
@@ -162,36 +156,24 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 		constants[i,2:4]=t(constant(skew[i],kurt[i],start=c(1,0,0)))
 		constants[i,1]=-(constants[i,3])
 	}
-	#Internal Function to solve the polynomial function to find the intermediate
-	#correlation between two normal variables for a given desired correlation between two
-	#non-normal variables and constants a,b,c,d Use Newton-Raphson iteration to
-	#approximate the root
 	solve.p12 <- function(r12,a1,a2,b1,b2,c1,c2,d1,d2) { #Start Internal Function 2
-		max.iter=500
-		start=.5
 		ftn <- function(p12) {
-			a <-((b1*b2+3*b1*d2+3*d1*b2+9*d1*d2)*p12)+((2*c1*c2)*p12^2)+((6*d1*d2)*p12^3)-r12
-			b <-(b1*b2+3*b1*d2+3*d1*b2+9*d1*d2)+((4*c1*c2)*p12)+((12*d1*d2)*p12^2)
-			c(a,b)
+			((b1*b2+3*b1*d2+3*d1*b2+9*d1*d2)*p12)+((2*c1*c2)*p12^2)+((6*d1*d2)*p12^3)-r12
 		}
-		p12 <- start
-		fx <- ftn(p12)
-		iter <- 0
-		while((abs(fx[1]) > tol) && (iter < max.iter)) {
-			p12 <- p12-fx[1]/fx[2]
-			fx <- ftn(p12)
-			iter <- iter+1
-		}
+		root <- uniroot(ftn, c(-1, 1), check.conv = TRUE)
+		p12 <- root$root
 		p12
 	} #End Internal Function 2
 	#Compute the intermediate intercorrelation matrix required for normal variables
 	#These normal variables are used to construct non-normal variables
 	inter <- matrix(0,k,k)
 	for(i in 1:k) {
-		for(j in 1:k) {
+		for(j in i:k) {
+		    if(i == j) next
 			inter[i,j]=solve.p12(cor[i,j],constants[i,1],constants[j,1],constants[i,2],constants[j,2],
 			                     constants[i,3],constants[j,3],
 								 constants[i,4],constants[j,4])
+			inter[j, i] <- inter[i,j]
 		}
 	}
 	diag(inter) <- 1
@@ -217,12 +199,12 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 	nonnormal
 }
 
-#' Generate Non-normal Distributions with Headrick's (2002) method
+#' Generate non-normal data with Headrick's (2002) method
 #'
-#' Generate multivariate non-normal distributions using the fifth-order method described by Headrick (2002).
+#' Generate multivariate non-normal distributions using the fifth-order polynomial method described by Headrick (2002).
 #'
 #' This function is primarily a wrapper for the code written by Oscar L. Olvera Astivia (last edited Feb 26, 2015)
-#' with some slight modifications.
+#' with some slight modifications (including better starting values for the Newton optimizer).
 #'
 #' @param n sample size
 #' @param mean a vector of k elements for the mean of the variables
@@ -235,7 +217,7 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 #' @param coefs (optional) supply previously estimated coefficients? This is useful when there must be multiple
 #'   data sets drawn and will avoid repetitive computations. Must be the object returned after passing
 #'   \code{return_coefs = TRUE}
-#' @param control a list of contol parameters when locating the polynomial coefficients
+#' @param control a list of control parameters when locating the polynomial coefficients
 #'
 #' @references
 #'
@@ -452,9 +434,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
                 60*c3[i]*c5[j]*x^3 + 600*c5[i]*c5[j]*x^3 + 24*c4[i]*c4[j]*x^4 +
                 120*c5[i]*c5[j]*x^5 +
                 c2[i]*(c0[j] + c2[j] + 3*c4[j] + 2*c2[j]*x^2 + 12*c4[j]*x^2)
-            obj <- eq^2
-            obj
-
+            eq
         }
 
         k <- ncol(poly.coeff)
@@ -474,17 +454,11 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
             for(j in (i+1):k){
                 l <- l + 1
                 rho.Y <- corr[i, j]
-                opt <- nlminb(start = rho.Y, objective = obj.fun2, lower = -1, upper = 1,
-                              control = list(abs.tol = 1e-20, eval.max = 1e5, iter.max = 1e3),
-                              c0 = c0, c1 = c1, c2 = c2, c3 = c3, c4 = c4, c5 = c5, i = i, j = j, rho.Y = rho.Y)
-                if(opt$convergence == 0){
-                    inter.corr[i, j] <- opt$par
-                    inter.corr[j, i] <- opt$par
-                    obj[i, j] <- opt$objective
-                }else{
-                    stop("error in solving intermediate correlation")
-                }
-
+                opt <- uniroot(obj.fun2, interval=c(-1, 1), c0 = c0, c1 = c1, c2 = c2, c3 = c3, c4 = c4, c5 = c5,
+                                i = i, j = j, rho.Y = rho.Y, check.conv = TRUE)
+                inter.corr[i, j] <- opt$root
+                inter.corr[j, i] <- opt$root
+                obj[i, j] <- opt$f.root
             }
         }
 

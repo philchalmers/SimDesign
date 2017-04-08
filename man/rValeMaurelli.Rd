@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate.R
 \name{rValeMaurelli}
 \alias{rValeMaurelli}
-\title{Generate Non-normal Distributions with Vale & Maurelli's (1983) method}
+\title{Generate non-normal data with Vale & Maurelli's (1983) method}
 \usage{
 rValeMaurelli(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
   skew = rep(0, nrow(sigma)), kurt = rep(0, nrow(sigma)))
@@ -19,20 +19,21 @@ rValeMaurelli(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 \item{kurt}{a vector of k elements for the kurtosis of the variables}
 }
 \description{
-Generate multivariate non-normal distributions using the third-order method described
+Generate multivariate non-normal distributions using the third-order polynomial method described
 by Vale & Maurelli (1983). If only a single variable is generated then this function
 is equivalent to the method described by Fleishman (1978).
 }
 \details{
-This function is primarily a wrapper for the code written by Cengiz Zopluoglu (last edited April 20, 2011)
-with some slight modifications.
+This function is loosly based on the code written by Cengiz Zopluoglu (last edited April 20, 2011).
+However, the optimization for solving the polynomial coefficients and the correlation parameters
+have been improved significantly, and now errors will be thrown when the roots cannot be found.
 }
 \examples{
 
 set.seed(1)
 
 # univariate with skew
-nonnormal <- rValeMaurelli(10000, mean=10, sigma=5, skew=1)
+nonnormal <- rValeMaurelli(10000, mean=10, sigma=5, skew=1, kurt=3)
 # psych::describe(nonnormal)
 
 # multivariate with skew and kurtosis

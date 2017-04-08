@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate.R
 \name{rHeadrick}
 \alias{rHeadrick}
-\title{Generate Non-normal Distributions with Headrick's (2002) method}
+\title{Generate non-normal data with Headrick's (2002) method}
 \usage{
 rHeadrick(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
   skew = rep(0, nrow(sigma)), kurt = rep(0, nrow(sigma)), gam3 = NaN,
@@ -30,14 +30,14 @@ rHeadrick(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 data sets drawn and will avoid repetitive computations. Must be the object returned after passing
 \code{return_coefs = TRUE}}
 
-\item{control}{a list of contol parameters when locating the polynomial coefficients}
+\item{control}{a list of control parameters when locating the polynomial coefficients}
 }
 \description{
-Generate multivariate non-normal distributions using the fifth-order method described by Headrick (2002).
+Generate multivariate non-normal distributions using the fifth-order polynomial method described by Headrick (2002).
 }
 \details{
 This function is primarily a wrapper for the code written by Oscar L. Olvera Astivia (last edited Feb 26, 2015)
-with some slight modifications.
+with some slight modifications (including better starting values for the Newton optimizer).
 }
 \examples{
 
