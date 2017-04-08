@@ -24,7 +24,7 @@ by Vale & Maurelli (1983). If only a single variable is generated then this func
 is equivalent to the method described by Fleishman (1978).
 }
 \details{
-This function is loosly based on the code written by Cengiz Zopluoglu (last edited April 20, 2011).
+This function is loosely based on the code written by Cengiz Zopluoglu (last edited April 20, 2011).
 However, the optimization for solving the polynomial coefficients and the correlation parameters
 have been improved significantly, and now errors will be thrown when the roots cannot be found.
 }
