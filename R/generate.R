@@ -268,6 +268,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 
     sd <- diag(sigma)
     corr <- cov2cor(sigma)
+    chol_corr <- t(chol(corr))
     skewness <- skew
     kurtosis <- kurt
     replication <- 1
@@ -711,7 +712,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
     for (replica in 1:replication){
         ## Generate intermediate normal distribution with desired intermediate correlation
 
-        Z <- MASS::mvrnorm(n, mu = rep(0, k), Sigma = inter.corr)
+        Z <- t(chol_corr %*% t(matrix(rnorm(n*k), ncol=k)))
         Z2 <- Z^2
         Z3 <- Z^3
         Z4 <- Z^4

@@ -18,7 +18,6 @@ Imports:
     parallel,
     plyr,
     pbapply (>= 1.3-0),
-    MASS,
     stats
 Suggests:
     knitr,
