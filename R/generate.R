@@ -1,3 +1,42 @@
+#' Generate data with the g-and-h distribution
+#'
+#' The g-and-h distriubtion is of the form \code{G(p,g,h,a,b) = a + b * exp((g*Zp)-1)/g * exp((h*Zp^2)/2)},
+#' and can be used to generate several different types of univariate distribution functions.
+#'
+#' @param n sample size
+#' @param g the g parameter which controls the skew of a distribution in terms of both direction
+#'   and magnitude
+#' @param h the h parameter which controls the tail weight or elongation of a distribution and
+#'   is positively related with kurtosis
+#' @param a location parameter
+#' @param b scale parameter (must be positive)
+#'
+#' @author Phil Chalmers
+#' @export
+#' @examples
+#'
+#' set.seed(1)
+#' norm <- rgh(10000,1e-5,0)
+#' hist(norm)
+#'
+#' skew <- rgh(10000,1/2,0)
+#' hist(skew)
+#'
+#' neg_skew_platykurtic <- rgh(10000,-1,-1/2)
+#' hist(neg_skew_platykurtic)
+#'
+rgh <- function(n, g, h, a=0, b=1) {
+    stopifnot(b >= 0)
+    qgh <- function(q, g, h, a, b) {
+        Zp <- qnorm(q)
+        ret <- if(g == 0) a + b*Zp
+        else a + b * (exp(g * Zp) - 1) / g * exp((h * Zp^2 / 2))
+        ret
+    }
+    q <- runif(n)
+    qgh(q, g, h, a, b)
+}
+
 #' Generate Non-normal Distributions with Vale & Maurelli's (1983) method
 #'
 #' Generate multivariate non-normal distributions using the third-order method described
