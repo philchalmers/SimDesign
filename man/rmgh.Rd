@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate.R
 \name{rmgh}
 \alias{rmgh}
-\title{Generate data with the g-and-h distribution}
+\title{Generate data with the multivariate g-and-h distribution}
 \usage{
 rmgh(n, g, h, mean = rep(0, length(g)), sigma = diag(length(mean)))
 }

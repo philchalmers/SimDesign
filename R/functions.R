@@ -1,8 +1,9 @@
 #' Generate data
 #'
 #' Generate data from a single row in the \code{design} input (see \code{\link{runSimulation}}). R contains
-#' numerous approaches to generate data, some of which are contained in the base package, however the majority
-#' can be found in external packages. See CRAN's list of possible distributions here:
+#' numerous approaches to generate data, some of which are contained in the base package, as well
+#' as in \code{SimDesign} (e.g., \code{\link{rmgh}}, \code{\link{rValeMaurelli}}, \code{\link{rHeadrick}}).
+#' However the majority can be found in external packages. See CRAN's list of possible distributions here:
 #' \url{https://CRAN.R-project.org/view=Distributions}
 #'
 #' @param condition a single row from the \code{design} input (as a \code{data.frame}), indicating the
@@ -16,7 +17,8 @@
 #'
 #' @aliases Generate
 #'
-#' @seealso \code{\link{add_missing}}, \code{\link{Attach}}
+#' @seealso \code{\link{add_missing}}, \code{\link{Attach}},
+#'   \code{\link{rmgh}}, \code{\link{rValeMaurelli}}, \code{\link{rHeadrick}}
 #'
 #' @examples
 #' \dontrun{

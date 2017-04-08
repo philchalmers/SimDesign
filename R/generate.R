@@ -1,4 +1,4 @@
-#' Generate data with the g-and-h distribution
+#' Generate data with the multivariate g-and-h distribution
 #'
 #' Generate non-normal distributions using the multivariate g-and-h distribution. Can be used to
 #' generate several different classes of univariate and multivariate distributions.
