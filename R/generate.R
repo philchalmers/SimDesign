@@ -143,7 +143,7 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 		    sum(F(par)^2)
 		}
 		opt <- nlminb(start = start, objective = obj.fun,
-		              control = list(abs.tol = 1e-20, rel.tol = 1e-15, eval.max = 1e6, iter.max = 1e6))
+		              control = list(abs.tol = 1e-10, rel.tol = 1e-10, eval.max = 1e6, iter.max = 1e6))
 		if(opt$converge != 0 || opt$objective > 1e-5)
 		    stop('optimizer could not find suitable solution for c0, c1, and c2')
         x0 <- opt$par
@@ -392,7 +392,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
             ntry <- ntry + 1
             start <- sapply(c(.5, .25, .1, .01, .001, .0001), function(x) rnorm(1, sd = x))
             opt <- nlminb(start = start, objective = obj.fun, lower = -2, upper = 2,
-                          control = list(abs.tol = 1e-20, rel.tol = 1e-15, eval.max = 1e6, iter.max = 1e6),
+                          control = list(abs.tol = 1e-10, rel.tol = 1e-10, eval.max = 1e6, iter.max = 1e6),
                           gam = gam)
             if(opt$convergence == 0 && opt$objective <= control[["obj.tol"]]){
                 cnt <- cnt + 1
