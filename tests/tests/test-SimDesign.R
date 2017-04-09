@@ -240,6 +240,7 @@ test_that('SimDesign', {
     mycompute <- function(condition, dat, fixed_objects = NULL){
         if(sample(c(FALSE, TRUE), 1)) log(-1)
         if(sample(c(FALSE, TRUE), 1)) log(-2)
+        if(sample(c(FALSE, TRUE), 1)) warning('Manual warning')
         c(ret = 1)
     }
     results <- runSimulation(Design, replications = 1, packages = 'mvtnorm',

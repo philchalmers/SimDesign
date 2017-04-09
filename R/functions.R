@@ -256,6 +256,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                 paste0('Warning in ', paste0(deparse(warn[[i]]$call), collapse = ''),
                        ' : ', warn[[i]]$message)
             }, warn=Warnings)
+            Warnings <- gsub('Warning in analyse(dat = simlist, condition = condition, fixed_objects = fixed_objects) : ',
+                 replacement = '', Warnings, fixed = TRUE)
         }
         if(any(is.na(res))){
             NA_names <- names(res)[is.na(res)]
@@ -270,7 +272,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             if(length(try_error) == max_errors){
                 res[1L] <-
                     gsub('Error in analyse\\(dat = simlist, condition = condition, fixed_objects = fixed_objects) : \\n  ',
-                         replacement = 'Error : ', res[1L])
+                         replacement = '', res[1L])
                 stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
                             ' consecutive errors. \n\nLast error message was: \n\n  ', res[1L]), call.=FALSE)
             }
