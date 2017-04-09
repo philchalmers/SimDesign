@@ -10,6 +10,7 @@ clean:
 	$(RM) -r source/*_cache/;
 	$(RM) -r source/*_files/;
 	$(RM) -r source/figure/;
+	$(RM) -r source/SimDesign*/;
 	$(RM) source/*.md;
 	$(RM) source/*.txt;
 
