@@ -65,10 +65,6 @@ rmgh <- function(n, g, h, mean = rep(0, length(g)), sigma = diag(length(mean))) 
 #' by Vale & Maurelli (1983). If only a single variable is generated then this function
 #' is equivalent to the method described by Fleishman (1978).
 #'
-#' This function is loosely based on the code written by Cengiz Zopluoglu (last edited April 20, 2011).
-#' However, the optimization for solving the polynomial coefficients and the correlation parameters
-#' have been improved significantly, and now errors will be thrown when the roots cannot be found.
-#'
 #' @param n sample size
 #' @param mean a vector of k elements for the mean of the variables
 #' @param sigma desired k x k covariance matrix between bivariate non-normal variables
@@ -82,7 +78,8 @@ rmgh <- function(n, g, h, mean = rep(0, length(g)), sigma = diag(length(mean))) 
 #'
 #' Vale, C. & Maurelli, V. (1983). Simulating multivariate nonnormal distributions.
 #' \emph{Psychometrika, 48}(3), 465-471.
-#' @author Cengiz Zopluoglu and Phil Chalmers
+#'
+#' @author Phil Chalmers
 #' @aliases rValeMaurelli
 #' @export
 #' @examples
@@ -122,6 +119,7 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
     stopifnot(ncol(sigma) == length(kurt))
     sds <- sqrt(diag(sigma))
     cor <- cov2cor(sigma)
+    chol_corr <- t(chol(cor))
     k <- ncol(cor)
     for (i in 1:k){
         if (kurt[i] <= skew[i]^2 - 2){
@@ -131,12 +129,12 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 	constant <- function(sk,ku,start){
 		F <- function(x){
 			F <- numeric(3)
-			b=x[1]
-			c=x[2]
-			d=x[3]
-			F[1]= b^2+6*b*d+2*c^2+15*d^2-1
-			F[2]= 2*c*(b^2+24*b*d+105*d^2+2)-sk
-			F[3]=24*(b*d+c^2*(1+b^2+28*b*d)+d^2*(12+48*b*d+141*c^2+225*d^2))-ku
+			b <- x[1]
+			c <- x[2]
+			d <- x[3]
+			F[1] <- b^2+6*b*d+2*c^2+15*d^2-1
+			F[2] <- 2*c*(b^2+24*b*d+105*d^2+2)-sk
+			F[3] <- 24*(b*d+c^2*(1+b^2+28*b*d)+d^2*(12+48*b*d+141*c^2+225*d^2))-ku
 			F
 		}
 		obj.fun <- function(par){
@@ -148,13 +146,11 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 		    stop('optimizer could not find suitable solution for c0, c1, and c2')
         x0 <- opt$par
 		x0
-	} #End internal function 1
-	#Compute the constants a,b,c, and d for each variable with a desired skewness and
-	#kurtosis
-	constants <- matrix(nrow=k,ncol=4)
+	}
+	constants <- matrix(nrow=k, ncol=4)
 	for(i in 1:k) {
-		constants[i,2:4]=t(constant(skew[i],kurt[i],start=c(1,0,0)))
-		constants[i,1]=-(constants[i,3])
+		constants[i,2:4] <- t(constant(skew[i], kurt[i], start=c(1,0,0)))
+		constants[i,1] <- -(constants[i,3])
 	}
 	solve.p12 <- function(r12,a1,a2,b1,b2,c1,c2,d1,d2) { #Start Internal Function 2
 		ftn <- function(p12) {
@@ -163,40 +159,29 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 		root <- uniroot(ftn, c(-1, 1), check.conv = TRUE)
 		p12 <- root$root
 		p12
-	} #End Internal Function 2
-	#Compute the intermediate intercorrelation matrix required for normal variables
-	#These normal variables are used to construct non-normal variables
-	inter <- matrix(0,k,k)
-	for(i in 1:k) {
+	}
+	inter <- matrix(0, k, k)
+	for(i in 1L:k) {
 		for(j in i:k) {
 		    if(i == j) next
-			inter[i,j]=solve.p12(cor[i,j],constants[i,1],constants[j,1],constants[i,2],constants[j,2],
-			                     constants[i,3],constants[j,3],
-								 constants[i,4],constants[j,4])
+			inter[i,j] <- solve.p12(cor[i,j],constants[i,1],constants[j,1],constants[i,2],constants[j,2],
+			                        constants[i,3],constants[j,3],
+			                        constants[i,4],constants[j,4])
 			inter[j, i] <- inter[i,j]
 		}
 	}
-	diag(inter) <- 1
-	#Compute the multivariate normal variables based on the intermediate intercorrelation
-	#matrix
-	#Eigen decomposition of correlation matrix
-	U <- eigen(inter)$vectors
-	L <- eigen(inter)$values
-	b <- U%*%diag(sqrt(L))
-	#Creating independent multivariate normal variables
-	normal <- matrix(nrow=n,ncol=k)
-	for(i in 1:k) { normal[,i]=rnorm(n,0,1) }
-	#Creating correlated multivariate normal variables
-	d <- as.data.frame(normal%*%t(b))
-	#Creating correlated non-normal multivariate variables from correlated multivariate
-	#normal variables using constants a,b,c, and d
-	nonnormal <- as.data.frame(matrix(nrow=n,ncol=k))
+	Z <- t(chol_corr %*% t(matrix(rnorm(n*k), ncol=k)))
+	Z2 <- Z^2
+	Z3 <- Z^3
+
+	## Generate multivariate distribution with desired property
+	Y <- matrix(0, nrow = n, ncol = k)
 	for(i in 1:k) {
-		nonnormal[,i]=constants[i,1]+
-			constants[i,2]*d[,i]+constants[i,3]*d[,i]^2+constants[i,4]*d[,i]^3
+		Y[ ,i] <- constants[i,1] + constants[i,2]*Z[,i] +
+		    constants[i,3]*Z2[,i] + constants[i,4]*Z3[,i]
 	}
-	nonnormal <- t(t(nonnormal) * sds + mean)
-	nonnormal
+	Y <- t(t(Y) * sds + mean)
+	Y
 }
 
 #' Generate non-normal data with Headrick's (2002) method
@@ -204,7 +189,8 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 #' Generate multivariate non-normal distributions using the fifth-order polynomial method described by Headrick (2002).
 #'
 #' This function is primarily a wrapper for the code written by Oscar L. Olvera Astivia (last edited Feb 26, 2015)
-#' with some slight modifications (including better starting values for the Newton optimizer).
+#' with some modifications (e.g., better starting values for the Newton optimizer, passing previously saved
+#' coefs, etc).
 #'
 #' @param n sample size
 #' @param mean a vector of k elements for the mean of the variables
@@ -271,7 +257,6 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
     chol_corr <- t(chol(corr))
     skewness <- skew
     kurtosis <- kurt
-    replication <- 1
 
     headrick02.poly.coeff <- function(skewness, kurtosis, gam3, gam4, control){
 
@@ -387,10 +372,10 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
         OPT <- list()
         ntry <- 0
         cnt <- 0
+        start <- c(1, numeric(5))
         while(ntry+1 < control[["max.ntry"]]){
 
             ntry <- ntry + 1
-            start <- sapply(c(.5, .25, .1, .01, .001, .0001), function(x) rnorm(1, sd = x))
             opt <- nlminb(start = start, objective = obj.fun, lower = -2, upper = 2,
                           control = list(abs.tol = 1e-10, rel.tol = 1e-10, eval.max = 1e6, iter.max = 1e6),
                           gam = gam)
@@ -400,9 +385,11 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
             }
 
 
-            if(length(OPT) >= control[["n.valid.sol"]] || (opt$objective <= min(1e-15, control[["obj.tol"]]) && opt$convergence == 0)){
+            if(length(OPT) >= control[["n.valid.sol"]] ||
+               (opt$objective <= control[["obj.tol"]] && opt$convergence == 0)){
                 break
             }
+            start <- sapply(c(.5, .25, .1, .01, .001, .0001), function(x) rnorm(1, sd = x))
         }
 
         if(length(OPT) == 0){
@@ -495,7 +482,6 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 
     k <- nrow(corr)
 
-
     if (is.nan(gam3[1]) && !is.nan(gam4[1])){
         stop("Error: Please provide both gam3 and gam4, or neither.")
     }
@@ -504,17 +490,17 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
         stop("Error: Please provide both gam3 and gam4, or neither.")
     }
 
-    default_gam3 = F
-    default_gam4 = F
+    default_gam3 = FALSE
+    default_gam4 = FALSE
 
     if(is.nan(gam3[1])){
         gam3 = pmax(skewness, kurtosis)
-        default_gam3 = T
+        default_gam3 = TRUE
     }
 
     if(is.nan(gam4[1])){
         gam4 = pmax(skewness,kurtosis)^2
-        default_gam4 = T
+        default_gam4 = TRUE
     }
 
     len <- c(length(mean), length(sd), length(skewness), length(kurtosis), length(gam3), length(gam4))
@@ -540,7 +526,6 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
             stop("Error: the ", i," th component of kurtosis is not bigger than skewness squared minus 2.\n")
         }
     }
-
 
     ##Solve for coefficients c0-c5 using equation 18, 22, B1-B4
 
@@ -568,7 +553,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 
         if (default_gam3 && default_gam4){
 
-            if (nrow(matched)>0){
+            if (nrow(matched) > 0){
             	if (control[["trace"]]){
             		cat("Configuration found in compiled list. Compiled coefficients will be used. \n")
             	}
@@ -595,7 +580,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
                     if (control[["trace"]]){
                         cat("Trial ",iterations," unsuccessful. Time spent: ", as.numeric(Sys.time()-tic, units="secs") , " seconds.\n", sep = "")
                     }
-                    j3<-j3+1
+                    j3 <- j3+1
                     if(j3==upper+1 && j<upper){
                         j3 <- 1
                         j <- j+1
@@ -709,25 +694,21 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
     c4 <- as.vector(coeff[5,], mode = "numeric")
     c5 <- as.vector(coeff[6,], mode = "numeric")
 
-    for (replica in 1:replication){
-        ## Generate intermediate normal distribution with desired intermediate correlation
+    ## Generate intermediate normal distribution with desired intermediate correlation
+    Z <- t(chol_corr %*% t(matrix(rnorm(n*k), ncol=k)))
+    Z2 <- Z^2
+    Z3 <- Z^3
+    Z4 <- Z^4
+    Z5 <- Z^5
 
-        Z <- t(chol_corr %*% t(matrix(rnorm(n*k), ncol=k)))
-        Z2 <- Z^2
-        Z3 <- Z^3
-        Z4 <- Z^4
-        Z5 <- Z^5
-
-        ## Generate multivariate distribution with desired property
-
-        Y <- matrix(0, nrow = n, ncol = k)
-        for(i in 1:k){
-            Y[, i] <- mean[i] + sd[i]*(c0[i] + c1[i] * Z[, i] + c2[i] * Z2[, i] +
-                                           c3[i] * Z3[, i] + c4[i] * Z4[, i] + c5[i] * Z5[, i])
-        }
+    ## Generate multivariate distribution with desired property
+    Y <- matrix(0, nrow = n, ncol = k)
+    for(i in 1:k){
+        Y[, i] <- mean[i] + sd[i]*(c0[i] + c1[i] * Z[, i] + c2[i] * Z2[, i] +
+                                       c3[i] * Z3[, i] + c4[i] * Z4[, i] + c5[i] * Z5[, i])
     }
 
-    if(return_coefs) return(data.frame(skew=skew, kurt=kurt, conv.tol=summary.poly.coeff[1L,],
-                                       gam3=gam3, gam4=gam4, t(summary.poly.coeff)[,-1L]))
+    if(return_coefs) Y <- data.frame(skew=skew, kurt=kurt, conv.tol=summary.poly.coeff[1L,],
+                                       gam3=gam3, gam4=gam4, t(summary.poly.coeff)[,-1L])
     Y
 }

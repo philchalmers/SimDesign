@@ -23,11 +23,6 @@ Generate multivariate non-normal distributions using the third-order polynomial 
 by Vale & Maurelli (1983). If only a single variable is generated then this function
 is equivalent to the method described by Fleishman (1978).
 }
-\details{
-This function is loosely based on the code written by Cengiz Zopluoglu (last edited April 20, 2011).
-However, the optimization for solving the polynomial coefficients and the correlation parameters
-have been improved significantly, and now errors will be thrown when the roots cannot be found.
-}
 \examples{
 
 set.seed(1)
@@ -58,5 +53,5 @@ Vale, C. & Maurelli, V. (1983). Simulating multivariate nonnormal distributions.
 \emph{Psychometrika, 48}(3), 465-471.
 }
 \author{
-Cengiz Zopluoglu and Phil Chalmers
+Phil Chalmers
 }

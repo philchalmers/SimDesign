@@ -37,7 +37,8 @@ Generate multivariate non-normal distributions using the fifth-order polynomial 
 }
 \details{
 This function is primarily a wrapper for the code written by Oscar L. Olvera Astivia (last edited Feb 26, 2015)
-with some slight modifications (including better starting values for the Newton optimizer).
+with some modifications (e.g., better starting values for the Newton optimizer, passing previously saved
+coefs, etc).
 }
 \examples{
 
