@@ -106,7 +106,7 @@ SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
 
     #functions
     Functions <- dots[c('generate', 'analyse', 'summarise')]
-    for(i in 1L:3L){
+    for(i in seq_len(3L)){
         if(!is.null(Functions[[i]])){
             output <- capture.output(print(Functions[[i]]))
             output <- paste0(output, '\n', collapse='')
@@ -124,7 +124,7 @@ SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
     cat('  sidebarLayout(\n')
     cat('    sidebarPanel(\n')
     cat('      numericInput("reps", "Number of replications:", 0),\n\n')
-    for(i in 1L:ncol(design))
+    for(i in seq_len(ncol(design)))
         UI_CONDITION(design[,i], name=nms[i])
     cat('      submitButton("Run Simulation")\n')
     cat('    ),\n\n')
@@ -140,7 +140,7 @@ SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
     cat(sprintf('    df <- data.frame(%s, stringsAsFactors = FALSE)\n',
                 paste0('input$', nms, collapse=',\n      ')))
     cat(sprintf('    names(df) <- c(%s)\n', paste0('"', nms, '"', collapse=',\n      ')))
-    cat('    for(i in 1L:length(df)) if(design_is_numeric[i]) df[,i] <- as.numeric(df[,i])\n')
+    cat('    for(i in seq_len(length(df))) if(design_is_numeric[i]) df[,i] <- as.numeric(df[,i])\n')
     cat('    df\n')
     cat('  })\n\n')
     cat('  output$results <- renderTable({\n')

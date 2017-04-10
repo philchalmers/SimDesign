@@ -161,7 +161,7 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 		p12
 	}
 	inter <- matrix(0, k, k)
-	for(i in 1L:k) {
+	for(i in seq_len(k)) {
 		for(j in i:k) {
 		    if(i == j) next
 			inter[i,j] <- solve.p12(cor[i,j],constants[i,1],constants[j,1],constants[i,2],constants[j,2],

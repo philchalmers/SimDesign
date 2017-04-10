@@ -95,7 +95,7 @@ SimAnova <- function(formula, dat, subset = NULL, rates = TRUE){
         ys <- attributes(dat)$design_names$sim
         ret <- vector('list', length(ys))
         names(ret) <- ys
-        for(i in 1L:length(ys)){
+        for(i in seq_len(length(ys))){
             f2 <- update.formula(formula, as.formula(paste0(ys[[i]], ' ~ .')))
             ret[[i]] <- SimAnova(formula=f2, dat=dat, rates=rates)
         }

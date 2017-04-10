@@ -92,7 +92,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     warnings <- if(length(warnings)){
         table(warnings[!is.na(warnings)])
     } else table(warnings)
-    for(i in 1L:length(results))
+    for(i in seq_len(length(results)))
         attr(results[[i]], 'try_errors') <- attr(results[[i]], 'warnings') <- NULL
 
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)

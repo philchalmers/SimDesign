@@ -65,7 +65,7 @@ SimResults <- function(results, which, wd = getwd()){
     file_nums <- as.numeric(gsub('.rds', '', file_nums))
     files <- data.frame(file_nums, files, stringsAsFactors = FALSE)
     ret <- vector('list', length(which))
-    for(i in 1L:length(which)){
+    for(i in seq_len(length(which))){
         pick <- which(files$file_num == which[i])
         ret[[i]] <- readRDS(files$files[pick])
     }

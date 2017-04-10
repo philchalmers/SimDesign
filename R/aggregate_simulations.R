@@ -92,7 +92,7 @@ aggregate_simulations <- function(files = NULL, dirs = NULL, results_dirname = '
     stopifnot(all(sapply(readin, function(x) length(unique(x$REPLICATIONS)) == 1L)))
     weights <- weights / sum(weights)
     message('Aggregating ', length(filenames), ' simulation files.')
-    for(i in 1L:length(filenames)){
+    for(i in seq_len(length(filenames))){
         tmp <- stats::na.omit(match(nms, names(errors[[i]])))
         if(length(tmp) > 0L){
             try_errors[,match(nms, names(try_errors))] <- errors[[i]][ ,tmp] +
