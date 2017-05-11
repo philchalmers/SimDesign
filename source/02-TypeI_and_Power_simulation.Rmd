@@ -19,7 +19,7 @@ options(digits = 3)
 Determine the Type I error and Power rates for a t-test when different groups sizes are used. The independent t-test has three main assumptions:
 
 - independence of observations,
-- normality of residuals (equivalent to normality of the data within each group), and
+- the sampling distribution of the mean difference statistic is normal (which necessarily occurs when the data within the respective groups are normally distributed, but also will asymptotically occur as $N\rightarrow\infty$ because of the central limit theorem), and
 - homogeneity of variance.
 
 The Welch test, on the other hand, only requires the first two assumptions. In the simulation below, we will also explore how robust the independent t-test is to this violation, and compare how well the Welch test behaves under the same conditions. 
