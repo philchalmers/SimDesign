@@ -350,6 +350,10 @@ test_that('SimDesign', {
     expect_that(length(attributes(F2)$design_names$design), equals(2))
     expect_that(length(attributes(F2)$design_names$sim), equals(2))
 
+    F3 <- subset(Final, subset = standard_deviations == 1)
+    expect_is(F3, 'SimDesign')
+    expect_that(nrow(F3), equals(4))
+
     # dummy run with no design
     Generate <- function(condition, fixed_objects = NULL)
         rnorm(100, mean = 10)
