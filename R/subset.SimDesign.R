@@ -14,6 +14,7 @@
 #'
 #' @examples
 #' \dontrun{
+#' data("BF_sim")
 #' x <- subset(BF_sim, select = 1:6)
 #' attributes(x)
 #' }
@@ -22,23 +23,9 @@ subset.SimDesign <- function(x, subset, select, drop = FALSE, ...){
     design_names <- attributes(x)$design_names
     extra_info <- attributes(x)$extra_info
 
-    r <- if (missing(subset))
-        rep_len(TRUE, nrow(x))
-    else {
-        e <- substitute(subset)
-        r <- eval(e, x, parent.frame())
-        if (!is.logical(r))
-            stop("'subset' must be logical")
-        r & !is.na(r)
-    }
-    vars <- if (missing(select))
-        TRUE
-    else {
-        nl <- as.list(seq_along(x))
-        names(nl) <- names(x)
-        eval(substitute(select), nl, parent.frame())
-    }
-    x <- x[r, vars, drop = drop]
+    x <- subset.data.frame(x, subset = subset,
+                           select = select,
+                           drop = drop, ...)
 
     # Assign previous attributes
     attributes(x)$design_names <- design_names
@@ -50,6 +37,5 @@ subset.SimDesign <- function(x, subset, select, drop = FALSE, ...){
 
     is.sim <- sapply(x, is.numeric)
     attributes(x)$design_names$sim <- names(is.sim[is.sim == TRUE])
-
     x
 }

@@ -337,6 +337,19 @@ test_that('SimDesign', {
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
+    # Maintain attributes after subsetting results
+    F1 <- subset(Final, select=1:4) # 3 design factors, 1 simulation result
+    expect_is(F1, 'SimDesign')
+    expect_that(length(F1), equals(4))
+    expect_that(length(attributes(F1)$design_names$design), equals(3))
+    expect_that(length(attributes(F1)$design_names$sim), equals(1))
+
+    F2 <- subset(Final, select = c(1,2,4,5)) # 2 design factors, 2 simulation results
+    expect_is(F2, 'SimDesign')
+    expect_that(length(F2), equals(4))
+    expect_that(length(attributes(F2)$design_names$design), equals(2))
+    expect_that(length(attributes(F2)$design_names$sim), equals(2))
+
     # dummy run with no design
     Generate <- function(condition, fixed_objects = NULL)
         rnorm(100, mean = 10)

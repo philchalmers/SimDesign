@@ -20,6 +20,7 @@ produced during a simulation.
 }
 \examples{
 \dontrun{
+data("BF_sim")
 x <- subset(BF_sim, select = 1:6)
 attributes(x)
 }
