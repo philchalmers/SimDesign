@@ -8,6 +8,14 @@
 }
 \arguments{
 \item{x}{A \code{data.frame} object, of class \code{SimDesign}.}
+
+\item{subset}{A logical expression indicating elements or rows to keep.}
+
+\item{select}{An expression, indicating columns to select from a dataframe.}
+
+\item{drop}{Additional arguments passed on to [ indexing operator.}
+
+\item{...}{Further arguments to be passed to or from other methods.}
 }
 \value{
 A \code{data.frame} object.
@@ -23,6 +31,13 @@ produced during a simulation.
 data("BF_sim")
 x <- subset(BF_sim, select = 1:6)
 attributes(x)
+
+x1 <- subset(BF_sim, select = var_ratio:alpha.05.Jacknife)
+attributes(x1)
+
+x2 <- subset(BF_sim, var_ratio == 1)
+dim(BF_sim)
+dim(x2)
 }
 
 }
