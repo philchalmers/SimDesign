@@ -20,6 +20,11 @@
 #' @param subset an optional argument to be passed to \code{\link{subset}} with the same name. Used to
 #'   subset the results object while preserving the associated attributes
 #'
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
+#'
 #' @aliases SimAnova
 #' @export
 #'

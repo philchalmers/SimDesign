@@ -19,6 +19,10 @@
 #'
 #' @seealso \code{\link{add_missing}}, \code{\link{Attach}},
 #'   \code{\link{rmgh}}, \code{\link{rValeMaurelli}}, \code{\link{rHeadrick}}
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
 #'
 #' @examples
 #' \dontrun{
@@ -102,6 +106,10 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #'   objects will be wrapped into suitable \code{list} objects
 #'
 #' @seealso \code{\link{stop}}
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
 #' @aliases Analyse
 #'
 #' @examples
@@ -156,6 +164,10 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #'
 #' @seealso \code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}},
 #'   \code{\link{ECR}}, \code{\link{MAE}}
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
 #'
 #' @examples
 #' \dontrun{
@@ -194,6 +206,10 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 #
 # @return must return a named list with the 'result' and 'parameters' elements for the
 #   computational results and \code{parameters} from \code{\link{Generate}}
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
 #
 # @aliases main
 #

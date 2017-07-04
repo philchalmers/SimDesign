@@ -90,3 +90,8 @@ ymiss <- add_missing(y, fun=fun)
 tail(cbind(y, ymiss), 10)
 
 }
+\references{
+Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+\doi{10.1080/10691898.2016.1246953}
+}
