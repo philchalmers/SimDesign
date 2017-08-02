@@ -168,7 +168,7 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
         ret <- sqrt(colMeans(t(t(log(estimate + 1)) - log(parameter + 1))^2))
     } else if(type != 'RMSE')
         stop('type argument not supported')
-    if(!MSE) ret <- ret^2
+    if(MSE) ret <- ret^2
     ret
 }
 
