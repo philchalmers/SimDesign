@@ -724,7 +724,7 @@ ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation
 \references{
 Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-\doi{10.1080/10691898.2016.1246953}
+\url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 }
 \seealso{
 \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},

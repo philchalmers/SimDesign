@@ -24,7 +24,7 @@
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 NULL
 
 
@@ -45,7 +45,7 @@ NULL
 #'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 #' @keywords data
 #' @examples
 #'
@@ -72,10 +72,10 @@ NULL
 #' @references
 #' Brown, M. B. and Forsythe, A. B. (1974). Robust tests for the equality of variances.
 #'   \emph{Journal of the American Statistical Association, 69}(346), 364--367.
-#' 
+#'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 #' @keywords data
 #' @examples
 #'

@@ -32,19 +32,22 @@ data("BF_sim")
 x <- subset(BF_sim, select = 1:6)
 attributes(x)
 
-x1 <- subset(BF_sim, select = var_ratio:alpha.05.Jacknife)
+x1 <- subset(BF_sim, select = c(1,2,4,5,10))
 attributes(x1)
 
-x2 <- subset(BF_sim, var_ratio == 1)
+x2 <- subset(BF_sim, select = var_ratio:alpha.05.Jacknife)
+attributes(x2)
+
+x3 <- subset(BF_sim, var_ratio == 1)
 dim(BF_sim)
-dim(x2)
+dim(x3)
 }
 
 }
 \references{
 Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-\doi{10.1080/10691898.2016.1246953}
+\url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 }
 \seealso{
 \code{\link{SimDesign}}

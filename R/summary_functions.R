@@ -24,7 +24,7 @@
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 #'
 #' @aliases bias
 #'
@@ -109,7 +109,7 @@ bias <- function(estimate, parameter = NULL, relative = FALSE){
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 #'
 #' @export RMSE
 #'
@@ -202,7 +202,7 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 #'
 #' @seealso RMSE
 #'
@@ -273,7 +273,7 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 #'
 #' @export RE
 #'
@@ -323,7 +323,7 @@ RE <- function(x, MSE = FALSE){
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 #'
 #' @export RD
 #'
@@ -377,7 +377,7 @@ RD <- function(est, pop, as.vector = TRUE){
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 #'
 #' @examples
 #'
@@ -436,7 +436,7 @@ EDR <- function(p, alpha = .05){
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 #'
 #' @export ECR
 #'
