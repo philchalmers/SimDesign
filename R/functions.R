@@ -224,7 +224,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors,
                     save_generate_data, save_generate_data_dirname,
-                    save_seeds, save_seeds_dirname, load_seed, packages = NULL){
+                    save_seeds, save_seeds_dirname, load_seed, warnings_as_errors, packages = NULL){
 
     load_packages(packages)
     try_error <- character()
@@ -274,6 +274,11 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             }, warn=Warnings)
             Warnings <- gsub('Warning in analyse(dat = simlist, condition = condition, fixed_objects = fixed_objects) : ',
                  replacement = '', Warnings, fixed = TRUE)
+            if(warnings_as_errors){
+                res <- try(stop(Warnings[1L]), TRUE)
+                res[1L] <- Warnings[1L]
+                Warnings <- NULL
+            }
         }
         if(any(is.na(res))){
             NA_names <- names(res)[is.na(res)]

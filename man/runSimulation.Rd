@@ -11,8 +11,8 @@
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, packages = NULL, filename = "SimDesign-results",
-  save = FALSE, save_results = FALSE, save_seeds = FALSE,
-  load_seed = NULL, seed = NULL, parallel = FALSE,
+  warnings_as_errors = FALSE, save = FALSE, save_results = FALSE,
+  save_seeds = FALSE, load_seed = NULL, seed = NULL, parallel = FALSE,
   ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
   max_errors = 50, as.factor = TRUE, save_generate_data = FALSE,
   save_details = list(), edit = "none", progress = FALSE,
@@ -71,6 +71,9 @@ when \code{save = TRUE}. If the same file name already exists in the working
 directly at the time of saving then a new
 file will be generated instead and a warning will be thrown. This helps to avoid accidentally overwriting
 existing files. Default is \code{'SimDesign-results'}}
+
+\item{warnings_as_errors}{logical; treat warning messages as errors during the simulation? Default is FALSE,
+therefore warnings are only collected and not used to restart the data generation step}
 
 \item{save}{logical; save the simulation state and final results to the hard-drive? This is useful
 for simulations which require an extended amount of time. When \code{TRUE}, a temp file

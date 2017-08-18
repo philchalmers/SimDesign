@@ -247,6 +247,10 @@ test_that('SimDesign', {
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
                   parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_true(any(grepl('WARNING:', names(results))))
+    results <- runSimulation(Design, replications = 1, packages = 'mvtnorm', max_errors = Inf,
+                             generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                             parallel=FALSE, save=FALSE, verbose = FALSE, warnings_as_errors=TRUE)
+    expect_true(any(grepl('ERROR:', names(results))))
     results <- runSimulation(Design, replications = 1, packages = 'mvtnorm',
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
                   parallel=TRUE, ncores=2L, save=FALSE, verbose = FALSE)

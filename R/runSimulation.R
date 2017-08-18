@@ -281,6 +281,9 @@
 #'   Alternatively, functions can be called explicitly without attaching the package with the \code{::} operator
 #'   (e.g., \code{mvtnorm::rmvnorm()})
 #'
+#' @param warnings_as_errors logical; treat warning messages as errors during the simulation? Default is FALSE,
+#'   therefore warnings are only collected and not used to restart the data generation step
+#'
 #' @param as.factor logical; coerce the input \code{design} elements into \code{factor}s when the
 #'   simulation is complete? If the columns inputs are numeric then these will be treated
 #'   as \code{ordered}. Default is \code{TRUE}
@@ -676,6 +679,7 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL,
                           filename = 'SimDesign-results',
+                          warnings_as_errors = FALSE,
                           save = FALSE, save_results = FALSE, save_seeds = FALSE,
                           load_seed = NULL, seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
@@ -906,6 +910,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          save_seeds_dirname=save_seeds_dirname,
                                          max_errors=max_errors, packages=packages,
                                          load_seed=load_seed, export_funs=export_funs,
+                                         warnings_as_errors=warnings_as_errors,
                                          progress=progress)
             time1 <- proc.time()[3]
             stored_time <- stored_time + (time1 - time0)
@@ -933,6 +938,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                               save_seeds_dirname=save_seeds_dirname,
                                                               max_errors=max_errors, packages=packages,
                                                               load_seed=load_seed, export_funs=export_funs,
+                                                              warnings_as_errors=warnings_as_errors,
                                                               progress=progress)),
                                            check.names=FALSE)
             time1 <- proc.time()[3]
