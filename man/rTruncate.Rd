@@ -41,7 +41,6 @@ In simulations it is often useful to draw numbers from truncated distributions
 rather than across the full theoretical range. For instance,
 }
 \examples{
-\dontrun{
 
 # n = 1000 truncated normal vector between [-2,3]
 vec <- rTruncate(1000, rnorm, c(-2,3))
@@ -62,7 +61,6 @@ summary(mat)
 vec <- rTruncate(1000, rchisq, c(2,6), df = 4)
 summary(vec)
 
-}
 }
 \references{
 Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte

@@ -39,7 +39,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #'
 #' # n = 1000 truncated normal vector between [-2,3]
 #' vec <- rTruncate(1000, rnorm, c(-2,3))
@@ -60,7 +59,6 @@
 #' vec <- rTruncate(1000, rchisq, c(2,6), df = 4)
 #' summary(vec)
 #'
-#' }
 rTruncate <- function(n, rfun, range, ..., redraws = 100){
     ret <- rfun(n, ...)
     stopifnot(is.numeric(ret))
