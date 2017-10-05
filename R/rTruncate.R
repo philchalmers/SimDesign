@@ -90,6 +90,6 @@ rTruncate <- function(n, rfun, range, ..., redraws = 100){
     }
     if(draw == redraws)
         stop("Truncate() redrew data too often and could not find suitable data",
-             .call=FALSE)
+             call.=FALSE)
     ret
 }
