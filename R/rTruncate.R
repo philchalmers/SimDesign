@@ -5,7 +5,14 @@
 #' are discarded and re-sampled until the desired criteria has been met.
 #'
 #' In simulations it is often useful to draw numbers from truncated distributions
-#' rather than across the full theoretical range. For instance,
+#' rather than across the full theoretical range. For instance, sampling parameters within
+#' the range [-4,4] from a normal distribution. The \code{rTruncate} function has been 
+#' designed to accept any sampling function, where the first argument is the number of
+#' values to sample, and will draw values iteratively until the number of values 
+#' within the specified bound are obtained. In situations where it is unlikely for the bounds
+#' to be located (e.g., sampling from a normal distribution where all values are within [-10,-6])
+#' then the sampling scheme will throw an error if too many re-sampling executions are required
+#' (default will stop if more that 100 calls to \code{rfun} are required). 
 #'
 #' @param n number of observations to generate. This should be the first argument passed
 #'   to \code{rfun}
