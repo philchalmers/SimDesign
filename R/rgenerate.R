@@ -723,7 +723,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
     Y
 }
 
-#' The Triangle Distribution
+#' Generate data with the triangle distribution
 #'
 #' Function generates data from the triangle distribution. Default draws data from a symmetric
 #' triangle distribution within the range [0,1].
@@ -768,4 +768,43 @@ rtriangle <- function(n, min = 0, max = 1, middle = (min+max)/2){
         ret
     })
     X
+}
+
+#' Generate data with the discrete uniform distribution
+#'
+#' Function generates data from the discrete uniform distribution.
+#' Default draws integer numbers uniformly within the range [1,100].
+#'
+#' @param n number of observations to generate
+#'
+#' @param min lowest possible integer number to be sampled. Default is 1
+#'
+#' @param max highest possible integer number to be sampled. Default is 100
+#'
+#' @return a numeric vector
+#'
+#' @seealso \code{\link{runSimulation}}
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
+#'
+#' @export
+#'
+#' @examples
+#'
+#' # symmetric values between [1,100]
+#' x <- rdunif(1000)
+#' hist(x, 15)
+#'
+#' # values between [50,80]
+#' x <- rdunif(1000, min=50, max=80)
+#' hist(x, 15)
+#'
+rdunif <- function(n, min = 1, max = 100){
+    min <- as.integer(min)
+    max <- as.integer(max)
+    stopifnot(min < max)
+    sample(min:max, n, prob = rep(1/(max -min + 1), (max -min + 1)),
+           replace = TRUE)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rgenerate.R
 \name{rtriangle}
 \alias{rtriangle}
-\title{The Triangle Distribution}
+\title{Generate data with the triangle distribution}
 \usage{
 rtriangle(n, min = 0, max = 1, middle = (min + max)/2)
 }
