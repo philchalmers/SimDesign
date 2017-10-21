@@ -24,7 +24,8 @@ Suggests:
     dplyr,
     ggplot2,
     shiny,
-    doMPI
+    doMPI,
+    copula
 License: GPL (>=2)
 LazyData: true
 URL: https://github.com/philchalmers/SimDesign,
