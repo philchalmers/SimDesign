@@ -6,13 +6,13 @@
 #'
 #' In simulations it is often useful to draw numbers from truncated distributions
 #' rather than across the full theoretical range. For instance, sampling parameters within
-#' the range [-4,4] from a normal distribution. The \code{rTruncate} function has been 
+#' the range [-4,4] from a normal distribution. The \code{rtruncate} function has been
 #' designed to accept any sampling function, where the first argument is the number of
-#' values to sample, and will draw values iteratively until the number of values 
+#' values to sample, and will draw values iteratively until the number of values
 #' within the specified bound are obtained. In situations where it is unlikely for the bounds
 #' to be located (e.g., sampling from a normal distribution where all values are within [-10,-6])
 #' then the sampling scheme will throw an error if too many re-sampling executions are required
-#' (default will stop if more that 100 calls to \code{rfun} are required). 
+#' (default will stop if more that 100 calls to \code{rfun} are required).
 #'
 #' @param n number of observations to generate. This should be the first argument passed
 #'   to \code{rfun}
@@ -48,25 +48,25 @@
 #' @examples
 #'
 #' # n = 1000 truncated normal vector between [-2,3]
-#' vec <- rTruncate(1000, rnorm, c(-2,3))
+#' vec <- rtruncate(1000, rnorm, c(-2,3))
 #' summary(vec)
 #'
 #' # truncated correlated multivariate normal between [-1,4]
-#' mat <- rTruncate(1000, mvtnorm::rmvnorm, c(-1,4),
+#' mat <- rtruncate(1000, mvtnorm::rmvnorm, c(-1,4),
 #'    sigma = matrix(c(2,1,1,1),2))
 #' summary(mat)
 #'
 #' # truncated correlated multivariate normal between [-1,4] for the
 #' #  first column and [0,3] for the second column
-#' mat <- rTruncate(1000, mvtnorm::rmvnorm, cbind(c(-1,4), c(0,3)),
+#' mat <- rtruncate(1000, mvtnorm::rmvnorm, cbind(c(-1,4), c(0,3)),
 #'    sigma = matrix(c(2,1,1,1),2))
 #' summary(mat)
 #'
 #' # truncated chi-square with df = 4 between [2,6]
-#' vec <- rTruncate(1000, rchisq, c(2,6), df = 4)
+#' vec <- rtruncate(1000, rchisq, c(2,6), df = 4)
 #' summary(vec)
 #'
-rTruncate <- function(n, rfun, range, ..., redraws = 100){
+rtruncate <- function(n, rfun, range, ..., redraws = 100){
     ret <- rfun(n, ...)
     stopifnot(is.numeric(ret))
     is_matrix <- is.matrix(ret)
@@ -89,7 +89,6 @@ rTruncate <- function(n, rfun, range, ..., redraws = 100){
         draw <- draw + 1L
     }
     if(draw == redraws)
-        stop("Truncate() redrew data too often and could not find suitable data",
-             call.=FALSE)
+        stop("rtruncate() redrew data too often and was terminated", call.=FALSE)
     ret
 }
