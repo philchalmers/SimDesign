@@ -427,6 +427,8 @@
 #'
 #' @export runSimulation
 #'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.

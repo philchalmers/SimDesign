@@ -57,5 +57,5 @@ Vale, C. & Maurelli, V. (1983). Simulating multivariate nonnormal distributions.
 \emph{Psychometrika, 48}(3), 465-471.
 }
 \author{
-Phil Chalmers
+Phil Chalmers \email{rphilip.chalmers@gmail.com}
 }

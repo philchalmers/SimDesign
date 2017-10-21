@@ -66,3 +66,6 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \seealso{
 \code{\link{runSimulation}}, \code{\link{Generate}}
 }
+\author{
+Phil Chalmers \email{rphilip.chalmers@gmail.com}
+}

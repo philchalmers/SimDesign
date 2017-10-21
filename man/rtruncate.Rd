@@ -54,13 +54,13 @@ vec <- rtruncate(1000, rnorm, c(-2,3))
 summary(vec)
 
 # truncated correlated multivariate normal between [-1,4]
-mat <- rtruncate(1000, mvtnorm::rmvnorm, c(-1,4),
+mat <- rtruncate(1000, rmvtnorm, c(-1,4),
    sigma = matrix(c(2,1,1,1),2))
 summary(mat)
 
 # truncated correlated multivariate normal between [-1,4] for the
 #  first column and [0,3] for the second column
-mat <- rtruncate(1000, mvtnorm::rmvnorm, cbind(c(-1,4), c(0,3)),
+mat <- rtruncate(1000, rmvtnorm, cbind(c(-1,4), c(0,3)),
    sigma = matrix(c(2,1,1,1),2))
 summary(mat)
 
@@ -76,4 +76,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 }
 \seealso{
 \code{\link{runSimulation}}
+}
+\author{
+Phil Chalmers \email{rphilip.chalmers@gmail.com}
 }

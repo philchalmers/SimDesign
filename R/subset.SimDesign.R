@@ -20,6 +20,8 @@
 #' @seealso \code{\link{SimDesign}}
 #' @export
 #'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
 #' @examples
 #' \dontrun{
 #' data("BF_sim")

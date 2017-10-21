@@ -26,6 +26,8 @@
 #'
 #' @export aggregate_simulations
 #'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
 #' @examples
 #' \dontrun{
 #'

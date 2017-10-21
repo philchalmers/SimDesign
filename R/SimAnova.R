@@ -25,6 +25,8 @@
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 #' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 #'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
 #' @aliases SimAnova
 #' @export
 #'

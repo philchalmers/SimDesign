@@ -83,5 +83,5 @@ Method to Generate Multivariate, Nonnormal Data for Simulation Purposes.
 \emph{Educational and Psychological Measurement, 75}, 541-567.
 }
 \author{
-Oscar L. Olvera Astivia and Phil Chalmers
+Oscar L. Olvera Astivia and Phil Chalmers \email{rphilip.chalmers@gmail.com}
 }

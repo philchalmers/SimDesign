@@ -734,3 +734,6 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
   \code{\link{SimFunctions}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
   \code{\link{aggregate_simulations}}, \code{\link{Attach}}, \code{\link{SimShiny}}
 }
+\author{
+Phil Chalmers \email{rphilip.chalmers@gmail.com}
+}

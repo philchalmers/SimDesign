@@ -44,6 +44,8 @@
 #'
 #' @export add_missing
 #'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
 #' @examples
 #'
 #' set.seed(1)

@@ -28,6 +28,8 @@
 #'
 #' @aliases bias
 #'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
 #' @export bias
 #'
 #' @examples
@@ -114,6 +116,8 @@ bias <- function(estimate, parameter = NULL, relative = FALSE){
 #' @export RMSE
 #'
 #' @seealso MAE
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
 #' @examples
 #'
@@ -206,6 +210,8 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
 #'
 #' @seealso RMSE
 #'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
 #' @examples
 #'
 #' pop <- 1
@@ -270,6 +276,8 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
 #'   values greater than 1 indicate worse efficiency
 #'
 #' @aliases RE
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
@@ -320,6 +328,9 @@ RE <- function(x, MSE = FALSE){
 #'   \code{as.vector} was used
 #'
 #' @aliases RD
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
@@ -370,6 +381,8 @@ RD <- function(est, pop, as.vector = TRUE){
 #'   is .05
 #'
 #' @aliases EDR
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
 #' @seealso \code{\link{ECR}}
 #'
@@ -439,6 +452,8 @@ EDR <- function(p, alpha = .05){
 #' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
 #'
 #' @export ECR
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
 #' @examples
 #'
