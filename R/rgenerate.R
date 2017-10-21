@@ -722,3 +722,50 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
                                        gam3=gam3, gam4=gam4, t(summary.poly.coeff)[,-1L])
     Y
 }
+
+#' The Triangle Distribution
+#'
+#' Function generates data from the triangle distribution. Default draws data from a symmetric
+#' triangle distribution within the range [0,1].
+#'
+#' @param n number of observations to generate
+#'
+#' @param min lower bound location. Default is 0
+#'
+#' @param max upper bound location. Default is 1
+#'
+#' @param middle middle location. Default is (min + max)/2
+#'
+#' @return a numeric vector
+#'
+#' @seealso \code{\link{runSimulation}}
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
+#'
+#' @export
+#'
+#' @examples
+#'
+#' # symmetric values between [0,1]
+#' x <- rtriangle(1000)
+#' hist(x, 15)
+#'
+#' # values between [0,2], completely negatively skewed
+#' x <- rtriangle(1000, max=2, middle=2)
+#' hist(x, 15)
+#'
+rtriangle <- function(n, min = 0, max = 1, middle = (min+max)/2){
+    stopifnot(min < max)
+    stopifnot(min <= middle && middle <= max)
+    Fc <- (middle - min) / (max - min)
+    U <- runif(n, min = 0, max = 1)
+    X <- sapply(U, function(u){
+        ret <- if(u < Fc)
+            min + sqrt(u * (max-min) * (middle - min))
+        else max - sqrt((1-u) * (max-min) * (max - middle))
+        ret
+    })
+    X
+}
