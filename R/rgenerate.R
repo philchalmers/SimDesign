@@ -723,98 +723,6 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
     Y
 }
 
-#' Generate data with the triangle distribution
-#'
-#' Function generates data from the triangle distribution. Default draws data from a symmetric
-#' triangle distribution within the range [0,1].
-#'
-#' @param n number of observations to generate
-#'
-#' @param min lower bound location. Default is 0
-#'
-#' @param max upper bound location. Default is 1
-#'
-#' @param middle middle location. Default is (min + max)/2
-#'
-#' @return a numeric vector
-#'
-#' @seealso \code{\link{runSimulation}}
-#' @references
-#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
-#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
-#'
-#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
-#'
-#' @export
-#'
-#' @examples
-#'
-#' # symmetric values between [0,1]
-#' x <- rtriangle(1000)
-#' hist(x, 15)
-#'
-#' # values between [0,2], completely negatively skewed
-#' x <- rtriangle(1000, max=2, middle=2)
-#' hist(x, 15)
-#'
-rtriangle <- function(n, min = 0, max = 1, middle = (min+max)/2){
-    stopifnot(!missing(n))
-    stopifnot(min < max)
-    stopifnot(min <= middle && middle <= max)
-    Fc <- (middle - min) / (max - min)
-    U <- runif(n, min = 0, max = 1)
-    X <- sapply(U, function(u){
-        ret <- if(u < Fc)
-            min + sqrt(u * (max-min) * (middle - min))
-        else max - sqrt((1-u) * (max-min) * (max - middle))
-        ret
-    })
-    X
-}
-
-#' Generate data with the discrete uniform distribution
-#'
-#' Function generates data from the discrete uniform distribution.
-#' Default draws integer numbers uniformly within the range [1,100].
-#'
-#' @param n number of observations to generate
-#'
-#' @param min lowest possible integer number to be sampled. Default is 1
-#'
-#' @param max highest possible integer number to be sampled. Default is 100
-#'
-#' @return a numeric vector
-#'
-#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
-#'
-#' @seealso \code{\link{runSimulation}}
-#' @references
-#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
-#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
-#'
-#' @export
-#'
-#' @examples
-#'
-#' # symmetric values between [1,100]
-#' x <- rdunif(1000)
-#' hist(x, 15)
-#'
-#' # values between [50,80]
-#' x <- rdunif(1000, min=50, max=80)
-#' hist(x, 15)
-#'
-rdunif <- function(n, min = 1, max = 100){
-    stopifnot(!missing(n))
-    min <- as.integer(min)
-    max <- as.integer(max)
-    stopifnot(min < max)
-    sample(min:max, n, prob = rep(1/(max -min + 1), (max -min + 1)),
-           replace = TRUE)
-}
-
 #' Generate data with the multivariate normal (i.e., Gaussian) distribution
 #'
 #' Function generates data from the multivariate normal distribution given some mean vector and/or
@@ -843,13 +751,13 @@ rdunif <- function(n, min = 1, max = 100){
 #' # random normal values with mean [5, 10] and variances [3,6], and covariance 2
 #' sigma <- matrix(c(3,2,2,6), 2, 2)
 #' mu <- c(5,10)
-#' x <- rmvtnorm(1000, mean = mu, sigma = sigma)
+#' x <- rmvnorm(1000, mean = mu, sigma = sigma)
 #' head(x)
 #' summary(x)
 #' plot(x[,1], x[,2])
 #'
 #'
-rmvtnorm <- function (n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)))
+rmvnorm <- function (n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)))
 {
     # code borrowed and modified from mvtnorm package, October 21, 2017
     if (!isSymmetric(sigma, tol = sqrt(.Machine$double.eps),
@@ -901,13 +809,13 @@ rmvtnorm <- function (n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)))
 #'
 #' # random t values given variances [3,6], covariance 2, and df = 15
 #' sigma <- matrix(c(3,2,2,6), 2, 2)
-#' x <- rmvT(1000, sigma = sigma, df = 15)
+#' x <- rmvt(1000, sigma = sigma, df = 15)
 #' head(x)
 #' summary(x)
 #' plot(x[,1], x[,2])
 #'
 #'
-rmvT <- function (n, sigma, df, delta = rep(0, nrow(sigma)),
+rmvt <- function (n, sigma, df, delta = rep(0, nrow(sigma)),
                   Kshirsagar = FALSE)
 {
     # code borrowed and modified from mvtnorm package, October 21, 2017
@@ -918,11 +826,11 @@ rmvT <- function (n, sigma, df, delta = rep(0, nrow(sigma)),
         stop("delta and sigma have non-conforming size")
     stopifnot(df >= 0)
     if (df == 0 || !is.finite(df))
-        return(rmvtnorm(n, mean = delta, sigma = sigma))
+        return(rmvnorm(n, mean = delta, sigma = sigma))
     ret <- if(Kshirsagar){
-        rmvtnorm(n, mean = delta, sigma = sigma) / sqrt(rchisq(n, df)/df)
+        rmvnorm(n, mean = delta, sigma = sigma) / sqrt(rchisq(n, df)/df)
     } else {
-        sims <- rmvtnorm(n, sigma = sigma) / sqrt(rchisq(n, df)/df)
+        sims <- rmvnorm(n, sigma = sigma) / sqrt(rchisq(n, df)/df)
         sweep(sims, 2, delta, "+")
     }
     ret

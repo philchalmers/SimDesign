@@ -25,7 +25,8 @@ Suggests:
     ggplot2,
     shiny,
     doMPI,
-    copula
+    copula,
+    extraDistr
 License: GPL (>=2)
 LazyData: true
 URL: https://github.com/philchalmers/SimDesign,
