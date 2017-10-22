@@ -1,7 +1,7 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
-sudo: true
+sudo: false
 cache: packages
 warnings_are_errors: true
 
@@ -18,11 +18,11 @@ before_install:
   - sudo apt-get install -y openmpi-common openmpi-bin libopenmpi-dev
 
 r_binary_packages:
-  - extraDistr
   - copula
 
 r_packages:
   - testthat
+  - extraDistr
 
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-build-vignettes --as-cran"
