@@ -11,7 +11,7 @@ rmvnorm(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)))
 
 \item{mean}{mean vector, default is \code{rep(0, length = ncol(sigma))}}
 
-\item{sigma}{covariance matrix, default is \code{diag(length(mean))}}
+\item{sigma}{positive definite covariance matrix, default is \code{diag(length(mean))}}
 }
 \value{
 a numeric matrix with columns equal to \code{length(mean)}

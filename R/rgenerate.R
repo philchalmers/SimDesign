@@ -732,7 +732,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 #'
 #' @param mean mean vector, default is \code{rep(0, length = ncol(sigma))}
 #'
-#' @param sigma covariance matrix, default is \code{diag(length(mean))}
+#' @param sigma positive definite covariance matrix, default is \code{diag(length(mean))}
 #'
 #' @return a numeric matrix with columns equal to \code{length(mean)}
 #'
@@ -782,7 +782,7 @@ rmvnorm <- function (n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)))
 #'
 #' @param n number of observations to generate
 #'
-#' @param sigma covariance matrix
+#' @param sigma positive definite covariance matrix
 #'
 #' @param df degrees of freedom. \code{df = 0} and \code{df = Inf}
 #'   corresponds to the multivariate normal distribution
@@ -793,7 +793,7 @@ rmvnorm <- function (n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)))
 #' @param Kshirsagar logical; triggers whether to generate data with non-centrality parameters
 #'   or to adjust the simulated data to the mode of the distribution. The default uses the mode
 #'
-#' @return a numeric matrix with columns equal to \code{length(mean)}
+#' @return a numeric matrix with columns equal to \code{ncol(sigma)}
 #'
 #' @seealso \code{\link{runSimulation}}
 #' @references
@@ -833,5 +833,50 @@ rmvt <- function (n, sigma, df, delta = rep(0, nrow(sigma)),
         sims <- rmvnorm(n, sigma = sigma) / sqrt(rchisq(n, df)/df)
         sweep(sims, 2, delta, "+")
     }
+    ret
+}
+
+#' Generate data with the inverse Wishart distribution
+#'
+#' Function generates data in the form of symmetric matrices from the inverse
+#' Wishart distribution given a covariance matrix and degrees of freedom.
+#'
+#' @param n number of matrix observations to generate. By default \code{n = 1}, which returns a single
+#'   symmetric matrix. If \code{n > 1} then a list of \code{n} symmetric matrices are returned instead
+#'
+#' @param sigma positive definite covariance matrix
+#'
+#' @param df degrees of freedom
+#'
+#' @return a numeric matrix with columns equal to \code{ncol(sigma)} when \code{n = 1}, or a list
+#'   of \code{n} matrices with the same properties
+#'
+#' @seealso \code{\link{runSimulation}}
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
+#' @export
+#'
+#' @examples
+#'
+#' # random inverse Wishart matrix given variances [3,6], covariance 2, and df=15
+#' sigma <- matrix(c(3,2,2,6), 2, 2)
+#' x <- rinvWishart(sigma = sigma, df = 15)
+#' x
+#'
+#' # list of matrices
+#' x <- rinvWishart(20, sigma = sigma, df = 15)
+#' x
+#'
+rinvWishart <- function(n = 1, df, sigma){
+    ret <- rWishart(n, df=df, Sigma = solve(sigma))
+    ret <- apply(ret, 3, solve)
+    ret <- lapply(1L:ncol(ret), function(ind, mats)
+        matrix(mats[,ind], ncol(sigma), ncol(sigma)), mats=ret)
+    if(n == 1L) ret <- ret[[1L]]
     ret
 }

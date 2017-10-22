@@ -9,7 +9,7 @@ rmvt(n, sigma, df, delta = rep(0, nrow(sigma)), Kshirsagar = FALSE)
 \arguments{
 \item{n}{number of observations to generate}
 
-\item{sigma}{covariance matrix}
+\item{sigma}{positive definite covariance matrix}
 
 \item{df}{degrees of freedom. \code{df = 0} and \code{df = Inf}
 corresponds to the multivariate normal distribution}
@@ -21,7 +21,7 @@ which specifies the either the modes (default) or non-centrality parameters}
 or to adjust the simulated data to the mode of the distribution. The default uses the mode}
 }
 \value{
-a numeric matrix with columns equal to \code{length(mean)}
+a numeric matrix with columns equal to \code{ncol(sigma)}
 }
 \description{
 Function generates data from the multivariate t distribution given a covariance matrix,
