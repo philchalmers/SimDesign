@@ -54,13 +54,13 @@
 #' summary(vec)
 #'
 #' # truncated correlated multivariate normal between [-1,4]
-#' mat <- rtruncate(1000, rmvtnorm, c(-1,4),
+#' mat <- rtruncate(1000, rmvnorm, c(-1,4),
 #'    sigma = matrix(c(2,1,1,1),2))
 #' summary(mat)
 #'
 #' # truncated correlated multivariate normal between [-1,4] for the
 #' #  first column and [0,3] for the second column
-#' mat <- rtruncate(1000, rmvtnorm, cbind(c(-1,4), c(0,3)),
+#' mat <- rtruncate(1000, rmvnorm, cbind(c(-1,4), c(0,3)),
 #'    sigma = matrix(c(2,1,1,1),2))
 #' summary(mat)
 #'
@@ -68,7 +68,7 @@
 #' vec <- rtruncate(1000, rchisq, c(2,6), df = 4)
 #' summary(vec)
 #'
-rtruncate <- function(n, rfun, range, ..., redraws = 100){
+rtruncate <- function(n, rfun, range, ..., redraws = 100L){
     ret <- rfun(n, ...)
     stopifnot(is.numeric(ret))
     is_matrix <- is.matrix(ret)

@@ -22,6 +22,7 @@ before_install:
 r_binary_packages:
   - testthat
   - extraDistr
+  - copula
 
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-build-vignettes --as-cran"
