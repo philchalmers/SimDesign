@@ -3,6 +3,12 @@
 language: R
 sudo: true
 cache: packages
+warnings_are_errors: true
+
+r:
+ - oldrel
+ - release
+ - devel
 
 notifications:
   email:
@@ -13,9 +19,12 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y openmpi-common openmpi-bin libopenmpi-dev
 
-r_packages:
+r_binary_packages:
   - testthat
   - extraDistr
+
+r_build_args: "--no-build-vignettes"
+r_check_args: "--no-build-vignettes --as-cran"
 
 script:
   - make install
