@@ -274,12 +274,12 @@
 #'   object will automatically set the \code{parallel} argument to \code{TRUE}
 #'
 #' @param packages a character vector of external packages to be used during the simulation (e.g.,
-#'   \code{c('MASS', 'mvtnorm', 'simsem')} ). Use this input when \code{parallel = TRUE} or
+#'   \code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when \code{parallel = TRUE} or
 #'   \code{MPI = TRUE} to use non-standard functions from additional packages,
 #'   otherwise the functions must be made available by using explicit
 #'   \code{\link{library}} or \code{\link{require}} calls within the provided simulation functions.
 #'   Alternatively, functions can be called explicitly without attaching the package with the \code{::} operator
-#'   (e.g., \code{mvtnorm::rmvnorm()})
+#'   (e.g., \code{extraDistr::rgumbel()})
 #'
 #' @param warnings_as_errors logical; treat warning messages as errors during the simulation? Default is FALSE,
 #'   therefore warnings are only collected and not used to restart the data generation step

@@ -216,7 +216,7 @@ test_that('SimDesign', {
         c(ret = 1)
     }
     mygenerate <- function(condition, fixed_objects = NULL){
-        rmvnorm(5, sigma = matrix(1))
+        rgumbel(5)
     }
     mycollect <- function(condition, results, fixed_objects = NULL) {
         colMeans(results)
@@ -227,10 +227,10 @@ test_that('SimDesign', {
     expect_error(runSimulation(Design, replications = 1, ncores=2,
                                generate=mygenerate, analyse=mycompute, summarise=mycollect,
                                parallel=TRUE, save=FALSE, verbose = FALSE))
-    out <- runSimulation(Design, replications = 1, packages = 'mvtnorm',
+    out <- runSimulation(Design, replications = 1, packages = 'extraDistr',
                          generate=mygenerate, analyse=mycompute, summarise=mycollect,
                          parallel=FALSE, save=FALSE, verbose = FALSE)
-    out2 <- runSimulation(Design, replications = 1, packages = 'mvtnorm',
+    out2 <- runSimulation(Design, replications = 1, packages = 'extraDistr',
                          generate=mygenerate, analyse=mycompute, summarise=mycollect,
                          parallel=TRUE, save=FALSE, verbose = FALSE)
     expect_is(out, 'SimDesign')
@@ -243,15 +243,15 @@ test_that('SimDesign', {
         if(sample(c(FALSE, TRUE), 1)) warning('Manual warning')
         c(ret = 1)
     }
-    results <- runSimulation(Design, replications = 1, packages = 'mvtnorm',
+    results <- runSimulation(Design, replications = 1, packages = 'extraDistr',
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
                   parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_true(any(grepl('WARNING:', names(results))))
-    results <- runSimulation(Design, replications = 1, packages = 'mvtnorm', max_errors = Inf,
+    results <- runSimulation(Design, replications = 1, packages = 'extraDistr', max_errors = Inf,
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save=FALSE, verbose = FALSE, warnings_as_errors=TRUE)
     expect_true(any(grepl('ERROR:', names(results))))
-    results <- runSimulation(Design, replications = 1, packages = 'mvtnorm',
+    results <- runSimulation(Design, replications = 1, packages = 'extraDistr',
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
                   parallel=TRUE, ncores=2L, save=FALSE, verbose = FALSE)
     expect_true(any(grepl('WARNING:', names(results))))
@@ -265,15 +265,15 @@ test_that('SimDesign', {
         c(ret = 1)
     }
     set.seed(1)
-    results <- runSimulation(Design, replications = 2, packages = 'mvtnorm',
+    results <- runSimulation(Design, replications = 2, packages = 'extraDistr',
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
                   parallel=FALSE, save_results = TRUE, verbose = FALSE,
                   save_details = list(save_results_dirname = 'dir1'))
-    results <- runSimulation(Design, replications = 2, packages = 'mvtnorm',
+    results <- runSimulation(Design, replications = 2, packages = 'extraDistr',
                   generate=mygenerate, analyse=mycompute2, summarise=mycollect,
                   parallel=FALSE, save_results = TRUE, verbose = FALSE,
                   save_details = list(save_results_dirname = 'dir2'))
-    results <- runSimulation(Design, replications = 2, packages = 'mvtnorm',
+    results <- runSimulation(Design, replications = 2, packages = 'extraDistr',
                              generate=mygenerate, analyse=mycompute3, summarise=mycollect,
                              parallel=FALSE, save_results = TRUE, verbose = FALSE,
                              save_details = list(save_results_dirname = 'dir3'))
@@ -289,11 +289,11 @@ test_that('SimDesign', {
     mycollect <- function(condition, results, fixed_objects = NULL) {
         c(ret=1)
     }
-    results <- runSimulation(Design, replications = 2, packages = 'mvtnorm',
+    results <- runSimulation(Design, replications = 2, packages = 'extraDistr',
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save_results = TRUE, verbose = FALSE,
                              save_details = list(save_results_dirname = 'dir1'))
-    results <- runSimulation(Design, replications = 2, packages = 'mvtnorm',
+    results <- runSimulation(Design, replications = 2, packages = 'extraDistr',
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save_results = TRUE, verbose = FALSE,
                              save_details = list(save_results_dirname = 'dir2'))
@@ -308,11 +308,11 @@ test_that('SimDesign', {
         ret
     }
 
-    results <- runSimulation(Design, replications = 10, packages = 'mvtnorm', seed=1:nrow(Design),
+    results <- runSimulation(Design, replications = 10, packages = 'extraDistr', seed=1:nrow(Design),
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_equal(names(results)[5], "ERROR: .Error : The following return NA/NaN and required redrawing: ret\n")
-    expect_equal(results[,5], c(NA, NA, NA, 2, 1, 3, NA, 2))
+    expect_equal(results[,5], c(1,2,1,1,2,4,1,NA))
 
     #data.frame test
     mysim <- function(condition, fixed_objects = NULL){

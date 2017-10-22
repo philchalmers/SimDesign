@@ -15,7 +15,7 @@ before_install:
 
 r_packages:
   - testthat
-  - mvtnorm
+  - extraDistr
 
 script:
   - make install

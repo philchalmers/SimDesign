@@ -59,12 +59,12 @@ that should be used across all conditions and replications (e.g., including a fi
 for linear regression), or simply control constant global elements such as sample size}
 
 \item{packages}{a character vector of external packages to be used during the simulation (e.g.,
-\code{c('MASS', 'mvtnorm', 'simsem')} ). Use this input when \code{parallel = TRUE} or
+\code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when \code{parallel = TRUE} or
 \code{MPI = TRUE} to use non-standard functions from additional packages,
 otherwise the functions must be made available by using explicit
 \code{\link{library}} or \code{\link{require}} calls within the provided simulation functions.
 Alternatively, functions can be called explicitly without attaching the package with the \code{::} operator
-(e.g., \code{mvtnorm::rmvnorm()})}
+(e.g., \code{extraDistr::rgumbel()})}
 
 \item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to
 when \code{save = TRUE}. If the same file name already exists in the working
