@@ -17,12 +17,10 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y openmpi-common openmpi-bin libopenmpi-dev
 
-r_binary_packages:
-  - copula
-
 r_packages:
   - testthat
   - extraDistr
+  - copula
 
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-build-vignettes --as-cran"
