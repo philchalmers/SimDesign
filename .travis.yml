@@ -15,7 +15,7 @@ notifications:
 
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y openmpi-common openmpi-bin libopenmpi-dev
+  - sudo apt-get install -y openmpi-common openmpi-bin libopenmpi-dev libgsl-dev
 
 r_packages:
   - testthat
