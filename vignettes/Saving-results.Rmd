@@ -149,7 +149,7 @@ row1 <- SimResults(results, 1)
 str(row1)
 ```
 
-The `SimResults()` function has the added benifit that it can read in all simulation 
+The `SimResults()` function has the added benefit that it can read in all simulation 
 results at once, or simply hand pick which ones should be inspected. For example,
 here is how all the saved results can be inspected:
 
@@ -167,7 +167,7 @@ SimClean(results = TRUE)
 
 # My recommendations
 
-My general recommendation when running simulations is to use the `save = TRUE` flag when your simulation is finally ready for run time, and to supply a `filename = 'some_simulation_name'` (particularly for simulations which take a long time to finish). As the aggregation of the simulation results is often what you are interested in then this approach will ensure that the results are stored in a succint manner for later analyses. 
+My general recommendation when running simulations is to use the `save = TRUE` flag when your simulation is finally ready for run time, and to supply a `filename = 'some_simulation_name'` (particularly for simulations which take a long time to finish). As the aggregation of the simulation results is often what you are interested in then this approach will ensure that the results are stored in a succinct manner for later analyses. 
 
 As well, passing `save_results = TRUE` will save all the results from the input `Analysis()` function which was passed to `Summarise()`, as well as save a final file to your hard-drive (but with the built-in safety feature that it will never over-write previously saved files). Hence, you'll be able to inspect all the elements manually if the need were to arise (e.g., to inspect `ECR(res1, alpha = .01)` instead of the `ECR(results, alpha = .05)` which may have only been used in the `Summarise()` function). However, do this **only** if your hard-drive can store all of the analysis results; if you are not careful, you could easily fill up your entire drive with the analysis results alone.
 
