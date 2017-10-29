@@ -47,12 +47,20 @@ myfun(1)
 
 This behavior is indeed a bit strange, but it's one of R's quirks. Unfortunately, when running code in parallel across different cores these objects *will not be visible*, and therefore must be exported using other methods (e.g., in the `parallel` package this is done with `clusterExport()`). 
 
-```{r}
+```{r eval = FALSE}
 library(parallel)
 cl <- makeCluster(2)
 res <- try(parSapply(cl=cl, 1:4, myfun))
 res
 ```
+
+```{r echo=FALSE}
+library(parallel)
+cl <- makeCluster(2)
+cat("Error in checkForRemoteErrors(val) : 
+  2 nodes produced errors; first error: object 'obj1' not found")
+```
+
 
 Exporting the objects to the cluster fixes the issue. 
 
@@ -62,6 +70,10 @@ parSapply(cl=cl, 1:4, myfun)
 ```
 
 The same reasoning above applies to functions defined in the R workspace as well, including functions defined within external R packages. Hence, in order to use functions from other packages they must either be explicitly loaded with `require()` or `library()` within the distributed code, or referenced via their Namespace with the `::` operator (e.g., `mvtnorm::rmvtnorm()`).
+
+```{r echo=FALSE}
+stopCluster(cl)
+```
 
 # Exporting objects example 
 
@@ -111,12 +123,10 @@ results <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixe
 results
 ```
 
-By placing objects in a list and passing this to `fixed_objects`, the objects are safely made available to all relevant functions. Furthermore, running this code in parallel is also valid. Remember, this is only required for R objects NOT user-defined functions.
+By placing objects in a list and passing this to `fixed_objects`, the objects are safely made available to all relevant functions. Furthermore, running this code in parallel will also be valid as a consequence (see below). Remember, this is only required for R **objects**, NOT user-defined functions!
 
-```{r}
+```{r eval=FALSE}
 results <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
                          parallel = TRUE)
-results
 ```
-

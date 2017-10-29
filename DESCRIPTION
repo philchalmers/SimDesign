@@ -28,6 +28,7 @@ Suggests:
     copula,
     extraDistr
 License: GPL (>=2)
+ByteCompile: yes
 LazyData: true
 URL: https://github.com/philchalmers/SimDesign,
     https://github.com/philchalmers/SimDesign/wiki
