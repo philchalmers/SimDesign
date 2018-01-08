@@ -1,6 +1,6 @@
 Package: SimDesign
 Title: Structure for Organizing Monte Carlo Simulation Designs
-Version: 1.8
+Version: 1.8.1
 Authors@R: c(person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com", role = c("aut", "cre")),
              person("Matthew", "Sigal", email = "matthewsigal@gmail.com", role = c("ctb")))
 Description: Provides tools to help safely and efficiently organize Monte Carlo simulations in R.

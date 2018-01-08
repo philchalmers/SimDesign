@@ -2,9 +2,9 @@
 % Please edit documentation in R/summary_functions.R
 \name{bias}
 \alias{bias}
-\title{Compute (relative) bias summary statistic}
+\title{Compute (relative/standardized) bias summary statistic}
 \usage{
-bias(estimate, parameter = NULL, relative = FALSE)
+bias(estimate, parameter = NULL, type = "bias")
 }
 \arguments{
 \item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame}
@@ -18,11 +18,15 @@ then the value will be recycled for each column.
 If \code{NULL} then it will be assumed that the \code{estimate} input is in a deviation
 form (therefore \code{mean(estimate))} will be returned)}
 
-\item{relative}{logical; compute the relative bias statistic (i.e., divide the bias by the value
-in \code{parameter})? Default is \code{FALSE}}
+\item{type}{type of bias statistic to return. Default (\code{'bias'}) computes the standard bias
+(average difference between sample and population), \code{'relative'} computes
+the relative bias statistic (i.e., divide the bias by the value
+in \code{parameter}), and \code{'standardized'} computes the standardized bias estimate
+(standard bias divided by the standard deviation of the sample estimates)}
 }
 \value{
-returns a \code{numeric} vector indicating the overall (relative) bias in the estimates
+returns a \code{numeric} vector indicating the overall (relative/standardized)
+  bias in the estimates
 }
 \description{
 Computes the (relative) bias of a sample estimate from the parameter value.
@@ -34,7 +38,8 @@ If relative bias is requested the \code{estimate} and \code{parameter} inputs ar
 pop <- 2
 samp <- rnorm(100, 2, sd = 0.5)
 bias(samp, pop)
-bias(samp, pop, relative = TRUE)
+bias(samp, pop, type = 'relative')
+bias(samp, pop, type = 'standardized')
 
 dev <- samp - pop
 bias(dev)
@@ -45,6 +50,8 @@ bias(mean(samp), pop)
 # matrix input
 mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 bias(mat, parameter = 2)
+bias(mat, parameter = 2, type = 'relative')
+bias(mat, parameter = 2, type = 'standardized')
 
 # same, but with data.frame
 df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))

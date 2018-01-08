@@ -1,4 +1,4 @@
-#' Compute (relative) bias summary statistic
+#' Compute (relative/standardized) bias summary statistic
 #'
 #' Computes the (relative) bias of a sample estimate from the parameter value.
 #' Accepts estimate and parameter values, as well as estimate values which are in deviation form.
@@ -15,10 +15,14 @@
 #'   If \code{NULL} then it will be assumed that the \code{estimate} input is in a deviation
 #'   form (therefore \code{mean(estimate))} will be returned)
 #'
-#' @param relative logical; compute the relative bias statistic (i.e., divide the bias by the value
-#'   in \code{parameter})? Default is \code{FALSE}
+#' @param type type of bias statistic to return. Default (\code{'bias'}) computes the standard bias
+#'   (average difference between sample and population), \code{'relative'} computes
+#'   the relative bias statistic (i.e., divide the bias by the value
+#'   in \code{parameter}), and \code{'standardized'} computes the standardized bias estimate
+#'   (standard bias divided by the standard deviation of the sample estimates)
 #'
-#' @return returns a \code{numeric} vector indicating the overall (relative) bias in the estimates
+#' @return returns a \code{numeric} vector indicating the overall (relative/standardized)
+#'   bias in the estimates
 #'
 #' @seealso \code{\link{RMSE}}
 #' @references
@@ -37,7 +41,8 @@
 #' pop <- 2
 #' samp <- rnorm(100, 2, sd = 0.5)
 #' bias(samp, pop)
-#' bias(samp, pop, relative = TRUE)
+#' bias(samp, pop, type = 'relative')
+#' bias(samp, pop, type = 'standardized')
 #'
 #' dev <- samp - pop
 #' bias(dev)
@@ -48,6 +53,8 @@
 #' # matrix input
 #' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 #' bias(mat, parameter = 2)
+#' bias(mat, parameter = 2, type = 'relative')
+#' bias(mat, parameter = 2, type = 'standardized')
 #'
 #' # same, but with data.frame
 #' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
@@ -59,7 +66,7 @@
 #' bias(estimates, parameters)
 #'
 #'
-bias <- function(estimate, parameter = NULL, relative = FALSE){
+bias <- function(estimate, parameter = NULL, type = 'bias'){
     if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
     if(is.vector(estimate)){
         nms <- names(estimate)
@@ -67,13 +74,15 @@ bias <- function(estimate, parameter = NULL, relative = FALSE){
         colnames(estimate) <- nms
     }
     stopifnot(is.matrix(estimate))
+    stopifnot(type %in% c('bias', 'standardized', 'relative'))
     n_col <- ncol(estimate)
-    if(relative) stopifnot(!is.null(parameter))
+    if(type == "relative") stopifnot(!is.null(parameter))
     if(is.null(parameter)) parameter <- 0
     stopifnot(is.vector(parameter))
     if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
     ret <- colMeans(t(t(estimate) - parameter))
-    if(relative) ret <- ret / parameter
+    if(type == 'relative') ret <- ret / parameter
+    else if(type == 'standardized') ret <- ret / apply(estimate, 2, sd)
     ret
 }
 
