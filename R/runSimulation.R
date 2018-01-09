@@ -47,8 +47,8 @@
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 #' all the Monte Carlo replications for each respective design condition,
 #' \code{COMPLETED} to indicate the date in which the given simulation condition completed,
-#' \code{SEED} if the \code{seed} argument
-#' was used, columns containing the number of replications which had to be re-run due to errors (where the error messages
+#' \code{SEED} for the integer values in the \code{seed} argument,
+#' columns containing the number of replications which had to be re-run due to errors (where the error messages
 #' represent the names of the columns prefixed with a \code{ERROR:} string), and
 #' columns containing the number of warnings prefixed with a \code{WARNING:} string.
 #'
@@ -405,7 +405,7 @@
 #'   This argument calls \code{\link{set.seed}} or
 #'   \code{\link{clusterSetRNGStream}} for each condition, respectively,
 #'   but will not be run when \code{MPI = TRUE}.
-#'   Default is \code{NULL}, indicating that no seed is set for each condition
+#'   Default randomly generates seeds within the range 1 to 2147483647.
 #'
 #' @param progress logical; display a progress bar for each simulation condition?
 #'   This is useful when simulations conditions take a long time to run.
@@ -479,6 +479,11 @@
 #' Final <- runSimulation(design=Design, replications=1000,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' Final
+#'
+#' # reproduce exact simulation
+#' Final_rep <- runSimulation(design=Design, replications=1000, seed=Final$SEED,
+#'                        generate=Generate, analyse=Analyse, summarise=Summarise)
+#' Final_rep
 #'
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
@@ -681,9 +686,9 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL,
                           filename = 'SimDesign-results',
-                          warnings_as_errors = FALSE,
-                          save = FALSE, save_results = FALSE, save_seeds = FALSE,
-                          load_seed = NULL, seed = NULL,
+                          seed = as.integer(runif(nrow(design), 1L, 2147483647L)),
+                          save = FALSE, save_results = FALSE,
+                          warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50, as.factor = TRUE, save_generate_data = FALSE,
                           save_details = list(), edit = 'none', progress = FALSE, verbose = TRUE)
@@ -706,6 +711,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             filename <- gsub('\\.rds', '', filename)
     }
     if(!is.null(cl)) parallel <- TRUE
+    if(!is.null(load_seed)) seed <- NULL
     edit <- tolower(edit)
     summarise_asis <- FALSE
     if(missing(summarise)){

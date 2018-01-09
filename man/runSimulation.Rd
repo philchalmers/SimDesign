@@ -11,12 +11,12 @@
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, packages = NULL, filename = "SimDesign-results",
-  warnings_as_errors = FALSE, save = FALSE, save_results = FALSE,
-  save_seeds = FALSE, load_seed = NULL, seed = NULL, parallel = FALSE,
-  ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
-  max_errors = 50, as.factor = TRUE, save_generate_data = FALSE,
-  save_details = list(), edit = "none", progress = FALSE,
-  verbose = TRUE)
+  seed = as.integer(runif(nrow(design), 1L, 2147483647L)), save = FALSE,
+  save_results = FALSE, warnings_as_errors = FALSE, save_seeds = FALSE,
+  load_seed = NULL, parallel = FALSE, ncores = parallel::detectCores(),
+  cl = NULL, MPI = FALSE, max_errors = 50, as.factor = TRUE,
+  save_generate_data = FALSE, save_details = list(), edit = "none",
+  progress = FALSE, verbose = TRUE)
 
 \method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE,
   format.time = TRUE, ...)
@@ -72,8 +72,12 @@ directly at the time of saving then a new
 file will be generated instead and a warning will be thrown. This helps to avoid accidentally overwriting
 existing files. Default is \code{'SimDesign-results'}}
 
-\item{warnings_as_errors}{logical; treat warning messages as errors during the simulation? Default is FALSE,
-therefore warnings are only collected and not used to restart the data generation step}
+\item{seed}{a vector of integers to be used for reproducibility.
+The length of the vector must be equal the number of rows in \code{design}.
+This argument calls \code{\link{set.seed}} or
+\code{\link{clusterSetRNGStream}} for each condition, respectively,
+but will not be run when \code{MPI = TRUE}.
+Default randomly generates seeds within the range 1 to 2147483647.}
 
 \item{save}{logical; save the simulation state and final results to the hard-drive? This is useful
 for simulations which require an extended amount of time. When \code{TRUE}, a temp file
@@ -96,6 +100,9 @@ be saved to the working directory, and the temp file will be removed. Default is
   WARNING: saving results to your hard-drive can fill up space very quickly for larger simulations. Be sure to
   test this option using a smaller number of replications before the full Monte Carlo simulation is performed.}
 
+\item{warnings_as_errors}{logical; treat warning messages as errors during the simulation? Default is FALSE,
+therefore warnings are only collected and not used to restart the data generation step}
+
 \item{save_seeds}{logical; save the \code{.Random.seed} states prior to performing each replication into
 plain text files located in the defined \code{save_seeds_dirname} directory/folder?
 Use this if you would like to keep track of the simulation state within each replication and design
@@ -111,13 +118,6 @@ be saved (after a call with \code{save_seeds = TRUE}). E.g., \code{load_seed = '
 will load the first seed in the second row of the \code{design} input. Note that it is important NOT
 to modify the \code{design} input object, otherwise the path may not point to the correct saved location.
 Default is \code{NULL}}
-
-\item{seed}{a vector of integers to be used for reproducibility.
-The length of the vector must be equal the number of rows in \code{design}.
-This argument calls \code{\link{set.seed}} or
-\code{\link{clusterSetRNGStream}} for each condition, respectively,
-but will not be run when \code{MPI = TRUE}.
-Default is \code{NULL}, indicating that no seed is set for each condition}
 
 \item{parallel}{logical; use parallel processing from the \code{parallel} package over each
 unique condition?}
@@ -279,8 +279,8 @@ Additional information for each condition are also contained in the \code{data.f
 \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 all the Monte Carlo replications for each respective design condition,
 \code{COMPLETED} to indicate the date in which the given simulation condition completed,
-\code{SEED} if the \code{seed} argument
-was used, columns containing the number of replications which had to be re-run due to errors (where the error messages
+\code{SEED} for the integer values in the \code{seed} argument,
+columns containing the number of replications which had to be re-run due to errors (where the error messages
 represent the names of the columns prefixed with a \code{ERROR:} string), and
 columns containing the number of warnings prefixed with a \code{WARNING:} string.
 
@@ -524,6 +524,11 @@ Summarise <- function(condition, results, fixed_objects = NULL){
 Final <- runSimulation(design=Design, replications=1000,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 Final
+
+# reproduce exact simulation
+Final_rep <- runSimulation(design=Design, replications=1000, seed=Final$SEED,
+                       generate=Generate, analyse=Analyse, summarise=Summarise)
+Final_rep
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
