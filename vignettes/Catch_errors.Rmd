@@ -22,9 +22,8 @@ par(mar=c(3,3,1,1)+.1)
 
 # Catch Errors
 
-Error catching is an important thing to consider when creating Monte Carlo simulations. Sometimes, iterative algorithms will 'fail to converge' or crash for other reasons (e.g., sparse data). However,
-`SimDesign` makes this process much easier because the internal functions are wrapped in a `try` block
-already, therefore the simulation will not terminate unexpectedly. Below we demonstrate what happens when errors are thrown and caught, and how this information is tracked in the returned object.
+Error catching is an important area to consider when creating Monte Carlo simulations. Sometimes, iterative algorithms will 'fail to converge', or otherwise crash for other reasons (e.g., sparse data). However,
+`SimDesign` makes this process much easier because the internal functions are automatically wrapped within  `try` blocks, and therefore simulations will not terminate unexpectedly. This type of information is also collected as it may be relevant to the writer that something unknown is going wrong in the code-base. Below we demonstrate what happens when errors are thrown and caught, and how this information is tracked in the returned object.
 
 ### Define the functions
 
@@ -75,7 +74,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 ```
 
 The above simulation is just an example of how errors are tracked in `SimDesign`, as well as how to 
-throw a manual error in case the data should be re-drawn (e.g., when a model converges but fails to 
+throw a manual error in case the data should be re-drawn based on the user's decision (e.g., when a model converges, but fails to 
 do so before some number of predefined iterations). 
 
 ### Run the simulation
@@ -93,14 +92,13 @@ result <- runSimulation(Design, replications = 100,
 print(result)
 ```
 
-What you'll immediately notice from this output object is that the name of the error/warning thrown, and the function from which the error was thrown, are included as additional columns in the output with the prefix `ERROR: `. Furthermore, the frequency in which the error occurred are also included for each design condition (here the `t.test.default()` error, where no inputs were supplied, occurred more often than the manually thrown error as well as the invalid-input error). This behaviour is also tracked for `WARNING` messages as well in case there are clues as to
+What you'll immediately notice from this output object is that the name of the error/warning thrown, and the function from which the error was thrown, are included as additional columns in the output with the prefix `ERROR: `. Furthermore, the frequency in which the error occurred are also included for each design condition (here the `t.test.default()` error, where no inputs were supplied, occurred more often than the manually thrown error as well as the invalid-input error). This behavior is also tracked for `WARNING` messages as well in case there are clues as to
 why estimation models are having difficulty (or for other reasons whereby the warnings may be more serious).
 
-Finally, `SimDesign` has a safety built-in feature controlled by with `max_errors` argument to avoid
-getting stuck in infinite loops. By default if more than 50 errors are consecutively returned then the simulation will be halted and the final error 
-message will be returned. This safety feature is built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code.
+Finally, `SimDesign` has a built-in safety feature controlled by with `max_errors` argument to avoid
+getting stuck in infinite redrawing loops. By default, if more than 50 errors are consecutively returned then the simulation will be halted, and the final error 
+message will be returned. This safety feature is built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code which should be fixed before continuing.
 
 ### What to do
 
-If errors occur too often then these design conditions should either be extracted out of the simulation or further inspected to determine if they can be fixed (e.g., providing better starting values, increasing convergence criteria/number of iterations, etc). The use of the debugging features may be useful to track
-down issues here as well. For example, wrap the problematic objects in a `try()` call and add the line `if(is(object, 'try-error')) browser()` to jump into the location/replication where the object unexpectedly witnessed an error, and attempt to discern why the error occurred and how to fix it.
+If errors occur too often then these design conditions should either be extracted out of the simulation or further inspected to determine if they can be fixed (e.g., providing better starting values, increasing convergence criteria/number of iterations, etc). The use of the debugging features can also be useful to track down issues as well. For example, manually wrap the problematic functions in a `try()` call, and add the line `if(is(object, 'try-error')) browser()` to jump into the location/replication where the object unexpectedly witnessed an error. Jumping into the exact location where the error occurred will greatly help you determine what exactly went wrong in the simulation state, allowing you to quickly locate and fix the issue.
