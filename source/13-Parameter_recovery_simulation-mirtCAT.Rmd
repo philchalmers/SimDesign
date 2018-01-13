@@ -22,7 +22,7 @@ step rather than across all replications. This showcases how within-function par
 code which has already been optimized for simulations, but still needs an 'outer-shell' to collect the simulation
 results. Currently requires `mirtCAT` version 1.1.4 or higher.
 
-This study explored two major design conditions: size of the item bank, and the magnitude of the discimination parameter. Just for didactic purposes the discrimination parameters were all set equal, however real studies will
+This study explored two major design conditions: size of the item bank, and the magnitude of the discrimination parameter. Just for didactic purposes the discrimination parameters were all set equal, however real studies will
 call for more intimate control of the properties of the item bank.
 
 ```{r}

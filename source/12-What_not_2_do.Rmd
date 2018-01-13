@@ -20,9 +20,9 @@ cache_ <- TRUE
 
 This is an example taken from the tutorial article: "Conducting Simulation Studies in the
 R Programming Environment" in *Tutorials in Quantitative Methods for Psychology*
-(2013, Vol. 9(2), p. 43-60) by Kevin A. Hallgren. While the majority of the article seems to be good at explaining the mechanics of performing Monte Carlo simulations in R, the implementation unforuntatly used the `for` loop strategy, and demonstrates very nicely why `for` loops make coding simulations very difficult to read, modify, and debug. 
+(2013, Vol. 9(2), p. 43-60) by Kevin A. Hallgren. While the majority of the article seems to be good at explaining the mechanics of performing Monte Carlo simulations in R, the implementation unfortunately used the `for` loop strategy, and demonstrates very nicely why `for` loops make coding simulations very difficult to read, modify, and debug. 
 
-The following is the code from Appendix A regarding how Sobel's test for mediation performs. However, to save space the comments have been removed. As well, the original code itself actually contained typographical errors (a phenomonon Sigal and Chalmers, in press, argued happens quite often with this strategy) which I have commented on below. For further details about the simulation see the original article. 
+The following is the code from Appendix A regarding how Sobel's test for mediation performs. However, to save space the comments have been removed. As well, the original code itself actually contained typographical errors (a phenomenon Sigal and Chalmers, 2016, argued happens quite often with the `for`-loop strategy), which I have commented on below. For further details about the simulation, see the original article. 
 
 # Simulation Using For-Loops
 
@@ -78,9 +78,7 @@ head(d)
 
 # Simulation Using SimDesign
 
-Compare the previous for-loop approach with SimDesign. Personally, I find it more telling what the p-values
-are doing instead of how the z-values are behaving, so the Sobel test function was modified to return both the z and 
-p-values. 
+Compare the previous `for`-loop approach with `SimDesign`. Personally, I find it more telling what the $p$-values are doing instead of how the $z$-values are behaving, so the Sobel test function was modified to return both the $z$ and $p$-values.
 
 ```{r cache=cache_}
 #modified to return z and p values
@@ -149,6 +147,6 @@ row1 <- SimResults(results, 1)
 
 # Comparison
 
-There are a few interesting things to note about this comparison example. First, `SimDesign` is faster than the for-loop strategy despite the fact it is technically doing more computations in the new Sobel test function and summarise steps. This is without runnning the `SimDesign` simulation code in parallel too, which would decrease the simulations times by a factor proportional to the number of cores available (and, unlike the for-loop code, only requires adding a `parallel = TRUE` flag). Furthermore, the current state of the `for` loop code unforunately cannot be used with parallel computations without a large amount of re-writing, because the object `d` is being updated across each replications (therefore, the objects between each replication condition are not strictly independent).
+There are a few interesting properties to note about this comparison example. First, `SimDesign` is faster than the `for`-loop strategy, despite the fact it is technically doing more computations in the new Sobel test function and summarise steps. This is without running the `SimDesign` simulation code in parallel too, which would decrease the simulations times by a factor proportional to the number of cores available (and, unlike the `for`-loop code, only requires adding a `parallel = TRUE` flag to `runSimulation()`). Furthermore, the current state of the `for` loop code unfortunately cannot be used with parallel computations without a large amount of re-writing, because the object `d` is updated across each replications (therefore, the objects between each replication condition are not strictly independent).
 
-Additionally, the code itself is much less error prone and safer in case error arise, the generation/analysis componenets are isolated better, the output is saved to external `.rds` files in order to inspect the results at a later time, thereby being more memory efficient, the codebase and results are generally more readable, ..., the list goes on. All this *despite the fact that the working code is nearly identical*. 
+Finally, the code itself is much less error prone and is much safer in case errors/warnings arise, the generation/analysis components are isolated better, the output is saved to external `.rds` files in order to inspect the results at a later time (thereby being more memory efficient), the code-base and results are generally more readable, ..., the list goes on. All this *despite the fact that the working code is nearly identical*. 

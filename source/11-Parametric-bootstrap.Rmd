@@ -16,7 +16,7 @@ options(digits = 3)
 
 # Parametric bootstrap
 
-The parametric bootstrap is a type of Monte Carlo simulation method where data is repeatedly generated and analysed based on characteristics from the original data and a specified population of interest. The reason it may be used is to investigate the sampling distribution of a statistic when no known sampling for exists. In this document we demonstrate how `SimDesign` can be used for parametric boostrapping as well, thereby becoming useful when used within R functions designed for analyses.
+The parametric bootstrap is a type of Monte Carlo simulation method where data is repeatedly generated and analysed based on characteristics from the original data and a specified population of interest. The reason it may be used is to investigate the sampling distribution of a statistic when no known sampling for exists. In this document we demonstrate how `SimDesign` can be used for parametric bootstrapping as well, thereby becoming useful when used within R functions designed for analyses.
 
 ## Example
 
