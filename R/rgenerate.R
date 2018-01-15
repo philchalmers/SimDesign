@@ -1,9 +1,60 @@
+#' Generate integer values within specified range
+#'
+#' Efficiently generate positive and negative integer values with (default) or without replacement.
+#' This function is mainly a wrapper to the \code{\link{sample.int}} function (which itself is much
+#' more efficient integer sampler than the more general \code{\link{sample}}), however is intended
+#' to work with both positive and negative integer ranges since \code{sample.int} only returns
+#' positive integer values that must begin at \code{1L}.
+#'
+#' @param n number of samples to draw
+#' @param min lower limit of the distribution. Must be finite
+#' @param max upper limit of the distribution. Must be finite
+#' @param replace should sampling be with replacement?
+#' @param prob a vector of probability weights for obtaining the elements of the vector being sampled
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
+#' @export
+#' @examples
+#'
+#' set.seed(1)
+#'
+#' # sample 1000 integer values within 20 to 100
+#' x <- rint(1000, min = 20, max = 100)
+#' summary(x)
+#'
+#' # sample 1000 integer values within 100 to 10 billion
+#' x <- rint(1000, min = 100, max = 1e7)
+#' summary(x)
+#'
+#' # compare speed to sample()
+#' system.time(x <- rint(1000, min = 100, max = 1e7))
+#' system.time(x2 <- sample(100:1e8, 1000, replace = TRUE))
+#'
+#' # sample 1000 integer values within -20 to 20
+#' x <- rint(1000, min = -20, max = 20)
+#' summary(x)
+#'
+rint <- function(n, min, max, replace = TRUE, prob = NULL){
+    stopifnot(!missing(n))
+    stopifnot(!missing(min))
+    stopifnot(!missing(max))
+    min <- as.integer(min)
+    max <- as.integer(max)
+    range <- max - min + 1L
+    ret <- sample.int(range, size = n, replace = replace, prob = prob) - 1L + min
+    ret
+}
+
 #' Generate data with the multivariate g-and-h distribution
 #'
 #' Generate non-normal distributions using the multivariate g-and-h distribution. Can be used to
 #' generate several different classes of univariate and multivariate distributions.
 #'
-#' @param n sample size
+#' @param n number of samples to draw
 #' @param g the g parameter(s) which control the skew of a distribution in terms of both direction
 #'   and magnitude
 #' @param h the h parameter(s) which control the tail weight or elongation of a distribution and
@@ -69,7 +120,7 @@ rmgh <- function(n, g, h, mean = rep(0, length(g)), sigma = diag(length(mean))) 
 #' by Vale & Maurelli (1983). If only a single variable is generated then this function
 #' is equivalent to the method described by Fleishman (1978).
 #'
-#' @param n sample size
+#' @param n number of samples to draw
 #' @param mean a vector of k elements for the mean of the variables
 #' @param sigma desired k x k covariance matrix between bivariate non-normal variables
 #' @param skew a vector of k elements for the skewness of the variables
@@ -199,7 +250,7 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 #' with some modifications (e.g., better starting values for the Newton optimizer, passing previously saved
 #' coefs, etc).
 #'
-#' @param n sample size
+#' @param n number of samples to draw
 #' @param mean a vector of k elements for the mean of the variables
 #' @param sigma desired k x k covariance matrix between bivariate non-normal variables
 #' @param skew a vector of k elements for the skewness of the variables

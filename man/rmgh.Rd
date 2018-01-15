@@ -7,7 +7,7 @@
 rmgh(n, g, h, mean = rep(0, length(g)), sigma = diag(length(mean)))
 }
 \arguments{
-\item{n}{sample size}
+\item{n}{number of samples to draw}
 
 \item{g}{the g parameter(s) which control the skew of a distribution in terms of both direction
 and magnitude}

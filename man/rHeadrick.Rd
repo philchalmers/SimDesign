@@ -10,7 +10,7 @@ rHeadrick(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
   NULL, trace = FALSE, max.ntry = 15, obj.tol = 1e-10, n.valid.sol = 1))
 }
 \arguments{
-\item{n}{sample size}
+\item{n}{number of samples to draw}
 
 \item{mean}{a vector of k elements for the mean of the variables}
 

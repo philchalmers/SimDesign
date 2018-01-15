@@ -8,7 +8,7 @@ rValeMaurelli(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
   skew = rep(0, nrow(sigma)), kurt = rep(0, nrow(sigma)))
 }
 \arguments{
-\item{n}{sample size}
+\item{n}{number of samples to draw}
 
 \item{mean}{a vector of k elements for the mean of the variables}
 

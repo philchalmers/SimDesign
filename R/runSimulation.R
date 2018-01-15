@@ -686,7 +686,7 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL,
                           filename = 'SimDesign-results',
-                          seed = sample.int(2147483647L, size = nrow(design), replace = TRUE),
+                          seed = rint(nrow(design), min=1L, max = 2147483647L),
                           save = FALSE, save_results = FALSE,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
