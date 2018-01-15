@@ -216,41 +216,41 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 <pre class="r"><code>result &lt;- runSimulation(Design, replications = 100, parallel = TRUE, packages = 'mirt',
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
-Design row: 1/6;   Started: Sun Apr  9 14:47:05 2017;   Total elapsed time: 0.00s 
+Design row: 1/6;   Started: Mon Jan 15 13:35:55 2018;   Total elapsed time: 0.00s 
 ## 
-Design row: 2/6;   Started: Sun Apr  9 14:47:18 2017;   Total elapsed time: 12.96s 
+Design row: 2/6;   Started: Mon Jan 15 13:36:00 2018;   Total elapsed time: 5.82s 
 ## 
-Design row: 3/6;   Started: Sun Apr  9 14:47:35 2017;   Total elapsed time: 30.37s 
+Design row: 3/6;   Started: Mon Jan 15 13:36:05 2018;   Total elapsed time: 10.21s 
 ## 
-Design row: 4/6;   Started: Sun Apr  9 14:47:56 2017;   Total elapsed time: 50.74s 
+Design row: 4/6;   Started: Mon Jan 15 13:36:10 2018;   Total elapsed time: 15.52s 
 ## 
-Design row: 5/6;   Started: Sun Apr  9 14:48:06 2017;   Total elapsed time: 01m 1.24s 
+Design row: 5/6;   Started: Mon Jan 15 13:36:13 2018;   Total elapsed time: 18.00s 
 ## 
-Design row: 6/6;   Started: Sun Apr  9 14:48:24 2017;   Total elapsed time: 01m 18.97s</code></pre>
+Design row: 6/6;   Started: Mon Jan 15 13:36:17 2018;   Total elapsed time: 22.61s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 01m 39.86s</code></pre>
+## Simulation complete. Total execution time: 27.85s</code></pre>
 <pre class="r"><code>print(result, time=FALSE, reps=FALSE)</code></pre>
-<pre><code>##   test_length distribution  bias_EAP  bias_MAP   bias_ML bias_EAP_bimodal
-## 1          10       normal  0.002735  0.001766 -3.01e-05         3.66e-03
-## 2          20       normal -0.006066 -0.006241 -5.67e-03        -6.17e-03
-## 3          30       normal -0.000275 -0.000494 -1.48e-03        -5.73e-05
-## 4          10      bimodal -0.001139 -0.001427 -3.87e-03        -1.75e-03
-## 5          20      bimodal  0.003226  0.003016  4.65e-03         2.29e-03
-## 6          30      bimodal  0.003570  0.003186  5.17e-03         2.94e-03
+<pre><code>##   test_length distribution  bias_EAP  bias_MAP  bias_ML bias_EAP_bimodal
+## 1          10       normal  0.000736  0.001831  0.00211          0.00187
+## 2          20       normal -0.000349  0.000146  0.00104         -0.00153
+## 3          30       normal  0.002303  0.002163  0.00214          0.00204
+## 4          10      bimodal  0.001234  0.001395 -0.00117          0.00194
+## 5          20      bimodal -0.001297 -0.001480 -0.00208         -0.00177
+## 6          30      bimodal -0.002534 -0.002415 -0.00268         -0.00208
 ##   RMSE_EAP RMSE_MAP RMSE_ML RMSE_EAP_bimodal REPLICATIONS SIM_TIME
-## 1    0.267    0.271   0.370           0.2979          100   12.96s
-## 2    0.154    0.156   0.215           0.1769          100   17.41s
-## 3    0.113    0.114   0.155           0.1288          100   20.38s
-## 4    0.232    0.233   0.356           0.2116          100   10.50s
-## 5    0.143    0.141   0.241           0.1226          100   17.73s
-## 6    0.102    0.101   0.161           0.0884          100   20.90s
-##                  COMPLETED
-## 1 Sun Apr  9 14:47:18 2017
-## 2 Sun Apr  9 14:47:35 2017
-## 3 Sun Apr  9 14:47:56 2017
-## 4 Sun Apr  9 14:48:06 2017
-## 5 Sun Apr  9 14:48:24 2017
-## 6 Sun Apr  9 14:48:45 2017</code></pre>
+## 1    0.510    0.514   0.590            0.541          100    5.82s
+## 2    0.396    0.398   0.470            0.424          100    4.39s
+## 3    0.334    0.336   0.395            0.357          100    5.31s
+## 4    0.477    0.479   0.597            0.456          100    2.48s
+## 5    0.375    0.373   0.486            0.349          100    4.61s
+## 6    0.323    0.320   0.405            0.300          100    5.24s
+##                  COMPLETED       SEED
+## 1 Mon Jan 15 13:36:00 2018  244176217
+## 2 Mon Jan 15 13:36:05 2018 1336377795
+## 3 Mon Jan 15 13:36:10 2018 1308407525
+## 4 Mon Jan 15 13:36:13 2018 1338697157
+## 5 Mon Jan 15 13:36:17 2018 1848801707
+## 6 Mon Jan 15 13:36:22 2018 1375056554</code></pre>
 </div>
 <div id="analyze-the-results" class="section level3">
 <h3>Analyze the results</h3>
@@ -283,7 +283,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

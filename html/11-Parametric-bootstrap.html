@@ -123,7 +123,7 @@ $(document).ready(function () {
 
 <div id="parametric-bootstrap" class="section level1">
 <h1>Parametric bootstrap</h1>
-<p>The parametric bootstrap is a type of Monte Carlo simulation method where data is repeatedly generated and analysed based on characteristics from the original data and a specified population of interest. The reason it may be used is to investigate the sampling distribution of a statistic when no known sampling for exists. In this document we demonstrate how <code>SimDesign</code> can be used for parametric boostrapping as well, thereby becoming useful when used within R functions designed for analyses.</p>
+<p>The parametric bootstrap is a type of Monte Carlo simulation method where data are repeatedly generated and analysed based on characteristics from the original data and a specified population of interest. The reason it may be used is to investigate the sampling distribution of a statistic when no known sampling for exists, but a population generating function is assumed to be known a priori. In this document, we demonstrate how <code>SimDesign</code> can be used for parametric bootstrapping as well, thereby becoming useful when used within R functions designed for analyses.</p>
 <div id="example" class="section level2">
 <h2>Example</h2>
 <p>Say that we were interested in an independent t-test type situation, however we wanted to test whether the medians divided by the inter-quartile range (IQR) would result in a significant effect. As the formula <span class="math inline">\(|M1 - M2| / IQR\)</span> generally has no known sampling distribution we can attempt to simulate one instead if we can make some reasonable assumptions about the population. For instance, say that the null distribution implies that <span class="math inline">\(H_0: |M1 - M2| = 0\)</span>, and that the population distribution is normally distributed.</p>
@@ -166,12 +166,13 @@ with(dat, median_diff(DV, group))</code></pre>
 <p>Using this function definition we can pass the necessary elements to obtain a parametrically estimate <span class="math inline">\(p\)</span>-value indicating how likely the observed statistic was to observe given that a suitable empirically generated null hypothesis distribution.</p>
 <pre class="r"><code>median_parametric_boot(dat, median_diff)</code></pre>
 <pre><code>##     p 
-## 0.942</code></pre>
+## 0.935</code></pre>
 <p>Furthermore, because additional arguments can be passed through the <code>...</code> input to <code>runSimulation</code> all the extra components available in the package will be present. E.g., defining a parallel cluster and running the code in parallel:</p>
 <pre class="r"><code>cl &lt;- parallel::makeCluster(2)
 median_parametric_boot(dat, median_diff, cl=cl, parallel=TRUE)</code></pre>
-<pre><code>##    p 
-## 0.96</code></pre>
+<pre><code>##     p 
+## 0.945</code></pre>
+<p>The general benefits of <code>SimDesign</code> becomes immediately useful here as well. Consider situations where data must be redrawn during the parametric bootstrap simulation scheme, or when warning messages appear that may suggest issues with the simulation. R’s <code>parallel</code> packages by default will either error-out when <code>stop()</code> messages are thrown (which must be dealt with manually within the user’s code), and information such as <code>warning()</code>s will generally disappear in the output when distributed across many cores (potentially influencing the reliability of the results in unexpected ways). However, as with running general Monte Carlo simulations, <code>runSimulation()</code> will collect all this information in a safe and efficient way, thereby providing the user a safety-blanket when implementing their own parametric bootstrap experiments.</p>
 </div>
 </div>
 
@@ -198,7 +199,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
