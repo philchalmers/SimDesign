@@ -16,7 +16,7 @@ options(digits = 3)
 
 # Parametric bootstrap
 
-The parametric bootstrap is a type of Monte Carlo simulation method where data is repeatedly generated and analysed based on characteristics from the original data and a specified population of interest. The reason it may be used is to investigate the sampling distribution of a statistic when no known sampling for exists. In this document we demonstrate how `SimDesign` can be used for parametric bootstrapping as well, thereby becoming useful when used within R functions designed for analyses.
+The parametric bootstrap is a type of Monte Carlo simulation method where data are repeatedly generated and analysed based on characteristics from the original data and a specified population of interest. The reason it may be used is to investigate the sampling distribution of a statistic when no known sampling for exists, but a population generating function is assumed to be known a priori. In this document, we demonstrate how `SimDesign` can be used for parametric bootstrapping as well, thereby becoming useful when used within R functions designed for analyses.
 
 ## Example
 
@@ -86,4 +86,4 @@ median_parametric_boot(dat, median_diff, cl=cl, parallel=TRUE)
 parallel::stopCluster(cl)
 ```
 
-
+The general benefits of `SimDesign` becomes immediately useful here as well. Consider situations where data must be redrawn during the parametric bootstrap simulation scheme, or when warning messages appear that may suggest issues with the simulation. R's `parallel` packages by default will either error-out when `stop()` messages are thrown (which must be dealt with manually within the user's code), and information such as `warning()`s will generally disappear in the output when distributed across many cores (potentially influencing the reliability of the results in unexpected ways). However, as with running general Monte Carlo simulations, `runSimulation()` will collect all this information in a safe and efficient way, thereby providing the user a safety-blanket when implementing their own parametric bootstrap experiments.

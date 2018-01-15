@@ -126,7 +126,7 @@ Usually it is a good idea to split up analyses into Type I error and power rates
 
 ```{r}
 head(results)
-results$REPLICATIONS <- results$SIM_TIME <- results$COMPLETED <- NULL
+results$REPLICATIONS <- results$SIM_TIME <- results$COMPLETED <- results$SEED <- NULL
 TypeI <- subset(results, mean_difference == 0)
 Power <- subset(results, mean_difference != 0)
 ```
