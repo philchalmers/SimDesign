@@ -405,7 +405,7 @@
 #'   This argument calls \code{\link{set.seed}} or
 #'   \code{\link{clusterSetRNGStream}} for each condition, respectively,
 #'   but will not be run when \code{MPI = TRUE}.
-#'   Default randomly generates seeds within the range 1 to 2147483647.
+#'   Default randomly generates seeds within the range 1 to 2147483647 for each condition.
 #'
 #' @param progress logical; display a progress bar for each simulation condition?
 #'   This is useful when simulations conditions take a long time to run.
@@ -686,7 +686,7 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL,
                           filename = 'SimDesign-results',
-                          seed = as.integer(runif(nrow(design), 1L, 2147483647L)),
+                          seed = sample.int(2147483647L, nrow(design)),
                           save = FALSE, save_results = FALSE,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,

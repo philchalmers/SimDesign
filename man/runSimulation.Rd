@@ -11,7 +11,7 @@
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, packages = NULL, filename = "SimDesign-results",
-  seed = as.integer(runif(nrow(design), 1L, 2147483647L)), save = FALSE,
+  seed = sample.int(2147483647L, nrow(design)), save = FALSE,
   save_results = FALSE, warnings_as_errors = FALSE, save_seeds = FALSE,
   load_seed = NULL, parallel = FALSE, ncores = parallel::detectCores(),
   cl = NULL, MPI = FALSE, max_errors = 50, as.factor = TRUE,
@@ -77,7 +77,7 @@ The length of the vector must be equal the number of rows in \code{design}.
 This argument calls \code{\link{set.seed}} or
 \code{\link{clusterSetRNGStream}} for each condition, respectively,
 but will not be run when \code{MPI = TRUE}.
-Default randomly generates seeds within the range 1 to 2147483647.}
+Default randomly generates seeds within the range 1 to 2147483647 for each condition.}
 
 \item{save}{logical; save the simulation state and final results to the hard-drive? This is useful
 for simulations which require an extended amount of time. When \code{TRUE}, a temp file
