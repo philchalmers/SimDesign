@@ -16,7 +16,7 @@
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
+#' \doi{10.1080/10691898.2016.1246953}
 #' @export
 #' @examples
 #'
@@ -66,7 +66,7 @@ rint <- function(n, min, max, replace = TRUE, prob = NULL){
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
+#' \doi{10.1080/10691898.2016.1246953}
 #' @export
 #' @examples
 #'
@@ -129,7 +129,7 @@ rmgh <- function(n, g, h, mean = rep(0, length(g)), sigma = diag(length(mean))) 
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
+#' \doi{10.1080/10691898.2016.1246953}
 #'
 #' Fleishman, A. I. (1978). A method for simulating non-normal distributions.
 #' \emph{Psychometrika, 43}, 521-532.
@@ -266,7 +266,7 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
+#' \doi{10.1080/10691898.2016.1246953}
 #'
 #' Headrick, T. C. (2002). Fast fifth-order polynomial transforms for generating univariate and
 #' multivariate nonnormal distributions. \emph{Computational Statistics & Data Analysis, 40}, 685-711.
@@ -791,7 +791,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
+#' \doi{10.1080/10691898.2016.1246953}
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
@@ -850,7 +850,7 @@ rmvnorm <- function (n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)))
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
+#' \doi{10.1080/10691898.2016.1246953}
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
@@ -906,7 +906,7 @@ rmvt <- function (n, sigma, df, delta = rep(0, nrow(sigma)),
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \url{http://www.tandfonline.com/doi/full/10.1080/10691898.2016.1246953}
+#' \doi{10.1080/10691898.2016.1246953}
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
