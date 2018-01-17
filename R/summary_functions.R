@@ -431,7 +431,8 @@ EDR <- function(p, alpha = .05){
 #'
 #' Computes the detection rate for determining empirical Type I error and power rates using information
 #' from the confidence intervals. Note that using \code{1 - ECR(CIs, parameter)} will provide the empirical
-#' detection rate.
+#' detection rate. Also supports computing the average width of the CIs, which may be useful when comparing
+#' the efficiency of CI estimators.
 #'
 #' @param CIs a \code{numeric} vector or \code{matrix} of confidence interval values for a
 #'   given parameter value, where the first element/column indicates the lower confidence interval
@@ -448,6 +449,10 @@ EDR <- function(p, alpha = .05){
 #'   the parameter was lower or higher than the supplied interval, respectively. This is mainly only
 #'   useful when the coverage region is not expected to be symmetric, and therefore is generally not
 #'   required. Note that \code{1 - sum(ECR(CIs, parameter, tails=TRUE)) == ECR(CIs, parameter)}
+#'
+#' @param CI_width logical; rather than returning the overall coverage rate, return the
+#'   average width of the CIs instead? Useful when comparing the efficiency of different CI
+#'   estimators
 #'
 #' @param names an optional character vector used to name the returned object. Generally useful
 #'   when more than one CI estimate is investigated at once
@@ -487,21 +492,27 @@ EDR <- function(p, alpha = .05){
 #' parameters <- parameters + rnorm(10)
 #' ECR(CIs, parameters)
 #'
+#' # average width of CIs
+#' ECR(CIs, parameters, CI_width=TRUE)
+#'
 #' # ECR() for multiple CI estimates in the same object
 #' parameter <- 10
 #' CIs <- data.frame(lowerCI_1=parameter - runif(10),
 #'                   upperCI_1=parameter + runif(10),
-#'                   lowerCI_2=parameter - runif(10),
-#'                   upperCI_2=parameter + runif(10))
+#'                   lowerCI_2=parameter - 2*runif(10),
+#'                   upperCI_2=parameter + 2*runif(10))
 #' head(CIs)
 #' ECR(CIs, parameter)
 #' ECR(CIs, parameter, tails=TRUE)
+#' ECR(CIs, parameter, CI_width=TRUE)
 #'
 #' # often a good idea to provide names for the output
 #' ECR(CIs, parameter, names = c('this', 'that'))
+#' ECR(CIs, parameter, CI_width=TRUE, names = c('this', 'that'))
 #' ECR(CIs, parameter, tails=TRUE, names = c('this', 'that'))
 #'
-ECR <- function(CIs, parameter, tails = FALSE, names = NULL){
+ECR <- function(CIs, parameter, tails = FALSE, CI_width = FALSE, names = NULL){
+    if(CI_width) tails <- FALSE
     if(is.data.frame(CIs)) CIs <- as.matrix(CIs)
     if(length(CIs) == 2L) CIs <- matrix(CIs, 1L, 2L)
     stopifnot(ncol(CIs) %% 2 == 0L)
@@ -510,7 +521,8 @@ ECR <- function(CIs, parameter, tails = FALSE, names = NULL){
         ind <- 1L
         for(i in seq(1L, ncol(CIs), by=2L)){
             ret <- c(ret, ECR(CIs[,c(i, i+1L)], parameter=parameter,
-                                  tails=tails, names=names[ind]))
+                              tails=tails, names=names[ind],
+                              CI_width=CI_width))
             ind <- ind + 1L
         }
         return(ret)
@@ -521,6 +533,12 @@ ECR <- function(CIs, parameter, tails = FALSE, names = NULL){
     if(CIs[1,1] > CIs[1,2]){
         warning('First column not less than second. Temporarily switching')
         CIs <- cbind(CIs[,2L], CIs[,1L])
+    }
+    if(CI_width){
+        ret <- mean(CIs[,2L] - CIs[,1L])
+        if(!is.null(names))
+            names(ret) <- names
+        return(ret)
     }
     ends <- c(mean(CIs[,1L] > parameter), mean(parameter > CIs[,2L]))
     if(tails){

@@ -4,7 +4,7 @@
 \alias{ECR}
 \title{Compute the empirical coverage rate for Type I errors and Power}
 \usage{
-ECR(CIs, parameter, tails = FALSE, names = NULL)
+ECR(CIs, parameter, tails = FALSE, CI_width = FALSE, names = NULL)
 }
 \arguments{
 \item{CIs}{a \code{numeric} vector or \code{matrix} of confidence interval values for a
@@ -23,13 +23,18 @@ the parameter was lower or higher than the supplied interval, respectively. This
 useful when the coverage region is not expected to be symmetric, and therefore is generally not
 required. Note that \code{1 - sum(ECR(CIs, parameter, tails=TRUE)) == ECR(CIs, parameter)}}
 
+\item{CI_width}{logical; rather than returning the overall coverage rate, return the
+average width of the CIs instead? Useful when comparing the efficiency of different CI
+estimators}
+
 \item{names}{an optional character vector used to name the returned object. Generally useful
 when more than one CI estimate is investigated at once}
 }
 \description{
 Computes the detection rate for determining empirical Type I error and power rates using information
 from the confidence intervals. Note that using \code{1 - ECR(CIs, parameter)} will provide the empirical
-detection rate.
+detection rate. Also supports computing the average width of the CIs, which may be useful when comparing
+the efficiency of CI estimators.
 }
 \examples{
 
@@ -54,18 +59,23 @@ CIs <- cbind(parameters - runif(10), parameters + runif(10))
 parameters <- parameters + rnorm(10)
 ECR(CIs, parameters)
 
+# average width of CIs
+ECR(CIs, parameters, CI_width=TRUE)
+
 # ECR() for multiple CI estimates in the same object
 parameter <- 10
 CIs <- data.frame(lowerCI_1=parameter - runif(10),
                   upperCI_1=parameter + runif(10),
-                  lowerCI_2=parameter - runif(10),
-                  upperCI_2=parameter + runif(10))
+                  lowerCI_2=parameter - 2*runif(10),
+                  upperCI_2=parameter + 2*runif(10))
 head(CIs)
 ECR(CIs, parameter)
 ECR(CIs, parameter, tails=TRUE)
+ECR(CIs, parameter, CI_width=TRUE)
 
 # often a good idea to provide names for the output
 ECR(CIs, parameter, names = c('this', 'that'))
+ECR(CIs, parameter, CI_width=TRUE, names = c('this', 'that'))
 ECR(CIs, parameter, tails=TRUE, names = c('this', 'that'))
 
 }
