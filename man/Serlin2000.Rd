@@ -4,21 +4,20 @@
 \alias{Serlin2000}
 \title{Empirical detection robustness method suggested by Serlin (2000)}
 \usage{
-Serlin2000(delta, p, alpha, R, CI = 0.95)
+Serlin2000(p, alpha, delta, R, CI = 0.95)
 }
 \arguments{
-\item{p}{empirical detection rate}
+\item{p}{a vector containing the empirical detection rate(s) to be tested}
 
 \item{alpha}{Type I error rate (e.g., often set to .05)}
+
+\item{delta}{symmetric robustness interval around \code{alpha} (e.g., a value
+of .01 when \code{alpha = .05} would test the robustness window .04-.06)}
 
 \item{R}{number of replications used in the simulation}
 
 \item{CI}{confidence interval for \code{alpha} as a proportion. Default of 0.95
-indicates a 95% interval}
-
-\item{lower}{lower bound of the rejection region}
-
-\item{upper}{upper bound of the rejection region}
+indicates a 95\% interval}
 }
 \description{
 Hypothesis test to determine whether an observed empirical detection rate,
@@ -30,12 +29,14 @@ window of robustness).
 \examples{
 
 # Cochran's criteria at alpha = .05 (i.e., 0.5 +- .01), assuming N = 2000
-Serlin2000(delta = .01, p = .051, alpha = .05, R = 2000)
+Serlin2000(p = .051, alpha = .05, delta = .01, R = 2000)
 
 # Bradley's liberal criteria given p = .06 and .076, assuming N = 1000
-Serlin2000(delta = .025, p = .060, alpha = .05, R = 1000)
-Serlin2000(delta = .025, p = .076, alpha = .05, R = 1000)
+Serlin2000(p = .060, alpha = .05, delta = .025, R = 1000)
+Serlin2000(p = .076, alpha = .05, delta = .025, R = 1000)
 
+# multiple p-values
+Serlin2000(p = c(.05, .06, .07), alpha = .05, delta = .025, R = 1000)
 }
 \references{
 Serlin, R. C. (2000). Testing for Robustness in Monte Carlo Studies.
