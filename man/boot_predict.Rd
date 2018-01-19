@@ -31,9 +31,16 @@ returns a list of linear model objects (via \code{\link{lm}}) for each
    meta-statistics returned by the \code{summarise()} function
 }
 \description{
-This function computes bootstrap mean-square error estimates to approximate the behavior
-of the meta-statistics in SimDesign's \code{summarise} functions.
-For more information about the method and plots, refer to Koehler, Brown, and Haneuse (2009).
+This function computes bootstrap mean-square error estimates to approximate the sampling behavior
+of the meta-statistics in SimDesign's \code{summarise} functions. A single design condition is
+supplied, and a simulation with \code{max(Rstar)} replications is performed whereby the 
+generate-analyse results are collected. After obtaining these replication values, the 
+replications are further drawn from (with replacement) using the differing sizes in \code{Rstar}
+to approximate the bootstrap MSE behavior given different replication sizes. Finally, given these
+bootstrap estimates linear regression models are fitted using the predictor term 
+\code{one_sqrtR = 1 / sqrt(Rstar)} to allow extrapolation to replication sizes not observed in 
+\code{Rstar}. For more information about the method and subsequent bootstrap MSE plots, 
+refer to Koehler, Brown, and Haneuse (2009).
 }
 \examples{
 
