@@ -51,13 +51,15 @@
 Serlin2000 <- function(p, alpha, delta, R, CI = .95){
     stopifnot(!missing(alpha))
     stopifnot(!missing(R))
-    z_crit <- abs(qnorm((1 - CI)/2))
+    cs <- c(2, 1)
+    if(alpha > .5) cs <- c(1, 2)
+    z_crit <- abs(qnorm((1 - CI)/cs[1L]))
     fn <- function(val){
         crit <- abs(val - alpha) / sqrt(val * (1 - val) / R)
         crit - z_crit
     }
     CV1 <- uniroot(fn, interval = c(0, alpha))$root
-    z_crit <- abs(qnorm((1 - CI)))
+    z_crit <- abs(qnorm((1 - CI)/cs[2L]))
     CV2 <- uniroot(fn, interval = c(alpha, 1 - 1e-10))$root
     if(!missing(p)){
         stopifnot(!missing(delta))
