@@ -50,7 +50,9 @@
 #' \code{SEED} for the integer values in the \code{seed} argument,
 #' columns containing the number of replications which had to be re-run due to errors (where the error messages
 #' represent the names of the columns prefixed with a \code{ERROR:} string), and
-#' columns containing the number of warnings prefixed with a \code{WARNING:} string.
+#' columns containing the number of warnings prefixed with a \code{WARNING:} string. Finally,
+#' if \code{bootSE = TRUE} was included then the final right-most columns will contain the labels
+#' \code{BOOT_SE.} followed by the name of the associated meta-statistic defined in \code{summarise()}.
 #'
 #' Additional examples, presentation files, and tutorials can be found on the package wiki located at
 #' \url{https://github.com/philchalmers/SimDesign/wiki}.
@@ -411,6 +413,22 @@
 #'   This is useful when simulations conditions take a long time to run.
 #'   Uses the \code{pbapply} package to display the progress. Default is \code{FALSE}
 #'
+#' @param bootSE logical; perform a non-parametric bootstrap to compute bootstrap standard error
+#'   estimates for the respective meta-statistics computed by the \code{Summarise} function?
+#'   When \code{TRUE}, bootstrap samples for each row in \code{Design} will be obtained after
+#'   the generate-analyse steps have obtain the simulation results to be summarised so that
+#'   standard errors for each statistic can be computed.
+#'
+#'   This option is useful to approximate how accurate the resulting meta-statatistic estimates
+#'   were, particularly if the number of \code{replications} was relatively low (e.g., less than
+#'   5000). If users prefer to obtain alternative bootstrap estimates then consider passing
+#'   \code{save_results = TRUE}, reading the generate-analyse data into R via
+#'   \code{\link{SimResults}}, and performing the bootstrap manually with function found in the
+#'   external \code{boot} package
+#'
+#' @param boot_draws number of non-parametric bootstrap draws to sample for the \code{summarise}
+#'   function after the generate-analyse replications are collected. Default is 1000
+#'
 #' @param verbose logical; print messages to the R console? Default is \code{TRUE}
 #'
 #' @return a \code{data.frame} (also of class \code{'SimDesign'})
@@ -684,13 +702,13 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          fixed_objects = NULL, packages = NULL,
-                          filename = 'SimDesign-results',
+                          fixed_objects = NULL, packages = NULL, bootSE = FALSE,
+                          boot_draws = 1000L, filename = 'SimDesign-results',
                           seed = rint(nrow(design), min=1L, max = 2147483647L),
                           save = FALSE, save_results = FALSE,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
-                          max_errors = 50, as.factor = TRUE, save_generate_data = FALSE,
+                          max_errors = 50L, as.factor = TRUE, save_generate_data = FALSE,
                           save_details = list(), edit = 'none', progress = FALSE, verbose = TRUE)
 {
     stopifnot(!missing(generate) || !missing(analyse))
@@ -799,7 +817,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     Result_list <- vector('list', nrow(design))
     names(Result_list) <- rownames(design)
-    time0 <- time1 <- proc.time()[3]
+    time0 <- time1 <- proc.time()[3L]
     files <- dir()
     if(!MPI && any(files == tmpfilename) && is.null(load_seed)){
         if(verbose)
@@ -885,7 +903,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                    get_packages)))
             } else {
                 p <- character()
-                try(table(foreach(p=rep(tmp[i], each=length(cl)*2)) %dopar% get_packages(p)))
+                try(table(foreach(p=rep(tmp[i], each=length(cl)*2L)) %dopar% get_packages(p)))
             }
             if(tmp[i] == 'stats') next
             if(length(packs) > 1L)
@@ -904,12 +922,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if(verbose)
                 print_progress(i, nrow(design), time1=time1, time0=time0,
                                stored_time=stored_time, progress=progress)
-            time0 <- proc.time()[3]
+            time0 <- proc.time()[3L]
             Result_list[[i]] <- Analysis(Functions=Functions,
                                          condition=design[i,],
                                          replications=replications,
                                          fixed_objects=fixed_objects,
                                          cl=cl, MPI=MPI, seed=seed,
+                                         bootSE=bootSE, boot_draws=boot_draws,
                                          save_results=save_results,
                                          save_results_dirname=save_results_dirname,
                                          save_generate_data=save_generate_data,
@@ -920,14 +939,14 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
                                          progress=progress)
-            time1 <- proc.time()[3]
+            time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
                 print_progress(i, nrow(design), time1=time1, time0=time0,
                                stored_time=stored_time, progress=progress)
-            time0 <- proc.time()[3]
+            time0 <- proc.time()[3L]
             if(save_generate_data)
                 dir.create(paste0(save_generate_data_dirname, '/design-row-', i), showWarnings = FALSE)
             if(save_seeds)
@@ -938,6 +957,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                               replications=replications,
                                                               fixed_objects=fixed_objects,
                                                               cl=cl, MPI=MPI, seed=seed,
+                                                              bootSE=bootSE, boot_draws=boot_draws,
                                                               save_results=save_results,
                                                               save_results_dirname=save_results_dirname,
                                                               save_generate_data=save_generate_data,
@@ -949,7 +969,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                               warnings_as_errors=warnings_as_errors,
                                                               progress=progress)),
                                            check.names=FALSE)
-            time1 <- proc.time()[3]
+            time1 <- proc.time()[3L]
             Result_list[[i]]$SIM_TIME <- time1 - time0
             Result_list[[i]]$COMPLETED <- date()
             if(save || save_results || save_generate_data) saveRDS(Result_list, tmpfilename)
@@ -957,15 +977,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     attr(Result_list, 'SimDesign_names') <- NULL
     if(summarise_asis){
-        if(verbose)
-            print_progress(nrow(design), nrow(design), time1=time1, time0=time0,
-                           stored_time=stored_time, progress=progress)
         design$ID <- NULL
         nms <- colnames(design)
-        nms2 <- matrix(character(0), nrow(design), ncol(design))
-        for(i in 1:ncol(design))
+        nms2 <- matrix(character(0L), nrow(design), ncol(design))
+        for(i in 1L:ncol(design))
             nms2[,i] <- paste0(nms[i], '=', design[,i], if(i < ncol(design)) '; ')
-        nms2 <- apply(nms2, 1, paste0, collapse='')
+        nms2 <- apply(nms2, 1L, paste0, collapse='')
         names(Result_list) <- nms2
         if(is.list(Result_list[[1L]][[1L]]))
             for(i in seq_len(length(Result_list)))
@@ -980,7 +997,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     SIM_TIME <- Final$SIM_TIME
     COMPLETED <- Final$COMPLETED
     REPLICATIONS <- Final$REPLICATIONS
-    Final$SIM_TIME <- Final$ID <- Final$REPLICATIONS <- Final$COMPLETED <-NULL
+    Final$SIM_TIME <- Final$ID <- Final$REPLICATIONS <- Final$COMPLETED <- NULL
     Final <- data.frame(Final, REPLICATIONS, SIM_TIME, COMPLETED, check.names=FALSE)
     if(!is.null(seed)) Final$SEED <- seed
     if(!is.null(filename) && safe){ #save file
@@ -1011,14 +1028,17 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     ten <- colnames(Final)[grepl('ERROR:', colnames(Final))]
     wen <- colnames(Final)[grepl('WARNING:', colnames(Final))]
-    en <- c('REPLICATIONS', 'SIM_TIME', 'COMPLETED')
-    if(!is.null(seed)) en <- c(en, 'SEED')
-    sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen))]
-    attr(Final, 'design_names') <- list(design=dn, sim=sn, extra=en, errors=ten, warnings=wen)
+    en <- c('REPLICATIONS', 'SIM_TIME', 'COMPLETED', 'SEED')
+    bsen <- colnames(Final)[grepl('BOOT_SE.', colnames(Final))]
+    if(length(bsen))
+        Final <- data.frame(Final[,!(colnames(Final) %in% bsen)], Final[,colnames(Final) %in% bsen])
+    sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen, bsen))]
+    attr(Final, 'design_names') <-
+        list(design=dn, sim=sn, bootSE=bsen, extra=en, errors=ten, warnings=wen)
     if(length(packages) > 1L){
         pack <- packages[packages != 'SimDesign']
         versions <- character(length(pack))
-        for(i in 1:length(pack))
+        for(i in 1L:length(pack))
             versions[i] <- as.character(packageVersion(pack[i]))
         pack_vers <- data.frame(packages=pack, versions=versions)
     } else pack_vers <- NULL
@@ -1029,7 +1049,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                     save_generate_data_dirname=save_generate_data_dirname,
                                                     save_results_dirname=save_results_dirname,
                                                     save_seeds_dirname=save_seeds_dirname)[pick],
-                                      ncores = if(parallel) length(cl) else if(MPI) NA else 1,
+                                      ncores = if(parallel) length(cl) else if(MPI) NA else 1L,
                                       number_of_conditions = nrow(design),
                                       date_completed = date(), total_elapsed_time = sum(Final$SIM_TIME))
     if(!is.null(filename) && save){ #save file

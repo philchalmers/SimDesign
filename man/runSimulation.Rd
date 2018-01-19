@@ -10,11 +10,12 @@
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
-  fixed_objects = NULL, packages = NULL, filename = "SimDesign-results",
+  fixed_objects = NULL, packages = NULL, bootSE = FALSE,
+  boot_draws = 1000L, filename = "SimDesign-results",
   seed = rint(nrow(design), min = 1L, max = 2147483647L), save = FALSE,
   save_results = FALSE, warnings_as_errors = FALSE, save_seeds = FALSE,
   load_seed = NULL, parallel = FALSE, ncores = parallel::detectCores(),
-  cl = NULL, MPI = FALSE, max_errors = 50, as.factor = TRUE,
+  cl = NULL, MPI = FALSE, max_errors = 50L, as.factor = TRUE,
   save_generate_data = FALSE, save_details = list(), edit = "none",
   progress = FALSE, verbose = TRUE)
 
@@ -65,6 +66,22 @@ otherwise the functions must be made available by using explicit
 \code{\link{library}} or \code{\link{require}} calls within the provided simulation functions.
 Alternatively, functions can be called explicitly without attaching the package with the \code{::} operator
 (e.g., \code{extraDistr::rgumbel()})}
+
+\item{bootSE}{logical; perform a non-parametric bootstrap to compute bootstrap standard error
+  estimates for the respective meta-statistics computed by the \code{Summarise} function?
+  When \code{TRUE}, bootstrap samples for each row in \code{Design} will be obtained after
+  the generate-analyse steps have obtain the simulation results to be summarised so that
+  standard errors for each statistic can be computed.
+
+  This option is useful to approximate how accurate the resulting meta-statatistic estimates
+  were, particularly if the number of \code{replications} was relatively low (e.g., less than
+  5000). If users prefer to obtain alternative bootstrap estimates then consider passing
+  \code{save_results = TRUE}, reading the generate-analyse data into R via
+  \code{\link{SimResults}}, and performing the bootstrap manually with function found in the
+  external \code{boot} package}
+
+\item{boot_draws}{number of non-parametric bootstrap draws to sample for the \code{summarise}
+function after the generate-analyse replications are collected. Default is 1000}
 
 \item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to
 when \code{save = TRUE}. If the same file name already exists in the working
@@ -282,7 +299,9 @@ all the Monte Carlo replications for each respective design condition,
 \code{SEED} for the integer values in the \code{seed} argument,
 columns containing the number of replications which had to be re-run due to errors (where the error messages
 represent the names of the columns prefixed with a \code{ERROR:} string), and
-columns containing the number of warnings prefixed with a \code{WARNING:} string.
+columns containing the number of warnings prefixed with a \code{WARNING:} string. Finally,
+if \code{bootSE = TRUE} was included then the final right-most columns will contain the labels
+\code{BOOT_SE.} followed by the name of the associated meta-statistic defined in \code{summarise()}.
 
 Additional examples, presentation files, and tutorials can be found on the package wiki located at
 \url{https://github.com/philchalmers/SimDesign/wiki}.
