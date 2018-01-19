@@ -43,14 +43,15 @@ See \code{\link{Generate}} for details}
 \item{analyse}{user-defined computation function which acts on the data generated from
 \code{\link{Generate}}. See \code{\link{Analyse}} for details}
 
-\item{summarise}{optional (but recommended) user-defined summary function to be used
+\item{summarise}{optional (but highly recommended) user-defined summary function to be used
 after all the replications have completed within each \code{design} condition. Omitting this function
 will return a list of matrices (or a single matrix, if only one row in \code{design} is supplied)
 or, for more general objects (such as lists), a list containing the results returned form \code{\link{Analyse}}.
 Ommiting this function is only recommended for didactic purposes because it leaves out a large amount of
 information (e.g., try-errors, warning messages, etc), can witness memory related issues,
 and generally is not as flexible internally. See
-the \code{save_results} option for a better alternative to storing the Generate-Analyse results}
+the \code{save_results} option for a more RAM friendly alternative to storing all the Generate-Analyse results
+in the working enviroment}
 
 \item{fixed_objects}{(optional) an object (usually a named \code{list})
 containing additional user-defined objects

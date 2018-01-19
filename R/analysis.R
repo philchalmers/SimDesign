@@ -66,13 +66,18 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         }
     }
     if(summarise_asis){
-        if(is.data.frame(results[[1]]) && nrow(results[[1]]) == 1L){
-            return(plyr::rbind.fill(results))
-        } else if(is.data.frame(results[[1]]) && nrow(results[[1]]) > 1L){
-            return(results)
+        ret <- if(is.data.frame(results[[1]]) && nrow(results[[1]]) == 1L){
+            plyr::rbind.fill(results)
+        } else if((is.data.frame(results[[1]]) && nrow(results[[1]]) > 1L) || is.list(results[[1L]])){
+            results
+        } else {
+            do.call(rbind, results)
         }
-        if(is.list(results[[1L]])) return(results)
-        return(do.call(rbind, results))
+        if(save_results){
+            tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
+            saveRDS(list(condition=condition, results=ret), tmpfilename)
+        }
+        return(ret)
     }
 
     try_errors <- do.call(c, lapply(results, function(x) attr(x, 'try_errors')))
