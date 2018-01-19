@@ -27,11 +27,11 @@
 #' summary(x)
 #'
 #' # sample 1000 integer values within 100 to 10 billion
-#' x <- rint(1000, min = 100, max = 1e7)
+#' x <- rint(1000, min = 100, max = 1e8)
 #' summary(x)
 #'
 #' # compare speed to sample()
-#' system.time(x <- rint(1000, min = 100, max = 1e7))
+#' system.time(x <- rint(1000, min = 100, max = 1e8))
 #' system.time(x2 <- sample(100:1e8, 1000, replace = TRUE))
 #'
 #' # sample 1000 integer values within -20 to 20
