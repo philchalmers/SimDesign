@@ -7,11 +7,13 @@
 Serlin2000(p, alpha, delta, R, CI = 0.95)
 }
 \arguments{
-\item{p}{a vector containing the empirical detection rate(s) to be tested}
+\item{p}{(optional) a vector containing the empirical detection rate(s) to be tested.
+Omitting this input will compute only the CV1 and CV2 values, while including this
+input will perform a one-sided hypthesis test for robustness}
 
 \item{alpha}{Type I error rate (e.g., often set to .05)}
 
-\item{delta}{symmetric robustness interval around \code{alpha} (e.g., a value
+\item{delta}{(optional) symmetric robustness interval around \code{alpha} (e.g., a value
 of .01 when \code{alpha = .05} would test the robustness window .04-.06)}
 
 \item{R}{number of replications used in the simulation}
@@ -24,7 +26,8 @@ Hypothesis test to determine whether an observed empirical detection rate,
 coupled with a given robustness interval, statistically differs from the
 population value. Uses the methods described by Serlin (2000) as well to
 generate critical values (similar to confidence intervals, but define a fixed
-window of robustness).
+window of robustness). Critical values may be computed without performing the simulation
+experiment (hence, can be obtained a priori).
 }
 \examples{
 
@@ -37,6 +40,10 @@ Serlin2000(p = .076, alpha = .05, delta = .025, R = 1000)
 
 # multiple p-values
 Serlin2000(p = c(.05, .06, .07), alpha = .05, delta = .025, R = 1000)
+
+# CV values computed before simulation performed
+Serlin2000(alpha = .05, R = 2500)
+
 }
 \references{
 Serlin, R. C. (2000). Testing for Robustness in Monte Carlo Studies.

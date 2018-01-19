@@ -18,7 +18,8 @@
 #' @param type type of bias statistic to return. Default (\code{'bias'}) computes the standard bias
 #'   (average difference between sample and population), \code{'relative'} computes
 #'   the relative bias statistic (i.e., divide the bias by the value
-#'   in \code{parameter}), and \code{'standardized'} computes the standardized bias estimate
+#'   in \code{parameter}; note that multiplying this by 100 gives the "percent bias" measure),
+#'   and \code{'standardized'} computes the standardized bias estimate
 #'   (standard bias divided by the standard deviation of the sample estimates)
 #'
 #' @return returns a \code{numeric} vector indicating the overall (relative/standardized)

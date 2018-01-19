@@ -4,15 +4,18 @@
 #' coupled with a given robustness interval, statistically differs from the
 #' population value. Uses the methods described by Serlin (2000) as well to
 #' generate critical values (similar to confidence intervals, but define a fixed
-#' window of robustness).
+#' window of robustness). Critical values may be computed without performing the simulation
+#' experiment (hence, can be obtained a priori).
 #'
-#' @param p a vector containing the empirical detection rate(s) to be tested
+#' @param p (optional) a vector containing the empirical detection rate(s) to be tested.
+#'   Omitting this input will compute only the CV1 and CV2 values, while including this
+#'   input will perform a one-sided hypthesis test for robustness
 #'
 #' @param R number of replications used in the simulation
 #'
 #' @param alpha Type I error rate (e.g., often set to .05)
 #'
-#' @param delta symmetric robustness interval around \code{alpha} (e.g., a value
+#' @param delta (optional) symmetric robustness interval around \code{alpha} (e.g., a value
 #'   of .01 when \code{alpha = .05} would test the robustness window .04-.06)
 #'
 #' @param CI confidence interval for \code{alpha} as a proportion. Default of 0.95
@@ -41,27 +44,36 @@
 #'
 #' # multiple p-values
 #' Serlin2000(p = c(.05, .06, .07), alpha = .05, delta = .025, R = 1000)
+#'
+#' # CV values computed before simulation performed
+#' Serlin2000(alpha = .05, R = 2500)
+#'
 Serlin2000 <- function(p, alpha, delta, R, CI = .95){
-    sigma2 <- alpha * (1 - alpha) / R
-    crit <- (abs(p - alpha) - delta) / sqrt(sigma2)
-    crit_p <- pnorm(abs(crit), lower.tail = FALSE) # one-tailed test
-    robust <- ifelse(crit_p > .1, "no",
-                     ifelse(crit_p > .05, "maybe", "yes"))
+    stopifnot(!missing(alpha))
+    stopifnot(!missing(R))
     z_crit <- abs(qnorm((1 - CI)/2))
     fn <- function(val){
         crit <- abs(val - alpha) / sqrt(val * (1 - val) / R)
         crit - z_crit
     }
-    CV1 <- try(uniroot(fn, interval = c(0, alpha))$root, TRUE)
-    if(is(CV1, 'try-error')) CV1 <- NA
+    CV1 <- uniroot(fn, interval = c(0, alpha))$root
     z_crit <- abs(qnorm((1 - CI)))
-    CV2 <- try(uniroot(fn, interval = c(alpha, 1 - 1e-10))$root, TRUE)
-    if(is(CV2, 'try-error')) CV2 <- NA
-    ret <- data.frame("p" = p,
-                      "z(|p-a| - d))" = crit,
-                      "Pr(>|z|)" = crit_p, check.names = FALSE,
-                      "robust" = robust,
-                      "CV1" = CV1,
-                      "CV2" = CV2)
+    CV2 <- uniroot(fn, interval = c(alpha, 1 - 1e-10))$root
+    if(!missing(p)){
+        stopifnot(!missing(delta))
+        sigma2 <- alpha * (1 - alpha) / R
+        crit <- (abs(p - alpha) - delta) / sqrt(sigma2)
+        crit_p <- pnorm(abs(crit), lower.tail = FALSE) # one-tailed test
+        robust <- ifelse(crit_p > .1, "no",
+                         ifelse(crit_p > .05, "maybe", "yes"))
+        ret <- data.frame("p" = p,
+                          "z(|p-a| - d))" = crit,
+                          "Pr(>|z|)" = crit_p,
+                          "robust" = robust,
+                          "CV1" = CV1,
+                          "CV2" = CV2, check.names = FALSE)
+    } else {
+        ret <- data.frame("CV1" = CV1, "CV2" = CV2)
+    }
     ret
 }
