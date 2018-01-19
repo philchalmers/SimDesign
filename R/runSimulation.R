@@ -417,7 +417,8 @@
 #'   estimates for the respective meta-statistics computed by the \code{Summarise} function?
 #'   When \code{TRUE}, bootstrap samples for each row in \code{Design} will be obtained after
 #'   the generate-analyse steps have obtain the simulation results to be summarised so that
-#'   standard errors for each statistic can be computed.
+#'   standard errors for each statistic can be computed. To compute large-sample confidence
+#'   intervals given the bootstrap SE estimates see \code{\link{SimBoot}}.
 #'
 #'   This option is useful to approximate how accurate the resulting meta-statatistic estimates
 #'   were, particularly if the number of \code{replications} was relatively low (e.g., less than
@@ -441,7 +442,7 @@
 #'
 #' @seealso \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
 #'   \code{\link{SimFunctions}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
-#'   \code{\link{aggregate_simulations}}, \code{\link{Attach}}, \code{\link{SimShiny}}
+#'   \code{\link{SimBoot}}, \code{\link{aggregate_simulations}}, \code{\link{Attach}}, \code{\link{SimShiny}}
 #'
 #' @export runSimulation
 #'
