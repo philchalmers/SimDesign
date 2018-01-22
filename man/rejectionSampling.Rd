@@ -2,7 +2,7 @@
 % Please edit documentation in R/rejectionSampling.R
 \name{rejectionSampling}
 \alias{rejectionSampling}
-\title{Rejection sampling (i.e., accept-reject method) to draw samples from difficult pdf}
+\title{Rejection sampling (i.e., accept-reject method) to draw samples from difficult probability density functions}
 \usage{
 rejectionSampling(n, df, dg, rg, M = NULL, returnM = FALSE,
   vectorized = TRUE)
@@ -21,11 +21,12 @@ this density function should be the same as \code{df}
 Must be in the form of a \code{function} with a single input
 corresponding to the values sampled from \code{rg}}
 
-\item{rg}{the proxy random number generation function associated with \code{dg}
+\item{rg}{the proxy random number generation function, associated with \code{dg},
 used to draw samples from in lieu of drawing samples from \code{df}.
 Must be in the form of a \code{function} with a single input
 corresponding to the number of values to draw, while the output can either
-be a vector or a matrix}
+be a vector or a matrix (if a matrix, each independent observation must be stored in
+a unique row)}
 
 \item{M}{the upper-bound of the ratio of probability density functions to help
 minimize the number of discarded draws. By default, \code{M} is computed
@@ -38,7 +39,7 @@ optimization results?}
 
 \item{vectorized}{logical; have the input function been vectorized (i.e., do they
 support a vector of input values rather than only a single sample)? This can
-be disabled, however it's recommended to redefine the input function to be
+be disabled, however it's recommended to redefine the input functions to be
 vectorized instead since these are more efficient when \code{n} is large or
 1/M is small}
 }
@@ -47,11 +48,11 @@ returns a vector or matrix of draws (corresponding to the
   output class from \code{rg}) from the desired \code{df}
 }
 \description{
-This function supports the rejection sampling approach to drawing values from a
-seemingly difficult, and potentially non-normed, probability density function by
-sampling values from a suitable proxy/support distribution. This function is
+This function supports the rejection sampling (i.e., accept-reject) approach to drawing values
+from seemingly difficult, and potentially non-normed, probability density functions by
+sampling values from a more manageable proxy distribution. This function is
 optimized to work efficiently when the defined functions are vectorized; otherwise,
-the accept-reject algorithm will loop over a single draw at a time.
+the accept-reject algorithm will loop over candidate sample-draws in isolation.
 }
 \details{
 The accept-reject algorithm is a flexible approach to obtaining i.i.d.'s from a
@@ -78,7 +79,7 @@ hist(dat, 100)
 hist(rbeta(10000, 2.7, 6.3), 100) # compare
 
 # when df and dg both integrate to 1, acceptance probability = 1/M
-rejectionSampling(df=df, dg=dg, returnM=TRUE)
+rejectionSampling(df=df, dg=dg, rg=rg, returnM=TRUE)
 
 # user supplied M. Here, M = 4, indicating 25\% acceptance rate
 dat2 <- rejectionSampling(10000, df=df, dg=dg, rg=rg, M=4)
@@ -106,7 +107,8 @@ plot(y, df(y), type = 'l', main = "pdf to sample")
 rg <- function(n) rnorm(n, sd=2)
 dg <- function(x) dnorm(x, sd=2)
 dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg)
-hist(dat, 100)
+hist(dat, 100, prob=TRUE)
+lines(density(dat), col = 'red')
 
 # same as above, but df not vectorized (much slower)
 df2 <- function(x){
