@@ -119,6 +119,18 @@ system.time(dat2 <-
 system.time(dat <-
    rejectionSampling(100000, df=df, dg=dg, rg=rg))
 
+#-----------------------------------------------------
+# multivariate distribution
+df <- function(x) prod(c(dnorm(x[1]) + dchisq(x[1], df = 5),
+                   dnorm(x[2], -1, 2)))
+rg <- function(n) c(rnorm(n, sd=3), rnorm(n, sd=3))
+dg <- function(x) prod(c(dnorm(x[1], sd=3), dnorm(x[1], sd=3)))
+
+dat <- rejectionSampling(5000, df=df, dg=dg, rg=rg, M=10)
+hist(dat[,1], 30)
+hist(dat[,2], 30)
+plot(dat)
+
 }
 \references{
 Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte

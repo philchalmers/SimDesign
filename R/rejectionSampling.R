@@ -117,6 +117,18 @@
 #' system.time(dat <-
 #'    rejectionSampling(100000, df=df, dg=dg, rg=rg))
 #'
+#' #-----------------------------------------------------
+#' # multivariate distribution
+#' df <- function(x) prod(c(dnorm(x[1]) + dchisq(x[1], df = 5),
+#'                    dnorm(x[2], -1, 2)))
+#' rg <- function(n) c(rnorm(n, sd=3), rnorm(n, sd=3))
+#' dg <- function(x) prod(c(dnorm(x[1], sd=3), dnorm(x[1], sd=3)))
+#'
+#' dat <- rejectionSampling(5000, df=df, dg=dg, rg=rg, M=10)
+#' hist(dat[,1], 30)
+#' hist(dat[,2], 30)
+#' plot(dat)
+#'
 rejectionSampling <- function(n, df, dg, rg, M = NULL, returnM = FALSE,
                               vectorized = TRUE) {
     stopifnot(!missing(dg))
@@ -142,13 +154,17 @@ rejectionSampling <- function(n, df, dg, rg, M = NULL, returnM = FALSE,
     while(n.remaining != 0L) {
         y <- if(vectorized) rg(n.remaining) else rg(1L)
         u <- if(vectorized) runif(n.remaining, 0, 1) else runif(1L, 0, 1)
-        pick <- u <= df(y)/(M * dg(y))
+        pick <- if(multipar){
+            y <- matrix(y, ncol = npar)
+            u <= apply(y, MARGIN = 1L, function(y, M) df(y)/(M * dg(y)), M=M)
+        } else u <= df(y)/(M * dg(y))
         sumpick <- sum(pick)
         if(sumpick >= 1L){
-            if(multipar)
-                res[lowest:(lowest + sumpick - 1L), , drop=FALSE] <-
-                    y[pick, , drop=FALSE]
-            else res[lowest:(lowest + sumpick - 1L)] <- y[pick]
+            if(multipar){
+                whc <- which(pick)
+                for(i in lowest:(lowest + sumpick - 1L))
+                    res[i, ] <- y[whc[i - lowest + 1L], ]
+            } else res[lowest:(lowest + sumpick - 1L)] <- y[pick]
             lowest <- lowest + sumpick
             n.remaining <- n - lowest
         }
