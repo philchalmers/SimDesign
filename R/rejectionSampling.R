@@ -69,7 +69,7 @@
 #' # Generate X ~ beta(a,b), where a and b are a = 2.7 and b = 6.3,
 #' # and the support is Y ~ Unif(0,1)
 #' df <- function(x) dbeta(x, shape1 = 2.7, shape2 = 6.3)
-#' dg <- function(x) 1
+#' dg <- function(x) dunif(x, min = 0, max = 1)
 #' rg <- function(n) runif(n, min = 0, max = 1)
 #'
 #' dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg)
