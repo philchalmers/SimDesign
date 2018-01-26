@@ -41,12 +41,12 @@
 #' by the \code{SimDesign} package
 #'
 #' \describe{
-#'   \item{\code{Design <- expand.grid(...)}}
-#'   \item{\code{Generate <- function(condition, fixed_objects = NULL) ...}}
-#'   \item{\code{Analyse <- function(condition, dat, fixed_objects = NULL) ...}}
-#'   \item{\code{Summarise <- function(condition, results, fixed_objects = NULL) ...}}
+#'   \item{\code{Design <- expand.grid(...)}}{}
+#'   \item{\code{Generate <- function(condition, fixed_objects = NULL) \{...\} }}{}
+#'   \item{\code{Analyse <- function(condition, dat, fixed_objects = NULL) \{...\} }}{}
+#'   \item{\code{Summarise <- function(condition, results, fixed_objects = NULL) \{...\} }}{}
 #'   \item{\code{results <- runSimulation(design=Design, replications, generate=Generate,
-#'         analyse=Analyse, summarise=Summarise)}}
+#'         analyse=Analyse, summarise=Summarise)}}{}
 #' }
 #'
 #' For a skeleton version of the work-flow, which is often useful when initially defining a simulation,
