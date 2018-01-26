@@ -5,7 +5,8 @@
 #' and may be restored by re-running \code{runSimulation}, provided that the respective temp
 #' file can be found in the working directory. \code{runSimulation} supports parallel
 #' and cluster computing, global and local debugging, error handling (including fail-safe
-#' stopping when functions fail too often, even across nodes), and tracking of error and warning messages.
+#' stopping when functions fail too often, even across nodes), provides bootstrap estimates of the
+#' sampling variability (optional), and tracking of error and warning messages.
 #' For convenience, all functions available in the R workspace are exported across all computational nodes
 #' so that they are more easily accessible (however, other R objects are not, and therefore
 #' must be passed to the \code{fixed_objects} input to become available across nodes).
@@ -34,6 +35,18 @@
 #'       simulation results}
 #'    \item{4)}{Analyze the output from \code{runSimulation}, possibly using ANOVA techniques
 #'      (\code{\link{SimAnova}}) and generating suitable plots and tables}
+#' }
+#'
+#' More succinctly, the functions to be called follow the following form with the exact inputs required
+#' by the \code{SimDesign} package
+#'
+#' \describe{
+#'   \item{\code{Design <- expand.grid(...)}}
+#'   \item{\code{Generate <- function(condition, fixed_objects = NULL) ...}}
+#'   \item{\code{Analyse <- function(condition, dat, fixed_objects = NULL) ...}}
+#'   \item{\code{Summarise <- function(condition, results, fixed_objects = NULL) ...}}
+#'   \item{\code{results <- runSimulation(design=Design, replications, generate=Generate,
+#'         analyse=Analyse, summarise=Summarise)}}
 #' }
 #'
 #' For a skeleton version of the work-flow, which is often useful when initially defining a simulation,
