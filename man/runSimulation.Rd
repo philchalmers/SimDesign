@@ -6,6 +6,7 @@
 \alias{head.SimDesign}
 \alias{tail.SimDesign}
 \alias{summary.SimDesign}
+\alias{extract_results}
 \alias{as.data.frame.SimDesign}
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
@@ -13,11 +14,12 @@ runSimulation(design, replications, generate, analyse, summarise,
   fixed_objects = NULL, packages = NULL, bootSE = FALSE,
   boot_draws = 1000L, filename = "SimDesign-results",
   seed = rint(nrow(design), min = 1L, max = 2147483647L), save = FALSE,
-  save_results = FALSE, warnings_as_errors = FALSE, save_seeds = FALSE,
-  load_seed = NULL, parallel = FALSE, ncores = parallel::detectCores(),
-  cl = NULL, MPI = FALSE, max_errors = 50L, as.factor = TRUE,
-  save_generate_data = FALSE, save_details = list(), edit = "none",
-  progress = FALSE, verbose = TRUE)
+  save_results = FALSE, store_results = FALSE, warnings_as_errors = FALSE,
+  save_seeds = FALSE, load_seed = NULL, parallel = FALSE,
+  ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
+  max_errors = 50L, as.factor = TRUE, save_generate_data = FALSE,
+  save_details = list(), edit = "none", progress = FALSE,
+  verbose = TRUE)
 
 \method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE,
   format.time = TRUE, ...)
@@ -27,6 +29,8 @@ runSimulation(design, replications, generate, analyse, summarise,
 \method{tail}{SimDesign}(x, ...)
 
 \method{summary}{SimDesign}(object, ...)
+
+extract_results(object)
 
 \method{as.data.frame}{SimDesign}(x, ...)
 }
@@ -118,6 +122,12 @@ be saved to the working directory, and the temp file will be removed. Default is
 
   WARNING: saving results to your hard-drive can fill up space very quickly for larger simulations. Be sure to
   test this option using a smaller number of replications before the full Monte Carlo simulation is performed.}
+
+\item{store_results}{logical; store the complete tables of simulation results
+in the returned object? This is \code{FALSE} by default to help avoid RAM
+issues (see \code{save_results} as a more suitable alternative). To extract these results
+pass the returned object to \code{\link{extract_results}}, which will return a named list
+of all the simulation results for each condition}
 
 \item{warnings_as_errors}{logical; treat warning messages as errors during the simulation? Default is FALSE,
 therefore warnings are only collected and not used to restart the data generation step}
@@ -641,7 +651,7 @@ Summarise <- function(condition, results, fixed_objects = NULL){
 #### Step 3 --- Collect results by looping over the rows in design
 
 # first, test to see if it works
-Final <- runSimulation(design=Design, replications=5,
+Final <- runSimulation(design=Design, replications=5, store_results=TRUE,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 head(Final)
 

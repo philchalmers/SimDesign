@@ -85,6 +85,12 @@ test_that('SimDesign', {
     expect_is(Final, 'data.frame')
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                           replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE,
+                           store_results = TRUE)
+    out <- extract_results(Final)
+    expect_equal(nrow(out[[1L]]), 2L)
+
+    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = parallel::detectCores(),
                            parallel=TRUE, ncores=2L, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')

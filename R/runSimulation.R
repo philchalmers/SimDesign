@@ -431,6 +431,12 @@
 #' @param boot_draws number of non-parametric bootstrap draws to sample for the \code{summarise}
 #'   function after the generate-analyse replications are collected. Default is 1000
 #'
+#' @param store_results logical; store the complete tables of simulation results
+#'   in the returned object? This is \code{FALSE} by default to help avoid RAM
+#'   issues (see \code{save_results} as a more suitable alternative). To extract these results
+#'   pass the returned object to \code{\link{extract_results}}, which will return a named list
+#'   of all the simulation results for each condition
+#'
 #' @param verbose logical; print messages to the R console? Default is \code{TRUE}
 #'
 #' @return a \code{data.frame} (also of class \code{'SimDesign'})
@@ -595,7 +601,7 @@
 #' #### Step 3 --- Collect results by looping over the rows in design
 #'
 #' # first, test to see if it works
-#' Final <- runSimulation(design=Design, replications=5,
+#' Final <- runSimulation(design=Design, replications=5, store_results=TRUE,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' head(Final)
 #'
@@ -707,7 +713,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, bootSE = FALSE,
                           boot_draws = 1000L, filename = 'SimDesign-results',
                           seed = rint(nrow(design), min=1L, max = 2147483647L),
-                          save = FALSE, save_results = FALSE,
+                          save = FALSE, save_results = FALSE, store_results = FALSE,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50L, as.factor = TRUE, save_generate_data = FALSE,
@@ -817,8 +823,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         }
         parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
     }
-    Result_list <- vector('list', nrow(design))
-    names(Result_list) <- rownames(design)
+    Result_list <- stored_Results_list <- vector('list', nrow(design))
+    names(Result_list) <- names(stored_Results_list) <- rownames(design)
     time0 <- time1 <- proc.time()[3L]
     files <- dir()
     if(!MPI && any(files == tmpfilename) && is.null(load_seed)){
@@ -940,7 +946,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          max_errors=max_errors, packages=packages,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
-                                         progress=progress)
+                                         progress=progress, store_results=FALSE)
             time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
         } else {
@@ -953,28 +959,33 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 dir.create(paste0(save_generate_data_dirname, '/design-row-', i), showWarnings = FALSE)
             if(save_seeds)
                 dir.create(paste0(save_seeds_dirname, '/design-row-', i), showWarnings = FALSE)
-            Result_list[[i]] <- data.frame(design[i, ],
-                                             as.list(Analysis(Functions=Functions,
-                                                              condition=design[i,],
-                                                              replications=replications,
-                                                              fixed_objects=fixed_objects,
-                                                              cl=cl, MPI=MPI, seed=seed,
-                                                              bootSE=bootSE, boot_draws=boot_draws,
-                                                              save_results=save_results,
-                                                              save_results_dirname=save_results_dirname,
-                                                              save_generate_data=save_generate_data,
-                                                              save_generate_data_dirname=save_generate_data_dirname,
-                                                              save_seeds=save_seeds, summarise_asis=summarise_asis,
-                                                              save_seeds_dirname=save_seeds_dirname,
-                                                              max_errors=max_errors, packages=packages,
-                                                              load_seed=load_seed, export_funs=export_funs,
-                                                              warnings_as_errors=warnings_as_errors,
-                                                              progress=progress)),
+            tmp <- Analysis(Functions=Functions,
+                            condition=design[i,],
+                            replications=replications,
+                            fixed_objects=fixed_objects,
+                            cl=cl, MPI=MPI, seed=seed,
+                            bootSE=bootSE, boot_draws=boot_draws,
+                            save_results=save_results,
+                            save_results_dirname=save_results_dirname,
+                            save_generate_data=save_generate_data,
+                            save_generate_data_dirname=save_generate_data_dirname,
+                            save_seeds=save_seeds, summarise_asis=summarise_asis,
+                            save_seeds_dirname=save_seeds_dirname,
+                            max_errors=max_errors, packages=packages,
+                            load_seed=load_seed, export_funs=export_funs,
+                            warnings_as_errors=warnings_as_errors,
+                            progress=progress, store_results=store_results)
+            if(store_results){
+                stored_Results_list[[i]] <- attr(tmp, 'full_results')
+                attr(tmp, 'full_results') <- NULL
+            }
+            Result_list[[i]] <- data.frame(design[i, ], as.list(tmp),
                                            check.names=FALSE)
             time1 <- proc.time()[3L]
             Result_list[[i]]$SIM_TIME <- time1 - time0
             Result_list[[i]]$COMPLETED <- date()
             if(save || save_results || save_generate_data) saveRDS(Result_list, tmpfilename)
+
         }
     }
     attr(Result_list, 'SimDesign_names') <- NULL
@@ -1053,7 +1064,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                     save_seeds_dirname=save_seeds_dirname)[pick],
                                       ncores = if(parallel) length(cl) else if(MPI) NA else 1L,
                                       number_of_conditions = nrow(design),
-                                      date_completed = date(), total_elapsed_time = sum(Final$SIM_TIME))
+                                      date_completed = date(), total_elapsed_time = sum(Final$SIM_TIME),
+                                      stored_results = stored_Results_list)
     if(!is.null(filename) && save){ #save file
         if(verbose)
             message(paste('\nSaving simulation results to file:', filename))
@@ -1110,6 +1122,26 @@ tail.SimDesign <- function(x, ...){
 summary.SimDesign <- function(object, ...){
     ret <- attr(object, 'extra_info')
     ret$total_elapsed_time <- timeFormater(ret$total_elapsed_time, TRUE)
+    ret
+}
+
+#' @rdname runSimulation
+#' @export
+extract_results <- function(object){
+    stopifnot(is(object, "SimDesign"))
+    extra_info <- attr(object, 'extra_info')
+    design_names <- attr(object, "design_names")
+    pick <- design_names$design
+    design <- subset(as.data.frame(object), select=pick)
+    nms <- colnames(design)
+    nms2 <- matrix(character(0L), nrow(design), ncol(design))
+    for(i in 1L:ncol(design))
+        nms2[,i] <- paste0(nms[i], '=', design[,i], if(i < ncol(design)) '; ')
+    nms2 <- apply(nms2, 1L, paste0, collapse='')
+    ret <- extra_info$stored_results
+    names(ret) <- nms2
+    ret
+
     ret
 }
 

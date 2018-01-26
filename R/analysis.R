@@ -2,7 +2,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      save_results, save_results_dirname, max_errors, bootSE, boot_draws,
                      save_generate_data, save_generate_data_dirname,
                      save_seeds, save_seeds_dirname, load_seed, export_funs, packages,
-                     summarise_asis, warnings_as_errors, progress)
+                     summarise_asis, warnings_as_errors, progress, store_results)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -65,8 +65,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
             }
         }
     }
-    if(summarise_asis){
-        ret <- if(is.data.frame(results[[1]]) && nrow(results[[1]]) == 1L){
+    if(summarise_asis || store_results){
+        tabled_results <- if(is.data.frame(results[[1]]) && nrow(results[[1]]) == 1L){
             plyr::rbind.fill(results)
         } else if((is.data.frame(results[[1]]) && nrow(results[[1]]) > 1L) || is.list(results[[1L]])){
             results
@@ -75,9 +75,9 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         }
         if(save_results){
             tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
-            saveRDS(list(condition=condition, results=ret), tmpfilename)
+            saveRDS(list(condition=condition, results=tabled_results), tmpfilename)
         }
-        return(ret)
+        if(summarise_asis) return(tabled_results)
     }
 
     try_errors <- do.call(c, lapply(results, function(x) attr(x, 'try_errors')))
@@ -135,5 +135,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         names(SE_sim_results) <- paste0("BOOT_SE.", names(sim_results))
         ret <- c(ret, SE_sim_results)
     }
+    if(store_results)
+        attr(ret, 'full_results') <- tabled_results
     ret
 }
