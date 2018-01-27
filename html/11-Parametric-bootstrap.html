@@ -171,7 +171,7 @@ with(dat, median_diff(DV, group))</code></pre>
 <pre class="r"><code>cl &lt;- parallel::makeCluster(2)
 median_parametric_boot(dat, median_diff, cl=cl, parallel=TRUE)</code></pre>
 <pre><code>##     p 
-## 0.945</code></pre>
+## 0.937</code></pre>
 <p>The general benefits of <code>SimDesign</code> becomes immediately useful here as well. Consider situations where data must be redrawn during the parametric bootstrap simulation scheme, or when warning messages appear that may suggest issues with the simulation. R’s <code>parallel</code> packages by default will either error-out when <code>stop()</code> messages are thrown (which must be dealt with manually within the user’s code), and information such as <code>warning()</code>s will generally disappear in the output when distributed across many cores (potentially influencing the reliability of the results in unexpected ways). However, as with running general Monte Carlo simulations, <code>runSimulation()</code> will collect all this information in a safe and efficient way, thereby providing the user a safety-blanket when implementing their own parametric bootstrap experiments.</p>
 </div>
 </div>

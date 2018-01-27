@@ -216,41 +216,41 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 <pre class="r"><code>result &lt;- runSimulation(Design, replications = 100, parallel = TRUE, packages = 'mirt',
                        generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
-Design row: 1/6;   Started: Mon Jan 15 13:35:55 2018;   Total elapsed time: 0.00s 
+Design row: 1/6;   Started: Sat Jan 27 15:03:12 2018;   Total elapsed time: 0.00s 
 ## 
-Design row: 2/6;   Started: Mon Jan 15 13:36:00 2018;   Total elapsed time: 5.82s 
+Design row: 2/6;   Started: Sat Jan 27 15:03:18 2018;   Total elapsed time: 6.11s 
 ## 
-Design row: 3/6;   Started: Mon Jan 15 13:36:05 2018;   Total elapsed time: 10.21s 
+Design row: 3/6;   Started: Sat Jan 27 15:03:23 2018;   Total elapsed time: 10.68s 
 ## 
-Design row: 4/6;   Started: Mon Jan 15 13:36:10 2018;   Total elapsed time: 15.52s 
+Design row: 4/6;   Started: Sat Jan 27 15:03:28 2018;   Total elapsed time: 15.82s 
 ## 
-Design row: 5/6;   Started: Mon Jan 15 13:36:13 2018;   Total elapsed time: 18.00s 
+Design row: 5/6;   Started: Sat Jan 27 15:03:31 2018;   Total elapsed time: 18.51s 
 ## 
-Design row: 6/6;   Started: Mon Jan 15 13:36:17 2018;   Total elapsed time: 22.61s</code></pre>
+Design row: 6/6;   Started: Sat Jan 27 15:03:35 2018;   Total elapsed time: 23.08s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 27.85s</code></pre>
+## Simulation complete. Total execution time: 28.36s</code></pre>
 <pre class="r"><code>print(result, time=FALSE, reps=FALSE)</code></pre>
 <pre><code>##   test_length distribution  bias_EAP  bias_MAP  bias_ML bias_EAP_bimodal
-## 1          10       normal  0.000736  0.001831  0.00211          0.00187
-## 2          20       normal -0.000349  0.000146  0.00104         -0.00153
-## 3          30       normal  0.002303  0.002163  0.00214          0.00204
-## 4          10      bimodal  0.001234  0.001395 -0.00117          0.00194
-## 5          20      bimodal -0.001297 -0.001480 -0.00208         -0.00177
-## 6          30      bimodal -0.002534 -0.002415 -0.00268         -0.00208
+## 1          10       normal  0.000736  0.001831  0.00211         0.001875
+## 2          20       normal  0.000810  0.000791  0.00104         0.000799
+## 3          30       normal -0.001107 -0.001376 -0.00122        -0.002294
+## 4          10      bimodal  0.001234  0.001395 -0.00117         0.001944
+## 5          20      bimodal  0.000825  0.000714  0.00208        -0.000127
+## 6          30      bimodal -0.002534 -0.002415 -0.00268        -0.002083
 ##   RMSE_EAP RMSE_MAP RMSE_ML RMSE_EAP_bimodal REPLICATIONS SIM_TIME
-## 1    0.510    0.514   0.590            0.541          100    5.82s
-## 2    0.396    0.398   0.470            0.424          100    4.39s
-## 3    0.334    0.336   0.395            0.357          100    5.31s
-## 4    0.477    0.479   0.597            0.456          100    2.48s
-## 5    0.375    0.373   0.486            0.349          100    4.61s
-## 6    0.323    0.320   0.405            0.300          100    5.24s
+## 1    0.510    0.514   0.590            0.541          100    6.11s
+## 2    0.394    0.396   0.469            0.420          100    4.57s
+## 3    0.332    0.334   0.386            0.357          100    5.14s
+## 4    0.477    0.479   0.597            0.456          100    2.69s
+## 5    0.375    0.373   0.482            0.349          100    4.57s
+## 6    0.323    0.320   0.405            0.300          100    5.28s
 ##                  COMPLETED       SEED
-## 1 Mon Jan 15 13:36:00 2018  244176217
-## 2 Mon Jan 15 13:36:05 2018 1336377795
-## 3 Mon Jan 15 13:36:10 2018 1308407525
-## 4 Mon Jan 15 13:36:13 2018 1338697157
-## 5 Mon Jan 15 13:36:17 2018 1848801707
-## 6 Mon Jan 15 13:36:22 2018 1375056554</code></pre>
+## 1 Sat Jan 27 15:03:18 2018  244176217
+## 2 Sat Jan 27 15:03:23 2018 1336377796
+## 3 Sat Jan 27 15:03:28 2018 1308407526
+## 4 Sat Jan 27 15:03:31 2018 1338697157
+## 5 Sat Jan 27 15:03:35 2018 1848801708
+## 6 Sat Jan 27 15:03:41 2018 1375056554</code></pre>
 </div>
 <div id="analyze-the-results" class="section level3">
 <h3>Analyze the results</h3>
