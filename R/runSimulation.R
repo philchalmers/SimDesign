@@ -1078,7 +1078,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       ncores = if(parallel) length(cl) else if(MPI) NA else 1L,
                                       number_of_conditions = nrow(design),
                                       date_completed = date(), total_elapsed_time = sum(Final$SIM_TIME),
-                                      stored_results = stored_Results_list)
+                                      stored_results = if(store_results) stored_Results_list else NULL)
     if(!is.null(filename) && save){ #save file
         if(verbose)
             message(paste('\nSaving simulation results to file:', filename))
@@ -1135,6 +1135,7 @@ tail.SimDesign <- function(x, ...){
 summary.SimDesign <- function(object, ...){
     ret <- attr(object, 'extra_info')
     ret$total_elapsed_time <- timeFormater(ret$total_elapsed_time, TRUE)
+    ret$stored_results <- NULL
     ret
 }
 
