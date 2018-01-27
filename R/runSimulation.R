@@ -1144,6 +1144,7 @@ summary.SimDesign <- function(object, ...){
 extract_results <- function(object){
     stopifnot(is(object, "SimDesign"))
     extra_info <- attr(object, 'extra_info')
+    if(is.null(extra_info$stored_results)) return(NULL)
     design_names <- attr(object, "design_names")
     pick <- design_names$design
     design <- subset(as.data.frame(object), select=pick)
@@ -1154,8 +1155,6 @@ extract_results <- function(object){
     nms2 <- apply(nms2, 1L, paste0, collapse='')
     ret <- extra_info$stored_results
     names(ret) <- nms2
-    ret
-
     ret
 }
 
