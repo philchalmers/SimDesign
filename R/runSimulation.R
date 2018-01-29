@@ -1079,6 +1079,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       number_of_conditions = nrow(design),
                                       date_completed = date(), total_elapsed_time = sum(Final$SIM_TIME),
                                       stored_results = if(store_results) stored_Results_list else NULL)
+    if(dummy_run) Final$dummy_run <- NULL
     class(Final) <- c('SimDesign', 'data.frame')
     if(!is.null(filename) && save){ #save file
         if(verbose)
@@ -1086,7 +1087,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         saveRDS(Final, filename)
     }
     if(save || save_results || save_generate_data || save_seeds) file.remove(tmpfilename)
-    if(dummy_run) Final$dummy_run <- NULL
     return(Final)
 }
 
