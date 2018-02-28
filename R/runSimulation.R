@@ -782,7 +782,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     start <- 1L; end <- nrow(design)
     if(!is.null(load_seed)){
-        save <- save_results <- save_generate_data <- save_seeds <- parallel <- MPI <- FALSE
+        save <- save_seeds <- parallel <- MPI <- FALSE
         replications <- 1L
         load_seed2 <- gsub('design-row-', '', load_seed)
         start <- end <- as.numeric(gsub('/.*', '', load_seed2))
