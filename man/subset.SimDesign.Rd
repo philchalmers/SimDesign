@@ -4,21 +4,15 @@
 \alias{subset.SimDesign}
 \title{Subset method for SimDesign objects}
 \usage{
-\method{subset}{SimDesign}(x, subset, select, drop = FALSE, ...)
+\method{subset}{SimDesign}(x, ...)
 }
 \arguments{
-\item{x}{A \code{data.frame} object, of class \code{SimDesign}.}
+\item{x}{A \code{data.frame} object, of class \code{SimDesign}}
 
-\item{subset}{A logical expression indicating elements or rows to keep.}
-
-\item{select}{An expression, indicating columns to select from a dataframe.}
-
-\item{drop}{Additional arguments passed on to [ indexing operator.}
-
-\item{...}{Further arguments to be passed to or from other methods.}
+\item{...}{Further arguments to be passed to \code{\link{subset}}}
 }
 \value{
-A \code{data.frame} object.
+A \code{data.frame}/\code{SimDesign} class object.
 }
 \description{
 \code{subset.SimDesign} is a default method for subsetting a
@@ -31,6 +25,7 @@ produced during a simulation.
 data("BF_sim")
 x <- subset(BF_sim, select = 1:6)
 attributes(x)
+head(x)
 
 x1 <- subset(BF_sim, select = c(1,2,4,5,10))
 attributes(x1)

@@ -5,13 +5,10 @@
 #' of the base R subset command to maintain the extra attributes
 #' produced during a simulation.
 #'
-#' @param x A \code{data.frame} object, of class \code{SimDesign}.
-#' @param subset A logical expression indicating elements or rows to keep.
-#' @param select An expression, indicating columns to select from a dataframe.
-#' @param drop Additional arguments passed on to [ indexing operator.
-#' @param ... Further arguments to be passed to or from other methods.
+#' @param x A \code{data.frame} object, of class \code{SimDesign}
+#' @param ... Further arguments to be passed to \code{\link{subset}}
 #'
-#' @return A \code{data.frame} object.
+#' @return A \code{data.frame}/\code{SimDesign} class object.
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
@@ -27,6 +24,7 @@
 #' data("BF_sim")
 #' x <- subset(BF_sim, select = 1:6)
 #' attributes(x)
+#' head(x)
 #'
 #' x1 <- subset(BF_sim, select = c(1,2,4,5,10))
 #' attributes(x1)
@@ -39,43 +37,17 @@
 #' dim(x3)
 #' }
 #'
-subset.SimDesign <- function(x, subset, select, drop = FALSE, ...){
+subset.SimDesign <- function(x, ...){
     design_names <- attributes(x)$design_names
     extra_info <- attributes(x)$extra_info
-
-    xd <- as.data.frame(x)
-    r <- if (missing(subset))
-        rep_len(TRUE, nrow(xd))
-    else {
-        e <- substitute(subset)
-        r <- eval(e, xd, parent.frame())
-        if (!is.logical(r))
-            stop("'subset' must be logical")
-        r & !is.na(r)
-    }
-    vars <- if (missing(select))
-        TRUE
-    else {
-        nl <- as.list(seq_along(xd))
-        names(nl) <- names(xd)
-        eval(substitute(select), nl, parent.frame())
-    }
-    ret <- xd[r, vars, drop = drop]
-
+    x <- as.data.frame(x)
+    ret <- subset(x, ...)
     # Assign proper class and attributes
     class(ret) <- c('SimDesign', 'data.frame')
+    design_names$design <- intersect(design_names$design, names(ret))
+    design_names$sim <- intersect(design_names$sim, names(ret))
     attributes(ret)$design_names <- design_names
     attributes(ret)$extra_info <- extra_info
-
-    # Reassign design and sim attributes, depending on selected columns
-    full_mod <- c(attributes(ret)$design_names$design, attributes(ret)$design_names$sim)
-    match <- intersect(names(ret), full_mod)
-
-    is.fact <- sapply(ret[, match], is.factor)
-    attributes(ret)$design_names$design <- match[is.fact]
-
-    is.sim <- sapply(ret[, match], is.numeric)
-    attributes(ret)$design_names$sim <- match[is.sim]
-    return(ret)
+    ret
 }
 
