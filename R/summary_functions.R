@@ -186,6 +186,91 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
     ret
 }
 
+#' Compute the integrated root mean-square error
+#'
+#' Computes the average/cumulative deviation given two continuous functions and an optional
+#' function representing the probability density function. Only one-dimensional integration
+#' is supported.
+#'
+#' The integrated root mean-square error (IRMSE) is of the form
+#' \deqn{IRMSE(\theta) = \sqrt{\int [f(\theta, \hat{\psi}) - f(\theta, \psi)]^2 g(\theta, ...)}}
+#' where \eqn{g(\theta, ...)} is the density function used to marginalize the continuous sample
+#' (\eqn{f(\theta, \hat{\psi})}) and population (\eqn{f(\theta, \psi)}) functions.
+#'
+#' @param estimate a vector of parameter estimates
+#'
+#' @param parameter a vector of population parameters
+#'
+#' @param fn a continuous function where the first argument is to be integrated and the second argument is
+#'   a vector of parameters or parameter estimates. This function
+#'   represents a implied continuous function which uses the sample estimates or population parameters
+#'
+#' @param density (optional) a density function used to marginalize (i.e., average), where the first
+#'   argument is to be integrated, and must be of the form \code{density(theta, ...)} or
+#'   \code{density(theta, param1, param2)}, where \code{param1} is a placeholder name for the
+#'   hyper-parameters associated with the probability density function. If omitted then
+#'   the cumulative different between the respective functions will be computed instead
+#'
+#' @param lower lower bound to begin numerical integration from
+#'
+#' @param upper upper bound to finish numerical integration to
+#'
+#' @param ... additional parameters to pass to \code{fnest}, \code{fnparam}, \code{density},
+#'   and \code{\link{integrate}},
+#'
+#' @return returns a single \code{numeric} term indicating the average/cumulative deviation
+#' given the supplied continuous functions
+#'
+#' @aliases IRMSE
+#'
+#' @seealso \code{\link{RMSE}}
+#'
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
+#'
+#' @export IRMSE
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
+#' @examples
+#'
+#' # logistic regression function with one slope and intercept
+#' fn <- function(theta, param) 1 / (1 + exp(param[1] + param[2] * theta))
+#'
+#' # sample and population sets
+#' est <- c(1.1253, -0.4951)
+#' pop <- c(1, -0.5)
+#'
+#' theta <- seq(-10,10,length.out=1000)
+#' plot(theta, fn(theta, pop), type = 'l', col='red', ylim = c(0,1))
+#' lines(theta, fn(theta, est), col='blue', lty=2)
+#'
+#' # cumulative result (i.e., standard integral)
+#' IRMSE(est, pop, fn)
+#'
+#' # integrated RMSE result by marginalizing over a N(0,1) distribution
+#' den <- function(theta, mean, sd) dnorm(theta, mean=mean, sd=sd)
+#'
+#' IRMSE(est, pop, fn, den, mean=0, sd=1)
+#'
+#' # this specification is equivalent to the above
+#' den2 <- function(theta, ...) dnorm(theta, ...)
+#'
+#' IRMSE(est, pop, fn, den2, mean=0, sd=1)
+#'
+IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
+                  lower = -Inf, upper = Inf, ...){
+    stopifnot(is.numeric(estimate) && is.numeric(parameter))
+    stopifnot(is.function(fn))
+    stopifnot(is.function(density))
+    intfn <- function(theta, estimate, parameter, ...)
+        (fn(theta, estimate) - fn(theta, parameter))^2 * density(theta, ...)
+    res <- integrate(intfn, lower=lower, upper=upper, estimate=estimate,
+                     parameter=parameter, ...)
+    sqrt(res$value)
+}
 
 
 
