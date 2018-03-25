@@ -237,11 +237,11 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
 #' @examples
 #'
 #' # logistic regression function with one slope and intercept
-#' fn <- function(theta, param) 1 / (1 + exp(param[1] + param[2] * theta))
+#' fn <- function(theta, param) 1 / (1 + exp(-(param[1] + param[2] * theta)))
 #'
 #' # sample and population sets
-#' est <- c(1.1253, -0.4951)
-#' pop <- c(1, -0.5)
+#' est <- c(-0.4951, 1.1253)
+#' pop <- c(-0.5, 1)
 #'
 #' theta <- seq(-10,10,length.out=1000)
 #' plot(theta, fn(theta, pop), type = 'l', col='red', ylim = c(0,1))
