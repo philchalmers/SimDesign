@@ -83,6 +83,7 @@ bias <- function(estimate, parameter = NULL, type = 'bias'){
     n_col <- ncol(estimate)
     if(type == "relative") stopifnot(!is.null(parameter))
     if(is.null(parameter)) parameter <- 0
+    if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
     ret <- colMeans(t(t(estimate) - parameter))
@@ -175,6 +176,7 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
     stopifnot(is.matrix(estimate))
     n_col <- ncol(estimate)
     if(is.null(parameter)) parameter <- 0
+    if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
     ret <- sqrt(colMeans(t( (t(estimate) - parameter)^2 )))
@@ -270,7 +272,6 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
 #'
 IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
                   lower = -Inf, upper = Inf, ...){
-    stopifnot(is.numeric(estimate) && is.numeric(parameter))
     stopifnot(is.function(fn))
     stopifnot(is.function(density))
     intfn <- function(theta, estimate, parameter, ...)
@@ -349,6 +350,7 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
     stopifnot(is.matrix(estimate))
     n_col <- ncol(estimate)
     if(is.null(parameter)) parameter <- 0
+    if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
     ret <- colMeans(t(abs(t(estimate) - parameter)))
@@ -622,6 +624,7 @@ ECR <- function(CIs, parameter, tails = FALSE, CI_width = FALSE, names = NULL){
         return(ret)
     }
     stopifnot(is.matrix(CIs))
+    if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) != 1L) stopifnot(length(parameter) == nrow(CIs))
     if(CIs[1,1] > CIs[1,2]){
