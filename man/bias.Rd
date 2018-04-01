@@ -14,7 +14,8 @@ the number of rows must equal the number of replications}
 
 \item{parameter}{a \code{numeric} scalar/vector indicating the fixed parameters.
 If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame}
-then the value will be recycled for each column.
+then the value will be recycled for each column; otherwise, each element will be associated
+with each respective column in the \code{estimate} input.
 If \code{NULL} then it will be assumed that the \code{estimate} input is in a deviation
 form (therefore \code{mean(estimate))} will be returned)}
 
