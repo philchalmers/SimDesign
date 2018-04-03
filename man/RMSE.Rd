@@ -13,7 +13,8 @@ If a vector, the length is equal to the number of replications. If a
 
 \item{parameter}{a \code{numeric} scalar/vector indicating the fixed parameter values.
 If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame} then
-the value will be recycled for each column.
+the value will be recycled for each column; otherwise, each element will be associated
+with each respective column in the \code{estimate} input.
 If \code{NULL} then it will be assumed that the \code{estimate} input is in a deviation
 form (therefore \code{sqrt(mean(estimate^2))} will be returned)}
 
@@ -51,6 +52,10 @@ RMSE(samp, pop, type = 'RMSLE')
 # matrix input
 mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 RMSE(mat, parameter = 2)
+
+# different parameter associated with each column
+mat <- cbind(M1=rnorm(1000, 2, sd = 0.25), M2 = rnorm(1000, 3, sd = .25))
+RMSE(mat, parameter = c(2,3))
 
 # same, but with data.frame
 df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))

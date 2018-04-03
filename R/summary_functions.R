@@ -11,7 +11,8 @@
 #'
 #' @param parameter a \code{numeric} scalar/vector indicating the fixed parameters.
 #'   If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame}
-#'   then the value will be recycled for each column.
+#'   then the value will be recycled for each column; otherwise, each element will be associated
+#'   with each respective column in the \code{estimate} input.
 #'   If \code{NULL} then it will be assumed that the \code{estimate} input is in a deviation
 #'   form (therefore \code{mean(estimate))} will be returned)
 #'
@@ -57,6 +58,10 @@
 #' bias(mat, parameter = 2, type = 'relative')
 #' bias(mat, parameter = 2, type = 'standardized')
 #'
+#' # different parameter associated with each column
+#' mat <- cbind(M1=rnorm(1000, 2, sd = 0.25), M2 = rnorm(1000, 3, sd = .25))
+#' bias(mat, parameter = c(2,3))
+#'
 #' # same, but with data.frame
 #' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 #' bias(df, parameter = c(2,2))
@@ -79,6 +84,7 @@ bias <- function(estimate, parameter = NULL, type = 'bias'){
     n_col <- ncol(estimate)
     if(type == "relative") stopifnot(!is.null(parameter))
     if(is.null(parameter)) parameter <- 0
+    if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
     ret <- colMeans(t(t(estimate) - parameter))
@@ -101,7 +107,8 @@ bias <- function(estimate, parameter = NULL, type = 'bias'){
 #'
 #' @param parameter a \code{numeric} scalar/vector indicating the fixed parameter values.
 #'   If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame} then
-#'   the value will be recycled for each column.
+#'   the value will be recycled for each column; otherwise, each element will be associated
+#'   with each respective column in the \code{estimate} input.
 #'   If \code{NULL} then it will be assumed that the \code{estimate} input is in a deviation
 #'   form (therefore \code{sqrt(mean(estimate^2))} will be returned)
 #'
@@ -148,6 +155,10 @@ bias <- function(estimate, parameter = NULL, type = 'bias'){
 #' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 #' RMSE(mat, parameter = 2)
 #'
+#' # different parameter associated with each column
+#' mat <- cbind(M1=rnorm(1000, 2, sd = 0.25), M2 = rnorm(1000, 3, sd = .25))
+#' RMSE(mat, parameter = c(2,3))
+#'
 #' # same, but with data.frame
 #' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 #' RMSE(df, parameter = c(2,2))
@@ -167,6 +178,7 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
     stopifnot(is.matrix(estimate))
     n_col <- ncol(estimate)
     if(is.null(parameter)) parameter <- 0
+    if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
     ret <- sqrt(colMeans(t( (t(estimate) - parameter)^2 )))
@@ -262,7 +274,6 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
 #'
 IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
                   lower = -Inf, upper = Inf, ...){
-    stopifnot(is.numeric(estimate) && is.numeric(parameter))
     stopifnot(is.function(fn))
     stopifnot(is.function(density))
     intfn <- function(theta, estimate, parameter, ...)
@@ -285,7 +296,8 @@ IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
 #'
 #' @param parameter a \code{numeric} scalar/vector indicating the fixed parameter values.
 #'   If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame} then the value will be
-#'   recycled for each column.
+#'   recycled for each column; otherwise, each element will be associated
+#'   with each respective column in the \code{estimate} input.
 #'   If \code{NULL}, then it will be assumed that the \code{estimate} input is in a deviation
 #'   form (therefore \code{mean(abs(estimate))} will be returned)
 #'
@@ -341,6 +353,7 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
     stopifnot(is.matrix(estimate))
     n_col <- ncol(estimate)
     if(is.null(parameter)) parameter <- 0
+    if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
     ret <- colMeans(t(abs(t(estimate) - parameter)))
@@ -614,6 +627,7 @@ ECR <- function(CIs, parameter, tails = FALSE, CI_width = FALSE, names = NULL){
         return(ret)
     }
     stopifnot(is.matrix(CIs))
+    if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) != 1L) stopifnot(length(parameter) == nrow(CIs))
     if(CIs[1,1] > CIs[1,2]){

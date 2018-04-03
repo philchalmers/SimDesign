@@ -13,7 +13,8 @@ If a vector, the length is equal to the number of replications. If a
 
 \item{parameter}{a \code{numeric} scalar/vector indicating the fixed parameter values.
 If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame} then the value will be
-recycled for each column.
+recycled for each column; otherwise, each element will be associated
+with each respective column in the \code{estimate} input.
 If \code{NULL}, then it will be assumed that the \code{estimate} input is in a deviation
 form (therefore \code{mean(abs(estimate))} will be returned)}
 
