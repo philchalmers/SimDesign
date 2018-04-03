@@ -122,6 +122,7 @@ SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
 
     #ui
     cat('#---------------------------------------------------------\n')
+    cat('library(SimDesign)\n')
     cat('library(shiny)\n\n')
     cat(sprintf('design_is_numeric <- c(%s)\n\n',
                 paste0(design_is_numeric, collapse=',')))
