@@ -416,6 +416,81 @@ RE <- function(x, MSE = FALSE){
 }
 
 
+#' Compute the relative performance behavior of collections of standard errors
+#'
+#' The mean-square relative standard error (MSRSE) compares standard error
+#' estimates to the standard deviation of the respective
+#' parameter estimates. Values close to 1 indicate that the behavior of the standard errors
+#' closely matched the sampling variability of the parameter estimates.
+#'
+#' Mean-square relative standard error (MSSE) is expressed as
+#'
+#' \deqn{MSRSE = \frac{E(SE(\psi)^2)}{SD(\psi)^2} =
+#'   \frac{1/R * \sum_{r=1}^R SE(\psi_r)^2}{SD(\psi)^2}}
+#'
+#' where \eqn{SE(\psi_r)} represents the estimate of the standard error at the \eqn{r}th
+#' simulation replication, and \eqn{SD(\psi)} represents the standard deviation estimate
+#' of the parameters across all \eqn{R} replications. Note that \eqn{SD(\psi)^2} is used,
+#' which corresponds to the variance of \eqn{\psi}.
+#'
+#' @param SE a \code{numeric} scalar/vector indicating the average standard errors across
+#'   the replications, or a \code{matrix} of collected standard error estimates themselves
+#'   to be used to compute the average standard errors. Each column/element in this input
+#'   corresponds to the column/element in \code{SD}
+#'
+#' @param SD a \code{numeric} scalar/vector indicating the standard deviation across
+#'   the replications, or a \code{matrix} of collected parameter estimates themselves
+#'   to be used to compute the standard deviations. Each column/element in this input
+#'   corresponds to the column/element in \code{SE}
+#'
+#' @return returns a \code{vector} of relative ratios indicating the relative performance
+#'   of the standard error estimates to the observed parameter standard deviation.
+#'   Values less than 1 indicate that the standard errors were larger than the standard
+#'   deviation of the parameters (i.e., more conservative SEs), while values greater than 1 were smaller than
+#'   the standard deviation of the parameters (i.e., more liberal SEs)
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
+#'
+#' @export
+#'
+#' @examples
+#'
+#' Generate <- function(condition, fixed_objects = NULL) {
+#'    X <- rep(0:1, each = 50)
+#'    y <- 10 + 5 * X + rnorm(100, 0, .2)
+#'    data.frame(y, X)
+#' }
+#'
+#' Analyse <- function(condition, dat, fixed_objects = NULL) {
+#'    mod <- lm(y ~ X, dat)
+#'    so <- summary(mod)
+#'    ret <- c(SE = so$coefficients[,"Std. Error"],
+#'             est = so$coefficients[,"Estimate"])
+#'    ret
+#' }
+#'
+#' Summarise <- function(condition, results, fixed_objects = NULL) {
+#'    MSRSE(SE = results[,1:2], SD = results[,3:4])
+#' }
+#'
+#' results <- runSimulation(replications=500, generate=Generate,
+#'                          analyse=Analyse, summarise=Summarise)
+#' results
+#'
+#'
+MSRSE <- function(SE, SD){
+    if(is.matrix(SE) && nrow(SE) > 1L)
+        SE <- apply(SE, 2L, mean)
+    if(is.matrix(SD) && nrow(SD) > 1L)
+        SD <- apply(SD, 2L, sd)
+    SE^2 / SD^2
+}
+
+
 #' Compute the relative difference
 #'
 #' Computes the relative difference statistic of the form \code{(est - pop)/ pop}, which
