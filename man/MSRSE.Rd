@@ -18,11 +18,12 @@ to be used to compute the standard deviations. Each column/element in this input
 corresponds to the column/element in \code{SE}}
 }
 \value{
-returns a \code{vector} of relative ratios indicating the relative performance
+returns a \code{vector} of ratios indicating the relative performance
   of the standard error estimates to the observed parameter standard deviation.
-  Values less than 1 indicate that the standard errors were larger than the standard
-  deviation of the parameters (i.e., more conservative SEs), while values greater than 1 were smaller than
-  the standard deviation of the parameters (i.e., more liberal SEs)
+  Values less than 0 indicate that the standard errors were larger than the standard
+  deviation of the parameters (hence, the SEs are interpreted as more conservative),
+  while values greater than 0 were smaller than the standard deviation of the
+  parameters (i.e., more liberal SEs)
 }
 \description{
 The mean-square relative standard error (MSRSE) compares standard error
@@ -31,10 +32,10 @@ parameter estimates. Values close to 1 indicate that the behavior of the standar
 closely matched the sampling variability of the parameter estimates.
 }
 \details{
-Mean-square relative standard error (MSSE) is expressed as
+Mean-square relative standard error (MSRSE) is expressed as
 
 \deqn{MSRSE = \frac{E(SE(\psi)^2)}{SD(\psi)^2} =
-  \frac{1/R * \sum_{r=1}^R SE(\psi_r)^2}{SD(\psi)^2}}
+  \frac{1/R * \sum_{r=1}^R SE(\psi_r)^2}{SD(\psi)^2} - 1}
 
 where \eqn{SE(\psi_r)} represents the estimate of the standard error at the \eqn{r}th
 simulation replication, and \eqn{SD(\psi)} represents the standard deviation estimate

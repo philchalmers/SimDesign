@@ -21,7 +21,7 @@ returns a \code{vector} or \code{matrix} depending on the inputs and whether
 }
 \description{
 Computes the relative difference statistic of the form \code{(est - pop)/ pop}, which
-is equivalent to the form \code{est/pop - 1}. If matricies are supplied then
+is equivalent to the form \code{est/pop - 1}. If matrices are supplied then
 an equivalent matrix variant will be used of the form
 \code{(est - pop) * solve(pop)}. Values closer to 0 indicate better
 relative parameter recovery.
