@@ -736,11 +736,18 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!all(names(save_results) %in%
             c('compname', 'tmpfilename', 'save_results_dirname', 'save_generate_data_dirname')))
         stop('save_details contains elements that are not supported', call.=FALSE)
-    compname <- save_details$compname; tmpfilename <- save_details$tmpfilename; safe <- save_details$safe
-    save_results_dirname <- save_details$save_results_dirname; save_seeds_dirname <- save_details$save_seeds_dirname
+
+    compname <- save_details$compname
+    safe <- save_details$safe
+    outdir <- save_details$outdir
+    tmpfilename <- save_details$tmpfilename
+    save_results_dirname <- save_details$save_results_dirname
     save_generate_data_dirname <- save_details$save_generate_data_dirname
+    save_seeds_dirname <- save_details$save_seeds_dirname
+
     if(is.null(compname)) compname <- Sys.info()['nodename']
     if(is.null(safe)) safe <- TRUE
+    if(is.null(outdir)) { outdir <- '.' } else { dir.create(outdir) }
     if(is.null(tmpfilename)) tmpfilename <- paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')
     if(is.null(save_results_dirname)) save_results_dirname <- paste0('SimDesign-results_', compname)
     if(is.null(save_generate_data_dirname)) save_generate_data_dirname <- paste0('SimDesign-generate-data_', compname)
@@ -839,12 +846,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Result_list <- stored_Results_list <- vector('list', nrow(design))
     names(Result_list) <- names(stored_Results_list) <- rownames(design)
     time0 <- time1 <- proc.time()[3L]
-    files <- dir()
+    files <- dir(outdir)
     if(!MPI && any(files == tmpfilename) && is.null(load_seed)){
         if(verbose)
             message(sprintf('Resuming simulation from %s file with %i replications.',
-                            tmpfilename, replications))
-        Result_list <- readRDS(tmpfilename)
+                            file.path(outdir, tmpfilename), replications))
+        Result_list <- readRDS(file.path(outdir, tmpfilename))
         if(!is.null(Result_list[[1L]]$REPLICATIONS))
             replications <- Result_list[[1L]]$REPLICATIONS
         if(nrow(design) != length(Result_list))
@@ -862,44 +869,44 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(save_results){
         save <- TRUE
-        if(!file.exists(tmpfilename)){
+        if(!file.exists(file.path(outdir, tmpfilename))) {
             if(safe){
                 tmp <- save_results_dirname
                 count <- 1L
-                while(dir.exists(save_results_dirname)){
+                while(dir.exists(file.path(outdir, save_results_dirname))) {
                     save_results_dirname <- paste0(tmp, '_', count)
                     count <- count + 1L
                 }
                 if(tmp != save_results_dirname && verbose)
                     message(sprintf('%s already exists; using %s directory instead',
-                                    tmp, save_results_dirname))
+                                    file.path(outdir, tmp), file.path(outdir, save_results_dirname)))
             }
-            dir.create(save_results_dirname)
+            dir.create(file.path(outdir, save_results_dirname))
         }
-        if(length(dir(save_results_dirname)) != (start - 1L))
+        if(length(dir(file.path(outdir, save_results_dirname))) != (start - 1L))
             stop('save_results_dirname not starting from correct location according to tempfile',
                  call.=FALSE)
     }
     if(save_seeds){
         save <- TRUE
-        if(!file.exists(tmpfilename)){
+        if(!file.exists(file.path(outdir, tmpfilename))) {
             if(safe){
                 tmp <- save_seeds_dirname
                 count <- 1L
-                while(dir.exists(save_seeds_dirname)){
+                while(dir.exists(file.path(outdir, save_seeds_dirname))) {
                     save_seeds_dirname <- paste0(tmp, '_', count)
                     count <- count + 1L
                 }
                 if(tmp != save_seeds_dirname && verbose)
                     message(sprintf('%s already exists; using %s directory instead',
-                                    tmp, save_seeds_dirname))
+                                    file.path(outdir, tmp), file.path(outdir, save_seeds_dirname)))
             }
-            dir.create(save_seeds_dirname)
+            dir.create(file.path(outdir, save_seeds_dirname))
         }
     }
     if(save_generate_data){
         save <- TRUE
-        if(!file.exists(tmpfilename)){
+        if(!file.exists(file.path(outdir, tmpfilename))) {
             if(safe){
                 tmp <- save_generate_data_dirname
                 count <- 1L
@@ -909,9 +916,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 }
                 if(tmp != save_generate_data_dirname && verbose)
                     message(sprintf('%s already exists; using %s directory instead',
-                                    tmp, save_generate_data_dirname))
+                                    file.path(outdir, tmp), file.path(outdir, save_generate_data_dirname)))
             }
-            dir.create(save_generate_data_dirname)
+            dir.create(file.path(outdir, save_generate_data_dirname))
         }
     }
     if(safe && (parallel || MPI)){
@@ -934,9 +941,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(is.null(attr(Result_list, 'SimDesign_names')))
         attr(Result_list, 'SimDesign_names') <-
-        c(save_generate_data_dirname=save_generate_data_dirname,
-          save_results_dirname=save_results_dirname,
-          save_seeds_dirname=save_seeds_dirname)
+        c(save_generate_data_dirname=file.path(outdir, save_generate_data_dirname),
+          save_results_dirname=file.path(outdir, save_results_dirname),
+          save_seeds_dirname=file.path(outdir, save_seeds_dirname))
     if(progress) verbose <- TRUE
     for(i in start:end){
         if(summarise_asis){
@@ -969,9 +976,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                stored_time=stored_time, progress=progress)
             time0 <- proc.time()[3L]
             if(save_generate_data)
-                dir.create(paste0(save_generate_data_dirname, '/design-row-', i), showWarnings = FALSE)
+                dir.create(file.path(outdir, paste0(save_generate_data_dirname, '/design-row-', i)), showWarnings = FALSE)
             if(save_seeds)
-                dir.create(paste0(save_seeds_dirname, '/design-row-', i), showWarnings = FALSE)
+                dir.create(file.path(outdir, paste0(save_seeds_dirname, '/design-row-', i)), showWarnings = FALSE)
             tmp <- Analysis(Functions=Functions,
                             condition=design[i,],
                             replications=replications,
@@ -979,6 +986,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             cl=cl, MPI=MPI, seed=seed,
                             bootSE=bootSE, boot_draws=boot_draws,
                             save_results=save_results,
+                            save_results_outdir = outdir,
                             save_results_dirname=save_results_dirname,
                             save_generate_data=save_generate_data,
                             save_generate_data_dirname=save_generate_data_dirname,
@@ -997,7 +1005,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             time1 <- proc.time()[3L]
             Result_list[[i]]$SIM_TIME <- time1 - time0
             Result_list[[i]]$COMPLETED <- date()
-            if(save || save_results || save_generate_data) saveRDS(Result_list, tmpfilename)
+            if(save || save_results || save_generate_data) saveRDS(Result_list, file.path(outdir, tmpfilename))
 
         }
     }
@@ -1027,7 +1035,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Final <- data.frame(Final, REPLICATIONS, SIM_TIME, COMPLETED, check.names=FALSE)
     if(!is.null(seed)) Final$SEED <- seed
     if(!is.null(filename) && safe){ #save file
-        files <- dir()
+        files <- dir(outdir)
         filename0 <- filename
         count <- 1L
         # create a new file name if old one exists, and throw warning
@@ -1084,7 +1092,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!is.null(filename) && save){ #save file
         if(verbose)
             message(paste('\nSaving simulation results to file:', filename))
-        saveRDS(Final, filename)
+        saveRDS(Final, file.path(outdir, filename))
     }
     if(save || save_results || save_generate_data || save_seeds) file.remove(tmpfilename)
     return(Final)

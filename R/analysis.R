@@ -1,5 +1,5 @@
 Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI, seed,
-                     save_results, save_results_dirname, max_errors, bootSE, boot_draws,
+                     save_results, save_results_outdir, save_results_dirname, max_errors, bootSE, boot_draws,
                      save_generate_data, save_generate_data_dirname,
                      save_seeds, save_seeds_dirname, load_seed, export_funs, packages,
                      summarise_asis, warnings_as_errors, progress, store_results)
@@ -14,6 +14,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    analyse=Functions$analyse,
                    fixed_objects=fixed_objects,
                    max_errors=max_errors, packages=packages,
+                   save_results_outdir=save_results_outdir,
                    save_generate_data=save_generate_data,
                    save_generate_data_dirname=save_generate_data_dirname,
                    save_seeds=save_seeds, load_seed=load_seed,
@@ -25,6 +26,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    analyse=Functions$analyse,
                    fixed_objects=fixed_objects,
                    max_errors=max_errors, packages=packages,
+                   save_results_outdir=save_results_outdir,
                    save_generate_data=save_generate_data,
                    save_generate_data_dirname=save_generate_data_dirname,
                    save_seeds=save_seeds, load_seed=load_seed,
@@ -34,6 +36,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     } else {
         if(MPI){
             i <- 1L
+            # This is most likely broken at the moment, OO.
             results <- foreach(i=1L:replications, .export=export_funs) %dopar%
                 mainsim(i, condition=condition, generate=Functions$generate,
                      analyse=Functions$analyse, fixed_objects=fixed_objects, load_seed=load_seed,
@@ -48,6 +51,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     condition=condition, generate=Functions$generate,
                                     analyse=Functions$analyse, load_seed=load_seed,
                                     fixed_objects=fixed_objects, packages=packages,
+                                    save_results_outdir=save_results_outdir,
                                     max_errors=max_errors, save_generate_data=save_generate_data,
                                     save_generate_data_dirname=save_generate_data_dirname,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
@@ -58,6 +62,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     condition=condition, generate=Functions$generate,
                                     analyse=Functions$analyse, load_seed=load_seed,
                                     fixed_objects=fixed_objects, packages=packages,
+                                    save_results_outdir=save_results_outdir,
                                     max_errors=max_errors, save_generate_data=save_generate_data,
                                     save_generate_data_dirname=save_generate_data_dirname,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
@@ -75,7 +80,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         }
         if(save_results){
             tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
-            saveRDS(list(condition=condition, results=tabled_results), tmpfilename)
+            saveRDS(list(condition=condition, results=tabled_results), file.path(save_results_outdir, tmpfilename))
         }
         if(summarise_asis) return(tabled_results)
     }
@@ -105,7 +110,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     if(save_results){
         tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
         saveRDS(list(condition=condition, results=results, errors=try_errors, warnings=warnings),
-                tmpfilename)
+                file.path(save_results_outdir, tmpfilename))
     }
     sim_results <- Functions$summarise(results=results,
                            condition=condition, fixed_objects=fixed_objects)

@@ -222,7 +222,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 # print(SimDesign::main)
 #
 # }
-mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors,
+mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_outdir,
                     save_generate_data, save_generate_data_dirname,
                     save_seeds, save_seeds_dirname, load_seed, warnings_as_errors, packages = NULL){
 
@@ -237,11 +237,11 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                                     '/seed-')
             filename <- paste0(filename_stem, index)
             count <- 1L
-            while(file.exists(filename)){
+            while(file.exists(file.path(save_results_outdir, filename))){
                 filename <- paste0(filename_stem, index, '-', count)
                 count <- count + 1L
             }
-            write(current_Random.seed, filename, sep = ' ')
+            write(current_Random.seed, file.path(save_results_outdir, filename), sep = ' ')
         }
         if(!is.null(load_seed))
             .GlobalEnv$.Random.seed <- as.integer(scan(load_seed, sep = ' ', quiet = TRUE))
@@ -254,11 +254,11 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                                     '/generate-data-')
             filename <- paste0(filename_stem, index, '.rds')
             count <- 1L
-            while(file.exists(filename)){
+            while(file.exists(file.path(save_results_outdir, filename))){
                 filename <- paste0(filename_stem, index, '-', count, '.rds')
                 count <- count + 1L
             }
-            saveRDS(simlist, filename)
+            saveRDS(simlist, file.path(save_results_outdir, filename))
         }
         Warnings <- NULL
         wHandler <- function(w) {
