@@ -1094,7 +1094,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             message(paste('\nSaving simulation results to file:', filename))
         saveRDS(Final, file.path(out_rootdir, filename))
     }
-    if(save || save_results || save_generate_data || save_seeds) file.remove(tmpfilename)
+    if(save || save_results || save_generate_data || save_seeds) file.remove(file.path(out_rootdir, tmpfilename))
     return(Final)
 }
 
