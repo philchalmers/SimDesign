@@ -194,6 +194,9 @@ as \code{ordered}. Default is \code{TRUE}}
       results from the temp files may be resumed on another computer by changing the name of the
       node to match the broken computer. Default is the result of evaluating \code{unname(Sys.info()['nodename'])}}
 
+    \item{\code{out_rootdir}}{root directory to save all files to. Default uses the
+       current working directory}
+
     \item{\code{tmpfilename}}{the name of the temporary \code{.rds} file when any of the \code{save} flags are used.
        This file will be read-in if it is in the working directory and the simulation will continue
        at the last point this file was saved

@@ -363,6 +363,9 @@
 #'       results from the temp files may be resumed on another computer by changing the name of the
 #'       node to match the broken computer. Default is the result of evaluating \code{unname(Sys.info()['nodename'])}}
 #'
+#'     \item{\code{out_rootdir}}{root directory to save all files to. Default uses the
+#'        current working directory}
+#'
 #'     \item{\code{tmpfilename}}{the name of the temporary \code{.rds} file when any of the \code{save} flags are used.
 #'        This file will be read-in if it is in the working directory and the simulation will continue
 #'        at the last point this file was saved
@@ -747,7 +750,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
 
     if(is.null(compname)) compname <- Sys.info()['nodename']
     if(is.null(safe)) safe <- TRUE
-    if(is.null(out_rootdir)) { out_rootdir <- '.' } else { dir.create(out_rootdir) }
+    if(is.null(out_rootdir)) { out_rootdir <- '.' } else { dir.create(out_rootdir, showWarnings=FALSE) }
     if(is.null(tmpfilename)) tmpfilename <- paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')
     if(is.null(save_results_dirname)) save_results_dirname <- paste0('SimDesign-results_', compname)
     if(is.null(save_generate_data_dirname)) save_generate_data_dirname <- paste0('SimDesign-generate-data_', compname)

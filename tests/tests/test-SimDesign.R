@@ -423,5 +423,12 @@ test_that('SimDesign', {
     expect_true('thatfile.rds' %in% dir())
     SimClean('thatfile.rds')
 
+    results <- runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile', out_rootdir = "~/mytmpdir"),
+                             generate=Generate, analyse=Analyse2, summarise=Summarise, filename = 'thatfile',
+                             verbose=FALSE)
+    expect_true('thatfile.rds' %in% dir("~/mytmpdir"))
+    SimClean('thatfile.rds', save_details = list(out_rootdir = "~/mytmpdir"))
+    expect_false('thatfile.rds' %in% dir("~/mytmpdir"))
+
 })
 

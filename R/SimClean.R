@@ -53,6 +53,11 @@
 SimClean <- function(..., dirs = NULL, generate_data = FALSE, results = FALSE,
                      seeds = FALSE, temp = FALSE, save_details = list()){
     compname <- save_details$compname; tmpfilename <- save_details$tmpfilename
+    out_rootdir <- save_details$out_rootdir
+    if(!is.null(out_rootdir)){
+        gtw <- getwd()
+        setwd(out_rootdir)
+    }
     save_results_dirname <- save_details$save_results_dirname
     save_seeds_dirname <- save_details$save_seeds_dirname
     save_generate_data_dirname <- save_details$save_generate_data_dirname
@@ -72,5 +77,6 @@ SimClean <- function(..., dirs = NULL, generate_data = FALSE, results = FALSE,
     if(results) unlink(save_results_dirname, recursive = TRUE, force = TRUE)
     if(seeds) unlink(save_seeds_dirname, recursive = TRUE, force = TRUE)
     if(temp) file.remove(tmpfilename)
+    if(!is.null(out_rootdir)) setwd(gtw)
     invisible(NULL)
 }
