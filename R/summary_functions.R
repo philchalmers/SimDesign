@@ -87,6 +87,9 @@ bias <- function(estimate, parameter = NULL, type = 'bias'){
     if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
+    equal_len <- length(estimate) == length(parameter)
+    if(!equal_len)
+        stopifnot(ncol(estimate) == length(parameter))
     ret <- colMeans(t(t(estimate) - parameter))
     if(type == 'relative') ret <- ret / parameter
     else if(type == 'standardized') ret <- ret / apply(estimate, 2, sd)
@@ -154,6 +157,7 @@ bias <- function(estimate, parameter = NULL, type = 'bias'){
 #' # matrix input
 #' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 #' RMSE(mat, parameter = 2)
+#' RMSE(mat, parameter = c(2, 3))
 #'
 #' # different parameter associated with each column
 #' mat <- cbind(M1=rnorm(1000, 2, sd = 0.25), M2 = rnorm(1000, 3, sd = .25))
@@ -181,6 +185,11 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
     if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
+    ret <- sapply(1L:ncol(estimate), function(i)
+        sqrt(mean((estimate[,i] - parameter[i])^2)))
+    equal_len <- length(estimate) == length(parameter)
+    if(!equal_len)
+        stopifnot(ncol(estimate) == length(parameter))
     ret <- sqrt(colMeans(t( (t(estimate) - parameter)^2 )))
     if(type == 'NRMSE'){
         diff <- apply(estimate, 2, max) - apply(estimate, 2, min)
@@ -356,6 +365,9 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
     if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) == 1L) parameter <- rep(parameter, n_col)
+    equal_len <- length(estimate) == length(parameter)
+    if(!equal_len)
+        stopifnot(ncol(estimate) == length(parameter))
     ret <- colMeans(t(abs(t(estimate) - parameter)))
     if(type == 'NMAE'){
         diff <- apply(estimate, 2, max) - apply(estimate, 2, min)
