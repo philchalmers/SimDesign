@@ -24,7 +24,10 @@ returns a named \code{numeric} vector or \code{data.frame} with the values of in
 }
 \description{
 Compute all relevant test statistics, parameter estimates, detection rates, and so on.
-This is the computational heavy lifting portion of the Monte Carlo simulation.
+This is the computational heavy lifting portion of the Monte Carlo simulation. If
+a suitable \code{\link{Generate}} function was not supplied then this function
+can be used to be generate and analyse the Monte Carlo data (though in general this
+setup is not recommended for larger simulations).
 }
 \details{
 In some cases, it may be easier to change the output to a named \code{list} containing

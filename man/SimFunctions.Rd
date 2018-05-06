@@ -5,7 +5,7 @@
 \title{Skeleton functions for simulations}
 \usage{
 SimFunctions(filename = NULL, dir = getwd(), comments = FALSE,
-  singlefile = TRUE, summarise = TRUE)
+  singlefile = TRUE, summarise = TRUE, generate = TRUE)
 }
 \arguments{
 \item{filename}{a character vector indicating whether the output should be saved to two respective files
@@ -22,6 +22,8 @@ often makes organization and debugging slightly easier, especially for larger Mo
 Default is \code{TRUE}}
 
 \item{summarise}{include \code{summarise} function? Default is \code{TRUE}}
+
+\item{generate}{include \code{generate} function? Default is \code{TRUE}}
 }
 \description{
 This function prints skeleton versions of the required SimDesign functions

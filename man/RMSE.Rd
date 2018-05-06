@@ -52,6 +52,7 @@ RMSE(samp, pop, type = 'RMSLE')
 # matrix input
 mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 RMSE(mat, parameter = 2)
+RMSE(mat, parameter = c(2, 3))
 
 # different parameter associated with each column
 mat <- cbind(M1=rnorm(1000, 2, sd = 0.25), M2 = rnorm(1000, 3, sd = .25))

@@ -42,10 +42,13 @@ be studied, where each row represents a unique condition and each column a facto
 Must be greater than 0}
 
 \item{generate}{user-defined data and parameter generating function.
-See \code{\link{Generate}} for details}
+See \code{\link{Generate}} for details. Note that this argument may be omitted by the
+user if they wish to generate the data with the \code{analyse} step, but for real-world
+simulations this is genererally not recommended}
 
 \item{analyse}{user-defined computation function which acts on the data generated from
-\code{\link{Generate}}. See \code{\link{Analyse}} for details}
+\code{\link{Generate}} (or, if \code{generate} was omitted, both generates and
+analyses the simulated data). See \code{\link{Analyse}} for details}
 
 \item{summarise}{optional (but highly recommended) user-defined summary function to be used
 after all the replications have completed within each \code{design} condition. Omitting this function

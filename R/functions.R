@@ -4,7 +4,9 @@
 #' numerous approaches to generate data, some of which are contained in the base package, as well
 #' as in \code{SimDesign} (e.g., \code{\link{rmgh}}, \code{\link{rValeMaurelli}}, \code{\link{rHeadrick}}).
 #' However the majority can be found in external packages. See CRAN's list of possible distributions here:
-#' \url{https://CRAN.R-project.org/view=Distributions}
+#' \url{https://CRAN.R-project.org/view=Distributions}. Note that this function technically
+#' can be omitted if the data generation is provided in the \code{\link{Analyse}} step, though
+#' in general this is not recommended.
 #'
 #' @param condition a single row from the \code{design} input (as a \code{data.frame}), indicating the
 #'   simulation conditions
@@ -77,7 +79,10 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #' Compute estimates and statistics
 #'
 #' Compute all relevant test statistics, parameter estimates, detection rates, and so on.
-#' This is the computational heavy lifting portion of the Monte Carlo simulation.
+#' This is the computational heavy lifting portion of the Monte Carlo simulation. If
+#' a suitable \code{\link{Generate}} function was not supplied then this function
+#' can be used to be generate and analyse the Monte Carlo data (though in general this
+#' setup is not recommended for larger simulations).
 #'
 #' In some cases, it may be easier to change the output to a named \code{list} containing
 #' different parameter configurations (e.g., when

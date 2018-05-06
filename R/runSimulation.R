@@ -255,10 +255,13 @@
 #'   be studied, where each row represents a unique condition and each column a factor to be varied
 #'
 #' @param generate user-defined data and parameter generating function.
-#'   See \code{\link{Generate}} for details
+#'   See \code{\link{Generate}} for details. Note that this argument may be omitted by the
+#'   user if they wish to generate the data with the \code{analyse} step, but for real-world
+#'   simulations this is genererally not recommended
 #'
 #' @param analyse user-defined computation function which acts on the data generated from
-#'   \code{\link{Generate}}. See \code{\link{Analyse}} for details
+#'   \code{\link{Generate}} (or, if \code{generate} was omitted, both generates and
+#'   analyses the simulated data). See \code{\link{Analyse}} for details
 #'
 #' @param summarise optional (but highly recommended) user-defined summary function to be used
 #'   after all the replications have completed within each \code{design} condition. Omitting this function
@@ -735,7 +738,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           max_errors = 50L, as.factor = TRUE, save_generate_data = FALSE,
                           save_details = list(), edit = 'none', progress = FALSE, verbose = TRUE)
 {
-    stopifnot(!missing(generate) || !missing(analyse))
+    stopifnot(missing(analyse))
+    if(missing(generate) && !missing(analyse))
+        generate <- function(condition, dat, fixed_objects = NULL){}
     if(!all(names(save_results) %in%
             c('compname', 'tmpfilename', 'save_results_dirname', 'save_generate_data_dirname')))
         stop('save_details contains elements that are not supported', call.=FALSE)

@@ -430,5 +430,15 @@ test_that('SimDesign', {
     SimClean('thatfile.rds', save_details = list(out_rootdir = "~/mytmpdir"))
     expect_false('thatfile.rds' %in% dir("~/mytmpdir"))
 
+    gen_anal <- function(condition, dat, fixed_objects = NULL){
+        dat <- rnorm(100)
+        mean(dat)
+    }
+    Summarise <- function(condition, results, fixed_objects = NULL)
+        bias(results, 0)
+    results <- runSimulation(replications = 10, analyse=gen_anal,
+                             summarise=Summarise)
+    expect_is(results, 'SimDesign')
+
 })
 

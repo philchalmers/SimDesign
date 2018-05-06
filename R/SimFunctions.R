@@ -27,6 +27,8 @@
 #'
 #' @param summarise include \code{summarise} function? Default is \code{TRUE}
 #'
+#' @param generate include \code{generate} function? Default is \code{TRUE}
+#'
 #' @aliases SimFunctions
 #'
 #' @export SimFunctions
@@ -53,7 +55,7 @@
 #' }
 #'
 SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
-                         singlefile = TRUE, summarise = TRUE){
+                         singlefile = TRUE, summarise = TRUE, generate = TRUE){
     LINE <- function()
         cat('#-------------------------------------------------------------------\n')
     HEAD <- function(){
@@ -73,13 +75,15 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
     FUNCTIONS <- function(){
         LINE()
         if(comments) cat('\n### Define essential simulation functions\n')
-        cat('\nGenerate <- function(condition, fixed_objects = NULL) {')
-        if(comments) cat('\n    # Define data generation code ...\n')
-        if(comments) cat('\n    # Return a vector, matrix, data.frame, or list')
-        cat('\n    dat <- data.frame()')
-        cat('\n    dat\n}')
-        cat('\n\n')
-        cat('Analyse <- function(condition, dat, fixed_objects = NULL) {')
+        if(generate){
+            cat('\nGenerate <- function(condition, fixed_objects = NULL) {')
+            if(comments) cat('\n    # Define data generation code ...\n')
+            if(comments) cat('\n    # Return a vector, matrix, data.frame, or list')
+            cat('\n    dat <- data.frame()')
+            cat('\n    dat\n}')
+            cat('\n')
+        }
+        cat('\nAnalyse <- function(condition, dat, fixed_objects = NULL) {')
         if(comments) cat('\n    # Run statistical analyses of interest ... \n')
         if(comments) cat('\n    # Return a named vector or list')
         cat('\n    ret <- c(stat1 = NaN, stat2 = NaN)\n    ret\n}')
@@ -95,7 +99,8 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
     TAIL <- function(){
         LINE()
         if(comments) cat('\n### Run the simulation\n')
-        cat('\nresults <- runSimulation(design=Design, replications=1000, generate=Generate, ')
+        cat('\nresults <- runSimulation(design=Design, replications=1000,',
+            if(generate) ', generate=Generate, ')
         cat(sprintf('\n                         analyse=Analyse%s',
                     if(summarise) ', summarise=Summarise)' else ')'))
         cat('\n\n')

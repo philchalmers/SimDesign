@@ -22,7 +22,9 @@ Generate data from a single row in the \code{design} input (see \code{\link{runS
 numerous approaches to generate data, some of which are contained in the base package, as well
 as in \code{SimDesign} (e.g., \code{\link{rmgh}}, \code{\link{rValeMaurelli}}, \code{\link{rHeadrick}}).
 However the majority can be found in external packages. See CRAN's list of possible distributions here:
-\url{https://CRAN.R-project.org/view=Distributions}
+\url{https://CRAN.R-project.org/view=Distributions}. Note that this function technically
+can be omitted if the data generation is provided in the \code{\link{Analyse}} step, though
+in general this is not recommended.
 }
 \examples{
 \dontrun{
