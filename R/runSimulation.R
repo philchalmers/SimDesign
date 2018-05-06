@@ -738,7 +738,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           max_errors = 50L, as.factor = TRUE, save_generate_data = FALSE,
                           save_details = list(), edit = 'none', progress = FALSE, verbose = TRUE)
 {
-    stopifnot(missing(analyse))
+    stopifnot(!missing(analyse))
     if(missing(generate) && !missing(analyse))
         generate <- function(condition, dat, fixed_objects = NULL){}
     if(!all(names(save_results) %in%
