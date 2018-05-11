@@ -232,6 +232,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                     save_seeds, save_seeds_dirname, load_seed, warnings_as_errors, packages = NULL){
 
     load_packages(packages)
+    condition$REPLICATION <- index
     try_error <- character()
 
     while(TRUE){

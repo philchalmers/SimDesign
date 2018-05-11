@@ -49,6 +49,16 @@
 #'         analyse=Analyse, summarise=Summarise)}}{}
 #' }
 #'
+#' The \code{condition} object represents a single row from the \code{design} object, indicating
+#' a unique Monte Carlo simulation condition. The \code{condition} object also contains two
+#' additional elements to help track the simulation's state: an \code{ID} variable, indicating
+#' the respective row number in the \code{design} object, and a \code{REPLICATION} element
+#' indicating the replication iteration number. Mainly, these are included to help with debugging,
+#' where users can easily locate the \code{r}th replication (e.g., \code{REPLICATION == 500})
+#' within the \code{j}th row in the simulation design (e.g., \code{ID == 2}). The
+#' \code{REPLICATION} input is also useful when temporarily saving files to the hard-drive
+#' when calling external command line utilities.
+#'
 #' For a skeleton version of the work-flow, which is often useful when initially defining a simulation,
 #' see \code{\link{SimFunctions}}. This function will write template simulation code
 #' to one/two files so that modifying the required functions and objects can begin immediately
@@ -257,7 +267,7 @@
 #' @param generate user-defined data and parameter generating function.
 #'   See \code{\link{Generate}} for details. Note that this argument may be omitted by the
 #'   user if they wish to generate the data with the \code{analyse} step, but for real-world
-#'   simulations this is genererally not recommended
+#'   simulations this is generally not recommended
 #'
 #' @param analyse user-defined computation function which acts on the data generated from
 #'   \code{\link{Generate}} (or, if \code{generate} was omitted, both generates and
@@ -271,7 +281,7 @@
 #'   information (e.g., try-errors, warning messages, etc), can witness memory related issues,
 #'   and generally is not as flexible internally. See
 #'   the \code{save_results} option for a more RAM friendly alternative to storing all the Generate-Analyse results
-#'   in the working enviroment
+#'   in the working environment
 #'
 #' @param replications number of replication to perform per condition (i.e., each row in \code{design}).
 #'   Must be greater than 0
@@ -440,7 +450,7 @@
 #'   standard errors for each statistic can be computed. To compute large-sample confidence
 #'   intervals given the bootstrap SE estimates see \code{\link{SimBoot}}.
 #'
-#'   This option is useful to approximate how accurate the resulting meta-statatistic estimates
+#'   This option is useful to approximate how accurate the resulting meta-statistic estimates
 #'   were, particularly if the number of \code{replications} was relatively low (e.g., less than
 #'   5000). If users prefer to obtain alternative bootstrap estimates then consider passing
 #'   \code{save_results = TRUE}, reading the generate-analyse data into R via
@@ -702,7 +712,7 @@
 #' # quick ANOVA analysis method with all two-way interactions
 #' SimAnova( ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
 #'
-#' # or more specific anovas
+#' # or more specific ANOVAs
 #' SimAnova(independent ~ (group_size_ratio + standard_deviation_ratio)^2,
 #'     Final)
 #'
@@ -823,6 +833,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         stop('number of replications must be greater than or equal to 1', call. = FALSE)
     if(!(edit %in% c('none', 'analyse', 'generate', 'summarise', 'all')))
         stop('edit location is not valid', call. = FALSE)
+    if(!is.null(design$REPLICATION))
+        stop("REPLICATION is a reserved keyword in the design object. Please use another name", call.=FALSE)
+    else design <- data.frame(REPLICATION=integer(nrow(design)), design)
     if(is.null(design$ID)){
         design <- data.frame(ID=1L:nrow(design), design)
     } else stopifnot(length(unique(design$ID)) == nrow(design))
@@ -966,6 +979,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          cl=cl, MPI=MPI, seed=seed,
                                          bootSE=bootSE, boot_draws=boot_draws,
                                          save_results=save_results,
+                                         save_results_out_rootdir=out_rootdir,
                                          save_results_dirname=save_results_dirname,
                                          save_generate_data=save_generate_data,
                                          save_generate_data_dirname=save_generate_data_dirname,
@@ -1019,7 +1033,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     attr(Result_list, 'SimDesign_names') <- NULL
     if(summarise_asis){
-        design$ID <- NULL
+        design$ID <- design$REPLICATION <- NULL
         nms <- colnames(design)
         nms2 <- matrix(character(0L), nrow(design), ncol(design))
         for(i in 1L:ncol(design))
@@ -1039,7 +1053,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     SIM_TIME <- Final$SIM_TIME
     COMPLETED <- Final$COMPLETED
     REPLICATIONS <- Final$REPLICATIONS
-    Final$SIM_TIME <- Final$ID <- Final$REPLICATIONS <- Final$COMPLETED <- NULL
+    Final$SIM_TIME <- Final$ID <- Final$REPLICATIONS <-
+        Final$COMPLETED <- Final$REPLICATION <- NULL
     Final <- data.frame(Final, REPLICATIONS, SIM_TIME, COMPLETED, check.names=FALSE)
     if(!is.null(seed)) Final$SEED <- seed
     if(!is.null(filename) && safe){ #save file
@@ -1060,7 +1075,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                Using a unique file name instead.\n'))
     }
     dn <- colnames(design)
-    dn <- dn[dn != 'ID']
+    dn <- dn[!(dn %in% c('ID', 'REPLICATION'))]
     if(as.factor){
         Final[dn] <- lapply(Final[dn], function(x){
             if(is.list(x)) return(x)

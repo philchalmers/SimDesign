@@ -44,7 +44,7 @@ Must be greater than 0}
 \item{generate}{user-defined data and parameter generating function.
 See \code{\link{Generate}} for details. Note that this argument may be omitted by the
 user if they wish to generate the data with the \code{analyse} step, but for real-world
-simulations this is genererally not recommended}
+simulations this is generally not recommended}
 
 \item{analyse}{user-defined computation function which acts on the data generated from
 \code{\link{Generate}} (or, if \code{generate} was omitted, both generates and
@@ -58,7 +58,7 @@ Ommiting this function is only recommended for didactic purposes because it leav
 information (e.g., try-errors, warning messages, etc), can witness memory related issues,
 and generally is not as flexible internally. See
 the \code{save_results} option for a more RAM friendly alternative to storing all the Generate-Analyse results
-in the working enviroment}
+in the working environment}
 
 \item{fixed_objects}{(optional) an object (usually a named \code{list})
 containing additional user-defined objects
@@ -82,7 +82,7 @@ Alternatively, functions can be called explicitly without attaching the package 
   standard errors for each statistic can be computed. To compute large-sample confidence
   intervals given the bootstrap SE estimates see \code{\link{SimBoot}}.
 
-  This option is useful to approximate how accurate the resulting meta-statatistic estimates
+  This option is useful to approximate how accurate the resulting meta-statistic estimates
   were, particularly if the number of \code{replications} was relatively low (e.g., less than
   5000). If users prefer to obtain alternative bootstrap estimates then consider passing
   \code{save_results = TRUE}, reading the generate-analyse data into R via
@@ -315,6 +315,16 @@ by the \code{SimDesign} package
   \item{\code{results <- runSimulation(design=Design, replications, generate=Generate,
         analyse=Analyse, summarise=Summarise)}}{}
 }
+
+The \code{condition} object represents a single row from the \code{design} object, indicating
+a unique Monte Carlo simulation condition. The \code{condition} object also contains two
+additional elements to help track the simulation's state: an \code{ID} variable, indicating
+the respective row number in the \code{design} object, and a \code{REPLICATION} element
+indicating the replication iteration number. Mainly, these are included to help with debugging,
+where users can easily locate the \code{r}th replication (e.g., \code{REPLICATION == 500})
+within the \code{j}th row in the simulation design (e.g., \code{ID == 2}). The
+\code{REPLICATION} input is also useful when temporarily saving files to the hard-drive
+when calling external command line utilities.
 
 For a skeleton version of the work-flow, which is often useful when initially defining a simulation,
 see \code{\link{SimFunctions}}. This function will write template simulation code
@@ -752,7 +762,7 @@ Final2 \%>\% group_by(standard_deviation_ratio, group_size_ratio) \%>\%
 # quick ANOVA analysis method with all two-way interactions
 SimAnova( ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
 
-# or more specific anovas
+# or more specific ANOVAs
 SimAnova(independent ~ (group_size_ratio + standard_deviation_ratio)^2,
     Final)
 
