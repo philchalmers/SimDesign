@@ -100,7 +100,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
         LINE()
         if(comments) cat('\n### Run the simulation\n')
         cat('\nresults <- runSimulation(design=Design, replications=1000,',
-            if(generate) ', generate=Generate, ')
+            if(generate) 'generate=Generate, ')
         cat(sprintf('\n                         analyse=Analyse%s',
                     if(summarise) ', summarise=Summarise)' else ')'))
         cat('\n\n')

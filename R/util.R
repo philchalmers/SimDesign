@@ -48,3 +48,50 @@ print_progress <- function(row, trow, time1, time0, stored_time, progress){
                 row, trow, date(), timeFormater(sum(stored_time))))
     invisible()
 }
+
+#' Suppress function messages and "Concatenate and Print" (cat)
+#'
+#' This function is used to suppress information printed from external functions
+#' that make internal use of \code{link{message}} and \code{\link{cat}}, which
+#' provide information in interactive R sessions. For simulations, the session
+#' is not interactive, and therefore this type of output should be suppressed.
+#' For similar behavior for suppressing warning messages see
+#' \code{\link{suppressWarnings}}, though use this function carefully as some
+#' warnings can be meaningful and unexpected.
+#'
+#' @param ... the functional expression to be evaluated
+#'
+#' @param message logical; suppress all messages?
+#'
+#' @param cat logical; suppress all concatenate and print calls from \code{\link{cat}}?
+#'
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
+#'
+#' @examples
+#'
+#' myfun <- function(x){
+#'    message('This function is rather chatty')
+#'    cat("It even prints in different output forms!\n")
+#'    message('And even at different....')
+#'    cat("...times!\n")
+#'    x
+#' }
+#'
+#' myfun(1)
+#'
+#' # tell the function to shhhh
+#' quiet(myfun(1))
+#'
+#' }
+#'
+quiet <- function(..., messages=FALSE, cat=FALSE){
+    if(!cat){
+        sink(tempfile())
+        on.exit(sink())
+    }
+    out <- if(messages) eval(...) else suppressMessages(eval(...))
+    out
+}
