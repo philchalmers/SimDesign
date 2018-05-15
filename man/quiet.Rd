@@ -2,16 +2,16 @@
 % Please edit documentation in R/util.R
 \name{quiet}
 \alias{quiet}
-\title{Suppress function messages and "Concatenate and Print" (cat)}
+\title{Suppress function messages and Concatenate and Print (cat)}
 \usage{
 quiet(..., messages = FALSE, cat = FALSE)
 }
 \arguments{
 \item{...}{the functional expression to be evaluated}
 
-\item{cat}{logical; suppress all concatenate and print calls from \code{\link{cat}}?}
+\item{messages}{logical; suppress all messages?}
 
-\item{message}{logical; suppress all messages?}
+\item{cat}{logical; suppress all concatenate and print calls from \code{\link{cat}}?}
 }
 \description{
 This function is used to suppress information printed from external functions
@@ -21,6 +21,23 @@ is not interactive, and therefore this type of output should be suppressed.
 For similar behavior for suppressing warning messages see
 \code{\link{suppressWarnings}}, though use this function carefully as some
 warnings can be meaningful and unexpected.
+}
+\examples{
+myfun <- function(x){
+   message('This function is rather chatty')
+   cat("It even prints in different output forms!\\n")
+   message('And even at different....')
+   cat("...times!\\n")
+   x
+}
+
+out <- myfun(1)
+out
+
+# tell the function to shhhh
+out <- quiet(myfun(1))
+out
+
 }
 \references{
 Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte

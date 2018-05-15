@@ -1,0 +1,145 @@
+---
+title: "Parallel computing information"
+author: "Phil Chalmers"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Parallel computing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r nomessages, echo = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  fig.height = 5,
+  fig.width = 5
+)
+options(digits=4)
+par(mar=c(3,3,1,1)+.1)
+```
+
+# Cluster computing:
+
+SimDesign code may be released to a computing system which supports parallel cluster computations using
+the industry standard Message Passing Interface (MPI) form. This simply
+requires that the computers be setup using the usual MPI requirements (typically, running some flavor
+of Linux, have password-less open-SSH access, IP addresses have been added to the `/etc/hosts` file
+or `~/.ssh/config`, etc). More generally though, these resources are widely available through professional
+organizations dedicated to super-computing.
+
+To setup the R code for an MPI cluster one need only add the argument `MPI = TRUE`,
+wrap the appropriate MPI directives around `runSimulation`, and submit the
+files using the suitable BASH commands to execute the `mpirun` tool. For example,
+```{r eval=FALSE}
+library(doMPI)
+cl <- startMPIcluster()
+registerDoMPI(cl)
+runSimulation(design=Design, replications=1000, save=TRUE, filename='mysimulation',
+    generate=Generate, analyse=Analyse, summarise=Summarise,  MPI=TRUE)
+closeCluster(cl)
+mpi.quit()
+```
+The necessary `SimDesign` files must be uploaded to the dedicated master node
+so that a BASH call to `mpirun` can be used to distribute the work across slaves.
+For instance, if the following BASH command is run on the master node then 16 processes
+will be summoned (1 master, 15 slaves) across the computers named `localhost`, `slave1`,
+and `slave2` in the ssh `config` file.
+
+`mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R`
+
+# Network computing:
+
+If you access have to a set of computers which can be linked via secure-shell (ssh) on the same LAN network then
+Network computing (a.k.a., a Beowulf cluster) may be a viable and useful option.
+This approach is similar to MPI computing approach
+except that it offers more localized control and requires more hands-on administrative access to the master
+and slave nodes. The setup generally requires that the master node
+has `SimDesign` installed and the slave/master nodes have all the required R packages pre-installed
+(Unix utilities such as `dsh` are very useful for this purpose). Finally,
+the master node must have ssh access to the slave nodes, each slave node must have ssh access
+with the master node, and a cluster object (`cl`) from the `parallel` package must be defined on the
+master node.
+
+Setup for network computing is generally more straightforward and controlled
+than the setup for MPI jobs in that it only requires the specification of a) the respective
+IP addresses within a defined R script, and b) the user name
+(if different from the master node's user name. Otherwise, only a) is required).
+However, on Linux I have found it is also important to include relevant information about the host names
+and IP addresses in the `/etc/hosts` file on the master and slave nodes, and to ensure that
+the selected port (passed to `makeCluster()`) on the master node is not hindered by a firewall.
+As an example, using the following code the master node (primary) will spawn 7 slaves and 1 master,
+while a separate computer on the network with the associated IP address will spawn an additional 6 slaves.
+Information will be collected on the master node, which is also where the files
+and objects will be saved using the `save` inputs (if requested).
+```{r eval=FALSE}
+library(parallel)
+primary <- '192.168.2.1'
+IPs <- list(list(host=primary, user='myname', ncore=8), list(host='192.168.2.2', user='myname', ncore=6))
+spec <- lapply(IPs, function(IP) rep(list(list(host=IP$host, user=IP$user)), IP$ncore))
+spec <- unlist(spec, recursive=FALSE)
+cl <- makeCluster(master=primary, spec=spec)
+Final <- runSimulation(..., cl=cl)
+stopCluster(cl)
+```
+The object `cl` is passed to `runSimulation` on the master node
+and the computations are distributed across the respective
+IP addresses. Finally, it's usually good practice to use `stopCluster(cl)`
+when all the simulations are said and done to release the communication between the computers,
+which is what the above code shows.
+
+Alternatively, if you have provided suitable names for each respective slave node, as well as the master,
+then you can define the `cl` object using these instead (rather than supplying the IP addresses in
+your R script). This requires that the master node has itself and all the slave nodes defined in the
+`/etc/hosts` and `~/.ssh/config` files, while the slave nodes require themselves and the
+master node in the same files (only 2 IP addresses required on each slave).
+Following this setup, and assuming the user name is the same across all nodes,
+the `cl` object could instead be defined with
+```{r eval=FALSE}
+library(parallel)
+primary <- 'master'
+IPs <- list(list(host=primary, ncore=8), list(host='slave', ncore=6))
+spec <- lapply(IPs, function(IP) rep(list(list(host=IP$host)), IP$ncore))
+spec <- unlist(spec, recursive=FALSE)
+cl <- makeCluster(master=primary, spec=spec)
+Final <- runSimulation(..., cl=cl)
+stopCluster(cl)
+```
+Or, even more succinctly if all communication elements required are identical to the master node,
+```{r eval=FALSE}
+library(parallel)
+primary <- 'master'
+spec <- c(rep(primary, 8), rep('slave', 6))
+cl <- makeCluster(master=primary, spec=spec)
+Final <- runSimulation(..., cl=cl)
+stopCluster(cl)
+```
+
+# Poor man's cluster computing for independent nodes:
+
+In the event that you do not have access to a Beowulf-type cluster (described in the section on
+"Network Computing") but have multiple personal
+computers then the simulation code can be manually distributed across each independent computer instead.
+
+This simply requires passing a smaller value to the `replications` argument on each computer and later
+aggregating the results using the `aggregate_simulations()` function.
+For instance, if you have two computers available on different networks and wanted a total of 500 replications you
+could pass `replications = 300` to one computer and`replications = 200` to the other along
+with a `filename` argument (or simply saving the final objects as `.rds` files manually after
+`runSimulation()` has finished). This will create two distinct `.rds` files which can be
+combined later with the `aggregate_simulations()` function. The benefit of this approach over
+MPI or setting up a Beowulf cluster is that computers need not be linked on the same network,
+and, should the need arise, the temporary
+simulation results can be migrated to another computer in case of a complete hardware failure by moving the
+saved temp files to another node, modifying
+the suitable `compname` input to `save_details` (or, if the `filename` and `tmpfilename`
+were modified, matching those files accordingly), and resuming the simulation as normal.
+
+Note that this is also a useful tactic if the MPI or Network computing options require you to
+submit smaller jobs due to time and resource constraint-related reasons,
+where fewer replications/nodes should be requested. After all the jobs are completed and saved to their
+respective files, `aggregate_simulations()`
+can then collapse the files as if the simulations were run all at once. Hence, SimDesign makes submitting
+smaller jobs to super-computing resources considerably less error prone than managing a number of smaller
+jobs manually.

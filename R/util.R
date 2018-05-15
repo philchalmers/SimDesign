@@ -49,7 +49,7 @@ print_progress <- function(row, trow, time1, time0, stored_time, progress){
     invisible()
 }
 
-#' Suppress function messages and "Concatenate and Print" (cat)
+#' Suppress function messages and Concatenate and Print (cat)
 #'
 #' This function is used to suppress information printed from external functions
 #' that make internal use of \code{link{message}} and \code{\link{cat}}, which
@@ -61,9 +61,11 @@ print_progress <- function(row, trow, time1, time0, stored_time, progress){
 #'
 #' @param ... the functional expression to be evaluated
 #'
-#' @param message logical; suppress all messages?
+#' @param messages logical; suppress all messages?
 #'
 #' @param cat logical; suppress all concatenate and print calls from \code{\link{cat}}?
+#'
+#' @export
 #'
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
@@ -71,7 +73,6 @@ print_progress <- function(row, trow, time1, time0, stored_time, progress){
 #' \doi{10.1080/10691898.2016.1246953}
 #'
 #' @examples
-#'
 #' myfun <- function(x){
 #'    message('This function is rather chatty')
 #'    cat("It even prints in different output forms!\n")
@@ -80,12 +81,12 @@ print_progress <- function(row, trow, time1, time0, stored_time, progress){
 #'    x
 #' }
 #'
-#' myfun(1)
+#' out <- myfun(1)
+#' out
 #'
 #' # tell the function to shhhh
-#' quiet(myfun(1))
-#'
-#' }
+#' out <- quiet(myfun(1))
+#' out
 #'
 quiet <- function(..., messages=FALSE, cat=FALSE){
     if(!cat){
