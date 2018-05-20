@@ -2,7 +2,7 @@
 #'
 #' This function generates confidence intervals for the meta-statistics called within the
 #' \code{summarise} function with \code{\link{runSimulation}}
-#' that included the arguemnt \code{bootSE = TRUE}.
+#' that included the argument \code{bootSE = TRUE}.
 #'
 #' @param results object returned from \code{\link{runSimulation}} where \code{bootSE = TRUE}
 #'   was used

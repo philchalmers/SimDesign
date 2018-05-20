@@ -9,7 +9,7 @@ Serlin2000(p, alpha, delta, R, CI = 0.95)
 \arguments{
 \item{p}{(optional) a vector containing the empirical detection rate(s) to be tested.
 Omitting this input will compute only the CV1 and CV2 values, while including this
-input will perform a one-sided hypthesis test for robustness}
+input will perform a one-sided hypothesis test for robustness}
 
 \item{alpha}{Type I error rate (e.g., often set to .05)}
 
