@@ -20,6 +20,7 @@ that included the argument \code{bootSE = TRUE}.
 }
 \examples{
 
+\dontrun{
 #SimFunctions()
 
 Design <- data.frame(N = c(10, 20, 30))
@@ -55,6 +56,8 @@ res2 <- runSimulation(design=Design, replications=2500, bootSE=TRUE,
 # point estimates more accurate, smaller BOOT_SE terms
 res2
 SimBoot(res2) # more reasonable CI range
+
+}
 
 }
 \references{
