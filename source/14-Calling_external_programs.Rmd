@@ -1,0 +1,30 @@
+%\VignetteIndexEntry{SimDesign}
+%\VignetteEngine{knitr::knitr}
+---
+title: "SimDesign"
+author: "Phil Chalmers"
+date: "September 22, 2015"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+```{r include=FALSE}
+options(digits = 3)
+cache_ <- TRUE
+```
+
+
+# Calling external programs
+
+Something
+
+# Mplus example (single-core)
+
+Smething
+
+# Mplus example (multi-core/parallel processing)
+
+Something
+
