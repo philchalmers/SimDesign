@@ -1,0 +1,6 @@
+TITLE:	this is an example of a simple linear
+	regression for a continuous observed
+	dependent variable with two covariates
+DATA:	FILE IS reg.dat;
+VARIABLE:	NAMES ARE y1 x1 x3;
+MODEL:	y1 ON x1 x3;

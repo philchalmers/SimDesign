@@ -18,13 +18,165 @@ cache_ <- TRUE
 
 # Calling external programs
 
-Something
+Often times, researchers are interested in calling programs that were not written in R specifically, and instead were built using some other language. This may include python, C++, Java, and so on, to perform a specific analysis task. However, in situations where compiled software, the source code for these programs may not be, making it more difficult to link R to these external software. Specifically, software may be distributed in the form of *binary* or otherwise *executable* files, typically with the file endings `.exe`, `.bat`, `.bin`, `.so`, and so on. Front-end users then use these pre-built software to perform their analysis by supplying the required arguments to these external software files. 
+
+This type of setup unfortunately still occurs quite a bit in the field of statistics, where transparency in code (as in packages such R, python, perl, ect) is not available to the front-end user; only the binary files are. If we are fortunate, the developers of their software will allow code instructions to be supplied via the *command-line* or *terminal*, in which case communicating with R should be possible through ad-hoc procedures such as saving and reading text files. This vignette demonstrates this exact work-flow when calling the executable binary from Mplus, a statistical software generally well-known for its estimation capabilities for latent variable models.
+
+## Command-line and terminal calls
+
+To call command-line utilities from R there are a few tools available: `system()`, `system2()`, and `shell()` (Windows only). For instance, if we want to use the `dir` function as though a terminal were opened up on the desired OS, the word `dir` was typed and we hit return, then we can execute this command-line tool like so:
+
+```{r eval=FALSE}
+system2('dir')
+```
+
+We can apply this same type of operation for any type of command-line executable file within our OS. As such, calling external software packages is no different in this respect. For example, if the file `mplus.exe` is the binary file we wish to call, and we wish to pass some set of instructions to this binary in the form of a `file.inp` script in the working directory, then we could execute the following:
+
+```{r eval=FALSE}
+system2('mplus.exe file.inp')
+```
+
+This setup works so long as `mplus.exe` is within the associated PATH, and therefore can be called without pointing to the exact location on the drive (e.g., the form `C:/User/Mplus/bin/mplus.exe` should be avoided since it is not computer of OS independent). Once this set of instructions is executed programs such as Mplus often save the results to various output files, at which point we can read these text-based files back into R for further analyses. This is the primary idea of how to use R in concert with external binary files. 
+
+## Command-line and terminal calls within `SimDesign`
+
+Adapting the above work-flow in `SimDesign`, here's one potentially useful approach that only uses external binary files for modeling fitting purposes:
+
+1) Write a `Generate()` function in R that generates the Monte Carlo data, and save this to the hard-drive in the form of a text file (or another easily supported form). 
+	- Make note of the file name saved, as this can be important for parallel computations
+2) Within `Analyse()`, call the external binary file given the newly saved data and some set of instructions. Once the external analysis has completed read the data back into R (package such as `stringr` can be helpful here to parse convoluted text files)
+	- For parallel computations, editing the instructions scripts directly may also be required because the file names must be tracked more carefully
+3) Once all the analyses are completed, the `Analyse()` step should also include a *file removal* portion. This is helpful to save space on the hard-drive, and so that the hard-drive does not fill-up because of the temporarily generated datasets
+
+The following examples demonstrate this work-flow using a simple simulation form, both with and without parallel execution, and in a form which is platform independent. 
 
 # Mplus example (single-core)
 
-Smething
+This Monte Carlo simulation example fits a linear regression model of the form
+$$y = 10 + 2.5 * x1 + 1.0 * x2 + e$$ 
+where $e \sim N(0,.2)$, and varies only the sample size for simplicity. This simulation is modeled after the very first example of how to use Mplus in the documentation, where [reg.inp](http://philchalmers.github.io/SimDesign/html/reg.inp) is the example input file given some `.dat` example data. This script contains the following instructions for Mplus:
+```{r}
+cat(readLines('reg.inp'), sep = '\n')
+```
+
+
+To save explicit calls to `system()`, and avoid parsing the Mplus text output files, this example utilizes the `MplusAutomation` package. However, the structure is completely general, and if a dedicated software package in R is not available then general-purpose reading and string parsing tools will function equally well. The code is executed in serial, where data and output files are created and read-in using the same name throughout.
+
+
+
+```{r eval=FALSE}
+library(SimDesign)
+
+Design <- expand.grid(N=c(100, 250, 500))
+fo <- list(param = c(10, 2.5, 1.0, .2))
+
+#-------------------------------------------------------------------
+
+Generate <- function(condition, fixed_objects = NULL) {
+    Attach(condition)
+    x1 <- rnorm(N)
+    x3 <- rnorm(N)
+    p <- fixed_objects$param
+    y <- p[1] + p[2] * x1 + p[3] * x3 + rnorm(N, 0, sqrt(p[4]))
+    dat <- data.frame(y, x1, x3)
+    filename <- 'reg.dat'
+    # save the generate data to a file named 'reg.dat'
+    write.table(dat, file = filename, row.names = FALSE, col.names = FALSE)
+    filename
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL) {
+	## MplusAutmation is needlessly verbose in the console, and so is shhh'd with quite()
+	
+	# use MplusAutomation to do the system() calls
+    quiet( runModels("reg.inp", logFile=NULL) ) 
+	
+	# use MplusAutomation to do the string parsing
+    quiet( inp <- readModels("reg.out") )
+    
+    param_hat <- inp$parameters$unstandardized$est
+    names(param_hat) <- c('beta1', 'beta2', 'beta0', 'sigma2')
+    SimClean(dat, 'reg.out') # delete the .out and .dat file for proper cleanup
+    param_hat
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL) {
+    p <- fixed_objects$param[c(2,3,1,4)] # reorder to match Mplus output
+    bias <- bias(results, p)
+    RMSE <- RMSE(results, p)
+    ret <- c(bias=bias, RMSE=RMSE)
+    ret
+}
+
+#-------------------------------------------------------------------
+
+results <- runSimulation(design=Design, fixed_objects=fo, replications=100, generate=Generate,
+                         analyse=Analyse, summarise=Summarise, packages='MplusAutomation')
+```
 
 # Mplus example (multi-core/parallel processing)
 
-Something
+This example is the same as above, but is now run using all available cores on the computer for (potentially) lower estimation time. However, there are a number of important issues that arise when executing code in parallel using the `system()` calling form. 
+
+To start, the above example code cannot be used in parallel because when multiple instances of R are spawned, the data will constantly be over-written by the independent cores. This implies that the independent cores may actually be analyzing the same data file during the replications rather than generating and analyzing independent replications. Therefore, to ensure that the data are generated and analyzed uniquely we must be more careful about saving and reading files. Fortunately, `SimDesign` tracks which replication number is currently being executed via the `condition$REPLICATION` element, and so saving and reading unique files within each processor is relatively painless.
+
+Compared to the above serial implementation, the following code:
+
+1) Generates data the same, but saves the `.dat` files to their own unique file name based on the value of `condition$REPLICATION` (e.g., `reg-99.dat`, representing the 99th replication in the simulation experiment).
+1) Modifies the master `.inp` instruction file to Mplus to correctly point to the replication-numbered data file, saves this `.inp` to its own replication-numbered file, and executes this file instead of the master. 
+	- This creates and associated `.out` file from Mplus, which also must be read-in, but will be safe to track across all processors
+1) The temporary data, temporary `.inp` instructions, and temporary `.out` files are all removed at the end of `Analyse()`
+
+```{r eval=FALSE}
+library(SimDesign)
+
+Design <- expand.grid(N=c(100, 250, 500))
+fo <- list(param = c(10, 2.5, 1.0, .2))
+
+#-------------------------------------------------------------------
+
+Generate <- function(condition, fixed_objects = NULL) {
+    Attach(condition)
+    x1 <- rnorm(N)
+    x3 <- rnorm(N)
+    p <- fixed_objects$param
+    y <- p[1] + p[2] * x1 + p[3] * x3 + rnorm(N, 0, sqrt(p[4]))
+    dat <- data.frame(y, x1, x3)
+    filename <- sprintf('reg-%i.dat', REPLICATION) #replication-specific file name
+    write.table(dat, file = filename, 
+                row.names = FALSE, col.names = FALSE)
+    filename
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL) {
+    Attach(condition)
+    master <- readLines('reg.inp') # read the master file
+    newinp <- gsub('reg.dat', dat, master) # replace 'reg.dat' with replication-specific file name
+    filename_inp <- sprintf('reg-%i.inp', REPLICATION) # replication-specific file name for .inp
+    filename_out <- sprintf('reg-%i.out', REPLICATION) # replication-specific file name for .out
+    writeLines(newinp, filename_inp) # save the temp .inp file to be run
+    quiet( runModels(filename_inp, logFile=NULL) ) 
+    quiet( inp <- readModels(filename_out) )
+    param_hat <- inp$parameters$unstandardized$est
+    names(param_hat) <- c('beta1', 'beta2', 'beta0', 'sigma2')
+    # remove the 3 temporary files
+    SimClean(dat, filename_inp, filename_out)
+    param_hat
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL) {
+    p <- fixed_objects$param[c(2,3,1,4)] # reorder to match Mplus output
+    bias <- bias(results, p)
+    RMSE <- RMSE(results, p)
+    ret <- c(bias=bias, RMSE=RMSE)
+    ret
+}
+
+#-------------------------------------------------------------------
+
+results <- runSimulation(design=Design, fixed_objects=fo, replications=100, generate=Generate,
+                         analyse=Analyse, summarise=Summarise, packages='MplusAutomation', parallel=TRUE)
+```
+
+
 
