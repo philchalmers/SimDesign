@@ -612,7 +612,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50L, as.factor = TRUE, save_generate_data = FALSE,
-                          save_details = list(), edit = 'none', progress = FALSE, verbose = TRUE)
+                          save_details = list(), edit = 'none', progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
     if(missing(generate) && !missing(analyse))
@@ -629,6 +629,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     save_generate_data_dirname <- save_details$save_generate_data_dirname
     save_seeds_dirname <- save_details$save_seeds_dirname
 
+    if(!verbose) progress <- FALSE
     if(is.null(compname)) compname <- Sys.info()['nodename']
     if(is.null(safe)) safe <- TRUE
     if(is.null(out_rootdir)) { out_rootdir <- '.' } else { dir.create(out_rootdir, showWarnings=FALSE) }

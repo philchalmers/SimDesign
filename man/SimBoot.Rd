@@ -14,7 +14,7 @@ was used}
 SE estimate. Default is .99, which constructs a 99\% confidence interval}
 }
 \description{
-This function generates confidence intervals for the meta-statistics called within the
+This function generates bootstrap confidence intervals for the meta-statistics called within the
 \code{summarise} function with \code{\link{runSimulation}}
 that included the argument \code{bootSE = TRUE}.
 }

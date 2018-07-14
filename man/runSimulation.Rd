@@ -18,8 +18,7 @@ runSimulation(design, replications, generate, analyse, summarise,
   save_seeds = FALSE, load_seed = NULL, parallel = FALSE,
   ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
   max_errors = 50L, as.factor = TRUE, save_generate_data = FALSE,
-  save_details = list(), edit = "none", progress = FALSE,
-  verbose = TRUE)
+  save_details = list(), edit = "none", progress = TRUE, verbose = TRUE)
 
 \method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE,
   format.time = TRUE, ...)
