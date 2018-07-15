@@ -36,13 +36,13 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     } else {
         if(MPI){
             i <- 1L
-            # This is most likely broken at the moment, OO.
             results <- foreach(i=1L:replications, .export=export_funs) %dopar%
                 mainsim(i, condition=condition, generate=Functions$generate,
                      analyse=Functions$analyse, fixed_objects=fixed_objects, load_seed=load_seed,
                      max_errors=max_errors, save_generate_data=save_generate_data,
                      save_generate_data_dirname=save_generate_data_dirname, packages=packages,
                      save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
+                     save_results_out_rootdir=save_results_out_rootdir,
                      warnings_as_errors=warnings_as_errors)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
