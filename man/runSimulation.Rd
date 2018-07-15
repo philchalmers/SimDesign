@@ -371,6 +371,13 @@ allowing for complete reproducibility); individual \code{.Random.seed} terms may
 providing a vector of \code{seeds} is also possible to ensure
 that each simulation condition is completely reproducible under the single/multi-core method selected.
 
+The \code{load_seed} input will also accept an integer vector corresponding to the exact
+\code{.Random.seed} state. This is helpful because SimDesign also tracks these seeds for simulation
+conditions that threw errors, where these values can be extracted via the \code{extract_error_seeds()}
+function. After this matrix object is extracted, individual columns can be passed to \code{load_seed}
+to replicate the exact error issue that appeared (note that the \code{design} object must be indexed
+manually to ensure that the correct design conditions is paired with this exact \code{.Random.seed} state).
+
 Finally, when the Monte Carlo simulation is complete
 it is recommended to write the results to a hard-drive for safe keeping, particularly with the
 \code{save} and \code{filename} arguments provided (for reasons that are more obvious in the parallel computation

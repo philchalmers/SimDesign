@@ -96,6 +96,13 @@
 #' providing a vector of \code{seeds} is also possible to ensure
 #' that each simulation condition is completely reproducible under the single/multi-core method selected.
 #'
+#' The \code{load_seed} input will also accept an integer vector corresponding to the exact
+#' \code{.Random.seed} state. This is helpful because SimDesign also tracks these seeds for simulation
+#' conditions that threw errors, where these values can be extracted via the \code{extract_error_seeds()}
+#' function. After this matrix object is extracted, individual columns can be passed to \code{load_seed}
+#' to replicate the exact error issue that appeared (note that the \code{design} object must be indexed
+#' manually to ensure that the correct design conditions is paired with this exact \code{.Random.seed} state).
+#'
 #' Finally, when the Monte Carlo simulation is complete
 #' it is recommended to write the results to a hard-drive for safe keeping, particularly with the
 #' \code{save} and \code{filename} arguments provided (for reasons that are more obvious in the parallel computation
@@ -931,7 +938,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     error_seeds <- do.call(cbind, lapply(1L:length(Result_list), function(x){
         ret <- attr(Result_list[[x]], "error_seeds")
-        if(nrow(ret) == 0) return(NULL)
+        if(length(ret) == 0L || nrow(ret) == 0L) return(NULL)
         rownames(ret) <- paste0("Design_row_", x, '.', 1L:nrow(ret))
         t(ret)
     }))
