@@ -314,7 +314,7 @@ test_that('SimDesign', {
         list(ret = 1)
     }
     results <- runSimulation(Design, replications = 2, packages = 'extraDistr', seed=1:8,
-                             generate=mygenerate, analyse=mycompute, summarise=mycollect)
+                             generate=mygenerate, analyse=mycompute, summarise=mycollect, verbose=FALSE)
     seeds <- extract_error_seeds(results)
     expect_is(seeds, 'matrix')
     expect_true(nrow(seeds) == 626)
@@ -452,7 +452,7 @@ test_that('SimDesign', {
     Summarise <- function(condition, results, fixed_objects = NULL)
         bias(results, 0)
     results <- runSimulation(replications = 10, analyse=gen_anal,
-                             summarise=Summarise)
+                             summarise=Summarise, verbose=FALSE)
     expect_is(results, 'SimDesign')
 
 })
