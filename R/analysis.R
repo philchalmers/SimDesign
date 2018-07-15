@@ -86,6 +86,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     }
 
     try_errors <- do.call(c, lapply(results, function(x) attr(x, 'try_errors')))
+    try_error_seeds <- do.call(rbind, lapply(results, function(x) attr(x, 'try_error_seeds')))
+    rownames(try_error_seeds) <- NULL
     try_errors <- if(length(try_errors)){
         table(try_errors[!is.na(try_errors)])
     } else table(try_errors)
@@ -97,7 +99,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         table(warnings[!is.na(warnings)])
     } else table(warnings)
     for(i in seq_len(length(results)))
-        attr(results[[i]], 'try_errors') <- attr(results[[i]], 'warnings') <- NULL
+        attr(results[[i]], 'try_errors') <- attr(results[[i]], 'warnings') <-
+        attr(results[[i]], 'try_error_seeds') <- NULL
 
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
     if(!is.list(results[[1L]]) ||
@@ -109,7 +112,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     }
     if(save_results){
         tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
-        saveRDS(list(condition=condition, results=results, errors=try_errors, warnings=warnings),
+        saveRDS(list(condition=condition, results=results, errors=try_errors, error_seeds=try_error_seeds,
+                     warnings=warnings),
                 file.path(save_results_out_rootdir, tmpfilename))
     }
     sim_results <- Functions$summarise(results=results,
@@ -140,6 +144,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         names(SE_sim_results) <- paste0("BOOT_SE.", names(sim_results))
         ret <- c(ret, SE_sim_results)
     }
+    attr(ret, 'error_seeds') <- try_error_seeds
     if(store_results)
         attr(ret, 'full_results') <- tabled_results
     ret

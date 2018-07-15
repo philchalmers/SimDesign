@@ -7,6 +7,7 @@
 \alias{tail.SimDesign}
 \alias{summary.SimDesign}
 \alias{extract_results}
+\alias{extract_error_seeds}
 \alias{as.data.frame.SimDesign}
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
@@ -30,6 +31,8 @@ runSimulation(design, replications, generate, analyse, summarise,
 \method{summary}{SimDesign}(object, ...)
 
 extract_results(object)
+
+extract_error_seeds(object)
 
 \method{as.data.frame}{SimDesign}(x, ...)
 }
@@ -139,16 +142,21 @@ plain text files located in the defined \code{save_seeds_dirname} directory/fold
 Use this if you would like to keep track of the simulation state within each replication and design
 condition. Primarily, this is useful for completely replicating any cell in the simulation if need be,
 especially when tracking down hard-to-find errors and bugs. As well, see the \code{load_seed} input
-to load a given \code{.Random.seed} to exactly replicate the generated data and analysis state (handy
+to load a given \code{.Random.seed} to exactly replicate the generated data and analysis state (mostly useful
 for debugging). When \code{TRUE}, temporary files will also be saved
 to the working directory (in the same way as when \code{save = TRUE}).
 Default is \code{FALSE}}
 
 \item{load_seed}{a character object indicating which file to load from when the \code{.Random.seed}s have
-be saved (after a call with \code{save_seeds = TRUE}). E.g., \code{load_seed = 'design-row-2/seed-1'}
-will load the first seed in the second row of the \code{design} input. Note that it is important NOT
-to modify the \code{design} input object, otherwise the path may not point to the correct saved location.
-Default is \code{NULL}}
+be saved (after a call with \code{save_seeds = TRUE}), or an integer vector indicating the actual
+\code{.Random.seed} values. E.g., \code{load_seed = 'design-row-2/seed-1'}
+will load the first seed in the second row of the \code{design} input, or explicilty passing the 626 long
+elements from \code{.Random.seed} (see \code{extract_error_seed()} to extract the seeds associated explicilty
+with errors during the simulation, where each column represents a unique seed).
+If the input is a character vector then it is important NOT
+to modify the \code{design} input object, otherwise the path may not point to the correct saved location, while
+if the input is an integer vector then it WILL be important to modify the \code{design} input in order to load this
+exact seed for the corresponding design row. Default is \code{NULL}}
 
 \item{parallel}{logical; use parallel processing from the \code{parallel} package over each
 unique condition?}

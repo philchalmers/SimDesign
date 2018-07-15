@@ -251,7 +251,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             write(current_Random.seed, file.path(save_results_out_rootdir, filename), sep = ' ')
         }
         if(!is.null(load_seed))
-            .GlobalEnv$.Random.seed <- as.integer(scan(load_seed, sep = ' ', quiet = TRUE))
+            .GlobalEnv$.Random.seed <- load_seed
         simlist <- try(generate(condition=condition, fixed_objects=fixed_objects), TRUE)
         if(is(simlist, 'try-error'))
             stop(paste0('generate function threw an error.',
