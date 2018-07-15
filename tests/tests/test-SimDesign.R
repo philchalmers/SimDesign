@@ -308,6 +308,14 @@ test_that('SimDesign', {
     expect_equal(4, length(readRDS('SimDesign_aggregate_results/results-row-1.rds')$results))
     SimClean(dirs = c('SimDesign_aggregate_results','dir1', 'dir2'))
 
+    mycompute <- function(condition, dat, fixed_objects = NULL){
+        if(sample(c(FALSE, TRUE), 1, prob = c(.5, .5))) warning('This is a warning')
+        if(sample(c(FALSE, TRUE), 1, prob = c(.5, .5))) stop('This is an error')
+        list(ret = 1)
+    }
+    results <- runSimulation(Design, replications = 2, packages = 'extraDistr',
+                             generate=mygenerate, analyse=mycompute, summarise=mycollect)
+
     # NAs
     mycompute <- function(condition, dat, fixed_objects = NULL){
         ret <- c(ret = sample(c(NA, 1), 1, prob = c(.1, .9)))

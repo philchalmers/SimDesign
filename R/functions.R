@@ -234,6 +234,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
     load_packages(packages)
     condition$REPLICATION <- index
     try_error <- character()
+    try_error_seeds <- matrix(0L, 0L, length(.GlobalEnv$.Random.seed))
 
     while(TRUE){
 
@@ -288,6 +289,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         }
         if(any(is.na(res))){
             NA_names <- names(res)[is.na(res)]
+            try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
             res <- try(stop(sprintf('The following return NA/NaN and required redrawing: %s',
                                     paste(NA_names, sep=',')),
                             call.=FALSE), silent=TRUE)
@@ -295,20 +297,21 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
 
         # if an error was detected in compute(), try again
         if(is(res, 'try-error')){
+            res[1L] <-
+                gsub('Error in analyse\\(dat = simlist, condition = condition, fixed_objects = fixed_objects) : \\n  ',
+                     replacement = '', res[1L])
             try_error <- c(try_error, res[1L])
-            if(length(try_error) == max_errors){
-                res[1L] <-
-                    gsub('Error in analyse\\(dat = simlist, condition = condition, fixed_objects = fixed_objects) : \\n  ',
-                         replacement = '', res[1L])
+            if(length(try_error) == max_errors)
                 stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
                             ' consecutive errors. \n\nLast error message was: \n\n  ', res[1L]), call.=FALSE)
-            }
+            try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
             next
         }
         if(!is.list(res) && !is.numeric(res))
             stop('analyse() did not return a list or numeric vector', call.=FALSE)
 
         attr(res, 'try_errors') <- try_error
+        attr(res, 'try_error_seeds') <- try_error_seeds
         attr(res, 'warnings') <- Warnings
         return(res)
     }
