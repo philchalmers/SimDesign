@@ -311,17 +311,19 @@ test_that('SimDesign', {
     mycompute <- function(condition, dat, fixed_objects = NULL){
         if(sample(c(FALSE, TRUE), 1, prob = c(.5, .5))) warning('This is a warning')
         if(sample(c(FALSE, TRUE), 1, prob = c(.5, .5))) stop('This is an error')
+        if(sample(c(FALSE, TRUE), 1, prob = c(.5, .5))) stop('This is a different error')
         list(ret = 1)
     }
     results <- runSimulation(Design, replications = 2, packages = 'extraDistr', seed=1:8,
                              generate=mygenerate, analyse=mycompute, summarise=mycollect, verbose=FALSE)
     seeds <- extract_error_seeds(results)
-    expect_is(seeds, 'matrix')
+    expect_is(seeds, 'data.frame')
     expect_true(nrow(seeds) == 626)
-    # results <- runSimulation(Design, replications = 2, packages = 'extraDistr', seed=1:8,
-    #                          generate=mygenerate, analyse=mycompute, summarise=mycollect,
-    #                          load_seed=seeds[,"Design_row_1.1"], edit='analyse')
-
+    if(interactive()){
+        results <- runSimulation(Design, replications = 2, packages = 'extraDistr', seed=1:8,
+                                 generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                                 load_seed=seeds$Design_row_1.1..This.is.an.error., edit='analyse')
+    }
 
     # NAs
     mycompute <- function(condition, dat, fixed_objects = NULL){

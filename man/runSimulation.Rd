@@ -374,7 +374,9 @@ that each simulation condition is completely reproducible under the single/multi
 The \code{load_seed} input will also accept an integer vector corresponding to the exact
 \code{.Random.seed} state. This is helpful because SimDesign also tracks these seeds for simulation
 conditions that threw errors, where these values can be extracted via the \code{extract_error_seeds()}
-function. After this matrix object is extracted, individual columns can be passed to \code{load_seed}
+function. The column names indicate the respective design row (first number), the order in which
+the errors were thrown (second number), and finally the error message string (coerced to a proper
+data.frame column name). After this data.frame object is extracted, individual columns can be passed to \code{load_seed}
 to replicate the exact error issue that appeared (note that the \code{design} object must be indexed
 manually to ensure that the correct design conditions is paired with this exact \code{.Random.seed} state).
 

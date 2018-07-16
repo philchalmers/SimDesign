@@ -289,7 +289,6 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         }
         if(any(is.na(res))){
             NA_names <- names(res)[is.na(res)]
-            try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
             res <- try(stop(sprintf('The following return NA/NaN and required redrawing: %s',
                                     paste(NA_names, sep=',')),
                             call.=FALSE), silent=TRUE)
@@ -310,6 +309,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         if(!is.list(res) && !is.numeric(res))
             stop('analyse() did not return a list or numeric vector', call.=FALSE)
 
+        rownames(try_error_seeds) <- try_error
         attr(res, 'try_errors') <- try_error
         attr(res, 'try_error_seeds') <- try_error_seeds
         attr(res, 'warnings') <- Warnings

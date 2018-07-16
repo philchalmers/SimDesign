@@ -105,14 +105,14 @@ An alternative approach to locating errors in general is to use information stor
 
 ```{r}
 seeds <- extract_error_seeds(result)
-head(seeds[,1:10])
+head(seeds[,1:3])
 ```
 
-Given these seeds, replicating an exact error can be achieved by a) extracting a single column into an `integer` vector, and b) passing this vector to the `load_seed` input. For example, replicating the first error message can be achieved as follows, where it makes the most sense to immediately go into the debugging mode via the `edit` inputs.
+Given these seeds, replicating an exact error can be achieved by a) extracting a single column into an `integer` vector, and b) passing this vector to the `load_seed` input. For example, replicating the first error message can be achieved as follows, where it makes the most sense to immediately go into the debugging mode via the `edit` inputs. Note that it's also important to select the correct `Design` row using this approach; otherwise, the seed will clearly not replicate the exact problem state. 
 
 ```{r eval=FALSE}
-picked_seed <- seeds[,1]
-runSimulation(Design, replications = 100, load_seed=picked_seed, edit='analyse',
+picked_seed <- seeds$Design_row_1.1..Error.in.t.test.default..invalid.....not.enough..x..observations.
+runSimulation(Design[1,], replications = 100, load_seed=picked_seed, edit='analyse',
               generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
 

@@ -87,7 +87,6 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
 
     try_errors <- do.call(c, lapply(results, function(x) attr(x, 'try_errors')))
     try_error_seeds <- do.call(rbind, lapply(results, function(x) attr(x, 'try_error_seeds')))
-    rownames(try_error_seeds) <- NULL
     try_errors <- if(length(try_errors)){
         table(try_errors[!is.na(try_errors)])
     } else table(try_errors)

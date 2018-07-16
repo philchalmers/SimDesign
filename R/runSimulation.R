@@ -99,7 +99,9 @@
 #' The \code{load_seed} input will also accept an integer vector corresponding to the exact
 #' \code{.Random.seed} state. This is helpful because SimDesign also tracks these seeds for simulation
 #' conditions that threw errors, where these values can be extracted via the \code{extract_error_seeds()}
-#' function. After this matrix object is extracted, individual columns can be passed to \code{load_seed}
+#' function. The column names indicate the respective design row (first number), the order in which
+#' the errors were thrown (second number), and finally the error message string (coerced to a proper
+#' data.frame column name). After this data.frame object is extracted, individual columns can be passed to \code{load_seed}
 #' to replicate the exact error issue that appeared (note that the \code{design} object must be indexed
 #' manually to ensure that the correct design conditions is paired with this exact \code{.Random.seed} state).
 #'
@@ -936,12 +938,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(verbose)
         message('\nSimulation complete. Total execution time: ', timeFormater(sum(stored_time)))
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
-    error_seeds <- do.call(cbind, lapply(1L:length(Result_list), function(x){
+    error_seeds <- data.frame(do.call(cbind, lapply(1L:length(Result_list), function(x){
         ret <- attr(Result_list[[x]], "error_seeds")
         if(length(ret) == 0L || nrow(ret) == 0L) return(NULL)
-        rownames(ret) <- paste0("Design_row_", x, '.', 1L:nrow(ret))
+        rownames(ret) <- paste0("Design_row_", x, '.', 1L:nrow(ret), ": ",
+                                rownames(ret))
         t(ret)
-    }))
+    })))
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
     COMPLETED <- Final$COMPLETED
