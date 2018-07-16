@@ -97,9 +97,11 @@ why estimation models are having difficulty (or for other reasons whereby the wa
 
 Finally, `SimDesign` has a built-in safety feature controlled by with `max_errors` argument to avoid getting stuck in infinite redrawing loops. By default, if more than 50 errors are consecutively returned then the simulation will be halted, and the final error message will be returned. This safety feature is built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code which should be fixed before continuing.
 
-### What to do
+### What to do (explicit debug catch)
 
 If errors occur too often then these design conditions should either be extracted out of the simulation or further inspected to determine if they can be fixed (e.g., providing better starting values, increasing convergence criteria/number of iterations, etc). The use of the debugging features can also be useful to track down issues as well. For example, manually wrap the problematic functions in a `try()` call, and add the line `if(is(object, 'try-error')) browser()` to jump into the location/replication where the object unexpectedly witnessed an error. Jumping into the exact location where the error occurred will greatly help you determine what exactly went wrong in the simulation state, allowing you to quickly locate and fix the issue.
+
+### What to do (stored error seed debuging)
 
 An alternative approach to locating errors in general is to use information stored within the `SimDesign` objects at the time of completion. By default, all `.Random.seed` states are stored within the final object, and these can be extracted using the `extract_error_seeds()` function, which returns a matrix with each seed stored column-wise. 
 
