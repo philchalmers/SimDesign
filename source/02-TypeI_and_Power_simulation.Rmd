@@ -114,7 +114,7 @@ set.seed(1234)
 ```
 
 
-```{r cache=TRUE}
+```{r}
 results <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
                        generate = Generate, analyse = Analyse, summarise = Summarise)
 ```
