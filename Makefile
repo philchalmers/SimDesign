@@ -11,6 +11,7 @@ clean:
 	$(RM) -r source/*_files/;
 	$(RM) -r source/figure/;
 	$(RM) -r source/SimDesign*/;
+	$(RM) -r source/*html/;
 	$(RM) source/*.md;
 	$(RM) source/*.txt;
 

@@ -172,25 +172,25 @@ results &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel 
                          generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')</code></pre>
 <pre class="r"><code>print(results)</code></pre>
 <pre><code>##   mu sample_size  t_CI  z_CI REPLICATIONS SIM_TIME
-## 1  0          10 0.947 0.914        10000    1.21s
-## 2  5          10 0.953 0.922        10000    1.13s
-## 3 10          10 0.951 0.919        10000    0.99s
-## 4  0          20 0.954 0.940        10000    1.04s
-## 5  5          20 0.948 0.931        10000    1.02s
-## 6 10          20 0.956 0.942        10000    1.06s
-## 7  0          30 0.951 0.941        10000    1.04s
-## 8  5          30 0.947 0.935        10000    1.10s
-## 9 10          30 0.949 0.939        10000    1.07s
+## 1  0          10 0.947 0.914        10000    1.84s
+## 2  5          10 0.953 0.922        10000    1.75s
+## 3 10          10 0.951 0.919        10000    1.81s
+## 4  0          20 0.954 0.940        10000    1.82s
+## 5  5          20 0.948 0.931        10000    1.64s
+## 6 10          20 0.956 0.942        10000    1.67s
+## 7  0          30 0.951 0.941        10000    1.70s
+## 8  5          30 0.947 0.935        10000    1.88s
+## 9 10          30 0.949 0.939        10000    1.76s
 ##                  COMPLETED       SEED
-## 1 Mon May 21 13:30:25 2018  244176217
-## 2 Mon May 21 13:30:27 2018 1336377796
-## 3 Mon May 21 13:30:28 2018 1308407526
-## 4 Mon May 21 13:30:29 2018 1338697157
-## 5 Mon May 21 13:30:30 2018 1848801708
-## 6 Mon May 21 13:30:31 2018 1375056554
-## 7 Mon May 21 13:30:32 2018   20391982
-## 8 Mon May 21 13:30:33 2018  499398409
-## 9 Mon May 21 13:30:34 2018 1430403979</code></pre>
+## 1 Mon Jul 16 21:08:15 2018  244176217
+## 2 Mon Jul 16 21:08:17 2018 1336377796
+## 3 Mon Jul 16 21:08:18 2018 1308407526
+## 4 Mon Jul 16 21:08:20 2018 1338697157
+## 5 Mon Jul 16 21:08:22 2018 1848801708
+## 6 Mon Jul 16 21:08:23 2018 1375056554
+## 7 Mon Jul 16 21:08:25 2018   20391982
+## 8 Mon Jul 16 21:08:27 2018  499398409
+## 9 Mon Jul 16 21:08:29 2018 1430403979</code></pre>
 <p>From these results it’s clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distribution CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.</p>
 <p>Note that the <code>ECR()</code> function was used within the <code>Analyse()</code> function rather than in <code>Summarise()</code>. When only the three values are supplied (CIs + population value) then <code>ECR()</code> will return either a 1 if the population value was within the CI or 0 if it was not. Hence, in the <code>Summarise()</code> function all that is required to obtain the coverage estimate is to find the mean of these 1’s and 0’s. The next section demonstrates how to use <code>ECR()</code> in the <code>Summarise()</code> instead, and it’s really a matter of preference which style you prefer.</p>
 </div>

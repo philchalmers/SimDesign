@@ -176,7 +176,7 @@ d = data.frame(d)
 # the following line was added to determine the computation time
 time1 &lt;- Sys.time()
 time1 - time0</code></pre>
-<pre><code>## Time difference of 8.58 mins</code></pre>
+<pre><code>## Time difference of 6.6 mins</code></pre>
 <pre class="r"><code>head(d)</code></pre>
 <pre><code>##   iteration    a    b   cp   N model Sobel_z
 ## 1         1 -0.3 -0.3 -0.2 100     1  1.7836
@@ -242,226 +242,280 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 results &lt;- runSimulation(design=Design, replications=1000, save_results=TRUE,
     generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')</code></pre>
 <pre><code>## 
-Design row: 1/54;   Started: Mon May 21 13:39:20 2018;   Total elapsed time: 0.00s 
 ## 
-Design row: 2/54;   Started: Mon May 21 13:39:24 2018;   Total elapsed time: 4.30s 
+Design row: 1/54;   Started: Mon Jul 16 21:15:19 2018;   Total elapsed time: 0.00s 
 ## 
-Design row: 3/54;   Started: Mon May 21 13:39:29 2018;   Total elapsed time: 9.40s 
 ## 
-Design row: 4/54;   Started: Mon May 21 13:39:34 2018;   Total elapsed time: 13.84s 
+Design row: 2/54;   Started: Mon Jul 16 21:15:24 2018;   Total elapsed time: 5.03s 
 ## 
-Design row: 5/54;   Started: Mon May 21 13:39:39 2018;   Total elapsed time: 19.05s 
 ## 
-Design row: 6/54;   Started: Mon May 21 13:39:44 2018;   Total elapsed time: 24.13s 
+Design row: 3/54;   Started: Mon Jul 16 21:15:29 2018;   Total elapsed time: 10.19s 
 ## 
-Design row: 7/54;   Started: Mon May 21 13:39:49 2018;   Total elapsed time: 29.49s 
 ## 
-Design row: 8/54;   Started: Mon May 21 13:39:54 2018;   Total elapsed time: 34.26s 
+Design row: 4/54;   Started: Mon Jul 16 21:15:34 2018;   Total elapsed time: 15.11s 
 ## 
-Design row: 9/54;   Started: Mon May 21 13:40:00 2018;   Total elapsed time: 39.70s 
 ## 
-Design row: 10/54;   Started: Mon May 21 13:40:05 2018;   Total elapsed time: 44.72s 
+Design row: 5/54;   Started: Mon Jul 16 21:15:39 2018;   Total elapsed time: 20.25s 
 ## 
-Design row: 11/54;   Started: Mon May 21 13:40:10 2018;   Total elapsed time: 50.54s 
 ## 
-Design row: 12/54;   Started: Mon May 21 13:40:16 2018;   Total elapsed time: 55.62s 
+Design row: 6/54;   Started: Mon Jul 16 21:15:44 2018;   Total elapsed time: 25.20s 
 ## 
-Design row: 13/54;   Started: Mon May 21 13:40:21 2018;   Total elapsed time: 01m 1.22s 
 ## 
-Design row: 14/54;   Started: Mon May 21 13:40:26 2018;   Total elapsed time: 01m 5.96s 
+Design row: 7/54;   Started: Mon Jul 16 21:15:49 2018;   Total elapsed time: 30.31s 
 ## 
-Design row: 15/54;   Started: Mon May 21 13:40:31 2018;   Total elapsed time: 01m 10.98s 
 ## 
-Design row: 16/54;   Started: Mon May 21 13:40:35 2018;   Total elapsed time: 01m 15.47s 
+Design row: 8/54;   Started: Mon Jul 16 21:15:54 2018;   Total elapsed time: 35.28s 
 ## 
-Design row: 17/54;   Started: Mon May 21 13:40:41 2018;   Total elapsed time: 01m 20.77s 
 ## 
-Design row: 18/54;   Started: Mon May 21 13:40:45 2018;   Total elapsed time: 01m 25.35s 
+Design row: 9/54;   Started: Mon Jul 16 21:15:59 2018;   Total elapsed time: 40.41s 
 ## 
-Design row: 19/54;   Started: Mon May 21 13:40:50 2018;   Total elapsed time: 01m 30.52s 
 ## 
-Design row: 20/54;   Started: Mon May 21 13:40:55 2018;   Total elapsed time: 01m 34.87s 
+Design row: 10/54;   Started: Mon Jul 16 21:16:04 2018;   Total elapsed time: 45.42s 
 ## 
-Design row: 21/54;   Started: Mon May 21 13:41:00 2018;   Total elapsed time: 01m 40.10s 
 ## 
-Design row: 22/54;   Started: Mon May 21 13:41:04 2018;   Total elapsed time: 01m 44.38s 
+Design row: 11/54;   Started: Mon Jul 16 21:16:09 2018;   Total elapsed time: 50.53s 
 ## 
-Design row: 23/54;   Started: Mon May 21 13:41:09 2018;   Total elapsed time: 01m 49.37s 
 ## 
-Design row: 24/54;   Started: Mon May 21 13:41:14 2018;   Total elapsed time: 01m 53.99s 
+Design row: 12/54;   Started: Mon Jul 16 21:16:14 2018;   Total elapsed time: 55.49s 
 ## 
-Design row: 25/54;   Started: Mon May 21 13:41:19 2018;   Total elapsed time: 01m 59.17s 
 ## 
-Design row: 26/54;   Started: Mon May 21 13:41:23 2018;   Total elapsed time: 02m 3.55s 
+Design row: 13/54;   Started: Mon Jul 16 21:16:19 2018;   Total elapsed time: 01m 0.61s 
 ## 
-Design row: 27/54;   Started: Mon May 21 13:41:28 2018;   Total elapsed time: 02m 8.39s 
 ## 
-Design row: 28/54;   Started: Mon May 21 13:41:33 2018;   Total elapsed time: 02m 12.74s 
+Design row: 14/54;   Started: Mon Jul 16 21:16:24 2018;   Total elapsed time: 01m 5.56s 
 ## 
-Design row: 29/54;   Started: Mon May 21 13:41:37 2018;   Total elapsed time: 02m 17.50s 
 ## 
-Design row: 30/54;   Started: Mon May 21 13:41:42 2018;   Total elapsed time: 02m 21.67s 
+Design row: 15/54;   Started: Mon Jul 16 21:16:30 2018;   Total elapsed time: 01m 10.70s 
 ## 
-Design row: 31/54;   Started: Mon May 21 13:41:46 2018;   Total elapsed time: 02m 26.24s 
 ## 
-Design row: 32/54;   Started: Mon May 21 13:41:50 2018;   Total elapsed time: 02m 30.34s 
+Design row: 16/54;   Started: Mon Jul 16 21:16:35 2018;   Total elapsed time: 01m 15.65s 
 ## 
-Design row: 33/54;   Started: Mon May 21 13:41:55 2018;   Total elapsed time: 02m 35.09s 
 ## 
-Design row: 34/54;   Started: Mon May 21 13:41:59 2018;   Total elapsed time: 02m 39.33s 
+Design row: 17/54;   Started: Mon Jul 16 21:16:40 2018;   Total elapsed time: 01m 20.75s 
 ## 
-Design row: 35/54;   Started: Mon May 21 13:42:04 2018;   Total elapsed time: 02m 44.13s 
 ## 
-Design row: 36/54;   Started: Mon May 21 13:42:08 2018;   Total elapsed time: 02m 48.48s 
+Design row: 18/54;   Started: Mon Jul 16 21:16:45 2018;   Total elapsed time: 01m 25.71s 
 ## 
-Design row: 37/54;   Started: Mon May 21 13:42:13 2018;   Total elapsed time: 02m 53.36s 
 ## 
-Design row: 38/54;   Started: Mon May 21 13:42:18 2018;   Total elapsed time: 02m 57.66s 
+Design row: 19/54;   Started: Mon Jul 16 21:16:50 2018;   Total elapsed time: 01m 30.82s 
 ## 
-Design row: 39/54;   Started: Mon May 21 13:42:22 2018;   Total elapsed time: 03m 2.37s 
 ## 
-Design row: 40/54;   Started: Mon May 21 13:42:27 2018;   Total elapsed time: 03m 6.63s 
+Design row: 20/54;   Started: Mon Jul 16 21:16:55 2018;   Total elapsed time: 01m 35.83s 
 ## 
-Design row: 41/54;   Started: Mon May 21 13:42:31 2018;   Total elapsed time: 03m 11.33s 
 ## 
-Design row: 42/54;   Started: Mon May 21 13:42:35 2018;   Total elapsed time: 03m 15.54s 
+Design row: 21/54;   Started: Mon Jul 16 21:17:00 2018;   Total elapsed time: 01m 40.92s 
 ## 
-Design row: 43/54;   Started: Mon May 21 13:42:40 2018;   Total elapsed time: 03m 20.17s 
 ## 
-Design row: 44/54;   Started: Mon May 21 13:42:44 2018;   Total elapsed time: 03m 24.27s 
+Design row: 22/54;   Started: Mon Jul 16 21:17:05 2018;   Total elapsed time: 01m 45.89s 
 ## 
-Design row: 45/54;   Started: Mon May 21 13:42:49 2018;   Total elapsed time: 03m 28.97s 
 ## 
-Design row: 46/54;   Started: Mon May 21 13:42:53 2018;   Total elapsed time: 03m 33.22s 
+Design row: 23/54;   Started: Mon Jul 16 21:17:10 2018;   Total elapsed time: 01m 50.99s 
 ## 
-Design row: 47/54;   Started: Mon May 21 13:42:58 2018;   Total elapsed time: 03m 37.98s 
 ## 
-Design row: 48/54;   Started: Mon May 21 13:43:02 2018;   Total elapsed time: 03m 42.23s 
+Design row: 24/54;   Started: Mon Jul 16 21:17:15 2018;   Total elapsed time: 01m 55.95s 
 ## 
-Design row: 49/54;   Started: Mon May 21 13:43:07 2018;   Total elapsed time: 03m 46.82s 
 ## 
-Design row: 50/54;   Started: Mon May 21 13:43:11 2018;   Total elapsed time: 03m 51.00s 
+Design row: 25/54;   Started: Mon Jul 16 21:17:20 2018;   Total elapsed time: 02m 1.10s 
 ## 
-Design row: 51/54;   Started: Mon May 21 13:43:16 2018;   Total elapsed time: 03m 55.90s 
 ## 
-Design row: 52/54;   Started: Mon May 21 13:43:20 2018;   Total elapsed time: 04m 0.28s 
+Design row: 26/54;   Started: Mon Jul 16 21:17:25 2018;   Total elapsed time: 02m 6.05s 
 ## 
-Design row: 53/54;   Started: Mon May 21 13:43:25 2018;   Total elapsed time: 04m 5.02s 
 ## 
-Design row: 54/54;   Started: Mon May 21 13:43:29 2018;   Total elapsed time: 04m 9.28s</code></pre>
+Design row: 27/54;   Started: Mon Jul 16 21:17:30 2018;   Total elapsed time: 02m 11.16s 
+## 
+## 
+Design row: 28/54;   Started: Mon Jul 16 21:17:35 2018;   Total elapsed time: 02m 16.13s 
+## 
+## 
+Design row: 29/54;   Started: Mon Jul 16 21:17:40 2018;   Total elapsed time: 02m 21.33s 
+## 
+## 
+Design row: 30/54;   Started: Mon Jul 16 21:17:45 2018;   Total elapsed time: 02m 26.24s 
+## 
+## 
+Design row: 31/54;   Started: Mon Jul 16 21:17:50 2018;   Total elapsed time: 02m 31.39s 
+## 
+## 
+Design row: 32/54;   Started: Mon Jul 16 21:17:55 2018;   Total elapsed time: 02m 36.36s 
+## 
+## 
+Design row: 33/54;   Started: Mon Jul 16 21:18:00 2018;   Total elapsed time: 02m 41.47s 
+## 
+## 
+Design row: 34/54;   Started: Mon Jul 16 21:18:05 2018;   Total elapsed time: 02m 46.48s 
+## 
+## 
+Design row: 35/54;   Started: Mon Jul 16 21:18:11 2018;   Total elapsed time: 02m 51.52s 
+## 
+## 
+Design row: 36/54;   Started: Mon Jul 16 21:18:15 2018;   Total elapsed time: 02m 56.48s 
+## 
+## 
+Design row: 37/54;   Started: Mon Jul 16 21:18:21 2018;   Total elapsed time: 03m 1.54s 
+## 
+## 
+Design row: 38/54;   Started: Mon Jul 16 21:18:26 2018;   Total elapsed time: 03m 6.48s 
+## 
+## 
+Design row: 39/54;   Started: Mon Jul 16 21:18:31 2018;   Total elapsed time: 03m 11.62s 
+## 
+## 
+Design row: 40/54;   Started: Mon Jul 16 21:18:36 2018;   Total elapsed time: 03m 16.56s 
+## 
+## 
+Design row: 41/54;   Started: Mon Jul 16 21:18:41 2018;   Total elapsed time: 03m 21.65s 
+## 
+## 
+Design row: 42/54;   Started: Mon Jul 16 21:18:46 2018;   Total elapsed time: 03m 26.59s 
+## 
+## 
+Design row: 43/54;   Started: Mon Jul 16 21:18:51 2018;   Total elapsed time: 03m 31.72s 
+## 
+## 
+Design row: 44/54;   Started: Mon Jul 16 21:18:56 2018;   Total elapsed time: 03m 36.70s 
+## 
+## 
+Design row: 45/54;   Started: Mon Jul 16 21:19:01 2018;   Total elapsed time: 03m 41.76s 
+## 
+## 
+Design row: 46/54;   Started: Mon Jul 16 21:19:06 2018;   Total elapsed time: 03m 46.70s 
+## 
+## 
+Design row: 47/54;   Started: Mon Jul 16 21:19:11 2018;   Total elapsed time: 03m 51.78s 
+## 
+## 
+Design row: 48/54;   Started: Mon Jul 16 21:19:16 2018;   Total elapsed time: 03m 56.74s 
+## 
+## 
+Design row: 49/54;   Started: Mon Jul 16 21:19:21 2018;   Total elapsed time: 04m 1.91s 
+## 
+## 
+Design row: 50/54;   Started: Mon Jul 16 21:19:26 2018;   Total elapsed time: 04m 6.84s 
+## 
+## 
+Design row: 51/54;   Started: Mon Jul 16 21:19:31 2018;   Total elapsed time: 04m 11.94s 
+## 
+## 
+Design row: 52/54;   Started: Mon Jul 16 21:19:36 2018;   Total elapsed time: 04m 16.85s 
+## 
+## 
+Design row: 53/54;   Started: Mon Jul 16 21:19:41 2018;   Total elapsed time: 04m 21.97s 
+## 
+## 
+Design row: 54/54;   Started: Mon Jul 16 21:19:46 2018;   Total elapsed time: 04m 26.97s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 04m 13.89s</code></pre>
+## Simulation complete. Total execution time: 04m 32.04s</code></pre>
 <pre class="r"><code>print(results)</code></pre>
 <pre><code>##      N    a    b   cp XMY.p XYM.p REPLICATIONS SIM_TIME
-## 1  100 -0.3 -0.3 -0.2 0.502 0.053         1000    4.30s
-## 2  300 -0.3 -0.3 -0.2 0.997 0.375         1000    5.10s
-## 3  100    0 -0.3 -0.2 0.015 0.205         1000    4.44s
-## 4  300    0 -0.3 -0.2 0.032 0.868         1000    5.22s
-## 5  100  0.3 -0.3 -0.2 0.499 0.446         1000    5.08s
-## 6  300  0.3 -0.3 -0.2 0.997 0.993         1000    5.36s
-## 7  100 -0.3    0 -0.2 0.007 0.001         1000    4.77s
-## 8  300 -0.3    0 -0.2 0.032 0.021         1000    5.44s
-## 9  100    0    0 -0.2 0.000 0.002         1000    5.02s
-## 10 300    0    0 -0.2 0.000 0.015         1000    5.83s
-## 11 100  0.3    0 -0.2 0.015 0.003         1000    5.08s
-## 12 300  0.3    0 -0.2 0.022 0.011         1000    5.60s
-## 13 100 -0.3  0.3 -0.2 0.479 0.430         1000    4.74s
-## 14 300 -0.3  0.3 -0.2 0.994 0.994         1000    5.01s
-## 15 100    0  0.3 -0.2 0.011 0.210         1000    4.49s
-## 16 300    0  0.3 -0.2 0.034 0.875         1000    5.30s
-## 17 100  0.3  0.3 -0.2 0.497 0.067         1000    4.58s
-## 18 300  0.3  0.3 -0.2 0.998 0.392         1000    5.18s
-## 19 100 -0.3 -0.3    0 0.454 0.042         1000    4.35s
-## 20 300 -0.3 -0.3    0 0.996 0.258         1000    5.23s
-## 21 100    0 -0.3    0 0.010 0.010         1000    4.28s
-## 22 300    0 -0.3    0 0.038 0.036         1000    4.99s
-## 23 100  0.3 -0.3    0 0.478 0.040         1000    4.62s
-## 24 300  0.3 -0.3    0 0.998 0.268         1000    5.17s
-## 25 100 -0.3    0    0 0.019 0.000         1000    4.38s
-## 26 300 -0.3    0    0 0.038 0.000         1000    4.84s
-## 27 100    0    0    0 0.000 0.000         1000    4.36s
-## 28 300    0    0    0 0.000 0.000         1000    4.75s
-## 29 100  0.3    0    0 0.010 0.000         1000    4.18s
-## 30 300  0.3    0    0 0.037 0.000         1000    4.57s
-## 31 100 -0.3  0.3    0 0.511 0.044         1000    4.10s
-## 32 300 -0.3  0.3    0 0.996 0.262         1000    4.74s
-## 33 100    0  0.3    0 0.016 0.012         1000    4.25s
-## 34 300    0  0.3    0 0.030 0.034         1000    4.79s
-## 35 100  0.3  0.3    0 0.502 0.045         1000    4.35s
-## 36 300  0.3  0.3    0 0.997 0.236         1000    4.88s
-## 37 100 -0.3 -0.3  0.2 0.501 0.433         1000    4.31s
-## 38 300 -0.3 -0.3  0.2 0.997 0.986         1000    4.71s
-## 39 100    0 -0.3  0.2 0.007 0.209         1000    4.26s
-## 40 300    0 -0.3  0.2 0.031 0.878         1000    4.70s
-## 41 100  0.3 -0.3  0.2 0.503 0.052         1000    4.21s
-## 42 300  0.3 -0.3  0.2 0.998 0.392         1000    4.63s
-## 43 100 -0.3    0  0.2 0.015 0.003         1000    4.10s
-## 44 300 -0.3    0  0.2 0.033 0.016         1000    4.70s
-## 45 100    0    0  0.2 0.000 0.007         1000    4.25s
-## 46 300    0    0  0.2 0.000 0.017         1000    4.76s
-## 47 100  0.3    0  0.2 0.011 0.005         1000    4.25s
-## 48 300  0.3    0  0.2 0.039 0.023         1000    4.60s
-## 49 100 -0.3  0.3  0.2 0.502 0.063         1000    4.18s
-## 50 300 -0.3  0.3  0.2 0.998 0.361         1000    4.90s
-## 51 100    0  0.3  0.2 0.010 0.213         1000    4.38s
-## 52 300    0  0.3  0.2 0.027 0.879         1000    4.74s
-## 53 100  0.3  0.3  0.2 0.514 0.442         1000    4.27s
-## 54 300  0.3  0.3  0.2 0.998 0.995         1000    4.61s
+## 1  100 -0.3 -0.3 -0.2 0.502 0.053         1000    5.03s
+## 2  300 -0.3 -0.3 -0.2 0.997 0.375         1000    5.16s
+## 3  100    0 -0.3 -0.2 0.015 0.205         1000    4.92s
+## 4  300    0 -0.3 -0.2 0.032 0.868         1000    5.14s
+## 5  100  0.3 -0.3 -0.2 0.499 0.446         1000    4.95s
+## 6  300  0.3 -0.3 -0.2 0.997 0.993         1000    5.11s
+## 7  100 -0.3    0 -0.2 0.007 0.001         1000    4.97s
+## 8  300 -0.3    0 -0.2 0.032 0.021         1000    5.13s
+## 9  100    0    0 -0.2 0.000 0.002         1000    5.01s
+## 10 300    0    0 -0.2 0.000 0.015         1000    5.11s
+## 11 100  0.3    0 -0.2 0.015 0.003         1000    4.96s
+## 12 300  0.3    0 -0.2 0.022 0.011         1000    5.12s
+## 13 100 -0.3  0.3 -0.2 0.479 0.430         1000    4.95s
+## 14 300 -0.3  0.3 -0.2 0.994 0.994         1000    5.14s
+## 15 100    0  0.3 -0.2 0.011 0.210         1000    4.95s
+## 16 300    0  0.3 -0.2 0.034 0.875         1000    5.10s
+## 17 100  0.3  0.3 -0.2 0.497 0.067         1000    4.96s
+## 18 300  0.3  0.3 -0.2 0.998 0.392         1000    5.11s
+## 19 100 -0.3 -0.3    0 0.454 0.042         1000    5.01s
+## 20 300 -0.3 -0.3    0 0.996 0.258         1000    5.09s
+## 21 100    0 -0.3    0 0.010 0.010         1000    4.97s
+## 22 300    0 -0.3    0 0.038 0.036         1000    5.10s
+## 23 100  0.3 -0.3    0 0.478 0.040         1000    4.96s
+## 24 300  0.3 -0.3    0 0.998 0.268         1000    5.15s
+## 25 100 -0.3    0    0 0.019 0.000         1000    4.95s
+## 26 300 -0.3    0    0 0.038 0.000         1000    5.11s
+## 27 100    0    0    0 0.000 0.000         1000    4.97s
+## 28 300    0    0    0 0.000 0.000         1000    5.20s
+## 29 100  0.3    0    0 0.010 0.000         1000    4.91s
+## 30 300  0.3    0    0 0.037 0.000         1000    5.15s
+## 31 100 -0.3  0.3    0 0.511 0.044         1000    4.97s
+## 32 300 -0.3  0.3    0 0.996 0.262         1000    5.11s
+## 33 100    0  0.3    0 0.016 0.012         1000    5.01s
+## 34 300    0  0.3    0 0.030 0.034         1000    5.04s
+## 35 100  0.3  0.3    0 0.502 0.045         1000    4.96s
+## 36 300  0.3  0.3    0 0.997 0.236         1000    5.06s
+## 37 100 -0.3 -0.3  0.2 0.501 0.433         1000    4.94s
+## 38 300 -0.3 -0.3  0.2 0.997 0.986         1000    5.14s
+## 39 100    0 -0.3  0.2 0.007 0.209         1000    4.94s
+## 40 300    0 -0.3  0.2 0.031 0.878         1000    5.09s
+## 41 100  0.3 -0.3  0.2 0.503 0.052         1000    4.94s
+## 42 300  0.3 -0.3  0.2 0.998 0.392         1000    5.13s
+## 43 100 -0.3    0  0.2 0.015 0.003         1000    4.98s
+## 44 300 -0.3    0  0.2 0.033 0.016         1000    5.06s
+## 45 100    0    0  0.2 0.000 0.007         1000    4.94s
+## 46 300    0    0  0.2 0.000 0.017         1000    5.08s
+## 47 100  0.3    0  0.2 0.011 0.005         1000    4.96s
+## 48 300  0.3    0  0.2 0.039 0.023         1000    5.17s
+## 49 100 -0.3  0.3  0.2 0.502 0.063         1000    4.93s
+## 50 300 -0.3  0.3  0.2 0.998 0.361         1000    5.10s
+## 51 100    0  0.3  0.2 0.010 0.213         1000    4.91s
+## 52 300    0  0.3  0.2 0.027 0.879         1000    5.12s
+## 53 100  0.3  0.3  0.2 0.514 0.442         1000    5.00s
+## 54 300  0.3  0.3  0.2 0.998 0.995         1000    5.07s
 ##                   COMPLETED       SEED
-## 1  Mon May 21 13:39:24 2018 1716133831
-## 2  Mon May 21 13:39:29 2018  125272152
-## 3  Mon May 21 13:39:34 2018  641798771
-## 4  Mon May 21 13:39:39 2018  394087155
-## 5  Mon May 21 13:39:44 2018  434832155
-## 6  Mon May 21 13:39:49 2018 1308492102
-## 7  Mon May 21 13:39:54 2018 2079973972
-## 8  Mon May 21 13:40:00 2018   42026543
-## 9  Mon May 21 13:40:05 2018  178425610
-## 10 Mon May 21 13:40:10 2018 1950910824
-## 11 Mon May 21 13:40:16 2018 1500360025
-## 12 Mon May 21 13:40:21 2018   41621648
-## 13 Mon May 21 13:40:26 2018 1426763092
-## 14 Mon May 21 13:40:31 2018 1175182759
-## 15 Mon May 21 13:40:35 2018  923481820
-## 16 Mon May 21 13:40:41 2018 1545635848
-## 17 Mon May 21 13:40:45 2018 1414239259
-## 18 Mon May 21 13:40:50 2018  234186430
-## 19 Mon May 21 13:40:55 2018 1951948161
-## 20 Mon May 21 13:41:00 2018 1181223091
-## 21 Mon May 21 13:41:04 2018 1831056919
-## 22 Mon May 21 13:41:09 2018  236715158
-## 23 Mon May 21 13:41:14 2018  741058315
-## 24 Mon May 21 13:41:19 2018 1380401928
-## 25 Mon May 21 13:41:23 2018   38537717
-## 26 Mon May 21 13:41:28 2018 2029372407
-## 27 Mon May 21 13:41:33 2018  657675993
-## 28 Mon May 21 13:41:37 2018   29557404
-## 29 Mon May 21 13:41:42 2018  931293951
-## 30 Mon May 21 13:41:46 2018 1121329480
-## 31 Mon May 21 13:41:50 2018 1463753105
-## 32 Mon May 21 13:41:55 2018 1170238372
-## 33 Mon May 21 13:41:59 2018  388019460
-## 34 Mon May 21 13:42:04 2018  283799703
-## 35 Mon May 21 13:42:08 2018 1769866422
-## 36 Mon May 21 13:42:13 2018   25816856
-## 37 Mon May 21 13:42:18 2018  192296919
-## 38 Mon May 21 13:42:22 2018  462837452
-## 39 Mon May 21 13:42:27 2018 1989886358
-## 40 Mon May 21 13:42:31 2018  566504170
-## 41 Mon May 21 13:42:35 2018 1485875236
-## 42 Mon May 21 13:42:40 2018  687218226
-## 43 Mon May 21 13:42:44 2018 1515984768
-## 44 Mon May 21 13:42:49 2018  510371573
-## 45 Mon May 21 13:42:53 2018  878098654
-## 46 Mon May 21 13:42:58 2018  630577529
-## 47 Mon May 21 13:43:02 2018 1297188225
-## 48 Mon May 21 13:43:07 2018 1124989325
-## 49 Mon May 21 13:43:11 2018  981968062
-## 50 Mon May 21 13:43:16 2018 1552619063
-## 51 Mon May 21 13:43:20 2018  503879618
-## 52 Mon May 21 13:43:25 2018  482352907
-## 53 Mon May 21 13:43:29 2018  293731354
-## 54 Mon May 21 13:43:34 2018 2009690489</code></pre>
+## 1  Mon Jul 16 21:15:24 2018 1716133831
+## 2  Mon Jul 16 21:15:29 2018  125272152
+## 3  Mon Jul 16 21:15:34 2018  641798771
+## 4  Mon Jul 16 21:15:39 2018  394087155
+## 5  Mon Jul 16 21:15:44 2018  434832155
+## 6  Mon Jul 16 21:15:49 2018 1308492102
+## 7  Mon Jul 16 21:15:54 2018 2079973972
+## 8  Mon Jul 16 21:15:59 2018   42026543
+## 9  Mon Jul 16 21:16:04 2018  178425610
+## 10 Mon Jul 16 21:16:09 2018 1950910824
+## 11 Mon Jul 16 21:16:14 2018 1500360025
+## 12 Mon Jul 16 21:16:19 2018   41621648
+## 13 Mon Jul 16 21:16:24 2018 1426763092
+## 14 Mon Jul 16 21:16:30 2018 1175182759
+## 15 Mon Jul 16 21:16:35 2018  923481820
+## 16 Mon Jul 16 21:16:40 2018 1545635848
+## 17 Mon Jul 16 21:16:45 2018 1414239259
+## 18 Mon Jul 16 21:16:50 2018  234186430
+## 19 Mon Jul 16 21:16:55 2018 1951948161
+## 20 Mon Jul 16 21:17:00 2018 1181223091
+## 21 Mon Jul 16 21:17:05 2018 1831056919
+## 22 Mon Jul 16 21:17:10 2018  236715158
+## 23 Mon Jul 16 21:17:15 2018  741058315
+## 24 Mon Jul 16 21:17:20 2018 1380401928
+## 25 Mon Jul 16 21:17:25 2018   38537717
+## 26 Mon Jul 16 21:17:30 2018 2029372407
+## 27 Mon Jul 16 21:17:35 2018  657675993
+## 28 Mon Jul 16 21:17:40 2018   29557404
+## 29 Mon Jul 16 21:17:45 2018  931293951
+## 30 Mon Jul 16 21:17:50 2018 1121329480
+## 31 Mon Jul 16 21:17:55 2018 1463753105
+## 32 Mon Jul 16 21:18:00 2018 1170238372
+## 33 Mon Jul 16 21:18:05 2018  388019460
+## 34 Mon Jul 16 21:18:11 2018  283799703
+## 35 Mon Jul 16 21:18:15 2018 1769866422
+## 36 Mon Jul 16 21:18:21 2018   25816856
+## 37 Mon Jul 16 21:18:25 2018  192296919
+## 38 Mon Jul 16 21:18:31 2018  462837452
+## 39 Mon Jul 16 21:18:36 2018 1989886358
+## 40 Mon Jul 16 21:18:41 2018  566504170
+## 41 Mon Jul 16 21:18:46 2018 1485875236
+## 42 Mon Jul 16 21:18:51 2018  687218226
+## 43 Mon Jul 16 21:18:56 2018 1515984768
+## 44 Mon Jul 16 21:19:01 2018  510371573
+## 45 Mon Jul 16 21:19:06 2018  878098654
+## 46 Mon Jul 16 21:19:11 2018  630577529
+## 47 Mon Jul 16 21:19:16 2018 1297188225
+## 48 Mon Jul 16 21:19:21 2018 1124989325
+## 49 Mon Jul 16 21:19:26 2018  981968062
+## 50 Mon Jul 16 21:19:31 2018 1552619063
+## 51 Mon Jul 16 21:19:36 2018  503879618
+## 52 Mon Jul 16 21:19:41 2018  482352907
+## 53 Mon Jul 16 21:19:46 2018  293731354
+## 54 Mon Jul 16 21:19:51 2018 2009690489</code></pre>
 <p>To see all the analyis results from <code>Design[1,]</code>, for example, inspect the object returned from <code>SimResults()</code>.</p>
 <pre class="r"><code>row1 &lt;- SimResults(results, 1)</code></pre>
 </div>
