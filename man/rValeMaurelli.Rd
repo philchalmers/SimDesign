@@ -4,8 +4,9 @@
 \alias{rValeMaurelli}
 \title{Generate non-normal data with Vale & Maurelli's (1983) method}
 \usage{
-rValeMaurelli(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
-  skew = rep(0, nrow(sigma)), kurt = rep(0, nrow(sigma)))
+rValeMaurelli(n, mean = rep(0, nrow(sigma)),
+  sigma = diag(length(mean)), skew = rep(0, nrow(sigma)),
+  kurt = rep(0, nrow(sigma)))
 }
 \arguments{
 \item{n}{number of samples to draw}

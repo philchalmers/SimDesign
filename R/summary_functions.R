@@ -23,6 +23,11 @@
 #'   and \code{'standardized'} computes the standardized bias estimate
 #'   (standard bias divided by the standard deviation of the sample estimates)
 #'
+#' @param abs logical; find the absoluate difference between the parameters and estimates, thereby
+#'   removing any sign effects? Note that this is performed last in the computations so that
+#'   relative and standardized bias estimates are not affected (but will also return only
+#'   positive values). Default is FALSE
+#'
 #' @return returns a \code{numeric} vector indicating the overall (relative/standardized)
 #'   bias in the estimates
 #'
@@ -72,7 +77,7 @@
 #' bias(estimates, parameters)
 #'
 #'
-bias <- function(estimate, parameter = NULL, type = 'bias'){
+bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
     if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
     if(is.vector(estimate)){
         nms <- names(estimate)
@@ -93,6 +98,7 @@ bias <- function(estimate, parameter = NULL, type = 'bias'){
     ret <- colMeans(t(t(estimate) - parameter))
     if(type == 'relative') ret <- ret / parameter
     else if(type == 'standardized') ret <- ret / apply(estimate, 2, sd)
+    if(abs) ret <- abs(ret)
     ret
 }
 

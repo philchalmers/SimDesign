@@ -4,8 +4,9 @@
 \alias{boot_predict}
 \title{Compute prediction estimates for the replication size using bootstrap MSE estimates}
 \usage{
-boot_predict(condition, generate, analyse, summarise, fixed_objects = NULL,
-  ..., Rstar = seq(100, 500, by = 100), boot_draws = 1000)
+boot_predict(condition, generate, analyse, summarise,
+  fixed_objects = NULL, ..., Rstar = seq(100, 500, by = 100),
+  boot_draws = 1000)
 }
 \arguments{
 \item{condition}{a \code{data.frame} consisting of one row from the original \code{design}
