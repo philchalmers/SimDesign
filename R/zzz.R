@@ -1,3 +1,4 @@
 .onAttach <- function(libname, pkgname) {
-    packageStartupMessage("See ?SimFunctions to get started with SimDesign")
+    if(interactive())
+        packageStartupMessage("See ?SimFunctions to get started with SimDesign")
 }
