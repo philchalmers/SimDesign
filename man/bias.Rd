@@ -28,8 +28,8 @@ are used in the denominator rather than the (potentially) signed input values,
 and \code{'standardized'} computes the standardized bias estimate
 (standard bias divided by the standard deviation of the sample estimates)}
 
-\item{abs}{logical; find the absoluate difference between the parameters and estimates, thereby
-removing any sign effects and express bias in terms of "deviation from 0"? Default is FALSE}
+\item{abs}{logical; find the absoluate bias between the parameters and estimates? This effectively
+just applies the \code{\link{abs}} transformation to the returned result. Default is FALSE}
 }
 \value{
 returns a \code{numeric} vector indicating the overall (relative/standardized)
@@ -72,6 +72,9 @@ bias(df, parameter = c(2,2))
 parameters <- 1:10
 estimates <- parameters + rnorm(10)
 bias(estimates, parameters)
+
+# relative difference dividing by the magnitude of parameters
+bias(estimates, parameters, type = 'abs_relative')
 
 
 }

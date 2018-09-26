@@ -25,8 +25,8 @@
 #'   and \code{'standardized'} computes the standardized bias estimate
 #'   (standard bias divided by the standard deviation of the sample estimates)
 #'
-#' @param abs logical; find the absoluate difference between the parameters and estimates, thereby
-#'   removing any sign effects and express bias in terms of "deviation from 0"? Default is FALSE
+#' @param abs logical; find the absoluate bias between the parameters and estimates? This effectively
+#'   just applies the \code{\link{abs}} transformation to the returned result. Default is FALSE
 #'
 #' @return returns a \code{numeric} vector indicating the overall (relative/standardized)
 #'   bias in the estimates
@@ -76,6 +76,9 @@
 #' estimates <- parameters + rnorm(10)
 #' bias(estimates, parameters)
 #'
+#' # relative difference dividing by the magnitude of parameters
+#' bias(estimates, parameters, type = 'abs_relative')
+#'
 #'
 bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
     if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
@@ -96,11 +99,11 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
     if(!equal_len)
         stopifnot(ncol(estimate) == length(parameter))
     diff <- t(t(estimate) - parameter)
-    if(abs) diff <- abs(diff)
     ret <- if(type == 'relative') colMeans(diff / parameter)
         else if(type == 'abs_relative') colMeans(diff / abs(parameter))
         else if(type == 'standardized') colMeans(diff) / apply(estimate, 2, sd)
         else colMeans(diff)
+    if(abs) ret <- abs(ret)
     ret
 }
 
