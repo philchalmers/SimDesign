@@ -20,13 +20,13 @@
 #'   (average difference between sample and population), \code{'relative'} computes
 #'   the relative bias statistic (i.e., divide the bias by the value
 #'   in \code{parameter}; note that multiplying this by 100 gives the "percent bias" measure),
+#'   \code{'abs_relative'} computes the relative bias but the absoluate values of the parameters
+#'   are used in the denominator rather than the (potentially) signed input values,
 #'   and \code{'standardized'} computes the standardized bias estimate
 #'   (standard bias divided by the standard deviation of the sample estimates)
 #'
 #' @param abs logical; find the absoluate difference between the parameters and estimates, thereby
-#'   removing any sign effects? Note that this is performed last in the computations so that
-#'   relative and standardized bias estimates are not affected (but will also return only
-#'   positive values). Default is FALSE
+#'   removing any sign effects and express bias in terms of "deviation from 0"? Default is FALSE
 #'
 #' @return returns a \code{numeric} vector indicating the overall (relative/standardized)
 #'   bias in the estimates
@@ -85,7 +85,7 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
         colnames(estimate) <- nms
     }
     stopifnot(is.matrix(estimate))
-    stopifnot(type %in% c('bias', 'standardized', 'relative'))
+    stopifnot(type %in% c('bias', 'standardized', 'relative', 'abs_relative'))
     n_col <- ncol(estimate)
     if(type == "relative") stopifnot(!is.null(parameter))
     if(is.null(parameter)) parameter <- 0
@@ -95,10 +95,12 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
     equal_len <- length(estimate) == length(parameter)
     if(!equal_len)
         stopifnot(ncol(estimate) == length(parameter))
-    ret <- colMeans(t(t(estimate) - parameter))
-    if(type == 'relative') ret <- ret / parameter
-    else if(type == 'standardized') ret <- ret / apply(estimate, 2, sd)
-    if(abs) ret <- abs(ret)
+    diff <- t(t(estimate) - parameter)
+    if(abs) diff <- abs(diff)
+    ret <- if(type == 'relative') colMeans(diff / parameter)
+        else if(type == 'abs_relative') colMeans(diff / abs(parameter))
+        else if(type == 'standardized') colMeans(diff) / apply(estimate, 2, sd)
+        else colMeans(diff)
     ret
 }
 

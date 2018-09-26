@@ -23,13 +23,13 @@ form (therefore \code{mean(estimate))} will be returned)}
 (average difference between sample and population), \code{'relative'} computes
 the relative bias statistic (i.e., divide the bias by the value
 in \code{parameter}; note that multiplying this by 100 gives the "percent bias" measure),
+\code{'abs_relative'} computes the relative bias but the absoluate values of the parameters
+are used in the denominator rather than the (potentially) signed input values,
 and \code{'standardized'} computes the standardized bias estimate
 (standard bias divided by the standard deviation of the sample estimates)}
 
 \item{abs}{logical; find the absoluate difference between the parameters and estimates, thereby
-removing any sign effects? Note that this is performed last in the computations so that
-relative and standardized bias estimates are not affected (but will also return only
-positive values). Default is FALSE}
+removing any sign effects and express bias in terms of "deviation from 0"? Default is FALSE}
 }
 \value{
 returns a \code{numeric} vector indicating the overall (relative/standardized)
