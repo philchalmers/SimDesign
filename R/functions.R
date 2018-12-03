@@ -228,7 +228,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 #
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
-                    save_generate_data, save_generate_data_dirname,
+                    save, save_generate_data, save_generate_data_dirname,
                     save_seeds, save_seeds_dirname, load_seed, warnings_as_errors, packages = NULL){
 
     load_packages(packages)
@@ -300,9 +300,20 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                 gsub('Error in analyse\\(dat = simlist, condition = condition, fixed_objects = fixed_objects) : \\n  ',
                      replacement = '', res[1L])
             try_error <- c(try_error, res[1L])
-            if(length(try_error) == max_errors)
+            if(length(try_error) == max_errors){
+                try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
+                if(save && !file.exists("SIMDESIGN_CRASHFILE_SEEDS.csv")){
+                    write.csv(try_error_seeds, paste0(save_results_out_rootdir, "/SIMDESIGN_CRASHFILE_SEEDS.csv"),
+                              row.names = FALSE)
+                    stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
+                                ' consecutive errors. \n\nLast error message was: \n\n  ', res[1L],
+                                "\nFile containing reproducible errors seeds saved to SIMDESIGN_CRASHFILE_SEEDS.csv \n\n"),
+                         call.=FALSE)
+                }
                 stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
                             ' consecutive errors. \n\nLast error message was: \n\n  ', res[1L]), call.=FALSE)
+
+            }
             try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
             next
         }

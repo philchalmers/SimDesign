@@ -109,12 +109,17 @@ but will not be run when \code{MPI = TRUE}.
 Default randomly generates seeds within the range 1 to 2147483647 for each condition.}
 
 \item{save}{logical; save the simulation state and final results to the hard-drive? This is useful
-for simulations which require an extended amount of time. When \code{TRUE}, a temp file
-will be created in the working directory which allows the simulation state to be saved
-and recovered (in case of power outages, crashes, etc). To recover your simulation at the last known
-location simply re-run the code you used to initially define the simulation and the external file
-will automatically be detected and read-in. Upon completion, the final results will
-be saved to the working directory, and the temp file will be removed. Default is \code{FALSE}}
+  for simulations which require an extended amount of time. When \code{TRUE}, a temp file
+  will be created in the working directory which allows the simulation state to be saved
+  and recovered (in case of power outages, crashes, etc). As well, triggering this flag will
+  save any fatal \code{.Random.seed} states when conditions unexpectedly crash (where each seed
+  is stored row-wise in an external .csv file), which provides a much easier mechanism
+  to debug the issue (see \code{load_seed} for details).
+
+  To recover your simulation at the last known
+  location simply re-run the code you used to initially define the simulation and the external file
+  will automatically be detected and read-in. Upon completion, the final results will
+  be saved to the working directory, and the temp file will be removed. Default is \code{FALSE}}
 
 \item{save_results}{logical; save the results returned from \code{\link{Analyse}} to external
   \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?

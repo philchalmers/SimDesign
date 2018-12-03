@@ -1,6 +1,6 @@
 Package: SimDesign
 Title: Structure for Organizing Monte Carlo Simulation Designs
-Version: 1.11.2
+Version: 1.11.3
 Authors@R: c(person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com", role = c("aut", "cre")),
              person("Matthew", "Sigal", role = c("ctb")),
              person("Ogreden", family="Oguzhan", role = c("ctb")))
@@ -35,4 +35,4 @@ ByteCompile: yes
 LazyData: true
 URL: https://github.com/philchalmers/SimDesign,
     https://github.com/philchalmers/SimDesign/wiki
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

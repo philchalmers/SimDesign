@@ -199,7 +199,12 @@ test_that('SimDesign', {
                                replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 1, parallel=TRUE, ncores=2L,
-                           save=FALSE, ncores = 2, verbose = FALSE))
+                           save=FALSE, verbose = FALSE))
+
+    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                               replications = 1, parallel=TRUE, ncores=2L,
+                               save=TRUE, verbose = FALSE))
+    SimClean('SIMDESIGN_CRASHFILE_SEEDS.csv')
 
     mycompute <- function(condition, dat, fixed_objects = NULL){
         ret <- does_not_exist(TRUE)
