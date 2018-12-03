@@ -298,7 +298,7 @@
 #'   will be created in the working directory which allows the simulation state to be saved
 #'   and recovered (in case of power outages, crashes, etc). As well, triggering this flag will
 #'   save any fatal \code{.Random.seed} states when conditions unexpectedly crash (where each seed
-#'   is stored row-wise in an external .csv file), which provides a much easier mechanism
+#'   is stored row-wise in an external .rds file), which provides a much easier mechanism
 #'   to debug the issue (see \code{load_seed} for details).
 #'
 #'   To recover your simulation at the last known
