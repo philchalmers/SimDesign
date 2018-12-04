@@ -702,7 +702,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             load_seed <- as.integer(scan(load_seed, sep = ' ', quiet = TRUE))
         }
         stopifnot(is.integer(load_seed))
-        stopifnot(length(load_seed) == 626L)
     }
     if(MPI){
         parallel <- FALSE
