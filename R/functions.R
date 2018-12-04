@@ -302,12 +302,12 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             try_error <- c(try_error, res[1L])
             if(length(try_error) == max_errors){
                 try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
-                if(save && !file.exists("SIMDESIGN_CRASHFILE_SEEDS.csv")){
-                    write.csv(try_error_seeds, paste0(save_results_out_rootdir, "/SIMDESIGN_CRASHFILE_SEEDS.csv"),
-                              row.names = FALSE)
+                rownames(try_error_seeds) <- paste0('Error_seed_', 1L:nrow(try_error_seeds))
+                if(save){
+                    saveRDS(try_error_seeds, paste0(save_results_out_rootdir, "/SIMDESIGN_CRASHFILE_SEEDS.rds"))
                     stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
                                 ' consecutive errors. \n\nLast error message was: \n\n  ', res[1L],
-                                "\nFile containing reproducible errors seeds saved to SIMDESIGN_CRASHFILE_SEEDS.csv \n\n"),
+                                "\nFile containing reproducible errors seeds saved to SIMDESIGN_CRASHFILE_SEEDS.rds \n\n"),
                          call.=FALSE)
                 }
                 stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
