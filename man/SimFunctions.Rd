@@ -5,7 +5,8 @@
 \title{Skeleton functions for simulations}
 \usage{
 SimFunctions(filename = NULL, dir = getwd(), comments = FALSE,
-  singlefile = TRUE, summarise = TRUE, generate = TRUE)
+  singlefile = TRUE, summarise = TRUE, generate = TRUE,
+  openFiles = TRUE)
 }
 \arguments{
 \item{filename}{a character vector indicating whether the output should be saved to two respective files
@@ -24,6 +25,9 @@ Default is \code{TRUE}}
 \item{summarise}{include \code{summarise} function? Default is \code{TRUE}}
 
 \item{generate}{include \code{generate} function? Default is \code{TRUE}}
+
+\item{openFiles}{logical; after files have been generated, open them in your text editor (e.g., if Rstudio is running
+the scripts will open in a new tab)?}
 }
 \description{
 This function prints skeleton versions of the required SimDesign functions

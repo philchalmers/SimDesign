@@ -103,7 +103,7 @@ test_that('SimDesign', {
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 2, save=TRUE, verbose = FALSE, filename = 'newfile')
     expect_equal(tmp[[1]]$bias.random_number[1], Final$bias.random_number[1])
-    SimClean('newfile.rds')
+    SimClean('newfile.rds', 'SIMDESIGN_CRASHFILE_SEEDS.rds')
 
     #seeds
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
@@ -443,7 +443,7 @@ test_that('SimDesign', {
     expect_error(runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile.rds'),
                   generate=Generate, analyse=Analyse1, summarise=Summarise, verbose=FALSE))
     expect_true('thisfile.rds' %in% dir())
-    SimClean('thisfile.rds')
+    SimClean('thisfile.rds', 'SIMDESIGN_CRASHFILE_SEEDS.rds')
     results <- runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile'),
                                generate=Generate, analyse=Analyse2, summarise=Summarise, filename = 'thatfile', verbose=FALSE)
     expect_true('thatfile.rds' %in% dir())

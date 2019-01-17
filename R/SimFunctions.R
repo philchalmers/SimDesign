@@ -29,6 +29,9 @@
 #'
 #' @param generate include \code{generate} function? Default is \code{TRUE}
 #'
+#' @param openFiles logical; after files have been generated, open them in your text editor (e.g., if Rstudio is running
+#'   the scripts will open in a new tab)?
+#'
 #' @aliases SimFunctions
 #'
 #' @export SimFunctions
@@ -55,7 +58,8 @@
 #' }
 #'
 SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
-                         singlefile = TRUE, summarise = TRUE, generate = TRUE){
+                         singlefile = TRUE, summarise = TRUE, generate = TRUE,
+                         openFiles = TRUE){
     LINE <- function()
         cat('#-------------------------------------------------------------------\n')
     HEAD <- function(){
@@ -133,6 +137,11 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
         sink(paste0(filename, '-functions.R'))
         FUNCTIONS()
         sink()
+    }
+    if(!is.null(filename) && openFiles){
+        message('\n\nOpening file(s) in your current text editor...')
+        if(!singlefile) file.show(paste0(filename, '-functions.R'))
+        file.show(paste0(filename, '.R'))
     }
     invisible()
 }
