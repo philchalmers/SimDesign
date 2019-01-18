@@ -1,6 +1,6 @@
 Package: SimDesign
 Title: Structure for Organizing Monte Carlo Simulation Designs
-Version: 1.12
+Version: 1.13
 Authors@R: c(person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com", role = c("aut", "cre")),
              person("Matthew", "Sigal", role = c("ctb")),
              person("Ogreden", family="Oguzhan", role = c("ctb")))
@@ -29,7 +29,8 @@ Suggests:
     shiny,
     doMPI,
     copula,
-    extraDistr
+    extraDistr,
+    rmarkdown
 License: GPL (>=2)
 ByteCompile: yes
 LazyData: true

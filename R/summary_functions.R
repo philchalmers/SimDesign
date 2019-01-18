@@ -616,7 +616,7 @@ RD <- function(est, pop, as.vector = TRUE){
 #'
 EDR <- function(p, alpha = .05){
     if(is.data.frame(p)) p <- as.matrix(p)
-    stopifnot(all(p <= 1 && p >= 0))
+    stopifnot(all(p <= 1 & p >= 0))
     stopifnot(length(alpha) == 1L)
     stopifnot(alpha <= 1 && alpha >= 0)
     if(is.vector(p)) p <- matrix(p)
