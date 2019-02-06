@@ -28,6 +28,9 @@
 #' @param abs logical; find the absoluate bias between the parameters and estimates? This effectively
 #'   just applies the \code{\link{abs}} transformation to the returned result. Default is FALSE
 #'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
+#'
 #' @return returns a \code{numeric} vector indicating the overall (relative/standardized)
 #'   bias in the estimates
 #'
@@ -79,8 +82,11 @@
 #' # relative difference dividing by the magnitude of parameters
 #' bias(estimates, parameters, type = 'abs_relative')
 #'
+#' # relative bias as a percentage
+#' bias(estimates, parameters, type = 'abs_relative', percent = TRUE)
 #'
-bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
+#'
+bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE, percent = FALSE){
     if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
     if(is.vector(estimate)){
         nms <- names(estimate)
@@ -104,6 +110,11 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
         else if(type == 'standardized') colMeans(diff) / apply(estimate, 2, sd)
         else colMeans(diff)
     if(abs) ret <- abs(ret)
+    if(percent){
+        ret <- ret * 100
+        if(!(type %in% c('relative', 'abs_relative')))
+            warning('Percentage only make sense for relative measures')
+    }
     ret
 }
 
@@ -133,6 +144,9 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
 #'
 #' @param MSE logical; return the mean square error equivalent of the results instead of the root
 #'   mean-square error (in other words, the result is squared)? Default is \code{FALSE}
+#'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
 #'
 #' @return returns a \code{numeric} vector indicating the overall average deviation in the estimates
 #'
@@ -165,6 +179,10 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
 #' RMSE(samp, pop, type = 'CV')
 #' RMSE(samp, pop, type = 'RMSLE')
 #'
+#' # percentage reported
+#' RMSE(samp, pop, type = 'NRMSE')
+#' RMSE(samp, pop, type = 'NRMSE', percent = TRUE)
+#'
 #' # matrix input
 #' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 #' RMSE(mat, parameter = 2)
@@ -183,7 +201,8 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
 #' estimates <- parameters + rnorm(10)
 #' RMSE(estimates, parameters)
 #'
-RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
+RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE,
+                 percent = FALSE){
     if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
     if(is.vector(estimate)){
         nms <- names(estimate)
@@ -215,6 +234,11 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
     } else if(type != 'RMSE')
         stop('type argument not supported')
     if(MSE) ret <- ret^2
+    if(percent){
+        ret <- ret * 100
+        if(type %in% c("RMSE", 'RMSLE'))
+            warning('Percentage only make sense for relative measures')
+    }
     ret
 }
 
@@ -323,7 +347,10 @@ IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
 #'
 #' @param type type of deviation to compute. Can be \code{'MAE'} (default) for the mean absolute error,
 #'   \code{'NMSE'} for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
-#'   \code{'NMSE_SD'} for the normalized MAE by the standard deviation (MAE / sd(estimate)),
+#'   \code{'NMSE_SD'} for the normalized MAE by the standard deviation (MAE / sd(estimate))
+#'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
 #'
 #' @return returns a numeric vector indicating the overall mean absolute error in the estimates
 #'
@@ -363,7 +390,7 @@ IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
 #' estimates <- parameters + rnorm(10)
 #' MAE(estimates, parameters)
 #'
-MAE <- function(estimate, parameter = NULL, type = 'MAE'){
+MAE <- function(estimate, parameter = NULL, type = 'MAE', percent = FALSE){
     if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
     if(is.vector(estimate)){
         nms <- names(estimate)
@@ -387,6 +414,11 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
         diff <- apply(estimate, 2, sd)
         ret <- ret / diff
     }
+    if(percent){
+        ret <- ret * 100
+        if(!(type %in% c('NMAE', 'NMAE_SD')))
+            warning('Percentage only make sense for relative measures')
+    }
     ret
 }
 
@@ -401,6 +433,9 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
 #'  MSE values if the flag \code{MSE = TRUE} is also included
 #'
 #' @param MSE logical; are the input value mean squared errors instead of root mean square errors?
+#'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
 #'
 #' @return returns a \code{vector} of variance ratios indicating the relative efficiency compared
 #'   to the first estimator. Values less than 1 indicate better efficiency, while
@@ -425,17 +460,20 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
 #' RMSE2 <- RMSE(samp2, pop)
 #'
 #' RE(c(RMSE1, RMSE2))
+#' RE(c(RMSE1, RMSE2), percent = TRUE) # as a percentage
 #'
 #' # using MSE instead
 #' mse <- c(RMSE1, RMSE2)^2
 #' RE(mse, MSE = TRUE)
 #'
-RE <- function(x, MSE = FALSE){
+RE <- function(x, MSE = FALSE, percent = FALSE){
     pow <- ifelse(MSE, 1, 2)
     x <- x^pow
-    if(!is.vector(x)){
+    ret <- if(!is.vector(x)){
         x / x[,1L]
-    } else return(x / x[1L])
+    } else x / x[1L]
+    if(percent) ret <- ret * 100
+    ret
 }
 
 
@@ -465,6 +503,9 @@ RE <- function(x, MSE = FALSE){
 #'   the replications, or a \code{matrix} of collected parameter estimates themselves
 #'   to be used to compute the standard deviations. Each column/element in this input
 #'   corresponds to the column/element in \code{SE}
+#'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
 #'
 #' @return returns a \code{vector} of ratios indicating the relative performance
 #'   of the standard error estimates to the observed parameter standard deviation.
@@ -506,12 +547,14 @@ RE <- function(x, MSE = FALSE){
 #' results
 #'
 #'
-MSRSE <- function(SE, SD){
+MSRSE <- function(SE, SD, percent = FALSE){
     if(is.matrix(SE) && nrow(SE) > 1L)
         SE <- apply(SE, 2L, mean)
     if(is.matrix(SD) && nrow(SD) > 1L)
         SD <- apply(SD, 2L, sd)
-    SE^2 / SD^2 - 1
+    ret <- SE^2 / SD^2 - 1
+    if(percent) ret <- ret * 100
+    ret
 }
 
 

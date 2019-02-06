@@ -4,7 +4,7 @@
 \alias{MAE}
 \title{Compute the mean absolute error}
 \usage{
-MAE(estimate, parameter = NULL, type = "MAE")
+MAE(estimate, parameter = NULL, type = "MAE", percent = FALSE)
 }
 \arguments{
 \item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame} of parameter estimates.
@@ -20,7 +20,10 @@ form (therefore \code{mean(abs(estimate))} will be returned)}
 
 \item{type}{type of deviation to compute. Can be \code{'MAE'} (default) for the mean absolute error,
 \code{'NMSE'} for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
-\code{'NMSE_SD'} for the normalized MAE by the standard deviation (MAE / sd(estimate)),}
+\code{'NMSE_SD'} for the normalized MAE by the standard deviation (MAE / sd(estimate))}
+
+\item{percent}{logical; change returned result to percentage by multiplying by 100?
+Default is FALSE}
 }
 \value{
 returns a numeric vector indicating the overall mean absolute error in the estimates
