@@ -438,8 +438,8 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE', percent = FALSE){
 #'   Default is FALSE
 #'
 #' @return returns a \code{vector} of variance ratios indicating the relative efficiency compared
-#'   to the first estimator. Values less than 1 indicate better efficiency, while
-#'   values greater than 1 indicate worse efficiency
+#'   to the first estimator. Values less than 1 indicate better efficiency than the first
+#'   estimator, while values greater than 1 indicate worse efficiency than the first estimator
 #'
 #' @aliases RE
 #'
@@ -469,6 +469,50 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE', percent = FALSE){
 RE <- function(x, MSE = FALSE, percent = FALSE){
     pow <- ifelse(MSE, 1, 2)
     x <- x^pow
+    ret <- if(!is.vector(x)){
+        x / x[,1L]
+    } else x / x[1L]
+    if(percent) ret <- ret * 100
+    ret
+}
+
+#' Compute the relative absolute of multiple estimators
+#'
+#' Computes the relative absoluate bias given the bias estimates for multiple estimators.
+#'
+#' @param x a \code{numeric} vector of bias estimates (see \code{\link{bias}}),
+#'  where the first element will be used as the reference
+#'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
+#'
+#' @return returns a \code{vector} of absolute bias ratios indicating the relative bias
+#'   effects compated to the first estimator. Values less than 1 indicate better bias estimates
+#'   than the first estimator, while values greater than 1 indicate worse bias than the first estimator
+#'
+#' @aliases RAB
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
+#'
+#' @export RAB
+#'
+#' @examples
+#'
+#' pop <- 1
+#' samp1 <- rnorm(5000, 1)
+#' bias1 <- bias(samp1, pop)
+#' samp2 <- rnorm(5000, 1)
+#' bias2 <- bias(samp2, pop)
+#'
+#' RAB(c(bias1, bias2))
+#' RAB(c(bias1, bias2), percent = TRUE) # as a percentage
+#'
+RAB <- function(x, percent = FALSE){
+    x <- abs(x)
     ret <- if(!is.vector(x)){
         x / x[,1L]
     } else x / x[1L]

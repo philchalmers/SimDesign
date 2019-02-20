@@ -18,8 +18,8 @@ Default is FALSE}
 }
 \value{
 returns a \code{vector} of variance ratios indicating the relative efficiency compared
-  to the first estimator. Values less than 1 indicate better efficiency, while
-  values greater than 1 indicate worse efficiency
+  to the first estimator. Values less than 1 indicate better efficiency than the first
+  estimator, while values greater than 1 indicate worse efficiency than the first estimator
 }
 \description{
 Computes the relative efficiency given the RMSE (default) or MSE values for multiple estimators.
