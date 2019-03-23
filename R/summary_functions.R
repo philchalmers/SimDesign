@@ -712,10 +712,10 @@ EDR <- function(p, alpha = .05){
 
 
 
-#' Compute the empirical coverage rate for Type I errors and Power
+#' Compute empirical coverage rates
 #'
-#' Computes the detection rate for determining empirical Type I error and power rates using information
-#' from the confidence intervals. Note that using \code{1 - ECR(CIs, parameter)} will provide the empirical
+#' Computes the detection rate for determining empirical coverage rates given a set of estimated
+#' confidence intervals. Note that using \code{1 - ECR(CIs, parameter)} will provide the empirical
 #' detection rate. Also supports computing the average width of the CIs, which may be useful when comparing
 #' the efficiency of CI estimators.
 #'
