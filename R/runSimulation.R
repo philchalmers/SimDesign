@@ -288,6 +288,12 @@
 #'   given condition. The purpose of this is to indicate that something fatally problematic is likely going
 #'   wrong in the generate-analyse phases and should be inspected. Default is 50
 #'
+#' @param allow_na logical; should \code{NA}s be allowed in the analyse step as a valid result from the simulation
+#'   analysis? Default is FALSE
+#'
+#' @param allow_nan logical; should \code{NaN}s be allowed in the analyse step as a valid result from the simulation
+#'   analysis? Default is FALSE
+#'
 #' @param ncores number of cores to be used in parallel execution. Default uses all available
 #'
 #' @param MPI logical; use the \code{foreach} package in a form usable by MPI to run simulation
@@ -631,7 +637,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50L, as.factor = TRUE, save_generate_data = FALSE,
-                          save_details = list(), edit = 'none', progress = TRUE, verbose = TRUE)
+                          save_details = list(), edit = 'none', progress = TRUE,
+                          allow_na = FALSE, allow_nan = FALSE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
     if(missing(generate) && !missing(analyse))
@@ -868,7 +875,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          fixed_objects=fixed_objects,
                                          cl=cl, MPI=MPI, seed=seed,
                                          bootSE=bootSE, boot_draws=boot_draws,
-                                         save=save,
+                                         save=save, allow_na=allow_na, allow_nan=allow_nan,
                                          save_results=save_results,
                                          save_results_out_rootdir=out_rootdir,
                                          save_results_dirname=save_results_dirname,
@@ -898,7 +905,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             fixed_objects=fixed_objects,
                             cl=cl, MPI=MPI, seed=seed,
                             bootSE=bootSE, boot_draws=boot_draws,
-                            save=save,
+                            save=save, allow_na=allow_na, allow_nan=allow_nan,
                             save_results=save_results,
                             save_results_out_rootdir = out_rootdir,
                             save_results_dirname=save_results_dirname,

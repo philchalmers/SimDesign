@@ -228,7 +228,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 #
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
-                    save, save_generate_data, save_generate_data_dirname,
+                    save, save_generate_data, save_generate_data_dirname, allow_na, allow_nan,
                     save_seeds, save_seeds_dirname, load_seed, warnings_as_errors, packages = NULL){
 
     load_packages(packages)
@@ -287,9 +287,15 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                 Warnings <- NULL
             }
         }
-        if(any(is.na(res))){
+        if(!allow_nan && any(is.nan(res))){
+            NA_names <- names(res)[is.nan(res)]
+            res <- try(stop(sprintf('The following return NaN and required redrawing: %s',
+                                    paste(NA_names, sep=',')),
+                            call.=FALSE), silent=TRUE)
+        }
+        if(!allow_na && any(is.na(res))){
             NA_names <- names(res)[is.na(res)]
-            res <- try(stop(sprintf('The following return NA/NaN and required redrawing: %s',
+            res <- try(stop(sprintf('The following return NA and required redrawing: %s',
                                     paste(NA_names, sep=',')),
                             call.=FALSE), silent=TRUE)
         }

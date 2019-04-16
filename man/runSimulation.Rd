@@ -20,7 +20,8 @@ runSimulation(design, replications, generate, analyse, summarise,
   parallel = FALSE, ncores = parallel::detectCores(), cl = NULL,
   MPI = FALSE, max_errors = 50L, as.factor = TRUE,
   save_generate_data = FALSE, save_details = list(), edit = "none",
-  progress = TRUE, verbose = TRUE)
+  progress = TRUE, allow_na = FALSE, allow_nan = FALSE,
+  verbose = TRUE)
 
 \method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE,
   format.time = TRUE, ...)
@@ -252,6 +253,12 @@ as \code{ordered}. Default is \code{TRUE}}
 \item{progress}{logical; display a progress bar for each simulation condition?
 This is useful when simulations conditions take a long time to run.
 Uses the \code{pbapply} package to display the progress. Default is \code{FALSE}}
+
+\item{allow_na}{logical; should \code{NA}s be allowed in the analyse step as a valid result from the simulation
+analysis? Default is FALSE}
+
+\item{allow_nan}{logical; should \code{NaN}s be allowed in the analyse step as a valid result from the simulation
+analysis? Default is FALSE}
 
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 
