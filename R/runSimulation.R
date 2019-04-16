@@ -801,7 +801,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             }
             dir.create(file.path(out_rootdir, save_results_dirname))
         }
-        if(length(dir(file.path(out_rootdir, save_results_dirname))) != (start - 1L))
+        if(!(length(dir(file.path(out_rootdir, save_results_dirname))) %in% c(start - 1L, start)))
             stop('save_results_dirname not starting from correct location according to tempfile',
                  call.=FALSE)
     }

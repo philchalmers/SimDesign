@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary_functions.R
 \name{ECR}
 \alias{ECR}
-\title{Compute the empirical coverage rate for Type I errors and Power}
+\title{Compute empirical coverage rates}
 \usage{
 ECR(CIs, parameter, tails = FALSE, CI_width = FALSE, names = NULL)
 }
@@ -31,8 +31,8 @@ estimators}
 when more than one CI estimate is investigated at once}
 }
 \description{
-Computes the detection rate for determining empirical Type I error and power rates using information
-from the confidence intervals. Note that using \code{1 - ECR(CIs, parameter)} will provide the empirical
+Computes the detection rate for determining empirical coverage rates given a set of estimated
+confidence intervals. Note that using \code{1 - ECR(CIs, parameter)} will provide the empirical
 detection rate. Also supports computing the average width of the CIs, which may be useful when comparing
 the efficiency of CI estimators.
 }

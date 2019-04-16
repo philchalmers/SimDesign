@@ -4,7 +4,8 @@
 \alias{RMSE}
 \title{Compute the (normalized) root mean square error}
 \usage{
-RMSE(estimate, parameter = NULL, type = "RMSE", MSE = FALSE)
+RMSE(estimate, parameter = NULL, type = "RMSE", MSE = FALSE,
+  percent = FALSE)
 }
 \arguments{
 \item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame} of parameter estimates.
@@ -25,6 +26,9 @@ form (therefore \code{sqrt(mean(estimate^2))} will be returned)}
 
 \item{MSE}{logical; return the mean square error equivalent of the results instead of the root
 mean-square error (in other words, the result is squared)? Default is \code{FALSE}}
+
+\item{percent}{logical; change returned result to percentage by multiplying by 100?
+Default is FALSE}
 }
 \value{
 returns a \code{numeric} vector indicating the overall average deviation in the estimates
@@ -48,6 +52,10 @@ RMSE(dev, type = 'NRMSE')
 RMSE(dev, pop, type = 'NRMSE_SD')
 RMSE(samp, pop, type = 'CV')
 RMSE(samp, pop, type = 'RMSLE')
+
+# percentage reported
+RMSE(samp, pop, type = 'NRMSE')
+RMSE(samp, pop, type = 'NRMSE', percent = TRUE)
 
 # matrix input
 mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))

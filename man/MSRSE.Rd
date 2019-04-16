@@ -4,7 +4,7 @@
 \alias{MSRSE}
 \title{Compute the relative performance behavior of collections of standard errors}
 \usage{
-MSRSE(SE, SD)
+MSRSE(SE, SD, percent = FALSE)
 }
 \arguments{
 \item{SE}{a \code{numeric} scalar/vector indicating the average standard errors across
@@ -16,6 +16,9 @@ corresponds to the column/element in \code{SD}}
 the replications, or a \code{matrix} of collected parameter estimates themselves
 to be used to compute the standard deviations. Each column/element in this input
 corresponds to the column/element in \code{SE}}
+
+\item{percent}{logical; change returned result to percentage by multiplying by 100?
+Default is FALSE}
 }
 \value{
 returns a \code{vector} of ratios indicating the relative performance

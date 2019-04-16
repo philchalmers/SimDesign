@@ -28,6 +28,9 @@
 #' @param abs logical; find the absoluate bias between the parameters and estimates? This effectively
 #'   just applies the \code{\link{abs}} transformation to the returned result. Default is FALSE
 #'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
+#'
 #' @return returns a \code{numeric} vector indicating the overall (relative/standardized)
 #'   bias in the estimates
 #'
@@ -79,8 +82,11 @@
 #' # relative difference dividing by the magnitude of parameters
 #' bias(estimates, parameters, type = 'abs_relative')
 #'
+#' # relative bias as a percentage
+#' bias(estimates, parameters, type = 'abs_relative', percent = TRUE)
 #'
-bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
+#'
+bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE, percent = FALSE){
     if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
     if(is.vector(estimate)){
         nms <- names(estimate)
@@ -104,6 +110,11 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
         else if(type == 'standardized') colMeans(diff) / apply(estimate, 2, sd)
         else colMeans(diff)
     if(abs) ret <- abs(ret)
+    if(percent){
+        ret <- ret * 100
+        if(!(type %in% c('relative', 'abs_relative')))
+            warning('Percentage only make sense for relative measures')
+    }
     ret
 }
 
@@ -133,6 +144,9 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
 #'
 #' @param MSE logical; return the mean square error equivalent of the results instead of the root
 #'   mean-square error (in other words, the result is squared)? Default is \code{FALSE}
+#'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
 #'
 #' @return returns a \code{numeric} vector indicating the overall average deviation in the estimates
 #'
@@ -165,6 +179,10 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
 #' RMSE(samp, pop, type = 'CV')
 #' RMSE(samp, pop, type = 'RMSLE')
 #'
+#' # percentage reported
+#' RMSE(samp, pop, type = 'NRMSE')
+#' RMSE(samp, pop, type = 'NRMSE', percent = TRUE)
+#'
 #' # matrix input
 #' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 #' RMSE(mat, parameter = 2)
@@ -183,7 +201,8 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE){
 #' estimates <- parameters + rnorm(10)
 #' RMSE(estimates, parameters)
 #'
-RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
+RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE,
+                 percent = FALSE){
     if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
     if(is.vector(estimate)){
         nms <- names(estimate)
@@ -215,6 +234,11 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE){
     } else if(type != 'RMSE')
         stop('type argument not supported')
     if(MSE) ret <- ret^2
+    if(percent){
+        ret <- ret * 100
+        if(type %in% c("RMSE", 'RMSLE'))
+            warning('Percentage only make sense for relative measures')
+    }
     ret
 }
 
@@ -323,7 +347,10 @@ IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
 #'
 #' @param type type of deviation to compute. Can be \code{'MAE'} (default) for the mean absolute error,
 #'   \code{'NMSE'} for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
-#'   \code{'NMSE_SD'} for the normalized MAE by the standard deviation (MAE / sd(estimate)),
+#'   \code{'NMSE_SD'} for the normalized MAE by the standard deviation (MAE / sd(estimate))
+#'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
 #'
 #' @return returns a numeric vector indicating the overall mean absolute error in the estimates
 #'
@@ -363,7 +390,7 @@ IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
 #' estimates <- parameters + rnorm(10)
 #' MAE(estimates, parameters)
 #'
-MAE <- function(estimate, parameter = NULL, type = 'MAE'){
+MAE <- function(estimate, parameter = NULL, type = 'MAE', percent = FALSE){
     if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
     if(is.vector(estimate)){
         nms <- names(estimate)
@@ -387,6 +414,11 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
         diff <- apply(estimate, 2, sd)
         ret <- ret / diff
     }
+    if(percent){
+        ret <- ret * 100
+        if(!(type %in% c('NMAE', 'NMAE_SD')))
+            warning('Percentage only make sense for relative measures')
+    }
     ret
 }
 
@@ -402,9 +434,12 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
 #'
 #' @param MSE logical; are the input value mean squared errors instead of root mean square errors?
 #'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
+#'
 #' @return returns a \code{vector} of variance ratios indicating the relative efficiency compared
-#'   to the first estimator. Values less than 1 indicate better efficiency, while
-#'   values greater than 1 indicate worse efficiency
+#'   to the first estimator. Values less than 1 indicate better efficiency than the first
+#'   estimator, while values greater than 1 indicate worse efficiency than the first estimator
 #'
 #' @aliases RE
 #'
@@ -425,17 +460,64 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE'){
 #' RMSE2 <- RMSE(samp2, pop)
 #'
 #' RE(c(RMSE1, RMSE2))
+#' RE(c(RMSE1, RMSE2), percent = TRUE) # as a percentage
 #'
 #' # using MSE instead
 #' mse <- c(RMSE1, RMSE2)^2
 #' RE(mse, MSE = TRUE)
 #'
-RE <- function(x, MSE = FALSE){
+RE <- function(x, MSE = FALSE, percent = FALSE){
     pow <- ifelse(MSE, 1, 2)
     x <- x^pow
-    if(!is.vector(x)){
+    ret <- if(!is.vector(x)){
         x / x[,1L]
-    } else return(x / x[1L])
+    } else x / x[1L]
+    if(percent) ret <- ret * 100
+    ret
+}
+
+#' Compute the relative absolute of multiple estimators
+#'
+#' Computes the relative absoluate bias given the bias estimates for multiple estimators.
+#'
+#' @param x a \code{numeric} vector of bias estimates (see \code{\link{bias}}),
+#'  where the first element will be used as the reference
+#'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
+#'
+#' @return returns a \code{vector} of absolute bias ratios indicating the relative bias
+#'   effects compated to the first estimator. Values less than 1 indicate better bias estimates
+#'   than the first estimator, while values greater than 1 indicate worse bias than the first estimator
+#'
+#' @aliases RAB
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
+#'
+#' @export RAB
+#'
+#' @examples
+#'
+#' pop <- 1
+#' samp1 <- rnorm(5000, 1)
+#' bias1 <- bias(samp1, pop)
+#' samp2 <- rnorm(5000, 1)
+#' bias2 <- bias(samp2, pop)
+#'
+#' RAB(c(bias1, bias2))
+#' RAB(c(bias1, bias2), percent = TRUE) # as a percentage
+#'
+RAB <- function(x, percent = FALSE){
+    x <- abs(x)
+    ret <- if(!is.vector(x)){
+        x / x[,1L]
+    } else x / x[1L]
+    if(percent) ret <- ret * 100
+    ret
 }
 
 
@@ -465,6 +547,9 @@ RE <- function(x, MSE = FALSE){
 #'   the replications, or a \code{matrix} of collected parameter estimates themselves
 #'   to be used to compute the standard deviations. Each column/element in this input
 #'   corresponds to the column/element in \code{SE}
+#'
+#' @param percent logical; change returned result to percentage by multiplying by 100?
+#'   Default is FALSE
 #'
 #' @return returns a \code{vector} of ratios indicating the relative performance
 #'   of the standard error estimates to the observed parameter standard deviation.
@@ -506,12 +591,14 @@ RE <- function(x, MSE = FALSE){
 #' results
 #'
 #'
-MSRSE <- function(SE, SD){
+MSRSE <- function(SE, SD, percent = FALSE){
     if(is.matrix(SE) && nrow(SE) > 1L)
         SE <- apply(SE, 2L, mean)
     if(is.matrix(SD) && nrow(SD) > 1L)
         SD <- apply(SD, 2L, sd)
-    SE^2 / SD^2 - 1
+    ret <- SE^2 / SD^2 - 1
+    if(percent) ret <- ret * 100
+    ret
 }
 
 
@@ -625,10 +712,10 @@ EDR <- function(p, alpha = .05){
 
 
 
-#' Compute the empirical coverage rate for Type I errors and Power
+#' Compute empirical coverage rates
 #'
-#' Computes the detection rate for determining empirical Type I error and power rates using information
-#' from the confidence intervals. Note that using \code{1 - ECR(CIs, parameter)} will provide the empirical
+#' Computes the detection rate for determining empirical coverage rates given a set of estimated
+#' confidence intervals. Note that using \code{1 - ECR(CIs, parameter)} will provide the empirical
 #' detection rate. Also supports computing the average width of the CIs, which may be useful when comparing
 #' the efficiency of CI estimators.
 #'

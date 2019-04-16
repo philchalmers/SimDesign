@@ -4,7 +4,7 @@
 \alias{RE}
 \title{Compute the relative efficiency of multiple estimators}
 \usage{
-RE(x, MSE = FALSE)
+RE(x, MSE = FALSE, percent = FALSE)
 }
 \arguments{
 \item{x}{a \code{numeric} vector of root mean square error values (see \code{\link{RMSE}}),
@@ -12,11 +12,14 @@ where the first element will be used as the reference. Otherwise, the object cou
 MSE values if the flag \code{MSE = TRUE} is also included}
 
 \item{MSE}{logical; are the input value mean squared errors instead of root mean square errors?}
+
+\item{percent}{logical; change returned result to percentage by multiplying by 100?
+Default is FALSE}
 }
 \value{
 returns a \code{vector} of variance ratios indicating the relative efficiency compared
-  to the first estimator. Values less than 1 indicate better efficiency, while
-  values greater than 1 indicate worse efficiency
+  to the first estimator. Values less than 1 indicate better efficiency than the first
+  estimator, while values greater than 1 indicate worse efficiency than the first estimator
 }
 \description{
 Computes the relative efficiency given the RMSE (default) or MSE values for multiple estimators.
@@ -30,6 +33,7 @@ samp2 <- rnorm(100, 1, sd = 1)
 RMSE2 <- RMSE(samp2, pop)
 
 RE(c(RMSE1, RMSE2))
+RE(c(RMSE1, RMSE2), percent = TRUE) # as a percentage
 
 # using MSE instead
 mse <- c(RMSE1, RMSE2)^2

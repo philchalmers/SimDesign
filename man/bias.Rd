@@ -4,7 +4,8 @@
 \alias{bias}
 \title{Compute (relative/standardized) bias summary statistic}
 \usage{
-bias(estimate, parameter = NULL, type = "bias", abs = FALSE)
+bias(estimate, parameter = NULL, type = "bias", abs = FALSE,
+  percent = FALSE)
 }
 \arguments{
 \item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame}
@@ -30,6 +31,9 @@ and \code{'standardized'} computes the standardized bias estimate
 
 \item{abs}{logical; find the absoluate bias between the parameters and estimates? This effectively
 just applies the \code{\link{abs}} transformation to the returned result. Default is FALSE}
+
+\item{percent}{logical; change returned result to percentage by multiplying by 100?
+Default is FALSE}
 }
 \value{
 returns a \code{numeric} vector indicating the overall (relative/standardized)
@@ -75,6 +79,9 @@ bias(estimates, parameters)
 
 # relative difference dividing by the magnitude of parameters
 bias(estimates, parameters, type = 'abs_relative')
+
+# relative bias as a percentage
+bias(estimates, parameters, type = 'abs_relative', percent = TRUE)
 
 
 }
