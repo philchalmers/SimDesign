@@ -343,7 +343,7 @@ test_that('SimDesign', {
     results <- runSimulation(Design, replications = 10, packages = 'extraDistr', seed=1:nrow(Design),
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save=FALSE, verbose = FALSE)
-    expect_equal(names(results)[5], "ERROR: .Error : The following return NA/NaN and required redrawing: ret\n")
+    expect_equal(names(results)[5], "ERROR: .Error : The following return NA and required redrawing: ret\n")
     expect_equal(results[,5], c(NA,1,NA,3,4,1,NA,4))
 
     #data.frame test
