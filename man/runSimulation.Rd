@@ -55,14 +55,19 @@ simulations this is generally not recommended}
 analyses the simulated data). See \code{\link{Analyse}} for details}
 
 \item{summarise}{optional (but highly recommended) user-defined summary function to be used
-after all the replications have completed within each \code{design} condition. Omitting this function
-will return a list of matrices (or a single matrix, if only one row in \code{design} is supplied)
-or, for more general objects (such as lists), a list containing the results returned form \code{\link{Analyse}}.
-Ommiting this function is only recommended for didactic purposes because it leaves out a large amount of
-information (e.g., try-errors, warning messages, etc), can witness memory related issues,
-and generally is not as flexible internally. See
-the \code{save_results} option for a more RAM friendly alternative to storing all the Generate-Analyse results
-in the working environment}
+  after all the replications have completed within each \code{design} condition. Omitting this function
+  will return a list of matrices (or a single matrix, if only one row in \code{design} is supplied)
+  or, for more general objects (such as lists), a list containing the results returned form \code{\link{Analyse}}.
+  Alternatively, the value \code{NA} can be passed to let the generate-analyse-summarise process run as usual,
+  but that the summarise components are included only as a placeholder.
+
+  Ommiting this input is only recommended for didactic purposes because it leaves out a large amount of
+  information (e.g., try-errors, warning messages, saving files, etc), can witness memory related issues,
+  and generally is not as flexible internally. If users do not wish to supply a summarise function then it
+  is is recommended to pass the values \code{NA} to indicate this function is deliberately omitted, but that
+  the \code{save_results} option should be used to save the results during the simulation. This provides a
+  more RAM friendly alternative to storing all the Generate-Analyse results in the working environment, where
+  the Analysis results can be summarised at a later time}
 
 \item{fixed_objects}{(optional) an object (usually a named \code{list})
 containing additional user-defined objects

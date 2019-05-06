@@ -191,6 +191,33 @@ test_that('SimDesign', {
     expect_equal(length(row1to5), 5)
     SimClean(results = TRUE)
 
+    # results no summarise
+    mycompute3 <- function(condition, dat, fixed_objects = NULL){
+
+        #wrap computational statistics in try() statements to control estimation problems
+        welch <- t.test(DV ~ group, dat)
+        ind <- stats::t.test(DV ~ group, dat, var.equal=TRUE)
+
+        # In this function the p values for the t-tests are returned,
+        #  and make sure to name each element, for future reference
+        ret <- c(welch = welch$p.value,
+                 independent = ind$p.value)
+
+        return(ret)
+    }
+
+    expect_message(tmp <- runSimulation(Design, generate=mysim, analyse=mycompute3, verbose=FALSE,
+                         replications = 2, parallel=FALSE, save_results = TRUE))
+    expect_true(all(sapply(tmp, function(x) length(x)) == 4L))
+
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute3, summarise=NA,
+                         verbose=FALSE, replications = 2, parallel=FALSE, save_results = TRUE)
+    expect_is(tmp, 'data.frame')
+    expect_true(dir.exists(DIR))
+    expect_equal(nrow(tmp), 8)
+    SimClean(results = TRUE)
+    SimClean(dir()[grepl('\\.rds', dir())])
+
     # error test
     mycompute <- function(condition, dat, fixed_objects = NULL){
         stop('this error')

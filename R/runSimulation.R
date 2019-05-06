@@ -152,11 +152,16 @@
 #'   after all the replications have completed within each \code{design} condition. Omitting this function
 #'   will return a list of matrices (or a single matrix, if only one row in \code{design} is supplied)
 #'   or, for more general objects (such as lists), a list containing the results returned form \code{\link{Analyse}}.
-#'   Ommiting this function is only recommended for didactic purposes because it leaves out a large amount of
-#'   information (e.g., try-errors, warning messages, etc), can witness memory related issues,
-#'   and generally is not as flexible internally. See
-#'   the \code{save_results} option for a more RAM friendly alternative to storing all the Generate-Analyse results
-#'   in the working environment
+#'   Alternatively, the value \code{NA} can be passed to let the generate-analyse-summarise process run as usual,
+#'   but that the summarise components are included only as a placeholder.
+#'
+#'   Ommiting this input is only recommended for didactic purposes because it leaves out a large amount of
+#'   information (e.g., try-errors, warning messages, saving files, etc), can witness memory related issues,
+#'   and generally is not as flexible internally. If users do not wish to supply a summarise function then it
+#'   is is recommended to pass the values \code{NA} to indicate this function is deliberately omitted, but that
+#'   the \code{save_results} option should be used to save the results during the simulation. This provides a
+#'   more RAM friendly alternative to storing all the Generate-Analyse results in the working environment, where
+#'   the Analysis results can be summarised at a later time
 #'
 #' @param replications number of replication to perform per condition (i.e., each row in \code{design}).
 #'   Must be greater than 0
@@ -643,6 +648,16 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     stopifnot(!missing(analyse))
     if(missing(generate) && !missing(analyse))
         generate <- function(condition, dat, fixed_objects = NULL){}
+    NA_summarise <- FALSE
+    if(!missing(summarise)){
+        NA_summarise <- if(!is.function(summarise) && is.na(summarise)) TRUE else FALSE
+        if(NA_summarise){
+            summarise <- function(condition, results, fixed_objects = NULL){0}
+            if(!save_results)
+                message('NA value for summarise input supplied; automatically setting save_results to TRUE\n')
+            save <- save_results <- TRUE
+        }
+    }
     if(!all(names(save_results) %in%
             c('compname', 'tmpfilename', 'save_results_dirname', 'save_generate_data_dirname')))
         stop('save_details contains elements that are not supported', call.=FALSE)
@@ -676,6 +691,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         summarise_asis <- TRUE
         save_generate_data <- FALSE
         stored_time <- 0
+        if(save || save_results)
+            message("save-based inputs not used when summarise input is missing. Consider passing summarise=NA instead")
+        save <- save_results <- FALSE
     }
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise)
     dummy_run <- FALSE
@@ -894,11 +912,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if(verbose)
                 print_progress(i, nrow(design), time1=time1, time0=time0,
                                stored_time=stored_time, progress=progress)
-            time0 <- proc.time()[3L]
             if(save_generate_data)
-                dir.create(file.path(out_rootdir, paste0(save_generate_data_dirname, '/design-row-', i)), showWarnings = FALSE)
+                dir.create(file.path(out_rootdir,
+                                     paste0(save_generate_data_dirname, '/design-row-', i)), showWarnings = FALSE)
             if(save_seeds)
-                dir.create(file.path(out_rootdir, paste0(save_seeds_dirname, '/design-row-', i)), showWarnings = FALSE)
+                dir.create(file.path(out_rootdir,
+                                     paste0(save_seeds_dirname, '/design-row-', i)), showWarnings = FALSE)
+            time0 <- proc.time()[3L]
             tmp <- Analysis(Functions=Functions,
                             condition=design[i,],
                             replications=replications,
@@ -927,11 +947,17 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             time1 <- proc.time()[3L]
             Result_list[[i]]$SIM_TIME <- time1 - time0
             Result_list[[i]]$COMPLETED <- date()
-            if(save || save_results || save_generate_data) saveRDS(Result_list, file.path(out_rootdir, tmpfilename))
-
+            if(save || save_results || save_generate_data)
+                saveRDS(Result_list, file.path(out_rootdir, tmpfilename))
         }
     }
     attr(Result_list, 'SimDesign_names') <- NULL
+    if(NA_summarise){
+        Result_list <- lapply(Result_list, function(x){
+            x$value <- NULL
+            x
+        })
+    }
     if(summarise_asis){
         design$ID <- design$REPLICATION <- NULL
         nms <- colnames(design)
