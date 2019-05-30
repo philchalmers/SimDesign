@@ -209,6 +209,8 @@
 #'
 #'   WARNING: saving results to your hard-drive can fill up space very quickly for larger simulations. Be sure to
 #'   test this option using a smaller number of replications before the full Monte Carlo simulation is performed.
+#'   See also \code{\link{postSummarise}} for applying summarise functions from saved
+#'   simulation results
 #'
 #' @param save_seeds logical; save the \code{.Random.seed} states prior to performing each replication into
 #'   plain text files located in the defined \code{save_seeds_dirname} directory/folder?
@@ -373,7 +375,7 @@
 #' @aliases runSimulation
 #'
 #' @seealso \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
-#'   \code{\link{SimFunctions}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
+#'   \code{\link{SimFunctions}}, \code{\link{postSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
 #'   \code{\link{SimBoot}}, \code{\link{aggregate_simulations}}, \code{\link{Attach}}, \code{\link{SimShiny}}
 #'
 #' @export runSimulation

@@ -96,3 +96,19 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
     out <- if(messages) eval(...) else suppressMessages(eval(...))
     out
 }
+
+sim_results_check <- function(sim_results){
+    if(is.data.frame(sim_results)){
+        if(nrow(sim_results) > 1L)
+            stop('When returning a data.frame in summarise() there should only be 1 row', call.=FALSE)
+        nms <- names(sim_results)
+        sim_results <- as.numeric(sim_results)
+        names(sim_results) <- nms
+    }
+    if(length(sim_results) == 1L)
+        if(is.null(names(sim_results)))
+            names(sim_results) <- 'value'
+        if(!is.vector(sim_results) || is.null(names(sim_results)))
+            stop('summarise() must return a named vector or data.frame object with 1 row', call.=FALSE)
+    sim_results
+}
