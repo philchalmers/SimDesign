@@ -18,6 +18,8 @@ the .rds files}
 
 \item{files}{(optional) names of files to read-in. If \code{NULL} all files
 located within \code{dir} will be used}
+
+\item{fixed_objects}{(optional) see \code{\link{runSimulation}} for details}
 }
 \description{
 When \code{runSimulation()} uses the option \code{save_results = TRUE}

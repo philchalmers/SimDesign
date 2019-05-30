@@ -19,6 +19,8 @@
 #' @param files (optional) names of files to read-in. If \code{NULL} all files
 #'   located within \code{dir} will be used
 #'
+#' @param fixed_objects (optional) see \code{\link{runSimulation}} for details
+#'
 #' @export
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
