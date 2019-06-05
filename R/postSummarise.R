@@ -83,9 +83,13 @@ postSummarise <- function(summarise, dir = NULL, files = NULL,
     for(i in 1L:length(files)){
         inp <- readRDS(files[i])
         conditions[[i]] <- inp$condition
-        res[[i]] <- summarise(condition=inp$condition, results=inp$results,
-                              fixed_objects=fixed_objects)
-        res[[i]] <-sim_results_check(res[[i]])
+        summ <- try(summarise(condition=inp$condition, results=inp$results,
+                          fixed_objects=fixed_objects))
+        if(is(summ, 'try-error'))
+            stop(sprintf("File \'%s\' threw an error in the summarise() function", files[i]))
+        res[[i]] <- try(sim_results_check(summ))
+        if(is(res[[i]], 'try-error'))
+            stop(sprintf("File \'%s\' did not return a valid summarise() output", files[i]))
     }
     res <- cbind(plyr::rbind.fill(conditions), do.call(rbind, res))
     res$REPLICATION <- res$ID <- NULL
