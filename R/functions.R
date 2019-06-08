@@ -229,7 +229,8 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
                     save, save_generate_data, save_generate_data_dirname, allow_na, allow_nan,
-                    save_seeds, save_seeds_dirname, load_seed, warnings_as_errors, packages = NULL){
+                    save_seeds, save_seeds_dirname, load_seed, warnings_as_errors, packages = NULL,
+                    use_try){
 
     load_packages(packages)
     condition$REPLICATION <- index
@@ -253,6 +254,15 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         if(!is.null(load_seed))
             .GlobalEnv$.Random.seed <- load_seed
         simlist <- try(generate(condition=condition, fixed_objects=fixed_objects), TRUE)
+        if(!use_try){
+            if(is(simlist, 'try-error')){
+                .GlobalEnv$.Random.seed <- current_Random.seed
+                debug(generate)
+                on.exit(myundebug(generate))
+                generate(condition=condition, fixed_objects=fixed_objects)
+                myundebug(generate)
+            }
+        }
         if(is(simlist, 'try-error'))
             stop(paste0('generate function threw an error.',
                         '\n\nError message was: ', simlist), call.=FALSE)
@@ -274,6 +284,16 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         }
         res <- try(withCallingHandlers(analyse(dat=simlist, condition=condition,
                            fixed_objects=fixed_objects), warning=wHandler), silent=TRUE)
+        if(!use_try){
+            if(is(res, 'try-error')){
+                debug(analyse)
+                on.exit(myundebug(analyse))
+                .GlobalEnv$.Random.seed <- current_Random.seed
+                simlist <- generate(condition=condition, fixed_objects=fixed_objects)
+                try(analyse(dat=simlist, condition=condition, fixed_objects=fixed_objects), TRUE)
+                myundebug(analyse)
+            }
+        }
         if(!is.null(Warnings)){
             Warnings <- sapply(1L:length(Warnings), function(i, warn) {
                 paste0('Warning in ', paste0(deparse(warn[[i]]$call), collapse = ''),

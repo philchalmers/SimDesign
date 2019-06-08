@@ -49,6 +49,8 @@ print_progress <- function(row, trow, time1, time0, stored_time, progress){
     invisible()
 }
 
+myundebug <- function(fun) if(isdebugged(fun)) undebug(fun)
+
 #' Suppress function messages and Concatenate and Print (cat)
 #'
 #' This function is used to suppress information printed from external functions

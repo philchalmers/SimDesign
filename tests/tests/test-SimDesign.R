@@ -355,7 +355,11 @@ test_that('SimDesign', {
     seeds <- extract_error_seeds(results)
     expect_is(seeds, 'data.frame')
     expect_true(nrow(seeds) == 626)
-    if(interactive()){
+    if(FALSE){
+        # run interactively
+        results <- runSimulation(Design, replications = 2, packages = 'extraDistr',
+                                 generate=mygenerate, analyse=mycompute, summarise=mycollect, edit='error')
+
         results <- runSimulation(Design, replications = 2, packages = 'extraDistr', seed=1:8,
                                  generate=mygenerate, analyse=mycompute, summarise=mycollect,
                                  load_seed=seeds$Design_row_1.1..This.is.an.error., edit='analyse')

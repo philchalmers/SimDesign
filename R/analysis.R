@@ -3,7 +3,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      save_generate_data, save_generate_data_dirname,
                      save_seeds, save_seeds_dirname, load_seed, export_funs, packages,
                      summarise_asis, warnings_as_errors, progress, store_results,
-                     allow_na, allow_nan)
+                     allow_na, allow_nan, use_try)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -21,7 +21,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    save_seeds=save_seeds, load_seed=load_seed,
                    save_seeds_dirname=save_seeds_dirname,
                    warnings_as_errors=warnings_as_errors,
-                   allow_na=allow_na, allow_nan=allow_nan)
+                   allow_na=allow_na, allow_nan=allow_nan, use_try=use_try)
         } else {
             lapply(1L:replications, mainsim, condition=condition,
                    generate=Functions$generate,
@@ -34,7 +34,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    save_seeds=save_seeds, load_seed=load_seed,
                    save_seeds_dirname=save_seeds_dirname,
                    warnings_as_errors=warnings_as_errors,
-                   allow_na=allow_na, allow_nan=allow_nan)
+                   allow_na=allow_na, allow_nan=allow_nan, use_try=use_try)
         }
     } else {
         if(MPI){
@@ -46,7 +46,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      save_generate_data_dirname=save_generate_data_dirname, packages=packages,
                      save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                      save_results_out_rootdir=save_results_out_rootdir,
-                     warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan)
+                     warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan,
+                     use_try=use_try)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
             results <- if(progress){
@@ -59,7 +60,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     save_generate_data_dirname=save_generate_data_dirname,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan,
-                                  cl=cl)
+                                    use_try=use_try, cl=cl)
             } else {
                 parallel::parLapply(cl, 1L:replications, mainsim,
                                     condition=condition, generate=Functions$generate,
@@ -69,7 +70,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     max_errors=max_errors, save_generate_data=save_generate_data,
                                     save_generate_data_dirname=save_generate_data_dirname,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
-                                    warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan)
+                                    warnings_as_errors=warnings_as_errors, allow_na=allow_na,
+                                    allow_nan=allow_nan, use_try=use_try)
             }
         }
     }
@@ -118,8 +120,17 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      warnings=warnings),
                 file.path(save_results_out_rootdir, tmpfilename))
     }
-    sim_results <- Functions$summarise(results=results,
-                           condition=condition, fixed_objects=fixed_objects)
+    sim_results <- try(Functions$summarise(results=results,
+                           condition=condition, fixed_objects=fixed_objects), TRUE)
+    if(!use_try){
+        if(is(sim_results, 'try-error')){
+            on.exit(myundebug(Functions$summarise))
+            debug(Functions$summarise)
+            try(Functions$summarise(results=results,
+                                condition=condition, fixed_objects=fixed_objects), TRUE)
+            myundebug(Functions$summarise)
+        }
+    }
     sim_results <- sim_results_check(sim_results)
     ret <- c(sim_results, 'REPLICATIONS'=replications, 'ERROR: '=try_errors,
              'WARNING: '=warnings)

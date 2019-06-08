@@ -247,15 +247,17 @@ as \code{ordered}. Default is \code{TRUE}}
   }}
 
 \item{edit}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
-  General options are \code{'none'} (default) and \code{'all'}, which are used
-  to disable debugging and to debug all the user defined functions, respectively.
-  Specific options include: \code{'generate'}
+  General options are \code{'none'} (default; no debugging), \code{'error'}, which starts the debugger
+  when any error in the code is detected in one of three generate-analyse-summarise functions,
+  and \code{'all'}, which debugs all the user defined functions regardless of whether an error was thrown
+  or not. Specific options include: \code{'generate'}
   to edit the data simulation function, \code{'analyse'} to edit the computational function, and
   \code{'summarise'} to  edit the aggregation function.
 
   Alternatively, users may place \code{\link{browser}} calls within the respective functions for
-  debugging at specific lines (note: parallel computation flags will automatically be disabled
-  when a \code{browser()} is detected)}
+  debugging at specific lines, which is useful when debugging based on conditional evaluations (e.g.,
+  \code{if(this == 'problem') browser()}). Note that parallel computation flags
+  will automatically be disabled when a \code{browser()} is detected}
 
 \item{progress}{logical; display a progress bar for each simulation condition?
 This is useful when simulations conditions take a long time to run.

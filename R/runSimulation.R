@@ -320,15 +320,17 @@
 #'   be saved to the working directory, and the temp file will be removed. Default is \code{FALSE}
 #'
 #' @param edit a string indicating where to initiate a \code{browser()} call for editing and debugging.
-#'   General options are \code{'none'} (default) and \code{'all'}, which are used
-#'   to disable debugging and to debug all the user defined functions, respectively.
-#'   Specific options include: \code{'generate'}
+#'   General options are \code{'none'} (default; no debugging), \code{'error'}, which starts the debugger
+#'   when any error in the code is detected in one of three generate-analyse-summarise functions,
+#'   and \code{'all'}, which debugs all the user defined functions regardless of whether an error was thrown
+#'   or not. Specific options include: \code{'generate'}
 #'   to edit the data simulation function, \code{'analyse'} to edit the computational function, and
 #'   \code{'summarise'} to  edit the aggregation function.
 #'
 #'   Alternatively, users may place \code{\link{browser}} calls within the respective functions for
-#'   debugging at specific lines (note: parallel computation flags will automatically be disabled
-#'   when a \code{browser()} is detected)
+#'   debugging at specific lines, which is useful when debugging based on conditional evaluations (e.g.,
+#'   \code{if(this == 'problem') browser()}). Note that parallel computation flags
+#'   will automatically be disabled when a \code{browser()} is detected
 #'
 #' @param seed a vector of integers to be used for reproducibility.
 #'   The length of the vector must be equal the number of rows in \code{design}.
@@ -748,7 +750,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         stop('design must be a data.frame object', call. = FALSE)
     if(replications < 1L)
         stop('number of replications must be greater than or equal to 1', call. = FALSE)
-    if(!(edit %in% c('none', 'analyse', 'generate', 'summarise', 'all')))
+    if(!(edit %in% c('none', 'analyse', 'generate', 'summarise', 'all', 'recover', 'error')))
         stop('edit location is not valid', call. = FALSE)
     if(!is.null(design$REPLICATION))
         stop("REPLICATION is a reserved keyword in the design object. Please use another name", call.=FALSE)
@@ -756,10 +758,15 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(is.null(design$ID)){
         design <- data.frame(ID=1L:nrow(design), design)
     } else stopifnot(length(unique(design$ID)) == nrow(design))
+    use_try  <- !(edit %in% c('error', 'recover'))
     if(edit != 'none'){
         save <- save_results <- save_generate_data <- save_seeds <- FALSE
         if(!(edit %in% 'summarise')) parallel <- MPI <- FALSE
-        if(edit == 'recover'){
+        if(edit == 'error'){
+            old_recover <- getOption('error')
+            options(error = browser)
+            on.exit(options(error = old_recover))
+        } else if(edit == 'recover'){
             old_recover <- getOption('error')
             options(error = utils::recover)
             on.exit(options(error = old_recover))
@@ -906,7 +913,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          max_errors=max_errors, packages=packages,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
-                                         progress=progress, store_results=FALSE)
+                                         progress=progress, store_results=FALSE, use_try=use_try)
             time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
         } else {
@@ -938,7 +945,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             max_errors=max_errors, packages=packages,
                             load_seed=load_seed, export_funs=export_funs,
                             warnings_as_errors=warnings_as_errors,
-                            progress=progress, store_results=store_results)
+                            progress=progress, store_results=store_results, use_try=use_try)
             if(store_results){
                 stored_Results_list[[i]] <- attr(tmp, 'full_results')
                 attr(tmp, 'full_results') <- NULL
