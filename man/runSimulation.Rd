@@ -19,7 +19,7 @@ runSimulation(design, replications, generate, analyse, summarise,
   warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
   parallel = FALSE, ncores = parallel::detectCores(), cl = NULL,
   MPI = FALSE, max_errors = 50L, as.factor = TRUE,
-  save_generate_data = FALSE, save_details = list(), edit = "none",
+  save_generate_data = FALSE, save_details = list(), debug = "none",
   progress = TRUE, allow_na = FALSE, allow_nan = FALSE,
   verbose = TRUE)
 
@@ -246,13 +246,13 @@ as \code{ordered}. Default is \code{TRUE}}
 
   }}
 
-\item{edit}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
+\item{debug}{a string indicating where to initiate a \code{browser()} call for editing and debugging.
   General options are \code{'none'} (default; no debugging), \code{'error'}, which starts the debugger
   when any error in the code is detected in one of three generate-analyse-summarise functions,
   and \code{'all'}, which debugs all the user defined functions regardless of whether an error was thrown
   or not. Specific options include: \code{'generate'}
-  to edit the data simulation function, \code{'analyse'} to edit the computational function, and
-  \code{'summarise'} to  edit the aggregation function.
+  to debug the data simulation function, \code{'analyse'} to debug the computational function, and
+  \code{'summarise'} to debug the aggregation function.
 
   Alternatively, users may place \code{\link{browser}} calls within the respective functions for
   debugging at specific lines, which is useful when debugging based on conditional evaluations (e.g.,
@@ -601,7 +601,7 @@ runSimulation(design=Design, replications=1000, parallel=TRUE, save=TRUE, filena
 ##   ls() to see what has been defined, and type Q to quit the debugger
 runSimulation(design=Design, replications=1000,
               generate=Generate, analyse=Analyse, summarise=Summarise,
-              parallel=TRUE, edit='generate')
+              parallel=TRUE, debug='generate')
 
 ## Alternatively, place a browser() within the desired function line to
 ##   jump to a specific location

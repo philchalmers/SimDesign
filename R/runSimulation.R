@@ -319,13 +319,13 @@
 #'   will automatically be detected and read-in. Upon completion, the final results will
 #'   be saved to the working directory, and the temp file will be removed. Default is \code{FALSE}
 #'
-#' @param edit a string indicating where to initiate a \code{browser()} call for editing and debugging.
+#' @param debug a string indicating where to initiate a \code{browser()} call for editing and debugging.
 #'   General options are \code{'none'} (default; no debugging), \code{'error'}, which starts the debugger
 #'   when any error in the code is detected in one of three generate-analyse-summarise functions,
 #'   and \code{'all'}, which debugs all the user defined functions regardless of whether an error was thrown
 #'   or not. Specific options include: \code{'generate'}
-#'   to edit the data simulation function, \code{'analyse'} to edit the computational function, and
-#'   \code{'summarise'} to  edit the aggregation function.
+#'   to debug the data simulation function, \code{'analyse'} to debug the computational function, and
+#'   \code{'summarise'} to debug the aggregation function.
 #'
 #'   Alternatively, users may place \code{\link{browser}} calls within the respective functions for
 #'   debugging at specific lines, which is useful when debugging based on conditional evaluations (e.g.,
@@ -552,7 +552,7 @@
 #' ##   ls() to see what has been defined, and type Q to quit the debugger
 #' runSimulation(design=Design, replications=1000,
 #'               generate=Generate, analyse=Analyse, summarise=Summarise,
-#'               parallel=TRUE, edit='generate')
+#'               parallel=TRUE, debug='generate')
 #'
 #' ## Alternatively, place a browser() within the desired function line to
 #' ##   jump to a specific location
@@ -646,7 +646,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50L, as.factor = TRUE, save_generate_data = FALSE,
-                          save_details = list(), edit = 'none', progress = TRUE,
+                          save_details = list(), debug = 'none', progress = TRUE,
                           allow_na = FALSE, allow_nan = FALSE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
@@ -688,7 +688,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(!is.null(cl)) parallel <- TRUE
     if(!is.null(load_seed)) seed <- NULL
-    edit <- tolower(edit)
+    debug <- tolower(debug)
     summarise_asis <- FALSE
     if(missing(summarise)){
         summarise <- function(condition, results, fixed_objects = NULL) results
@@ -709,7 +709,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     stopifnot(!missing(replications))
     if(!is.null(seed))
         stopifnot(nrow(design) == length(seed))
-    edit <- tolower(edit)
+    debug <- tolower(debug)
     if(!save && any(save_results, save_generate_data, save_seeds)) filename <- NULL
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))
@@ -750,34 +750,26 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         stop('design must be a data.frame object', call. = FALSE)
     if(replications < 1L)
         stop('number of replications must be greater than or equal to 1', call. = FALSE)
-    if(!(edit %in% c('none', 'analyse', 'generate', 'summarise', 'all', 'recover', 'error')))
-        stop('edit location is not valid', call. = FALSE)
+    if(!(debug %in% c('none', 'analyse', 'generate', 'summarise', 'all', 'recover', 'error')))
+        stop('debug input is not valid', call. = FALSE)
     if(!is.null(design$REPLICATION))
         stop("REPLICATION is a reserved keyword in the design object. Please use another name", call.=FALSE)
     else design <- data.frame(REPLICATION=integer(nrow(design)), design)
     if(is.null(design$ID)){
         design <- data.frame(ID=1L:nrow(design), design)
     } else stopifnot(length(unique(design$ID)) == nrow(design))
-    use_try  <- !(edit %in% c('error', 'recover'))
-    if(edit != 'none'){
+    use_try  <- !(debug %in% c('error', 'recover'))
+    if(debug != 'none'){
         save <- save_results <- save_generate_data <- save_seeds <- FALSE
-        if(!(edit %in% 'summarise')) parallel <- MPI <- FALSE
-        if(edit == 'error'){
-            old_recover <- getOption('error')
-            options(error = browser)
-            on.exit(options(error = old_recover))
-        } else if(edit == 'recover'){
-            old_recover <- getOption('error')
-            options(error = utils::recover)
-            on.exit(options(error = old_recover))
-        } else if(edit == 'all'){
+        if(!(debug %in% 'summarise')) parallel <- MPI <- FALSE
+        if(debug == 'all'){
             debug(Functions[['generate']]); debug(Functions[['analyse']])
             debug(Functions[['summarise']])
             on.exit({undebug(Functions[['generate']]); undebug(Functions[['analyse']])
                 undebug(Functions[['summarise']])})
         } else {
-            debug(Functions[[edit]])
-            on.exit(undebug(Functions[[edit]]))
+            debug(Functions[[debug]])
+            on.exit(undebug(Functions[[debug]]))
         }
     }
     export_funs <- parent_env_fun()
