@@ -234,7 +234,7 @@ test_that('SimDesign', {
     seeds <- readRDS('SIMDESIGN_CRASHFILE_SEEDS.rds')
     # runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
     #               replications = 1, parallel=TRUE, ncores=2L, load_seed=seeds[1,],
-    #               save=TRUE, verbose = FALSE, edit='analyse')
+    #               save=TRUE, verbose = FALSE, debug='analyse')
     SimClean('SIMDESIGN_CRASHFILE_SEEDS.rds')
 
     mycompute <- function(condition, dat, fixed_objects = NULL){
@@ -358,11 +358,11 @@ test_that('SimDesign', {
     if(FALSE){
         # run interactively
         results <- runSimulation(Design, replications = 2, packages = 'extraDistr',
-                                 generate=mygenerate, analyse=mycompute, summarise=mycollect, edit='error')
+                                 generate=mygenerate, analyse=mycompute, summarise=mycollect, debug='error')
 
         results <- runSimulation(Design, replications = 2, packages = 'extraDistr', seed=1:8,
                                  generate=mygenerate, analyse=mycompute, summarise=mycollect,
-                                 load_seed=seeds$Design_row_1.1..This.is.an.error., edit='analyse')
+                                 load_seed=seeds$Design_row_1.1..This.is.an.error., debug='analyse')
     }
 
     # NAs
