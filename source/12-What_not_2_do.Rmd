@@ -132,7 +132,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 # large results objects are saved to the hard drive
 results <- runSimulation(design=Design, replications=1000, save_results=TRUE,
-    generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
+    generate=Generate, analyse=Analyse, summarise=Summarise, debug='none')
 ```
 
 ```{r}

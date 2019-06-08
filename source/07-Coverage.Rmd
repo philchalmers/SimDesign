@@ -66,7 +66,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 ### Run the simulation
 results <- runSimulation(Design, replications=10000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
+                         generate=Generate, analyse=Analyse, summarise=Summarise, debug='none')
 ```
 
 ```{r}

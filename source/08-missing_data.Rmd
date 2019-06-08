@@ -68,7 +68,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 ### Run the simulation
 results <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
+                         generate=Generate, analyse=Analyse, summarise=Summarise, debug='none',
                          packages = 'mvtnorm')
 ```
 
@@ -93,7 +93,7 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 results <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none',
+                         generate=Generate, analyse=Analyse, summarise=Summarise, debug='none',
                          packages = 'mvtnorm')
 ```
 

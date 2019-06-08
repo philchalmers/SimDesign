@@ -50,7 +50,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 ### Run the simulation (using all available cores)
 results <- runSimulation(Design, replications=10000, verbose=FALSE, parallel=TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, edit='none')
+                         generate=Generate, analyse=Analyse, summarise=Summarise, debug='none')
 ```
 
 ```{r}
@@ -111,7 +111,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 ### Run the simulation (note: no summarise function)
 reps <- 50
 results <- runSimulation(Design, replications=reps, verbose=FALSE, parallel=FALSE,
-                         generate=Generate, analyse=Analyse, edit='none')
+                         generate=Generate, analyse=Analyse, debug='none')
 ```
 
 ```{r}

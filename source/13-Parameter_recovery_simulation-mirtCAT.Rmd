@@ -61,7 +61,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 
 # only 1 replication
 results <- runSimulation(design=Design, replications=1, seed = 1:nrow(Design),
-    generate=Generate, analyse=Analyse, fixed_objects=fo, edit='none')
+    generate=Generate, analyse=Analyse, fixed_objects=fo, debug='none')
 ```
 
 
