@@ -26,10 +26,19 @@ However the majority can be found in external packages. See CRAN's list of possi
 can be omitted if the data generation is provided in the \code{\link{Analyse}} step, though
 in general this is not recommended.
 }
+\details{
+The use of \code{\link{try}} functions is generally not required in this function because \code{Generate}
+is internally wrapped in a \code{\link{try}} call. Therefore, if a function stops early
+then this will cause the function to halt internally, the message which triggered the \code{\link{stop}}
+will be recorded, and \code{Generate} will be called again to obtain a different dataset.
+That said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
+should be re-drawn for other reasons (e.g., an estimated model terminated correctly but the maximum number of
+iterations were reached).
+}
 \examples{
 \dontrun{
 
-mygenerate <- function(condition, fixed_objects = NULL){
+generate <- function(condition, fixed_objects = NULL){
     N1 <- condition$sample_sizes_group1
     N2 <- condition$sample_sizes_group2
     sd <- condition$standard_deviations
@@ -45,7 +54,7 @@ mygenerate <- function(condition, fixed_objects = NULL){
 }
 
 # similar to above, but using the Attach() function instead of indexing
-mygenerate <- function(condition, fixed_objects = NULL){
+generate <- function(condition, fixed_objects = NULL){
     Attach(condition)
     N1 <- sample_sizes_group1
     N2 <- sample_sizes_group2
@@ -58,13 +67,13 @@ mygenerate <- function(condition, fixed_objects = NULL){
     dat
 }
 
-mygenerate2 <- function(condition, fixed_objects = NULL){
+generate2 <- function(condition, fixed_objects = NULL){
     mu <- sample(c(-1,0,1), 1)
     dat <- rnorm(100, mu)
     dat        #return simple vector (discard mu information)
 }
 
-mygenerate3 <- function(condition, fixed_objects = NULL){
+generate3 <- function(condition, fixed_objects = NULL){
     mu <- sample(c(-1,0,1), 1)
     dat <- data.frame(DV = rnorm(100, mu))
     dat

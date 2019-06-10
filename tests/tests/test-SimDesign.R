@@ -497,5 +497,25 @@ test_that('SimDesign', {
                              summarise=Summarise, verbose=FALSE)
     expect_is(results, 'SimDesign')
 
+    # warnings/error in generate
+    mycompute <- function(condition, dat, fixed_objects = NULL){
+        int <- sample(1:10, 1)
+        if(int > 5) warning('greater than 5')
+        if(int == 1) stop('generate error')
+        c(ret = 1)
+    }
+    mygenerate <- function(condition, fixed_objects = NULL){
+        int <- sample(1:10, 1)
+        if(int > 5) warning('greater than 5 in analyse')
+        if(int == 1) stop('generate error in analyse')
+        rnorm(5)
+    }
+    mycollect <- function(condition, results, fixed_objects = NULL) {
+        colMeans(results)
+    }
+    result <- runSimulation(replications = 100, seed=1234, verbose=FALSE,
+                            generate=mygenerate, analyse=mycompute, summarise=mycollect)
+    expect_equal(ncol(result), 9L)
+
 })
 

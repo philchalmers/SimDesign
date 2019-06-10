@@ -8,6 +8,14 @@
 #' can be omitted if the data generation is provided in the \code{\link{Analyse}} step, though
 #' in general this is not recommended.
 #'
+#' The use of \code{\link{try}} functions is generally not required in this function because \code{Generate}
+#' is internally wrapped in a \code{\link{try}} call. Therefore, if a function stops early
+#' then this will cause the function to halt internally, the message which triggered the \code{\link{stop}}
+#' will be recorded, and \code{Generate} will be called again to obtain a different dataset.
+#' That said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
+#' should be re-drawn for other reasons (e.g., an estimated model terminated correctly but the maximum number of
+#' iterations were reached).
+#'
 #' @param condition a single row from the \code{design} input (as a \code{data.frame}), indicating the
 #'   simulation conditions
 #'
@@ -29,7 +37,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' mygenerate <- function(condition, fixed_objects = NULL){
+#' generate <- function(condition, fixed_objects = NULL){
 #'     N1 <- condition$sample_sizes_group1
 #'     N2 <- condition$sample_sizes_group2
 #'     sd <- condition$standard_deviations
@@ -45,7 +53,7 @@
 #' }
 #'
 #' # similar to above, but using the Attach() function instead of indexing
-#' mygenerate <- function(condition, fixed_objects = NULL){
+#' generate <- function(condition, fixed_objects = NULL){
 #'     Attach(condition)
 #'     N1 <- sample_sizes_group1
 #'     N2 <- sample_sizes_group2
@@ -58,13 +66,13 @@
 #'     dat
 #' }
 #'
-#' mygenerate2 <- function(condition, fixed_objects = NULL){
+#' generate2 <- function(condition, fixed_objects = NULL){
 #'     mu <- sample(c(-1,0,1), 1)
 #'     dat <- rnorm(100, mu)
 #'     dat        #return simple vector (discard mu information)
 #' }
 #'
-#' mygenerate3 <- function(condition, fixed_objects = NULL){
+#' generate3 <- function(condition, fixed_objects = NULL){
 #'     mu <- sample(c(-1,0,1), 1)
 #'     dat <- data.frame(DV = rnorm(100, mu))
 #'     dat
@@ -120,7 +128,7 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #' @examples
 #' \dontrun{
 #'
-#' myanalyse <- function(condition, dat, fixed_objects = NULL){
+#' analyse <- function(condition, dat, fixed_objects = NULL){
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -177,7 +185,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #' @examples
 #' \dontrun{
 #'
-#' mysummarise <- function(condition, results, fixed_objects = NULL){
+#' summarise <- function(condition, results, fixed_objects = NULL){
 #'
 #'     #find results of interest here (alpha < .1, .05, .01)
 #'     lessthan.05 <- EDR(results, alpha = .05)
@@ -239,6 +247,11 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
 
     while(TRUE){
 
+        Warnings <- NULL
+        wHandler <- function(w) {
+            Warnings <<- c(Warnings, list(w))
+            invokeRestart("muffleWarning")
+        }
         current_Random.seed <- .GlobalEnv$.Random.seed
         if(save_seeds){
             filename_stem <- paste0(save_seeds_dirname, '/design-row-', condition$ID,
@@ -253,7 +266,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         }
         if(!is.null(load_seed))
             .GlobalEnv$.Random.seed <- load_seed
-        simlist <- try(generate(condition=condition, fixed_objects=fixed_objects), TRUE)
+        simlist <- try(withCallingHandlers(generate(condition=condition,
+                                                    fixed_objects=fixed_objects), warning=wHandler), TRUE)
         if(!use_try){
             if(is(simlist, 'try-error')){
                 .GlobalEnv$.Random.seed <- current_Random.seed
@@ -263,9 +277,20 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                 myundebug(generate)
             }
         }
-        if(is(simlist, 'try-error'))
-            stop(paste0('generate function threw an error.',
-                        '\n\nError message was: ', simlist), call.=FALSE)
+        if(is(simlist, 'try-error')){
+            simlist[1L] <-
+                gsub('Error in generate\\(condition = condition, fixed_objects = fixed_objects) : \\n  ',
+                     replacement = '', simlist[1L])
+            try_error <- c(try_error, simlist[1L])
+            if(length(try_error) == max_errors){
+                try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
+                rownames(try_error_seeds) <- paste0('Error_seed_', 1L:nrow(try_error_seeds))
+                stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
+                            ' consecutive errors. \n\nLast error message was: \n\n  ', simlist[1L]), call.=FALSE)
+            }
+            try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
+            next
+        }
         if(save_generate_data){
             filename_stem <- paste0(save_generate_data_dirname, '/design-row-', condition$ID,
                                     '/generate-data-')
@@ -276,11 +301,6 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                 count <- count + 1L
             }
             saveRDS(simlist, file.path(save_results_out_rootdir, filename))
-        }
-        Warnings <- NULL
-        wHandler <- function(w) {
-            Warnings <<- c(Warnings, list(w))
-            invokeRestart("muffleWarning")
         }
         res <- try(withCallingHandlers(analyse(dat=simlist, condition=condition,
                            fixed_objects=fixed_objects), warning=wHandler), silent=TRUE)
@@ -299,6 +319,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                 paste0('Warning in ', paste0(deparse(warn[[i]]$call), collapse = ''),
                        ' : ', warn[[i]]$message)
             }, warn=Warnings)
+            Warnings <- gsub('Warning in generate(condition = condition, fixed_objects = fixed_objects) : ',
+                             replacement = '', Warnings, fixed = TRUE)
             Warnings <- gsub('Warning in analyse(dat = simlist, condition = condition, fixed_objects = fixed_objects) : ',
                  replacement = '', Warnings, fixed = TRUE)
             if(warnings_as_errors){
