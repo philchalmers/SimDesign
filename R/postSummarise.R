@@ -3,7 +3,7 @@
 #' When \code{runSimulation()} uses the option \code{save_results = TRUE}
 #' the R replication results from the Generate-Analyse functions are
 #' stored to the hard drive. As such, additional summarise components
-#' may be required at a later time, whereby the respective .rds files
+#' may be required at a later time, whereby the respective \code{.rds} files
 #' must be read back into R to be summarised. This function performs
 #' the reading of these files, application of a provided summarise function,
 #' and final collection of the respective results.

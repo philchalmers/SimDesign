@@ -164,8 +164,8 @@ Default is \code{FALSE}}
 \item{load_seed}{a character object indicating which file to load from when the \code{.Random.seed}s have
 be saved (after a call with \code{save_seeds = TRUE}), or an integer vector indicating the actual
 \code{.Random.seed} values. E.g., \code{load_seed = 'design-row-2/seed-1'}
-will load the first seed in the second row of the \code{design} input, or explicilty passing the 626 long
-elements from \code{.Random.seed} (see \code{extract_error_seed()} to extract the seeds associated explicilty
+will load the first seed in the second row of the \code{design} input, or explicitly passing the 626 long
+elements from \code{.Random.seed} (see \code{extract_error_seed()} to extract the seeds associated explicitly
 with errors during the simulation, where each column represents a unique seed).
 If the input is a character vector then it is important NOT
 to modify the \code{design} input object, otherwise the path may not point to the correct saved location, while

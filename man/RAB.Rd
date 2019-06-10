@@ -19,7 +19,7 @@ returns a \code{vector} of absolute bias ratios indicating the relative bias
   than the first estimator, while values greater than 1 indicate worse bias than the first estimator
 }
 \description{
-Computes the relative absoluate bias given the bias estimates for multiple estimators.
+Computes the relative absolute bias given the bias estimates for multiple estimators.
 }
 \examples{
 

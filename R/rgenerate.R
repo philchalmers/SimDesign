@@ -838,7 +838,7 @@ rmvnorm <- function (n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)))
 #' @param df degrees of freedom. \code{df = 0} and \code{df = Inf}
 #'   corresponds to the multivariate normal distribution
 #'
-#' @param delta the vector of noncentrality parameters of length \code{n}
+#' @param delta the vector of non-centrality parameters of length \code{n}
 #'   which specifies the either the modes (default) or non-centrality parameters
 #'
 #' @param Kshirsagar logical; triggers whether to generate data with non-centrality parameters

@@ -14,7 +14,7 @@ rmvt(n, sigma, df, delta = rep(0, nrow(sigma)), Kshirsagar = FALSE)
 \item{df}{degrees of freedom. \code{df = 0} and \code{df = Inf}
 corresponds to the multivariate normal distribution}
 
-\item{delta}{the vector of noncentrality parameters of length \code{n}
+\item{delta}{the vector of non-centrality parameters of length \code{n}
 which specifies the either the modes (default) or non-centrality parameters}
 
 \item{Kshirsagar}{logical; triggers whether to generate data with non-centrality parameters
