@@ -222,6 +222,8 @@
 #'   to the working directory (in the same way as when \code{save = TRUE}).
 #'   Default is \code{FALSE}
 #'
+#' @param edit this argument has been deprecated. Please use \code{debug} instead
+#'
 #' @param save_generate_data logical; save the data returned from \code{\link{Generate}} to external \code{.rds} files
 #'   located in the defined \code{save_generate_data_dirname} directory/folder?
 #'   When \code{TRUE}, temporary files will also be saved to the working directory
@@ -647,8 +649,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50L, as.factor = TRUE, save_generate_data = FALSE,
                           save_details = list(), debug = 'none', progress = TRUE,
-                          allow_na = FALSE, allow_nan = FALSE, verbose = TRUE)
+                          allow_na = FALSE, allow_nan = FALSE, edit = 'none', verbose = TRUE)
 {
+    if(edit != 'none'){
+        warning('The edit argument has been deprecated. Please use \'debug\' instead.', call. = FALSE)
+        debug <- edit
+    }
     stopifnot(!missing(analyse))
     if(missing(generate) && !missing(analyse))
         generate <- function(condition, dat, fixed_objects = NULL){}

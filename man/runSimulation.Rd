@@ -21,7 +21,7 @@ runSimulation(design, replications, generate, analyse, summarise,
   MPI = FALSE, max_errors = 50L, as.factor = TRUE,
   save_generate_data = FALSE, save_details = list(), debug = "none",
   progress = TRUE, allow_na = FALSE, allow_nan = FALSE,
-  verbose = TRUE)
+  edit = "none", verbose = TRUE)
 
 \method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE,
   format.time = TRUE, ...)
@@ -268,6 +268,8 @@ analysis? Default is FALSE}
 
 \item{allow_nan}{logical; should \code{NaN}s be allowed in the analyse step as a valid result from the simulation
 analysis? Default is FALSE}
+
+\item{edit}{this argument has been deprecated. Please use \code{debug} instead}
 
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 
