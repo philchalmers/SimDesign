@@ -59,24 +59,27 @@
 #'
 #' SimClean('SimDesign-results.rds')
 #'
-#' results <- postSummarise(Summarise, dir = 'simresults/')
+#' results <- reSummarise(Summarise, dir = 'simresults/')
 #' results
 #'
 #' Summarise2 <- function(condition, results, fixed_objects = NULL){
 #'     mean(results)
 #' }
 #'
-#' results2 <- postSummarise(Summarise2, dir = 'simresults/')
+#' results2 <- reSummarise(Summarise2, dir = 'simresults/')
 #' results2
 #'
 #' SimClean('simresults/')
 #' }
-postSummarise <- function(summarise, dir = NULL, files = NULL,
+reSummarise <- function(summarise, dir = NULL, files = NULL,
                           fixed_objects = NULL){
     current_wd <- getwd()
     on.exit(setwd(current_wd))
     if(!is.null(dir)) setwd(dir)
     if(is.null(files)) files <- dir()
+    expect_filenames <- paste0(paste0('results-row-'), 1L:length(files), '.rds')
+    if(!all(files == expect_filenames))
+        stop('Filenames in select directory did not follow the \'results-row-#\' pattern. Please fix')
     res <- vector('list', length(files))
     conditions <- vector('list', length(files))
 
