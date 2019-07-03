@@ -889,11 +889,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
           save_seeds_dirname=file.path(out_rootdir, save_seeds_dirname))
     if(progress) verbose <- TRUE
     for(i in start:end){
+        time0 <- proc.time()[3L]
         if(summarise_asis){
             if(verbose)
                 print_progress(i, nrow(design), time1=time1, time0=time0,
                                stored_time=stored_time, progress=progress)
-            time0 <- proc.time()[3L]
             Result_list[[i]] <- Analysis(Functions=Functions,
                                          condition=design[i,],
                                          replications=replications,
@@ -925,7 +925,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if(save_seeds)
                 dir.create(file.path(out_rootdir,
                                      paste0(save_seeds_dirname, '/design-row-', i)), showWarnings = FALSE)
-            time0 <- proc.time()[3L]
             tmp <- Analysis(Functions=Functions,
                             condition=design[i,],
                             replications=replications,
@@ -951,11 +950,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             Result_list[[i]] <- data.frame(design[i, ], as.list(tmp),
                                            check.names=FALSE)
             attr(Result_list[[i]], 'error_seeds') <- attr(tmp, 'error_seeds')
-            time1 <- proc.time()[3L]
-            Result_list[[i]]$SIM_TIME <- time1 - time0
+            Result_list[[i]]$SIM_TIME <- proc.time()[3L] - time0
             Result_list[[i]]$COMPLETED <- date()
             if(save || save_results || save_generate_data)
                 saveRDS(Result_list, file.path(out_rootdir, tmpfilename))
+            time1 <- proc.time()[3L]
         }
     }
     attr(Result_list, 'SimDesign_names') <- NULL
