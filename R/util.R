@@ -42,7 +42,7 @@ timeFormater <- function(time, decimals = TRUE){
     resTime
 }
 
-print_progress <- function(row, trow, time1, time0, stored_time, progress){
+print_progress <- function(row, trow, stored_time, progress){
     if(progress) cat('\n')
     cat(sprintf('\rDesign row: %i/%i;   Started: %s;   Total elapsed time: %s \n',
                 row, trow, date(), timeFormater(sum(stored_time))))

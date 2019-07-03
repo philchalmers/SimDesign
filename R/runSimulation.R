@@ -892,8 +892,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         time0 <- proc.time()[3L]
         if(summarise_asis){
             if(verbose)
-                print_progress(i, nrow(design), time1=time1, time0=time0,
-                               stored_time=stored_time, progress=progress)
+                print_progress(i, nrow(design), stored_time=stored_time, progress=progress)
             Result_list[[i]] <- Analysis(Functions=Functions,
                                          condition=design[i,],
                                          replications=replications,
@@ -917,8 +916,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
-                print_progress(i, nrow(design), time1=time1, time0=time0,
-                               stored_time=stored_time, progress=progress)
+                print_progress(i, nrow(design), stored_time=stored_time, progress=progress)
             if(save_generate_data)
                 dir.create(file.path(out_rootdir,
                                      paste0(save_generate_data_dirname, '/design-row-', i)), showWarnings = FALSE)
@@ -955,6 +953,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if(save || save_results || save_generate_data)
                 saveRDS(Result_list, file.path(out_rootdir, tmpfilename))
             time1 <- proc.time()[3L]
+            Result_list[[i]]$SIM_TIME <- time1 - time0
+
         }
     }
     attr(Result_list, 'SimDesign_names') <- NULL
