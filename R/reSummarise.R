@@ -78,7 +78,7 @@ reSummarise <- function(summarise, dir = NULL, files = NULL,
     if(!is.null(dir)) setwd(dir)
     if(is.null(files)) files <- dir()
     expect_filenames <- paste0(paste0('results-row-'), 1L:length(files), '.rds')
-    if(!all(files == expect_filenames))
+    if(!all(files %in% expect_filenames))
         stop('Filenames in select directory did not follow the \'results-row-#\' pattern. Please fix')
     res <- vector('list', length(files))
     conditions <- vector('list', length(files))
