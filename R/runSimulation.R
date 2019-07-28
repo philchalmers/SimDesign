@@ -370,7 +370,7 @@
 #'
 #' @param verbose logical; print messages to the R console? Default is \code{TRUE}
 #'
-#' @return a \code{data.frame} (also of class \code{'SimDesign'})
+#' @return a \code{\link[dplyr]{tibble}} (also of class \code{'SimDesign'})
 #'   with the original \code{design} conditions in the left-most columns,
 #'   simulation results and ERROR/WARNING's (if applicable) in the middle columns,
 #'   and additional information (such as REPLICATIONS, SIM_TIME, COMPLETED, and SEED) in the right-most
@@ -996,7 +996,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     REPLICATIONS <- Final$REPLICATIONS
     Final$SIM_TIME <- Final$ID <- Final$REPLICATIONS <-
         Final$COMPLETED <- Final$REPLICATION <- NULL
-    Final <- data.frame(Final, REPLICATIONS, SIM_TIME, COMPLETED, check.names=FALSE)
+    Final <- dplyr::as_tibble(data.frame(Final, REPLICATIONS, SIM_TIME, COMPLETED, check.names=FALSE))
     if(!is.null(seed)) Final$SEED <- seed
     if(!is.null(filename) && safe){ #save file
         files <- dir(out_rootdir)
@@ -1053,7 +1053,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       error_seeds=error_seeds,
                                       stored_results = if(store_results) stored_Results_list else NULL)
     if(dummy_run) Final$dummy_run <- NULL
-    class(Final) <- c('SimDesign', 'data.frame')
+    class(Final) <- c('SimDesign', class(Final))
     if(!is.null(filename) && save){ #save file
         if(verbose)
             message(paste('\nSaving simulation results to file:', filename))
@@ -1080,26 +1080,10 @@ print.SimDesign <- function(x, drop.extras = FALSE, drop.design = FALSE, format.
             x$SIM_TIME <- sapply(x$SIM_TIME, timeFormater, TRUE)
     if(drop.extras) x <- x[ ,c(att$design, att$sim), drop=FALSE]
     if(drop.design) x <- x[ ,!(names(x) %in% att$design), drop=FALSE]
-    class(x) <- 'data.frame'
+    class(x) <- class(x)[-1L]
     ldots <- list(...)
     if(is.null(ldots$print)) print(x, ...)
     else return(x)
-}
-
-#' @rdname runSimulation
-#' @export
-head.SimDesign <- function(x, ...){
-    x <- print(x, print = FALSE, ...)
-    class(x) <- 'data.frame'
-    print(head(x, ...), ...)
-}
-
-#' @rdname runSimulation
-#' @export
-tail.SimDesign <- function(x, ...){
-    x <- print(x, print = FALSE, ...)
-    class(x) <- 'data.frame'
-    print(tail(x, ...), ...)
 }
 
 #' @rdname runSimulation
@@ -1140,27 +1124,4 @@ extract_error_seeds <- function(object){
     extra_info <- attr(object, 'extra_info')
     ret <- extra_info$error_seeds
     ret
-}
-
-#' @rdname runSimulation
-#' @export
-as.data.frame.SimDesign <- function(x, ...){
-    class(x) <- 'data.frame'
-    x
-}
-
-#' @export
-"[<-.SimDesign"  <- function(x, i, j, value){
-    x <- as.data.frame(x)
-    x[i, j] <- value
-    class(x) <- c('SimDesign', 'data.frame')
-    x
-}
-
-#' @export
-"[[<-.SimDesign"  <- function(x, i, j, value){
-    x <- as.data.frame(x)
-    x[[i,j]] <- value
-    class(x) <- c('SimDesign', 'data.frame')
-    x
 }

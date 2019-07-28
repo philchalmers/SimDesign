@@ -21,11 +21,11 @@ Imports:
     methods,
     parallel,
     plyr,
+    dplyr,
     pbapply (>= 1.3-0),
     stats
 Suggests:
     knitr,
-    dplyr,
     ggplot2,
     shiny,
     doMPI,

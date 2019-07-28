@@ -96,5 +96,5 @@ reSummarise <- function(summarise, dir = NULL, files = NULL,
     }
     res <- cbind(plyr::rbind.fill(conditions), do.call(rbind, res))
     res$REPLICATION <- res$ID <- NULL
-    res
+    dplyr::as_tibble(res)
 }

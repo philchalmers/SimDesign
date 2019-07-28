@@ -3,12 +3,9 @@
 \name{runSimulation}
 \alias{runSimulation}
 \alias{print.SimDesign}
-\alias{head.SimDesign}
-\alias{tail.SimDesign}
 \alias{summary.SimDesign}
 \alias{extract_results}
 \alias{extract_error_seeds}
-\alias{as.data.frame.SimDesign}
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
@@ -26,17 +23,11 @@ runSimulation(design, replications, generate, analyse, summarise,
 \method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE,
   format.time = TRUE, ...)
 
-\method{head}{SimDesign}(x, ...)
-
-\method{tail}{SimDesign}(x, ...)
-
 \method{summary}{SimDesign}(object, ...)
 
 extract_results(object)
 
 extract_error_seeds(object)
-
-\method{as.data.frame}{SimDesign}(x, ...)
 }
 \arguments{
 \item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
@@ -290,7 +281,7 @@ results instead of using the auto-factorized version. Default is \code{FALSE}}
 \item{object}{SimDesign object returned from \code{\link{runSimulation}}}
 }
 \value{
-a \code{data.frame} (also of class \code{'SimDesign'})
+a \code{\link[dplyr]{tibble}} (also of class \code{'SimDesign'})
   with the original \code{design} conditions in the left-most columns,
   simulation results and ERROR/WARNING's (if applicable) in the middle columns,
   and additional information (such as REPLICATIONS, SIM_TIME, COMPLETED, and SEED) in the right-most
