@@ -28,6 +28,7 @@ attributes(x)
 head(x)
 
 x1 <- subset(BF_sim, select = c(1,2,4,5,10))
+x1
 attributes(x1)
 
 x2 <- subset(BF_sim, select = var_ratio:alpha.05.Jacknife)

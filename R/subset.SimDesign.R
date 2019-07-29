@@ -27,6 +27,7 @@
 #' head(x)
 #'
 #' x1 <- subset(BF_sim, select = c(1,2,4,5,10))
+#' x1
 #' attributes(x1)
 #'
 #' x2 <- subset(BF_sim, select = var_ratio:alpha.05.Jacknife)
@@ -41,9 +42,8 @@ subset.SimDesign <- function(x, ...){
     design_names <- attributes(x)$design_names
     extra_info <- attributes(x)$extra_info
     x <- as.data.frame(x)
-    ret <- subset(x, ...)
-    # Assign proper class and attributes
-    class(ret) <- c('SimDesign', 'data.frame')
+    ret <- dplyr::as_tibble(subset(x, ...))
+    class(ret) <- c('SimDesign', class(ret))
     design_names$design <- intersect(design_names$design, names(ret))
     design_names$sim <- intersect(design_names$sim, names(ret))
     attributes(ret)$design_names <- design_names
