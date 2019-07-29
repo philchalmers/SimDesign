@@ -108,7 +108,7 @@ aggregate_simulations <- function(files = NULL, dirs = NULL, results_dirname = '
         ret$SIM_TIME <- ret$SIM_TIME + readin[[i]]$SIM_TIME
         ret[ ,pick] <- ret[ ,pick] + weights[i] * readin[[i]][ ,pick]
     }
-    out <- data.frame(ret, try_errors, check.names = FALSE)
+    out <- dplyr::as_tibble(data.frame(ret, try_errors, check.names = FALSE))
     out$SEED <- NULL
     out
 }

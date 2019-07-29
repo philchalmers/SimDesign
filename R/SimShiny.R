@@ -84,6 +84,9 @@
 #'
 #' }
 SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
+
+    if(!is.null(filename)) on.exit(sink())
+
     UI_CONDITION <- function(condition, name){
         cond <- unique(condition)
         is_numeric <- is.numeric(cond)
@@ -155,10 +158,11 @@ SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
     cat('  output$results <- renderTable({\n')
     cat('    reps <- input$reps\n')
     cat('    if(reps > 0){\n')
-    cat('         res <- as.data.frame(runSimulation(design=Design(), replications=reps,\n')
-    cat(sprintf('                    %s))\n', inputs))
+    cat('         res <- runSimulation(design=Design(), replications=reps,\n')
+    cat(sprintf('                    %s)\n', inputs))
     cat('         res <- res[,(ncol(Design())+1):ncol(res)]\n')
     cat('         res$REPLICATIONS <- NULL\n')
+    cat('         res$SEED <- NULL\n')
     cat('         return(res)\n')
     cat('    } else return(NULL)\n')
     cat('  }, digits = 3)\n')
@@ -166,6 +170,5 @@ SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
 
     cat('shinyApp(ui=ui, server=server)\n\n')
 
-    if(!is.null(filename)) sink()
     invisible()
 }
