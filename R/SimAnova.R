@@ -109,11 +109,11 @@ SimAnova <- function(formula, dat, subset = NULL, rates = TRUE){
         return(ret)
     }
 
-    dat2 <- model.frame(formula, dat)
+    dat2 <- model.frame(formula, as.data.frame(dat))
     if(rates){
         dat2[,1] <- suppressWarnings(qlogis(dat2[,1]))
-        dat2[dat2[,1] == Inf, 1] <- max(dat2[,1])
-        dat2[dat2[,1] == -Inf, 1] <- min(dat2[,1])
+        dat2[dat2[,1] == Inf, 1] <- max(dat2[is.finite(dat2[,1]),1])
+        dat2[dat2[,1] == -Inf, 1] <- min(dat2[is.finite(dat2[,1]),1])
     }
     mod <- lm(formula, dat2)
     return(etaSquared(mod))

@@ -370,7 +370,7 @@
 #'
 #' @param verbose logical; print messages to the R console? Default is \code{TRUE}
 #'
-#' @return a \code{\link[dplyr]{tibble}} (also of class \code{'SimDesign'})
+#' @return a \code{1tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
 #'   with the original \code{design} conditions in the left-most columns,
 #'   simulation results and ERROR/WARNING's (if applicable) in the middle columns,
 #'   and additional information (such as REPLICATIONS, SIM_TIME, COMPLETED, and SEED) in the right-most
@@ -534,13 +534,13 @@
 #' # first, test to see if it works
 #' Final <- runSimulation(design=Design, replications=5, store_results=TRUE,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
-#' head(Final)
+#' Final
 #'
 #' \dontrun{
 #' # complete run with 1000 replications per condition
 #' Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
-#' head(Final, digits = 3)
+#' Final
 #' View(Final)
 #'
 #' ## save final results to a file upon completion (not run)
@@ -606,23 +606,22 @@
 #' ###### This is where you get to be a data analyst!
 #'
 #' library(dplyr)
-#' Final2 <- tbl_df(Final)
-#' Final2 %>% summarise(mean(welch), mean(independent))
-#' Final2 %>% group_by(standard_deviation_ratio, group_size_ratio) %>%
+#' Final %>% summarise(mean(welch), mean(independent))
+#' Final %>% group_by(standard_deviation_ratio, group_size_ratio) %>%
 #'    summarise(mean(welch), mean(independent))
 #'
 #' # quick ANOVA analysis method with all two-way interactions
-#' SimAnova( ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final)
+#' SimAnova( ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final,
+#'   rates = TRUE)
 #'
 #' # or more specific ANOVAs
 #' SimAnova(independent ~ (group_size_ratio + standard_deviation_ratio)^2,
-#'     Final)
+#'     Final, rates = TRUE)
 #'
 #' # make some plots
 #' library(ggplot2)
 #' library(reshape2)
-#' welch_ind <- Final[,c('group_size_ratio', "standard_deviation_ratio",
-#'     "welch", "independent")]
+#' welch_ind <- Final %>% select(group_size_ratio, standard_deviation_ratio, welch, independent)
 #' dd <- melt(welch_ind, id.vars = names(welch_ind)[1:2])
 #'
 #' ggplot(dd, aes(factor(group_size_ratio), value)) + geom_boxplot() +

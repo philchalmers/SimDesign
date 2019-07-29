@@ -107,7 +107,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
             if(generate) 'generate=Generate, ')
         cat(sprintf('\n                         analyse=Analyse%s',
                     if(summarise) ', summarise=Summarise)' else ')'))
-        cat('\n\n')
+        cat('\nresults\n\n')
     }
 
     #main
