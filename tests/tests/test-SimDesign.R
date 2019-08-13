@@ -156,6 +156,8 @@ test_that('SimDesign', {
                            replications = 2, verbose = FALSE, max_errors = Inf)
     expect_is(Final, 'data.frame')
     expect_true(any(grepl('ERROR:', names(Final))))
+    error_seeds <- extract_error_seeds(Final)
+    expect_true(dim(error_seeds)[1L] > 0)
 
     # aggregate test
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,

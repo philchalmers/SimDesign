@@ -380,7 +380,8 @@
 #'
 #' @seealso \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
 #'   \code{\link{SimFunctions}}, \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
-#'   \code{\link{SimBoot}}, \code{\link{aggregate_simulations}}, \code{\link{Attach}}, \code{\link{SimShiny}}
+#'   \code{\link{SimBoot}}, \code{\link{aggregate_simulations}}, \code{\link{Attach}},
+#'   \code{\link{extract_error_seeds}}, \code{\link{SimShiny}}
 #'
 #' @export runSimulation
 #'
@@ -1119,7 +1120,7 @@ extract_results <- function(object){
 #' @rdname runSimulation
 #' @export
 extract_error_seeds <- function(object){
-    stopifnot(is(object, "SimDesign"))
+    stopifnot(inherits(object, "SimDesign"))
     extra_info <- attr(object, 'extra_info')
     ret <- extra_info$error_seeds
     ret
