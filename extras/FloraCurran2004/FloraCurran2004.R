@@ -15,6 +15,7 @@ Design <- expand.grid(N=c(100, 200, 500, 1000),
 # remove super unstable WLS rows (p. 483)
 Design <- subset(Design, !(estimator == 'WLS' & N %in% c(100, 200) &
                                model == 4))
+head(Design)
 
 #-------------------------------------------------------------------
 
@@ -33,27 +34,24 @@ Generate <- function(condition, fixed_objects = NULL) {
 			   'f1 ~~ .3*f2 \n',
 			   paste0(sprintf('x%s ~~ 0.51*x%s', 1:J, 1:J), collapse=' \n '))
 	}
-	while(TRUE){
-		cdat <- simulateData(syntax, model.type = 'cfa', sample.nobs = N,
-							 skewness = skew_kurt[[1L]][1L],
-							 kurtosis = skew_kurt[[1L]][2L])
-		tau <- if(categories == 2) 0
+	cdat <- simulateData(syntax, model.type = 'cfa', sample.nobs = N,
+						 skewness = skew_kurt[[1L]][1L],
+						 kurtosis = skew_kurt[[1L]][2L])
+	tau <- if(categories == 2) 0
 		else if(model != 4) c(-1.645, -0.643, 0.643, 1.645)
 		# lowest value from DF's dissertation to fix sparseness
 		else c(-1.125, -0.643, 0.643, 1.645)
-
-		dat <- apply(cdat, 2, function(x, tau){
-			dat <- numeric(length(x))
-			if(length(tau) == 1) dat <- ifelse(x > tau, 1, 0)
-			else for(i in seq_len(4)){
-				dat[x > tau[i]] <- i
-			}
-			dat
-		}, tau=tau)
-		if(all(apply(dat, 2, function(x)
-		    length(unique(x))) == categories)) break
-		break
-	}
+	dat <- apply(cdat, 2, function(x, tau){
+		dat <- numeric(length(x))
+		if(length(tau) == 1) dat <- ifelse(x > tau, 1, 0)
+		else for(i in seq_len(4)){
+			dat[x > tau[i]] <- i
+		}
+		dat
+	}, tau=tau)
+	# throw error if number of categories not correct
+	if(!all(apply(dat, 2, function(x) length(unique(x))) == categories))
+		stop('Number of categories generated is incorrect')
 	dat
 }
 
@@ -63,11 +61,13 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 	syntax <- if(model == 1 || model == 2){
 		pick_lambdas <- matrix(TRUE, J, 1)
 		paste0(paste0('f1 =~ NA*x1 + ', paste0(paste0('x', 2:J),
-		                                       collapse=' + ')), '\n f1 ~~ 1*f1')
+		                                       collapse=' + ')), 
+			   '\n f1 ~~ 1*f1')
 	} else if(model == 3 || model == 4){
 		pick_lambdas <- matrix(TRUE, J*2, 2)
 		pick_lambdas[(J+1):(J*3)] <- FALSE
-		paste0(paste0('f1 =~ NA*x1 + ', paste0(paste0('x', 2:J), collapse=' + ')),
+		paste0(paste0('f1 =~ NA*x1 + ', 
+					  paste0(paste0('x', 2:J), collapse=' + ')),
 			   paste0(sprintf('\nf2 =~ NA*x%s + ', J+1),
 			          paste0(paste0('x', 2:J + J), collapse=' + ')),
 			   '\nf1 ~~ 1*f1 \n f2 ~~ 1*f2 \nf1 ~~ f2')
@@ -75,10 +75,12 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 	mod <- cfa(syntax, dat, ordered = colnames(dat), estimator = estimator)
 	if(!lavInspect(mod, 'converged')) stop('Model did not converge')
 	cfs <- lavInspect(mod, what="std")$lambda[pick_lambdas]
-	psi12 <- if(model %in% c(3, 4)) lavInspect(mod, what="std")$psi[1,2] else .3
+	psi12 <- if(model %in% c(3, 4)) 
+		lavInspect(mod, what="std")$psi[1,2] else .3
 	fit <- fitMeasures(mod)
 	ses <- lavInspect(mod, what="se")$lambda[pick_lambdas]
-	ret <- c(X2_rbias = unname(bias(fit['chisq'], fit['df'], type='relative') * 100),
+	ret <- c(X2_rbias = unname(bias(fit['chisq'], fit['df'], 
+									type='relative') * 100),
 			 p = unname(EDR(fit['pvalue'])),
 			 cfi = unname(fit['cfi']),
 			 bias = unname(bias(cfs, .7)),
@@ -102,5 +104,6 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 results <- runSimulation(design=Design, replications=500, generate=Generate,
 						 analyse=Analyse, summarise=Summarise,
-						 packages = 'lavaan', parallel = TRUE, save = TRUE,
-						 filename = 'FloraCurran2004')
+						 packages= 'lavaan', parallel=TRUE, save=TRUE,
+						 filename='FloraCurran2004')
+results
