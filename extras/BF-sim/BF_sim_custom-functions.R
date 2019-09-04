@@ -25,7 +25,7 @@ Jacknife_vartest <- function(DV, group){
     J <- num/den
     df1 <- g-1; df2 <- sum(Ns-1)
     p.value <- pf(J, df1, df2, lower.tail = FALSE)
-    return(list(J=J, df1=df1, df2=df2, p.value=p.value))
+    data.frame(J=J, df1=df1, df2=df2, p.value=p.value, row.names="")
 }
 
 Layard_vartest <- function(DV, group){
@@ -47,5 +47,5 @@ Layard_vartest <- function(DV, group){
     S <- sum( (Ns-1) * (log_s2 - sum((Ns-1) * log_s2)/sum(Ns-1))^2) / tau2
     df <- g - 1
     p.value <- pchisq(S, df, lower.tail=FALSE)
-    return(list(S=S, df=df, p.value=p.value))
+    data.frame(S=S, df=df, p.value=p.value, row.names = "")
 }
