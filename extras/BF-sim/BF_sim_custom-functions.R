@@ -1,7 +1,12 @@
 #-------------------------------------------------------------------
 # Custom functions required (not defined in other R packages)
 
+#' Jacknife variance test
+#' 
+#' @param DV a numeric vector
+#' @param group a character/factor vector containing the group membership
 Jacknife_vartest <- function(DV, group){
+    stopifnot(length(DV) == length(group))
     nms <- unique(group)
     g <- length(nms)
     Ns <- s2 <- Ui. <- numeric(g)
@@ -28,7 +33,12 @@ Jacknife_vartest <- function(DV, group){
     data.frame(J=J, df1=df1, df2=df2, p.value=p.value, row.names="")
 }
 
+#' Layard's variance test
+#' 
+#' @param DV a numeric vector
+#' @param group a character/factor vector containing the group membership
 Layard_vartest <- function(DV, group){
+    stopifnot(length(DV) == length(group))
     nms <- unique(group)
     Ns <- table(group)
     N <- sum(Ns)
