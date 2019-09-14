@@ -2,7 +2,14 @@
 title: "Parallel computing information"
 author: "Phil Chalmers"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  html_document:
+    fig_caption: false
+    number_sections: true 
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
 vignette: >
   %\VignetteIndexEntry{Parallel computing}
   %\VignetteEngine{knitr::rmarkdown}
@@ -20,7 +27,7 @@ options(digits=4)
 par(mar=c(3,3,1,1)+.1)
 ```
 
-# Cluster computing:
+# Cluster computing
 
 SimDesign code may be released to a computing system which supports parallel cluster computations using
 the industry standard Message Passing Interface (MPI) form. This simply
@@ -49,7 +56,7 @@ and `slave2` in the ssh `config` file.
 
 `mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R`
 
-# Network computing:
+# Network computing
 
 If you access have to a set of computers which can be linked via secure-shell (ssh) on the same LAN network then
 Network computing (a.k.a., a Beowulf cluster) may be a viable and useful option.
@@ -116,7 +123,7 @@ Final <- runSimulation(..., cl=cl)
 stopCluster(cl)
 ```
 
-# Poor man's cluster computing for independent nodes:
+# Poor man's cluster computing for independent nodes
 
 In the event that you do not have access to a Beowulf-type cluster (described in the section on
 "Network Computing") but have multiple personal

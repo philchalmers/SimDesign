@@ -2,7 +2,14 @@
 title: "Exporting objects and functions from the workspace"
 author: "Phil Chalmers"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  html_document:
+    fig_caption: false
+    number_sections: true 
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
 vignette: >
   %\VignetteIndexEntry{Exporting objects and functions from the workspace}
   %\VignetteEngine{knitr::rmarkdown}
@@ -25,7 +32,7 @@ par(mar=c(3,3,1,1)+.1)
 
 R is fun language for computer programming and statistics, but it's not without it's quirks. For instance, R generally has a recursive strategy when attempting to find objects within functions. If an object can't be found, R will start to look outside the function's environment to see if the object can be located there, and if not, look within even higher-level environments... This recursive search continues until it searches for the object in the user workspace/Global environment, and only when the object can't be found here will an error be thrown. This is a strange feature to most programmers who come from other languages, and when writing simulations may cause some severely unwanted issues. This tutorial demonstrates how to make sure all required user-defined objects are visible to `SimDesign`. 
 
-### Scoping
+# Scoping
 
 ```{r include=FALSE}
 set.seed(1234)

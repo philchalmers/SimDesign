@@ -2,7 +2,14 @@
 title: "Introduction to the SimDesign package"
 author: "Phil Chalmers"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  html_document:
+    fig_caption: false
+    number_sections: true 
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
 vignette: >
   %\VignetteIndexEntry{Introduction to the SimDesign package}
   %\VignetteEngine{knitr::rmarkdown}
@@ -19,8 +26,6 @@ knitr::opts_chunk$set(
 options(digits=4)
 par(mar=c(3,3,1,1)+.1)
 ```
-
-# Introduction
 
 Designing Monte Carlo simulations can be a fun and rewarding experience. Whether you are interested in
 evaluating the performance of a new optimizer, re-evaluating previous research claims (like the 
@@ -46,7 +51,7 @@ is represented by a `data.frame` object containing the simulation conditions to 
 Each of these components are constructed and passed to the `runSimulation()` function where the simulation 
 steps are evaluated, ultimately returning a `data.frame` object containing the simulation results.
 
-## A general overview
+# A general overview
 
 ```{r include=FALSE}
 options(digits = 2)
@@ -88,7 +93,7 @@ As a toy example, let's consider how the following question can be investigated 
 different sample sizes with Gaussian and $\chi^2$ distributions. Also, demonstrate the effect of using the 
 median to recover the mean.
 
-### Define the conditions
+## Define the conditions
 
 First, define the condition combinations that should be investigated. In this case we wish to study
 4 different sample sizes, and use a symmetric and skewed distribution. The use of `expand.grid()` is
@@ -102,7 +107,7 @@ Design
 
 Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where $N=30$ and the distribution should be normal. 
 
-### Define the functions
+## Define the functions
 
 We first start by defining the data generation functional component. The only argument accepted by this function is `condition`, which will always be a *single row from the Design data.frame object* of class `data.frame`. Conditions are run sequentially from row 1 to the last row in `Design`. It is also
 possible to pass a `fixed_objects` object to the function for including fixed sets of population parameters and other conditions, however for this simple simulation this input is not required.
@@ -169,7 +174,7 @@ Stopping for a moment and thinking carefully, we know that each `condition` will
 a rectangular form, such as in a `matrix` or `data.frame`. 
 Well, you'd be right --- good for you.
 
-### Putting it all together
+## Putting it all together
 
 The last stage of the `SimDesign` work-flow is to pass the four defined elements to the `runSimulation()` 
 function which, unsurprisingly given it's name, runs the simulation. There are numerous options available in the 
@@ -182,7 +187,7 @@ single processor, and finally store the results to an object called `results`.
 set.seed(1234)
 ```
 
-```{r, cache=TRUE}
+```{r}
 results <- runSimulation(Design, replications = 1000, generate=Generate, 
                          analyse=Analyse, summarise=Summarise)
 results
@@ -194,7 +199,7 @@ to the results: `REPLICATIONS`, which indicates how many time the conditions wer
 the time (in seconds) it took to completely finish the respective conditions, and `SEED`, which indicates the random seeds used by `SimDesign` for each condition (for reproducibility). A call to `View()` in the 
 R console may also be a nice way to sift through the `results` object.
 
-### Interpreting the results
+## Interpreting the results
 
 In this case, visually inspecting the simulation table is enough to understand what is occurring, though for
 other Monte Carlo simulations use of ANOVAs, marginalized tables, and graphics should be used to capture the

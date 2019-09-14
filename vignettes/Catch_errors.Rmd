@@ -2,7 +2,14 @@
 title: "Catching errors"
 author: "Phil Chalmers"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  html_document:
+    fig_caption: false
+    number_sections: true 
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
 vignette: >
   %\VignetteIndexEntry{Catching errors}
   %\VignetteEngine{knitr::rmarkdown}
@@ -20,12 +27,10 @@ options(digits=4)
 par(mar=c(3,3,1,1)+.1)
 ```
 
-# Catch Errors
-
 Error catching is an important area to consider when creating Monte Carlo simulations. Sometimes, iterative algorithms will 'fail to converge', or otherwise crash for other reasons (e.g., sparse data). However,
 `SimDesign` makes this process much easier because the internal functions are automatically wrapped within  `try` blocks, and therefore simulations will not terminate unexpectedly. This type of information is also collected as it may be relevant to the writer that something unknown is going wrong in the code-base. Below we demonstrate what happens when errors are thrown and caught, and how this information is tracked in the returned object.
 
-### Define the functions
+# Define the functions
 
 As usual, define the functions of interest.
 
@@ -77,13 +82,13 @@ The above simulation is just an example of how errors are tracked in `SimDesign`
 throw a manual error in case the data should be re-drawn based on the user's decision (e.g., when a model converges, but fails to 
 do so before some number of predefined iterations). 
 
-### Run the simulation
+# Run the simulation
 
 ```{r include=FALSE}
 set.seed(1)
 ```
 
-```{r cache=TRUE}
+```{r }
 result <- runSimulation(Design, replications = 100, 
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
@@ -97,11 +102,11 @@ why estimation models are having difficulty (or for other reasons whereby the wa
 
 Finally, `SimDesign` has a built-in safety feature controlled by with `max_errors` argument to avoid getting stuck in infinite redrawing loops. By default, if more than 50 errors are consecutively returned then the simulation will be halted, and the final error message will be returned. This safety feature is built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code which should be fixed before continuing.
 
-### What to do (explicit debug catch)
+# What to do (explicit debug catch)
 
 If errors occur too often then these design conditions should either be extracted out of the simulation or further inspected to determine if they can be fixed (e.g., providing better starting values, increasing convergence criteria/number of iterations, etc). The use of the debugging features can also be useful to track down issues as well. For example, manually wrap the problematic functions in a `try()` call, and add the line `if(is(object, 'try-error')) browser()` to jump into the location/replication where the object unexpectedly witnessed an error. Jumping into the exact location where the error occurred will greatly help you determine what exactly went wrong in the simulation state, allowing you to quickly locate and fix the issue.
 
-### What to do (stored error seed debuging)
+# What to do (stored error seed debuging)
 
 An alternative approach to locating errors in general is to use information stored within the `SimDesign` objects at the time of completion. By default, all `.Random.seed` states associated with errors are stored within the final object, and these can be extracted using the `extract_error_seeds()` function. This function returns a `data.frame` object with each seed stored column-wise, where the associated error message is contained in the column name itself (and allowed to be coerced into a valid `data.frame` column name). 
 
