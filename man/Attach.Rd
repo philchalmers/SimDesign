@@ -4,7 +4,7 @@
 \alias{Attach}
 \title{Attach the simulation conditions for easier reference}
 \usage{
-Attach(condition, check = TRUE)
+Attach(condition, check = TRUE, attach_listone_length = TRUE)
 }
 \arguments{
 \item{condition}{a \code{data.frame} containing the \code{condition} names}
@@ -12,6 +12,10 @@ Attach(condition, check = TRUE)
 \item{check}{logical; check to see if the function will accidentally replace previously defined
 variables with the same names as in \code{condition}? Default is \code{TRUE}, which will avoid
 this error}
+
+\item{attach_listone_length}{logical; if the elemement to be assign is a list of length one
+then assign the first element of this list with the associated name. This generally avoids
+adding an often unnecessary list 1 index, such as \code{name <- list[[1L]]}}
 }
 \description{
 This function accepts the \code{condition} object used to indicate the design conditions
@@ -56,6 +60,7 @@ mygenerate <- function(condition, fixed_objects = NULL){
                       DV = c(group1, group2))
     dat
 }
+
 }
 }
 \references{

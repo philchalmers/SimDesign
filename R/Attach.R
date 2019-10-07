@@ -18,6 +18,10 @@
 #'   variables with the same names as in \code{condition}? Default is \code{TRUE}, which will avoid
 #'   this error
 #'
+#' @param attach_listone_length logical; if the elemement to be assign is a list of length one
+#'   then assign the first element of this list with the associated name. This generally avoids
+#'   adding an often unnecessary list 1 index, such as \code{name <- list[[1L]]}
+#'
 #' @seealso \code{\link{runSimulation}}, \code{\link{Generate}}
 #' @references
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
@@ -57,14 +61,20 @@
 #'                       DV = c(group1, group2))
 #'     dat
 #' }
+#'
 #' }
-Attach <- function(condition, check = TRUE){
+Attach <- function(condition, check = TRUE, attach_listone_length = TRUE){
     envir <- as.environment(-1L)
     if(check)
         if(any(ls(envir = envir) %in% names(condition)))
             stop(sprintf('Using Attach() will mask the previously defined variable(s): %s)',
                          ls(envir = envir)[ls(envir = envir) %in% names(condition)]), call. = FALSE)
-    for(n in names(condition))
+    for(n in names(condition)){
+        if(attach_listone_length && is.list(condition[[n]]) && length(condition[[n]]) == 1L){
+            assign(n, condition[[n]][[1L]], envir = envir)
+            next
+        }
         assign(n, condition[[n]], envir = envir)
+    }
     invisible()
 }
