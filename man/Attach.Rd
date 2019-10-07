@@ -4,7 +4,7 @@
 \alias{Attach}
 \title{Attach the simulation conditions for easier reference}
 \usage{
-Attach(condition, check = TRUE, attach_listone_length = TRUE)
+Attach(condition, check = TRUE, attach_listone = TRUE)
 }
 \arguments{
 \item{condition}{a \code{data.frame} containing the \code{condition} names}
@@ -13,7 +13,7 @@ Attach(condition, check = TRUE, attach_listone_length = TRUE)
 variables with the same names as in \code{condition}? Default is \code{TRUE}, which will avoid
 this error}
 
-\item{attach_listone_length}{logical; if the elemement to be assign is a list of length one
+\item{attach_listone}{logical; if the elemement to be assign is a list of length one
 then assign the first element of this list with the associated name. This generally avoids
 adding an often unnecessary list 1 index, such as \code{name <- list[[1L]]}}
 }
