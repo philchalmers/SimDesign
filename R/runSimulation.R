@@ -370,7 +370,7 @@
 #'
 #' @param verbose logical; print messages to the R console? Default is \code{TRUE}
 #'
-#' @return a \code{1tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
+#' @return a \code{tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
 #'   with the original \code{design} conditions in the left-most columns,
 #'   simulation results and ERROR/WARNING's (if applicable) in the middle columns,
 #'   and additional information (such as REPLICATIONS, SIM_TIME, COMPLETED, and SEED) in the right-most

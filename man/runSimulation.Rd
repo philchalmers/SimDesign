@@ -281,7 +281,7 @@ results instead of using the auto-factorized version. Default is \code{FALSE}}
 \item{object}{SimDesign object returned from \code{\link{runSimulation}}}
 }
 \value{
-a \code{1tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
+a \code{tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
   with the original \code{design} conditions in the left-most columns,
   simulation results and ERROR/WARNING's (if applicable) in the middle columns,
   and additional information (such as REPLICATIONS, SIM_TIME, COMPLETED, and SEED) in the right-most
