@@ -88,7 +88,14 @@ rbind.SimDesign <- function(...){
         extra_info$number_of_conditions <- extra_info$number_of_conditions + tmp_extra_info$number_of_conditions
         extra_info$total_elapsed_time <- extra_info$total_elapsed_time + tmp_extra_info$total_elapsed_time
         extra_info$error_seeds <- c(extra_info$error_seeds, tmp_extra_info$error_seeds)
+
+        # throw warning if package versions differ
+        lapply(extra_info$sessionInfo$otherPkgs, function(x, tmp){
+            if(x$Version != tmp$sessionInfo$otherPkgs[[x$Package]]$Version)
+                warning(sprintf('Different %s package version used across simulation objects.'))
+        }, tmp=tmp_extra_info)
     }
+
     ret <- dplyr::as_tibble(ret)
     attr(ret, 'extra_info') <- extra_info
     attr(ret, 'design_names') <- design_names
