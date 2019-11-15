@@ -92,7 +92,8 @@ rbind.SimDesign <- function(...){
         # throw warning if package versions differ
         lapply(extra_info$sessionInfo$otherPkgs, function(x, tmp){
             if(x$Version != tmp$sessionInfo$otherPkgs[[x$Package]]$Version)
-                warning(sprintf('Different %s package version used across simulation objects.'))
+                warning(sprintf('Different "%s" package used across simulation objects (%s and %s).',
+                                x$Package, x$Version, tmp$sessionInfo$otherPkgs[[x$Package]]$Version), call.=FALSE)
         }, tmp=tmp_extra_info)
     }
 
