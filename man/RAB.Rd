@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary_functions.R
 \name{RAB}
 \alias{RAB}
-\title{Compute the relative absolute of multiple estimators}
+\title{Compute the relative absolute bias of multiple estimators}
 \usage{
 RAB(x, percent = FALSE)
 }

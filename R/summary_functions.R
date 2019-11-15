@@ -476,7 +476,7 @@ RE <- function(x, MSE = FALSE, percent = FALSE){
     ret
 }
 
-#' Compute the relative absolute of multiple estimators
+#' Compute the relative absolute bias of multiple estimators
 #'
 #' Computes the relative absolute bias given the bias estimates for multiple estimators.
 #'
