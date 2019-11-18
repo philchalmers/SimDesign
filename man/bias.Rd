@@ -5,7 +5,7 @@
 \title{Compute (relative/standardized) bias summary statistic}
 \usage{
 bias(estimate, parameter = NULL, type = "bias", abs = FALSE,
-  percent = FALSE)
+  percent = FALSE, unname = FALSE)
 }
 \arguments{
 \item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame}
@@ -34,6 +34,9 @@ just applies the \code{\link{abs}} transformation to the returned result. Defaul
 
 \item{percent}{logical; change returned result to percentage by multiplying by 100?
 Default is FALSE}
+
+\item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
+names?}
 }
 \value{
 returns a \code{numeric} vector indicating the overall (relative/standardized)

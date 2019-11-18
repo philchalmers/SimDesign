@@ -4,7 +4,7 @@
 \alias{RD}
 \title{Compute the relative difference}
 \usage{
-RD(est, pop, as.vector = TRUE)
+RD(est, pop, as.vector = TRUE, unname = FALSE)
 }
 \arguments{
 \item{est}{a \code{numeric} vector or matrix containing the parameter estimates}
@@ -14,6 +14,9 @@ of the same dimensions as \code{est}}
 
 \item{as.vector}{logical; always wrap the result in a \code{\link{as.vector}} function
 before returning?}
+
+\item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
+names?}
 }
 \value{
 returns a \code{vector} or \code{matrix} depending on the inputs and whether

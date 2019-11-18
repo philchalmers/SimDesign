@@ -4,7 +4,8 @@
 \alias{ECR}
 \title{Compute empirical coverage rates}
 \usage{
-ECR(CIs, parameter, tails = FALSE, CI_width = FALSE, names = NULL)
+ECR(CIs, parameter, tails = FALSE, CI_width = FALSE, names = NULL,
+  unname = FALSE)
 }
 \arguments{
 \item{CIs}{a \code{numeric} vector or \code{matrix} of confidence interval values for a
@@ -29,6 +30,9 @@ estimators}
 
 \item{names}{an optional character vector used to name the returned object. Generally useful
 when more than one CI estimate is investigated at once}
+
+\item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
+names?}
 }
 \description{
 Computes the detection rate for determining empirical coverage rates given a set of estimated

@@ -4,7 +4,7 @@
 \alias{RAB}
 \title{Compute the relative absolute bias of multiple estimators}
 \usage{
-RAB(x, percent = FALSE)
+RAB(x, percent = FALSE, unname = FALSE)
 }
 \arguments{
 \item{x}{a \code{numeric} vector of bias estimates (see \code{\link{bias}}),
@@ -12,6 +12,9 @@ where the first element will be used as the reference}
 
 \item{percent}{logical; change returned result to percentage by multiplying by 100?
 Default is FALSE}
+
+\item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
+names?}
 }
 \value{
 returns a \code{vector} of absolute bias ratios indicating the relative bias

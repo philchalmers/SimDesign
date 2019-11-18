@@ -4,7 +4,7 @@
 \alias{MSRSE}
 \title{Compute the relative performance behavior of collections of standard errors}
 \usage{
-MSRSE(SE, SD, percent = FALSE)
+MSRSE(SE, SD, percent = FALSE, unname = FALSE)
 }
 \arguments{
 \item{SE}{a \code{numeric} scalar/vector indicating the average standard errors across
@@ -19,6 +19,9 @@ corresponds to the column/element in \code{SE}}
 
 \item{percent}{logical; change returned result to percentage by multiplying by 100?
 Default is FALSE}
+
+\item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
+names?}
 }
 \value{
 returns a \code{vector} of ratios indicating the relative performance

@@ -4,7 +4,8 @@
 \alias{MAE}
 \title{Compute the mean absolute error}
 \usage{
-MAE(estimate, parameter = NULL, type = "MAE", percent = FALSE)
+MAE(estimate, parameter = NULL, type = "MAE", percent = FALSE,
+  unname = FALSE)
 }
 \arguments{
 \item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame} of parameter estimates.
@@ -24,6 +25,9 @@ form (therefore \code{mean(abs(estimate))} will be returned)}
 
 \item{percent}{logical; change returned result to percentage by multiplying by 100?
 Default is FALSE}
+
+\item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
+names?}
 }
 \value{
 returns a numeric vector indicating the overall mean absolute error in the estimates

@@ -5,7 +5,7 @@
 \title{Compute the (normalized) root mean square error}
 \usage{
 RMSE(estimate, parameter = NULL, type = "RMSE", MSE = FALSE,
-  percent = FALSE)
+  percent = FALSE, unname = FALSE)
 }
 \arguments{
 \item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame} of parameter estimates.
@@ -29,6 +29,9 @@ mean-square error (in other words, the result is squared)? Default is \code{FALS
 
 \item{percent}{logical; change returned result to percentage by multiplying by 100?
 Default is FALSE}
+
+\item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
+names?}
 }
 \value{
 returns a \code{numeric} vector indicating the overall average deviation in the estimates

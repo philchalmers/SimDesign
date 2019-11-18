@@ -4,7 +4,7 @@
 \alias{RE}
 \title{Compute the relative efficiency of multiple estimators}
 \usage{
-RE(x, MSE = FALSE, percent = FALSE)
+RE(x, MSE = FALSE, percent = FALSE, unname = FALSE)
 }
 \arguments{
 \item{x}{a \code{numeric} vector of root mean square error values (see \code{\link{RMSE}}),
@@ -15,6 +15,9 @@ MSE values if the flag \code{MSE = TRUE} is also included}
 
 \item{percent}{logical; change returned result to percentage by multiplying by 100?
 Default is FALSE}
+
+\item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
+names?}
 }
 \value{
 returns a \code{vector} of variance ratios indicating the relative efficiency compared
