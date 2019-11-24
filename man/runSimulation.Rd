@@ -31,9 +31,6 @@ runSimulation(design, replications, generate, analyse, summarise,
 \method{tail}{SimDesign}(x, ..., drop.extras = FALSE,
   drop.design = FALSE, format.time = TRUE)
 
-\method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE,
-  format.time = TRUE, ...)
-
 \method{summary}{SimDesign}(object, ...)
 
 extract_results(object)
@@ -290,18 +287,6 @@ results instead of using the auto-factorized version. Default is \code{FALSE}}
 \item{...}{additional arguments}
 
 \item{object}{SimDesign object returned from \code{\link{runSimulation}}}
-
-\item{x}{SimDesign object returned from \code{\link{runSimulation}}}
-
-\item{drop.extras}{logical; don't print information about warnings, errors, simulation time, and replications?
-Default is \code{FALSE}}
-
-\item{drop.design}{logical; don't include information about the (potentially factorized) simulation design?
-This may be useful if you wish to \code{cbind()} the original design \code{data.frame} to the simulation
-results instead of using the auto-factorized version. Default is \code{FALSE}}
-
-\item{format.time}{logical; format \code{SIM_TIME} into a day/hour/min/sec character vector? Default is
-\code{TRUE}}
 }
 \value{
 a \code{tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
