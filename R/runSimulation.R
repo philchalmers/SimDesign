@@ -1005,7 +1005,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Final <- data.frame(Final, REPLICATIONS, SIM_TIME, COMPLETED, check.names=FALSE)
     if(is.null(Final$SEED)) Final$SEED <- NA
     if(!is.null(seed)) Final$SEED <- seed
-    Final <- dplyr::as_tibble(Final)
     if(!is.null(filename) && safe){ #save file
         files <- dir(out_rootdir)
         filename0 <- filename
