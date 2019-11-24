@@ -1094,6 +1094,45 @@ print.SimDesign <- function(x, drop.extras = FALSE, drop.design = FALSE, format.
 }
 
 #' @rdname runSimulation
+#' @export
+head.SimDesign <- function(x, ..., drop.extras = FALSE, drop.design = FALSE, format.time = TRUE){
+    out <- print(x, drop.extras=drop.extras, drop.design=drop.design, format.time=format.time,
+                 print=FALSE, ...)
+    head(dplyr::as_tibble(out), ...)
+}
+
+#' @rdname runSimulation
+#' @export
+tail.SimDesign <- function(x, ..., drop.extras = FALSE, drop.design = FALSE, format.time = TRUE){
+    out <- print(x, drop.extras=drop.extras, drop.design=drop.design, format.time=format.time,
+                 print=FALSE, ...)
+    tail(dplyr::as_tibble(out), ...)
+}
+
+#' @rdname runSimulation
+#' @param x SimDesign object returned from \code{\link{runSimulation}}
+#' @param drop.extras logical; don't print information about warnings, errors, simulation time, and replications?
+#'   Default is \code{FALSE}
+#' @param drop.design logical; don't include information about the (potentially factorized) simulation design?
+#'   This may be useful if you wish to \code{cbind()} the original design \code{data.frame} to the simulation
+#'   results instead of using the auto-factorized version. Default is \code{FALSE}
+#' @param format.time logical; format \code{SIM_TIME} into a day/hour/min/sec character vector? Default is
+#'   \code{TRUE}
+#' @export
+print.SimDesign <- function(x, drop.extras = FALSE, drop.design = FALSE, format.time = TRUE, ...){
+    att <- attr(x, 'design_names')
+    if(format.time)
+        if(!is.null(x$SIM_TIME))
+            x$SIM_TIME <- sapply(x$SIM_TIME, timeFormater, TRUE)
+        if(drop.extras) x <- x[ ,c(att$design, att$sim), drop=FALSE]
+        if(drop.design) x <- x[ ,!(names(x) %in% att$design), drop=FALSE]
+        class(x) <- class(x)[-1L]
+        ldots <- list(...)
+        if(is.null(ldots$print)) print(x, ...)
+        else return(x)
+}
+
+#' @rdname runSimulation
 #' @param object SimDesign object returned from \code{\link{runSimulation}}
 #' @param ... additional arguments
 #' @export
