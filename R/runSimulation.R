@@ -1035,7 +1035,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     en <- c('REPLICATIONS', 'SIM_TIME', 'COMPLETED', 'SEED')
     bsen <- colnames(Final)[grepl('BOOT_SE.', colnames(Final))]
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen, bsen))]
-    Final <- dplyr::as_tibble(data.frame(Final[ ,c(dn, sn, bsen, en, ten, wen)]))
+    Final <- dplyr::as_tibble(data.frame(Final[ ,c(dn, sn, bsen, en, ten, wen)],
+                                         check.names = FALSE))
     attr(Final, 'design_names') <-
         list(design=dn, sim=sn, bootSE=bsen, extra=en, errors=ten, warnings=wen)
     if(length(packages) > 1L){
