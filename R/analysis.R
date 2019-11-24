@@ -142,6 +142,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
             tmp <- results[pick, , drop=FALSE]
             Functions$summarise(results=tmp, condition=condition, fixed_objects=fixed_objects)
         })
+        if(!is.matrix(SE_sim_results)) SE_sim_results <- matrix(SE_sim_results, nrow=1L)
         SE_sim_results <- apply(SE_sim_results, 1L, sd)
         names(SE_sim_results) <- paste0("BOOT_SE.", names(sim_results))
         ret <- c(ret, SE_sim_results)
