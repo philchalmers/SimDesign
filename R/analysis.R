@@ -113,6 +113,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         if(length(unique(colnames(results))) != ncol(results) && ncol(results) > 1L)
             stop('Object of results returned from analyse must have unique names', call.=FALSE)
         rownames(results) <- NULL
+        if(ncol(results) == 1L) results <- results[,1]
     }
     if(save_results){
         tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')

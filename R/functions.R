@@ -160,7 +160,8 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #' estimates such as RMSE, bias, Type I error rates, coverage rates, etc. See the
 #' \code{See Also} section below for useful functions to be used within \code{Summarise}.
 #'
-#' @param results a \code{data.frame} (if \code{Analyse} returned a numeric vector) or a \code{list}
+#' @param results a \code{data.frame} (if \code{Analyse} returned a numeric vector with more than two
+#'   elements), a vector (if \code{Analyse} returned a single numeric value), or a \code{list}
 #'   (if \code{Analyse} returned a list or multi-rowed data.frame) containing the analysis
 #'   results from \code{\link{Analyse}},
 #'   where each cell is stored in a unique row/list element
