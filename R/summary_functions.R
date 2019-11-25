@@ -617,9 +617,9 @@ RAB <- function(x, percent = FALSE, unname = FALSE){
 #'
 #'
 MSRSE <- function(SE, SD, percent = FALSE, unname = FALSE){
-    if(is.matrix(SE) && nrow(SE) > 1L)
+    if((is.matrix(SE) || is.data.frame(SE)) && nrow(SE) > 1L)
         SE <- apply(SE, 2L, mean)
-    if(is.matrix(SD) && nrow(SD) > 1L)
+    if((is.matrix(SD) || is.data.frame(SD)) && nrow(SD) > 1L)
         SD <- apply(SD, 2L, sd)
     ret <- SE^2 / SD^2 - 1
     if(percent) ret <- ret * 100

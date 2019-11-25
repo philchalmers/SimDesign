@@ -109,7 +109,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
     if(!is.list(results[[1L]]) ||
        (is.data.frame(results[[1L]]) && nrow(results[[1L]]) == 1L)){
-        results <- as.data.frame(do.call(rbind, results), check.names = FALSE)
+        results <- as.data.frame(do.call(rbind, results))
         if(length(unique(colnames(results))) != ncol(results) && ncol(results) > 1L)
             stop('Object of results returned from analyse must have unique names', call.=FALSE)
         rownames(results) <- NULL
