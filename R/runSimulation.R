@@ -150,7 +150,7 @@
 #'
 #' @param summarise optional (but highly recommended) user-defined summary function to be used
 #'   after all the replications have completed within each \code{design} condition. Omitting this function
-#'   will return a list of matrices (or a single matrix, if only one row in \code{design} is supplied)
+#'   will return a list of data.frames (or a single data.frame, if only one row in \code{design} is supplied)
 #'   or, for more general objects (such as lists), a list containing the results returned form \code{\link{Analyse}}.
 #'   Alternatively, the value \code{NA} can be passed to let the generate-analyse-summarise process run as usual,
 #'   but that the summarise components are included only as a placeholder.
