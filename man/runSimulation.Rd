@@ -608,8 +608,8 @@ runSimulation(design=Design, replications=1000,
 ##   jump to a specific location
 Summarise <- function(condition, results, fixed_objects = NULL){
     #find results of interest here (e.g., alpha < .1, .05, .01)
-    ret <- EDR(results[,nms], alpha = .05)
     browser()
+    ret <- EDR(results[,nms], alpha = .05)
     ret
 }
 
