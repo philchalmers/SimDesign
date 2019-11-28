@@ -259,7 +259,7 @@ test_that('SimDesign', {
         rgumbel(5)
     }
     mycollect <- function(condition, results, fixed_objects = NULL) {
-        colMeans(results)
+        mean(results)
     }
     expect_error(runSimulation(Design, replications = 1,
                                generate=mygenerate, analyse=mycompute, summarise=mycollect,
@@ -267,10 +267,10 @@ test_that('SimDesign', {
     expect_error(runSimulation(Design, replications = 1, ncores=2,
                                generate=mygenerate, analyse=mycompute, summarise=mycollect,
                                parallel=TRUE, save=FALSE, verbose = FALSE))
-    out <- runSimulation(Design, replications = 1, packages = 'extraDistr',
+    out <- runSimulation(Design, replications = 2, packages = 'extraDistr',
                          generate=mygenerate, analyse=mycompute, summarise=mycollect,
                          parallel=FALSE, save=FALSE, verbose = FALSE)
-    out2 <- runSimulation(Design, replications = 1, packages = 'extraDistr',
+    out2 <- runSimulation(Design, replications = 2, packages = 'extraDistr',
                          generate=mygenerate, analyse=mycompute, summarise=mycollect,
                          parallel=TRUE, save=FALSE, verbose = FALSE)
     expect_is(out, 'SimDesign')
