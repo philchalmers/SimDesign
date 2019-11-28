@@ -26,9 +26,9 @@ names?}
 \value{
 returns a \code{vector} of ratios indicating the relative performance
   of the standard error estimates to the observed parameter standard deviation.
-  Values less than 0 indicate that the standard errors were larger than the standard
+  Values less than 1 indicate that the standard errors were larger than the standard
   deviation of the parameters (hence, the SEs are interpreted as more conservative),
-  while values greater than 0 were smaller than the standard deviation of the
+  while values greater than 1 were smaller than the standard deviation of the
   parameters (i.e., more liberal SEs)
 }
 \description{
@@ -41,7 +41,7 @@ closely matched the sampling variability of the parameter estimates.
 Mean-square relative standard error (MSRSE) is expressed as
 
 \deqn{MSRSE = \frac{E(SE(\psi)^2)}{SD(\psi)^2} =
-  \frac{1/R * \sum_{r=1}^R SE(\psi_r)^2}{SD(\psi)^2} - 1}
+  \frac{1/R * \sum_{r=1}^R SE(\psi_r)^2}{SD(\psi)^2}}
 
 where \eqn{SE(\psi_r)} represents the estimate of the standard error at the \eqn{r}th
 simulation replication, and \eqn{SD(\psi)} represents the standard deviation estimate

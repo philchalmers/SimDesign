@@ -5,9 +5,9 @@ test_that('SimDesign', {
     sample_sizes <- c(10, 20)
     standard_deviations <- c(1, 4)
 
-    Design <- expand.grid(sample_sizes_group1=sample_sizes,
-                          sample_sizes_group2=sample_sizes,
-                          standard_deviations=standard_deviations)
+    Design <- createDesign(sample_sizes_group1=sample_sizes,
+                           sample_sizes_group2=sample_sizes,
+                           standard_deviations=standard_deviations)
 
     mysim <- function(condition, fixed_objects = NULL){
 

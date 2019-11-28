@@ -38,8 +38,10 @@ extract_results(object)
 extract_error_seeds(object)
 }
 \arguments{
-\item{design}{a \code{data.frame} object containing the Monte Carlo simulation conditions to
-be studied, where each row represents a unique condition and each column a factor to be varied}
+\item{design}{a \code{data.frame} or \code{tibble} object containing the Monte Carlo simulation
+conditions to be studied, where each row represents a unique condition and each column a factor
+to be varied. Note that if a \code{tibble} is supplied this object will be coerced to a
+\code{data.frame} internally}
 
 \item{replications}{number of replication to perform per condition (i.e., each row in \code{design}).
 Must be greater than 0}
@@ -278,7 +280,7 @@ analysis? Default is FALSE}
 Default is \code{FALSE}}
 
 \item{drop.design}{logical; don't include information about the (potentially factorized) simulation design?
-This may be useful if you wish to \code{cbind()} the original design \code{data.frame} to the simulation
+This may be useful if you wish to \code{cbind()} the original design \code{data.frame}/\code{tibble} to the simulation
 results instead of using the auto-factorized version. Default is \code{FALSE}}
 
 \item{format.time}{logical; format \code{SIM_TIME} into a day/hour/min/sec character vector? Default is
@@ -315,10 +317,11 @@ for other tutorial material, examples, and applications of \code{SimDesign} to r
 The strategy for organizing the Monte Carlo simulation work-flow is to
 
 \describe{
-   \item{1)}{Define a suitable \code{design} data.frame object containing fixed conditional
+   \item{1)}{Define a suitable \code{Design} object (a \code{tibble} or \code{data.frame})
+      containing fixed conditional
       information about the Monte Carlo simulations. This is often expedited by using the
-      \code{\link{expand.grid}} function, and if necessary using the \code{\link{subset}}
-      function to remove redundant or non-applicable rows}
+      \code{\link{createDesign}} function, and if necessary the arguemnt \code{subset}
+      can be used to remove redundant or non-applicable rows}
    \item{2)}{Define the three step functions to generate the data (\code{\link{Generate}}; see also
       \url{https://CRAN.R-project.org/view=Distributions} for a list of distributions in R),
       analyse the generated data by computing the respective parameter estimates, detection rates,
@@ -338,7 +341,7 @@ More succinctly, the functions to be called follow the following form with the e
 by the \code{SimDesign} package
 
 \describe{
-  \item{\code{Design <- expand.grid(...)}}{}
+  \item{\code{Design <- createDesign(...)}}{}
   \item{\code{Generate <- function(condition, fixed_objects = NULL) \{...\} }}{}
   \item{\code{Analyse <- function(condition, dat, fixed_objects = NULL) \{...\} }}{}
   \item{\code{Summarise <- function(condition, results, fixed_objects = NULL) \{...\} }}{}
@@ -533,11 +536,10 @@ SimFunctions('my-simulation')
 
 #### Step 1 --- Define your conditions under study and create design data.frame
 
-Design <- expand.grid(sample_size = c(30, 60, 90, 120),
-                      group_size_ratio = c(1, 4, 8),
-                      standard_deviation_ratio = c(.5, 1, 2))
-dim(Design)
-head(Design)
+Design <- createDesign(sample_size = c(30, 60, 90, 120),
+                       group_size_ratio = c(1, 4, 8),
+                       standard_deviation_ratio = c(.5, 1, 2))
+Design
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 2 --- Define generate, analyse, and summarise functions

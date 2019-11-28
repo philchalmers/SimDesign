@@ -144,7 +144,7 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE,
 #'
 #' @param type type of deviation to compute. Can be \code{'RMSE'} (default) for the root mean square-error,
 #'   \code{'NRMSE'} for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
-#'   \code{'NRMSE_SD'} for the normalized RMSE with the standard deviation (RMSE / sd(estimate)),
+#'   \code{'SRMSE'} for the standardized RMSE (RMSE / sd(estimate)),
 #'   \code{'CV'} for the coefficient of variation, or \code{'RMSLE'} for the root mean-square log-error
 #'
 #' @param MSE logical; return the mean square error equivalent of the results instead of the root
@@ -183,7 +183,7 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE,
 #'
 #' RMSE(samp, pop, type = 'NRMSE')
 #' RMSE(dev, type = 'NRMSE')
-#' RMSE(dev, pop, type = 'NRMSE_SD')
+#' RMSE(dev, pop, type = 'SRMSE')
 #' RMSE(samp, pop, type = 'CV')
 #' RMSE(samp, pop, type = 'RMSLE')
 #'
@@ -232,7 +232,7 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE,
     if(type == 'NRMSE'){
         diff <- apply(estimate, 2, max) - apply(estimate, 2, min)
         ret <- ret / diff
-    } else if(type == 'NRMSE_SD'){
+    } else if(type == 'SRMSE'){
         diff <- apply(estimate, 2, sd)
         ret <- ret / diff
     } else if(type == 'CV'){
@@ -356,7 +356,7 @@ IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
 #'
 #' @param type type of deviation to compute. Can be \code{'MAE'} (default) for the mean absolute error,
 #'   \code{'NMSE'} for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
-#'   \code{'NMSE_SD'} for the normalized MAE by the standard deviation (MAE / sd(estimate))
+#'   \code{'SMSE'} for the standardized MAE (MAE / sd(estimate))
 #'
 #' @param percent logical; change returned result to percentage by multiplying by 100?
 #'   Default is FALSE
@@ -387,7 +387,7 @@ IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
 #' dev <- samp - pop
 #' MAE(dev)
 #' MAE(samp, pop, type = 'NMAE')
-#' MAE(samp, pop, type = 'NMAE_SD')
+#' MAE(samp, pop, type = 'SMAE')
 #'
 #' # matrix input
 #' mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
@@ -423,13 +423,13 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE',
     if(type == 'NMAE'){
         diff <- apply(estimate, 2, max) - apply(estimate, 2, min)
         ret <- ret / diff
-    } else if(type == 'NMAE_SD'){
+    } else if(type == 'SMAE'){
         diff <- apply(estimate, 2, sd)
         ret <- ret / diff
     }
     if(percent){
         ret <- ret * 100
-        if(!(type %in% c('NMAE', 'NMAE_SD')))
+        if(!(type %in% c('NMAE', 'SMAE')))
             warning('Percentage only make sense for relative measures')
     }
     if(unname) ret <- unname(ret)
@@ -553,7 +553,7 @@ RAB <- function(x, percent = FALSE, unname = FALSE){
 #' Mean-square relative standard error (MSRSE) is expressed as
 #'
 #' \deqn{MSRSE = \frac{E(SE(\psi)^2)}{SD(\psi)^2} =
-#'   \frac{1/R * \sum_{r=1}^R SE(\psi_r)^2}{SD(\psi)^2} - 1}
+#'   \frac{1/R * \sum_{r=1}^R SE(\psi_r)^2}{SD(\psi)^2}}
 #'
 #' where \eqn{SE(\psi_r)} represents the estimate of the standard error at the \eqn{r}th
 #' simulation replication, and \eqn{SD(\psi)} represents the standard deviation estimate
@@ -578,9 +578,9 @@ RAB <- function(x, percent = FALSE, unname = FALSE){
 #'
 #' @return returns a \code{vector} of ratios indicating the relative performance
 #'   of the standard error estimates to the observed parameter standard deviation.
-#'   Values less than 0 indicate that the standard errors were larger than the standard
+#'   Values less than 1 indicate that the standard errors were larger than the standard
 #'   deviation of the parameters (hence, the SEs are interpreted as more conservative),
-#'   while values greater than 0 were smaller than the standard deviation of the
+#'   while values greater than 1 were smaller than the standard deviation of the
 #'   parameters (i.e., more liberal SEs)
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
@@ -621,7 +621,7 @@ MSRSE <- function(SE, SD, percent = FALSE, unname = FALSE){
         SE <- apply(SE, 2L, mean)
     if((is.matrix(SD) || is.data.frame(SD)) && nrow(SD) > 1L)
         SD <- apply(SD, 2L, sd)
-    ret <- SE^2 / SD^2 - 1
+    ret <- SE^2 / SD^2
     if(percent) ret <- ret * 100
     if(unname) ret <- unname(ret)
     ret
@@ -634,7 +634,8 @@ MSRSE <- function(SE, SD, percent = FALSE, unname = FALSE){
 #' is equivalent to the form \code{est/pop - 1}. If matrices are supplied then
 #' an equivalent matrix variant will be used of the form
 #' \code{(est - pop) * solve(pop)}. Values closer to 0 indicate better
-#' relative parameter recovery.
+#' relative parameter recovery. Note that for single variable inputs this is equivalent to
+#' \code{bias(..., type = 'relative')}.
 #'
 #' @param est a \code{numeric} vector or matrix containing the parameter estimates
 #'

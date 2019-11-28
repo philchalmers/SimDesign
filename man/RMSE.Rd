@@ -21,7 +21,7 @@ form (therefore \code{sqrt(mean(estimate^2))} will be returned)}
 
 \item{type}{type of deviation to compute. Can be \code{'RMSE'} (default) for the root mean square-error,
 \code{'NRMSE'} for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
-\code{'NRMSE_SD'} for the normalized RMSE with the standard deviation (RMSE / sd(estimate)),
+\code{'SRMSE'} for the standardized RMSE (RMSE / sd(estimate)),
 \code{'CV'} for the coefficient of variation, or \code{'RMSLE'} for the root mean-square log-error}
 
 \item{MSE}{logical; return the mean square error equivalent of the results instead of the root
@@ -52,7 +52,7 @@ RMSE(dev)
 
 RMSE(samp, pop, type = 'NRMSE')
 RMSE(dev, type = 'NRMSE')
-RMSE(dev, pop, type = 'NRMSE_SD')
+RMSE(dev, pop, type = 'SRMSE')
 RMSE(samp, pop, type = 'CV')
 RMSE(samp, pop, type = 'RMSLE')
 

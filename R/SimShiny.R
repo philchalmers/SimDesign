@@ -29,9 +29,9 @@
 #' @examples
 #' \dontrun{
 #'
-#' Design <- expand.grid(sample_size = c(30, 60, 90, 120),
-#'                       group_size_ratio = c(1, 4, 8),
-#'                       standard_deviation_ratio = c(.5, 1, 2))
+#' Design <- createDesign(sample_size = c(30, 60, 90, 120),
+#'                        group_size_ratio = c(1, 4, 8),
+#'                        standard_deviation_ratio = c(.5, 1, 2))
 #'
 #' Generate <- function(condition, fixed_objects = NULL){
 #'     N <- condition$sample_size

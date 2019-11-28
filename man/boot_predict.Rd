@@ -46,7 +46,7 @@ refer to Koehler, Brown, and Haneuse (2009).
 \examples{
 
 set.seed(4321)
-Design <- expand.grid(sigma = c(1, 2))
+Design <- createDesign(sigma = c(1, 2))
 
 #-------------------------------------------------------------------
 

@@ -29,8 +29,8 @@ object combinations.
 
 # modified example from runSimulation()
 
-Design <- expand.grid(N = c(10, 20),
-                      SD = c(1, 2))
+Design <- createDesign(N = c(10, 20),
+                       SD = c(1, 2))
 
 Generate <- function(condition, fixed_objects = NULL){
     dat <- with(condition, rnorm(N, 10, sd=SD))
@@ -54,8 +54,8 @@ Final1
 ###
 # later decide that N = 30 should have also been investigated. Rather than
 # running the following object ....
-newDesign <- expand.grid(N = c(10, 20, 30),
-                       SD = c(1, 2))
+newDesign <- createDesign(N = c(10, 20, 30),
+                          SD = c(1, 2))
 
 # ... only the new subset levels are executed to save time
 subDesign <- subset(newDesign, N == 30)

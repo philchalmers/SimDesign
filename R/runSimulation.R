@@ -18,10 +18,11 @@
 #' The strategy for organizing the Monte Carlo simulation work-flow is to
 #'
 #' \describe{
-#'    \item{1)}{Define a suitable \code{design} data.frame object containing fixed conditional
+#'    \item{1)}{Define a suitable \code{Design} object (a \code{tibble} or \code{data.frame})
+#'       containing fixed conditional
 #'       information about the Monte Carlo simulations. This is often expedited by using the
-#'       \code{\link{expand.grid}} function, and if necessary using the \code{\link{subset}}
-#'       function to remove redundant or non-applicable rows}
+#'       \code{\link{createDesign}} function, and if necessary the arguemnt \code{subset}
+#'       can be used to remove redundant or non-applicable rows}
 #'    \item{2)}{Define the three step functions to generate the data (\code{\link{Generate}}; see also
 #'       \url{https://CRAN.R-project.org/view=Distributions} for a list of distributions in R),
 #'       analyse the generated data by computing the respective parameter estimates, detection rates,
@@ -41,7 +42,7 @@
 #' by the \code{SimDesign} package
 #'
 #' \describe{
-#'   \item{\code{Design <- expand.grid(...)}}{}
+#'   \item{\code{Design <- createDesign(...)}}{}
 #'   \item{\code{Generate <- function(condition, fixed_objects = NULL) \{...\} }}{}
 #'   \item{\code{Analyse <- function(condition, dat, fixed_objects = NULL) \{...\} }}{}
 #'   \item{\code{Summarise <- function(condition, results, fixed_objects = NULL) \{...\} }}{}
@@ -136,8 +137,10 @@
 #' \code{packages} input to declare packages which must be loaded via \code{library()} in order to make
 #' specific non-standard R functions available across nodes.
 #'
-#' @param design a \code{data.frame} object containing the Monte Carlo simulation conditions to
-#'   be studied, where each row represents a unique condition and each column a factor to be varied
+#' @param design a \code{data.frame} or \code{tibble} object containing the Monte Carlo simulation
+#'   conditions to be studied, where each row represents a unique condition and each column a factor
+#'   to be varied. Note that if a \code{tibble} is supplied this object will be coerced to a
+#'   \code{data.frame} internally
 #'
 #' @param generate user-defined data and parameter generating function.
 #'   See \code{\link{Generate}} for details. Note that this argument may be omitted by the
@@ -486,11 +489,10 @@
 #'
 #' #### Step 1 --- Define your conditions under study and create design data.frame
 #'
-#' Design <- expand.grid(sample_size = c(30, 60, 90, 120),
-#'                       group_size_ratio = c(1, 4, 8),
-#'                       standard_deviation_ratio = c(.5, 1, 2))
-#' dim(Design)
-#' head(Design)
+#' Design <- createDesign(sample_size = c(30, 60, 90, 120),
+#'                        group_size_ratio = c(1, 4, 8),
+#'                        standard_deviation_ratio = c(.5, 1, 2))
+#' Design
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Step 2 --- Define generate, analyse, and summarise functions
@@ -752,16 +754,18 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(any(grepl('attach\\(', char_functions)))
         stop('Did you mean to use Attach() instead of attach()?', call.=FALSE)
-    if(!is.data.frame(design))
-        stop('design must be a data.frame object', call. = FALSE)
+    if(is(design, 'tbl') || is(design, 'tbl_df'))
+        design <- as.data.frame(design)
+    if(!is(design, 'data.frame'))
+        stop('design must be a data.frame or tibble object', call. = FALSE)
     if(replications < 1L)
         stop('number of replications must be greater than or equal to 1', call. = FALSE)
     if(!(debug %in% c('none', 'analyse', 'generate', 'summarise', 'all', 'recover', 'error')))
         stop('debug input is not valid', call. = FALSE)
-    if(!is.null(design$REPLICATION))
+    if(any(names(design) == 'REPLICATION'))
         stop("REPLICATION is a reserved keyword in the design object. Please use another name", call.=FALSE)
     else design <- data.frame(REPLICATION=integer(nrow(design)), design)
-    if(is.null(design$ID)){
+    if(!any(names(design) == 'ID')){
         design <- data.frame(ID=1L:nrow(design), design)
     } else stopifnot(length(unique(design$ID)) == nrow(design))
     use_try  <- !(debug %in% c('error', 'recover'))
@@ -1075,7 +1079,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
 #' @param drop.extras logical; don't print information about warnings, errors, simulation time, and replications?
 #'   Default is \code{FALSE}
 #' @param drop.design logical; don't include information about the (potentially factorized) simulation design?
-#'   This may be useful if you wish to \code{cbind()} the original design \code{data.frame} to the simulation
+#'   This may be useful if you wish to \code{cbind()} the original design \code{data.frame}/\code{tibble} to the simulation
 #'   results instead of using the auto-factorized version. Default is \code{FALSE}
 #' @param format.time logical; format \code{SIM_TIME} into a day/hour/min/sec character vector? Default is
 #'   \code{TRUE}

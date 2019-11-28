@@ -27,7 +27,8 @@ Computes the relative difference statistic of the form \code{(est - pop)/ pop}, 
 is equivalent to the form \code{est/pop - 1}. If matrices are supplied then
 an equivalent matrix variant will be used of the form
 \code{(est - pop) * solve(pop)}. Values closer to 0 indicate better
-relative parameter recovery.
+relative parameter recovery. Note that for single variable inputs this is equivalent to
+\code{bias(..., type = 'relative')}.
 }
 \examples{
 

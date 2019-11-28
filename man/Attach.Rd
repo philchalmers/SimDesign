@@ -7,7 +7,7 @@
 Attach(condition, check = TRUE, attach_listone = TRUE)
 }
 \arguments{
-\item{condition}{a \code{data.frame} containing the \code{condition} names}
+\item{condition}{a \code{data.frame} or \code{tibble} containing the \code{condition} names}
 
 \item{check}{logical; check to see if the function will accidentally replace previously defined
 variables with the same names as in \code{condition}? Default is \code{TRUE}, which will avoid

@@ -12,7 +12,7 @@
 #' Hence, this function is much safer to use than the \code{\link{attach}}, which
 #' incidentally should never be used in your code.
 #'
-#' @param condition a \code{data.frame} containing the \code{condition} names
+#' @param condition a \code{data.frame} or \code{tibble} containing the \code{condition} names
 #'
 #' @param check logical; check to see if the function will accidentally replace previously defined
 #'   variables with the same names as in \code{condition}? Default is \code{TRUE}, which will avoid
