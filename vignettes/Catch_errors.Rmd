@@ -98,10 +98,10 @@ print(result)
 ```
 
 What you'll immediately notice from this output object is that counts of the error and warning messages have been
-appended to the `result` object. This is useful to determine just how problematic the errors and warnings are based on their frequency alone. Furthermore, the specific frequency in which the errors/warnings occurred are also included for each design condition (here the `t.test.default()` error, where no inputs were supplied, occurred more often than the manually thrown error as well as the invalid-input error) after extracting and inspecting  `SimExtract(results, what = 'errors')` and `SimExtract(results, what = 'warnings')`.
+appended to the `result` object. This is useful to determine just how problematic the errors and warnings are based on their frequency alone. Furthermore, the specific frequency in which the errors/warnings occurred are also included for each design condition (here the `t.test.default()` error, where no inputs were supplied, occurred more often than the manually thrown error as well as the invalid-input error) after extracting and inspecting  `SimExtract(result, what = 'errors')` and `SimExtract(result, what = 'warnings')`.
 
 ```{r}
-SimExtract(results, what = 'errors')
+SimExtract(result, what = 'errors')
 ```
 
 
@@ -112,7 +112,7 @@ Finally, `SimDesign` has a built-in safety feature controlled by with `max_error
 
 If errors occur too often then these design conditions should either be extracted out of the simulation or further inspected to determine if they can be fixed (e.g., providing better starting values, increasing convergence criteria/number of iterations, etc). The use of the debugging features can also be useful to track down issues as well. For example, manually wrap the problematic functions in a `try()` call, and add the line `if(is(object, 'try-error')) browser()` to jump into the location/replication where the object unexpectedly witnessed an error. Jumping into the exact location where the error occurred will greatly help you determine what exactly went wrong in the simulation state, allowing you to quickly locate and fix the issue.
 
-# What to do (stored error seed debuging)
+# What to do (stored error seed debugging)
 
 An alternative approach to locating errors in general is to use information stored within the `SimDesign` objects at the time of completion. By default, all `.Random.seed` states associated with errors are stored within the final object, and these can be extracted using the `SimExtract(..., what='error_seeds')` option.  This function returns a `data.frame` object with each seed stored column-wise, where the associated error message is contained in the column name itself (and allowed to be coerced into a valid column name to make it easier to use the `$` operator). For example, 
 
@@ -121,7 +121,7 @@ seeds <- SimExtract(result, what = 'error_seeds')
 head(seeds[,1:3])
 ```
 
-Given these seeds, replicating an exact error can be achieved by a) extracting a single column into an `integer` vector, and b) passing this vector to the `load_seed` input. For example, replicating the first error message can be achieved as follows, where it makes the most sense to immediately go into the debugging mode via the `debug` inputs. 
+Given these seeds, replicating an exact error can be achieved by a) extracting a single column into an `integer` vector (it's easiest to type `result$`, then hit the `tab` key to locate the desired element), and b) passing this vector to the `load_seed` input. For example, replicating the first error message can be achieved as follows, where it makes the most sense to immediately go into the debugging mode via the `debug` inputs. 
 
 Note: It is important to manually select the correct `Design` row using this error extraction approach; otherwise, the seed will clearly not replicate the exact problem state. 
 

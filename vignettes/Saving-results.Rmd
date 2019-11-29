@@ -173,12 +173,12 @@ SimClean(results = TRUE)
 
 Similar to `save_results = TRUE`, though less recommended for RAM related reasons (if the number of replications/`design` conditions is too large then the R session may run out of memory as the simulation progresses), users can pass `store_results = TRUE` to store the complete simulation results in the returned object. 
 
-After the simulation is complete, these results can be extracted using the `extract_results()` function. For example,
+After the simulation is complete, these results can be extracted using `SimExtract(results, what = 'results')`. For example,
 
 ```{r}
 results <- runSimulation(Design, replications = 3, store_results=TRUE,
               generate=Generate, analyse=Analyse, summarise=Summarise)
-list_results <- extract_results(results)
+list_results <- SimExtract(results, what = 'results')
 list_results
 ```
 

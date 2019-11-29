@@ -511,7 +511,6 @@ test_that('SimDesign', {
                             generate=mygenerate, analyse=mycompute, summarise=mycollect)
     expect_equal(ncol(result), 7L)
 
-    expect_true(all(dim(SimExtract(result, what = 'error_seeds')) %in% c(626,21)))
     expect_true(all(names(SimExtract(result, what = 'errors')) %in% c(
         'ERROR: .generate error in analyse\n', 'ERROR: .generate error\n')))
     expect_true(all(names(SimExtract(result, what = 'warnings')) %in% c(
@@ -521,7 +520,6 @@ test_that('SimDesign', {
                                                 seed=c(1234, 4321), verbose=FALSE,
                             generate=mygenerate, analyse=mycompute, summarise=mycollect)
     expect_equal(ncol(result), 8L)
-    expect_true(all(dim(SimExtract(result, what = 'error_seeds')) %in% c(626,37)))
     expect_true(all(names(SimExtract(result, what = 'errors')) %in% c("N",
         'ERROR: .generate error in analyse\n', 'ERROR: .generate error\n')))
     expect_true(all(names(SimExtract(result, what = 'warnings')) %in% c("N",
