@@ -29,15 +29,15 @@
 #'
 #' Generate <- function(condition, fixed_objects = NULL){
 #'     int <- sample(1:10, 1)
-#'     if(int > 5) warning('greater than 5 in analyse')
-#'     if(int == 1) stop('generate error in analyse')
+#'     if(int > 5) warning('GENERATE WARNING: int greater than 5')
+#'     if(int == 1) stop('GENERATE WARNING: integer is 1')
 #'     rnorm(5)
 #' }
 #'
 #' Analyse <- function(condition, dat, fixed_objects = NULL){
 #'     int <- sample(1:10, 1)
-#'     if(int > 5) warning('greater than 5')
-#'     if(int == 1) stop('generate error')
+#'     if(int > 5) warning('ANALYSE WARNING: int greater than 5')
+#'     if(int == 1) stop('ANALYSE WARNING: int is 1')
 #'     c(ret = 1)
 #' }
 #'
@@ -51,7 +51,14 @@
 #'
 #' SimExtract(result, what = 'errors')
 #' SimExtract(result, what = 'warnings')
-#' SimExtract(result, what = 'error_seeds')[,1:3]
+#' seeds <- SimExtract(result, what = 'error_seeds')
+#' seeds[,1:3]
+#'
+#' # replicate a specific error for debugging (type Q to exit debugger)
+#' result <- runSimulation(replications = 100, load_seed=seeds[,1], debug='analyse',
+#'                         generate=Generate, analyse=Analyse, summarise=Summarise)
+#'
+#'
 #'
 #' }
 SimExtract <- function(object, what){
