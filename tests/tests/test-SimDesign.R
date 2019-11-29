@@ -83,7 +83,7 @@ test_that('SimDesign', {
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE,
                            store_results = TRUE)
-    out <- extract_results(Final)
+    out <- SimExtract(Final, what = 'results')
     expect_equal(nrow(out[[1L]]), 2L)
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
