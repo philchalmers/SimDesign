@@ -346,7 +346,7 @@ test_that('SimDesign', {
     }
     results <- runSimulation(Design, replications = 2, packages = 'extraDistr', seed=1:8,
                              generate=mygenerate, analyse=mycompute, summarise=mycollect, verbose=FALSE)
-    seeds <- extract_error_seeds(results)
+    seeds <- SimExtract(results, what = 'error_seeds')
     expect_is(seeds, 'data.frame')
     expect_true(nrow(seeds) == 626)
     if(FALSE){

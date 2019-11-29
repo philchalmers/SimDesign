@@ -96,12 +96,12 @@ median to recover the mean.
 ## Define the conditions
 
 First, define the condition combinations that should be investigated. In this case we wish to study
-4 different sample sizes, and use a symmetric and skewed distribution. The use of `expand.grid()` is
+4 different sample sizes, and use a symmetric and skewed distribution. The use of `createDesign()` is
 extremely helpful here to create a completely crossed-design for each combination (there are 8 in total).
 
 ```{r}
-Design <- expand.grid(sample_size = c(30, 60, 120, 240), 
-                      distribution = c('norm', 'chi'))
+Design <- createDesign(sample_size = c(30, 60, 120, 240), 
+                       distribution = c('norm', 'chi'))
 Design
 ```
 

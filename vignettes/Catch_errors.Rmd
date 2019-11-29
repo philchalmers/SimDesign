@@ -43,7 +43,7 @@ set.seed(1)
 library(SimDesign)
 # SimFunctions(comments=FALSE)
 
-Design <- data.frame(N = c(10,20,30))
+Design <- createDesign(N = c(10,20,30))
 ```
 
 ```{r}
@@ -97,8 +97,14 @@ result <- runSimulation(Design, replications = 100,
 print(result)
 ```
 
-What you'll immediately notice from this output object is that the name of the error/warning thrown, and the function from which the error was thrown, are included as additional columns in the output with the prefix `ERROR: `. Furthermore, the frequency in which the error occurred are also included for each design condition (here the `t.test.default()` error, where no inputs were supplied, occurred more often than the manually thrown error as well as the invalid-input error). This behavior is also tracked for `WARNING` messages as well in case there are clues as to
-why estimation models are having difficulty (or for other reasons whereby the warnings may be more serious).
+What you'll immediately notice from this output object is that counts of the error and warning messages have been
+appended to the `result` object. This is useful to determine just how problematic the errors and warnings are based on their frequency alone. Furthermore, the specific frequency in which the errors/warnings occurred are also included for each design condition (here the `t.test.default()` error, where no inputs were supplied, occurred more often than the manually thrown error as well as the invalid-input error) after extracting and inspecting  `SimExtract(results, what = 'errors')` and `SimExtract(results, what = 'warnings')`.
+
+```{r}
+SimExtract(results, what = 'errors')
+```
+
+
 
 Finally, `SimDesign` has a built-in safety feature controlled by with `max_errors` argument to avoid getting stuck in infinite redrawing loops. By default, if more than 50 errors are consecutively returned then the simulation will be halted, and the final error message will be returned. This safety feature is built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code which should be fixed before continuing.
 
@@ -108,10 +114,10 @@ If errors occur too often then these design conditions should either be extracte
 
 # What to do (stored error seed debuging)
 
-An alternative approach to locating errors in general is to use information stored within the `SimDesign` objects at the time of completion. By default, all `.Random.seed` states associated with errors are stored within the final object, and these can be extracted using the `extract_error_seeds()` function. This function returns a `data.frame` object with each seed stored column-wise, where the associated error message is contained in the column name itself (and allowed to be coerced into a valid `data.frame` column name). 
+An alternative approach to locating errors in general is to use information stored within the `SimDesign` objects at the time of completion. By default, all `.Random.seed` states associated with errors are stored within the final object, and these can be extracted using the `SimExtract(..., what='error_seeds')` option.  This function returns a `data.frame` object with each seed stored column-wise, where the associated error message is contained in the column name itself (and allowed to be coerced into a valid column name to make it easier to use the `$` operator). For example, 
 
 ```{r}
-seeds <- extract_error_seeds(result)
+seeds <- SimExtract(result, what = 'error_seeds')
 head(seeds[,1:3])
 ```
 

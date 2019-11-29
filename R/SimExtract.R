@@ -8,7 +8,7 @@
 #'
 #' @param what character indicating what information to extract. Possible inputs
 #'   include \code{'errors'} to return a \code{tibble} object containing counts of any
-#'   error messages, \code{'warnings'} to return a \code{tibble} object containing
+#'   error messages, \code{'warnings'} to return a \code{data.frame} object containing
 #'   counts of any warning messages, \code{'error_seeds'} to extact the assocaited
 #'   \code{.Random.seed} values associated with the ERROR messages, and \code{'results'}
 #'   to extrac the simulation results if the option \code{store_results} was passed to
@@ -107,5 +107,5 @@ extract_results <- function(object){
 extract_error_seeds <- function(object){
     extra_info <- attr(object, 'extra_info')
     ret <- extra_info$error_seeds
-    dplyr::as_tibble(ret)
+    ret
 }

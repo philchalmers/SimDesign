@@ -740,8 +740,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             load_seed <- paste0(save_seeds_dirname, '/', load_seed)
             load_seed <- as.integer(scan(load_seed, sep = ' ', quiet = TRUE))
         }
-        if(is(load_seed, 'tbl') || is(load_seed, 'tbl_df'))
-            load_seed <- as.data.frame(load_seed)[,1]
         stopifnot(is.integer(load_seed))
     }
     if(MPI){

@@ -93,7 +93,7 @@ library(SimDesign)
 #SimFunctions(comments = FALSE)
 
 ### Define design conditions and number of replications
-Design <- expand.grid(N = c(10, 20, 30))
+Design <- createDesign(N = c(10, 20, 30))
 replications <- 1000
 
 # define custom functions and objects (or use source() to read these in from an external file)

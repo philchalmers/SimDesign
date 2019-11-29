@@ -35,7 +35,7 @@ As usual, define the functions of interest.
 library(SimDesign)
 # SimFunctions()
 
-Design <- data.frame(N = c(10,20,30))
+Design <- createDesign(N = c(10,20,30))
 ```
 
 ```{r}
