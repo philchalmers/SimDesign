@@ -4,7 +4,7 @@
 #' with any error messages, and any analysis results that were stored in the
 #' final simulation object.
 #'
-#' @param results object returned from \code{\link{runSimulation}}
+#' @param object object returned from \code{\link{runSimulation}}
 #'
 #' @param what character indicating what information to extract. Possible inputs
 #'   include \code{'errors'} to return a \code{tibble} object containing counts of any

@@ -140,7 +140,7 @@ Default randomly generates seeds within the range 1 to 2147483647 for each condi
 \item{store_results}{logical; store the complete tables of simulation results
 in the returned object? This is \code{FALSE} by default to help avoid RAM
 issues (see \code{save_results} as a more suitable alternative). To extract these results
-pass the returned object to \code{\link{extract_results}}, which will return a named list
+pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
 of all the simulation results for each condition}
 
 \item{warnings_as_errors}{logical; treat warning messages as errors during the simulation? Default is FALSE,
@@ -160,7 +160,7 @@ Default is \code{FALSE}}
 be saved (after a call with \code{save_seeds = TRUE}), or an integer vector indicating the actual
 \code{.Random.seed} values. E.g., \code{load_seed = 'design-row-2/seed-1'}
 will load the first seed in the second row of the \code{design} input, or explicitly passing the 626 long
-elements from \code{.Random.seed} (see \code{extract_error_seed()} to extract the seeds associated explicitly
+elements from \code{.Random.seed} (see \code{\link{SimExtract}} to extract the seeds associated explicitly
 with errors during the simulation, where each column represents a unique seed).
 If the input is a character vector then it is important NOT
 to modify the \code{design} input object, otherwise the path may not point to the correct saved location, while
@@ -394,7 +394,7 @@ that each simulation condition is completely reproducible under the single/multi
 
 The \code{load_seed} input will also accept an integer vector corresponding to the exact
 \code{.Random.seed} state. This is helpful because SimDesign also tracks these seeds for simulation
-conditions that threw errors, where these values can be extracted via the \code{extract_error_seeds()}
+conditions that threw errors, where these values can be extracted via \code{SimExtract(..., what='error_seeds')}
 function. The column names indicate the respective design row (first number), the order in which
 the errors were thrown (second number), and finally the error message string (coerced to a proper
 data.frame column name). After this data.frame object is extracted, individual columns can be passed to \code{load_seed}
@@ -695,7 +695,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
   \code{\link{SimFunctions}}, \code{\link{SimExtract}},
   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
   \code{\link{SimBoot}}, \code{\link{aggregate_simulations}}, \code{\link{Attach}},
-  \code{\link{extract_error_seeds}}, \code{\link{SimShiny}}
+  \code{\link{SimShiny}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}
