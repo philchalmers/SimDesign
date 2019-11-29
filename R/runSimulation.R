@@ -382,7 +382,8 @@
 #' @aliases runSimulation
 #'
 #' @seealso \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
-#'   \code{\link{SimFunctions}}, \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
+#'   \code{\link{SimFunctions}}, \code{\link{SimExtract}},
+#'   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
 #'   \code{\link{SimBoot}}, \code{\link{aggregate_simulations}}, \code{\link{Attach}},
 #'   \code{\link{extract_error_seeds}}, \code{\link{SimShiny}}
 #'
@@ -1037,13 +1038,20 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     ten <- colnames(Final)[grepl('ERROR:', colnames(Final))]
     wen <- colnames(Final)[grepl('WARNING:', colnames(Final))]
+    ERROR_msg <- Final[ ,ten]
+    WARNING_msg <- Final[ ,wen]
+    ERRORS <- as.integer(rowSums(ERROR_msg, na.rm = TRUE))
+    WARNINGS <- as.integer(rowSums(WARNING_msg, na.rm = TRUE))
     en <- c('REPLICATIONS', 'SIM_TIME', 'COMPLETED', 'SEED')
     bsen <- colnames(Final)[grepl('BOOT_SE.', colnames(Final))]
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen, bsen))]
-    Final <- dplyr::as_tibble(data.frame(Final[ ,c(dn, sn, bsen, en, ten, wen)],
-                                         check.names = FALSE))
+    Final <- data.frame(Final[ ,c(dn, sn, bsen, en)], ERRORS, WARNINGS,
+                                         check.names = FALSE)
+    if(all(ERRORS == 0)) Final$ERRORS <- NULL
+    if(all(WARNINGS == 0)) Final$WARNINGS <- NULL
+    Final <- dplyr::as_tibble(Final)
     attr(Final, 'design_names') <-
-        list(design=dn, sim=sn, bootSE=bsen, extra=en, errors=ten, warnings=wen)
+        list(design=dn, sim=sn, bootSE=bsen, extra=en, errors='ERRORS', warnings="WARNINGS")
     if(length(packages) > 1L){
         pack <- packages[packages != 'SimDesign']
         versions <- character(length(pack))
@@ -1053,6 +1061,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     } else pack_vers <- NULL
     pick <- c(save_generate_data, save_results, save_seeds)
     if(!is.null(filename)) pick <- c(save, pick)
+    attr(Final, "ERROR_msg") <- ERROR_msg
+    attr(Final, "WARNING_msg") <- WARNING_msg
     attr(Final, 'extra_info') <- list(sessionInfo = sessionInfo(), packages=pack_vers,
                                       save_info = c(filename=filename,
                                                     save_generate_data_dirname=save_generate_data_dirname,

@@ -697,7 +697,8 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 }
 \seealso{
 \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
-  \code{\link{SimFunctions}}, \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
+  \code{\link{SimFunctions}}, \code{\link{SimExtract}},
+  \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
   \code{\link{SimBoot}}, \code{\link{aggregate_simulations}}, \code{\link{Attach}},
   \code{\link{extract_error_seeds}}, \code{\link{SimShiny}}
 }
