@@ -1,10 +1,18 @@
 #' Function to extract extra information from SimDesign objects
 #'
-#' Something
+#' Function used to extract any error or warnings messages, the seeds assocaited
+#' with any error messages, and any analysis results that were stored in the
+#' final simulation object.
 #'
 #' @param results object returned from \code{\link{runSimulation}}
 #'
-#' @param what character indicating what information to extract
+#' @param what character indicating what information to extract. Possible inputs
+#'   include \code{'errors'} to return a \code{tibble} object containing counts of any
+#'   error messages, \code{'warnings'} to return a \code{tibble} object containing
+#'   counts of any warning messages, \code{'error_seeds'} to extact the assocaited
+#'   \code{.Random.seed} values associated with the ERROR messages, and \code{'results'}
+#'   to extrac the simulation results if the option \code{store_results} was passed to
+#'   \code{\link{runSimulation}}
 #'
 #' @export
 #'
@@ -19,7 +27,78 @@
 #'
 #' \dontrun{
 #'
+#' Generate <- function(condition, fixed_objects = NULL){
+#'     int <- sample(1:10, 1)
+#'     if(int > 5) warning('greater than 5 in analyse')
+#'     if(int == 1) stop('generate error in analyse')
+#'     rnorm(5)
 #' }
-SimExtract <- function(results, what){
+#'
+#' Analyse <- function(condition, dat, fixed_objects = NULL){
+#'     int <- sample(1:10, 1)
+#'     if(int > 5) warning('greater than 5')
+#'     if(int == 1) stop('generate error')
+#'     c(ret = 1)
+#' }
+#'
+#' Summarise <- function(condition, results, fixed_objects = NULL) {
+#'     mean(results)
+#' }
+#'
+#' result <- runSimulation(replications = 100, seed=1234, verbose=FALSE,
+#'                         generate=Generate, analyse=Analyse, summarise=Summarise)
+#' result
+#'
+#' SimExtract(result, what = 'errors')
+#' SimExtract(result, what = 'warnings')
+#' SimExtract(result, what = 'error_seeds')[,1:3]
+#'
+#' }
+SimExtract <- function(object, what){
+    stopifnot(is(object, "SimDesign"))
+    pick <- attr(object, 'design_names')$design
+    Design <- if(any(pick != 'dummy_run'))
+        object[,attr(object, 'design_names')$design]
+        else dplyr::tibble(.rows = nrow(object))
+    if(missing(what)) stop('Please specify what you want to extract')
+    ret <- if(what == 'results'){
+        extract_results(object)
+    } else if(what == 'errors'){
+        cbind(Design, extract_errors(object))
+    } else if(what == 'error_seeds'){
+        extract_error_seeds(object)
+    } else if(what == 'warnings'){
+        cbind(Design, extract_warnings(object))
+    } else stop('Input provided to \"what" is not supported')
+    ret
+}
 
+extract_errors <- function(object){
+    attr(object, 'ERROR_msg')
+}
+
+extract_warnings <- function(object){
+    attr(object, 'WARNING_msg')
+}
+
+extract_results <- function(object){
+    extra_info <- attr(object, 'extra_info')
+    if(is.null(extra_info$stored_results)) return(NULL)
+    design_names <- attr(object, "design_names")
+    pick <- design_names$design
+    design <- subset(as.data.frame(object), select=pick)
+    nms <- colnames(design)
+    nms2 <- matrix(character(0L), nrow(design), ncol(design))
+    for(i in 1L:ncol(design))
+        nms2[,i] <- paste0(nms[i], '=', design[,i], if(i < ncol(design)) '; ')
+    nms2 <- apply(nms2, 1L, paste0, collapse='')
+    ret <- extra_info$stored_results
+    names(ret) <- nms2
+    ret
+}
+
+extract_error_seeds <- function(object){
+    extra_info <- attr(object, 'extra_info')
+    ret <- extra_info$error_seeds
+    dplyr::as_tibble(ret)
 }

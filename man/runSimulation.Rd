@@ -6,8 +6,6 @@
 \alias{head.SimDesign}
 \alias{tail.SimDesign}
 \alias{summary.SimDesign}
-\alias{extract_results}
-\alias{extract_error_seeds}
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
@@ -32,10 +30,6 @@ runSimulation(design, replications, generate, analyse, summarise,
   drop.design = FALSE, format.time = TRUE)
 
 \method{summary}{SimDesign}(object, ...)
-
-extract_results(object)
-
-extract_error_seeds(object)
 }
 \arguments{
 \item{design}{a \code{data.frame} or \code{tibble} object containing the Monte Carlo simulation
@@ -370,10 +364,11 @@ Additional information for each condition are also contained in the \code{data.f
 \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 all the Monte Carlo replications for each respective design condition,
 \code{COMPLETED} to indicate the date in which the given simulation condition completed,
-\code{SEED} for the integer values in the \code{seed} argument,
-columns containing the number of replications which had to be re-run due to errors (where the error messages
-represent the names of the columns prefixed with a \code{ERROR:} string), and
-columns containing the number of warnings prefixed with a \code{WARNING:} string. Finally,
+\code{SEED} for the integer values in the \code{seed} argument, and, if applicable,
+\code{ERRORS} and \code{WARNINGS} which contain counts for the number of error or warning
+messages that were caught (if no errors/warnings were observed these columns will be omitted).
+Note that to extract the specific error and warnings messages see
+\code{\link{SimExtract}}. Finally,
 if \code{bootSE = TRUE} was included then the final right-most columns will contain the labels
 \code{BOOT_SE.} followed by the name of the associated meta-statistic defined in \code{summarise()}.
 

@@ -71,10 +71,11 @@
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 #' all the Monte Carlo replications for each respective design condition,
 #' \code{COMPLETED} to indicate the date in which the given simulation condition completed,
-#' \code{SEED} for the integer values in the \code{seed} argument,
-#' columns containing the number of replications which had to be re-run due to errors (where the error messages
-#' represent the names of the columns prefixed with a \code{ERROR:} string), and
-#' columns containing the number of warnings prefixed with a \code{WARNING:} string. Finally,
+#' \code{SEED} for the integer values in the \code{seed} argument, and, if applicable,
+#' \code{ERRORS} and \code{WARNINGS} which contain counts for the number of error or warning
+#' messages that were caught (if no errors/warnings were observed these columns will be omitted).
+#' Note that to extract the specific error and warnings messages see
+#' \code{\link{SimExtract}}. Finally,
 #' if \code{bootSE = TRUE} was included then the final right-most columns will contain the labels
 #' \code{BOOT_SE.} followed by the name of the associated meta-statistic defined in \code{summarise()}.
 #'
@@ -1038,8 +1039,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     ten <- colnames(Final)[grepl('ERROR:', colnames(Final))]
     wen <- colnames(Final)[grepl('WARNING:', colnames(Final))]
-    ERROR_msg <- Final[ ,ten]
-    WARNING_msg <- Final[ ,wen]
+    ERROR_msg <- Final[ ,ten, drop=FALSE]
+    WARNING_msg <- Final[ ,wen, drop=FALSE]
     ERRORS <- as.integer(rowSums(ERROR_msg, na.rm = TRUE))
     WARNINGS <- as.integer(rowSums(WARNING_msg, na.rm = TRUE))
     en <- c('REPLICATIONS', 'SIM_TIME', 'COMPLETED', 'SEED')
@@ -1061,8 +1062,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     } else pack_vers <- NULL
     pick <- c(save_generate_data, save_results, save_seeds)
     if(!is.null(filename)) pick <- c(save, pick)
-    attr(Final, "ERROR_msg") <- ERROR_msg
-    attr(Final, "WARNING_msg") <- WARNING_msg
+    attr(Final, "ERROR_msg") <- dplyr::as_tibble(ERROR_msg)
+    attr(Final, "WARNING_msg") <- dplyr::as_tibble(WARNING_msg)
     attr(Final, 'extra_info') <- list(sessionInfo = sessionInfo(), packages=pack_vers,
                                       save_info = c(filename=filename,
                                                     save_generate_data_dirname=save_generate_data_dirname,
@@ -1132,33 +1133,5 @@ summary.SimDesign <- function(object, ...){
     ret$total_elapsed_time <- timeFormater(ret$total_elapsed_time, TRUE)
     ret$stored_results <- NULL
     ret$error_seeds <- NULL
-    ret
-}
-
-#' @rdname runSimulation
-#' @export
-extract_results <- function(object){
-    stopifnot(is(object, "SimDesign"))
-    extra_info <- attr(object, 'extra_info')
-    if(is.null(extra_info$stored_results)) return(NULL)
-    design_names <- attr(object, "design_names")
-    pick <- design_names$design
-    design <- subset(as.data.frame(object), select=pick)
-    nms <- colnames(design)
-    nms2 <- matrix(character(0L), nrow(design), ncol(design))
-    for(i in 1L:ncol(design))
-        nms2[,i] <- paste0(nms[i], '=', design[,i], if(i < ncol(design)) '; ')
-    nms2 <- apply(nms2, 1L, paste0, collapse='')
-    ret <- extra_info$stored_results
-    names(ret) <- nms2
-    ret
-}
-
-#' @rdname runSimulation
-#' @export
-extract_error_seeds <- function(object){
-    stopifnot(inherits(object, "SimDesign"))
-    extra_info <- attr(object, 'extra_info')
-    ret <- extra_info$error_seeds
     ret
 }

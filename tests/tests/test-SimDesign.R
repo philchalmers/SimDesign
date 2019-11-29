@@ -56,10 +56,6 @@ test_that('SimDesign', {
 
     mycollect <-  function(condition, results, fixed_objects = NULL){
 
-        # handy functions
-        bias <- function(observed, population) mean(observed - population)
-        RMSD <- function(observed, population) sqrt(mean((observed - population)^2))
-
         #find results of interest here
         nms <- c('welch', 'independent')
         lessthan.05 <- EDR(results[,nms], alpha = .05)
@@ -155,8 +151,8 @@ test_that('SimDesign', {
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, verbose = FALSE, max_errors = Inf)
     expect_is(Final, 'data.frame')
-    expect_true(any(grepl('ERROR:', names(Final))))
-    error_seeds <- extract_error_seeds(Final)
+    expect_true(any(grepl('ERROR', names(Final))))
+    error_seeds <- SimExtract(Final, what = 'error_seeds')
     expect_true(dim(error_seeds)[1L] > 0)
 
     # aggregate test
@@ -286,15 +282,15 @@ test_that('SimDesign', {
     results <- runSimulation(Design, replications = 1, packages = 'extraDistr',
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
                   parallel=FALSE, save=FALSE, verbose = FALSE)
-    expect_true(any(grepl('WARNING:', names(results))))
+    expect_true(any(grepl('WARNING', names(results))))
     results <- runSimulation(Design, replications = 1, packages = 'extraDistr', max_errors = Inf,
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save=FALSE, verbose = FALSE, warnings_as_errors=TRUE)
-    expect_true(any(grepl('ERROR:', names(results))))
+    expect_true(any(grepl('ERROR', names(results))))
     results <- runSimulation(Design, replications = 1, packages = 'extraDistr',
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
                   parallel=TRUE, ncores=2L, save=FALSE, verbose = FALSE)
-    expect_true(any(grepl('WARNING:', names(results))))
+    expect_true(any(grepl('WARNING', names(results))))
 
     #aggregate different files
     mycompute2 <- function(condition, dat, fixed_objects = NULL){
@@ -372,8 +368,8 @@ test_that('SimDesign', {
     results <- runSimulation(Design, replications = 10, packages = 'extraDistr', seed=1:nrow(Design),
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save=FALSE, verbose = FALSE)
-    expect_equal(names(results)[9], "ERROR: .Error : The following return NA and required redrawing: ret\n")
-    expect_equal(results[,9, drop=TRUE], c(NA,1,NA,3,4,1,NA,4))
+    expect_equal(names(results)[9], "ERRORS")
+    expect_equal(results[,9, drop=TRUE], c(0,1,0,3,4,1,0,4))
 
     #data.frame test
     mysim <- function(condition, fixed_objects = NULL){
@@ -513,7 +509,23 @@ test_that('SimDesign', {
     }
     result <- runSimulation(replications = 100, seed=1234, verbose=FALSE,
                             generate=mygenerate, analyse=mycompute, summarise=mycollect)
-    expect_equal(ncol(result), 9L)
+    expect_equal(ncol(result), 7L)
+
+    expect_true(all(dim(SimExtract(result, what = 'error_seeds')) %in% c(626,21)))
+    expect_true(all(names(SimExtract(result, what = 'errors')) %in% c(
+        'ERROR: .generate error in analyse\n', 'ERROR: .generate error\n')))
+    expect_true(all(names(SimExtract(result, what = 'warnings')) %in% c(
+        'WARNING: .greater than 5', 'WARNING: .greater than 5 in analyse')))
+
+    result <- runSimulation(design=createDesign(N=c(100, 200)), replications = 100,
+                                                seed=c(1234, 4321), verbose=FALSE,
+                            generate=mygenerate, analyse=mycompute, summarise=mycollect)
+    expect_equal(ncol(result), 8L)
+    expect_true(all(dim(SimExtract(result, what = 'error_seeds')) %in% c(626,37)))
+    expect_true(all(names(SimExtract(result, what = 'errors')) %in% c("N",
+        'ERROR: .generate error in analyse\n', 'ERROR: .generate error\n')))
+    expect_true(all(names(SimExtract(result, what = 'warnings')) %in% c("N",
+        'WARNING: .greater than 5', 'WARNING: .greater than 5 in analyse')))
 
 })
 

@@ -4,19 +4,53 @@
 \alias{SimExtract}
 \title{Function to extract extra information from SimDesign objects}
 \usage{
-SimExtract(results, what)
+SimExtract(object, what)
 }
 \arguments{
-\item{results}{object returned from \code{\link{runSimulation}}}
+\item{what}{character indicating what information to extract. Possible inputs
+include \code{'errors'} to return a \code{tibble} object containing counts of any
+error messages, \code{'warnings'} to return a \code{tibble} object containing
+counts of any warning messages, \code{'error_seeds'} to extact the assocaited
+\code{.Random.seed} values associated with the ERROR messages, and \code{'results'}
+to extrac the simulation results if the option \code{store_results} was passed to
+\code{\link{runSimulation}}}
 
-\item{what}{character indicating what information to extract}
+\item{results}{object returned from \code{\link{runSimulation}}}
 }
 \description{
-Something
+Function used to extract any error or warnings messages, the seeds assocaited
+with any error messages, and any analysis results that were stored in the
+final simulation object.
 }
 \examples{
 
 \dontrun{
+
+Generate <- function(condition, fixed_objects = NULL){
+    int <- sample(1:10, 1)
+    if(int > 5) warning('greater than 5 in analyse')
+    if(int == 1) stop('generate error in analyse')
+    rnorm(5)
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL){
+    int <- sample(1:10, 1)
+    if(int > 5) warning('greater than 5')
+    if(int == 1) stop('generate error')
+    c(ret = 1)
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL) {
+    mean(results)
+}
+
+result <- runSimulation(replications = 100, seed=1234, verbose=FALSE,
+                        generate=Generate, analyse=Analyse, summarise=Summarise)
+result
+
+SimExtract(result, what = 'errors')
+SimExtract(result, what = 'warnings')
+SimExtract(result, what = 'error_seeds')[,1:3]
 
 }
 }
