@@ -197,10 +197,6 @@
 #' @param warnings_as_errors logical; treat warning messages as errors during the simulation? Default is FALSE,
 #'   therefore warnings are only collected and not used to restart the data generation step
 #'
-#' @param as.factor logical; coerce the input \code{design} elements into \code{factor}s when the
-#'   simulation is complete? If the columns inputs are numeric then these will be treated
-#'   as \code{ordered}. Default is \code{TRUE}
-#'
 #' @param save_results logical; save the results returned from \code{\link{Analyse}} to external
 #'   \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
 #'   Use this if you would like to keep track of the individual parameters returned from the analyses.
@@ -651,7 +647,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           save = FALSE, save_results = FALSE, store_results = FALSE,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
-                          max_errors = 50L, as.factor = TRUE, save_generate_data = FALSE,
+                          max_errors = 50L, save_generate_data = FALSE,
                           save_details = list(), debug = 'none', progress = TRUE,
                           allow_na = FALSE, allow_nan = FALSE, edit = 'none', verbose = TRUE)
 {
@@ -717,6 +713,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(nrow(design) == 1L) verbose <- FALSE
     stopifnot(!missing(replications))
+    replications <- as.integer(replications)
     if(!is.null(seed))
         stopifnot(nrow(design) == length(seed))
     debug <- tolower(debug)
@@ -1008,7 +1005,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     REPLICATIONS <- Final$REPLICATIONS
     Final$SIM_TIME <- Final$ID <- Final$REPLICATIONS <-
         Final$COMPLETED <- Final$REPLICATION <- NULL
-    Final <- data.frame(Final, REPLICATIONS, SIM_TIME, COMPLETED, check.names=FALSE)
+    Final <- data.frame(Final, REPLICATIONS, SIM_TIME, COMPLETED, check.names=FALSE,
+                        stringsAsFactors=FALSE)
     if(is.null(Final$SEED)) Final$SEED <- NA
     if(!is.null(seed)) Final$SEED <- seed
     if(!is.null(filename) && safe){ #save file
@@ -1030,13 +1028,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     dn <- colnames(design)
     dn <- dn[!(dn %in% c('ID', 'REPLICATION'))]
-    if(as.factor){
-        Final[dn] <- lapply(Final[dn], function(x){
-            if(is.list(x)) return(x)
-            if(is.numeric(x)) return(ordered(x))
-                else return(factor(x))
-            })
-    }
     ten <- colnames(Final)[grepl('ERROR:', colnames(Final))]
     wen <- colnames(Final)[grepl('WARNING:', colnames(Final))]
     ERROR_msg <- Final[ ,ten, drop=FALSE]

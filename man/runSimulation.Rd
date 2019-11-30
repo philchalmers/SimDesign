@@ -12,10 +12,10 @@ runSimulation(design, replications, generate, analyse, summarise,
   save_results = FALSE, store_results = FALSE,
   warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
   parallel = FALSE, ncores = parallel::detectCores(), cl = NULL,
-  MPI = FALSE, max_errors = 50L, as.factor = TRUE,
-  save_generate_data = FALSE, save_details = list(), debug = "none",
-  progress = TRUE, allow_na = FALSE, allow_nan = FALSE,
-  edit = "none", verbose = TRUE)
+  MPI = FALSE, max_errors = 50L, save_generate_data = FALSE,
+  save_details = list(), debug = "none", progress = TRUE,
+  allow_na = FALSE, allow_nan = FALSE, edit = "none",
+  verbose = TRUE)
 
 \method{summary}{SimDesign}(object, ...)
 }
@@ -172,10 +172,6 @@ in parallel on a cluster? Default is \code{FALSE}}
 \item{max_errors}{the simulation will terminate when more than this number of consecutive errors are thrown in any
 given condition. The purpose of this is to indicate that something fatally problematic is likely going
 wrong in the generate-analyse phases and should be inspected. Default is 50}
-
-\item{as.factor}{logical; coerce the input \code{design} elements into \code{factor}s when the
-simulation is complete? If the columns inputs are numeric then these will be treated
-as \code{ordered}. Default is \code{TRUE}}
 
 \item{save_generate_data}{logical; save the data returned from \code{\link{Generate}} to external \code{.rds} files
   located in the defined \code{save_generate_data_dirname} directory/folder?
