@@ -2,9 +2,6 @@
 % Please edit documentation in R/runSimulation.R
 \name{runSimulation}
 \alias{runSimulation}
-\alias{print.SimDesign}
-\alias{head.SimDesign}
-\alias{tail.SimDesign}
 \alias{summary.SimDesign}
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
@@ -19,15 +16,6 @@ runSimulation(design, replications, generate, analyse, summarise,
   save_generate_data = FALSE, save_details = list(), debug = "none",
   progress = TRUE, allow_na = FALSE, allow_nan = FALSE,
   edit = "none", verbose = TRUE)
-
-\method{print}{SimDesign}(x, drop.extras = FALSE, drop.design = FALSE,
-  format.time = TRUE, ...)
-
-\method{head}{SimDesign}(x, ..., drop.extras = FALSE,
-  drop.design = FALSE, format.time = TRUE)
-
-\method{tail}{SimDesign}(x, ..., drop.extras = FALSE,
-  drop.design = FALSE, format.time = TRUE)
 
 \method{summary}{SimDesign}(object, ...)
 }
@@ -268,21 +256,9 @@ analysis? Default is FALSE}
 
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 
-\item{x}{SimDesign object returned from \code{\link{runSimulation}}}
-
-\item{drop.extras}{logical; don't print information about warnings, errors, simulation time, and replications?
-Default is \code{FALSE}}
-
-\item{drop.design}{logical; don't include information about the (potentially factorized) simulation design?
-This may be useful if you wish to \code{cbind()} the original design \code{data.frame}/\code{tibble} to the simulation
-results instead of using the auto-factorized version. Default is \code{FALSE}}
-
-\item{format.time}{logical; format \code{SIM_TIME} into a day/hour/min/sec character vector? Default is
-\code{TRUE}}
+\item{object}{SimDesign object returned from \code{\link{runSimulation}}}
 
 \item{...}{additional arguments}
-
-\item{object}{SimDesign object returned from \code{\link{runSimulation}}}
 }
 \value{
 a \code{tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
