@@ -1002,8 +1002,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Final <- plyr::rbind.fill(Result_list)
     SIM_TIME <- Final$SIM_TIME
     COMPLETED <- Final$COMPLETED
-    Final$SIM_TIME <- Final$ID <- Final$COMPLETED <- Final$REPLICATION <- NULL
-    Final <- data.frame(Final, REPLICATIONS=replication, SIM_TIME, COMPLETED, check.names=FALSE,
+    Final$SIM_TIME <- Final$ID <- Final$COMPLETED <- Final$REPLICATIONS <- NULL
+    Final <- data.frame(Final, REPLICATIONS=replications, SIM_TIME, COMPLETED, check.names=FALSE,
                         stringsAsFactors=FALSE)
     if(is.null(Final$SEED)) Final$SEED <- NA
     if(!is.null(seed)) Final$SEED <- seed
