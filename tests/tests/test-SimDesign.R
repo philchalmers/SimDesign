@@ -368,8 +368,7 @@ test_that('SimDesign', {
     results <- runSimulation(Design, replications = 10, packages = 'extraDistr', seed=1:nrow(Design),
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save=FALSE, verbose = FALSE)
-    expect_equal(names(results)[9], "ERRORS")
-    expect_equal(results[,9, drop=TRUE], c(0,1,0,3,4,1,0,4))
+    expect_equal(results$ERRORS, c(0,1,0,3,4,1,0,4))
 
     #data.frame test
     mysim <- function(condition, fixed_objects = NULL){
