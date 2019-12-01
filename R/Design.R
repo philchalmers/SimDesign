@@ -77,7 +77,9 @@ createDesign <- function(..., subset, tibble = TRUE, stringsAsFactors = FALSE){
 
 #' @rdname createDesign
 #' @param list2char logical; for \code{tibble} object re-evaluate list elements
-#'   as character vectors for better printing of the levels? Default is TRUE
+#'   as character vectors for better printing of the levels? Note that this
+#'   does not change the original classes of the object, just how they are printed.
+#'   Default is TRUE
 #' @export
 print.Design <- function(x, list2char = TRUE, ...){
     classes <- sapply(x, class)
@@ -93,8 +95,8 @@ list2char <- function(x){
     nms <- names(pick)
     for(nm in nms){
         tmp <- as.vector(apply(pick[,nm], 2L, as.character))
-        tmp <- sub("c(", "", tmp, fixed=TRUE)
-        tmp <- sub(")", "", tmp, fixed=TRUE)
+        tmp <- sub("c(", "[", tmp, fixed=TRUE)
+        tmp <- sub(")", "]", tmp, fixed=TRUE)
         x[ , nm] <- tmp
     }
     x

@@ -262,7 +262,9 @@ analysis? Default is FALSE}
 \item{x}{SimDesign object returned from \code{\link{runSimulation}}}
 
 \item{list2char}{logical; for \code{tibble} object re-evaluate list elements
-as character vectors for better printing of the levels? Default is TRUE}
+as character vectors for better printing of the levels? Note that this
+does not change the original classes of the object, just how they are printed.
+Default is TRUE}
 }
 \value{
 a \code{tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})

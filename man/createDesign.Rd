@@ -24,7 +24,9 @@ to create a partially crossed simulation design}
 to factors? Default is FALSE}
 
 \item{list2char}{logical; for \code{tibble} object re-evaluate list elements
-as character vectors for better printing of the levels? Default is TRUE}
+as character vectors for better printing of the levels? Note that this
+does not change the original classes of the object, just how they are printed.
+Default is TRUE}
 }
 \value{
 a \code{tibble} or \code{data.frame} containing the simulation experiment
