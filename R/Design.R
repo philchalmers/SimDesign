@@ -76,6 +76,7 @@ createDesign <- function(..., subset, tibble = TRUE, stringsAsFactors = FALSE){
 }
 
 #' @rdname createDesign
+#' @param x object returned by \code{\link{createDesign}}
 #' @param list2char logical; for \code{tibble} object re-evaluate list elements
 #'   as character vectors for better printing of the levels? Note that this
 #'   does not change the original classes of the object, just how they are printed.

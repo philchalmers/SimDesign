@@ -23,6 +23,8 @@ to create a partially crossed simulation design}
 \item{stringsAsFactors}{logical; should character variable inputs be coerced
 to factors? Default is FALSE}
 
+\item{x}{object returned by \code{\link{createDesign}}}
+
 \item{list2char}{logical; for \code{tibble} object re-evaluate list elements
 as character vectors for better printing of the levels? Note that this
 does not change the original classes of the object, just how they are printed.

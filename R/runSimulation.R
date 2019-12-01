@@ -1093,6 +1093,7 @@ summary.SimDesign <- function(object, ...){
 #'   does not change the original classes of the object, just how they are printed.
 #'   Default is TRUE
 #' @rdname runSimulation
+#' @export
 print.SimDesign <- function(x, list2char = TRUE, ...){
     classes <- sapply(x, class)
     if(list2char && any(classes == 'list') && is(x, 'tbl_df'))
