@@ -1086,3 +1086,16 @@ summary.SimDesign <- function(object, ...){
     ret$error_seeds <- NULL
     ret
 }
+
+#' @param x SimDesign object returned from \code{\link{runSimulation}}
+#' @param list2char logical; for \code{tibble} object re-evaluate list elements
+#'   as character vectors for better printing of the levels? Default is TRUE
+#' @rdname runSimulation
+print.SimDesign <- function(x, list2char = TRUE, ...){
+    classes <- sapply(x, class)
+    if(list2char && any(classes == 'list') && is(x, 'tbl_df'))
+        x <- list2char(x)
+    class(x) <- class(x)[!(class(x) %in% 'SimDesign')]
+    print(x, ...)
+
+}

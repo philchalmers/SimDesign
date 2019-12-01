@@ -2,9 +2,12 @@
 % Please edit documentation in R/Design.R
 \name{createDesign}
 \alias{createDesign}
+\alias{print.Design}
 \title{Create the simulation Design object}
 \usage{
 createDesign(..., subset, tibble = TRUE, stringsAsFactors = FALSE)
+
+\method{print}{Design}(x, list2char = TRUE, ...)
 }
 \arguments{
 \item{...}{comma separated list of named input objects representing the simulation
@@ -19,6 +22,9 @@ to create a partially crossed simulation design}
 
 \item{stringsAsFactors}{logical; should character variable inputs be coerced
 to factors? Default is FALSE}
+
+\item{list2char}{logical; for \code{tibble} object re-evaluate list elements
+as character vectors for better printing of the levels? Default is TRUE}
 }
 \value{
 a \code{tibble} or \code{data.frame} containing the simulation experiment
@@ -44,6 +50,20 @@ Design <- createDesign(N = c(10, 20),
                        SD = c(1, 2),
                        subset = !(N == 10 & SD == 2))
 Design
+
+# example with list inputs
+Design <- createDesign(N = c(10, 20),
+                       SD = c(1, 2),
+                       combo = list(c(0,0), c(0,0,1)))
+Design   # notice levels printed (not typical for tibble)
+print(Design, list2char = FALSE)   # standard tibble output
+
+Design <- createDesign(N = c(10, 20),
+                       SD = c(1, 2),
+                       combo = list(c(0,0), c(0,0,1)),
+                       combo2 = list(c(5,10,5), c(6,7)))
+Design
+print(Design, list2char = FALSE)   # standard tibble output
 
 }
 }

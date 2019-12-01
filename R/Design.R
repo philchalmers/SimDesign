@@ -46,6 +46,20 @@
 #'                        subset = !(N == 10 & SD == 2))
 #' Design
 #'
+#' # example with list inputs
+#' Design <- createDesign(N = c(10, 20),
+#'                        SD = c(1, 2),
+#'                        combo = list(c(0,0), c(0,0,1)))
+#' Design   # notice levels printed (not typical for tibble)
+#' print(Design, list2char = FALSE)   # standard tibble output
+#'
+#' Design <- createDesign(N = c(10, 20),
+#'                        SD = c(1, 2),
+#'                        combo = list(c(0,0), c(0,0,1)),
+#'                        combo2 = list(c(5,10,5), c(6,7)))
+#' Design
+#' print(Design, list2char = FALSE)   # standard tibble output
+#'
 #' }
 createDesign <- function(..., subset, tibble = TRUE, stringsAsFactors = FALSE){
     ret <- expand.grid(..., stringsAsFactors = stringsAsFactors)
@@ -57,5 +71,31 @@ createDesign <- function(..., subset, tibble = TRUE, stringsAsFactors = FALSE){
         ret <- ret[r & !is.na(r), , drop=FALSE]
     }
     if(tibble) ret <- dplyr::as_tibble(ret)
+    class(ret) <- c('Design', class(ret))
     ret
+}
+
+#' @rdname createDesign
+#' @param list2char logical; for \code{tibble} object re-evaluate list elements
+#'   as character vectors for better printing of the levels? Default is TRUE
+#' @export
+print.Design <- function(x, list2char = TRUE, ...){
+    classes <- sapply(x, class)
+    if(list2char && any(classes == 'list') && is(x, 'tbl_df'))
+        x <- list2char(x)
+    class(x) <- class(x)[!(class(x) %in% 'Design')]
+    print(x, ...)
+}
+
+list2char <- function(x){
+    classes <- sapply(x, class)
+    pick <- x[ , classes == 'list']
+    nms <- names(pick)
+    for(nm in nms){
+        tmp <- as.vector(apply(pick[,nm], 2L, as.character))
+        tmp <- sub("c(", "", tmp, fixed=TRUE)
+        tmp <- sub(")", "", tmp, fixed=TRUE)
+        x[ , nm] <- tmp
+    }
+    x
 }

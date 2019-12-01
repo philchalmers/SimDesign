@@ -3,6 +3,7 @@
 \name{runSimulation}
 \alias{runSimulation}
 \alias{summary.SimDesign}
+\alias{print.SimDesign}
 \title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
 \usage{
 runSimulation(design, replications, generate, analyse, summarise,
@@ -18,6 +19,8 @@ runSimulation(design, replications, generate, analyse, summarise,
   verbose = TRUE)
 
 \method{summary}{SimDesign}(object, ...)
+
+\method{print}{SimDesign}(x, list2char = TRUE, ...)
 }
 \arguments{
 \item{design}{a \code{data.frame} or \code{tibble} object containing the Monte Carlo simulation
@@ -255,6 +258,11 @@ analysis? Default is FALSE}
 \item{object}{SimDesign object returned from \code{\link{runSimulation}}}
 
 \item{...}{additional arguments}
+
+\item{x}{SimDesign object returned from \code{\link{runSimulation}}}
+
+\item{list2char}{logical; for \code{tibble} object re-evaluate list elements
+as character vectors for better printing of the levels? Default is TRUE}
 }
 \value{
 a \code{tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
