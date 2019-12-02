@@ -179,7 +179,7 @@ longer required.
 
 ```{r}
 res10 <- subset(res, nitems == 10)
-res10 <- res10[,!is.na(res10[1L, ])]
+res10 <- res10[,!as.vector(is.na(res10[1L, ]))]
 res20 <- subset(res, nitems == 20)
 ```
 
