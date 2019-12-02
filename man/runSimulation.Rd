@@ -40,12 +40,13 @@ simulations this is generally not recommended}
 \code{\link{Generate}} (or, if \code{generate} was omitted, both generates and
 analyses the simulated data). See \code{\link{Analyse}} for details}
 
-\item{summarise}{optional (but highly recommended) user-defined summary function to be used
-  after all the replications have completed within each \code{design} condition. Omitting this function
-  will return a list of data.frames (or a single data.frame, if only one row in \code{design} is supplied)
-  or, for more general objects (such as lists), a list containing the results returned form \code{\link{Analyse}}.
-  Alternatively, the value \code{NA} can be passed to let the generate-analyse-summarise process run as usual,
-  but that the summarise components are included only as a placeholder.
+\item{summarise}{optional (but highly recommended) user-defined summary function from \code{\link{Summarise}}
+  to be used after all the replications have completed within each \code{design} condition. Omitting this function
+  will return a list of \code{data.frame}s (or a single \code{data.frame}, if only one row in
+  \code{design} is supplied) or, for more general objects (such as \code{list}s), a \code{list}
+  containing the results returned form \code{\link{Analyse}}.
+  Alternatively, the value \code{NA} can be passed to let the generate-analyse-summarise process to run as usual,
+  where the summarise components are instead included only as a placeholder.
 
   Ommiting this input is only recommended for didactic purposes because it leaves out a large amount of
   information (e.g., try-errors, warning messages, saving files, etc), can witness memory related issues,
