@@ -37,7 +37,7 @@ library(SimDesign)
 #SimFunctions(comments = FALSE)
 
 ### Define design conditions
-Design <- expand.grid(N = c(50, 100, 200))
+Design <- createDesign(N = c(50, 100, 200))
 
 #--------------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 ### Run the simulation
 results <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, debug='none',
+                         generate=Generate, analyse=Analyse, summarise=Summarise, 
                          packages = 'mvtnorm')
 ```
 

@@ -34,10 +34,10 @@ influence the detection rates of the independent t-test. Here we study define th
 library(SimDesign)
 # SimFunctions()
 
-Design <- expand.grid(sample_size = c(30, 60, 90, 120),
-                      group_size_ratio = c(1/2, 1, 2),
-                      standard_deviation_ratio = c(1, 4, 8),
-                      mean_difference = c(0, 0.5))
+Design <- createDesign(sample_size = c(30, 60, 90, 120),
+                       group_size_ratio = c(1/2, 1, 2),
+                       standard_deviation_ratio = c(1, 4, 8),
+                       mean_difference = c(0, 0.5))
 dim(Design)
 head(Design, 3)
 tail(Design, 3)
@@ -194,14 +194,14 @@ Consider the following design definition:
 library(SimDesign)
 # SimFunctions()
 
-Design <- expand.grid(sample_size = c(30, 60, 90, 120),
-                      group_sizes = list(c(1/3, 2/3),
-                      						c(1/2, 1/2),
-                      						c(2/3, 1/3)),
-                      standard_deviations = list(c(1, 1),
-                      						   c(1, 4),
-                      						   c(1, 8)),
-                      means = list(c(0, 0), c(0, 0.5)))
+Design <- createDesign(sample_size = c(30, 60, 90, 120),
+                       group_sizes = list(c(1/3, 2/3),
+                       						c(1/2, 1/2),
+                       						c(2/3, 1/3)),
+                       standard_deviations = list(c(1, 1),
+                       						   c(1, 4),
+                       						   c(1, 8)),
+                       means = list(c(0, 0), c(0, 0.5)))
 dim(Design)
 head(Design)
 ```

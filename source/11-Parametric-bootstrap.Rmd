@@ -45,7 +45,7 @@ median_parametric_boot <- function(dat, fun, R = 1000, verbose = FALSE, ...){
     observed <- with(dat, fun(DV, group))
     
     require(SimDesign)
-    Design <- data.frame(N=nrow(dat))
+    Design <- createDesign(N=nrow(dat))
     fixed_objects <- list(fun = fun) #export fun to make it available across nodes
     
     Generate <- function(condition, fixed_objects = NULL) {

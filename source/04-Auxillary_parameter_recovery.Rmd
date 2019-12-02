@@ -33,8 +33,8 @@ All other parameters will be sampled from some internal generating functions in 
 library(SimDesign)
 # SimFunctions()
 
-Design <- expand.grid(test_length = c(10, 20, 30), 
-                      distribution = c('normal', 'bimodal'))
+Design <- createDesign(test_length = c(10, 20, 30), 
+                       distribution = c('normal', 'bimodal'))
 ```
 
 ### Define the functions

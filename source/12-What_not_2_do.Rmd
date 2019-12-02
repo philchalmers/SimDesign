@@ -98,10 +98,10 @@ sobel_test_p <- function(X, M, Y){
 
 library(SimDesign)
 
-Design <- expand.grid(N = c(100, 300),
-                      a = c(-.3, 0, .3),
-                      b = c(-.3, 0, .3),
-                      cp = c(-.2, 0, .2))
+Design <- createDesign(N = c(100, 300),
+                       a = c(-.3, 0, .3),
+                       b = c(-.3, 0, .3),
+                       cp = c(-.2, 0, .2))
 
 #-------------------------------------------------------------------
 

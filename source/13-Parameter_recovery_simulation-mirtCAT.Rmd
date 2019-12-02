@@ -30,8 +30,8 @@ library(SimDesign)
 library(mirtCAT)
 library(parallel)
 
-Design <- expand.grid(nitems = c(100, 300, 500),
-					  discrimination = c(.5, 1.5))
+Design <- createDesign(nitems = c(100, 300, 500),
+					   discrimination = c(.5, 1.5))
 cl <- makeCluster(detectCores())
 fo <- list(cl=cl, 
 		   design=list(min_SEM = .25, min_items = 10, max_items = 50))

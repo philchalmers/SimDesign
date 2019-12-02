@@ -38,8 +38,8 @@ z.CI <- function(dat, alpha = .05){
 }
 
 ### Define design conditions. Here we want a finer range of values for plotting
-Design <- expand.grid(mu = c(0, 5, 10), 
-                      sample_size = c(10, 20, 30))
+Design <- createDesign(mu = c(0, 5, 10), 
+                       sample_size = c(10, 20, 30))
 
 #---------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 ### Run the simulation
 results <- runSimulation(Design, replications=10000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, debug='none')
+                         generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
 
 ```{r}
@@ -87,8 +87,8 @@ library(SimDesign)
 #SimFunctions(comments = FALSE)
 
 ### Define design conditions. Here we want a finer range of values for plotting
-Design <- expand.grid(mu = c(0, 5, 10), 
-                      sample_size = c(10, 20, 30))
+Design <- createDesign(mu = c(0, 5, 10), 
+                       sample_size = c(10, 20, 30))
 
 z.CI <- function(dat, alpha = .05){
 	xbar <- mean(dat)
