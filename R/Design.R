@@ -70,7 +70,7 @@ createDesign <- function(..., subset, tibble = TRUE, stringsAsFactors = FALSE){
             stop("'subset' must be logical")
         ret <- ret[r & !is.na(r), , drop=FALSE]
     }
-    if(tibble) ret <- dplyr::as_tibble(ret, )
+    if(tibble) ret <- dplyr::as_tibble(ret)
     class(ret) <- c('Design', class(ret))
     ret
 }
