@@ -16,7 +16,7 @@
 #'   \code{data.frame}? Default is TRUE
 #'
 #' @param stringsAsFactors logical; should character variable inputs be coerced
-#'   to factors? Default is FALSE
+#'   to factors when building a \code{data.frame}? Default is FALSE
 #'
 #'
 #' @return a \code{tibble} or \code{data.frame} containing the simulation experiment
@@ -70,7 +70,7 @@ createDesign <- function(..., subset, tibble = TRUE, stringsAsFactors = FALSE){
             stop("'subset' must be logical")
         ret <- ret[r & !is.na(r), , drop=FALSE]
     }
-    if(tibble) ret <- dplyr::as_tibble(ret)
+    if(tibble) ret <- dplyr::as_tibble(ret, )
     class(ret) <- c('Design', class(ret))
     ret
 }

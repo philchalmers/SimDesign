@@ -21,7 +21,7 @@ to create a partially crossed simulation design}
 \code{data.frame}? Default is TRUE}
 
 \item{stringsAsFactors}{logical; should character variable inputs be coerced
-to factors? Default is FALSE}
+to factors when building a \code{data.frame}? Default is FALSE}
 
 \item{x}{object returned by \code{\link{createDesign}}}
 
