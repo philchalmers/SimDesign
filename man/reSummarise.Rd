@@ -5,7 +5,7 @@
 \title{Run a summarise step for results that have been saved to the hard drive}
 \usage{
 reSummarise(summarise, dir = NULL, files = NULL,
-  fixed_objects = NULL)
+  fixed_objects = NULL, bootSE = FALSE, boot_draws = 1000L)
 }
 \arguments{
 \item{summarise}{a summarise function to apply to the read-in files.
@@ -20,6 +20,13 @@ the .rds files}
 located within \code{dir} will be used}
 
 \item{fixed_objects}{(optional) see \code{\link{runSimulation}} for details}
+
+\item{bootSE}{logical; perform a non-parametric bootstrap to compute bootstrap standard error
+estimates for the respective meta-statistics computed by the \code{Summarise} function?
+See \code{\link{runSimulation}} for details}
+
+\item{boot_draws}{number of non-parametric bootstrap draws to sample for the \code{summarise}
+function after the generate-analyse replications are collected. Default is 1000}
 }
 \description{
 When \code{runSimulation()} uses the option \code{save_results = TRUE}

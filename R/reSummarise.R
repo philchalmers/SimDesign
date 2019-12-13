@@ -21,6 +21,13 @@
 #'
 #' @param fixed_objects (optional) see \code{\link{runSimulation}} for details
 #'
+#' @param bootSE logical; perform a non-parametric bootstrap to compute bootstrap standard error
+#'   estimates for the respective meta-statistics computed by the \code{Summarise} function?
+#'   See \code{\link{runSimulation}} for details
+#'
+#' @param boot_draws number of non-parametric bootstrap draws to sample for the \code{summarise}
+#'   function after the generate-analyse replications are collected. Default is 1000
+#'
 #' @export
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
@@ -72,7 +79,7 @@
 #' SimClean('simresults/')
 #' }
 reSummarise <- function(summarise, dir = NULL, files = NULL,
-                          fixed_objects = NULL){
+                        fixed_objects = NULL, bootSE = FALSE, boot_draws = 1000L){
     current_wd <- getwd()
     on.exit(setwd(current_wd))
     if(!is.null(dir)) setwd(dir)
@@ -93,6 +100,18 @@ reSummarise <- function(summarise, dir = NULL, files = NULL,
         res[[i]] <- try(sim_results_check(summ))
         if(is(res[[i]], 'try-error'))
             stop(sprintf("File \'%s\' did not return a valid summarise() output", files[i]))
+        if(bootSE){
+            SE_sim_results <- sapply(1L:boot_draws, function(r){
+                pick <- rint(n = replications, min = 1L, max = replications)
+                tmp <- if(!is.data.frame(inp$results)) inp$results[pick]
+                else inp$results[pick, , drop=FALSE]
+                summarise(results=tmp, condition=inp$condition, fixed_objects=fixed_objects)
+            })
+            if(!is.matrix(SE_sim_results)) SE_sim_results <- matrix(SE_sim_results, nrow=1L)
+            SE_sim_results <- apply(SE_sim_results, 1L, sd)
+            names(SE_sim_results) <- paste0("BOOT_SE.", names(res[[i]]))
+            res[[i]] <- c(res[[i]], SE_sim_results)
+        }
     }
     res <- cbind(plyr::rbind.fill(conditions), do.call(rbind, res))
     res$REPLICATION <- res$ID <- NULL

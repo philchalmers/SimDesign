@@ -140,8 +140,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         # could parallelize, TODO
         SE_sim_results <- sapply(1L:boot_draws, function(r){
             pick <- rint(n = replications, min = 1L, max = replications)
-            # results could be a list? TODO
-            tmp <- results[pick, , drop=FALSE]
+            tmp <- if(!is.data.frame(results)) results[pick]
+                else results[pick, , drop=FALSE]
             Functions$summarise(results=tmp, condition=condition, fixed_objects=fixed_objects)
         })
         if(!is.matrix(SE_sim_results)) SE_sim_results <- matrix(SE_sim_results, nrow=1L)
