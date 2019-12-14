@@ -255,7 +255,7 @@ test_that('SimDesign', {
         rgumbel(5)
     }
     mycollect <- function(condition, results, fixed_objects = NULL) {
-        mean(results)
+        mean(results$ret)
     }
     expect_error(runSimulation(Design, replications = 1,
                                generate=mygenerate, analyse=mycompute, summarise=mycollect,
@@ -473,12 +473,14 @@ test_that('SimDesign', {
     expect_true('thatfile.rds' %in% dir())
     SimClean('thatfile.rds')
 
-    results <- runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile', out_rootdir = "~/mytmpdir"),
-                             generate=Generate, analyse=Analyse2, summarise=Summarise, filename = 'thatfile',
-                             verbose=FALSE)
-    expect_true('thatfile.rds' %in% dir("~/mytmpdir"))
-    SimClean('thatfile.rds', save_details = list(out_rootdir = "~/mytmpdir"))
-    expect_false('thatfile.rds' %in% dir("~/mytmpdir"))
+    if(Sys.info()["sysname"] != 'Windows'){
+        results <- runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile', out_rootdir = "~/mytmpdir"),
+                                 generate=Generate, analyse=Analyse2, summarise=Summarise, filename = 'thatfile',
+                                 verbose=FALSE)
+        expect_true('thatfile.rds' %in% dir("~/mytmpdir"))
+        SimClean('thatfile.rds', save_details = list(out_rootdir = "~/mytmpdir"))
+        expect_false('thatfile.rds' %in% dir("~/mytmpdir"))
+    }
 
     gen_anal <- function(condition, dat, fixed_objects = NULL){
         dat <- rnorm(100)
@@ -504,7 +506,7 @@ test_that('SimDesign', {
         rnorm(5)
     }
     mycollect <- function(condition, results, fixed_objects = NULL) {
-        mean(results)
+        mean(results[,1])
     }
     result <- runSimulation(replications = 100, seed=1234, verbose=FALSE,
                             generate=mygenerate, analyse=mycompute, summarise=mycollect)
