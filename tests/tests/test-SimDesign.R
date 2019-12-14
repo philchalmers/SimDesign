@@ -315,7 +315,7 @@ test_that('SimDesign', {
                              save_details = list(save_results_dirname = 'dir3'))
     aggregate_simulations(dirs = c('dir1', 'dir2', 'dir3'))
     expect_true(dir.exists('SimDesign_aggregate_results'))
-    expect_equal(3, nrow(readRDS('SimDesign_aggregate_results/results-row-1.rds')$results))
+    expect_equal(6, nrow(readRDS('SimDesign_aggregate_results/results-row-1.rds')$results))
     SimClean(dirs = c('SimDesign_aggregate_results','dir1', 'dir2', 'dir3'))
 
     mycompute <- function(condition, dat, fixed_objects = NULL){
