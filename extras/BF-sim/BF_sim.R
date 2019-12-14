@@ -23,11 +23,10 @@ library(SimDesign)
 Design <- createDesign(var_ratio=c(4, 2, 1, 1/2, 1/4),
                        N=c(80, 20),
                        groups_equal=c(TRUE, FALSE),
-                       distribution=c('Gaussian', 't4', 'Chi4', 'Cauchy'))
-
-# remove redundent or not-applicable rows
-Design <- subset(Design, !(groups_equal & var_ratio < 1) |
-                     !(distribution != 'Gaussian' & var_ratio != 1))
+                       distribution=c('Gaussian', 't4', 'Chi4', 'Cauchy'),
+                       # remove redundent or not-applicable rows
+                       subset = !(groups_equal & var_ratio < 1) | 
+                           !(distribution != 'Gaussian' & var_ratio != 1))
 
 # Brown and Forsythe use different sample sizes when groups were unequal
 pick1 <- with(Design, !groups_equal & N == 80)

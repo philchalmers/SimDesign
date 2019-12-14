@@ -1,119 +1,101 @@
-generateLavaanSyntax <- function(J, model){
-    syntax <- if(model == 1 || model == 2){
-        paste0(paste0('f1 =~ ', paste0(rep(.7, J), paste0('*x', 1:J),
-                                       collapse=' + '), ' \n '),
-               paste0(sprintf('x%s ~~ 0.51*x%s', 1:J, 1:J), collapse=' \n '))
-    } else if(model == 3 || model == 4){
-        paste0(paste0('f1 =~ ', paste0(rep(.7, J), paste0('*x', 1:J),
-                                       collapse=' + '), ' \n '),
-               paste0('f2 =~ ', paste0(rep(.7, J), paste0('*x', 1:J + J),
-                                       collapse=' + '), ' \n '),
-               'f1 ~~ .3*f2 \n',
-               paste0(sprintf('x%s ~~ 0.51*x%s', 1:J, 1:J), collapse=' \n '))
-    }
-    syntax
-}
-
-analyseLavaanSyntax <- function(J, model){
-    syntax <- if(model == 1 || model == 2){
-        pick_lambdas <- matrix(TRUE, J, 1)
-        paste0(paste0('f1 =~ NA*x1 + ', paste0(paste0('x', 2:J),
-                                               collapse=' + ')), 
-               '\n f1 ~~ 1*f1')
-    } else if(model == 3 || model == 4){
-        pick_lambdas <- matrix(TRUE, J*2, 2)
-        pick_lambdas[(J+1):(J*3)] <- FALSE
-        paste0(paste0('f1 =~ NA*x1 + ', 
-                      paste0(paste0('x', 2:J), collapse=' + ')),
-               paste0(sprintf('\nf2 =~ NA*x%s + ', J+1),
-                      paste0(paste0('x', 2:J + J), collapse=' + ')),
-               '\nf1 ~~ 1*f1 \n f2 ~~ 1*f2 \nf1 ~~ f2')
-    }
-    list(syntax=syntax, pick_lambdas=pick_lambdas)
-}
-
-#-------------------------------------------------------------------
-
-# Flora and Curran (2004)
-
 library(SimDesign)
 
-# NOTE: row 30 will only have 4 categores, not 5, due to tau cut-offs
-Design <- expand.grid(N=c(100, 200, 500, 1000),
-                      categories = c(2,5),
-                      skew_kurt = list(c(0,0), c(.75, 1.75), c(.75, 3.75),
-                                       c(1.25, 1.75), c(1.25, 3.75)),
-                      model = c(1,2,3,4),
-                      estimator = c('DWLS', 'WLS'), stringsAsFactors = FALSE)
+Design <- createDesign(N = c(100, 200, 500, 1000),
+                       categories = c(2, 5),
+                       skewness_kurtosis = list(c(0, 0), c(.75, 1.75), c(.75, 3.75),
+                                                c(1.25, 1.75), c(1.25, 3.75)),
+                       factors = c(1, 2),
+                       indicators = c(5, 10),
+                       estimator = c('WLSMV', 'WLS'), 
+                       # remove poorly converging combinations
+                       subset = !(estimator == 'WLS' & N %in% c(100, 200) &
+                                      factors == 2 & indicators == 10))
 
-# remove super unstable WLS rows (p. 483)
-Design <- subset(Design, !(estimator == 'WLS' & N %in% c(100, 200) &
-                               model == 4))
-head(Design)
+# include syntax generation function
+source('FloraCurran2004-functions.R')
 
-#-------------------------------------------------------------------
+######################################################
 
 Generate <- function(condition, fixed_objects = NULL) {
-	Attach(condition)
-	J <- ifelse(model %in% c(1, 3), 5, 10)
-	syntax <- generateLavaanSyntax(J=J, model=model)
-	cdat <- simulateData(syntax, model.type = 'cfa', sample.nobs = N,
-						 skewness = skew_kurt[[1L]][1L],
-						 kurtosis = skew_kurt[[1L]][2L])
-	tau <- if(categories == 2) 0
-		else if(model != 4) c(-1.645, -0.643, 0.643, 1.645)
-		# lowest value from DF's dissertation to fix sparseness
-		else c(-1.125, -0.643, 0.643, 1.645)
-	dat <- apply(cdat, 2, function(x, tau){
-		vec <- numeric(length(x))
-		if(length(tau) == 1) 
-		    vec <- ifelse(x > tau, 1, 0)
-		else for(i in seq_len(4))
-		    vec[x > tau[i]] <- i
-		vec
-	}, tau=tau)
-	# throw error if number of categories not correct
-	if(!all(apply(dat, 2, function(x) length(unique(x))) == categories))
-		stop('Number of categories generated is incorrect')
-	dat
+    Attach(condition)
+    syntax <- genLavaanSyntax(factors=factors, indicators=indicators)
+    cdat <- simulateData(syntax, model.type='cfa', sample.nobs=N,
+                         skewness=skew_kurt[1L],
+                         kurtosis=skew_kurt[2L])
+    tau <- if(categories == 5)
+        c(-1.645, -0.643, 0.643, 1.645) else 0
+    # data generation fix described in Flora's (2002) unpublished dissertation 
+    if(categories == 5 && all(skew_kurt == c(1.25, 1.75))) 
+        tau[1] <- -1.125
+    dat <- apply(cdat, 2, function(x, tau){
+        dat <- numeric(length(x))
+        for(i in 1:length(tau))
+            dat[x > tau[i]] <- i
+        dat
+    }, tau=tau)
+    # throw error if number of categories not correct
+    if(!all(apply(dat, 2, function(x) length(unique(x))) == categories))
+        stop('Number of categories generated is incorrect')
+    dat
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL) {
-	Attach(condition)
-	J <- ifelse(model %in% c(1, 3), 5, 10)
-	out <- analyseLavaanSyntax(J=J, model=model)
-	mod <- cfa(out$syntax, dat, ordered = colnames(dat), estimator = estimator)
-	if(!lavInspect(mod, 'converged')) stop('Model did not converge')
-	cfs <- lavInspect(mod, what="std")$lambda[out$pick_lambdas]
-	psi12 <- if(model %in% c(3, 4)) 
-		lavInspect(mod, what="std")$psi[1,2] else .3
-	fit <- fitMeasures(mod)
-	ses <- lavInspect(mod, what="se")$lambda[out$pick_lambdas]
-	ret <- c(X2_rbias = unname(bias(fit['chisq'], fit['df'], 
-									type='relative') * 100),
-			 p = unname(EDR(fit['pvalue'])),
-			 cfi = unname(fit['cfi']),
-			 bias = unname(bias(cfs, .7)),
-			 rbias = unname(bias(cfs, .7, type='relative')) * 100,
-			 RMSE = unname(RMSE(cfs, .7)),
-			 psi12 = psi12,
-			 bias_psi12 = bias(psi12, .3),
-			 rbias_psi12 = bias(psi12, .3, type='relative') * 100,
-			 RMSE_psi12 = unname(RMSE(psi12, .3)),
-			 se = mean(ses))
-	ret
+    Attach(condition)
+    syntax <- genLavaanSyntax(factors=factors, indicators=indicators, analyse=TRUE)
+    mod <- cfa(syntax, dat, ordered=colnames(dat), estimator=estimator)
+    
+    # check that model and coefficients are reasonable
+    if(!lavInspect(mod, 'converged')) stop('Model did not converge')
+    pick_lambdas <- matrix(TRUE, indicators*factors, factors)
+    if(factors == 2)
+        pick_lambdas[(indicators+1):(indicators*3)] <- FALSE
+    cfs <- lavInspect(mod, what="std")$lambda[pick_lambdas]
+    if(any(cfs > 1 | cfs < -1))
+        stop('Model contains Heywood cases')
+    if(factors > 2 && abs(lavInspect(mod, what="std")$psi[2,1]) >= 1)
+        stop('Latent variable psi matrix not positive definite')
+    
+    # extract desired results
+    fit <- fitMeasures(mod)
+    ses <- lavInspect(mod, what="se")$lambda[pick_lambdas]
+    fitstats <- if(estimator == 'WLS') fit[c('chisq', 'df', 'pvalue')]
+    else if(estimator == 'WLSMV') fit[c('chisq.scaled', 'df.scaled', 'pvalue.scaled')]
+    names(fitstats) <- c('chisq', 'df', 'pvalue')
+    phi21 <- if(factors == 2)
+        lavInspect(mod, what="std")$psi[1,2] else NULL
+    
+    ret <- c(fitstats, mean_ses=mean(ses), lambda=cfs, phi21=phi21)
+    ret
 }
 
 Summarise <- function(condition, results, fixed_objects = NULL) {
-	c(colMeans(results),
-	  se_ratio = sd(results[,'bias']) / mean(results[,'se']),
-	  sd=apply(results, 2, sd))
+    # model parameters
+    lambdas <- results[ , grepl('lambda', colnames(results))]
+    pool_mean_lambdas <- mean(apply(lambdas, 2, mean))     # Equation 10
+    pool_SD_lambdas <- sqrt(mean(apply(lambdas, 2, var)))  # Equation 11
+    RB_phi21 <- if(condition$factors == 2)
+        bias(results$phi21, parameter=.3, type='relative', percent=TRUE) else NULL
+    mean_se <- mean(results$mean_ses)
+    
+    # goodness-of-fit
+    edr_05 <- EDR(results$pvalue, alpha = .05)
+    mean_X2 <- mean(results$chisq)
+    sd_X2 <- sd(results$chisq)
+    RB_X2 <- bias(results$chisq, parameter=results$df, type='relative',
+                  percent=TRUE, unname=TRUE)
+    
+    ret <- c(mean_X2=mean_X2, sd_X2=sd_X2, edr_05=edr_05,
+             pool_mean_lambdas=pool_mean_lambdas,
+             pool_SD_lambdas=pool_SD_lambdas, mean_se=mean_se,
+             RB_X2=RB_X2, RB_phi21=RB_phi21)
+    ret
 }
 
-#-------------------------------------------------------------------
+######################################################
 
+# run simulation
 results <- runSimulation(design=Design, replications=500, generate=Generate,
-						 analyse=Analyse, summarise=Summarise,
-						 packages= 'lavaan', parallel=TRUE, save=TRUE,
-						 filename='FloraCurran2004')
+                         analyse=Analyse, summarise=Summarise,
+                         packages='lavaan', parallel=TRUE, save=TRUE,
+                         filename='FloraCurran2004', save_results=TRUE)
 results
