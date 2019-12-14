@@ -81,58 +81,60 @@ head(d)
 Compare the previous `for`-loop approach with `SimDesign`. Personally, I find it more telling what the $p$-values are doing instead of how the $z$-values are behaving, so the Sobel test function was modified to return both the $z$ and $p$-values.
 
 ```{r cache=cache_}
-#modified to return z and p values
-sobel_test_p <- function(X, M, Y){
-    M_X = lm(M ~ X)
-    Y_XM = lm(Y ~ X + M)
-    a = coefficients(M_X)[2]
-    b = coefficients(Y_XM)[3]
-    stdera = summary(M_X)$coefficients[2,2] 
-    stderb = summary(Y_XM)$coefficients[3,2]
-    sobelz = unname(a*b / sqrt(b^2 * stdera^2 + a^2 * stderb^2))
-    ret <- c(sobelz=sobelz, p=pnorm(abs(sobelz), lower.tail = FALSE)*2)
+# Generate then edit R template file 'Hallgren2013.R'
+# SimDesign::SimFunctions('Hallgren2013')
+
+# function returns large-sample p-values and other information
+sobel_test <- function(X, M, Y){
+    M_X <- lm(M ~ X)
+    Y_XM <- lm(Y ~ X + M)
+    a <- coefficients(M_X)[2] # extract from numeric vector
+    b <- coefficients(Y_XM)[3]
+    stdera <- summary(M_X)$coefficients[2,2] # extract from list first then matrix 
+    stderb <- summary(Y_XM)$coefficients[3,2]
+    sobelz <- a*b / sqrt(b^2 * stdera^2 + a^2 * stderb^2)
+    sobelp <- pnorm(abs(sobelz), lower.tail = FALSE)*2
+    ret <- data.frame(a=a, SE_a=stdera, b=b, SE_b=stdera, 
+                      z=sobelz, p=sobelp)
     ret
 }
 
 #-------------------------------------------------------------------
-
 library(SimDesign)
 
+# fully-crossed simulation experiment
 Design <- createDesign(N = c(100, 300),
                        a = c(-.3, 0, .3),
                        b = c(-.3, 0, .3),
                        cp = c(-.2, 0, .2))
 
 #-------------------------------------------------------------------
-
 Generate <- function(condition, fixed_objects = NULL) {
-    Attach(condition)
-    X <- rnorm(N, 0, 1)
-    M <- a*X + rnorm(N, 0, 1)
-    Y <- cp*X + b*M + rnorm(N, 0, 1)
-    dat <- data.frame(X, M, Y)
-    dat
+    Attach(condition) # make N, a, b, and cp accessable
+    X <- rnorm(N)
+    M <- a*X + rnorm(N)
+    Y <- cp*X + b*M + rnorm(N)
+    dat <- data.frame(X=X, M=M, Y=Y) 
+    dat    
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL) {
-	Attach(dat)
-    XMY <- sobel_test_p(X, M, Y)
-    XYM <- sobel_test_p(X, Y, M)
-    ret <- c(XMY=XMY, XYM=XYM)
-    ret
+    Attach(dat) # make objects X, M, and Y directly accessible
+    sobel <- sobel_test(X=X, M=M, Y=Y)$p      
+    sobel_incorrect <- sobel_test(X=X, M=Y, Y=M)$p    
+    ret <- c(sobel=sobel, sobel_incorrect=sobel_incorrect) 
+    ret    # named vector of p-values
 }
 
 Summarise <- function(condition, results, fixed_objects = NULL) {
-    ret <- EDR(results[,c('XMY.p', 'XYM.p')], alpha = .05)
-    ret
+    ret <- EDR(results, alpha = .05) # results object is a 'data.frame'
+    ret    # empirical detection rate returned
 }
 
 #-------------------------------------------------------------------
-
-
-# large results objects are saved to the hard drive
-results <- runSimulation(design=Design, replications=1000, save_results=TRUE,
-    generate=Generate, analyse=Analyse, summarise=Summarise, debug='none')
+results <- runSimulation(design=Design, replications=1000,  
+    generate=Generate, analyse=Analyse, summarise=Summarise)
+results
 ```
 
 ```{r}
