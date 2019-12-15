@@ -95,7 +95,8 @@ list2char <- function(x){
     pick <- x[ , classes == 'list']
     nms <- names(pick)
     for(nm in nms){
-        tmp <- as.vector(apply(pick[,nm], 2L, as.character))
+        tmp <- try(as.vector(apply(pick[,nm], 2L, as.character)), TRUE)
+        if(is(tmp, 'try-error')) next
         tmp <- sub("c(", "[", tmp, fixed=TRUE)
         tmp <- sub(")", "]", tmp, fixed=TRUE)
         x[ , nm] <- tmp
