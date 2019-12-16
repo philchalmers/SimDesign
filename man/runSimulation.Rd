@@ -13,10 +13,9 @@ runSimulation(design, replications, generate, analyse, summarise,
   save_results = FALSE, store_results = FALSE,
   warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
   parallel = FALSE, ncores = parallel::detectCores(), cl = NULL,
-  MPI = FALSE, max_errors = 50L, save_generate_data = FALSE,
-  save_details = list(), debug = "none", progress = TRUE,
-  allow_na = FALSE, allow_nan = FALSE, edit = "none",
-  verbose = TRUE)
+  MPI = FALSE, max_errors = 50L, save_details = list(),
+  debug = "none", progress = TRUE, allow_na = FALSE,
+  allow_nan = FALSE, edit = "none", verbose = TRUE)
 
 \method{summary}{SimDesign}(object, ...)
 
@@ -177,18 +176,8 @@ in parallel on a cluster? Default is \code{FALSE}}
 given condition. The purpose of this is to indicate that something fatally problematic is likely going
 wrong in the generate-analyse phases and should be inspected. Default is 50}
 
-\item{save_generate_data}{logical; save the data returned from \code{\link{Generate}} to external \code{.rds} files
-  located in the defined \code{save_generate_data_dirname} directory/folder?
-  When \code{TRUE}, temporary files will also be saved to the working directory
-  (in the same way as when \code{save = TRUE}). Default is \code{FALSE}
-
-  WARNING: saving data to your hard-drive can fill up space very quickly for larger simulations. Be sure to
-  test this option using a smaller number of replications before the full Monte Carlo simulation is performed.
-  It is generally recommended to leave this argument as \code{FALSE} because saving datasets will often consume
-  a needless amount of disk space, and by-and-large saving data is not required for simulations.}
-
 \item{save_details}{a list pertaining to information regarding how and where files should be saved
-  when the \code{save}, \code{save_results}, or \code{save_generate_data} flags are triggered.
+  when the \code{save} or \code{save_results} flags are triggered.
 
   \describe{
 
@@ -220,12 +209,6 @@ wrong in the generate-analyse phases and should be inspected. Default is 50}
       \code{.Random.seed} objects to when \code{save_seeds = TRUE}. If a directory/folder does not exist
       in the current working directory then one will be created automatically. Default is
       \code{'SimDesign-seeds_'} with the associated \code{compname} appended}
-
-    \item{\code{save_generate_data_dirname}}{a string indicating the name of the folder to save
-      data objects to when \code{save_generate_data = TRUE}. If a directory/folder does not exist
-      in the current working directory then one will be created automatically.
-      Within this folder nested directories will be created associated with each row in \code{design}.
-      Default is \code{'SimDesign-generate-data_'} with the \code{compname} appended}
 
   }}
 
@@ -367,10 +350,9 @@ For longer simulations it is recommended to use \code{save = TRUE} to temporaril
 simulation state, and to use the \code{save_results} flag to write the analysis results
 the to hard-disc.
 
-The generated data can be saved by passing
-\code{save_generate_data = TRUE}, however it is often more memory efficient to use the
-\code{save_seeds} option instead to only save R's \code{.Random.seed} state instead (still
-allowing for complete reproducibility); individual \code{.Random.seed} terms may also be read in with the
+The use of the \code{save_seeds} option can be envoked to save R's \code{.Random.seed} state to allow
+for complete reproducibility of each replication within each condition. These
+individual \code{.Random.seed} terms can then be read in with the
 \code{load_seed} input to reproduce the exact simulation state at any given replication. Finally,
 providing a vector of \code{seeds} is also possible to ensure
 that each simulation condition is completely reproducible under the single/multi-core method selected.

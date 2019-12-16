@@ -237,9 +237,8 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 #
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
-                    save, save_generate_data, save_generate_data_dirname, allow_na, allow_nan,
-                    save_seeds, save_seeds_dirname, load_seed, warnings_as_errors, packages = NULL,
-                    use_try){
+                    save, allow_na, allow_nan, save_seeds, save_seeds_dirname, load_seed,
+                    warnings_as_errors, packages = NULL, use_try){
 
     load_packages(packages)
     condition$REPLICATION <- index
@@ -291,17 +290,6 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             }
             try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
             next
-        }
-        if(save_generate_data){
-            filename_stem <- paste0(save_generate_data_dirname, '/design-row-', condition$ID,
-                                    '/generate-data-')
-            filename <- paste0(filename_stem, index, '.rds')
-            count <- 1L
-            while(file.exists(file.path(save_results_out_rootdir, filename))){
-                filename <- paste0(filename_stem, index, '-', count, '.rds')
-                count <- count + 1L
-            }
-            saveRDS(simlist, file.path(save_results_out_rootdir, filename))
         }
         res <- try(withCallingHandlers(analyse(dat=simlist, condition=condition,
                            fixed_objects=fixed_objects), warning=wHandler), silent=TRUE)
