@@ -66,7 +66,7 @@
 #' with minimal error. This means that you can focus on your Monte Carlo simulation immediately rather
 #' than worrying about the administrative code-work required to organize the simulation work-flow.
 #'
-#' Additional information for each condition are also contained in the \code{data.frame} object returned by
+#' Additional information for each condition are also contained in the object returned by
 #' \code{runSimulation}: \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 #' all the Monte Carlo replications for each respective design condition,
@@ -754,8 +754,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(any(grepl('attach\\(', char_functions)))
         stop('Did you mean to use Attach() instead of attach()?', call.=FALSE)
-    if(is(design, 'tbl') || is(design, 'tbl_df'))
+    was_tibble <- FALSE
+    if(is(design, 'tbl') || is(design, 'tbl_df')){
         design <- as.data.frame(design)
+        was_tibble <- TRUE
+    }
     if(!is(design, 'data.frame'))
         stop('design must be a data.frame or tibble object', call. = FALSE)
     if(replications < 1L)
@@ -904,7 +907,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if(verbose)
                 print_progress(i, nrow(design), stored_time=stored_time, progress=progress)
             Result_list[[i]] <- Analysis(Functions=Functions,
-                                         condition=design[i,],
+                                         condition=if(was_tibble) dplyr::as_tibble(design[i,]) else design[i,],
                                          replications=replications,
                                          fixed_objects=fixed_objects,
                                          cl=cl, MPI=MPI, seed=seed,
@@ -934,7 +937,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 dir.create(file.path(out_rootdir,
                                      paste0(save_seeds_dirname, '/design-row-', i)), showWarnings = FALSE)
             tmp <- Analysis(Functions=Functions,
-                            condition=design[i,],
+                            condition=if(was_tibble) dplyr::as_tibble(design[i,]) else design[i,],
                             replications=replications,
                             fixed_objects=fixed_objects,
                             cl=cl, MPI=MPI, seed=seed,

@@ -342,7 +342,7 @@ to one/two files so that modifying the required functions and objects can begin 
 with minimal error. This means that you can focus on your Monte Carlo simulation immediately rather
 than worrying about the administrative code-work required to organize the simulation work-flow.
 
-Additional information for each condition are also contained in the \code{data.frame} object returned by
+Additional information for each condition are also contained in the object returned by
 \code{runSimulation}: \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 all the Monte Carlo replications for each respective design condition,
