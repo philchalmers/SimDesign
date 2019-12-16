@@ -35,7 +35,7 @@ incidentally should never be used in your code.
 \dontrun{
 
 # does not use Attach()
-mygenerate <- function(condition, fixed_objects = NULL){
+Generate <- function(condition, fixed_objects = NULL){
     N1 <- condition$sample_sizes_group1
     N2 <- condition$sample_sizes_group2
     sd <- condition$standard_deviations
@@ -48,7 +48,7 @@ mygenerate <- function(condition, fixed_objects = NULL){
 }
 
 # similar to above, but using the Attach() function instead of indexing
-mygenerate <- function(condition, fixed_objects = NULL){
+Generate <- function(condition, fixed_objects = NULL){
     Attach(condition)
     N1 <- sample_sizes_group1
     N2 <- sample_sizes_group2

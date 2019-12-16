@@ -125,17 +125,17 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 #---------------------------------------------------------------------------
 
 ### Run the simulation
-results <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, debug='none')
-results
+res <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
+                     generate=Generate, analyse=Analyse, summarise=Summarise, debug='none')
+res
 ```
 
 By placing objects in a list and passing this to `fixed_objects`, the objects are safely exported to all relevant functions. Furthermore, running this code in parallel will also be valid as a consequence (see below) because all objects are properly exported to each core. 
 
 ```{r eval=FALSE}
-results <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, debug='none',
-                         parallel = TRUE)
+res <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
+                     generate=Generate, analyse=Analyse, summarise=Summarise, debug='none',
+                     parallel = TRUE)
 ```
 
 Again, remember that this is only required for R **objects**, NOT for user-defined functions!

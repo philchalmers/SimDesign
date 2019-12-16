@@ -188,16 +188,16 @@ set.seed(1234)
 ```
 
 ```{r}
-results <- runSimulation(Design, replications = 1000, generate=Generate, 
+res <- runSimulation(Design, replications = 1000, generate=Generate, 
                          analyse=Analyse, summarise=Summarise)
-results
+res
 ```
 
 As can be seen from the printed results, each result from the `Summarise()` function has been paired with their
 respective condition, meta-statistics have been properly named, and three additional columns have been appended
 to the results: `REPLICATIONS`, which indicates how many time the conditions were performed, `SIM_TIME`, indicating
 the time (in seconds) it took to completely finish the respective conditions, and `SEED`, which indicates the random seeds used by `SimDesign` for each condition (for reproducibility). A call to `View()` in the 
-R console may also be a nice way to sift through the `results` object.
+R console may also be a nice way to sift through the `res` object.
 
 ## Interpreting the results
 
@@ -214,7 +214,7 @@ the mean is the least effective method. This is witnessed rather clearly in the 
 prints the relative efficiency of the estimators:
 
 ```{r}
-REs <- results[,grepl('RE\\.', colnames(results))]
+REs <- res[,grepl('RE\\.', colnames(res))]
 data.frame(Design, REs)
 ```
 

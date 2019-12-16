@@ -44,18 +44,18 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
     mean(results)
 }
 
-result <- runSimulation(replications = 100, seed=1234, verbose=FALSE,
-                        generate=Generate, analyse=Analyse, summarise=Summarise)
-result
+res <- runSimulation(replications = 100, seed=1234, verbose=FALSE,
+                     generate=Generate, analyse=Analyse, summarise=Summarise)
+res
 
-SimExtract(result, what = 'errors')
-SimExtract(result, what = 'warnings')
-seeds <- SimExtract(result, what = 'error_seeds')
+SimExtract(res, what = 'errors')
+SimExtract(res, what = 'warnings')
+seeds <- SimExtract(res, what = 'error_seeds')
 seeds[,1:3]
 
 # replicate a specific error for debugging (type Q to exit debugger)
-result <- runSimulation(replications = 100, load_seed=seeds[,1], debug='analyse',
-                        generate=Generate, analyse=Analyse, summarise=Summarise)
+res <- runSimulation(replications = 100, load_seed=seeds[,1], debug='analyse',
+                     generate=Generate, analyse=Analyse, summarise=Summarise)
 
 
 

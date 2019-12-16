@@ -46,7 +46,7 @@
 #'   \item{\code{Generate <- function(condition, fixed_objects = NULL) \{...\} }}{}
 #'   \item{\code{Analyse <- function(condition, dat, fixed_objects = NULL) \{...\} }}{}
 #'   \item{\code{Summarise <- function(condition, results, fixed_objects = NULL) \{...\} }}{}
-#'   \item{\code{results <- runSimulation(design=Design, replications, generate=Generate,
+#'   \item{\code{res <- runSimulation(design=Design, replications, generate=Generate,
 #'         analyse=Analyse, summarise=Summarise)}}{}
 #' }
 #'
@@ -439,17 +439,17 @@
 #' #   b) pass save_results = TRUE to runSimulation() and read the results in with SimResults()
 #'
 #' # e.g., the a) approach
-#' results <- runSimulation(design=Design, replications=1000,
-#'                        generate=Generate, analyse=Analyse)
-#' str(results)
-#' head(results[[1]])
+#' res <- runSimulation(design=Design, replications=1000,
+#'                      generate=Generate, analyse=Analyse)
+#' str(res)
+#' head(res[[1]])
 #'
 #' # or b) approach
 #' Final <- runSimulation(design=Design, replications=1000, save_results=TRUE,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
-#' results <- SimResults(Final)
-#' str(results)
-#' head(results[[1]]$results)
+#' res <- SimResults(Final)
+#' str(res)
+#' head(res[[1]]$results)
 #'
 #' # remove the saved results from the hard-drive if you no longer want them
 #' SimClean(results = TRUE)
@@ -517,16 +517,16 @@
 #' #### Step 3 --- Collect results by looping over the rows in design
 #'
 #' # first, test to see if it works
-#' Final <- runSimulation(design=Design, replications=5, store_results=TRUE,
-#'                        generate=Generate, analyse=Analyse, summarise=Summarise)
-#' Final
+#' res <- runSimulation(design=Design, replications=5, store_results=TRUE,
+#'                      generate=Generate, analyse=Analyse, summarise=Summarise)
+#' res
 #'
 #' \dontrun{
 #' # complete run with 1000 replications per condition
-#' Final <- runSimulation(design=Design, replications=1000, parallel=TRUE,
-#'                        generate=Generate, analyse=Analyse, summarise=Summarise)
-#' Final
-#' View(Final)
+#' res <- runSimulation(design=Design, replications=1000, parallel=TRUE,
+#'                      generate=Generate, analyse=Analyse, summarise=Summarise)
+#' res
+#' View(res)
 #'
 #' ## save final results to a file upon completion (not run)
 #' runSimulation(design=Design, replications=1000, parallel=TRUE, save=TRUE, filename = 'mysim',
@@ -582,8 +582,8 @@
 #' # spec <- unlist(spec, recursive=FALSE)
 #' #
 #' # cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)
-#' # Final <- runSimulation(design=Design, replications=1000, parallel = TRUE, save=TRUE,
-#' #                        generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
+#' # res <- runSimulation(design=Design, replications=1000, parallel = TRUE, save=TRUE,
+#' #                      generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' ###### Post-analysis: Analyze the results via functions like lm() or SimAnova(), and create
@@ -591,22 +591,22 @@
 #' ###### This is where you get to be a data analyst!
 #'
 #' library(dplyr)
-#' Final %>% summarise(mean(welch), mean(independent))
-#' Final %>% group_by(standard_deviation_ratio, group_size_ratio) %>%
+#' res %>% summarise(mean(welch), mean(independent))
+#' res %>% group_by(standard_deviation_ratio, group_size_ratio) %>%
 #'    summarise(mean(welch), mean(independent))
 #'
 #' # quick ANOVA analysis method with all two-way interactions
-#' SimAnova( ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, Final,
+#' SimAnova( ~ (sample_size + group_size_ratio + standard_deviation_ratio)^2, res,
 #'   rates = TRUE)
 #'
 #' # or more specific ANOVAs
 #' SimAnova(independent ~ (group_size_ratio + standard_deviation_ratio)^2,
-#'     Final, rates = TRUE)
+#'     res, rates = TRUE)
 #'
 #' # make some plots
 #' library(ggplot2)
 #' library(reshape2)
-#' welch_ind <- Final %>% select(group_size_ratio, standard_deviation_ratio, welch, independent)
+#' welch_ind <- res %>% select(group_size_ratio, standard_deviation_ratio, welch, independent)
 #' dd <- melt(welch_ind, id.vars = names(welch_ind)[1:2])
 #'
 #' ggplot(dd, aes(factor(group_size_ratio), value)) + geom_boxplot() +

@@ -66,15 +66,15 @@
 #'
 #' SimClean('SimDesign-results.rds')
 #'
-#' results <- reSummarise(Summarise, dir = 'simresults/')
-#' results
+#' res <- reSummarise(Summarise, dir = 'simresults/')
+#' res
 #'
 #' Summarise2 <- function(condition, results, fixed_objects = NULL){
 #'     mean(results)
 #' }
 #'
-#' results2 <- reSummarise(Summarise2, dir = 'simresults/')
-#' results2
+#' res2 <- reSummarise(Summarise2, dir = 'simresults/')
+#' res2
 #'
 #' SimClean('simresults/')
 #' }
