@@ -35,17 +35,18 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 #-------------------------------------------------------------------
 
 # save results to the drive
-results <- runSimulation(design=Design, replications=5000, packages = 'lawstat',
-    generate=Generate, analyse=Analyse, summarise=Summarise, parallel=TRUE,
-    save=TRUE, filename='Nordstokke_Zumbo2007')
-results
+res <- runSimulation(design=Design, replications=5000, generate=Generate,
+                     analyse=Analyse, summarise=Summarise, parallel=TRUE,
+                     packages = 'lawstat', save=TRUE,
+                     filename='Nordstokke_Zumbo2007')
+res
 
 # Type I errors
-TypeI <- subset(results, var_ratio == 1)
+TypeI <- subset(res, var_ratio == 1)
 Table1 <- TypeI[order(TypeI$df, TypeI$sample_size), ]
 Table1
 
 # Power
-Power <- subset(results, var_ratio != 1)
+Power <- subset(res, var_ratio != 1)
 Power
 

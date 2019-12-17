@@ -25,7 +25,7 @@ Design <- createDesign(var_ratio=c(4, 2, 1, 1/2, 1/4),
                        groups_equal=c(TRUE, FALSE),
                        distribution=c('Gaussian', 't4', 'Chi4', 'Cauchy'),
                        # remove redundent or not-applicable rows
-                       subset = !(groups_equal & var_ratio < 1) | 
+                       subset = !(groups_equal & var_ratio < 1) |
                            !(distribution != 'Gaussian' & var_ratio != 1))
 
 # Brown and Forsythe use different sample sizes when groups were unequal
@@ -81,14 +81,14 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 #-------------------------------------------------------------------
 # Run the MCS
 
-results <- runSimulation(design=Design, replications=1000, parallel=TRUE,
-                         generate=Generate, analyse=Analyse,
-                         summarise=Summarise, packages='lawstat',
-                         filename='BF_simulation')
-results
+res <- runSimulation(design=Design, replications=1000, parallel=TRUE,
+                     generate=Generate, analyse=Analyse,
+                     summarise=Summarise, packages='lawstat',
+                     filename='BF_simulation')
+res
 
-TypeI <- subset(results, var_ratio == 1)
+TypeI <- subset(res, var_ratio == 1)
 TypeI
 
-Power <- subset(results, var_ratio != 1)
+Power <- subset(res, var_ratio != 1)
 Power
