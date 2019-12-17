@@ -12,7 +12,7 @@ Design <- createDesign(N = c(100, 200, 500, 1000),
                                       factors == 2 & indicators == 10))
 
 # include syntax generation function
-source('FloraCurran2004-functions.R')
+source('FloraCurran2004_functions.R')
 
 ######################################################
 
