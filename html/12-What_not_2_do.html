@@ -420,7 +420,7 @@ d = data.frame(d)
 # the following line was added to determine the computation time
 time1 &lt;- Sys.time()
 time1 - time0</code></pre>
-<pre><code>## Time difference of 5.34 mins</code></pre>
+<pre><code>## Time difference of 5.37 mins</code></pre>
 <pre class="r"><code>head(d)</code></pre>
 <pre><code>##   iteration    a    b   cp   N model Sobel_z
 ## 1         1 -0.3 -0.3 -0.2 100     1  1.7836
@@ -433,239 +433,255 @@ time1 - time0</code></pre>
 <div id="simulation-using-simdesign" class="section level1">
 <h1>Simulation Using SimDesign</h1>
 <p>Compare the previous <code>for</code>-loop approach with <code>SimDesign</code>. Personally, I find it more telling what the <span class="math inline">\(p\)</span>-values are doing instead of how the <span class="math inline">\(z\)</span>-values are behaving, so the Sobel test function was modified to return both the <span class="math inline">\(z\)</span> and <span class="math inline">\(p\)</span>-values.</p>
-<pre class="r"><code>#modified to return z and p values
-sobel_test_p &lt;- function(X, M, Y){
-    M_X = lm(M ~ X)
-    Y_XM = lm(Y ~ X + M)
-    a = coefficients(M_X)[2]
-    b = coefficients(Y_XM)[3]
-    stdera = summary(M_X)$coefficients[2,2] 
-    stderb = summary(Y_XM)$coefficients[3,2]
-    sobelz = unname(a*b / sqrt(b^2 * stdera^2 + a^2 * stderb^2))
-    ret &lt;- c(sobelz=sobelz, p=pnorm(abs(sobelz), lower.tail = FALSE)*2)
+<pre class="r"><code># Generate then edit R template file 'Hallgren2013.R'
+# SimDesign::SimFunctions('Hallgren2013')
+
+# function returns large-sample p-values and other information
+sobel_test &lt;- function(X, M, Y){
+    M_X &lt;- lm(M ~ X)
+    Y_XM &lt;- lm(Y ~ X + M)
+    a &lt;- coefficients(M_X)[2] # extract from numeric vector
+    b &lt;- coefficients(Y_XM)[3]
+    stdera &lt;- summary(M_X)$coefficients[2,2] # extract from list first then matrix 
+    stderb &lt;- summary(Y_XM)$coefficients[3,2]
+    sobelz &lt;- a*b / sqrt(b^2 * stdera^2 + a^2 * stderb^2)
+    sobelp &lt;- pnorm(abs(sobelz), lower.tail = FALSE)*2
+    ret &lt;- data.frame(a=a, SE_a=stdera, b=b, SE_b=stdera, 
+                      z=sobelz, p=sobelp)
     ret
 }
 
 #-------------------------------------------------------------------
-
 library(SimDesign)
 
+# fully-crossed simulation experiment
 Design &lt;- createDesign(N = c(100, 300),
                        a = c(-.3, 0, .3),
                        b = c(-.3, 0, .3),
                        cp = c(-.2, 0, .2))
 
 #-------------------------------------------------------------------
-
 Generate &lt;- function(condition, fixed_objects = NULL) {
-    Attach(condition)
-    X &lt;- rnorm(N, 0, 1)
-    M &lt;- a*X + rnorm(N, 0, 1)
-    Y &lt;- cp*X + b*M + rnorm(N, 0, 1)
-    dat &lt;- data.frame(X, M, Y)
-    dat
+    Attach(condition) # make N, a, b, and cp accessable
+    X &lt;- rnorm(N)
+    M &lt;- a*X + rnorm(N)
+    Y &lt;- cp*X + b*M + rnorm(N)
+    dat &lt;- data.frame(X=X, M=M, Y=Y) 
+    dat    
 }
 
 Analyse &lt;- function(condition, dat, fixed_objects = NULL) {
-    Attach(dat)
-    XMY &lt;- sobel_test_p(X, M, Y)
-    XYM &lt;- sobel_test_p(X, Y, M)
-    ret &lt;- c(XMY=XMY, XYM=XYM)
-    ret
+    Attach(dat) # make objects X, M, and Y directly accessible
+    sobel &lt;- sobel_test(X=X, M=M, Y=Y)$p      
+    sobel_incorrect &lt;- sobel_test(X=X, M=Y, Y=M)$p    
+    ret &lt;- c(sobel=sobel, sobel_incorrect=sobel_incorrect) 
+    ret    # named vector of p-values
 }
 
 Summarise &lt;- function(condition, results, fixed_objects = NULL) {
-    ret &lt;- EDR(results[,c('XMY.p', 'XYM.p')], alpha = .05)
-    ret
+    ret &lt;- EDR(results, alpha = .05) # results object is a 'data.frame'
+    ret    # empirical detection rate returned
 }
 
 #-------------------------------------------------------------------
-
-
-# large results objects are saved to the hard drive
-results &lt;- runSimulation(design=Design, replications=1000, save_results=TRUE,
-    generate=Generate, analyse=Analyse, summarise=Summarise, debug='none')</code></pre>
+res &lt;- runSimulation(design=Design, replications=1000, generate=Generate, 
+                     analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 ## 
-Design row: 1/54;   Started: Mon Dec  2 23:37:44 2019;   Total elapsed time: 0.00s 
+Design row: 1/54;   Started: Tue Dec 17 16:12:28 2019;   Total elapsed time: 0.00s 
 ## 
 ## 
-Design row: 2/54;   Started: Mon Dec  2 23:37:48 2019;   Total elapsed time: 4.22s 
+Design row: 2/54;   Started: Tue Dec 17 16:12:34 2019;   Total elapsed time: 5.16s 
 ## 
 ## 
-Design row: 3/54;   Started: Mon Dec  2 23:37:53 2019;   Total elapsed time: 8.62s 
+Design row: 3/54;   Started: Tue Dec 17 16:12:39 2019;   Total elapsed time: 10.70s 
 ## 
 ## 
-Design row: 4/54;   Started: Mon Dec  2 23:37:57 2019;   Total elapsed time: 12.82s 
+Design row: 4/54;   Started: Tue Dec 17 16:12:44 2019;   Total elapsed time: 15.85s 
 ## 
 ## 
-Design row: 5/54;   Started: Mon Dec  2 23:38:01 2019;   Total elapsed time: 17.24s 
+Design row: 5/54;   Started: Tue Dec 17 16:12:50 2019;   Total elapsed time: 21.30s 
 ## 
 ## 
-Design row: 6/54;   Started: Mon Dec  2 23:38:05 2019;   Total elapsed time: 21.47s 
+Design row: 6/54;   Started: Tue Dec 17 16:12:55 2019;   Total elapsed time: 26.41s 
 ## 
 ## 
-Design row: 7/54;   Started: Mon Dec  2 23:38:10 2019;   Total elapsed time: 25.90s 
+Design row: 7/54;   Started: Tue Dec 17 16:13:00 2019;   Total elapsed time: 31.70s 
 ## 
 ## 
-Design row: 8/54;   Started: Mon Dec  2 23:38:14 2019;   Total elapsed time: 30.16s 
+Design row: 8/54;   Started: Tue Dec 17 16:13:05 2019;   Total elapsed time: 36.84s 
 ## 
 ## 
-Design row: 9/54;   Started: Mon Dec  2 23:38:18 2019;   Total elapsed time: 34.52s 
+Design row: 9/54;   Started: Tue Dec 17 16:13:11 2019;   Total elapsed time: 42.25s 
 ## 
 ## 
-Design row: 10/54;   Started: Mon Dec  2 23:38:23 2019;   Total elapsed time: 38.69s 
+Design row: 10/54;   Started: Tue Dec 17 16:13:16 2019;   Total elapsed time: 47.32s 
 ## 
 ## 
-Design row: 11/54;   Started: Mon Dec  2 23:38:27 2019;   Total elapsed time: 43.08s 
+Design row: 11/54;   Started: Tue Dec 17 16:13:21 2019;   Total elapsed time: 52.65s 
 ## 
 ## 
-Design row: 12/54;   Started: Mon Dec  2 23:38:31 2019;   Total elapsed time: 47.31s 
+Design row: 12/54;   Started: Tue Dec 17 16:13:26 2019;   Total elapsed time: 57.81s 
 ## 
 ## 
-Design row: 13/54;   Started: Mon Dec  2 23:38:36 2019;   Total elapsed time: 51.71s 
+Design row: 13/54;   Started: Tue Dec 17 16:13:32 2019;   Total elapsed time: 01m 3.25s 
 ## 
 ## 
-Design row: 14/54;   Started: Mon Dec  2 23:38:40 2019;   Total elapsed time: 55.91s 
+Design row: 14/54;   Started: Tue Dec 17 16:13:37 2019;   Total elapsed time: 01m 8.37s 
 ## 
 ## 
-Design row: 15/54;   Started: Mon Dec  2 23:38:44 2019;   Total elapsed time: 01m 0.36s 
+Design row: 15/54;   Started: Tue Dec 17 16:13:42 2019;   Total elapsed time: 01m 13.71s 
 ## 
 ## 
-Design row: 16/54;   Started: Mon Dec  2 23:38:48 2019;   Total elapsed time: 01m 4.57s 
+Design row: 16/54;   Started: Tue Dec 17 16:13:48 2019;   Total elapsed time: 01m 19.28s 
 ## 
 ## 
-Design row: 17/54;   Started: Mon Dec  2 23:38:53 2019;   Total elapsed time: 01m 9.10s 
+Design row: 17/54;   Started: Tue Dec 17 16:13:53 2019;   Total elapsed time: 01m 24.88s 
 ## 
 ## 
-Design row: 18/54;   Started: Mon Dec  2 23:38:57 2019;   Total elapsed time: 01m 13.34s 
+Design row: 18/54;   Started: Tue Dec 17 16:13:59 2019;   Total elapsed time: 01m 30.19s 
 ## 
 ## 
-Design row: 19/54;   Started: Mon Dec  2 23:39:02 2019;   Total elapsed time: 01m 17.85s 
+Design row: 19/54;   Started: Tue Dec 17 16:14:04 2019;   Total elapsed time: 01m 35.63s 
 ## 
 ## 
-Design row: 20/54;   Started: Mon Dec  2 23:39:06 2019;   Total elapsed time: 01m 22.03s 
+Design row: 20/54;   Started: Tue Dec 17 16:14:09 2019;   Total elapsed time: 01m 40.73s 
 ## 
 ## 
-Design row: 21/54;   Started: Mon Dec  2 23:39:11 2019;   Total elapsed time: 01m 26.68s 
+Design row: 21/54;   Started: Tue Dec 17 16:14:15 2019;   Total elapsed time: 01m 46.11s 
 ## 
 ## 
-Design row: 22/54;   Started: Mon Dec  2 23:39:15 2019;   Total elapsed time: 01m 31.02s 
+Design row: 22/54;   Started: Tue Dec 17 16:14:20 2019;   Total elapsed time: 01m 51.32s 
 ## 
 ## 
-Design row: 23/54;   Started: Mon Dec  2 23:39:19 2019;   Total elapsed time: 01m 35.42s 
+Design row: 23/54;   Started: Tue Dec 17 16:14:25 2019;   Total elapsed time: 01m 56.92s 
 ## 
 ## 
-Design row: 24/54;   Started: Mon Dec  2 23:39:24 2019;   Total elapsed time: 01m 39.62s 
+Design row: 24/54;   Started: Tue Dec 17 16:14:31 2019;   Total elapsed time: 02m 2.19s 
 ## 
 ## 
-Design row: 25/54;   Started: Mon Dec  2 23:39:28 2019;   Total elapsed time: 01m 44.02s 
+Design row: 25/54;   Started: Tue Dec 17 16:14:36 2019;   Total elapsed time: 02m 7.55s 
 ## 
 ## 
-Design row: 26/54;   Started: Mon Dec  2 23:39:32 2019;   Total elapsed time: 01m 48.20s 
+Design row: 26/54;   Started: Tue Dec 17 16:14:41 2019;   Total elapsed time: 02m 12.72s 
 ## 
 ## 
-Design row: 27/54;   Started: Mon Dec  2 23:39:37 2019;   Total elapsed time: 01m 52.60s 
+Design row: 27/54;   Started: Tue Dec 17 16:14:47 2019;   Total elapsed time: 02m 18.04s 
 ## 
 ## 
-Design row: 28/54;   Started: Mon Dec  2 23:39:41 2019;   Total elapsed time: 01m 56.80s 
+Design row: 28/54;   Started: Tue Dec 17 16:14:52 2019;   Total elapsed time: 02m 23.37s 
 ## 
 ## 
-Design row: 29/54;   Started: Mon Dec  2 23:39:45 2019;   Total elapsed time: 02m 1.20s 
+Design row: 29/54;   Started: Tue Dec 17 16:14:57 2019;   Total elapsed time: 02m 28.67s 
 ## 
 ## 
-Design row: 30/54;   Started: Mon Dec  2 23:39:49 2019;   Total elapsed time: 02m 5.47s 
+Design row: 30/54;   Started: Tue Dec 17 16:15:02 2019;   Total elapsed time: 02m 33.93s 
 ## 
 ## 
-Design row: 31/54;   Started: Mon Dec  2 23:39:54 2019;   Total elapsed time: 02m 9.84s 
+Design row: 31/54;   Started: Tue Dec 17 16:15:08 2019;   Total elapsed time: 02m 39.25s 
 ## 
 ## 
-Design row: 32/54;   Started: Mon Dec  2 23:39:58 2019;   Total elapsed time: 02m 14.03s 
+Design row: 32/54;   Started: Tue Dec 17 16:15:13 2019;   Total elapsed time: 02m 44.39s 
 ## 
 ## 
-Design row: 33/54;   Started: Mon Dec  2 23:40:02 2019;   Total elapsed time: 02m 18.44s 
+Design row: 33/54;   Started: Tue Dec 17 16:15:19 2019;   Total elapsed time: 02m 50.21s 
 ## 
 ## 
-Design row: 34/54;   Started: Mon Dec  2 23:40:07 2019;   Total elapsed time: 02m 22.64s 
+Design row: 34/54;   Started: Tue Dec 17 16:15:24 2019;   Total elapsed time: 02m 55.67s 
 ## 
 ## 
-Design row: 35/54;   Started: Mon Dec  2 23:40:11 2019;   Total elapsed time: 02m 27.06s 
+Design row: 35/54;   Started: Tue Dec 17 16:15:29 2019;   Total elapsed time: 03m 0.93s 
 ## 
 ## 
-Design row: 36/54;   Started: Mon Dec  2 23:40:15 2019;   Total elapsed time: 02m 31.28s 
+Design row: 36/54;   Started: Tue Dec 17 16:15:35 2019;   Total elapsed time: 03m 6.05s 
 ## 
 ## 
-Design row: 37/54;   Started: Mon Dec  2 23:40:20 2019;   Total elapsed time: 02m 35.69s 
+Design row: 37/54;   Started: Tue Dec 17 16:15:40 2019;   Total elapsed time: 03m 11.34s 
 ## 
 ## 
-Design row: 38/54;   Started: Mon Dec  2 23:40:24 2019;   Total elapsed time: 02m 40.08s 
+Design row: 38/54;   Started: Tue Dec 17 16:15:45 2019;   Total elapsed time: 03m 16.57s 
 ## 
 ## 
-Design row: 39/54;   Started: Mon Dec  2 23:40:28 2019;   Total elapsed time: 02m 44.48s 
+Design row: 39/54;   Started: Tue Dec 17 16:15:50 2019;   Total elapsed time: 03m 21.95s 
 ## 
 ## 
-Design row: 40/54;   Started: Mon Dec  2 23:40:33 2019;   Total elapsed time: 02m 48.80s 
+Design row: 40/54;   Started: Tue Dec 17 16:15:56 2019;   Total elapsed time: 03m 27.06s 
 ## 
 ## 
-Design row: 41/54;   Started: Mon Dec  2 23:40:37 2019;   Total elapsed time: 02m 53.40s 
+Design row: 41/54;   Started: Tue Dec 17 16:16:01 2019;   Total elapsed time: 03m 32.68s 
 ## 
 ## 
-Design row: 42/54;   Started: Mon Dec  2 23:40:41 2019;   Total elapsed time: 02m 57.59s 
+Design row: 42/54;   Started: Tue Dec 17 16:16:06 2019;   Total elapsed time: 03m 37.81s 
 ## 
 ## 
-Design row: 43/54;   Started: Mon Dec  2 23:40:46 2019;   Total elapsed time: 03m 1.97s 
+Design row: 43/54;   Started: Tue Dec 17 16:16:12 2019;   Total elapsed time: 03m 43.21s 
 ## 
 ## 
-Design row: 44/54;   Started: Mon Dec  2 23:40:50 2019;   Total elapsed time: 03m 6.16s 
+Design row: 44/54;   Started: Tue Dec 17 16:16:17 2019;   Total elapsed time: 03m 48.32s 
 ## 
 ## 
-Design row: 45/54;   Started: Mon Dec  2 23:40:54 2019;   Total elapsed time: 03m 10.55s 
+Design row: 45/54;   Started: Tue Dec 17 16:16:22 2019;   Total elapsed time: 03m 53.72s 
 ## 
 ## 
-Design row: 46/54;   Started: Mon Dec  2 23:40:59 2019;   Total elapsed time: 03m 14.79s 
+Design row: 46/54;   Started: Tue Dec 17 16:16:27 2019;   Total elapsed time: 03m 58.87s 
 ## 
 ## 
-Design row: 47/54;   Started: Mon Dec  2 23:41:03 2019;   Total elapsed time: 03m 19.21s 
+Design row: 47/54;   Started: Tue Dec 17 16:16:33 2019;   Total elapsed time: 04m 4.26s 
 ## 
 ## 
-Design row: 48/54;   Started: Mon Dec  2 23:41:07 2019;   Total elapsed time: 03m 23.53s 
+Design row: 48/54;   Started: Tue Dec 17 16:16:38 2019;   Total elapsed time: 04m 9.41s 
 ## 
 ## 
-Design row: 49/54;   Started: Mon Dec  2 23:41:12 2019;   Total elapsed time: 03m 28.15s 
+Design row: 49/54;   Started: Tue Dec 17 16:16:44 2019;   Total elapsed time: 04m 15.07s 
 ## 
 ## 
-Design row: 50/54;   Started: Mon Dec  2 23:41:16 2019;   Total elapsed time: 03m 32.38s 
+Design row: 50/54;   Started: Tue Dec 17 16:16:49 2019;   Total elapsed time: 04m 20.57s 
 ## 
 ## 
-Design row: 51/54;   Started: Mon Dec  2 23:41:21 2019;   Total elapsed time: 03m 36.93s 
+Design row: 51/54;   Started: Tue Dec 17 16:16:54 2019;   Total elapsed time: 04m 25.98s 
 ## 
 ## 
-Design row: 52/54;   Started: Mon Dec  2 23:41:25 2019;   Total elapsed time: 03m 41.30s 
+Design row: 52/54;   Started: Tue Dec 17 16:17:00 2019;   Total elapsed time: 04m 31.09s 
 ## 
 ## 
-Design row: 53/54;   Started: Mon Dec  2 23:41:30 2019;   Total elapsed time: 03m 45.67s 
+Design row: 53/54;   Started: Tue Dec 17 16:17:05 2019;   Total elapsed time: 04m 36.45s 
 ## 
 ## 
-Design row: 54/54;   Started: Mon Dec  2 23:41:34 2019;   Total elapsed time: 03m 49.85s</code></pre>
+Design row: 54/54;   Started: Tue Dec 17 16:17:10 2019;   Total elapsed time: 04m 41.63s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 03m 54.26s</code></pre>
-<pre class="r"><code>print(results)</code></pre>
+## Simulation complete. Total execution time: 04m 47.02s</code></pre>
+<pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 54 x 10
-##        N     a     b    cp XMY.p XYM.p REPLICATIONS SIM_TIME COMPLETED
-##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;    
-##  1   100  -0.3  -0.3  -0.2 0.487 0.063         1000     4.22 Mon Dec …
-##  2   300  -0.3  -0.3  -0.2 0.995 0.382         1000     4.40 Mon Dec …
-##  3   100   0    -0.3  -0.2 0.012 0.194         1000     4.20 Mon Dec …
-##  4   300   0    -0.3  -0.2 0.026 0.866         1000     4.41 Mon Dec …
-##  5   100   0.3  -0.3  -0.2 0.501 0.451         1000     4.23 Mon Dec …
-##  6   300   0.3  -0.3  -0.2 0.997 0.993         1000     4.43 Mon Dec …
-##  7   100  -0.3   0    -0.2 0.014 0.003         1000     4.26 Mon Dec …
-##  8   300  -0.3   0    -0.2 0.034 0.018         1000     4.36 Mon Dec …
-##  9   100   0     0    -0.2 0     0.002         1000     4.17 Mon Dec …
-## 10   300   0     0    -0.2 0     0.013         1000     4.39 Mon Dec …
-## # … with 44 more rows, and 1 more variable: SEED &lt;int&gt;</code></pre>
-<p>To see all the analyis results from <code>Design[1,]</code>, for example, inspect the object returned from <code>SimResults()</code>.</p>
-<pre class="r"><code>row1 &lt;- SimResults(results, 1)</code></pre>
+##        N     a     b    cp sobel sobel_incorrect REPLICATIONS SIM_TIME
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;           &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt;
+##  1   100  -0.3  -0.3  -0.2 0.487           0.063         1000     5.16
+##  2   300  -0.3  -0.3  -0.2 0.995           0.382         1000     5.55
+##  3   100   0    -0.3  -0.2 0.012           0.194         1000     5.15
+##  4   300   0    -0.3  -0.2 0.026           0.866         1000     5.44
+##  5   100   0.3  -0.3  -0.2 0.501           0.451         1000     5.11
+##  6   300   0.3  -0.3  -0.2 0.997           0.993         1000     5.29
+##  7   100  -0.3   0    -0.2 0.014           0.003         1000     5.15
+##  8   300  -0.3   0    -0.2 0.034           0.018         1000     5.40
+##  9   100   0     0    -0.2 0               0.002         1000     5.07
+## 10   300   0     0    -0.2 0               0.013         1000     5.34
+## # … with 44 more rows, and 2 more variables: COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
+<pre class="r"><code>res</code></pre>
+<pre><code>## # A tibble: 54 x 10
+##        N     a     b    cp sobel sobel_incorrect REPLICATIONS SIM_TIME
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;           &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt;
+##  1   100  -0.3  -0.3  -0.2 0.487           0.063         1000     5.16
+##  2   300  -0.3  -0.3  -0.2 0.995           0.382         1000     5.55
+##  3   100   0    -0.3  -0.2 0.012           0.194         1000     5.15
+##  4   300   0    -0.3  -0.2 0.026           0.866         1000     5.44
+##  5   100   0.3  -0.3  -0.2 0.501           0.451         1000     5.11
+##  6   300   0.3  -0.3  -0.2 0.997           0.993         1000     5.29
+##  7   100  -0.3   0    -0.2 0.014           0.003         1000     5.15
+##  8   300  -0.3   0    -0.2 0.034           0.018         1000     5.40
+##  9   100   0     0    -0.2 0               0.002         1000     5.07
+## 10   300   0     0    -0.2 0               0.013         1000     5.34
+## # … with 44 more rows, and 2 more variables: COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
+<p>To see all the analysis results from <code>Design[1,]</code>, for example, inspect the object returned from <code>SimResults()</code>.</p>
+<pre class="r"><code>row1 &lt;- SimResults(res, 1)</code></pre>
 </div>
 <div id="comparison" class="section level1">
 <h1>Comparison</h1>

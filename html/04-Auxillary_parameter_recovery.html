@@ -459,29 +459,29 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 <div id="run-the-simulation" class="section level3">
 <h3>Run the simulation</h3>
 <p>The following function call should be familiar to you by now.</p>
-<pre class="r"><code>result &lt;- runSimulation(Design, replications = 100, parallel = TRUE, packages = 'mirt',
-                       generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
+<pre class="r"><code>res &lt;- runSimulation(Design, replications = 100, parallel = TRUE, packages = 'mirt',
+                     generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 ## 
-Design row: 1/6;   Started: Mon Dec  2 23:30:39 2019;   Total elapsed time: 0.00s 
+Design row: 1/6;   Started: Tue Dec 17 16:05:23 2019;   Total elapsed time: 0.00s 
 ## 
 ## 
-Design row: 2/6;   Started: Mon Dec  2 23:30:47 2019;   Total elapsed time: 7.63s 
+Design row: 2/6;   Started: Tue Dec 17 16:05:30 2019;   Total elapsed time: 7.38s 
 ## 
 ## 
-Design row: 3/6;   Started: Mon Dec  2 23:30:52 2019;   Total elapsed time: 12.83s 
+Design row: 3/6;   Started: Tue Dec 17 16:05:35 2019;   Total elapsed time: 12.47s 
 ## 
 ## 
-Design row: 4/6;   Started: Mon Dec  2 23:30:58 2019;   Total elapsed time: 19.05s 
+Design row: 4/6;   Started: Tue Dec 17 16:05:41 2019;   Total elapsed time: 18.41s 
 ## 
 ## 
-Design row: 5/6;   Started: Mon Dec  2 23:31:01 2019;   Total elapsed time: 22.05s 
+Design row: 5/6;   Started: Tue Dec 17 16:05:44 2019;   Total elapsed time: 21.36s 
 ## 
 ## 
-Design row: 6/6;   Started: Mon Dec  2 23:31:07 2019;   Total elapsed time: 27.43s</code></pre>
+Design row: 6/6;   Started: Tue Dec 17 16:05:49 2019;   Total elapsed time: 26.67s</code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 33.06s</code></pre>
-<pre class="r"><code>print(result, time=FALSE, reps=FALSE)</code></pre>
+## Simulation complete. Total execution time: 32.32s</code></pre>
+<pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 6 x 14
 ##   test_length distribution bias_EAP bias_MAP  bias_ML bias_EAP_bimodal
 ##         &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;            &lt;dbl&gt;

@@ -402,11 +402,11 @@ with(dat, median_diff(DV, group))</code></pre>
     }
 
     # no summarise function provided because design only contains 1 row. Returns a matrix
-    results &lt;- runSimulation(design=Design, replications=R, generate=Generate, analyse=Analyse, 
-                             fixed_objects=fixed_objects, verbose=verbose, ...)
+    res &lt;- runSimulation(design=Design, replications=R, generate=Generate, analyse=Analyse, 
+                         fixed_objects=fixed_objects, verbose=verbose, ...)
     
     # empirical p-value
-    ret &lt;- c(p = colMeans(observed &lt; results))
+    ret &lt;- c(p = colMeans(observed &lt; res))
     ret
 }</code></pre>
 <p>Using this function definition we can pass the necessary elements to obtain a parametrically estimate <span class="math inline">\(p\)</span>-value indicating how likely the observed statistic was to observe given that a suitable empirically generated null hypothesis distribution.</p>

@@ -488,7 +488,44 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 <p>Because this simulation takes considerably longer it is recommended to pass the <code>save = TRUE</code> to temporarily save results in case of power outages. Results can be continued by running the identical simulation code as the initial run, and the function will automatically detect whether any temp files are available and resume the simulation at the previously saved location.</p>
 <pre class="r"><code>res &lt;- runSimulation(Design, replications=100, verbose=FALSE, save=TRUE, parallel=TRUE,
                      generate=Generate, analyse=Analyse, summarise=Summarise, 
-                     packages=c('mirt', 'lavaan'), fixed_objects=pars)</code></pre>
+                     packages=c('mirt', 'lavaan'), fixed_objects=pars)
+res</code></pre>
+<pre><code>## # A tibble: 6 x 86
+##   sample_size nitems bias.FIML_as1 bias.FIML_as2 bias.FIML_as3
+##         &lt;dbl&gt;  &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
+## 1         250     10      -0.00804       0.0263       -0.0139 
+## 2         500     10      -0.0183        0.00165      -0.0168 
+## 3        1000     10      -0.0109       -0.0151       -0.0169 
+## 4         250     20       0.0479        0.0387        0.0112 
+## 5         500     20       0.0413        0.0540        0.00919
+## 6        1000     20       0.0275        0.0360       -0.00946
+## # … with 81 more variables: bias.FIML_as4 &lt;dbl&gt;, bias.FIML_as5 &lt;dbl&gt;,
+## #   bias.FIML_as6 &lt;dbl&gt;, bias.FIML_as7 &lt;dbl&gt;, bias.FIML_as8 &lt;dbl&gt;,
+## #   bias.FIML_as9 &lt;dbl&gt;, bias.FIML_as10 &lt;dbl&gt;, bias.DWLS_as1 &lt;dbl&gt;,
+## #   bias.DWLS_as2 &lt;dbl&gt;, bias.DWLS_as3 &lt;dbl&gt;, bias.DWLS_as4 &lt;dbl&gt;,
+## #   bias.DWLS_as5 &lt;dbl&gt;, bias.DWLS_as6 &lt;dbl&gt;, bias.DWLS_as7 &lt;dbl&gt;,
+## #   bias.DWLS_as8 &lt;dbl&gt;, bias.DWLS_as9 &lt;dbl&gt;, bias.DWLS_as10 &lt;dbl&gt;,
+## #   RMSE.FIML_as1 &lt;dbl&gt;, RMSE.FIML_as2 &lt;dbl&gt;, RMSE.FIML_as3 &lt;dbl&gt;,
+## #   RMSE.FIML_as4 &lt;dbl&gt;, RMSE.FIML_as5 &lt;dbl&gt;, RMSE.FIML_as6 &lt;dbl&gt;,
+## #   RMSE.FIML_as7 &lt;dbl&gt;, RMSE.FIML_as8 &lt;dbl&gt;, RMSE.FIML_as9 &lt;dbl&gt;,
+## #   RMSE.FIML_as10 &lt;dbl&gt;, RMSE.DWLS_as1 &lt;dbl&gt;, RMSE.DWLS_as2 &lt;dbl&gt;,
+## #   RMSE.DWLS_as3 &lt;dbl&gt;, RMSE.DWLS_as4 &lt;dbl&gt;, RMSE.DWLS_as5 &lt;dbl&gt;,
+## #   RMSE.DWLS_as6 &lt;dbl&gt;, RMSE.DWLS_as7 &lt;dbl&gt;, RMSE.DWLS_as8 &lt;dbl&gt;,
+## #   RMSE.DWLS_as9 &lt;dbl&gt;, RMSE.DWLS_as10 &lt;dbl&gt;, bias.FIML_as11 &lt;dbl&gt;,
+## #   bias.FIML_as12 &lt;dbl&gt;, bias.FIML_as13 &lt;dbl&gt;, bias.FIML_as14 &lt;dbl&gt;,
+## #   bias.FIML_as15 &lt;dbl&gt;, bias.FIML_as16 &lt;dbl&gt;, bias.FIML_as17 &lt;dbl&gt;,
+## #   bias.FIML_as18 &lt;dbl&gt;, bias.FIML_as19 &lt;dbl&gt;, bias.FIML_as20 &lt;dbl&gt;,
+## #   bias.DWLS_as11 &lt;dbl&gt;, bias.DWLS_as12 &lt;dbl&gt;, bias.DWLS_as13 &lt;dbl&gt;,
+## #   bias.DWLS_as14 &lt;dbl&gt;, bias.DWLS_as15 &lt;dbl&gt;, bias.DWLS_as16 &lt;dbl&gt;,
+## #   bias.DWLS_as17 &lt;dbl&gt;, bias.DWLS_as18 &lt;dbl&gt;, bias.DWLS_as19 &lt;dbl&gt;,
+## #   bias.DWLS_as20 &lt;dbl&gt;, RMSE.FIML_as11 &lt;dbl&gt;, RMSE.FIML_as12 &lt;dbl&gt;,
+## #   RMSE.FIML_as13 &lt;dbl&gt;, RMSE.FIML_as14 &lt;dbl&gt;, RMSE.FIML_as15 &lt;dbl&gt;,
+## #   RMSE.FIML_as16 &lt;dbl&gt;, RMSE.FIML_as17 &lt;dbl&gt;, RMSE.FIML_as18 &lt;dbl&gt;,
+## #   RMSE.FIML_as19 &lt;dbl&gt;, RMSE.FIML_as20 &lt;dbl&gt;, RMSE.DWLS_as11 &lt;dbl&gt;,
+## #   RMSE.DWLS_as12 &lt;dbl&gt;, RMSE.DWLS_as13 &lt;dbl&gt;, RMSE.DWLS_as14 &lt;dbl&gt;,
+## #   RMSE.DWLS_as15 &lt;dbl&gt;, RMSE.DWLS_as16 &lt;dbl&gt;, RMSE.DWLS_as17 &lt;dbl&gt;,
+## #   RMSE.DWLS_as18 &lt;dbl&gt;, RMSE.DWLS_as19 &lt;dbl&gt;, RMSE.DWLS_as20 &lt;dbl&gt;,
+## #   REPLICATIONS &lt;int&gt;, SIM_TIME &lt;dbl&gt;, COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
 </div>
 <div id="analyze-the-results" class="section level3">
 <h3>Analyze the results</h3>

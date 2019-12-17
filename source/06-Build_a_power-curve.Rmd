@@ -75,9 +75,9 @@ Compare these results to analytical formulas, we can see that the two are essent
 ```{r}
 library(pwr)
 pwr.t.test(d=0.5, n=30, sig.level=0.05, type="one.sample", alternative="two.sided")
-subset(results, mean_diff == .5 & sample_size == 30)
+subset(res, mean_diff == .5 & sample_size == 30)
 pwr.t.test(d=0.5, n=10, sig.level=0.05, type="one.sample", alternative="two.sided")
-subset(results, mean_diff == .5 & sample_size == 10)
+subset(res, mean_diff == .5 & sample_size == 10)
 ```
 
 # Power-curve function estimation
@@ -115,7 +115,7 @@ res <- runSimulation(Design, replications=reps, verbose=FALSE, parallel=FALSE,
 ```
 
 ```{r}
-res <- do.call(rbind, results)
+res <- do.call(rbind, res)
 head(res)
 tail(res)
 
