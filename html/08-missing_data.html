@@ -408,10 +408,10 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 #--------------------------------------------------------------------------
 
 ### Run the simulation
-results &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, 
-                         packages = 'mvtnorm')</code></pre>
-<pre class="r"><code>print(results)</code></pre>
+res &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
+                     generate=Generate, analyse=Analyse, summarise=Summarise, 
+                     packages = 'mvtnorm')</code></pre>
+<pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 3 x 11
 ##       N bias.listwise bias.pairwise RMSE.listwise RMSE.pairwise RE.listwise
 ##   &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;
@@ -434,10 +434,10 @@ results &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel =
     dat
 }
 
-results &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, debug='none',
-                         packages = 'mvtnorm')</code></pre>
-<pre class="r"><code>print(results)</code></pre>
+res &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
+                     generate=Generate, analyse=Analyse, summarise=Summarise, debug='none',
+                     packages = 'mvtnorm')</code></pre>
+<pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 3 x 11
 ##       N bias.listwise bias.pairwise RMSE.listwise RMSE.pairwise RE.listwise
 ##   &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;

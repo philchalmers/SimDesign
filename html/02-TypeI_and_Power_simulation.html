@@ -440,27 +440,31 @@ dim(Design)</code></pre>
 <div id="run-the-simulation" class="section level3">
 <h3>Run the simulation</h3>
 <p>In this case a few extra arguments are passed to <code>runSimulation()</code>. To help speed things up, the use of parallel architecture is used by passing <code>parallel = TRUE</code>, and messages printed to the console are disabled by passing <code>verbose = FALSE</code>.</p>
-<pre class="r"><code>results &lt;- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
-                       generate = Generate, analyse = Analyse, summarise = Summarise)</code></pre>
+<pre class="r"><code>res &lt;- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
+                     generate = Generate, analyse = Analyse, summarise = Summarise)</code></pre>
 </div>
 <div id="analyse-the-results" class="section level3">
 <h3>Analyse the results</h3>
 <p>Usually it is a good idea to split up analyses into Type I error and power rates data, and to make <code>design</code> conditions into <code>factor</code>s if/where necessary. More specifically, Power rates really should only be interpreted when the Type I errors are well behaved (liberal detection rates naturally will result in more powerful tests, while conservative detection rates will induce lower power).</p>
-<pre class="r"><code>head(results)</code></pre>
-<pre><code>## # A tibble: 6 x 10
-##   sample_size group_size_ratio standard_deviat… mean_difference welch
-##         &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;           &lt;dbl&gt; &lt;dbl&gt;
-## 1          30              0.5                1               0 0.041
-## 2          60              0.5                1               0 0.053
-## 3          90              0.5                1               0 0.05 
-## 4         120              0.5                1               0 0.052
-## 5          30              1                  1               0 0.053
-## 6          60              1                  1               0 0.051
-## # … with 5 more variables: independent &lt;dbl&gt;, REPLICATIONS &lt;int&gt;,
-## #   SIM_TIME &lt;dbl&gt;, COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
-<pre class="r"><code>results$REPLICATIONS &lt;- results$SIM_TIME &lt;- results$COMPLETED &lt;- results$SEED &lt;- NULL
-TypeI &lt;- subset(results, mean_difference == 0)
-Power &lt;- subset(results, mean_difference != 0)</code></pre>
+<pre class="r"><code>res</code></pre>
+<pre><code>## # A tibble: 72 x 10
+##    sample_size group_size_ratio standard_deviat… mean_difference welch
+##          &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;           &lt;dbl&gt; &lt;dbl&gt;
+##  1          30              0.5                1               0 0.041
+##  2          60              0.5                1               0 0.053
+##  3          90              0.5                1               0 0.05 
+##  4         120              0.5                1               0 0.052
+##  5          30              1                  1               0 0.053
+##  6          60              1                  1               0 0.051
+##  7          90              1                  1               0 0.05 
+##  8         120              1                  1               0 0.052
+##  9          30              2                  1               0 0.052
+## 10          60              2                  1               0 0.052
+## # … with 62 more rows, and 5 more variables: independent &lt;dbl&gt;,
+## #   REPLICATIONS &lt;int&gt;, SIM_TIME &lt;dbl&gt;, COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
+<pre class="r"><code>res$REPLICATIONS &lt;- res$SIM_TIME &lt;- res$COMPLETED &lt;- res$SEED &lt;- NULL
+TypeI &lt;- subset(res, mean_difference == 0)
+Power &lt;- subset(res, mean_difference != 0)</code></pre>
 <p>Lets start off by looking at some descriptive tables, and performing simple ANOVA analyses with effect sizes to determine where the differences generally occurred.</p>
 <pre class="r"><code>library(reshape2)
 mlt &lt;- melt(TypeI, id.vars = colnames(TypeI)[1:4])
@@ -878,24 +882,22 @@ Design &lt;- createDesign(sample_size = c(30, 60, 90, 120),
                                                c(1, 4),
                                                c(1, 8)),
                        means = list(c(0, 0), c(0, 0.5)))
-dim(Design)</code></pre>
-<pre><code>## [1] 72  4</code></pre>
-<pre class="r"><code>head(Design)</code></pre>
-<pre><code>## # A tibble: 6 x 4
-##   sample_size group_sizes                         standard_deviations means
-##         &lt;dbl&gt; &lt;chr&gt;                               &lt;chr&gt;               &lt;chr&gt;
-## 1          30 [0.333333333333333, 0.666666666666… [1, 1]              [0, …
-## 2          60 [0.333333333333333, 0.666666666666… [1, 1]              [0, …
-## 3          90 [0.333333333333333, 0.666666666666… [1, 1]              [0, …
-## 4         120 [0.333333333333333, 0.666666666666… [1, 1]              [0, …
-## 5          30 [0.5, 0.5]                          [1, 1]              [0, …
-## 6          60 [0.5, 0.5]                          [1, 1]              [0, …</code></pre>
+Design</code></pre>
+<pre><code>## # A tibble: 72 x 4
+##    sample_size group_sizes                        standard_deviations means
+##          &lt;dbl&gt; &lt;chr&gt;                              &lt;chr&gt;               &lt;chr&gt;
+##  1          30 [0.333333333333333, 0.66666666666… [1, 1]              [0, …
+##  2          60 [0.333333333333333, 0.66666666666… [1, 1]              [0, …
+##  3          90 [0.333333333333333, 0.66666666666… [1, 1]              [0, …
+##  4         120 [0.333333333333333, 0.66666666666… [1, 1]              [0, …
+##  5          30 [0.5, 0.5]                         [1, 1]              [0, …
+##  6          60 [0.5, 0.5]                         [1, 1]              [0, …
+##  7          90 [0.5, 0.5]                         [1, 1]              [0, …
+##  8         120 [0.5, 0.5]                         [1, 1]              [0, …
+##  9          30 [0.666666666666667, 0.33333333333… [1, 1]              [0, …
+## 10          60 [0.666666666666667, 0.33333333333… [1, 1]              [0, …
+## # … with 62 more rows</code></pre>
 <p>Notice that there are still 72 conditions to be investigated, however now each element in <code>Design$group_sizes</code>, <code>Design$standard_deviation</code>, and <code>Design$means</code> are vectors rather than a scalars. E.g.,</p>
-<pre class="r"><code>sapply(Design, class)</code></pre>
-<pre><code>##         sample_size         group_sizes standard_deviations 
-##           &quot;numeric&quot;              &quot;list&quot;              &quot;list&quot; 
-##               means 
-##              &quot;list&quot;</code></pre>
 <pre class="r"><code>Design[1,]</code></pre>
 <pre><code>## # A tibble: 1 x 4
 ##   sample_size group_sizes                         standard_deviations means
@@ -930,20 +932,24 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL){
 
 #---------------------------------------------------
 
-results &lt;- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel=TRUE,
-                       generate = Generate, analyse = Analyse, summarise = Summarise)
-head(results, reps=FALSE, time=FALSE)</code></pre>
-<pre><code>## # A tibble: 6 x 10
-##   sample_size group_sizes standard_deviat… means welch independent
-##         &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;            &lt;chr&gt; &lt;dbl&gt;       &lt;dbl&gt;
-## 1          30 [0.3333333… [1, 1]           [0, … 0.048       0.046
-## 2          60 [0.3333333… [1, 1]           [0, … 0.053       0.053
-## 3          90 [0.3333333… [1, 1]           [0, … 0.043       0.046
-## 4         120 [0.3333333… [1, 1]           [0, … 0.049       0.052
-## 5          30 [0.5, 0.5]  [1, 1]           [0, … 0.047       0.047
-## 6          60 [0.5, 0.5]  [1, 1]           [0, … 0.042       0.042
-## # … with 4 more variables: REPLICATIONS &lt;int&gt;, SIM_TIME &lt;dbl&gt;,
-## #   COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
+res &lt;- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel=TRUE,
+                     generate = Generate, analyse = Analyse, summarise = Summarise)
+res</code></pre>
+<pre><code>## # A tibble: 72 x 10
+##    sample_size group_sizes standard_deviat… means welch independent
+##          &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;            &lt;chr&gt; &lt;dbl&gt;       &lt;dbl&gt;
+##  1          30 [0.3333333… [1, 1]           [0, … 0.048       0.046
+##  2          60 [0.3333333… [1, 1]           [0, … 0.053       0.053
+##  3          90 [0.3333333… [1, 1]           [0, … 0.043       0.046
+##  4         120 [0.3333333… [1, 1]           [0, … 0.049       0.052
+##  5          30 [0.5, 0.5]  [1, 1]           [0, … 0.047       0.047
+##  6          60 [0.5, 0.5]  [1, 1]           [0, … 0.042       0.042
+##  7          90 [0.5, 0.5]  [1, 1]           [0, … 0.05        0.05 
+##  8         120 [0.5, 0.5]  [1, 1]           [0, … 0.067       0.067
+##  9          30 [0.6666666… [1, 1]           [0, … 0.052       0.061
+## 10          60 [0.6666666… [1, 1]           [0, … 0.057       0.054
+## # … with 62 more rows, and 4 more variables: REPLICATIONS &lt;int&gt;,
+## #   SIM_TIME &lt;dbl&gt;, COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
 </div>
 
 
