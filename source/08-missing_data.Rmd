@@ -67,13 +67,13 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 #--------------------------------------------------------------------------
 
 ### Run the simulation
-results <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, 
-                         packages = 'mvtnorm')
+res <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
+                     generate=Generate, analyse=Analyse, summarise=Summarise, 
+                     packages = 'mvtnorm')
 ```
 
 ```{r}
-print(results)
+res
 ```
 
 Not surprisingly, these results suggest that computing correlations with the pairwise-complete method is more efficient than removing rows in a list-wise fashion, though both approaches results in unbiased estimates when the missing data mechanism is MCAR. The selected removal mechanism appears to be less of an issue as the sample size increases, however in general pairwise complete provides better results. 
@@ -92,13 +92,13 @@ Generate <- function(condition, fixed_objects = NULL) {
     dat
 }
 
-results <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                         generate=Generate, analyse=Analyse, summarise=Summarise, debug='none',
-                         packages = 'mvtnorm')
+res <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
+                     generate=Generate, analyse=Analyse, summarise=Summarise, debug='none',
+                     packages = 'mvtnorm')
 ```
 
 ```{r}
-print(results)
+res
 ```
 
 In this case we can see the effect of MNAR influencing the bias of the correlation values. This particular missing data mechanism causes the observed parameter estimates to be too lower on average, thereby underestimating the true magnitude of the correlation statistics. 

@@ -369,11 +369,11 @@ Generate <- function(...) ...
 Analyse <- function(...) ...
 Summarise <- function(...) ...
 
-results <- runSimulation(design = Design, 
-                         replications = 1000, 
-                         generate = Generate, 
-                         analyse = Analyse, 
-                         summerise = Summarise)
+res <- runSimulation(design = Design, 
+                     replications = 1000, 
+                     generate = Generate, 
+                     analyse = Analyse, 
+                     summerise = Summarise)
 
 ```
 
@@ -382,7 +382,7 @@ results <- runSimulation(design = Design,
 
 `SimDesign` requires
 
-- **design** is a `data.frame` with the relevant simulations conditions to be investigated in each row, and each major MCS condition to be in each column (e.g., sample size, effect size, distribution, etc), 
+- **Design** is a `tibble` object with the relevant simulations conditions to be investigated in each row, and each major MCS condition to be in each column (e.g., sample size, effect size, distribution, etc), 
 - `generate()`, `analyse()`, and `summarise()` are all user-defined R functions (with a specific set of inputs and required output properties), and
 - passing all objects, functions, and optional arguments to `runSimulation()` to control the MCS flow and features
 
@@ -400,7 +400,7 @@ automatically. Hence, if an routine fails within any of the respective functions
 call is thrown) then `SimDesign` will silently deal with the error while also tracking what the error 
 message was.
 
-- Error messages are appended into the returned `data.frame` object with the number of times they occurred
+- Error messages are appended into the returned object with the number of times they occurred
 - Users may throw their own `stop()` calls if useful (e.g., when a model converges but not before
   the maximum number of iterations were reached)
 - `SimDesign` has built-in safety termination when more than 50 consecutive errors are thrown. This

@@ -164,6 +164,7 @@ simulation at the previously saved location.
 res <- runSimulation(Design, replications=100, verbose=FALSE, save=TRUE, parallel=TRUE,
                      generate=Generate, analyse=Analyse, summarise=Summarise, 
                      packages=c('mirt', 'lavaan'), fixed_objects=pars)
+res
 ```
 
 ### Analyze the results

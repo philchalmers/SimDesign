@@ -139,12 +139,12 @@ set.seed(1234)
 ```
 
 ```{r cache=TRUE}
-result <- runSimulation(Design, replications = 100, parallel = TRUE, packages = 'mirt',
-                       generate=Generate, analyse=Analyse, summarise=Summarise)
+res <- runSimulation(Design, replications = 100, parallel = TRUE, packages = 'mirt',
+                     generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
 
 ```{r}
-print(result, time=FALSE, reps=FALSE)
+res
 ```
 
 ### Analyze the results

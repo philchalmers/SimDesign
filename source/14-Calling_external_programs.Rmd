@@ -110,8 +110,8 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 #-------------------------------------------------------------------
 
-results <- runSimulation(design=Design, fixed_objects=fo, replications=100, generate=Generate,
-                         analyse=Analyse, summarise=Summarise, packages='MplusAutomation')
+res <- runSimulation(design=Design, fixed_objects=fo, replications=100, generate=Generate,
+                     analyse=Analyse, summarise=Summarise, packages='MplusAutomation')
 ```
 
 # Mplus example (multi-core/parallel processing)
@@ -174,8 +174,8 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 #-------------------------------------------------------------------
 
-results <- runSimulation(design=Design, fixed_objects=fo, replications=100, generate=Generate,
-                         analyse=Analyse, summarise=Summarise, packages='MplusAutomation', parallel=TRUE)
+res <- runSimulation(design=Design, fixed_objects=fo, replications=100, generate=Generate,
+                     analyse=Analyse, summarise=Summarise, packages='MplusAutomation', parallel=TRUE)
 ```
 
 

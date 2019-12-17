@@ -60,11 +60,11 @@ median_parametric_boot <- function(dat, fun, R = 1000, verbose = FALSE, ...){
     }
 
     # no summarise function provided because design only contains 1 row. Returns a matrix
-    results <- runSimulation(design=Design, replications=R, generate=Generate, analyse=Analyse, 
-                             fixed_objects=fixed_objects, verbose=verbose, ...)
+    res <- runSimulation(design=Design, replications=R, generate=Generate, analyse=Analyse, 
+                         fixed_objects=fixed_objects, verbose=verbose, ...)
     
     # empirical p-value
-    ret <- c(p = colMeans(observed < results))
+    ret <- c(p = colMeans(observed < res))
     ret
 }
 ```

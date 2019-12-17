@@ -115,8 +115,8 @@ set.seed(1234)
 
 
 ```{r}
-results <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
-                       generate = Generate, analyse = Analyse, summarise = Summarise)
+res <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
+                     generate = Generate, analyse = Analyse, summarise = Summarise)
 ```
 
 ### Analyse the results
@@ -125,10 +125,10 @@ Usually it is a good idea to split up analyses into Type I error and power rates
 `design` conditions into `factor`s if/where necessary. More specifically, Power rates really should only be interpreted when the Type I errors are well behaved (liberal detection rates naturally will result in more powerful tests, while conservative detection rates will induce lower power).
 
 ```{r}
-head(results)
-results$REPLICATIONS <- results$SIM_TIME <- results$COMPLETED <- results$SEED <- NULL
-TypeI <- subset(results, mean_difference == 0)
-Power <- subset(results, mean_difference != 0)
+res
+res$REPLICATIONS <- res$SIM_TIME <- res$COMPLETED <- res$SEED <- NULL
+TypeI <- subset(res, mean_difference == 0)
+Power <- subset(res, mean_difference != 0)
 ```
 
 Lets start off by looking at some descriptive tables, and performing simple ANOVA analyses with effect sizes
@@ -202,14 +202,12 @@ Design <- createDesign(sample_size = c(30, 60, 90, 120),
                        						   c(1, 4),
                        						   c(1, 8)),
                        means = list(c(0, 0), c(0, 0.5)))
-dim(Design)
-head(Design)
+Design
 ```
 
 Notice that there are still 72 conditions to be investigated, however now each element in `Design$group_sizes`, `Design$standard_deviation`, and `Design$means` are vectors rather than a scalars. E.g.,
 
 ```{r}
-sapply(Design, class)
 Design[1,]
 Design$group_sizes[[1]]
 ```
@@ -243,7 +241,7 @@ Summarise <- function(condition, results, fixed_objects = NULL){
 
 #---------------------------------------------------
 
-results <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel=TRUE,
-                       generate = Generate, analyse = Analyse, summarise = Summarise)
-head(results, reps=FALSE, time=FALSE)
+res <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel=TRUE,
+                     generate = Generate, analyse = Analyse, summarise = Summarise)
+res
 ```

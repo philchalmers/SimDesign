@@ -60,28 +60,28 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 #-------------------------------------------------------------------
 
 # only 1 replication
-results <- runSimulation(design=Design, replications=1, seed = 1:nrow(Design),
-    generate=Generate, analyse=Analyse, fixed_objects=fo, debug='none')
+res <- runSimulation(design=Design, replications=1, seed = 1:nrow(Design),
+                     generate=Generate, analyse=Analyse, fixed_objects=fo, debug='none')
 ```
 
 
 ```{r}
-names(results)
+res
 
 # person 100 from the first condition
-plot(results$`nitems=100; discrimination=0.5`[[1]][[100]], SE = 1.96)
+plot(res$`nitems=100; discrimination=0.5`[[1]][[100]], SE = 1.96)
 
 # person 50 from the last condition
-plot(results$`nitems=500; discrimination=1.5`[[1]][[50]], SE = 1.96)
+plot(res$`nitems=500; discrimination=1.5`[[1]][[50]], SE = 1.96)
 
-diff <- lapply(results, function(x){
+diff <- lapply(res, function(x){
 	sapply(x[[1]], function(y){
 		so <- summary(y)
 		so$final_estimates[1,] - so$true_thetas
 	})
 })
 
-nitems_answered <- lapply(results, function(x){
+nitems_answered <- lapply(res, function(x){
 	sapply(x[[1]], function(y){
 		so <- summary(y)
 		length(so$items_answered)

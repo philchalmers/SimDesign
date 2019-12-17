@@ -132,19 +132,19 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 }
 
 #-------------------------------------------------------------------
-results <- runSimulation(design=Design, replications=1000,  
-    generate=Generate, analyse=Analyse, summarise=Summarise)
-results
+res <- runSimulation(design=Design, replications=1000, generate=Generate, 
+                     analyse=Analyse, summarise=Summarise)
+res
 ```
 
 ```{r}
-print(results)
+res
 ```
 
-To see all the analyis results from `Design[1,]`, for example, inspect the object returned from `SimResults()`.
+To see all the analysis results from `Design[1,]`, for example, inspect the object returned from `SimResults()`.
 
 ```{r eval=FALSE}
-row1 <- SimResults(results, 1)
+row1 <- SimResults(res, 1)
 ```
 
 # Comparison
