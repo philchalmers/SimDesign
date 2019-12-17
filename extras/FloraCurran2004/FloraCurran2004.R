@@ -20,12 +20,12 @@ Generate <- function(condition, fixed_objects = NULL) {
     Attach(condition)
     syntax <- genLavaanSyntax(factors=factors, indicators=indicators)
     cdat <- simulateData(syntax, model.type='cfa', sample.nobs=N,
-                         skewness=skew_kurt[1L],
-                         kurtosis=skew_kurt[2L])
+                         skewness=skewness_kurtosis[1L],
+                         kurtosis=skewness_kurtosis[2L])
     tau <- if(categories == 5)
         c(-1.645, -0.643, 0.643, 1.645) else 0
     # data generation fix described in Flora's (2002) unpublished dissertation
-    if(categories == 5 && all(skew_kurt == c(1.25, 1.75)))
+    if(categories == 5 && all(skewness_kurtosis == c(1.25, 1.75)))
         tau[1] <- -1.125
     dat <- apply(cdat, 2, function(x, tau){
         dat <- numeric(length(x))
@@ -95,7 +95,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 # run simulation
 res <- runSimulation(design=Design, replications=500, generate=Generate,
-                     analyse=Analyse, summarise=Summarise,
+                     analyse=Analyse, summarise=Summarise, max_errors=100,
                      packages='lavaan', parallel=TRUE, save=TRUE,
                      filename='FloraCurran2004', save_results=TRUE)
 res

@@ -84,7 +84,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 res <- runSimulation(design=Design, replications=1000, parallel=TRUE,
                      generate=Generate, analyse=Analyse,
                      summarise=Summarise, packages='lawstat',
-                     filename='BF_simulation')
+                     save=TRUE, filename='BF_simulation')
 res
 
 TypeI <- subset(res, var_ratio == 1)
