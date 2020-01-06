@@ -4,8 +4,7 @@
 \alias{rejectionSampling}
 \title{Rejection sampling (i.e., accept-reject method) to draw samples from difficult probability density functions}
 \usage{
-rejectionSampling(n, df, dg, rg, M = NULL, returnM = FALSE,
-  vectorized = TRUE)
+rejectionSampling(n, df, dg, rg, M = NULL, returnM = FALSE, vectorized = TRUE)
 }
 \arguments{
 \item{n}{number of samples to draw}

@@ -4,8 +4,7 @@
 \alias{add_missing}
 \title{Add missing values to a vector given a MCAR, MAR, or MNAR scheme}
 \usage{
-add_missing(y, fun = function(y, rate = 0.1, ...) rep(rate, length(y)),
-  ...)
+add_missing(y, fun = function(y, rate = 0.1, ...) rep(rate, length(y)), ...)
 }
 \arguments{
 \item{y}{an input vector that should contain missing data in the form of \code{NA}'s}

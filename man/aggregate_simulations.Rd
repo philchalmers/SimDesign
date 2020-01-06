@@ -4,8 +4,11 @@
 \alias{aggregate_simulations}
 \title{Collapse separate simulation files into a single result}
 \usage{
-aggregate_simulations(files = NULL, dirs = NULL,
-  results_dirname = "SimDesign_aggregate_results")
+aggregate_simulations(
+  files = NULL,
+  dirs = NULL,
+  results_dirname = "SimDesign_aggregate_results"
+)
 }
 \arguments{
 \item{files}{a \code{character} vector containing the names of the simulation files. If \code{NULL},

@@ -4,8 +4,14 @@
 \alias{ECR}
 \title{Compute empirical coverage rates}
 \usage{
-ECR(CIs, parameter, tails = FALSE, CI_width = FALSE, names = NULL,
-  unname = FALSE)
+ECR(
+  CIs,
+  parameter,
+  tails = FALSE,
+  CI_width = FALSE,
+  names = NULL,
+  unname = FALSE
+)
 }
 \arguments{
 \item{CIs}{a \code{numeric} vector or \code{matrix} of confidence interval values for a

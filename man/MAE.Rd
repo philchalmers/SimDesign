@@ -4,8 +4,7 @@
 \alias{MAE}
 \title{Compute the mean absolute error}
 \usage{
-MAE(estimate, parameter = NULL, type = "MAE", percent = FALSE,
-  unname = FALSE)
+MAE(estimate, parameter = NULL, type = "MAE", percent = FALSE, unname = FALSE)
 }
 \arguments{
 \item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame} of parameter estimates.

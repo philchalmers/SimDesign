@@ -86,8 +86,9 @@ print.Design <- function(x, list2char = TRUE, ...){
     classes <- sapply(x, class)
     if(list2char && any(classes == 'list') && is(x, 'tbl_df'))
         x <- list2char(x)
+    classes2 <- sapply(x, class)
     class(x) <- class(x)[!(class(x) %in% 'Design')]
-    print(x, ...)
+    printDesign(x, whichlist=  which(classes != classes2), ...)
 }
 
 list2char <- function(x){
@@ -102,4 +103,21 @@ list2char <- function(x){
         x[ , nm] <- tmp
     }
     x
+}
+
+cat_line <- function(...) {
+    cat(paste0(..., "\n"), sep = "")
+}
+
+printDesign <- function(x, whichlist, ..., n = NULL, width = NULL, n_extra = NULL) {
+    ff <- format(x, ..., n = n, width = width, n_extra = n_extra)
+    ff3 <- strsplit(ff[3], "\\[23m")[[1]]
+    if(length(whichlist)){
+        for(w in whichlist)
+            ff3[w] <- gsub('chr', 'lst', ff3[w])
+        ff3 <- paste0(ff3, collapse='[23m')
+        ff[3] <- ff3
+    }
+    cat_line(ff)
+    invisible(x)
 }

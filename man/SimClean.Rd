@@ -4,8 +4,15 @@
 \alias{SimClean}
 \title{Removes/cleans files and folders that have been saved}
 \usage{
-SimClean(..., dirs = NULL, generate_data = FALSE, results = FALSE,
-  seeds = FALSE, temp = FALSE, save_details = list())
+SimClean(
+  ...,
+  dirs = NULL,
+  generate_data = FALSE,
+  results = FALSE,
+  seeds = FALSE,
+  temp = FALSE,
+  save_details = list()
+)
 }
 \arguments{
 \item{...}{one or more character objects indicating which files to remove. Used to remove

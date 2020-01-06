@@ -25,9 +25,9 @@ warnings can be meaningful and unexpected.
 \examples{
 myfun <- function(x){
    message('This function is rather chatty')
-   cat("It even prints in different output forms!\\n")
+   cat("It even prints in different output forms!\n")
    message('And even at different....')
-   cat("...times!\\n")
+   cat("...times!\n")
    x
 }
 

@@ -4,8 +4,15 @@
 \alias{IRMSE}
 \title{Compute the integrated root mean-square error}
 \usage{
-IRMSE(estimate, parameter, fn, density = function(theta, ...) 1,
-  lower = -Inf, upper = Inf, ...)
+IRMSE(
+  estimate,
+  parameter,
+  fn,
+  density = function(theta, ...) 1,
+  lower = -Inf,
+  upper = Inf,
+  ...
+)
 }
 \arguments{
 \item{estimate}{a vector of parameter estimates}

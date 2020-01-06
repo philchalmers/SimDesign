@@ -4,8 +4,14 @@
 \alias{bias}
 \title{Compute (relative/standardized) bias summary statistic}
 \usage{
-bias(estimate, parameter = NULL, type = "bias", abs = FALSE,
-  percent = FALSE, unname = FALSE)
+bias(
+  estimate,
+  parameter = NULL,
+  type = "bias",
+  abs = FALSE,
+  percent = FALSE,
+  unname = FALSE
+)
 }
 \arguments{
 \item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame}

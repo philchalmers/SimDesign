@@ -4,8 +4,14 @@
 \alias{reSummarise}
 \title{Run a summarise step for results that have been saved to the hard drive}
 \usage{
-reSummarise(summarise, dir = NULL, files = NULL,
-  fixed_objects = NULL, bootSE = FALSE, boot_draws = 1000L)
+reSummarise(
+  summarise,
+  dir = NULL,
+  files = NULL,
+  fixed_objects = NULL,
+  bootSE = FALSE,
+  boot_draws = 1000L
+)
 }
 \arguments{
 \item{summarise}{a summarise function to apply to the read-in files.

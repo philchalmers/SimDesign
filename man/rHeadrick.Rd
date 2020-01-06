@@ -4,11 +4,19 @@
 \alias{rHeadrick}
 \title{Generate non-normal data with Headrick's (2002) method}
 \usage{
-rHeadrick(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
-  skew = rep(0, nrow(sigma)), kurt = rep(0, nrow(sigma)), gam3 = NaN,
-  gam4 = NaN, return_coefs = FALSE, coefs = NULL,
-  control = list(seed = NULL, trace = FALSE, max.ntry = 15, obj.tol =
-  1e-10, n.valid.sol = 1))
+rHeadrick(
+  n,
+  mean = rep(0, nrow(sigma)),
+  sigma = diag(length(mean)),
+  skew = rep(0, nrow(sigma)),
+  kurt = rep(0, nrow(sigma)),
+  gam3 = NaN,
+  gam4 = NaN,
+  return_coefs = FALSE,
+  coefs = NULL,
+  control = list(seed = NULL, trace = FALSE, max.ntry = 15, obj.tol = 1e-10, n.valid.sol
+    = 1)
+)
 }
 \arguments{
 \item{n}{number of samples to draw}

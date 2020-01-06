@@ -4,9 +4,15 @@
 \alias{SimFunctions}
 \title{Skeleton functions for simulations}
 \usage{
-SimFunctions(filename = NULL, dir = getwd(), comments = FALSE,
-  singlefile = TRUE, summarise = TRUE, generate = TRUE,
-  openFiles = TRUE)
+SimFunctions(
+  filename = NULL,
+  dir = getwd(),
+  comments = FALSE,
+  singlefile = TRUE,
+  summarise = TRUE,
+  generate = TRUE,
+  openFiles = TRUE
+)
 }
 \arguments{
 \item{filename}{a character vector indicating whether the output should be saved to two respective files

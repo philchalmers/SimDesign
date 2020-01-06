@@ -4,8 +4,14 @@
 \alias{RMSE}
 \title{Compute the (normalized) root mean square error}
 \usage{
-RMSE(estimate, parameter = NULL, type = "RMSE", MSE = FALSE,
-  percent = FALSE, unname = FALSE)
+RMSE(
+  estimate,
+  parameter = NULL,
+  type = "RMSE",
+  MSE = FALSE,
+  percent = FALSE,
+  unname = FALSE
+)
 }
 \arguments{
 \item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame} of parameter estimates.
