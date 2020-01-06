@@ -1051,10 +1051,6 @@ summary.SimDesign <- function(object, ...){
 #' @rdname runSimulation
 #' @export
 print.SimDesign <- function(x, list2char = TRUE, ...){
-    classes <- sapply(x, class)
-    if(list2char && any(classes == 'list') && is(x, 'tbl_df'))
-        x <- list2char(x)
-    class(x) <- class(x)[!(class(x) %in% 'SimDesign')]
-    print(x, ...)
+    print.Design(x=x, list2char=list2char, ...)
 
 }
