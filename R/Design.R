@@ -62,6 +62,9 @@
 #'
 #' }
 createDesign <- function(..., subset, tibble = TRUE, stringsAsFactors = FALSE){
+    dots <- list(...)
+    if(is.null(names(dots)) || any(names(dots) == ""))
+        stop("Please provide meaningful names for each supplied simulation factor")
     ret <- expand.grid(..., stringsAsFactors = stringsAsFactors)
     if (!missing(subset)){
         e <- substitute(subset)
