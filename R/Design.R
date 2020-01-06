@@ -114,12 +114,20 @@ cat_line <- function(...) {
 
 printDesign <- function(x, whichlist, ..., n = NULL, width = NULL, n_extra = NULL) {
     ff <- format(x, ..., n = n, width = width, n_extra = n_extra)
-    ff3 <- strsplit(ff[3], "\\[23m")[[1]]
     if(length(whichlist)){
-        for(w in whichlist)
-            ff3[w] <- gsub('chr', 'lst', ff3[w])
-        ff3 <- paste0(ff3, collapse='[23m')
-        ff[3] <- ff3
+        if(grepl("\\[23m", ff[3])){ # for Rstudio formatting
+            ff3 <- strsplit(ff[3], "\\[23m")[[1]]
+            for(w in whichlist)
+                ff3[w] <- gsub('chr', 'lst', ff3[w])
+            ff3 <- paste0(ff3, collapse='[23m')
+            ff[3] <- ff3
+        } else { # in LaTeX, HTML, Word
+            ff3 <- strsplit(ff[3], ">")[[1]]
+            for(w in whichlist)
+                ff3[w] <- gsub('chr', 'lst', ff3[w])
+            ff3 <- paste0(ff3, collapse='>')
+            ff[3] <- ff3
+        }
     }
     cat_line(ff)
     invisible(x)
