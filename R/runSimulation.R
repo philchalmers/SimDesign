@@ -1051,6 +1051,6 @@ summary.SimDesign <- function(object, ...){
 #' @rdname runSimulation
 #' @export
 print.SimDesign <- function(x, list2char = TRUE, ...){
-    print.Design(x=x, list2char=list2char, ...)
-
+    class(x) <- c('Design', class(x)[-1L])
+    print(x=x, list2char=list2char, ...)
 }
