@@ -34,7 +34,7 @@ runSimulation(
   progress = TRUE,
   allow_na = FALSE,
   allow_nan = FALSE,
-  stop_on_fatal = TRUE,
+  stop_on_fatal = FALSE,
   edit = "none",
   verbose = TRUE
 )

@@ -638,7 +638,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50L, save_details = list(), debug = 'none', progress = TRUE,
-                          allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = TRUE,
+                          allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = FALSE,
                           edit = 'none', verbose = TRUE)
 {
     if(edit != 'none'){
@@ -956,7 +956,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     if(verbose)
-        message('\nSimulation complete. Total execution time: ', timeFormater(sum(stored_time)))
+        message('\nSimulation complete. Total execution time: ', timeFormater(sum(stored_time)), "\n")
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     error_seeds <- data.frame(do.call(cbind, lapply(1L:length(Result_list), function(x){
         ret <- attr(Result_list[[x]], "error_seeds")
@@ -966,8 +966,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         t(ret)
     })))
     Final <- plyr::rbind.fill(Result_list)
-    if(any(colnames(Final) == 'FATAL_TERMINATION')){
-        warning('The following Design rows were fatally terminated: ',
+    if(!stop_on_fatal && any(colnames(Final) == 'FATAL_TERMINATION')){
+        warning('One or more design rows were fatally terminated. Please inspect/debug row(s): ',
                 paste(which(!is.na(Final$FATAL_TERMINATION)), collapse=','), call.=FALSE)
     }
     SIM_TIME <- Final$SIM_TIME
