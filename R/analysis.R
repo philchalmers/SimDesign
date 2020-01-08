@@ -2,14 +2,14 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      save_results, save_results_out_rootdir, save_results_dirname, max_errors, bootSE, boot_draws,
                      save_seeds, save_seeds_dirname, load_seed, export_funs, packages,
                      summarise_asis, warnings_as_errors, progress, store_results,
-                     allow_na, allow_nan, use_try)
+                     allow_na, allow_nan, use_try, stop_on_fatal)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
     if(is.null(cl)){
         if(!is.null(seed)) set.seed(seed[condition$ID])
         results <- if(progress){
-            pbapply::pblapply(1L:replications, mainsim, condition=condition,
+            try(pbapply::pblapply(1L:replications, mainsim, condition=condition,
                    generate=Functions$generate,
                    analyse=Functions$analyse,
                    fixed_objects=fixed_objects,
@@ -18,9 +18,9 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    save_seeds=save_seeds, load_seed=load_seed,
                    save_seeds_dirname=save_seeds_dirname,
                    warnings_as_errors=warnings_as_errors,
-                   allow_na=allow_na, allow_nan=allow_nan, use_try=use_try)
+                   allow_na=allow_na, allow_nan=allow_nan, use_try=use_try), TRUE)
         } else {
-            lapply(1L:replications, mainsim, condition=condition,
+            try(lapply(1L:replications, mainsim, condition=condition,
                    generate=Functions$generate,
                    analyse=Functions$analyse,
                    fixed_objects=fixed_objects,
@@ -29,33 +29,23 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    save_seeds=save_seeds, load_seed=load_seed,
                    save_seeds_dirname=save_seeds_dirname,
                    warnings_as_errors=warnings_as_errors,
-                   allow_na=allow_na, allow_nan=allow_nan, use_try=use_try)
+                   allow_na=allow_na, allow_nan=allow_nan, use_try=use_try), TRUE)
         }
     } else {
         if(MPI){
             i <- 1L
-            results <- foreach(i=1L:replications, .export=export_funs) %dopar%
+            results <- try(foreach(i=1L:replications, .export=export_funs) %dopar%
                 mainsim(i, condition=condition, generate=Functions$generate,
                      analyse=Functions$analyse, fixed_objects=fixed_objects, load_seed=load_seed,
                      max_errors=max_errors, save=save, packages=packages,
                      save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                      save_results_out_rootdir=save_results_out_rootdir,
                      warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan,
-                     use_try=use_try)
+                     use_try=use_try), TRUE)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
             results <- if(progress){
-                pbapply::pblapply(1L:replications, mainsim,
-                                    condition=condition, generate=Functions$generate,
-                                    analyse=Functions$analyse, load_seed=load_seed,
-                                    fixed_objects=fixed_objects, packages=packages, save=save,
-                                    save_results_out_rootdir=save_results_out_rootdir,
-                                    max_errors=max_errors,
-                                    save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
-                                    warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan,
-                                    use_try=use_try, cl=cl)
-            } else {
-                parallel::parLapply(cl, 1L:replications, mainsim,
+                try(pbapply::pblapply(1L:replications, mainsim,
                                     condition=condition, generate=Functions$generate,
                                     analyse=Functions$analyse, load_seed=load_seed,
                                     fixed_objects=fixed_objects, packages=packages, save=save,
@@ -63,12 +53,32 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     max_errors=max_errors,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
-                                    allow_nan=allow_nan, use_try=use_try)
+                                    allow_nan=allow_nan, use_try=use_try, cl=cl), TRUE)
+            } else {
+                try(parallel::parLapply(cl, 1L:replications, mainsim,
+                                    condition=condition, generate=Functions$generate,
+                                    analyse=Functions$analyse, load_seed=load_seed,
+                                    fixed_objects=fixed_objects, packages=packages, save=save,
+                                    save_results_out_rootdir=save_results_out_rootdir,
+                                    max_errors=max_errors,
+                                    save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
+                                    warnings_as_errors=warnings_as_errors, allow_na=allow_na,
+                                    allow_nan=allow_nan, use_try=use_try), TRUE)
             }
         }
     }
+    if(is(results, 'try-error')){
+        # deal with fatal errors
+        if(stop_on_fatal){
+            stop(as.character(results))
+        } else {
+            out <- gsub('\\n', '', as.character(results))
+            ret <- c(FATAL_TERMINATION=strsplit(out, "Last error message was:   ")[[1L]][2L])
+            return(ret)
+        }
+    }
     if(summarise_asis || store_results){
-        tabled_results <- if(is.data.frame(results[[1]]) && nrow(results[[1]]) == 1L){
+        tabled_results <- if(is.data.frame(results[[1]]) && nrow(results[[1L]]) == 1L){
             plyr::rbind.fill(results)
         } else if((is.data.frame(results[[1]]) && nrow(results[[1]]) > 1L) || is.list(results[[1L]])){
             results

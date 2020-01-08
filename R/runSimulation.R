@@ -352,6 +352,12 @@
 #'   pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
 #'   of all the simulation results for each condition
 #'
+#' @param stop_on_fatal logical; should the simulation be terminated immediately when
+#'   the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
+#'   the simulation will continue as though errors did not occur, however a column
+#'   \code{FATAL_TERMINATION} will be included in the resulting object indicating the final
+#'   error message observed, and \code{NA} placeholders will be placed in all other row-elements
+#'
 #' @param verbose logical; print messages to the R console? Default is \code{TRUE}
 #'
 #' @return a \code{tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
@@ -632,7 +638,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50L, save_details = list(), debug = 'none', progress = TRUE,
-                          allow_na = FALSE, allow_nan = FALSE, edit = 'none', verbose = TRUE)
+                          allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = TRUE,
+                          edit = 'none', verbose = TRUE)
 {
     if(edit != 'none'){
         warning('The edit argument has been deprecated. Please use \'debug\' instead.', call. = FALSE)
@@ -881,7 +888,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          max_errors=max_errors, packages=packages,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
-                                         progress=progress, store_results=FALSE, use_try=use_try)
+                                         progress=progress, store_results=FALSE, use_try=use_try,
+                                         stop_on_fatal=stop_on_fatal)
             time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
         } else {
@@ -906,7 +914,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             max_errors=max_errors, packages=packages,
                             load_seed=load_seed, export_funs=export_funs,
                             warnings_as_errors=warnings_as_errors,
-                            progress=progress, store_results=store_results, use_try=use_try)
+                            progress=progress, store_results=store_results, use_try=use_try,
+                            stop_on_fatal=stop_on_fatal)
             if(store_results){
                 stored_Results_list[[i]] <- attr(tmp, 'full_results')
                 attr(tmp, 'full_results') <- NULL
@@ -957,6 +966,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         t(ret)
     })))
     Final <- plyr::rbind.fill(Result_list)
+    if(any(colnames(Final) == 'FATAL_TERMINATION')){
+        warning('The following Design rows were fatally terminated: ',
+                paste(which(!is.na(Final$FATAL_TERMINATION)), collapse=','), call.=FALSE)
+    }
     SIM_TIME <- Final$SIM_TIME
     COMPLETED <- Final$COMPLETED
     Final$SIM_TIME <- Final$ID <- Final$COMPLETED <-

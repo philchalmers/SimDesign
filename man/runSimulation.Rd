@@ -34,6 +34,7 @@ runSimulation(
   progress = TRUE,
   allow_na = FALSE,
   allow_nan = FALSE,
+  stop_on_fatal = TRUE,
   edit = "none",
   verbose = TRUE
 )
@@ -255,6 +256,12 @@ analysis? Default is FALSE}
 
 \item{allow_nan}{logical; should \code{NaN}s be allowed in the analyse step as a valid result from the simulation
 analysis? Default is FALSE}
+
+\item{stop_on_fatal}{logical; should the simulation be terminated immediately when
+the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
+the simulation will continue as though errors did not occur, however a column
+\code{FATAL_TERMINATION} will be included in the resulting object indicating the final
+error message observed, and \code{NA} placeholders will be placed in all other row-elements}
 
 \item{edit}{this argument has been deprecated. Please use \code{debug} instead}
 
