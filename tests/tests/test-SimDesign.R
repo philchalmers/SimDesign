@@ -2,6 +2,8 @@ context('SimDesign')
 
 test_that('SimDesign', {
 
+    library(SimDesign)
+
     sample_sizes <- c(10, 20)
     standard_deviations <- c(1, 4)
 
@@ -93,7 +95,7 @@ test_that('SimDesign', {
 
     # resume
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute2, summarise=mycollect,
-                           replications = 2, save=TRUE, verbose = FALSE))
+                           replications = 2, save=TRUE, verbose = FALSE, stop_on_fatal=TRUE))
     compname = Sys.info()["nodename"]
     tmp <- readRDS(paste0('SIMDESIGN-TEMPFILE_', compname, '.rds'))
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
@@ -216,15 +218,16 @@ test_that('SimDesign', {
     mycompute <- function(condition, dat, fixed_objects = NULL){
         stop('this error')
     }
-    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+    expect_warning(out <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
-    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+
+    expect_warning(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 1, parallel=TRUE, ncores=2L,
                            save=FALSE, verbose = FALSE))
 
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=TRUE, ncores=2L,
-                               save=TRUE, verbose = FALSE))
+                               save=TRUE, verbose = FALSE, stop_on_fatal = TRUE))
     seeds <- readRDS('SIMDESIGN_CRASHFILE_SEEDS.rds')
     # runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
     #               replications = 1, parallel=TRUE, ncores=2L, load_seed=seeds[1,],
@@ -235,16 +238,16 @@ test_that('SimDesign', {
         ret <- does_not_exist(TRUE)
         ret
     }
-    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+    expect_warning(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
-    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+    expect_warning(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=TRUE, ncores=2L,
                                save=FALSE, verbose = FALSE))
 
     mysim <- function(condition, fixed_objects = NULL){
         stop('something silly', call.=FALSE)
     }
-    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+    expect_warning(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
 
 
@@ -257,10 +260,10 @@ test_that('SimDesign', {
     mycollect <- function(condition, results, fixed_objects = NULL) {
         mean(results$ret)
     }
-    expect_error(runSimulation(Design, replications = 1,
+    expect_warning(runSimulation(Design, replications = 1,
                                generate=mygenerate, analyse=mycompute, summarise=mycollect,
                                parallel=FALSE, save=FALSE, verbose = FALSE))
-    expect_error(runSimulation(Design, replications = 1, ncores=2,
+    expect_warning(runSimulation(Design, replications = 1, ncores=2,
                                generate=mygenerate, analyse=mycompute, summarise=mycollect,
                                parallel=TRUE, save=FALSE, verbose = FALSE))
     out <- runSimulation(Design, replications = 2, packages = 'extraDistr',
@@ -465,7 +468,7 @@ test_that('SimDesign', {
     Summarise <- function(condition, results, fixed_objects = NULL)
         bias(results, 0)
     expect_error(runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile.rds'),
-                  generate=Generate, analyse=Analyse1, summarise=Summarise, verbose=FALSE))
+                  generate=Generate, analyse=Analyse1, summarise=Summarise, verbose=FALSE, stop_on_fatal=TRUE))
     expect_true('thisfile.rds' %in% dir())
     SimClean('thisfile.rds', 'SIMDESIGN_CRASHFILE_SEEDS.rds')
     results <- runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile'),
