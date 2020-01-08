@@ -638,7 +638,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50L, save_details = list(), debug = 'none', progress = TRUE,
-                          allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = FALSE,
+                          allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = TRUE,
                           edit = 'none', verbose = TRUE)
 {
     if(edit != 'none'){
