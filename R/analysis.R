@@ -74,6 +74,9 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         } else {
             out <- gsub('\\n', '', as.character(results))
             ret <- c(FATAL_TERMINATION=strsplit(out, "Last error message was:   ")[[1L]][2L])
+            if(progress)
+                message('\nWARNING: Condition terminated because of consecutive errors; using NA placeholders. \n\t Last error message was: ',
+                        unname(ret))
             return(ret)
         }
     }
