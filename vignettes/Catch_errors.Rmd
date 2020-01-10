@@ -28,7 +28,7 @@ par(mar=c(3,3,1,1)+.1)
 ```
 
 Error catching is an important area to consider when creating Monte Carlo simulations. Sometimes, iterative algorithms will 'fail to converge', or otherwise crash for other reasons (e.g., sparse data). However,
-`SimDesign` makes this process much easier because the internal functions are automatically wrapped within  `try` blocks, and therefore simulations will not terminate unexpectedly. This type of information is also collected as it may be relevant to the writer that something unknown is going wrong in the code-base. Below we demonstrate what happens when errors are thrown and caught, and how this information is tracked in the returned object.
+`SimDesign` makes this process much easier because the internal functions are automatically wrapped within  `try` blocks, and therefore simulations will not terminate unexpectedly. This type of information is also collected in the final simulation object since it may be relevant to the writer that something unknown is going wrong in the code-base. Below we demonstrate what happens when errors are thrown and caught, and how this information is tracked in the returned object.
 
 # Define the functions
 
@@ -106,11 +106,11 @@ SimExtract(result, what = 'errors')
 
 
 
-Finally, `SimDesign` has a built-in safety feature controlled by with `max_errors` argument to avoid getting stuck in infinite redrawing loops. By default, if more than 50 errors are consecutively returned then the simulation will be halted, and the final error message will be returned. This safety feature is built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code which should be fixed before continuing.
+Finally, `SimDesign` has a built-in safety feature controlled by with `max_errors` argument to avoid getting stuck in infinite redrawing loops. By default, if more than 50 errors are consecutively returned then the simulation condition will be halted, and a warnning message will be printed to the console indicating the last observed fatal error. These safety features are built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code which should be fixed before continuing. However, when encountering fatal errors in a given simulation condition the remainer of the simulation experiment will still be executed as normal, where for the problematic conditions combinations `NA` placeholders will be assigned to these rows in the final output object. This is so that the entire experiment does not unexpectedly terminate due to one or more problmematic row connditions in `Design`, and instead these conidtions can be inspected and debugged at a later time. Of course, if inspecting the code directly, the simulation could be manually halted so that these terminal errors can be attended to immediately (e.g., using `Ctrl + c`, or clicking the 'Stop' icon in Rstudio).
 
 # What to do (explicit debug catch)
 
-If errors occur too often then these design conditions should either be extracted out of the simulation or further inspected to determine if they can be fixed (e.g., providing better starting values, increasing convergence criteria/number of iterations, etc). The use of the debugging features can also be useful to track down issues as well. For example, manually wrap the problematic functions in a `try()` call, and add the line `if(is(object, 'try-error')) browser()` to jump into the location/replication where the object unexpectedly witnessed an error. Jumping into the exact location where the error occurred will greatly help you determine what exactly went wrong in the simulation state, allowing you to quickly locate and fix the issue.
+If errors occur too often (but not in a fatal way) then the respective design conditions should either be extracted out of the simulation or further inspected to determine if they can be fixed (e.g., providing better starting values, increasing convergence criteria/number of iterations, etc). The use of the debugging features can also be useful to track down issues as well. For example, manually wrap the problematic functions in a `try()` call, and add the line `if(is(object, 'try-error')) browser()` to jump into the location/replication where the object unexpectedly witnessed an error. Jumping into the exact location where the error occurred will greatly help you determine what exactly went wrong in the simulation state, allowing you to quickly locate and fix the issue.
 
 # What to do (stored error seed debuging)
 

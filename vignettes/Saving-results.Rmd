@@ -190,7 +190,3 @@ As well, passing `save_results = TRUE` will save all the results from the input 
 
 Finally, if you are worried about reproducibility, particularly during the debugging states, then the `seed` and `save_seeds` are the arguments you should utilize. `seed` sets the global seed for each design row, while `save_seed` writes the `.Random.seed` state to the hard-disk for complete reproducibility within each design condition (note that all seeds can be saved in parallel or when running simulations on single cores). If `save_seed` were used then the exact simulation state can be reloaded to the generated data by passing the specific saved seed file to `load_seed`. This also makes tracking down hard-to-find bugs within each design condition much easier. 
 
-```{r include=FALSE}
-SimDesign::SimClean("SIMDESIGN_CRASHFILE_SEEDS.rds")
-```
-
