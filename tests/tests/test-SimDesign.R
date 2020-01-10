@@ -100,7 +100,7 @@ test_that('SimDesign', {
     tmp <- readRDS(paste0('SIMDESIGN-TEMPFILE_', compname, '.rds'))
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 2, save=TRUE, verbose = FALSE, filename = 'newfile')
-    SimClean('newfile.rds', 'SIMDESIGN_CRASHFILE_SEEDS.rds')
+    SimClean('newfile.rds')
 
     #seeds
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
@@ -228,11 +228,6 @@ test_that('SimDesign', {
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=TRUE, ncores=2L,
                                save=TRUE, verbose = FALSE, stop_on_fatal = TRUE))
-    seeds <- readRDS('SIMDESIGN_CRASHFILE_SEEDS.rds')
-    # runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-    #               replications = 1, parallel=TRUE, ncores=2L, load_seed=seeds[1,],
-    #               save=TRUE, verbose = FALSE, debug='analyse')
-    SimClean('SIMDESIGN_CRASHFILE_SEEDS.rds')
 
     mycompute <- function(condition, dat, fixed_objects = NULL){
         ret <- does_not_exist(TRUE)
@@ -470,7 +465,7 @@ test_that('SimDesign', {
     expect_error(runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile.rds'),
                   generate=Generate, analyse=Analyse1, summarise=Summarise, verbose=FALSE, stop_on_fatal=TRUE))
     expect_true('thisfile.rds' %in% dir())
-    SimClean('thisfile.rds', 'SIMDESIGN_CRASHFILE_SEEDS.rds')
+    SimClean('thisfile.rds')
     results <- runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile'),
                                generate=Generate, analyse=Analyse2, summarise=Summarise, filename = 'thatfile', verbose=FALSE)
     expect_true('thatfile.rds' %in% dir())
