@@ -27,6 +27,7 @@ Imports:
 Suggests:
     knitr,
     ggplot2,
+    tidyr,
     shiny,
     doMPI,
     copula,

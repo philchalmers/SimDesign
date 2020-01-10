@@ -611,21 +611,23 @@
 #'
 #' # make some plots
 #' library(ggplot2)
-#' library(reshape2)
-#' welch_ind <- res %>% select(group_size_ratio, standard_deviation_ratio, welch, independent)
-#' dd <- melt(welch_ind, id.vars = names(welch_ind)[1:2])
+#' library(tidyr)
+#' dd <- res %>%
+#'    select(group_size_ratio, standard_deviation_ratio, welch, independent) %>%
+#'    pivot_longer(cols=c('welch', 'independent'), names_to = 'stats')
+#' dd
 #'
 #' ggplot(dd, aes(factor(group_size_ratio), value)) + geom_boxplot() +
 #'     geom_abline(intercept=0.05, slope=0, col = 'red') +
 #'     geom_abline(intercept=0.075, slope=0, col = 'red', linetype='dotted') +
 #'     geom_abline(intercept=0.025, slope=0, col = 'red', linetype='dotted') +
-#'     facet_wrap(~variable)
+#'     facet_wrap(~stats)
 #'
 #' ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation_ratio))) +
 #'     geom_boxplot() + geom_abline(intercept=0.05, slope=0, col = 'red') +
 #'     geom_abline(intercept=0.075, slope=0, col = 'red', linetype='dotted') +
 #'     geom_abline(intercept=0.025, slope=0, col = 'red', linetype='dotted') +
-#'     facet_grid(variable~standard_deviation_ratio) +
+#'     facet_grid(stats~standard_deviation_ratio) +
 #'     theme(legend.position = 'none')
 #'
 #' }
