@@ -38,7 +38,7 @@ a \code{tibble} or \code{data.frame} containing the simulation experiment
 Create a partially or fully-crossed data object reflecting the unique
 simulation design conditions. Each row of the returned object represents
 a unique simulation condition, and each column represents the named factor
-variables unders study.
+variables under study.
 }
 \examples{
 \dontrun{
@@ -49,7 +49,7 @@ Design <- createDesign(N = c(10, 20),
                        SD = c(1, 2))
 Design
 
-# remove N=10, SD=2 row from initial defintion
+# remove N=10, SD=2 row from initial definition
 Design <- createDesign(N = c(10, 20),
                        SD = c(1, 2),
                        subset = !(N == 10 & SD == 2))

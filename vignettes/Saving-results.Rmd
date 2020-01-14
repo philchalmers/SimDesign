@@ -154,7 +154,7 @@ row1 <- SimResults(res, 1)
 str(row1)
 ```
 
-The `SimResults()` function has the added benefit that it can read in all simulation 
+The `SimResults()` function has the added benefit that it can read-in all simulation 
 results at once, or simply hand pick which ones should be inspected. For example,
 here is how all the saved results can be inspected:
 
@@ -188,5 +188,5 @@ My general recommendation when running simulations is to use the `save = TRUE` f
 
 As well, passing `save_results = TRUE` will save all the results from the input `Analysis()` function which was passed to `Summarise()`, as well as save a final file to your hard-drive (but with the built-in safety feature that it will never over-write previously saved files). Hence, you'll be able to inspect all the elements manually if the need were to arise (e.g., to inspect `ECR(res1, alpha = .01)` instead of the `ECR(results, alpha = .05)` which may have only been used in the `Summarise()` function). However, do this **only** if your hard-drive can store all of the analysis results; if you are not careful, you could easily fill up your entire drive with the analysis results alone.
 
-Finally, if you are worried about reproducibility, particularly during the debugging states, then the `seed` and `save_seeds` are the arguments you should utilize. `seed` sets the global seed for each design row, while `save_seed` writes the `.Random.seed` state to the hard-disk for complete reproducibility within each design condition (note that all seeds can be saved in parallel or when running simulations on single cores). If `save_seed` were used then the exact simulation state can be reloaded to the generated data by passing the specific saved seed file to `load_seed`. This also makes tracking down hard-to-find bugs within each design condition much easier. 
+Finally, if you are worried about reproducibility, particularly during the debugging states, then the `seed` and `save_seeds` are the arguments you should utilize. `seed` sets the global seed for each design row, while `save_seed` writes the `.Random.seed` state to the hard-disk for complete reproducibility within each design condition (note that all seeds can be saved in parallel or when running simulations on single cores). If `save_seed` were used then the exact simulation state can be reloaded to the generated data by passing the specific saved seed file to `load_seed`. That said, problematic error states are automatically stored within the returned simulation object (which can be extracted via `SimExtract()`), and therefore if the purpose of saving the seeds is to help with debugging the package already automatically collects such information to replicate potentially hard-to-find errors/bugs within each design condition. 
 

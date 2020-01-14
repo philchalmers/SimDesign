@@ -3,7 +3,6 @@
 S3method(print,Design)
 S3method(print,SimDesign)
 S3method(rbind,SimDesign)
-S3method(subset,SimDesign)
 S3method(summary,SimDesign)
 export(Attach)
 export(ECR)

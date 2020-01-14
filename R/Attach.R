@@ -18,7 +18,7 @@
 #'   variables with the same names as in \code{condition}? Default is \code{TRUE}, which will avoid
 #'   this error
 #'
-#' @param attach_listone logical; if the elemement to be assign is a list of length one
+#' @param attach_listone logical; if the element to be assign is a list of length one
 #'   then assign the first element of this list with the associated name. This generally avoids
 #'   adding an often unnecessary list 1 index, such as \code{name <- list[[1L]]}
 #'

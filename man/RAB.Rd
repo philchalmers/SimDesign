@@ -18,7 +18,7 @@ names?}
 }
 \value{
 returns a \code{vector} of absolute bias ratios indicating the relative bias
-  effects compated to the first estimator. Values less than 1 indicate better bias estimates
+  effects compared to the first estimator. Values less than 1 indicate better bias estimates
   than the first estimator, while values greater than 1 indicate worse bias than the first estimator
 }
 \description{

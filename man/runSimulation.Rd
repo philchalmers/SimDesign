@@ -44,10 +44,11 @@ runSimulation(
 \method{print}{SimDesign}(x, list2char = TRUE, ...)
 }
 \arguments{
-\item{design}{a \code{data.frame} or \code{tibble} object containing the Monte Carlo simulation
+\item{design}{a \code{tibble} or \code{data.frame} object containing the Monte Carlo simulation
 conditions to be studied, where each row represents a unique condition and each column a factor
 to be varied. Note that if a \code{tibble} is supplied this object will be coerced to a
-\code{data.frame} internally}
+\code{data.frame} internally. See \code{\link{createDesign}} for the standard approach
+to create this simulation design object}
 
 \item{replications}{number of replication to perform per condition (i.e., each row in \code{design}).
 Must be greater than 0}
@@ -130,7 +131,7 @@ Default randomly generates seeds within the range 1 to 2147483647 for each condi
   is stored row-wise in an external .rds file), which provides a much easier mechanism
   to debug the issue (see \code{load_seed} for details).
 
-  To recover your simulation at the last known
+  Additionally, to recover your simulation at the last known
   location simply re-run the code you used to initially define the simulation and the external file
   will automatically be detected and read-in. Upon completion, the final results will
   be saved to the working directory, and the temp file will be removed. Default is \code{FALSE}}
@@ -160,14 +161,19 @@ of all the simulation results for each condition}
 therefore warnings are only collected and not used to restart the data generation step}
 
 \item{save_seeds}{logical; save the \code{.Random.seed} states prior to performing each replication into
-plain text files located in the defined \code{save_seeds_dirname} directory/folder?
-Use this if you would like to keep track of the simulation state within each replication and design
-condition. Primarily, this is useful for completely replicating any cell in the simulation if need be,
-especially when tracking down hard-to-find errors and bugs. As well, see the \code{load_seed} input
-to load a given \code{.Random.seed} to exactly replicate the generated data and analysis state (mostly useful
-for debugging). When \code{TRUE}, temporary files will also be saved
-to the working directory (in the same way as when \code{save = TRUE}).
-Default is \code{FALSE}}
+  plain text files located in the defined \code{save_seeds_dirname} directory/folder?
+  Use this if you would like to keep track of the simulation state within each replication and design
+  condition. Primarily, this is useful for completely replicating any cell in the simulation if need be,
+  especially when tracking down hard-to-find errors and bugs. As well, see the \code{load_seed} input
+  to load a given \code{.Random.seed} to exactly replicate the generated data and analysis state (mostly useful
+  for debugging). When \code{TRUE}, temporary files will also be saved
+  to the working directory (in the same way as when \code{save = TRUE}). Default is \code{FALSE}
+
+  Note, however, that this option is not typically necessary since the \code{.Random.seed} states for simulation
+  replications that threw errors during the execution are automatically stored within the final simulation
+  object, and can be extracted and investigated using \code{\link{SimExtract}}. Hence, this option is only of
+  interest when \emph{all} of the replications must be reproducible, otherwise the defaults to \code{runSimulation}
+  are likely sufficient for most simulation studies.}
 
 \item{load_seed}{a character object indicating which file to load from when the \code{.Random.seed}s have
 be saved (after a call with \code{save_seeds = TRUE}), or an integer vector indicating the actual
@@ -261,7 +267,8 @@ analysis? Default is FALSE}
 the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
 the simulation will continue as though errors did not occur, however a column
 \code{FATAL_TERMINATION} will be included in the resulting object indicating the final
-error message observed, and \code{NA} placeholders will be placed in all other row-elements}
+error message observed, and \code{NA} placeholders will be placed in all other row-elements. Default is
+\code{FALSE}}
 
 \item{edit}{this argument has been deprecated. Please use \code{debug} instead}
 
@@ -308,14 +315,13 @@ The strategy for organizing the Monte Carlo simulation work-flow is to
    \item{1)}{Define a suitable \code{Design} object (a \code{tibble} or \code{data.frame})
       containing fixed conditional
       information about the Monte Carlo simulations. This is often expedited by using the
-      \code{\link{createDesign}} function, and if necessary the arguemnt \code{subset}
+      \code{\link{createDesign}} function, and if necessary the argument \code{subset}
       can be used to remove redundant or non-applicable rows}
    \item{2)}{Define the three step functions to generate the data (\code{\link{Generate}}; see also
       \url{https://CRAN.R-project.org/view=Distributions} for a list of distributions in R),
       analyse the generated data by computing the respective parameter estimates, detection rates,
       etc (\code{\link{Analyse}}), and finally summarise the results across the total
-      number of replications (\code{\link{Summarise}}). Note that these functions can be
-      automatically generated by using the \code{\link{SimFunctions}} function.
+      number of replications (\code{\link{Summarise}}).
    }
    \item{3)}{Pass the above objects to the \code{runSimulation} function, and declare the
       number of replications to perform with the \code{replications} input. This function will accept
@@ -325,8 +331,8 @@ The strategy for organizing the Monte Carlo simulation work-flow is to
      (\code{\link{SimAnova}}) and generating suitable plots and tables}
 }
 
-More succinctly, the functions to be called follow the following form with the exact inputs required
-by the \code{SimDesign} package
+Expressing the above more succinctly, the functions to be called have the following form,
+with the exact inputs listed
 
 \describe{
   \item{\code{Design <- createDesign(...)}}{}
@@ -337,7 +343,7 @@ by the \code{SimDesign} package
         analyse=Analyse, summarise=Summarise)}}{}
 }
 
-The \code{condition} object represents a single row from the \code{design} object, indicating
+The \code{condition} object above represents a single row from the \code{design} object, indicating
 a unique Monte Carlo simulation condition. The \code{condition} object also contains two
 additional elements to help track the simulation's state: an \code{ID} variable, indicating
 the respective row number in the \code{design} object, and a \code{REPLICATION} element
@@ -345,10 +351,10 @@ indicating the replication iteration number. Mainly, these are included to help 
 where users can easily locate the \code{r}th replication (e.g., \code{REPLICATION == 500})
 within the \code{j}th row in the simulation design (e.g., \code{ID == 2}). The
 \code{REPLICATION} input is also useful when temporarily saving files to the hard-drive
-when calling external command line utilities.
+when calling external command line utilities (see examples on the wiki).
 
 For a skeleton version of the work-flow, which is often useful when initially defining a simulation,
-see \code{\link{SimFunctions}}. This function will write template simulation code
+use \code{\link{SimFunctions}}. This function will write template simulation code
 to one/two files so that modifying the required functions and objects can begin immediately
 with minimal error. This means that you can focus on your Monte Carlo simulation immediately rather
 than worrying about the administrative code-work required to organize the simulation work-flow.
@@ -378,10 +384,12 @@ For longer simulations it is recommended to use \code{save = TRUE} to temporaril
 simulation state, and to use the \code{save_results} flag to write the analysis results
 the to hard-disc.
 
-The use of the \code{save_seeds} option can be envoked to save R's \code{.Random.seed} state to allow
+The use of the \code{save_seeds} option can be evoked to save R's \code{.Random.seed} state to allow
 for complete reproducibility of each replication within each condition. These
 individual \code{.Random.seed} terms can then be read in with the
-\code{load_seed} input to reproduce the exact simulation state at any given replication. Finally,
+\code{load_seed} input to reproduce the exact simulation state at any given replication. Most often though,
+\code{save_seeds} is less useful since problematic seeds are automatically stored in the final
+simulation object to allow for easier replicability of potentially problematic errors. Finally,
 providing a vector of \code{seeds} is also possible to ensure
 that each simulation condition is completely reproducible under the single/multi-core method selected.
 
@@ -686,8 +694,9 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
 }
 \seealso{
-\code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
-  \code{\link{SimFunctions}}, \code{\link{SimExtract}},
+\code{\link{SimFunctions}}, \code{\link{createDesign}},
+  \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
+  \code{\link{SimExtract}},
   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
   \code{\link{SimBoot}}, \code{\link{aggregate_simulations}}, \code{\link{Attach}},
   \code{\link{SimShiny}}

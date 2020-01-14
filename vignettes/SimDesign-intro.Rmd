@@ -83,7 +83,7 @@ have helpful comments included then these can be achieved with the `singlefile` 
 SimFunctions('mysim', singlefile = FALSE, comments = TRUE)
 ```
 
-Personally, I find keeping the design and functions separate when writing larger real-world simulations, though there are other reasons to keep them separate. For example, when debugging code (either through the `debug` argument or by explicitly using `browser()` calls) GUIs such as `Rstudio` are usually better at tracking the debugged functions. As a good amount of your time will initially be spent debugging, it's good to make this as painless as possible. Second, it's easier and more fluid to simply `source()` (keyboard shortcut `ctrl + shift + s`) the file containing functions and not worry that you might accidentally start running your simulation; though this is a matter of preference. Finally, the structure is often more readable, especially when you come back to your code sometime in the future after you've long forgotten what exactly you've written. In the design file then, you can describe the simulation study more thoroughly with comments and generally outline the specifics of how the simulation is to be run, while the functions file simply contains the underlying mechanics and cogs required to run the simulation machine. Of course, this all a matter of preference, and you may prefer to use the defaults in your simulation work.
+The choice of using a single file or not is entirely a matter of preference, and will not influence the overall simulation implementation.
 
 # Simulation: Determine estimator efficiency
 

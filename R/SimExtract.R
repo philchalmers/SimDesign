@@ -1,6 +1,6 @@
 #' Function to extract extra information from SimDesign objects
 #'
-#' Function used to extract any error or warnings messages, the seeds assocaited
+#' Function used to extract any error or warnings messages, the seeds associated
 #' with any error messages, and any analysis results that were stored in the
 #' final simulation object.
 #'
@@ -9,9 +9,9 @@
 #' @param what character indicating what information to extract. Possible inputs
 #'   include \code{'errors'} to return a \code{tibble} object containing counts of any
 #'   error messages, \code{'warnings'} to return a \code{data.frame} object containing
-#'   counts of any warning messages, \code{'error_seeds'} to extact the assocaited
+#'   counts of any warning messages, \code{'error_seeds'} to extract the associated
 #'   \code{.Random.seed} values associated with the ERROR messages, and \code{'results'}
-#'   to extrac the simulation results if the option \code{store_results} was passed to
+#'   to extract the simulation results if the option \code{store_results} was passed to
 #'   \code{\link{runSimulation}}
 #'
 #' @export
