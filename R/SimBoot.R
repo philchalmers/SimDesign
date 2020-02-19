@@ -62,7 +62,7 @@
 #'
 SimBoot <- function(results, CI = .99){
     nms <- attr(results, 'design_names')
-    q <- -qnorm((1 - .99)/2)
+    q <- -qnorm((1 - CI)/2)
     results <- as.data.frame(results)
     bootSE <- subset(results, select = colnames(results) %in% nms$bootSE)
     sims <- subset(results, select = colnames(results) %in% nms$sim)
@@ -72,7 +72,7 @@ SimBoot <- function(results, CI = .99){
     ret[,seq(1L, ncol(ret), by = 2L)] <- lower
     ret[,seq(2L, ncol(ret), by = 2L)] <- upper
     colnames(ret) <- paste0(as.vector(sapply(paste0(nms$sim, ":("), function(x)
-        paste0(x, c( (1 - .99)/2 * 100, (1 - (1 - .99)/2)*100)))), "%)")
+        paste0(x, c( (1 - CI)/2 * 100, (1 - (1 - CI)/2)*100)))), "%)")
     ret <- data.frame(subset(results, select = colnames(results) %in% nms$design), ret,
                       check.names = FALSE)
     ret
