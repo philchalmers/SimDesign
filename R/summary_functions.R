@@ -880,3 +880,63 @@ ECR <- function(CIs, parameter, tails = FALSE, CI_width = FALSE,
     ret
 }
 
+#' Compute congruence coefficient
+#'
+#' Computes the congruence coefficient, also known as an "unadjusted" correlation
+#' or Tucker's congruence coefficient.
+#'
+#' @param x a vector or \code{data.frame}/\code{matrix} containing the
+#'   variables to use. If a vector then the input \code{y} is required,
+#'   otherwise the cogruence coefficient is computed for all bivariate
+#'   combinations
+#'
+#' @param y (optional) the second vector input to use if
+#'   \code{x} is a vector
+#'
+#' @param unname logical; apply \code{\link{unname}} to the results to remove any variable
+#'   names?
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
+#' @seealso \code{\link{cor}}
+#'
+#' @export
+#' @references
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
+#'
+#' @examples
+#'
+#' vec1 <- runif(1000)
+#' vec2 <- runif(1000)
+#'
+#' CC(vec1, vec2)
+#' # compare to cor()
+#' cor(vec1, vec2)
+#'
+#' # column input
+#' df <- data.frame(vec1, vec2, vec3 = runif(1000))
+#' CC(df)
+#' cor(df)
+#'
+CC <- function(x, y = NULL, unname = FALSE){
+    cc <- function(x,y)
+        sum(x * y) / (sqrt(sum(x^2) * sum(y^2)))
+    if(!is.null(y)) x <- data.frame(x, y)
+    if(is.data.frame(x)) x <- as.matrix(x)
+    if(ncol(x) == 2){
+        ret <- cc(x[,1], x[,2])
+    } else {
+        J <- ncol(x)
+        ret <- matrix(0, ncol=J, nrow=J)
+        colnames(ret) <- rownames(ret) <- colnames(x)
+        for(i in 1L:(J-1L))
+            for(j in (i+1):J)
+                ret[i,j] <- cc(x[,i], x[,j])
+        ret <- ret + t(ret)
+        diag(ret) <- 1
+    }
+    if(unname) ret <- unname(ret)
+    ret
+}

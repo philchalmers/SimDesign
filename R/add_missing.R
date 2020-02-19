@@ -47,6 +47,7 @@
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
 #' @examples
+#' \dontrun{
 #'
 #' set.seed(1)
 #' y <- rnorm(1000)
@@ -88,6 +89,8 @@
 #' fun <- function(y) ifelse(abs(y) > 1, .4, 0)
 #' ymiss <- add_missing(y, fun=fun)
 #' tail(cbind(y, ymiss), 10)
+#'
+#' }
 #'
 add_missing <- function(y, fun = function(y, rate = .1, ...) rep(rate, length(y)), ...){
     if(!('y' %in% names(formals(fun))))

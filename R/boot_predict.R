@@ -2,13 +2,13 @@
 #'
 #' This function computes bootstrap mean-square error estimates to approximate the sampling behavior
 #' of the meta-statistics in SimDesign's \code{summarise} functions. A single design condition is
-#' supplied, and a simulation with \code{max(Rstar)} replications is performed whereby the 
-#' generate-analyse results are collected. After obtaining these replication values, the 
+#' supplied, and a simulation with \code{max(Rstar)} replications is performed whereby the
+#' generate-analyse results are collected. After obtaining these replication values, the
 #' replications are further drawn from (with replacement) using the differing sizes in \code{Rstar}
 #' to approximate the bootstrap MSE behavior given different replication sizes. Finally, given these
-#' bootstrap estimates linear regression models are fitted using the predictor term 
-#' \code{one_sqrtR = 1 / sqrt(Rstar)} to allow extrapolation to replication sizes not observed in 
-#' \code{Rstar}. For more information about the method and subsequent bootstrap MSE plots, 
+#' bootstrap estimates linear regression models are fitted using the predictor term
+#' \code{one_sqrtR = 1 / sqrt(Rstar)} to allow extrapolation to replication sizes not observed in
+#' \code{Rstar}. For more information about the method and subsequent bootstrap MSE plots,
 #' refer to Koehler, Brown, and Haneuse (2009).
 #'
 #' @param condition a \code{data.frame} consisting of one row from the original \code{design}
@@ -71,6 +71,7 @@
 #'     ret
 #' }
 #'
+#' \dontrun{
 #' # boot_predict supports only one condition at a time
 #' out <- boot_predict(condition=Design[1L, , drop=FALSE],
 #'     generate=Generate, analyse=Analyse, summarise=Summarise)
@@ -97,6 +98,7 @@
 #'
 #' # approximately how many replications to obtain MSE = .001?
 #' (beta / .001)^2
+#' }
 #'
 boot_predict <- function(condition, generate, analyse, summarise, fixed_objects = NULL, ...,
                         Rstar = seq(100, 500, by=100), boot_draws = 1000){

@@ -53,6 +53,7 @@
 #'     ret
 #' }
 #'
+#' \dontrun{
 #' # run the simulation
 #' runSimulation(design=Design, replications=50,
 #'               generate=Generate, analyse=Analyse,
@@ -77,6 +78,7 @@
 #' res2
 #'
 #' SimClean('simresults/')
+#' }
 #' }
 reSummarise <- function(summarise, dir = NULL, files = NULL,
                         fixed_objects = NULL, bootSE = FALSE, boot_draws = 1000L){

@@ -59,6 +59,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL){
     ret
 }
 
+\dontrun{
 # run the simulation
 runSimulation(design=Design, replications=50,
               generate=Generate, analyse=Analyse,
@@ -83,6 +84,7 @@ res2 <- reSummarise(Summarise2, dir = 'simresults/')
 res2
 
 SimClean('simresults/')
+}
 }
 }
 \references{

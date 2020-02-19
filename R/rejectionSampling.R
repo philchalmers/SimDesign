@@ -65,6 +65,7 @@
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
 #' @examples
+#' \dontrun{
 #'
 #' # Generate X ~ beta(a,b), where a and b are a = 2.7 and b = 6.3,
 #' # and the support is Y ~ Unif(0,1)
@@ -130,6 +131,8 @@
 #' hist(dat[,1], 30)
 #' hist(dat[,2], 30)
 #' plot(dat)
+#'
+#' }
 #'
 rejectionSampling <- function(n, df, dg, rg, M = NULL, returnM = FALSE,
                               vectorized = TRUE) {
