@@ -200,12 +200,17 @@ test_that('SimDesign', {
 
         return(ret)
     }
+
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycomputeGood, summarise=mycollect, verbose=FALSE,
+                         replications = 10, boot_method = 'basic')
+    expect_true(all(dim(tmp) == c(8,13)))
+
     tmp <- runSimulation(rbind(Design, Design), generate=mysim, analyse=mycomputeGood, summarise=mycollect, verbose=FALSE,
                          replications = 10, parallel=FALSE, save_results = TRUE)
     out <- reSummarise(summarise = mycollect, dir=DIR)
     expect_true(all(dim(out) == c(16,5)))
-    out <- reSummarise(summarise = mycollect, dir=DIR, bootSE = TRUE)
-    expect_true(all(dim(out) == c(16,7)))
+    out <- reSummarise(summarise = mycollect, dir=DIR, boot_method = 'basic')
+    expect_true(all(dim(out) == c(16,9)))
     SimClean(results = TRUE)
 
     # results no summarise

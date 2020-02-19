@@ -75,8 +75,9 @@
 #' messages that were caught (if no errors/warnings were observed these columns will be omitted).
 #' Note that to extract the specific error and warnings messages see
 #' \code{\link{SimExtract}}. Finally,
-#' if \code{bootSE = TRUE} was included then the final right-most columns will contain the labels
-#' \code{BOOT_SE.} followed by the name of the associated meta-statistic defined in \code{summarise()}.
+#' if \code{boot_method} was a valid input other than 'none' then the final right-most columns will contain the labels
+#' \code{BOOT_} followed by the name of the associated meta-statistic defined in \code{summarise()} and
+#' and bootstrapped confidence interval location for the meta-statistics.
 #'
 #' Additional examples, presentation files, and tutorials can be found on the package wiki located at
 #' \url{https://github.com/philchalmers/SimDesign/wiki}.
@@ -336,22 +337,16 @@
 #'   This is useful when simulations conditions take a long time to run.
 #'   Uses the \code{pbapply} package to display the progress. Default is \code{FALSE}
 #'
-#' @param bootSE logical; perform a non-parametric bootstrap to compute bootstrap standard error
-#'   estimates for the respective meta-statistics computed by the \code{Summarise} function?
-#'   When \code{TRUE}, bootstrap samples for each row in \code{Design} will be obtained after
-#'   the generate-analyse steps have obtain the simulation results to be summarised so that
-#'   standard errors for each statistic can be computed. To compute large-sample confidence
-#'   intervals given the bootstrap SE estimates see \code{\link{SimBoot}}.
-#'
-#'   This option is useful to approximate how accurate the resulting meta-statistic estimates
-#'   were, particularly if the number of \code{replications} was relatively low (e.g., less than
-#'   5000). If users prefer to obtain alternative bootstrap estimates then consider passing
-#'   \code{save_results = TRUE}, reading the generate-analyse data into R via
-#'   \code{\link{SimResults}}, and performing the bootstrap manually with function found in the
-#'   external \code{boot} package
+#' @param boot_method method for performing non-parametric bootstrap confidience intervals
+#'  for the respective meta-statistics computed by the \code{Summarise} function.
+#'  Can be \code{'basic'} for the empirical bootstrap CI, \code{'percentile'}
+#'  for percentile CIs, or \code{'norm'} for normal approximation CIs.
+#'  Default is \code{'none'}, which performs no bootstrapping
 #'
 #' @param boot_draws number of non-parametric bootstrap draws to sample for the \code{summarise}
 #'   function after the generate-analyse replications are collected. Default is 1000
+#'
+#' @param CI bootstrap confidence interval level (default is 95\%)
 #'
 #' @param store_results logical; store the complete tables of simulation results
 #'   in the returned object? This is \code{FALSE} by default to help avoid RAM
@@ -380,7 +375,7 @@
 #'   \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
 #'   \code{\link{SimExtract}},
 #'   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
-#'   \code{\link{SimBoot}}, \code{\link{aggregate_simulations}}, \code{\link{Attach}},
+#'   \code{\link{aggregate_simulations}}, \code{\link{Attach}},
 #'   \code{\link{SimShiny}}
 #'
 #' @export runSimulation
@@ -406,7 +401,7 @@
 #'
 #' #### Step 1 --- Define your conditions under study and create design data.frame
 #'
-#' Design <- data.frame(N = c(10, 20, 30))
+#' Design <- createDesign(N = c(10, 20, 30))
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Step 2 --- Define generate, analyse, and summarise functions
@@ -446,6 +441,7 @@
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Extras
+#' \dontrun{
 #' # compare SEs estimates to the true SEs from the formula sigma/sqrt(N)
 #' 5 / sqrt(Design$N)
 #'
@@ -466,10 +462,24 @@
 #' str(res)
 #' head(res[[1]]$results)
 #'
+#'
+#' # obtain empirical bootstrapped CIs during an initial run
+#' # the simulation was completed (necessarily requires save_results = TRUE)
+#' res <- runSimulation(design=Design, replications=1000, boot_method = 'basic',
+#'                      generate=Generate, analyse=Analyse, summarise=Summarise)
+#' res
+#'
+#' # alternative bootstrapped CIs that uses saved results via reSummarise().
+#' # Default directory save to:
+#' dirname <- paste0('SimDesign-results_', unname(Sys.info()['nodename']), "/")
+#' res <- reSummarise(summarise=Summarise, dir=dirname, boot_method = 'basic')
+#' res
+#'
+#'
 #' # remove the saved results from the hard-drive if you no longer want them
 #' SimClean(results = TRUE)
 #'
-#'
+#' }
 #'
 #'
 #' #-------------------------------------------------------------------------------
@@ -571,7 +581,6 @@
 #'
 #'
 #'
-#'
 #' ## EXTRA: To run the simulation on a MPI cluster, use the following setup on each node (not run)
 #' # library(doMPI)
 #' # cl <- startMPIcluster()
@@ -642,8 +651,8 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          fixed_objects = NULL, packages = NULL, bootSE = FALSE,
-                          boot_draws = 1000L, filename = 'SimDesign-results',
+                          fixed_objects = NULL, packages = NULL, filename = 'SimDesign-results',
+                          boot_method='none', boot_draws = 1000L, CI = .95,
                           seed = rint(nrow(design), min=1L, max = 2147483647L),
                           save = FALSE, save_results = FALSE, store_results = FALSE,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
@@ -889,7 +898,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          replications=replications,
                                          fixed_objects=fixed_objects,
                                          cl=cl, MPI=MPI, seed=seed,
-                                         bootSE=bootSE, boot_draws=boot_draws,
+                                         boot_draws=boot_draws, boot_method=boot_method, CI=CI,
                                          save=save, allow_na=allow_na, allow_nan=allow_nan,
                                          save_results=save_results,
                                          save_results_out_rootdir=out_rootdir,
@@ -915,7 +924,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             replications=replications,
                             fixed_objects=fixed_objects,
                             cl=cl, MPI=MPI, seed=seed,
-                            bootSE=bootSE, boot_draws=boot_draws,
+                            boot_method=boot_method, boot_draws=boot_draws, CI=CI,
                             save=save, allow_na=allow_na, allow_nan=allow_nan,
                             save_results=save_results,
                             save_results_out_rootdir = out_rootdir,
@@ -1015,7 +1024,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     ERRORS <- as.integer(rowSums(ERROR_msg, na.rm = TRUE))
     WARNINGS <- as.integer(rowSums(WARNING_msg, na.rm = TRUE))
     en <- c('REPLICATIONS', 'SIM_TIME', 'COMPLETED', 'SEED')
-    bsen <- colnames(Final)[grepl('BOOT_SE.', colnames(Final))]
+    bsen <- colnames(Final)[grepl('BOOT_', colnames(Final))]
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen, bsen))]
     Final <- data.frame(Final[ ,c(dn, sn, bsen, en)], ERRORS, WARNINGS,
                                          check.names = FALSE)
@@ -1023,7 +1032,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(all(WARNINGS == 0)) Final$WARNINGS <- NULL
     Final <- dplyr::as_tibble(Final)
     attr(Final, 'design_names') <-
-        list(design=dn, sim=sn, bootSE=bsen, extra=en, errors='ERRORS', warnings="WARNINGS")
+        list(design=dn, sim=sn, bootCI=bsen, extra=en, errors='ERRORS', warnings="WARNINGS")
     if(length(packages) > 1L){
         pack <- packages[packages != 'SimDesign']
         versions <- character(length(pack))

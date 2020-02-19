@@ -9,8 +9,9 @@ reSummarise(
   dir = NULL,
   files = NULL,
   fixed_objects = NULL,
-  bootSE = FALSE,
-  boot_draws = 1000L
+  boot_method = "none",
+  boot_draws = 1000L,
+  CI = 0.95
 )
 }
 \arguments{
@@ -27,12 +28,15 @@ located within \code{dir} will be used}
 
 \item{fixed_objects}{(optional) see \code{\link{runSimulation}} for details}
 
-\item{bootSE}{logical; perform a non-parametric bootstrap to compute bootstrap standard error
-estimates for the respective meta-statistics computed by the \code{Summarise} function?
-See \code{\link{runSimulation}} for details}
+\item{boot_method}{method for performing non-parametric bootstrap confidience intervals
+for the respective meta-statistics computed by the \code{Summarise} function.
+Can be \code{'basic'} for the empirical bootstrap CI, \code{'percentile'}
+for percentile CIs, or \code{'norm'} for normal approximation CIs}
 
 \item{boot_draws}{number of non-parametric bootstrap draws to sample for the \code{summarise}
 function after the generate-analyse replications are collected. Default is 1000}
+
+\item{CI}{bootstrap confidence interval level (default is 95\%)}
 }
 \description{
 When \code{runSimulation()} uses the option \code{save_results = TRUE}

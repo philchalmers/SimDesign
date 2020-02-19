@@ -14,9 +14,10 @@ runSimulation(
   summarise,
   fixed_objects = NULL,
   packages = NULL,
-  bootSE = FALSE,
-  boot_draws = 1000L,
   filename = "SimDesign-results",
+  boot_method = "none",
+  boot_draws = 1000L,
+  CI = 0.95,
   seed = rint(nrow(design), min = 1L, max = 2147483647L),
   save = FALSE,
   save_results = FALSE,
@@ -93,28 +94,22 @@ otherwise the functions must be made available by using explicit
 Alternatively, functions can be called explicitly without attaching the package with the \code{::} operator
 (e.g., \code{extraDistr::rgumbel()})}
 
-\item{bootSE}{logical; perform a non-parametric bootstrap to compute bootstrap standard error
-  estimates for the respective meta-statistics computed by the \code{Summarise} function?
-  When \code{TRUE}, bootstrap samples for each row in \code{Design} will be obtained after
-  the generate-analyse steps have obtain the simulation results to be summarised so that
-  standard errors for each statistic can be computed. To compute large-sample confidence
-  intervals given the bootstrap SE estimates see \code{\link{SimBoot}}.
-
-  This option is useful to approximate how accurate the resulting meta-statistic estimates
-  were, particularly if the number of \code{replications} was relatively low (e.g., less than
-  5000). If users prefer to obtain alternative bootstrap estimates then consider passing
-  \code{save_results = TRUE}, reading the generate-analyse data into R via
-  \code{\link{SimResults}}, and performing the bootstrap manually with function found in the
-  external \code{boot} package}
-
-\item{boot_draws}{number of non-parametric bootstrap draws to sample for the \code{summarise}
-function after the generate-analyse replications are collected. Default is 1000}
-
 \item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to
 when \code{save = TRUE}. If the same file name already exists in the working
 directly at the time of saving then a new
 file will be generated instead and a warning will be thrown. This helps to avoid accidentally overwriting
 existing files. Default is \code{'SimDesign-results'}}
+
+\item{boot_method}{method for performing non-parametric bootstrap confidience intervals
+for the respective meta-statistics computed by the \code{Summarise} function.
+Can be \code{'basic'} for the empirical bootstrap CI, \code{'percentile'}
+for percentile CIs, or \code{'norm'} for normal approximation CIs.
+Default is \code{'none'}, which performs no bootstrapping}
+
+\item{boot_draws}{number of non-parametric bootstrap draws to sample for the \code{summarise}
+function after the generate-analyse replications are collected. Default is 1000}
+
+\item{CI}{bootstrap confidence interval level (default is 95\%)}
 
 \item{seed}{a vector of integers to be used for reproducibility.
 The length of the vector must be equal the number of rows in \code{design}.
@@ -369,8 +364,9 @@ all the Monte Carlo replications for each respective design condition,
 messages that were caught (if no errors/warnings were observed these columns will be omitted).
 Note that to extract the specific error and warnings messages see
 \code{\link{SimExtract}}. Finally,
-if \code{bootSE = TRUE} was included then the final right-most columns will contain the labels
-\code{BOOT_SE.} followed by the name of the associated meta-statistic defined in \code{summarise()}.
+if \code{boot_method} was a valid input other than 'none' then the final right-most columns will contain the labels
+\code{BOOT_} followed by the name of the associated meta-statistic defined in \code{summarise()} and
+and bootstrapped confidence interval location for the meta-statistics.
 
 Additional examples, presentation files, and tutorials can be found on the package wiki located at
 \url{https://github.com/philchalmers/SimDesign/wiki}.
@@ -452,7 +448,7 @@ SimFunctions()
 
 #### Step 1 --- Define your conditions under study and create design data.frame
 
-Design <- data.frame(N = c(10, 20, 30))
+Design <- createDesign(N = c(10, 20, 30))
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 2 --- Define generate, analyse, and summarise functions
@@ -492,6 +488,7 @@ Final_rep
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Extras
+\dontrun{
 # compare SEs estimates to the true SEs from the formula sigma/sqrt(N)
 5 / sqrt(Design$N)
 
@@ -512,10 +509,24 @@ res <- SimResults(Final)
 str(res)
 head(res[[1]]$results)
 
+
+# obtain empirical bootstrapped CIs during an initial run
+# the simulation was completed (necessarily requires save_results = TRUE)
+res <- runSimulation(design=Design, replications=1000, boot_method = 'basic',
+                     generate=Generate, analyse=Analyse, summarise=Summarise)
+res
+
+# alternative bootstrapped CIs that uses saved results via reSummarise().
+# Default directory save to:
+dirname <- paste0('SimDesign-results_', unname(Sys.info()['nodename']), "/")
+res <- reSummarise(summarise=Summarise, dir=dirname, boot_method = 'basic')
+res
+
+
 # remove the saved results from the hard-drive if you no longer want them
 SimClean(results = TRUE)
 
-
+}
 
 
 #-------------------------------------------------------------------------------
@@ -617,7 +628,6 @@ runSimulation(design=Design, replications=1000,
 
 
 
-
 ## EXTRA: To run the simulation on a MPI cluster, use the following setup on each node (not run)
 # library(doMPI)
 # cl <- startMPIcluster()
@@ -698,7 +708,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
   \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
   \code{\link{SimExtract}},
   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
-  \code{\link{SimBoot}}, \code{\link{aggregate_simulations}}, \code{\link{Attach}},
+  \code{\link{aggregate_simulations}}, \code{\link{Attach}},
   \code{\link{SimShiny}}
 }
 \author{

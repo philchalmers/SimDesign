@@ -1,6 +1,6 @@
 Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI, seed, save,
-                     save_results, save_results_out_rootdir, save_results_dirname, max_errors, bootSE, boot_draws,
-                     save_seeds, save_seeds_dirname, load_seed, export_funs, packages,
+                     save_results, save_results_out_rootdir, save_results_dirname, max_errors,
+                     boot_method, boot_draws, CI, save_seeds, save_seeds_dirname, load_seed, export_funs, packages,
                      summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal)
 {
@@ -141,18 +141,13 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     sim_results <- sim_results_check(sim_results)
     ret <- c(sim_results, 'REPLICATIONS'=replications, 'ERROR: '=try_errors,
              'WARNING: '=warnings)
-    if(bootSE){
+    if(boot_method != 'none'){
         # could parallelize, TODO
-        SE_sim_results <- sapply(1L:boot_draws, function(r){
-            pick <- rint(n = replications, min = 1L, max = replications)
-            tmp <- if(!is.data.frame(results)) results[pick]
-                else results[pick, , drop=FALSE]
-            Functions$summarise(results=tmp, condition=condition, fixed_objects=fixed_objects)
-        })
-        if(!is.matrix(SE_sim_results)) SE_sim_results <- matrix(SE_sim_results, nrow=1L)
-        SE_sim_results <- apply(SE_sim_results, 1L, sd)
-        names(SE_sim_results) <- paste0("BOOT_SE.", names(sim_results))
-        ret <- c(ret, SE_sim_results)
+        CIs <- SimBoot(results, summarise=Functions$summarise,
+                       condition=condition, fixed_objects=fixed_objects,
+                       boot_method=boot_method,
+                       boot_draws=boot_draws, CI=CI)
+        ret <- c(ret, CIs)
     }
     attr(ret, 'error_seeds') <- try_error_seeds
     if(store_results)
