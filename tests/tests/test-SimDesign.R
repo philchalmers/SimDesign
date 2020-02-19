@@ -187,6 +187,27 @@ test_that('SimDesign', {
     expect_equal(length(row1to5), 5)
     SimClean(results = TRUE)
 
+    # reSummarise test
+    mycomputeGood <- function(condition, dat, fixed_objects = NULL){
+
+        welch <- t.test(DV ~ group, dat)
+        ind <- stats::t.test(DV ~ group, dat, var.equal=TRUE)
+
+        # In this function the p values for the t-tests are returned,
+        #  and make sure to name each element, for future reference
+        ret <- c(welch = welch$p.value,
+                 independent = ind$p.value)
+
+        return(ret)
+    }
+    tmp <- runSimulation(rbind(Design, Design), generate=mysim, analyse=mycomputeGood, summarise=mycollect, verbose=FALSE,
+                         replications = 10, parallel=FALSE, save_results = TRUE)
+    out <- reSummarise(summarise = mycollect, dir=DIR)
+    expect_true(all(dim(out) == c(16,5)))
+    out <- reSummarise(summarise = mycollect, dir=DIR, bootSE = TRUE)
+    expect_true(all(dim(out) == c(16,7)))
+    SimClean(results = TRUE)
+
     # results no summarise
     mycompute3 <- function(condition, dat, fixed_objects = NULL){
 

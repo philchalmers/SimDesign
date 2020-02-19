@@ -103,10 +103,11 @@ reSummarise <- function(summarise, dir = NULL, files = NULL,
         if(is(res[[i]], 'try-error'))
             stop(sprintf("File \'%s\' did not return a valid summarise() output", files[i]))
         if(bootSE){
+            replications <- if(is.data.frame(inp$results)) nrow(inp$results) else length(inp$results)
             SE_sim_results <- sapply(1L:boot_draws, function(r){
                 pick <- rint(n = replications, min = 1L, max = replications)
                 tmp <- if(!is.data.frame(inp$results)) inp$results[pick]
-                else inp$results[pick, , drop=FALSE]
+                    else inp$results[pick, , drop=FALSE]
                 summarise(results=tmp, condition=inp$condition, fixed_objects=fixed_objects)
             })
             if(!is.matrix(SE_sim_results)) SE_sim_results <- matrix(SE_sim_results, nrow=1L)
