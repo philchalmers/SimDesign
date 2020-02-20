@@ -103,8 +103,9 @@ existing files. Default is \code{'SimDesign-results'}}
 \item{boot_method}{method for performing non-parametric bootstrap confidience intervals
 for the respective meta-statistics computed by the \code{Summarise} function.
 Can be \code{'basic'} for the empirical bootstrap CI, \code{'percentile'}
-for percentile CIs, or \code{'norm'} for normal approximation CIs.
-Default is \code{'none'}, which performs no bootstrapping}
+for percentile CIs, \code{'norm'} for normal approximations CIs, or \code{'studentized'}
+for studentized CIs (should only be used for simulations with lower replications due to its
+computational intensity). Default is \code{'none'}, which performs no bootstrapping}
 
 \item{boot_draws}{number of non-parametric bootstrap draws to sample for the \code{summarise}
 function after the generate-analyse replications are collected. Default is 1000}
