@@ -119,7 +119,7 @@ printDesign <- function(x, whichlist, ..., n = NULL, width = NULL, n_extra = NUL
             ff3 <- strsplit(ff[3], "\\[23m")[[1]]
             for(w in whichlist)
                 ff3[w] <- gsub('chr', 'lst', ff3[w])
-            ff3 <- paste0(ff3, collapse='[23m')
+            ff3 <- paste0(ff3, '[23m', collapse='')
             ff[3] <- ff3
         } else { # in LaTeX, HTML, Word
             ff3 <- strsplit(ff[3], ">")[[1]]
