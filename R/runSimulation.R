@@ -99,7 +99,7 @@
 #' providing a vector of \code{seeds} is also possible to ensure
 #' that each simulation condition is completely reproducible under the single/multi-core method selected.
 #'
-#' The \code{load_seed} input will also accept an integer vector corresponding to the exact
+#' The \code{load_seed} input will also accept an integer vector (or single column \code{tbl} object) corresponding to the exact
 #' \code{.Random.seed} state. This is helpful because SimDesign also tracks these seeds for simulation
 #' conditions that threw errors, where these values can be extracted via \code{SimExtract(..., what='error_seeds')}
 #' function. The column names indicate the respective design row (first number), the order in which
@@ -240,7 +240,8 @@
 #'   with errors during the simulation, where each column represents a unique seed).
 #'   If the input is a character vector then it is important NOT
 #'   to modify the \code{design} input object, otherwise the path may not point to the correct saved location, while
-#'   if the input is an integer vector then it WILL be important to modify the \code{design} input in order to load this
+#'   if the input is an integer vector (or single column \code{tbl} object)
+#'   then it WILL be important to modify the \code{design} input in order to load this
 #'   exact seed for the corresponding design row. Default is \code{NULL}
 #'
 #' @param filename (optional) the name of the \code{.rds} file to save the final simulation results to
@@ -745,6 +746,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             load_seed <- paste0(save_seeds_dirname, '/', load_seed)
             load_seed <- as.integer(scan(load_seed, sep = ' ', quiet = TRUE))
         }
+        if(is(load_seed, 'tbl'))
+            load_seed <- as.integer(as.data.frame(load_seed)[,1])
         stopifnot(is.integer(load_seed))
     }
     if(MPI){
@@ -1052,7 +1055,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       ncores = if(parallel) length(cl) else if(MPI) NA else 1L,
                                       number_of_conditions = nrow(design),
                                       date_completed = date(), total_elapsed_time = sum(Final$SIM_TIME),
-                                      error_seeds=error_seeds,
+                                      error_seeds=dplyr::as_tibble(error_seeds),
                                       stored_results = if(store_results) stored_Results_list else NULL)
     if(dummy_run) Final$dummy_run <- NULL
     class(Final) <- c('SimDesign', class(Final))

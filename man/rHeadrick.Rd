@@ -14,8 +14,8 @@ rHeadrick(
   gam4 = NaN,
   return_coefs = FALSE,
   coefs = NULL,
-  control = list(seed = NULL, trace = FALSE, max.ntry = 15, obj.tol = 1e-10, n.valid.sol
-    = 1)
+  control = list(seed = NULL, trace = FALSE, max.ntry = 15, obj.tol = 1e-10,
+    n.valid.sol = 1)
 )
 }
 \arguments{

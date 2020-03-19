@@ -179,7 +179,8 @@ elements from \code{.Random.seed} (see \code{\link{SimExtract}} to extract the s
 with errors during the simulation, where each column represents a unique seed).
 If the input is a character vector then it is important NOT
 to modify the \code{design} input object, otherwise the path may not point to the correct saved location, while
-if the input is an integer vector then it WILL be important to modify the \code{design} input in order to load this
+if the input is an integer vector (or single column \code{tbl} object)
+then it WILL be important to modify the \code{design} input in order to load this
 exact seed for the corresponding design row. Default is \code{NULL}}
 
 \item{parallel}{logical; use parallel processing from the \code{parallel} package over each
@@ -390,7 +391,7 @@ simulation object to allow for easier replicability of potentially problematic e
 providing a vector of \code{seeds} is also possible to ensure
 that each simulation condition is completely reproducible under the single/multi-core method selected.
 
-The \code{load_seed} input will also accept an integer vector corresponding to the exact
+The \code{load_seed} input will also accept an integer vector (or single column \code{tbl} object) corresponding to the exact
 \code{.Random.seed} state. This is helpful because SimDesign also tracks these seeds for simulation
 conditions that threw errors, where these values can be extracted via \code{SimExtract(..., what='error_seeds')}
 function. The column names indicate the respective design row (first number), the order in which
