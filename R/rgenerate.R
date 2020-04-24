@@ -310,8 +310,7 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
                       skew = rep(0, nrow(sigma)), kurt = rep(0, nrow(sigma)),
                       gam3 = NaN, gam4=NaN, return_coefs = FALSE, coefs = NULL,
-                      control = list(seed = NULL, trace = FALSE,
-                                     max.ntry = 15, obj.tol = 1e-10, n.valid.sol = 1)){
+                      control = list(trace = FALSE, max.ntry = 15, obj.tol = 1e-10, n.valid.sol = 1)){
 
     sd <- diag(sigma)
     corr <- cov2cor(sigma)
