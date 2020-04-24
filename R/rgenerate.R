@@ -518,17 +518,12 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 
     ##setting up
 
-    if(!is.null(control[["seed"]])){
-        set.seed(control[["seed"]])
-    }
-
-
     if(is.null(control[["trace"]])){
-        control[["trace"]] <- T
+        control[["trace"]] <- FALSE
     }
 
     if(is.null(control[["max.ntry"]])){
-        control[["max.ntry"]] <- 5
+        control[["max.ntry"]] <- 15
     }
 
     if(is.null(control[["obj.tol"]])){
