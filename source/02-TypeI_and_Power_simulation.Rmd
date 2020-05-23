@@ -127,8 +127,8 @@ Usually it is a good idea to split up analyses into Type I error and power rates
 ```{r}
 res
 res$REPLICATIONS <- res$SIM_TIME <- res$COMPLETED <- res$SEED <- NULL
-TypeI <- subset(res, mean_difference == 0)
-Power <- subset(res, mean_difference != 0)
+(TypeI <- subset(res, mean_difference == 0))
+(Power <- subset(res, mean_difference != 0))
 ```
 
 Lets start off by looking at some descriptive tables, and performing simple ANOVA analyses with effect sizes
@@ -170,12 +170,12 @@ SimAnova(welch ~ group_size_ratio * standard_deviation_ratio, TypeI)
 library(ggplot2)
 
 # Welch
-gg <- ggplot(TypeI, aes(group_size_ratio, welch, fill = standard_deviation_ratio))
+gg <- ggplot(TypeI, aes(factor(group_size_ratio), welch, fill = factor(standard_deviation_ratio)))
 gg + geom_boxplot() + facet_wrap(~standard_deviation_ratio) + ylim(c(0,0.2)) + 
     geom_hline(yintercept = .075, colour = 'red') + geom_hline(yintercept = .025, colour = 'red')
 
 # Independent
-gg <- ggplot(TypeI, aes(group_size_ratio, independent, fill = standard_deviation_ratio))
+gg <- ggplot(TypeI, aes(factor(group_size_ratio), independent, fill = factor(standard_deviation_ratio)))
 gg + geom_boxplot() + facet_wrap(~standard_deviation_ratio) + ylim(c(0,0.2)) + 
     geom_hline(yintercept = .075, colour = 'red') + geom_hline(yintercept = .025, colour = 'red')
 ```

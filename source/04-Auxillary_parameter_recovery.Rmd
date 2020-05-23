@@ -144,7 +144,7 @@ res <- runSimulation(Design, replications = 100, parallel = TRUE, packages = 'mi
 ```
 
 ```{r}
-res
+str(res)
 ```
 
 ### Analyze the results
