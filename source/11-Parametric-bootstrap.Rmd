@@ -3,7 +3,6 @@
 ---
 title: "SimDesign"
 author: "Phil Chalmers"
-date: "September 22, 2015"
 output:
   html_document:
     number_sections: yes

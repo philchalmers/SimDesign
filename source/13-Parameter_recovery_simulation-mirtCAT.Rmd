@@ -3,7 +3,6 @@
 ---
 title: "SimDesign"
 author: "Phil Chalmers"
-date: "September 22, 2015"
 output:
   html_document:
     number_sections: yes
@@ -59,14 +58,14 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 
 #-------------------------------------------------------------------
 
-# only 1 replication
+# only 1 replication (note: no Summarise() function)
 res <- runSimulation(design=Design, replications=1, seed = 1:nrow(Design),
                      generate=Generate, analyse=Analyse, fixed_objects=fo, debug='none')
 ```
 
 
 ```{r}
-res
+str(res)
 
 # person 100 from the first condition
 plot(res$`nitems=100; discrimination=0.5`[[1]][[100]], SE = 1.96)

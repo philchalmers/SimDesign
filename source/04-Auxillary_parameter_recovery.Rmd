@@ -3,7 +3,6 @@
 ---
 title: "SimDesign"
 author: "Phil Chalmers"
-date: "September 22, 2015"
 output:
   html_document:
     number_sections: yes
@@ -138,13 +137,13 @@ The following function call should be familiar to you by now.
 set.seed(1234)
 ```
 
-```{r cache=TRUE}
-res <- runSimulation(Design, replications = 100, parallel = TRUE, packages = 'mirt',
+```{r}
+res <- runSimulation(Design, replications = 5, parallel = FALSE, packages = 'mirt',
                      generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
 
 ```{r}
-str(res)
+res
 ```
 
 ### Analyze the results
