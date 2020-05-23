@@ -1,4 +1,4 @@
-all: vignettes extra move clean
+all: vignettes move clean
 
 vignettes:
 	Rscript -e "setwd('source');library('rmarkdown');files=dir();for(file in files) render(file)"
