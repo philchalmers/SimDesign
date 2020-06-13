@@ -14,12 +14,12 @@ runSimulation(
   summarise,
   fixed_objects = NULL,
   packages = NULL,
-  filename = "SimDesign-results",
+  filename = NULL,
   boot_method = "none",
   boot_draws = 1000L,
   CI = 0.95,
   seed = rint(nrow(design), min = 1L, max = 2147483647L),
-  save = FALSE,
+  save = TRUE,
   save_results = FALSE,
   store_results = FALSE,
   warnings_as_errors = FALSE,
@@ -94,8 +94,8 @@ otherwise the functions must be made available by using explicit
 Alternatively, functions can be called explicitly without attaching the package with the \code{::} operator
 (e.g., \code{extraDistr::rgumbel()})}
 
-\item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to
-when \code{save = TRUE}. If the same file name already exists in the working
+\item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to.
+If the same file name already exists in the working
 directly at the time of saving then a new
 file will be generated instead and a warning will be thrown. This helps to avoid accidentally overwriting
 existing files. Default is \code{'SimDesign-results'}}
@@ -120,7 +120,8 @@ but will not be run when \code{MPI = TRUE}.
 Default randomly generates seeds within the range 1 to 2147483647 for each condition.}
 
 \item{save}{logical; save the simulation state and final results to the hard-drive? This is useful
-  for simulations which require an extended amount of time. When \code{TRUE}, a temp file
+  for simulations which require an extended amount of time, though for shorter simulations
+  can be disabled to slightly improve computational efficiency. When \code{TRUE}, a temp file
   will be created in the working directory which allows the simulation state to be saved
   and recovered (in case of power outages, crashes, etc). As well, triggering this flag will
   save any fatal \code{.Random.seed} states when conditions unexpectedly crash (where each seed
@@ -130,7 +131,7 @@ Default randomly generates seeds within the range 1 to 2147483647 for each condi
   Additionally, to recover your simulation at the last known
   location simply re-run the code you used to initially define the simulation and the external file
   will automatically be detected and read-in. Upon completion, the final results will
-  be saved to the working directory, and the temp file will be removed. Default is \code{FALSE}}
+  be saved to the working directory, and the temp file will be removed. Default is \code{TRUE}}
 
 \item{save_results}{logical; save the results returned from \code{\link{Analyse}} to external
   \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
@@ -378,8 +379,7 @@ Additional examples, presentation files, and tutorials can be found on the packa
 
 To conserve RAM, temporary objects (such as data generated across conditions and replications)
 are discarded; however, these can be saved to the hard-disk by passing the appropriate flags.
-For longer simulations it is recommended to use \code{save = TRUE} to temporarily save the
-simulation state, and to use the \code{save_results} flag to write the analysis results
+For longer simulations it is recommended to use the \code{save_results} flag to write the analysis results
 the to hard-disc.
 
 The use of the \code{save_seeds} option can be evoked to save R's \code{.Random.seed} state to allow
@@ -402,9 +402,8 @@ manually to ensure that the correct design conditions is paired with this exact 
 
 Finally, when the Monte Carlo simulation is complete
 it is recommended to write the results to a hard-drive for safe keeping, particularly with the
-\code{save} and \code{filename} arguments provided (for reasons that are more obvious in the parallel computation
-descriptions below). Using the \code{filename} argument (along with \code{save = TRUE})
-supplied is much safer than using something
+\code{filename} argument provided (for reasons that are more obvious in the parallel computation
+descriptions below). Using the \code{filename} argument supplied is much safer than using something
 like \code{\link{saveRDS}} directly because files will never accidentally be overwritten,
 and instead a new file name will be created when a conflict arises; this type of safety
 is prevalent in many aspects of the package and helps to avoid many unrecoverable (yet surprisingly common)
@@ -414,7 +413,7 @@ mistakes.
 \section{Resuming temporary results}{
 
 
-In the event of a computer crash, power outage, etc, if \code{save = TRUE} was used
+In the event of a computer crash, power outage, etc, if \code{save = TRUE} was used (the default)
 then the original code used to execute \code{runSimulation()} need only be re-run to resume the simulation.
 The saved temp file will be read into the function automatically, and the simulation will continue
 one the condition where it left off before the simulation state was terminated.
@@ -603,7 +602,7 @@ res
 View(res)
 
 ## save final results to a file upon completion (not run)
-runSimulation(design=Design, replications=1000, parallel=TRUE, save=TRUE, filename = 'mysim',
+runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
               generate=Generate, analyse=Analyse, summarise=Summarise)
 
 
@@ -634,7 +633,7 @@ runSimulation(design=Design, replications=1000,
 # library(doMPI)
 # cl <- startMPIcluster()
 # registerDoMPI(cl)
-# Final <- runSimulation(design=Design, replications=1000, MPI=TRUE, save=TRUE,
+# Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
 #                        generate=Generate, analyse=Analyse, summarise=Summarise)
 # saveRDS(Final, 'mysim.rds')
 # closeCluster(cl)
@@ -655,7 +654,7 @@ runSimulation(design=Design, replications=1000,
 # spec <- unlist(spec, recursive=FALSE)
 #
 # cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)
-# res <- runSimulation(design=Design, replications=1000, parallel = TRUE, save=TRUE,
+# res <- runSimulation(design=Design, replications=1000, parallel = TRUE,
 #                      generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~

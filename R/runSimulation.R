@@ -86,8 +86,7 @@
 #'
 #' To conserve RAM, temporary objects (such as data generated across conditions and replications)
 #' are discarded; however, these can be saved to the hard-disk by passing the appropriate flags.
-#' For longer simulations it is recommended to use \code{save = TRUE} to temporarily save the
-#' simulation state, and to use the \code{save_results} flag to write the analysis results
+#' For longer simulations it is recommended to use the \code{save_results} flag to write the analysis results
 #' the to hard-disc.
 #'
 #' The use of the \code{save_seeds} option can be evoked to save R's \code{.Random.seed} state to allow
@@ -110,9 +109,8 @@
 #'
 #' Finally, when the Monte Carlo simulation is complete
 #' it is recommended to write the results to a hard-drive for safe keeping, particularly with the
-#' \code{save} and \code{filename} arguments provided (for reasons that are more obvious in the parallel computation
-#' descriptions below). Using the \code{filename} argument (along with \code{save = TRUE})
-#' supplied is much safer than using something
+#' \code{filename} argument provided (for reasons that are more obvious in the parallel computation
+#' descriptions below). Using the \code{filename} argument supplied is much safer than using something
 #' like \code{\link{saveRDS}} directly because files will never accidentally be overwritten,
 #' and instead a new file name will be created when a conflict arises; this type of safety
 #' is prevalent in many aspects of the package and helps to avoid many unrecoverable (yet surprisingly common)
@@ -120,7 +118,7 @@
 #'
 #' @section Resuming temporary results:
 #'
-#' In the event of a computer crash, power outage, etc, if \code{save = TRUE} was used
+#' In the event of a computer crash, power outage, etc, if \code{save = TRUE} was used (the default)
 #' then the original code used to execute \code{runSimulation()} need only be re-run to resume the simulation.
 #' The saved temp file will be read into the function automatically, and the simulation will continue
 #' one the condition where it left off before the simulation state was terminated.
@@ -244,8 +242,8 @@
 #'   then it WILL be important to modify the \code{design} input in order to load this
 #'   exact seed for the corresponding design row. Default is \code{NULL}
 #'
-#' @param filename (optional) the name of the \code{.rds} file to save the final simulation results to
-#'   when \code{save = TRUE}. If the same file name already exists in the working
+#' @param filename (optional) the name of the \code{.rds} file to save the final simulation results to.
+#'   If the same file name already exists in the working
 #'   directly at the time of saving then a new
 #'   file will be generated instead and a warning will be thrown. This helps to avoid accidentally overwriting
 #'   existing files. Default is \code{'SimDesign-results'}
@@ -302,7 +300,8 @@
 #'   in parallel on a cluster? Default is \code{FALSE}
 #'
 #' @param save logical; save the simulation state and final results to the hard-drive? This is useful
-#'   for simulations which require an extended amount of time. When \code{TRUE}, a temp file
+#'   for simulations which require an extended amount of time, though for shorter simulations
+#'   can be disabled to slightly improve computational efficiency. When \code{TRUE}, a temp file
 #'   will be created in the working directory which allows the simulation state to be saved
 #'   and recovered (in case of power outages, crashes, etc). As well, triggering this flag will
 #'   save any fatal \code{.Random.seed} states when conditions unexpectedly crash (where each seed
@@ -312,7 +311,7 @@
 #'   Additionally, to recover your simulation at the last known
 #'   location simply re-run the code you used to initially define the simulation and the external file
 #'   will automatically be detected and read-in. Upon completion, the final results will
-#'   be saved to the working directory, and the temp file will be removed. Default is \code{FALSE}
+#'   be saved to the working directory, and the temp file will be removed. Default is \code{TRUE}
 #'
 #' @param debug a string indicating where to initiate a \code{browser()} call for editing and debugging.
 #'   General options are \code{'none'} (default; no debugging), \code{'error'}, which starts the debugger
@@ -556,7 +555,7 @@
 #' View(res)
 #'
 #' ## save final results to a file upon completion (not run)
-#' runSimulation(design=Design, replications=1000, parallel=TRUE, save=TRUE, filename = 'mysim',
+#' runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
 #'               generate=Generate, analyse=Analyse, summarise=Summarise)
 #'
 #'
@@ -587,7 +586,7 @@
 #' # library(doMPI)
 #' # cl <- startMPIcluster()
 #' # registerDoMPI(cl)
-#' # Final <- runSimulation(design=Design, replications=1000, MPI=TRUE, save=TRUE,
+#' # Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
 #' #                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' # saveRDS(Final, 'mysim.rds')
 #' # closeCluster(cl)
@@ -608,7 +607,7 @@
 #' # spec <- unlist(spec, recursive=FALSE)
 #' #
 #' # cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)
-#' # res <- runSimulation(design=Design, replications=1000, parallel = TRUE, save=TRUE,
+#' # res <- runSimulation(design=Design, replications=1000, parallel = TRUE,
 #' #                      generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
@@ -653,10 +652,10 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          fixed_objects = NULL, packages = NULL, filename = 'SimDesign-results',
+                          fixed_objects = NULL, packages = NULL, filename = NULL,
                           boot_method='none', boot_draws = 1000L, CI = .95,
                           seed = rint(nrow(design), min=1L, max = 2147483647L),
-                          save = FALSE, save_results = FALSE, store_results = FALSE,
+                          save = TRUE, save_results = FALSE, store_results = FALSE,
                           warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50L, save_details = list(), debug = 'none', progress = TRUE,
@@ -726,7 +725,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!is.null(seed))
         stopifnot(nrow(design) == length(seed))
     debug <- tolower(debug)
-    if(!save && any(save_results, save_seeds)) filename <- NULL
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))
         truefms <- switch(i,
@@ -1059,7 +1057,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       stored_results = if(store_results) stored_Results_list else NULL)
     if(dummy_run) Final$dummy_run <- NULL
     class(Final) <- c('SimDesign', class(Final))
-    if(!is.null(filename) && save){ #save file
+    if(!is.null(filename)){ #save file
         if(verbose)
             message(paste('\nSaving simulation results to file:', filename))
         saveRDS(Final, file.path(out_rootdir, filename))
