@@ -449,6 +449,7 @@
 #' # To store the results from the analyse function either
 #' #   a) omit a definition of of summarise(), or
 #' #   b) pass save_results = TRUE to runSimulation() and read the results in with SimResults()
+#' # Note that the latter method should be adopted for longer simulations
 #'
 #' # e.g., the a) approach
 #' res <- runSimulation(design=Design, replications=1000,
@@ -475,7 +476,6 @@
 #' dirname <- paste0('SimDesign-results_', unname(Sys.info()['nodename']), "/")
 #' res <- reSummarise(summarise=Summarise, dir=dirname, boot_method = 'basic')
 #' res
-#'
 #'
 #' # remove the saved results from the hard-drive if you no longer want them
 #' SimClean(results = TRUE)
@@ -543,7 +543,7 @@
 #' #### Step 3 --- Collect results by looping over the rows in design
 #'
 #' # first, test to see if it works
-#' res <- runSimulation(design=Design, replications=5, store_results=TRUE,
+#' res <- runSimulation(design=Design, replications=5,
 #'                      generate=Generate, analyse=Analyse, summarise=Summarise)
 #' res
 #'

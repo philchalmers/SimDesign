@@ -43,8 +43,8 @@ files using the suitable BASH commands to execute the `mpirun` tool. For example
 library(doMPI)
 cl <- startMPIcluster()
 registerDoMPI(cl)
-runSimulation(design=Design, replications=1000, save=TRUE, filename='mysimulation',
-    generate=Generate, analyse=Analyse, summarise=Summarise,  MPI=TRUE)
+runSimulation(design=Design, replications=1000, filename='mysimulation',
+    generate=Generate, analyse=Analyse, summarise=Summarise, MPI=TRUE)
 closeCluster(cl)
 mpi.quit()
 ```
@@ -79,7 +79,7 @@ the selected port (passed to `makeCluster()`) on the master node is not hindered
 As an example, using the following code the master node (primary) will spawn 7 slaves and 1 master,
 while a separate computer on the network with the associated IP address will spawn an additional 6 slaves.
 Information will be collected on the master node, which is also where the files
-and objects will be saved using the `save` inputs (if requested).
+and objects will be saved using the `save` inputs.
 ```{r eval=FALSE}
 library(parallel)
 primary <- '192.168.2.1'
@@ -147,6 +147,6 @@ Note that this is also a useful tactic if the MPI or Network computing options r
 submit smaller jobs due to time and resource constraint-related reasons,
 where fewer replications/nodes should be requested. After all the jobs are completed and saved to their
 respective files, `aggregate_simulations()`
-can then collapse the files as if the simulations were run all at once. Hence, SimDesign makes submitting
+can then collapse the files as if the simulations were run all at once. Hence, `SimDesign` makes submitting
 smaller jobs to super-computing resources considerably less error prone than managing a number of smaller
 jobs manually.
