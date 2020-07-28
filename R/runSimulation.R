@@ -7,7 +7,7 @@
 #' and cluster computing, global and local debugging, error handling (including fail-safe
 #' stopping when functions fail too often, even across nodes), provides bootstrap estimates of the
 #' sampling variability (optional), and tracking of error and warning messages.
-#' For convenience, all functions available in the R workspace are exported across all computational nodes
+#' For convenience, all functions available in the R work-space are exported across all computational nodes
 #' so that they are more easily accessible (however, other R objects are not, and therefore
 #' must be passed to the \code{fixed_objects} input to become available across nodes).
 #' For a didactic presentation of the package refer to Sigal and Chalmers
@@ -233,7 +233,7 @@
 #' @param load_seed a character object indicating which file to load from when the \code{.Random.seed}s have
 #'   be saved (after a call with \code{save_seeds = TRUE}), or an integer vector indicating the actual
 #'   \code{.Random.seed} values. E.g., \code{load_seed = 'design-row-2/seed-1'}
-#'   will load the first seed in the second row of the \code{design} input, or explicitly passing the 626 long
+#'   will load the first seed in the second row of the \code{design} input, or explicitly passing the
 #'   elements from \code{.Random.seed} (see \code{\link{SimExtract}} to extract the seeds associated explicitly
 #'   with errors during the simulation, where each column represents a unique seed).
 #'   If the input is a character vector then it is important NOT
@@ -337,11 +337,11 @@
 #'   This is useful when simulations conditions take a long time to run.
 #'   Uses the \code{pbapply} package to display the progress. Default is \code{FALSE}
 #'
-#' @param boot_method method for performing non-parametric bootstrap confidience intervals
+#' @param boot_method method for performing non-parametric bootstrap confidence intervals
 #'  for the respective meta-statistics computed by the \code{Summarise} function.
 #'  Can be \code{'basic'} for the empirical bootstrap CI, \code{'percentile'}
 #'  for percentile CIs, \code{'norm'} for normal approximations CIs, or \code{'studentized'}
-#'  for studentized CIs (should only be used for simulations with lower replications due to its
+#'  for Studentized CIs (should only be used for simulations with lower replications due to its
 #'  computational intensity). Default is \code{'none'}, which performs no bootstrapping
 #'
 #' @param boot_draws number of non-parametric bootstrap draws to sample for the \code{summarise}

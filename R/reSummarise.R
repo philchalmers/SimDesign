@@ -21,7 +21,7 @@
 #'
 #' @param fixed_objects (optional) see \code{\link{runSimulation}} for details
 #'
-#' @param boot_method method for performing non-parametric bootstrap confidience intervals
+#' @param boot_method method for performing non-parametric bootstrap confidence intervals
 #'  for the respective meta-statistics computed by the \code{Summarise} function.
 #'  See \code{\link{runSimulation}} for details
 #'

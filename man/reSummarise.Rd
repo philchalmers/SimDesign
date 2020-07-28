@@ -28,7 +28,7 @@ located within \code{dir} will be used}
 
 \item{fixed_objects}{(optional) see \code{\link{runSimulation}} for details}
 
-\item{boot_method}{method for performing non-parametric bootstrap confidience intervals
+\item{boot_method}{method for performing non-parametric bootstrap confidence intervals
 for the respective meta-statistics computed by the \code{Summarise} function.
 See \code{\link{runSimulation}} for details}
 
