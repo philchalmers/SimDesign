@@ -72,7 +72,7 @@ analyses the simulated data). See \code{\link{Analyse}} for details}
   Alternatively, the value \code{NA} can be passed to let the generate-analyse-summarise process to run as usual,
   where the summarise components are instead included only as a placeholder.
 
-  Ommiting this input is only recommended for didactic purposes because it leaves out a large amount of
+  Omitting this input is only recommended for didactic purposes because it leaves out a large amount of
   information (e.g., try-errors, warning messages, saving files, etc), can witness memory related issues,
   and generally is not as flexible internally. If users do not wish to supply a summarise function then it
   is is recommended to pass the values \code{NA} to indicate this function is deliberately omitted, but that
