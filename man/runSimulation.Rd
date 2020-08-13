@@ -170,7 +170,14 @@ of all the simulation results for each condition}
      \code{runSimulation(...,
           notification = function() pbPost(type = "note", title = "SimDesign", body = "Simulation Complete"))}}
 
-  }}
+  }
+
+  Alternatively, if you just an email sent to yourself to indicate the simulation has been completed you could use
+  \code{sendmailR} package, like so: \code{runSimulation(...,
+          notification = function() sendmailR::sendmail(from="<sendmailR@your.computer>",
+                                                        to="<your.email@address>", subject="SimDesign", msg="Simulation Complete",
+                                                        control=list(smtpServer="ASPMX.L.GOOGLE.COM")))}.
+ However, this may be less reliable since the email message could be directed to a spam folder.}
 
 \item{warnings_as_errors}{logical; treat warning messages as errors during the simulation? Default is FALSE,
 therefore warnings are only collected and not used to restart the data generation step}
@@ -468,6 +475,7 @@ SimFunctions()
 #### Step 1 --- Define your conditions under study and create design data.frame
 
 Design <- createDesign(N = c(10, 20, 30))
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 2 --- Define generate, analyse, and summarise functions
