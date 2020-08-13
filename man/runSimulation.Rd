@@ -163,8 +163,8 @@ of all the simulation results for each condition}
   \describe{
 
     \item{Prior Setup}{Prior to defining \code{notification}, load the \code{RPushbullet} library via \code{library(RPushbullet)}. If
-      this is the first time using the package then a suitable \code{rpushbullet.json} will not exist, and you'll need to supply
-      a) a suitable token and b) the devise to push the notification to}
+      this is the first time you have used the package then a suitable \code{rpushbullet.json} file will not exist on your computer,
+      and you'll need to supply a suitable token and the devise to push the notification to via the \code{pbSetup()} setup}
 
      \item{Execution}{Supply a definition of \code{notification} that utilizes the \code{pbPost} function. E.g.,
      \code{runSimulation(...,
