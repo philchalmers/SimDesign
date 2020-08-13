@@ -22,6 +22,7 @@ runSimulation(
   save = TRUE,
   save_results = FALSE,
   store_results = FALSE,
+  notification = NULL,
   warnings_as_errors = FALSE,
   save_seeds = FALSE,
   load_seed = NULL,
@@ -153,6 +154,23 @@ in the returned object? This is \code{FALSE} by default to help avoid RAM
 issues (see \code{save_results} as a more suitable alternative). To extract these results
 pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
 of all the simulation results for each condition}
+
+\item{notification}{an optional empty argument function to be executed upon completion of the simulation. This can be used, for
+  instance, to trigger email or SMS notifications to indicate that the simulation has been completed. For instance,
+  to utilize the \code{RPushbullet} package (and assuming users have previously registered for a Pushbullet account
+  and installed the application on their mobile device and computer), use the following:
+
+  \describe{
+
+    \item{Prior Setup}{Prior to defining \code{notification}, load the \code{RPushbullet} library via \code{library(RPushbullet)}. If
+      this is the first time using the package then a suitable \code{rpushbullet.json} will not exist, and you'll need to supply
+      a) a suitable token and b) the devise to push the notification to}
+
+     \item{Execution}{Supply a definition of \code{notification} that utilizes the \code{pbPost} function. E.g.,
+     \code{runSimulation(...,
+          notification = function() pbPost(type = "note", title = "SimDesign", body = "Simulation Complete"))}}
+
+  }}
 
 \item{warnings_as_errors}{logical; treat warning messages as errors during the simulation? Default is FALSE,
 therefore warnings are only collected and not used to restart the data generation step}
