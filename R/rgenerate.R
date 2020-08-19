@@ -15,7 +15,7 @@
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #' @references
 #'
-#' Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 #' \doi{10.20982/tqmp.16.4.p249}
 #'
@@ -70,7 +70,7 @@ rint <- function(n, min, max, replace = TRUE, prob = NULL){
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #' @references
 #'
-#' Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 #' \doi{10.20982/tqmp.16.4.p249}
 #'
@@ -138,7 +138,7 @@ rmgh <- function(n, g, h, mean = rep(0, length(g)), sigma = diag(length(mean))) 
 #'
 #' @references
 #'
-#' Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 #' \doi{10.20982/tqmp.16.4.p249}
 #'
@@ -280,7 +280,7 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 #'
 #' @references
 #'
-#' Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 #' \doi{10.20982/tqmp.16.4.p249}
 #'
@@ -804,7 +804,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 #' @seealso \code{\link{runSimulation}}
 #' @references
 #'
-#' Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 #' \doi{10.20982/tqmp.16.4.p249}
 #'
@@ -868,7 +868,7 @@ rmvnorm <- function (n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)))
 #' @seealso \code{\link{runSimulation}}
 #' @references
 #'
-#' Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 #' \doi{10.20982/tqmp.16.4.p249}
 #'
@@ -929,7 +929,7 @@ rmvt <- function (n, sigma, df, delta = rep(0, nrow(sigma)),
 #' @seealso \code{\link{runSimulation}}
 #' @references
 #'
-#' Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 #' \doi{10.20982/tqmp.16.4.p249}
 #'

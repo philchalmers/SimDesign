@@ -46,7 +46,7 @@ Serlin2000(alpha = .05, R = 2500)
 
 }
 \references{
-Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 \doi{10.20982/tqmp.16.4.p249}
 

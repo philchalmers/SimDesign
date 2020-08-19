@@ -31,7 +31,7 @@
 #'   \code{\link{rmgh}}, \code{\link{rValeMaurelli}}, \code{\link{rHeadrick}}
 #' @references
 #'
-#' Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 #' \doi{10.20982/tqmp.16.4.p249}
 #'
@@ -126,7 +126,7 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #' @seealso \code{\link{stop}}
 #' @references
 #'
-#' Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 #' \doi{10.20982/tqmp.16.4.p249}
 #'
@@ -190,7 +190,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #'   \code{\link{ECR}}, \code{\link{MAE}}
 #' @references
 #'
-#' Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 #' \doi{10.20982/tqmp.16.4.p249}
 #'
@@ -237,7 +237,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 #   computational results and \code{parameters} from \code{\link{Generate}}
 # @references
 #
-# Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+# Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 # with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
 # \doi{10.20982/tqmp.16.4.p249}
 #
