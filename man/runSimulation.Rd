@@ -326,8 +326,9 @@ sampling variability (optional), and tracking of error and warning messages.
 For convenience, all functions available in the R work-space are exported across all computational nodes
 so that they are more easily accessible (however, other R objects are not, and therefore
 must be passed to the \code{fixed_objects} input to become available across nodes).
-For a didactic presentation of the package refer to Sigal and Chalmers
-(2016; \doi{10.1080/10691898.2016.1246953}), and see the associated
+For an in-depth tutorial of the package please refer to Chalmers and Adkins (2020).
+For an earlier didactic presentation of the package users can refer to Sigal and Chalmers
+(2016; \doi{10.1080/10691898.2016.1246953}). Finally, see the associated
 wiki on Github (\url{https://github.com/philchalmers/SimDesign/wiki})
 for other tutorial material, examples, and applications of \code{SimDesign} to real-world simulations.
 }
@@ -726,6 +727,10 @@ ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation
 
 }
 \references{
+Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
+\doi{10.20982/tqmp.16.4.p249}
+
 Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}

@@ -25,6 +25,11 @@ subset(BF_sim, var_ratio == 1)
 Brown, M. B. and Forsythe, A. B. (1974). Robust tests for the equality of variances.
   \emph{Journal of the American Statistical Association, 69}(346), 364--367.
 
+Chalmers, R. P., & Adkins, M. C.  (2016). Writing Effective and Reliable Monte Carlo Simulations
+with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
+\doi{10.20982/tqmp.16.4.p249}
+
+
 Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
