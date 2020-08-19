@@ -2,7 +2,7 @@ citHeader("To cite SimDesign in publications use:")
 
 citEntry(entry = "Article",
   title        = "Writing effective and reliable {Monte Carlo} simulations with the {SimDesign} package",
-  author       = "R. Philip Chalmers and Mark C. Adkins"),
+  author       = "R. Philip Chalmers and Mark C. Adkins",
   journal      = "The Quantitative Methods for Psychology",
   year         = "2020",
   volume       = "16",
