@@ -216,10 +216,16 @@
 #'   Alternatively, if users wish to have an email sent upon completion then the following template that uses the \code{sendmailR}
 #'   package could be used:
 #'
-#'   \code{runSimulation(...,
-#'           notification = function() sendmailR::sendmail(from="<sendmailR@your.computer>",
-#'                                                         to="<your.email@address>", subject="SimDesign", msg="Simulation Complete",
-#'                                                         control=list(smtpServer="ASPMX.L.GOOGLE.COM")))}.
+#'   \describe{
+#'
+#'     \item{Using \code{sendmailR}}{
+#'
+#'        \code{runSimulation(...,
+#'             notification = function() sendmailR::sendmail(from="<sendmailR@your.computer>",
+#'                                                           to="<your.email@address>", subject="SimDesign", msg="Simulation Complete",
+#'                                                           control=list(smtpServer="ASPMX.L.GOOGLE.COM")))}.
+#'                                                            }
+#'  }
 #'  However, note that this may be less reliable since the email message could be directed to a spam folder.
 #'
 #' @param warnings_as_errors logical; treat warning messages as error messages during the simulation? Default is FALSE,
