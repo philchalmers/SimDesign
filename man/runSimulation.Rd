@@ -37,7 +37,6 @@ runSimulation(
   allow_na = FALSE,
   allow_nan = FALSE,
   stop_on_fatal = FALSE,
-  edit = "none",
   verbose = TRUE
 )
 
@@ -292,8 +291,6 @@ the simulation will continue as though errors did not occur, however a column
 \code{FATAL_TERMINATION} will be included in the resulting object indicating the final
 error message observed, and \code{NA} placeholders will be placed in all other row-elements. Default is
 \code{FALSE}}
-
-\item{edit}{this argument has been deprecated. Please use \code{debug} instead}
 
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 

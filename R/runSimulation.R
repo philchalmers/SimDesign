@@ -255,8 +255,6 @@
 #'   interest when \emph{all} of the replications must be reproducible, otherwise the defaults to \code{runSimulation}
 #'   are likely sufficient for most simulation studies.
 #'
-#' @param edit this argument has been deprecated. Please use \code{debug} instead
-#'
 #' @param load_seed a character object indicating which file to load from when the \code{.Random.seed}s have
 #'   be saved (after a call with \code{save_seeds = TRUE}), or an integer vector indicating the actual
 #'   \code{.Random.seed} values. E.g., \code{load_seed = 'design-row-2/seed-1'}
@@ -692,13 +690,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           notification = NULL, warnings_as_errors = FALSE, save_seeds = FALSE, load_seed = NULL,
                           parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
                           max_errors = 50L, save_details = list(), debug = 'none', progress = TRUE,
-                          allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = FALSE,
-                          edit = 'none', verbose = TRUE)
+                          allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = FALSE, verbose = TRUE)
 {
-    if(edit != 'none'){
-        warning('The edit argument has been deprecated. Please use \'debug\' instead.', call. = FALSE)
-        debug <- edit
-    }
     stopifnot(!missing(analyse))
     if(missing(generate) && !missing(analyse))
         generate <- function(condition, dat, fixed_objects = NULL){}
