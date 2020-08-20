@@ -154,10 +154,10 @@ issues (see \code{save_results} as a more suitable alternative). To extract thes
 pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
 of all the simulation results for each condition}
 
-\item{notification}{an optional empty argument function to be executed upon completion of the simulation. This can be used, for
-  instance, to trigger email or SMS notifications to indicate that the simulation has been completed. For instance,
-  to utilize the \code{RPushbullet} package (and assuming users have previously registered for a Pushbullet account
-  and installed the application on their mobile device and computer), use the following:
+\item{notification}{an optional, empty argument function to be executed upon completion of the simulation. This can be used, for
+  instance, to trigger email or SMS notifications that indicate the simulation has been completed. For example,
+  to utilize the \code{RPushbullet} package (and assuming users have previously a) registered for a Pushbullet account,
+  and b) installed the application on their mobile device and computer), use the following:
 
   \describe{
 
@@ -171,15 +171,18 @@ of all the simulation results for each condition}
 
   }
 
-  Alternatively, if you just an email sent to yourself to indicate the simulation has been completed you could use
-  \code{sendmailR} package, like so: \code{runSimulation(...,
+  Alternatively, if users wish to have an email sent upon completion then the following template that uses the \code{sendmailR}
+  package could be used:
+
+  \code{runSimulation(...,
           notification = function() sendmailR::sendmail(from="<sendmailR@your.computer>",
                                                         to="<your.email@address>", subject="SimDesign", msg="Simulation Complete",
                                                         control=list(smtpServer="ASPMX.L.GOOGLE.COM")))}.
- However, this may be less reliable since the email message could be directed to a spam folder.}
+ However, note that this may be less reliable since the email message could be directed to a spam folder.}
 
-\item{warnings_as_errors}{logical; treat warning messages as errors during the simulation? Default is FALSE,
-therefore warnings are only collected and not used to restart the data generation step}
+\item{warnings_as_errors}{logical; treat warning messages as error messages during the simulation? Default is FALSE,
+therefore warnings are only collected and not used to restart the data generation step, and the seeds associated with
+the warning message conditions are not stored within the final simulation object}
 
 \item{save_seeds}{logical; save the \code{.Random.seed} states prior to performing each replication into
   plain text files located in the defined \code{save_seeds_dirname} directory/folder?
