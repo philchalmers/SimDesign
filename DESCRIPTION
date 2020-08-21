@@ -1,6 +1,6 @@
 Package: SimDesign
 Title: Structure for Organizing Monte Carlo Simulation Designs
-Version: 2.0.5
+Version: 2.0.6
 Authors@R: c(person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com", role = c("aut", "cre"),
                     comment = c(ORCID="0000-0001-5332-2810")),
              person("Matthew", "Sigal", role = c("ctb")),
@@ -12,7 +12,8 @@ Description: Provides tools to help safely and efficiently organize Monte Carlo 
     back-end and MPI distributed computations, save and restore temporary files,
     aggregate results across independent nodes, and provide native support for debugging.
     For a pedagogical introduction to the package refer to 
-    Sigal and Chalmers (2016) <doi:10.1080/10691898.2016.1246953>.
+    Sigal and Chalmers (2016) <doi:10.1080/10691898.2016.1246953>, and for an in-depth overview of 
+    the package and its design philosophy see Chalmers and Adkins (2020) <doi:10.20982/tqmp.16.4.p249>.
 VignetteBuilder: knitr
 Depends:
     R (>= 3.2.1)
