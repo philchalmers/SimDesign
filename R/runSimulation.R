@@ -22,7 +22,9 @@
 #' \describe{
 #'    \item{1)}{Define a suitable \code{Design} object (a \code{tibble} or \code{data.frame})
 #'       containing fixed conditional
-#'       information about the Monte Carlo simulations. This is often expedited by using the
+#'       information about the Monte Carlo simulations. Each row or this \code{design} object pertains
+#'       to a unique set of simulation to study, while each column the simulation factor under investigation (e.g., sample size,
+#'       distribution types, etc). This is often expedited by using the
 #'       \code{\link{createDesign}} function, and if necessary the argument \code{subset}
 #'       can be used to remove redundant or non-applicable rows}
 #'    \item{2)}{Define the three step functions to generate the data (\code{\link{Generate}}; see also
@@ -31,16 +33,15 @@
 #'       etc (\code{\link{Analyse}}), and finally summarise the results across the total
 #'       number of replications (\code{\link{Summarise}}).
 #'    }
-#'    \item{3)}{Pass the above objects to the \code{runSimulation} function, and declare the
-#'       number of replications to perform with the \code{replications} input. This function will accept
-#'       a \code{design} data.frame object and will return a suitable data.frame object with the
-#'       simulation results}
+#'    \item{3)}{Pass the \code{design} object and three defined R functions to \code{runSimulation}, and declare the
+#'       number of replications to perform with the \code{replications} input. This function will return a suitable
+#'       \code{tibble} object with the complete simulation results and execution details}
 #'    \item{4)}{Analyze the output from \code{runSimulation}, possibly using ANOVA techniques
 #'      (\code{\link{SimAnova}}) and generating suitable plots and tables}
 #' }
 #'
 #' Expressing the above more succinctly, the functions to be called have the following form,
-#' with the exact inputs listed
+#' with the exact functional arguments listed:
 #'
 #' \describe{
 #'   \item{\code{Design <- createDesign(...)}}{}
@@ -55,33 +56,19 @@
 #' a unique Monte Carlo simulation condition. The \code{condition} object also contains two
 #' additional elements to help track the simulation's state: an \code{ID} variable, indicating
 #' the respective row number in the \code{design} object, and a \code{REPLICATION} element
-#' indicating the replication iteration number. Mainly, these are included to help with debugging,
-#' where users can easily locate the \code{r}th replication (e.g., \code{REPLICATION == 500})
+#' indicating the replication iteration number (an integer value between 1 and \code{replication}).
+#' This setup allows users to easily locate the \code{r}th replication (e.g., \code{REPLICATION == 500})
 #' within the \code{j}th row in the simulation design (e.g., \code{ID == 2}). The
 #' \code{REPLICATION} input is also useful when temporarily saving files to the hard-drive
 #' when calling external command line utilities (see examples on the wiki).
 #'
-#' For a skeleton version of the work-flow, which is often useful when initially defining a simulation,
-#' use \code{\link{SimFunctions}}. This function will write template simulation code
-#' to one/two files so that modifying the required functions and objects can begin immediately
-#' with minimal error. This means that you can focus on your Monte Carlo simulation immediately rather
-#' than worrying about the administrative code-work required to organize the simulation work-flow.
+#' For a template-based version of the work-flow, which is often useful when initially defining a simulation,
+#' use the \code{\link{SimFunctions}} function. This function will write a template simulation
+#' to one/two files so that modifying the required functions and objects can begin immediately.
+#' This means that users can focus on their Monte Carlo simulation details right away rather
+#' than worrying about the repetitive administrative code-work required to organize the simulation's execution flow.
 #'
-#' Additional information for each condition are also contained in the object returned by
-#' \code{runSimulation}: \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
-#' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
-#' all the Monte Carlo replications for each respective design condition,
-#' \code{COMPLETED} to indicate the date in which the given simulation condition completed,
-#' \code{SEED} for the integer values in the \code{seed} argument, and, if applicable,
-#' \code{ERRORS} and \code{WARNINGS} which contain counts for the number of error or warning
-#' messages that were caught (if no errors/warnings were observed these columns will be omitted).
-#' Note that to extract the specific error and warnings messages see
-#' \code{\link{SimExtract}}. Finally,
-#' if \code{boot_method} was a valid input other than 'none' then the final right-most columns will contain the labels
-#' \code{BOOT_} followed by the name of the associated meta-statistic defined in \code{summarise()} and
-#' and bootstrapped confidence interval location for the meta-statistics.
-#'
-#' Additional examples, presentation files, and tutorials can be found on the package wiki located at
+#' Finally, examples, presentation files, and tutorials can be found on the package wiki located at
 #' \url{https://github.com/philchalmers/SimDesign/wiki}.
 #'
 #' @section Saving data, results, seeds, and the simulation state:
@@ -89,41 +76,35 @@
 #' To conserve RAM, temporary objects (such as data generated across conditions and replications)
 #' are discarded; however, these can be saved to the hard-disk by passing the appropriate flags.
 #' For longer simulations it is recommended to use the \code{save_results} flag to write the analysis results
-#' the to hard-disc.
+#' to the hard-drive.
 #'
 #' The use of the \code{save_seeds} option can be evoked to save R's \code{.Random.seed} state to allow
 #' for complete reproducibility of each replication within each condition. These
 #' individual \code{.Random.seed} terms can then be read in with the
 #' \code{load_seed} input to reproduce the exact simulation state at any given replication. Most often though,
 #' \code{save_seeds} is less useful since problematic seeds are automatically stored in the final
-#' simulation object to allow for easier replicability of potentially problematic errors. Finally,
+#' simulation object to allow for easier replicability of potentially problematic errors (which incidentally
+#' can be extracted using \code{SimExtract(res, 'error_seeds')} and passed to the \code{load_seed} argument). Finally,
 #' providing a vector of \code{seeds} is also possible to ensure
-#' that each simulation condition is completely reproducible under the single/multi-core method selected.
-#'
-#' The \code{load_seed} input will also accept an integer vector (or single column \code{tbl} object) corresponding to the exact
-#' \code{.Random.seed} state. This is helpful because SimDesign also tracks these seeds for simulation
-#' conditions that threw errors, where these values can be extracted via \code{SimExtract(..., what='error_seeds')}
-#' function. The column names indicate the respective design row (first number), the order in which
-#' the errors were thrown (second number), and finally the error message string (coerced to a proper
-#' data.frame column name). After this data.frame object is extracted, individual columns can be passed to \code{load_seed}
-#' to replicate the exact error issue that appeared (note that the \code{design} object must be indexed
-#' manually to ensure that the correct design conditions is paired with this exact \code{.Random.seed} state).
+#' that each simulation condition is macro reproducible under the single/multi-core method selected.
 #'
 #' Finally, when the Monte Carlo simulation is complete
 #' it is recommended to write the results to a hard-drive for safe keeping, particularly with the
 #' \code{filename} argument provided (for reasons that are more obvious in the parallel computation
-#' descriptions below). Using the \code{filename} argument supplied is much safer than using something
-#' like \code{\link{saveRDS}} directly because files will never accidentally be overwritten,
-#' and instead a new file name will be created when a conflict arises; this type of safety
-#' is prevalent in many aspects of the package and helps to avoid many unrecoverable (yet surprisingly common)
-#' mistakes.
+#' descriptions below). Using the \code{filename} argument supplied is safer than using, for instance,
+#' \code{\link{saveRDS}} directly because files will never accidentally be overwritten,
+#' and instead a new file name will be created when a conflict arises; this type of implementation safety
+#' is prevalent in many locations in the package to help avoid unrecoverable (yet surprisingly common) mistakes
+#' during the process of designing and executing Monte Carlo simulations.
 #'
 #' @section Resuming temporary results:
 #'
 #' In the event of a computer crash, power outage, etc, if \code{save = TRUE} was used (the default)
 #' then the original code used to execute \code{runSimulation()} need only be re-run to resume the simulation.
 #' The saved temp file will be read into the function automatically, and the simulation will continue
-#' one the condition where it left off before the simulation state was terminated.
+#' one the condition where it left off before the simulation state was terminated. If users wish to remove this temporary
+#' simulation state entirely so as to start anew then simply pass \code{SimClean(temp = TRUE)} in the R console to remove any
+#' previously saved temporary objects.
 #'
 #' @section A note on parallel computing:
 #'
@@ -396,9 +377,21 @@
 #'
 #' @return a \code{tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
 #'   with the original \code{design} conditions in the left-most columns,
-#'   simulation results and ERROR/WARNING's (if applicable) in the middle columns,
-#'   and additional information (such as REPLICATIONS, SIM_TIME, COMPLETED, and SEED) in the right-most
-#'   columns.
+#'   simulation results in the middle columns, and additional information in the right-most columns (see below).
+#'
+#' The right-most column information for each condition are:
+#' \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
+#' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
+#' all the Monte Carlo replications for each respective design condition,
+#' \code{COMPLETED} to indicate the date in which the given simulation condition completed,
+#' \code{SEED} for the integer values in the \code{seed} argument, and, if applicable,
+#' \code{ERRORS} and \code{WARNINGS} which contain counts for the number of error or warning
+#' messages that were caught (if no errors/warnings were observed these columns will be omitted).
+#' Note that to extract the specific error and warnings messages see
+#' \code{\link{SimExtract}}. Finally,
+#' if \code{boot_method} was a valid input other than 'none' then the final right-most columns will contain the labels
+#' \code{BOOT_} followed by the name of the associated meta-statistic defined in \code{summarise()} and
+#' and bootstrapped confidence interval location for the meta-statistics.
 #'
 #' @aliases runSimulation
 #'
@@ -689,12 +682,11 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL, debug = 'none', load_seed = NULL,
-                          save = TRUE, save_results = FALSE, store_results = FALSE,
-                          parallel = FALSE, ncores = parallel::detectCores(), cl = NULL, MPI = FALSE,
-                          seed = rint(nrow(design), min=1L, max = 2147483647L), save_seeds = FALSE,
+                          save_results = FALSE, parallel = FALSE, ncores = parallel::detectCores(), cl = NULL,
                           notification = NULL, boot_method='none', boot_draws = 1000L, CI = .95,
-                          warnings_as_errors = FALSE, max_errors = 50L,
-                          allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = FALSE,
+                          seed = rint(nrow(design), min=1L, max = 2147483647L), save_seeds = FALSE,
+                          save = TRUE, store_results = FALSE, warnings_as_errors = FALSE, max_errors = 50L,
+                          allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = FALSE, MPI = FALSE,
                           save_details = list(), progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
