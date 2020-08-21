@@ -67,8 +67,6 @@ SimClean <- function(..., dirs = NULL, generate_data = FALSE, results = FALSE,
     save_seeds_dirname <- save_details$save_seeds_dirname
     save_generate_data_dirname <- save_details$save_generate_data_dirname
     if(is.null(compname)) compname <- Sys.info()['nodename']
-    if(is.null(tmpfilename))
-        tmpfilename <- paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')
     if(is.null(save_results_dirname))
         save_results_dirname <- paste0('SimDesign-results_', compname)
     if(is.null(save_generate_data_dirname))
@@ -81,7 +79,10 @@ SimClean <- function(..., dirs = NULL, generate_data = FALSE, results = FALSE,
     if(generate_data) unlink(save_generate_data_dirname, recursive = TRUE, force = TRUE)
     if(results) unlink(save_results_dirname, recursive = TRUE, force = TRUE)
     if(seeds) unlink(save_seeds_dirname, recursive = TRUE, force = TRUE)
-    if(temp) file.remove(tmpfilename)
+    if(temp){
+        fs <- dir()
+        file.remove(fs[grepl('SIMDESIGN-TEMPFILE_', fs)])
+    }
     if(!is.null(out_rootdir)) setwd(gtw)
     invisible(NULL)
 }
