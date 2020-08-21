@@ -813,7 +813,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         design <- data.frame(ID=1L:nrow(design), design)
     } else stopifnot(length(unique(design$ID)) == nrow(design))
     use_try  <- !(debug %in% c('error', 'recover'))
-    if(debug != 'none'){
+    if(debug != 'none' && !(debug %in% c('error', 'recover'))){
         save <- save_results <- save_seeds <- FALSE
         if(!(debug %in% 'summarise')) parallel <- MPI <- FALSE
         if(debug == 'all'){
