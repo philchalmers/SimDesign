@@ -114,7 +114,7 @@ existing files. Default is \code{NULL}, indicating no file will be saved by defa
   Alternatively, users may place \code{\link{browser}} calls within the respective functions for
   debugging at specific lines, which is useful when debugging based on conditional evaluations (e.g.,
   \code{if(this == 'problem') browser()}). Note that parallel computation flags
-  will automatically be disabled when a \code{browser()} is detected or when a dugging argument other than
+  will automatically be disabled when a \code{browser()} is detected or when a debugging argument other than
   \code{'none'} is supplied}
 
 \item{load_seed}{used to replicate an exact simulation state, which is primarily useful for debugging purposes.
