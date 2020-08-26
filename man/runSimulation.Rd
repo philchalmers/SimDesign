@@ -96,11 +96,14 @@ otherwise the functions must be made available by using explicit
 Alternatively, functions can be called explicitly without attaching the package with the \code{::} operator
 (e.g., \code{extraDistr::rgumbel()})}
 
-\item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to.
-If the same file name already exists in the working
-directly at the time of saving then a new
-file will be generated instead and a warning will be thrown. This helps to avoid accidentally overwriting
-existing files. Default is \code{NULL}, indicating no file will be saved by default}
+\item{filename}{(optional) the name of the \code{.rds} file to save the final simulation results to. If the extension
+  \code{.rds} is not included in the file name (e.g. \code{"mysimulation"} versus \code{"mysimulation.rds"}) then the
+  \code{.rds} extension will be automatically added to the file name to ensure the file extension is correct.
+
+  Note that if the same file name already exists in the working
+  directly at the time of saving then a new
+  file will be generated instead and a warning will be thrown. This helps to avoid accidentally overwriting
+  existing files. Default is \code{NULL}, indicating no file will be saved by default}
 
 \item{debug}{a string indicating where to initiate a \code{browser()} call for editing and debugging, and pairs
   particularly well with the \code{load_seed} argument for precice debugging.

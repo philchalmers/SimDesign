@@ -258,8 +258,11 @@
 #'   then it WILL be important to modify the \code{design} input in order to load this
 #'   exact seed for the corresponding design row. Default is \code{NULL}
 #'
-#' @param filename (optional) the name of the \code{.rds} file to save the final simulation results to.
-#'   If the same file name already exists in the working
+#' @param filename (optional) the name of the \code{.rds} file to save the final simulation results to. If the extension
+#'   \code{.rds} is not included in the file name (e.g. \code{"mysimulation"} versus \code{"mysimulation.rds"}) then the
+#'   \code{.rds} extension will be automatically added to the file name to ensure the file extension is correct.
+#'
+#'   Note that if the same file name already exists in the working
 #'   directly at the time of saving then a new
 #'   file will be generated instead and a warning will be thrown. This helps to avoid accidentally overwriting
 #'   existing files. Default is \code{NULL}, indicating no file will be saved by default
