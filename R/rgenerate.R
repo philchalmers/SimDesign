@@ -678,7 +678,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
             if (is.null(poly.coeff)){
                 cat("Error: no solution found for the combination of skewness: ", skewness[i], "; kurtosis: ",
                     kurtosis[i], ".\n", sep = "")
-                return(NULL)
+                return(invisible(NULL))
             }
             }
         }
@@ -704,7 +704,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
             if(is.null(poly.coeff)){
                 cat("Error: no solution found for the combination of skewness: ", skewness[i], "; kurtosis: ",
                     kurtosis[i], " gam3: ", gam3_fit[i], "; gam4: ", gam4_fit[i], ".\n", sep = "")
-                return
+                return(invisible(NULL))
             }
             else{
                 curr.coeff = poly.coeff$coeff
