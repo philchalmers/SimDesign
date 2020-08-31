@@ -2,9 +2,19 @@
 % Please edit documentation in R/summary_functions.R
 \name{RMSE}
 \alias{RMSE}
+\alias{RMSD}
 \title{Compute the (normalized) root mean square error}
 \usage{
 RMSE(
+  estimate,
+  parameter = NULL,
+  type = "RMSE",
+  MSE = FALSE,
+  percent = FALSE,
+  unname = FALSE
+)
+
+RMSD(
   estimate,
   parameter = NULL,
   type = "RMSE",

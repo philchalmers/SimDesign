@@ -261,6 +261,10 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE,
     ret
 }
 
+#' @rdname RMSE
+#' @export
+RMSD <- RMSE
+
 #' Compute the integrated root mean-square error
 #'
 #' Computes the average/cumulative deviation given two continuous functions and an optional
