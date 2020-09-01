@@ -72,8 +72,8 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
         cat('\nlibrary(SimDesign)\n')
         if(comments)
             cat('\n### Define design conditions')
-        cat('\nDesign <- createDesign(condition1 = NA,
-                       condition2 = NA)\n\n')
+        cat('\nDesign <- createDesign(factor1 = NA,
+                       factor2 = NA)\n\n')
         if(!is.null(filename) && !singlefile){
             if(comments) cat('### Source in essential functions\n')
             cat('# setwd(\"', dir, '\")', sep='')
