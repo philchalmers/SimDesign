@@ -272,10 +272,10 @@ test_that('SimDesign', {
                                replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
 
 
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects = NULL) {
         c(ret = 1)
     }
-    mygenerate <- function(condition, fixed_objects = NULL){
+    mygenerate <- function(condition, fixed_objects = NULL) {
         rgumbel(5)
     }
     mycollect <- function(condition, results, fixed_objects = NULL) {
@@ -517,13 +517,13 @@ test_that('SimDesign', {
     expect_is(results, 'SimDesign')
 
     # warnings/error in generate
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects = NULL) {
         int <- sample(1:10, 1)
         if(int > 5) warning('greater than 5')
         if(int == 1) stop('generate error')
         c(ret = 1)
     }
-    mygenerate <- function(condition, fixed_objects = NULL){
+    mygenerate <- function(condition, fixed_objects = NULL) {
         int <- sample(1:10, 1)
         if(int > 5) warning('greater than 5 in analyse')
         if(int == 1) stop('generate error in analyse')
