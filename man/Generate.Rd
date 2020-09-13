@@ -38,7 +38,7 @@ iterations were reached).
 \examples{
 \dontrun{
 
-generate <- function(condition, fixed_objects = NULL){
+generate <- function(condition, fixed_objects = NULL) {
     N1 <- condition$sample_sizes_group1
     N2 <- condition$sample_sizes_group2
     sd <- condition$standard_deviations
@@ -54,7 +54,7 @@ generate <- function(condition, fixed_objects = NULL){
 }
 
 # similar to above, but using the Attach() function instead of indexing
-generate <- function(condition, fixed_objects = NULL){
+generate <- function(condition, fixed_objects = NULL) {
     Attach(condition)
     N1 <- sample_sizes_group1
     N2 <- sample_sizes_group2
@@ -67,13 +67,13 @@ generate <- function(condition, fixed_objects = NULL){
     dat
 }
 
-generate2 <- function(condition, fixed_objects = NULL){
+generate2 <- function(condition, fixed_objects = NULL) {
     mu <- sample(c(-1,0,1), 1)
     dat <- rnorm(100, mu)
     dat        #return simple vector (discard mu information)
 }
 
-generate3 <- function(condition, fixed_objects = NULL){
+generate3 <- function(condition, fixed_objects = NULL) {
     mu <- sample(c(-1,0,1), 1)
     dat <- data.frame(DV = rnorm(100, mu))
     dat

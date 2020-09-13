@@ -42,7 +42,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' generate <- function(condition, fixed_objects = NULL){
+#' generate <- function(condition, fixed_objects = NULL) {
 #'     N1 <- condition$sample_sizes_group1
 #'     N2 <- condition$sample_sizes_group2
 #'     sd <- condition$standard_deviations
@@ -58,7 +58,7 @@
 #' }
 #'
 #' # similar to above, but using the Attach() function instead of indexing
-#' generate <- function(condition, fixed_objects = NULL){
+#' generate <- function(condition, fixed_objects = NULL) {
 #'     Attach(condition)
 #'     N1 <- sample_sizes_group1
 #'     N2 <- sample_sizes_group2
@@ -71,13 +71,13 @@
 #'     dat
 #' }
 #'
-#' generate2 <- function(condition, fixed_objects = NULL){
+#' generate2 <- function(condition, fixed_objects = NULL) {
 #'     mu <- sample(c(-1,0,1), 1)
 #'     dat <- rnorm(100, mu)
 #'     dat        #return simple vector (discard mu information)
 #' }
 #'
-#' generate3 <- function(condition, fixed_objects = NULL){
+#' generate3 <- function(condition, fixed_objects = NULL) {
 #'     mu <- sample(c(-1,0,1), 1)
 #'     dat <- data.frame(DV = rnorm(100, mu))
 #'     dat
@@ -138,7 +138,7 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #' @examples
 #' \dontrun{
 #'
-#' analyse <- function(condition, dat, fixed_objects = NULL){
+#' analyse <- function(condition, dat, fixed_objects = NULL) {
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -201,7 +201,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #' @examples
 #' \dontrun{
 #'
-#' summarise <- function(condition, results, fixed_objects = NULL){
+#' summarise <- function(condition, results, fixed_objects = NULL) {
 #'
 #'     #find results of interest here (alpha < .1, .05, .01)
 #'     lessthan.05 <- EDR(results, alpha = .05)

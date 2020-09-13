@@ -30,7 +30,7 @@ estimates such as RMSE, bias, Type I error rates, coverage rates, etc. See the
 \examples{
 \dontrun{
 
-summarise <- function(condition, results, fixed_objects = NULL){
+summarise <- function(condition, results, fixed_objects = NULL) {
 
     #find results of interest here (alpha < .1, .05, .01)
     lessthan.05 <- EDR(results, alpha = .05)

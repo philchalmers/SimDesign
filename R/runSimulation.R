@@ -441,19 +441,19 @@
 #' #### Step 2 --- Define generate, analyse, and summarise functions
 #'
 #' # help(Generate)
-#' Generate <- function(condition, fixed_objects = NULL){
+#' Generate <- function(condition, fixed_objects = NULL) {
 #'     dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
 #'     dat
 #' }
 #'
 #' # help(Analyse)
-#' Analyse <- function(condition, dat, fixed_objects = NULL){
+#' Analyse <- function(condition, dat, fixed_objects = NULL) {
 #'     ret <- mean(dat) # mean of the sample data vector
 #'     ret
 #' }
 #'
 #' # help(Summarise)
-#' Summarise <- function(condition, results, fixed_objects = NULL){
+#' Summarise <- function(condition, results, fixed_objects = NULL) {
 #'     ret <- c(mu=mean(results), SE=sd(results)) # mean and SD summary of the sample means
 #'     ret
 #' }
@@ -538,7 +538,7 @@
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Step 2 --- Define generate, analyse, and summarise functions
 #'
-#' Generate <- function(condition, fixed_objects = NULL){
+#' Generate <- function(condition, fixed_objects = NULL) {
 #'     N <- condition$sample_size      # alternatively, could use Attach() to make objects available
 #'     grs <- condition$group_size_ratio
 #'     sd <- condition$standard_deviation_ratio
@@ -555,7 +555,7 @@
 #'     dat
 #' }
 #'
-#' Analyse <- function(condition, dat, fixed_objects = NULL){
+#' Analyse <- function(condition, dat, fixed_objects = NULL) {
 #'     welch <- t.test(DV ~ group, dat)
 #'     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
 #'
@@ -565,7 +565,7 @@
 #'     ret
 #' }
 #'
-#' Summarise <- function(condition, results, fixed_objects = NULL){
+#' Summarise <- function(condition, results, fixed_objects = NULL) {
 #'     #find results of interest here (e.g., alpha < .1, .05, .01)
 #'     ret <- EDR(results, alpha = .05)
 #'     ret
@@ -602,7 +602,7 @@
 #'
 #' ## Alternatively, place a browser() within the desired function line to
 #' ##   jump to a specific location
-#' Summarise <- function(condition, results, fixed_objects = NULL){
+#' Summarise <- function(condition, results, fixed_objects = NULL) {
 #'     #find results of interest here (e.g., alpha < .1, .05, .01)
 #'     browser()
 #'     ret <- EDR(results[,nms], alpha = .05)

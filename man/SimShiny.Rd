@@ -31,7 +31,7 @@ Design <- createDesign(sample_size = c(30, 60, 90, 120),
                        group_size_ratio = c(1, 4, 8),
                        standard_deviation_ratio = c(.5, 1, 2))
 
-Generate <- function(condition, fixed_objects = NULL){
+Generate <- function(condition, fixed_objects = NULL) {
     N <- condition$sample_size
     grs <- condition$group_size_ratio
     sd <- condition$standard_deviation_ratio
@@ -48,7 +48,7 @@ Generate <- function(condition, fixed_objects = NULL){
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL){
+Analyse <- function(condition, dat, fixed_objects = NULL) {
     welch <- t.test(DV ~ group, dat)
     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
 
@@ -58,7 +58,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL){
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL){
+Summarise <- function(condition, results, fixed_objects = NULL) {
     #find results of interest here (e.g., alpha < .1, .05, .01)
     ret <- EDR(results, alpha = .05)
     ret

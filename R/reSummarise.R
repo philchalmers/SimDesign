@@ -50,12 +50,12 @@
 #'
 #' Design <- data.frame(N = c(10, 20, 30))
 #'
-#' Generate <- function(condition, fixed_objects = NULL){
+#' Generate <- function(condition, fixed_objects = NULL) {
 #'     dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
 #'     dat
 #' }
 #'
-#' Analyse <- function(condition, dat, fixed_objects = NULL){
+#' Analyse <- function(condition, dat, fixed_objects = NULL) {
 #'     ret <- mean(dat) # mean of the sample data vector
 #'     ret
 #' }
@@ -77,7 +77,7 @@
 #' res <- reSummarise(Summarise, dir = 'simresults/')
 #' res
 #'
-#' Summarise2 <- function(condition, results, fixed_objects = NULL){
+#' Summarise2 <- function(condition, results, fixed_objects = NULL) {
 #'     mean(results)
 #' }
 #'

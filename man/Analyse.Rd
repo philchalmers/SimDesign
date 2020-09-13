@@ -45,7 +45,7 @@ iterations were reached).
 \examples{
 \dontrun{
 
-analyse <- function(condition, dat, fixed_objects = NULL){
+analyse <- function(condition, dat, fixed_objects = NULL) {
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
