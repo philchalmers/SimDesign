@@ -1,16 +1,18 @@
-#' Skeleton functions for simulations
+#' Template-based generation of the Generate-Analyse-Summarise functions
 #'
-#' This function prints skeleton versions of the required SimDesign functions
-#' to run simulations, complete with the correct inputs, class of outputs, and optional comments to
-#' help with the initial definitions. Use this at the start of your Monte Carlo simulation study. The
-#' recommended approach is to save the template to the hard-drive by passing a suitable file name.
-#' However, for larger simulations, as well as when using the \code{RStudio}, two
-#' separate files will often be easier for debugging/sourcing the simulation code (achieved by passing
-#' \code{singlefile = FALSE}).
-#' For a didactic presentation of the package refer to Sigal and Chalmers
-#' (2016; \doi{10.1080/10691898.2016.1246953}), and see the associated
-#' wiki on Github (\url{https://github.com/philchalmers/SimDesign/wiki})
-#' for other tutorial material, examples, and applications of \code{SimDesign} to real-world simulations.
+#' This function prints template versions of the required \code{Design} and Generate-Analyse-Summarise functions
+#' for \code{SimDesign} to run simulations. Templated output comes complete with the correct inputs,
+#' class of outputs, and optional comments to help with the initial definitions.
+#' Use this at the start of your Monte Carlo simulation study. Following
+#' the definition of the \code{SimDesign} template file please refer to detailed the information
+#' in \code{\link{runSimulation}} for how to edit this template to make a working simulation study.
+#'
+#' The recommended approach to organizing Monte Carlo simulation files is to first save the template generated
+#' by this function to the hard-drive by passing a suitable \code{filename} argument (which, if users are interacting
+#' with R via the RStudio IDE, will also open the template file after it has been saved). For larger simulations, two
+#' separate files could also be used (achieved by passing \code{singlefile = FALSE}),
+#' and may be easier for debugging/sourcing the simulation code; however, this is a
+#' matter of preference and does not change any functionality in the package.
 #'
 #' @param filename a character vector indicating whether the output should be saved to two respective files
 #'   containing the simulation design and the functional components, respectively. Using this option
@@ -33,6 +35,8 @@
 #'   the scripts will open in a new tab)?
 #'
 #' @aliases SimFunctions
+#'
+#' @seealso \code{\link{runSimulation}}
 #'
 #' @export SimFunctions
 #'
