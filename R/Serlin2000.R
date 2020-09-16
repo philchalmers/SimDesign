@@ -25,7 +25,7 @@
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
-#' \doi{10.20982/tqmp.16.4.p249}
+#' \doi{10.20982/tqmp.16.4.p248}
 #'
 #' Serlin, R. C. (2000). Testing for Robustness in Monte Carlo Studies.
 #' \emph{Psychological Methods, 5}, 230-240.

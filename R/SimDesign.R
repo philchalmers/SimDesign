@@ -7,7 +7,7 @@
 #' back-end and MPI distributed computations, save and restore temporary files,
 #' aggregate results across independent nodes, and provide native support for debugging.
 #' The primary function for organizing the simulations is \code{\link{runSimulation}}.
-#' For an in-depth tutorial of the package please refer to Chalmers and Adkins (2020).
+#' For an in-depth tutorial of the package please refer to Chalmers and Adkins (2020; \doi{10.20982/tqmp.16.4.p248}).
 #' For an earlier didactic presentation of the package users can refer to Sigal and Chalmers
 #' (2016; \doi{10.1080/10691898.2016.1246953}). Finally, see the associated
 #' wiki on Github (\url{https://github.com/philchalmers/SimDesign/wiki})
@@ -27,7 +27,7 @@
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
-#' \doi{10.20982/tqmp.16.4.p249}
+#' \doi{10.20982/tqmp.16.4.p248}
 #'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
@@ -52,7 +52,7 @@ NULL
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
-#' \doi{10.20982/tqmp.16.4.p249}
+#' \doi{10.20982/tqmp.16.4.p248}
 #'
 #'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
@@ -87,7 +87,7 @@ NULL
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
-#' \doi{10.20982/tqmp.16.4.p249}
+#' \doi{10.20982/tqmp.16.4.p248}
 #'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
