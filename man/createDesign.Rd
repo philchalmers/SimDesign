@@ -73,7 +73,7 @@ print(Design, list2char = FALSE)   # standard tibble output
 }
 \references{
 Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
-with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
+with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 \doi{10.20982/tqmp.16.4.p248}
 
 Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte

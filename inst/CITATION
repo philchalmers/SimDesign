@@ -7,12 +7,12 @@ citEntry(entry = "Article",
   year         = "2020",
   volume       = "16",
   number       = "4",
-  pages        = "249--281",
+  pages        = "248--280",
   doi          = "10.20982/tqmp.16.4.p248",
 
   textVersion  =
   paste("R.\ Philip Chalmers & Adkins, M. C. (2020).",
         "Writing effective and reliable Monte Carlo simulations with the SimDesign package.",
-        "The Quantitative Methods for Psychology, 16(4), 249-281.",
+        "The Quantitative Methods for Psychology, 16(4), 248-280.",
         "doi:10.20982/tqmp.16.4.p248")
 )

@@ -26,7 +26,7 @@ Brown, M. B. and Forsythe, A. B. (1974). Robust tests for the equality of varian
   \emph{Journal of the American Statistical Association, 69}(346), 364--367.
 
 Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
-with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
+with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 \doi{10.20982/tqmp.16.4.p248}
 
 

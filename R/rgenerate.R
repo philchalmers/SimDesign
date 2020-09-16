@@ -16,7 +16,7 @@
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
-#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
+#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 #' \doi{10.20982/tqmp.16.4.p248}
 #'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
@@ -71,7 +71,7 @@ rint <- function(n, min, max, replace = TRUE, prob = NULL){
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
-#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
+#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 #' \doi{10.20982/tqmp.16.4.p248}
 #'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
@@ -139,7 +139,7 @@ rmgh <- function(n, g, h, mean = rep(0, length(g)), sigma = diag(length(mean))) 
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
-#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
+#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 #' \doi{10.20982/tqmp.16.4.p248}
 #'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
@@ -281,7 +281,7 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
-#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
+#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 #' \doi{10.20982/tqmp.16.4.p248}
 #'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
@@ -805,7 +805,7 @@ rHeadrick <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
-#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
+#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 #' \doi{10.20982/tqmp.16.4.p248}
 #'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
@@ -869,7 +869,7 @@ rmvnorm <- function (n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)))
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
-#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
+#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 #' \doi{10.20982/tqmp.16.4.p248}
 #'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
@@ -930,7 +930,7 @@ rmvt <- function (n, sigma, df, delta = rep(0, nrow(sigma)),
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
-#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 249-281.
+#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 #' \doi{10.20982/tqmp.16.4.p248}
 #'
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
