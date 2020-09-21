@@ -18,13 +18,8 @@ install_github('philchalmers/SimDesign')
 
 ## Getting started
 
-Load the package and read the documentation in `runSimulation()`
+For a discription pertaining to the philosophy and general workflow of the package it is helpful to first read through [the following reference](10.20982/tqmp.16.4.p248):
 
-```r
-library(SimDesign)
-help(runSimulation)
-```
+	Chalmers, R. Philip, Adkins, Mark C. (2020) Writing Effective and Reliable Monte Carlo Simulations with the SimDesign Package, The Quantitative Methods for Psychology, 16(4), 248-280. doi: 10.20982/tqmp.16.4.p248
 
-Go through the worked example to understand what the function inputs require, and try your luck walking through a debugging process though the `edit` argument (also very handy for writing the initial functions if you are comfortable with the debugging environment).
-
-For additional information and instructions about how to use the package, refer to the examples on the [wiki](https://github.com/philchalmers/SimDesign/wiki).
+Examples found within this article range from relatively simple (e.g., a re-implementation of one of [Hallgren's (2013) simulation study examples](https://www.tqmp.org/RegularArticles/vol09-2/p043/index.html), as well as possible extensions to the simulation design) to more advanced real-world simulation experiments (e.g., [Flora and Curran's (2004) simulation study](https://psycnet.apa.org/doiLanding?doi=10.1037%2F1082-989X.9.4.466)). For additional information and instructions about how to use the package please refer to the examples in the associated [Github wiki](https://github.com/philchalmers/SimDesign/wiki).
