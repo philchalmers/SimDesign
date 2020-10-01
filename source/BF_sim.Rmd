@@ -1,7 +1,7 @@
 %\VignetteIndexEntry{SimDesign}
 %\VignetteEngine{knitr::knitr}
 ---
-title: "Flora and Curran (2004) simulation"
+title: "Brown and Forsythe (1974) simulation"
 author: "Phil Chalmers"
 output:
   html_document:
@@ -87,6 +87,10 @@ Layard_vartest <- function(DV, group){
 
 
 # Simulation code
+
+```{r include=FALSE}
+library(SimDesign)
+```
 
 ```{r eval=FALSE}
 #-------------------------------------------------------------------
