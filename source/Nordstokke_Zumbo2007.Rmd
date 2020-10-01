@@ -1,7 +1,7 @@
 %\VignetteIndexEntry{SimDesign}
 %\VignetteEngine{knitr::knitr}
 ---
-title: "Flora and Curran (2004) simulation"
+title: "Nordstokke and Zumbo (2007) simulation"
 author: "Phil Chalmers"
 output:
   html_document:
@@ -62,6 +62,11 @@ res <- runSimulation(design=Design, replications=5000, generate=Generate,
                      filename='Nordstokke_Zumbo2007')
 res
 ```
+
+```{r include=FALSE}
+library(SimDesign)
+```
+
 
 ```{r echo=FALSE}
 res <- readRDS("../extras/Nordstokke_Zumbo2007/Nordstokke_Zumbo2007.rds")
