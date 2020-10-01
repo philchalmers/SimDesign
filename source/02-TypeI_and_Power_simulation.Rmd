@@ -185,7 +185,7 @@ However, when the second group contained a larger variance **AND** a larger samp
 
 # An alternative approach
 
-The following is the same simulation design as above, however the approach is slightly different. Because the `design` input object is a `data.frame` object it is technically possible to include `list`s as factors as well to be passed to `expand.grid()`, thereby creating a fully-crossed simulation design with the `list` inputs. This may be preferable to some users if, for example, you would rather explicitly include grouping distributions in `design` rather than using scalars like 1/2, 1, and 2.
+The following is the same simulation design as above, however the approach is slightly different. Because the `design` input object is a `data.frame` object it is technically possible to include `list`s as factors as well to be passed to `createDesign()`, thereby creating a fully-crossed simulation design with the `list` inputs. This may be preferable to some users if, for example, you would rather explicitly include grouping distributions in `design` rather than using scalars like 1/2, 1, and 2.
 
 Consider the following design definition:
 
