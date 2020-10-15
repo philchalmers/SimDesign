@@ -16,7 +16,7 @@ set.seed(1)
 
 # Power-curve
 
-Power-curves are useful when researchers are interested in the range of power effects when varying different population and sample properties. For instance, researchers may be interested in how power improves as the magnitude of the population mean difference for a t-test increases, or how quickly power improves when increasing the sample size ($N$).  
+Power-curves are useful when researchers are interested in the range of power effects when varying different population and sample properties. For instance, researchers may be interested in how power improves as the magnitude of the population mean difference for an independent samples $t$-test increases, or how quickly power improves when increasing the sample size ($N$). The following simulation assumes that the population variances are equal.   
 
 ### Define the functions
 
@@ -31,18 +31,22 @@ Design <- createDesign(mean_diff = seq(0, 1, by = .1),
 #--------------------------------------------------------------------
 
 Generate <- function(condition, fixed_objects = NULL) {
-    ret <- with(condition, rnorm(sample_size, mean_diff))
-    ret
+  Attach(condition)
+  dat1 <- rnorm(sample_size)
+  dat2 <- rnorm(sample_size, mean=mean_diff)
+  dat <- list(dat1=dat1, dat2=dat2)
+  dat
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL) {
-    ret <- c(p = t.test(dat)$p.value)
-    ret
+  ret <- c(p = t.test(dat$dat1, dat$dat2, 
+                      var.equal=TRUE)$p.value)
+  ret
 }
 
 Summarise <- function(condition, results, fixed_objects = NULL) {
-    ret <- EDR(results, alpha = .05)
-    ret
+  ret <- EDR(results, alpha = .05)
+  ret
 }
 
 #--------------------------------------------------------------------
@@ -73,9 +77,9 @@ Compare these results to analytic formulas, we can see that the two are essentia
 
 ```{r}
 library(pwr)
-pwr.t.test(d=0.5, n=30, sig.level=0.05, type="one.sample", alternative="two.sided")
+pwr.t.test(d=0.5, n=30, sig.level=0.05, type="two.sample", alternative="two.sided")
 subset(res, mean_diff == .5 & sample_size == 30)
-pwr.t.test(d=0.5, n=10, sig.level=0.05, type="one.sample", alternative="two.sided")
+pwr.t.test(d=0.5, n=10, sig.level=0.05, type="two.sample", alternative="two.sided")
 subset(res, mean_diff == .5 & sample_size == 10)
 ```
 
