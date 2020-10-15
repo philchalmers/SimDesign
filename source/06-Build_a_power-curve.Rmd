@@ -81,9 +81,27 @@ subset(res, mean_diff == .5 & sample_size == 10)
 
 # Power-curve with Bootstrapped Confidence Intervals
 
-In situations where analogical power estimation is not available, and therefore simulations are used as a suitable stand-in, it's important to gauge the precision of the power estimates. A reasonable approach would be to apply bootstrapping methodology to the within replication $p$-values to obtain suitable non-parametric confidence intervals. 
+In situations where analytic power estimation is not available, and therefore simulations are used as a suitable stand-in, it's important to evaluate the *precision* of the observed power estimates from the simulation study. As such, one reasonable (and extremely general approach) is to apply bootstrapping methodology to the within replication; for simulated power analyses this involves bootstrapping the $R$ replicated $p$-values to obtain suitable non-parametric confidence intervals. 
 
-The following implements the empirical (i.e., basic) bootstrap CI method for the simulation above, but instead plots the point-wise 95% CIs estimates for each condition in the `Design` input.
+The following implements the empirical (i.e., basic) bootstrap CI method for the simulation above, and instead plots the point-wise 95% CIs estimates for each condition in the `Design` input. Notice that the replications were reduced from 10000 to 1000 to demonstrate the potential uncertainty when using too few replications when estimating power via simulation.
+
+```{r}
+### Run the simulation (using all available cores)
+res <- runSimulation(Design, replications=1000, verbose=FALSE, parallel=TRUE,
+                     generate=Generate, analyse=Analyse, summarise=Summarise,
+                     boot_method = 'basic')
+res
+```
+
+```{r fig.align='center'}
+library(ggplot2)
+ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom_line() +
+    geom_ribbon(aes(ymin=BOOT_p_2.5, ymax=BOOT_p_97.5, fill=factor(sample_size)), alpha=.3, linetype=0) + 
+    xlab('Mean Difference') + ylab('Detection Rate') + ggtitle('Empirical Power Curves with 95% CIs') +
+    scale_fill_discrete('N') + scale_colour_discrete('N')
+```
+
+Finally, when increasing the replications back to 10000 it become visually clear how precise the original point-estimates  presented in the previous section were. 
 
 ```{r}
 ### Run the simulation (using all available cores)
@@ -96,7 +114,7 @@ res
 ```{r fig.align='center'}
 library(ggplot2)
 ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom_line() +
-    geom_ribbon(aes(ymin=`BOOT_p_2.5%`, ymax=`BOOT_p_97.5%`, fill=factor(sample_size)), alpha=.3, linetype=0) + 
+    geom_ribbon(aes(ymin=BOOT_p_2.5, ymax=BOOT_p_97.5, fill=factor(sample_size)), alpha=.3, linetype=0) + 
     xlab('Mean Difference') + ylab('Detection Rate') + ggtitle('Empirical Power Curves with 95% CIs') +
     scale_fill_discrete('N') + scale_colour_discrete('N')
 ```
