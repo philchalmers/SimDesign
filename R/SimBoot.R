@@ -72,6 +72,6 @@ SimBoot <- function(results, summarise, condition, fixed_objects, boot_method,
     }
     CIs <- as.vector(rbind(lower, upper))
     names(CIs) <- paste0(as.vector(sapply(paste0("BOOT_", names(t0), "_"), function(x)
-        paste0(x, c( (1 - CI)/2 * 100, (1 - (1 - CI)/2)*100)))), "%")
+        paste0(x, c( (1 - CI)/2 * 100, (1 - (1 - CI)/2)*100)))))
     CIs
 }
