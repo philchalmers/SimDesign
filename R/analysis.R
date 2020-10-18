@@ -2,7 +2,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      save_results, save_results_out_rootdir, save_results_dirname, max_errors,
                      boot_method, boot_draws, CI, save_seeds, save_seeds_dirname, load_seed, export_funs, packages,
                      summarise_asis, warnings_as_errors, progress, store_results,
-                     allow_na, allow_nan, use_try, stop_on_fatal)
+                     allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -14,6 +14,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    analyse=Functions$analyse,
                    fixed_objects=fixed_objects,
                    max_errors=max_errors, packages=packages, save=save,
+                   store_warning_seeds=store_warning_seeds,
                    save_results_out_rootdir=save_results_out_rootdir,
                    save_seeds=save_seeds, load_seed=load_seed,
                    save_seeds_dirname=save_seeds_dirname,
@@ -27,6 +28,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    max_errors=max_errors, packages=packages, save=save,
                    save_results_out_rootdir=save_results_out_rootdir,
                    save_seeds=save_seeds, load_seed=load_seed,
+                   store_warning_seeds=store_warning_seeds,
                    save_seeds_dirname=save_seeds_dirname,
                    warnings_as_errors=warnings_as_errors,
                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try), TRUE)
@@ -40,6 +42,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      max_errors=max_errors, save=save, packages=packages,
                      save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                      save_results_out_rootdir=save_results_out_rootdir,
+                     store_warning_seeds=store_warning_seeds,
                      warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan,
                      use_try=use_try), TRUE)
         } else {
@@ -50,7 +53,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     analyse=Functions$analyse, load_seed=load_seed,
                                     fixed_objects=fixed_objects, packages=packages, save=save,
                                     save_results_out_rootdir=save_results_out_rootdir,
-                                    max_errors=max_errors,
+                                    max_errors=max_errors, store_warning_seeds=store_warning_seeds,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
                                     allow_nan=allow_nan, use_try=use_try, cl=cl), TRUE)
@@ -60,7 +63,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     analyse=Functions$analyse, load_seed=load_seed,
                                     fixed_objects=fixed_objects, packages=packages, save=save,
                                     save_results_out_rootdir=save_results_out_rootdir,
-                                    max_errors=max_errors,
+                                    max_errors=max_errors, store_warning_seeds=store_warning_seeds,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
                                     allow_nan=allow_nan, use_try=use_try), TRUE)
@@ -107,9 +110,10 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     warnings <- if(length(warnings)){
         table(warnings[!is.na(warnings)])
     } else table(warnings)
+    warning_message_seeds <- do.call(rbind, lapply(results, function(x) attr(x, 'warning_message_seeds')))
     for(i in seq_len(length(results)))
         attr(results[[i]], 'try_errors') <- attr(results[[i]], 'warnings') <-
-        attr(results[[i]], 'try_error_seeds') <- NULL
+        attr(results[[i]], 'try_error_seeds') <- attr(results[[i]], 'warning_message_seeds') <- NULL
 
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
     if(!is.list(results[[1L]]) ||
@@ -124,7 +128,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     if(save_results){
         tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
         saveRDS(list(condition=condition, results=results, errors=try_errors, error_seeds=try_error_seeds,
-                     warnings=warnings),
+                     warnings=warnings, warning_seeds=warning_message_seeds),
                 file.path(save_results_out_rootdir, tmpfilename))
     }
     sim_results <- try(Functions$summarise(results=results,
@@ -142,7 +146,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     ret <- c(sim_results, 'REPLICATIONS'=replications, 'ERROR: '=try_errors,
              'WARNING: '=warnings)
     if(boot_method != 'none'){
-        # could parallelize, TODO
+        # could parallelize, but likely not worth the overhead
         CIs <- SimBoot(results, summarise=Functions$summarise,
                        condition=condition, fixed_objects=fixed_objects,
                        boot_method=boot_method,
@@ -150,6 +154,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         ret <- c(ret, CIs)
     }
     attr(ret, 'error_seeds') <- try_error_seeds
+    attr(ret, 'warning_seeds') <- warning_message_seeds
     if(store_results)
         attr(ret, 'full_results') <- tabled_results
     ret

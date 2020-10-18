@@ -1,7 +1,7 @@
 #' Function to extract extra information from SimDesign objects
 #'
 #' Function used to extract any error or warnings messages, the seeds associated
-#' with any error messages, and any analysis results that were stored in the
+#' with any error or warning messages, and any analysis results that were stored in the
 #' final simulation object.
 #'
 #' @param object object returned from \code{\link{runSimulation}}
@@ -9,10 +9,11 @@
 #' @param what character indicating what information to extract. Possible inputs
 #'   include \code{'errors'} to return a \code{tibble} object containing counts of any
 #'   error messages, \code{'warnings'} to return a \code{data.frame} object containing
-#'   counts of any warning messages, \code{'error_seeds'} to extract the associated
-#'   \code{.Random.seed} values associated with the ERROR messages, and \code{'results'}
-#'   to extract the simulation results if the option \code{store_results} was passed to
-#'   \code{\link{runSimulation}}
+#'   counts of any warning messages, \code{'error_seeds'} and \code{'warning_seeds'}
+#'   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
+#'   and \code{'results'} to extract the simulation results if the option \code{store_results} was passed to
+#'   \code{\link{runSimulation}}. Note that \code{'warning_seeds'} are not stored automatically in
+#'   simulations and require passing \code{store_warning_seeds = TRUE} to \code{\link{runSimulation}}.
 #'
 #' @export
 #'
@@ -81,6 +82,8 @@ SimExtract <- function(object, what){
         extract_error_seeds(object)
     } else if(what == 'warnings'){
         cbind(Design, extract_warnings(object))
+    } else if(what == 'warning_seeds'){
+        extract_warning_seeds(object)
     } else stop('Input provided to \"what" is not supported')
     ret
 }
@@ -112,5 +115,11 @@ extract_results <- function(object){
 extract_error_seeds <- function(object){
     extra_info <- attr(object, 'extra_info')
     ret <- extra_info$error_seeds
+    ret
+}
+
+extract_warning_seeds <- function(object){
+    extra_info <- attr(object, 'extra_info')
+    ret <- extra_info$warning_seeds
     ret
 }

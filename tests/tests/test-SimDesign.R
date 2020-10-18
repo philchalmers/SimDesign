@@ -178,10 +178,11 @@ test_that('SimDesign', {
     files <- dir(DIR)
     expect_equal(length(files), 16L)
     x <- readRDS(paste0(DIR, '/', files[1]))
-    expect_true(all(names(x) %in% c('condition', 'results', 'errors', 'warnings', "error_seeds")))
+    expect_true(all(names(x) %in% c('condition', 'results', 'errors', 'warnings', "error_seeds",
+                                    'warning_seeds')))
     row1 <- SimResults(tmp, 1)
     expect_is(row1, 'list')
-    expect_equal(length(row1), 5)
+    expect_equal(length(row1), 6)
     row1to5 <- SimResults(tmp, 1:5)
     expect_is(row1to5, 'list')
     expect_equal(length(row1to5), 5)
@@ -307,6 +308,10 @@ test_that('SimDesign', {
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
                   parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_true(any(grepl('WARNING', names(results))))
+    results <- runSimulation(Design, replications = 1, packages = 'extraDistr',
+                             generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                             parallel=FALSE, save=FALSE, verbose = FALSE, store_warning_seeds = TRUE)
+    expect_true(length(SimExtract(results, what = 'warning_seeds')) > 0)
     results <- runSimulation(Design, replications = 1, packages = 'extraDistr', max_errors = Inf,
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save=FALSE, verbose = FALSE, warnings_as_errors=TRUE)

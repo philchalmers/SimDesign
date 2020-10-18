@@ -258,12 +258,12 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
                     save, allow_na, allow_nan, save_seeds, save_seeds_dirname, load_seed,
-                    warnings_as_errors, packages = NULL, use_try){
+                    warnings_as_errors, store_warning_seeds, packages = NULL, use_try){
 
     load_packages(packages)
     condition$REPLICATION <- index
     try_error <- character()
-    try_error_seeds <- matrix(0L, 0L, length(.GlobalEnv$.Random.seed))
+    try_error_seeds <- warning_message_seeds <- matrix(0L, 0L, length(.GlobalEnv$.Random.seed))
 
     while(TRUE){
 
@@ -337,6 +337,10 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                 res[1L] <- Warnings[1L]
                 Warnings <- NULL
             }
+            if(store_warning_seeds){
+                for(i in seq_len(length(Warnings)))
+                    warning_message_seeds <- rbind(warning_message_seeds, current_Random.seed)
+            }
         }
         if(!allow_nan && !is.list(res) && any(is.nan(res))){
             NA_names <- names(res)[is.nan(res)]
@@ -371,9 +375,12 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             stop('analyse() did not return a list or numeric vector', call.=FALSE)
 
         rownames(try_error_seeds) <- try_error
+        if(store_warning_seeds)
+            rownames(warning_message_seeds) <- Warnings
         attr(res, 'try_errors') <- try_error
         attr(res, 'try_error_seeds') <- try_error_seeds
         attr(res, 'warnings') <- Warnings
+        attr(res, 'warning_message_seeds') <- warning_message_seeds
         return(res)
     }
 }

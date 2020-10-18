@@ -29,6 +29,7 @@ runSimulation(
   save_seeds = FALSE,
   save = TRUE,
   store_results = FALSE,
+  store_warning_seeds = FALSE,
   warnings_as_errors = FALSE,
   max_errors = 50L,
   allow_na = FALSE,
@@ -242,6 +243,15 @@ in the returned object? This is \code{FALSE} by default to help avoid RAM
 issues (see \code{save_results} as a more suitable alternative). To extract these results
 pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
 of all the simulation results for each condition}
+
+\item{store_warning_seeds}{logical; in addition to storing the \code{.Random.seed} states whenever error messages
+  are raised, also store the \code{.Random.seed} states when warnings are raised? This is disabled by default
+  since warnings are generally less problematic than errors, and because many more warnings messages may be raised
+  throughout the simulation (potentially causing RAM related issues when constructing the final simulation object as
+  any given simulation replicate could generate numerous warnings, and storing the seeds states could add up quickly).
+
+  Set this to \code{TRUE} when replicating warning messages is important, however be aware that too many warnings
+  messages raised during the simulation implementation could cause RAM related issues.}
 
 \item{warnings_as_errors}{logical; treat warning messages as error messages during the simulation? Default is FALSE,
 therefore warnings are only collected and not used to restart the data generation step, and the seeds associated with

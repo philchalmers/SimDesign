@@ -213,6 +213,15 @@
 #'  }
 #'  However, note that this may be less reliable since the email message could be directed to a spam folder.
 #'
+#' @param store_warning_seeds logical; in addition to storing the \code{.Random.seed} states whenever error messages
+#'   are raised, also store the \code{.Random.seed} states when warnings are raised? This is disabled by default
+#'   since warnings are generally less problematic than errors, and because many more warnings messages may be raised
+#'   throughout the simulation (potentially causing RAM related issues when constructing the final simulation object as
+#'   any given simulation replicate could generate numerous warnings, and storing the seeds states could add up quickly).
+#'
+#'   Set this to \code{TRUE} when replicating warning messages is important, however be aware that too many warnings
+#'   messages raised during the simulation implementation could cause RAM related issues.
+#'
 #' @param warnings_as_errors logical; treat warning messages as error messages during the simulation? Default is FALSE,
 #'   therefore warnings are only collected and not used to restart the data generation step, and the seeds associated with
 #'   the warning message conditions are not stored within the final simulation object
@@ -689,7 +698,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           save_results = FALSE, parallel = FALSE, ncores = parallel::detectCores(), cl = NULL,
                           notification = NULL, boot_method='none', boot_draws = 1000L, CI = .95,
                           seed = rint(nrow(design), min=1L, max = 2147483647L), save_seeds = FALSE,
-                          save = TRUE, store_results = FALSE, warnings_as_errors = FALSE, max_errors = 50L,
+                          save = TRUE, store_results = FALSE, store_warning_seeds = FALSE,
+                          warnings_as_errors = FALSE, max_errors = 50L,
                           allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = FALSE, MPI = FALSE,
                           save_details = list(), progress = TRUE, verbose = TRUE)
 {
@@ -705,7 +715,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 message('NA value for summarise input supplied; automatically setting save_results to TRUE\n')
             save <- save_results <- TRUE
         }
-    }
+    } else save <- FALSE
     if(!all(names(save_results) %in%
             c('compname', 'save_results_dirname')))
         stop('save_details contains elements that are not supported', call.=FALSE)
@@ -930,6 +940,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          boot_draws=boot_draws, boot_method=boot_method, CI=CI,
                                          save=save, allow_na=allow_na, allow_nan=allow_nan,
                                          save_results=save_results,
+                                         store_warning_seeds=store_warning_seeds,
                                          save_results_out_rootdir=out_rootdir,
                                          save_results_dirname=save_results_dirname,
                                          save_seeds=save_seeds, summarise_asis=summarise_asis,
@@ -956,6 +967,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             boot_method=boot_method, boot_draws=boot_draws, CI=CI,
                             save=save, allow_na=allow_na, allow_nan=allow_nan,
                             save_results=save_results,
+                            store_warning_seeds=store_warning_seeds,
                             save_results_out_rootdir = out_rootdir,
                             save_results_dirname=save_results_dirname,
                             save_seeds=save_seeds, summarise_asis=summarise_asis,
@@ -972,6 +984,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             Result_list[[i]] <- data.frame(design[i, ], as.list(tmp),
                                            check.names=FALSE)
             attr(Result_list[[i]], 'error_seeds') <- attr(tmp, 'error_seeds')
+            attr(Result_list[[i]], 'warning_seeds') <- attr(tmp, 'warning_seeds')
             Result_list[[i]]$SIM_TIME <- proc.time()[3L] - time0
             Result_list[[i]]$COMPLETED <- date()
             if(save || save_results)
@@ -999,7 +1012,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(is.list(Result_list[[1L]][[1L]]))
             for(i in seq_len(length(Result_list)))
                 attr(Result_list[[i]][[1L]], 'try_errors') <-
-            attr(Result_list[[i]][[1L]], 'try_error_seeds') <- NULL
+                attr(Result_list[[i]][[1L]], 'try_error_seeds') <-
+                attr(Result_list[[i]][[1L]], 'warning_seeds') <- NULL
         if(nrow(design) == 1L) Result_list <- Result_list[[1L]]
         return(Result_list)
     }
@@ -1009,6 +1023,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     error_seeds <- data.frame(do.call(cbind, lapply(1L:length(Result_list), function(x){
         ret <- attr(Result_list[[x]], "error_seeds")
+        if(length(ret) == 0L || nrow(ret) == 0L) return(NULL)
+        rownames(ret) <- paste0("Design_row_", x, '.', 1L:nrow(ret), ": ",
+                                rownames(ret))
+        t(ret)
+    })))
+    warning_seeds <- data.frame(do.call(cbind, lapply(1L:length(Result_list), function(x){
+        ret <- attr(Result_list[[x]], "warning_seeds")
         if(length(ret) == 0L || nrow(ret) == 0L) return(NULL)
         rownames(ret) <- paste0("Design_row_", x, '.', 1L:nrow(ret), ": ",
                                 rownames(ret))
@@ -1081,6 +1102,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       number_of_conditions = nrow(design),
                                       date_completed = date(), total_elapsed_time = sum(Final$SIM_TIME),
                                       error_seeds=dplyr::as_tibble(error_seeds),
+                                      warning_seeds=dplyr::as_tibble(warning_seeds),
                                       stored_results = if(store_results) stored_Results_list else NULL)
     if(dummy_run) Final$dummy_run <- NULL
     class(Final) <- c('SimDesign', class(Final))

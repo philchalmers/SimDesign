@@ -12,14 +12,15 @@ SimExtract(object, what)
 \item{what}{character indicating what information to extract. Possible inputs
 include \code{'errors'} to return a \code{tibble} object containing counts of any
 error messages, \code{'warnings'} to return a \code{data.frame} object containing
-counts of any warning messages, \code{'error_seeds'} to extract the associated
-\code{.Random.seed} values associated with the ERROR messages, and \code{'results'}
-to extract the simulation results if the option \code{store_results} was passed to
-\code{\link{runSimulation}}}
+counts of any warning messages, \code{'error_seeds'} and \code{'warning_seeds'}
+to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
+and \code{'results'} to extract the simulation results if the option \code{store_results} was passed to
+\code{\link{runSimulation}}. Note that \code{'warning_seeds'} are not stored automatically in
+simulations and require passing \code{store_warning_seeds = TRUE} to \code{\link{runSimulation}}.}
 }
 \description{
 Function used to extract any error or warnings messages, the seeds associated
-with any error messages, and any analysis results that were stored in the
+with any error or warning messages, and any analysis results that were stored in the
 final simulation object.
 }
 \examples{
