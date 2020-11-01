@@ -34,6 +34,7 @@ Suggests:
     copula,
     extraDistr,
     RPushbullet,
+    renv,
     rmarkdown
 License: GPL (>=2)
 ByteCompile: yes
