@@ -239,10 +239,16 @@ Default randomly generates seeds within the range 1 to 2147483647 for each condi
   Default is \code{TRUE}}
 
 \item{store_results}{logical; store the complete tables of simulation results
-in the returned object? This is \code{FALSE} by default to help avoid RAM
-issues (see \code{save_results} as a more suitable alternative). To extract these results
-pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
-of all the simulation results for each condition}
+  in the returned object? This is \code{FALSE} by default to help avoid RAM
+  issues (see \code{save_results} as a more suitable alternative). However, if the \code{Design}
+  object is omitted from the call to \code{runSimulation()}, or the number of rows in \code{Design}
+  is exactly 1, then this argument is automatically set to \code{TRUE} as RAM storage will no
+  longer be an issue.
+
+  To extract these results
+  pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
+  of all the simulation results for each condition if \code{nrow(Design) > 1}; otherwise, if
+  \code{nrow(Design) == 1} or \code{Design} was missing the \code{results} object will be stored as-is}
 
 \item{store_warning_seeds}{logical; in addition to storing the \code{.Random.seed} states whenever error messages
   are raised, also store the \code{.Random.seed} states when warnings are raised? This is disabled by default

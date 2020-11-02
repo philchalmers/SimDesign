@@ -375,9 +375,15 @@
 #'
 #' @param store_results logical; store the complete tables of simulation results
 #'   in the returned object? This is \code{FALSE} by default to help avoid RAM
-#'   issues (see \code{save_results} as a more suitable alternative). To extract these results
+#'   issues (see \code{save_results} as a more suitable alternative). However, if the \code{Design}
+#'   object is omitted from the call to \code{runSimulation()}, or the number of rows in \code{Design}
+#'   is exactly 1, then this argument is automatically set to \code{TRUE} as RAM storage will no
+#'   longer be an issue.
+#'
+#'   To extract these results
 #'   pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
-#'   of all the simulation results for each condition
+#'   of all the simulation results for each condition if \code{nrow(Design) > 1}; otherwise, if
+#'   \code{nrow(Design) == 1} or \code{Design} was missing the \code{results} object will be stored as-is
 #'
 #' @param stop_on_fatal logical; should the simulation be terminated immediately when
 #'   the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
@@ -756,7 +762,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         design <- data.frame(dummy_run=NA)
         dummy_run <- TRUE
     }
-    if(nrow(design) == 1L) verbose <- FALSE
+    if(nrow(design) == 1L){
+        verbose <- FALSE
+        store_results <- TRUE
+    }
     stopifnot(!missing(replications))
     replications <- as.integer(replications)
     if(!is.null(seed))
