@@ -101,6 +101,8 @@ extract_results <- function(object){
     if(is.null(extra_info$stored_results)) return(NULL)
     design_names <- attr(object, "design_names")
     pick <- design_names$design
+    if(all(pick == 'dummy_run'))
+        return(extra_info$stored_results[[1L]])
     design <- subset(as.data.frame(object), select=pick)
     nms <- colnames(design)
     nms2 <- matrix(character(0L), nrow(design), ncol(design))
