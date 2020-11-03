@@ -72,8 +72,9 @@ Attach <- function(condition, check = TRUE, attach_listone = TRUE){
     envir <- as.environment(-1L)
     if(check)
         if(any(ls(envir = envir) %in% names(condition)))
-            stop(sprintf('Using Attach() will mask the previously defined variable(s): %s)',
-                         ls(envir = envir)[ls(envir = envir) %in% names(condition)]), call. = FALSE)
+            stop(sprintf('Using Attach() will mask the previously defined variable(s): %s',
+                         paste(ls(envir = envir)[ls(envir = envir) %in% names(condition)], collapse=' ')),
+                         call. = FALSE)
     for(n in names(condition)){
         if(attach_listone && is.list(condition[[n]]) && length(condition[[n]]) == 1L){
             assign(n, condition[[n]][[1L]], envir = envir)
