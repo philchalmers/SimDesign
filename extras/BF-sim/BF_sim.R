@@ -48,11 +48,11 @@ Generate <- function(condition, fixed_objects = NULL) {
         N1 <- N * 1/3
         N2 <- N - N1
     }
-    dv <- switch(as.character(distribution),
-                  Gaussian = c(rnorm(N1, sd = sd1), rnorm(N2, sd = sd2)),
-                  t4 = c(rt(N1, df = 4), rt(N2, df = 4)),
-                  Chi4 = c(rchisq(N1, df = 4), rchisq(N2, df = 4)),
-                  Cauchy = c(rcauchy(N1), rcauchy(N2))
+    dv <- switch(distribution,
+                 Gaussian = c(rnorm(N1, sd = sd1), rnorm(N2, sd = sd2)),
+                 t4 = c(rt(N1, df = 4), rt(N2, df = 4)),
+                 Chi4 = c(rchisq(N1, df = 4), rchisq(N2, df = 4)),
+                 Cauchy = c(rcauchy(N1), rcauchy(N2))
     )
     dat <- data.frame(DV=dv,
                       group=c(rep('G1', N1), rep('G2', N2)))
@@ -84,7 +84,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 res <- runSimulation(design=Design, replications=1000, parallel=TRUE,
                      generate=Generate, analyse=Analyse,
                      summarise=Summarise, packages='lawstat',
-                     save=TRUE, filename='BF_simulation')
+                     filename='BF_simulation')
 res
 
 TypeI <- subset(res, var_ratio == 1)

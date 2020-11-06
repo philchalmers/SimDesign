@@ -164,9 +164,9 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 # run simulation
 res <- runSimulation(design=Design, replications=500, generate=Generate,
-                     analyse=Analyse, summarise=Summarise, max_errors=100,
-                     packages='lavaan', parallel=TRUE, save=TRUE,
-                     filename='FloraCurran2004', save_results=TRUE)
+                     analyse=Analyse, summarise=Summarise, packages='lavaan', 
+                     parallel=TRUE, max_errors=100, save_results=TRUE,
+                     filename='FloraCurran2004')
 res
 ```
 

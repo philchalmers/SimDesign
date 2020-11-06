@@ -58,8 +58,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 # save results to the drive
 res <- runSimulation(design=Design, replications=5000, generate=Generate,
                      analyse=Analyse, summarise=Summarise, parallel=TRUE,
-                     packages = 'lawstat', save=TRUE,
-                     filename='Nordstokke_Zumbo2007')
+                     packages='lawstat', filename='Nordstokke_Zumbo2007')
 res
 ```
 
