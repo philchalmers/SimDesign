@@ -1134,6 +1134,7 @@ summary.SimDesign <- function(object, ...){
     ret$total_elapsed_time <- timeFormater(ret$total_elapsed_time, TRUE)
     ret$stored_results <- NULL
     ret$error_seeds <- NULL
+    ret$warning_seeds <- NULL
     ret
 }
 
