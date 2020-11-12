@@ -55,8 +55,8 @@
 #' SimClean(results = TRUE, save_details = list(save_results_dirname = 'mydir'))
 #'
 #' }
-SimClean <- function(..., dirs = NULL, generate_data = FALSE, results = FALSE,
-                     seeds = FALSE, temp = FALSE, save_details = list()){
+SimClean <- function(..., dirs = NULL, temp = TRUE, generate_data = FALSE, results = FALSE,
+                     seeds = FALSE, save_details = list()){
     compname <- save_details$compname; tmpfilename <- save_details$tmpfilename
     out_rootdir <- save_details$out_rootdir
     if(!is.null(out_rootdir)){

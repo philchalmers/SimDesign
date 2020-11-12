@@ -7,10 +7,10 @@
 SimClean(
   ...,
   dirs = NULL,
+  temp = TRUE,
   generate_data = FALSE,
   results = FALSE,
   seeds = FALSE,
-  temp = FALSE,
   save_details = list()
 )
 }
@@ -21,6 +21,8 @@ and \code{filename} inputs to \code{\link{runSimulation}}}
 
 \item{dirs}{a character vector indicating which directories to remove}
 
+\item{temp}{logical; remove the temporary file saved when passing \code{save = TRUE}?}
+
 \item{generate_data}{logical; remove the \code{.rds} data-set files
 saved when passing \code{save_generate_data = TRUE}?}
 
@@ -29,8 +31,6 @@ saved when passing \code{save_results = TRUE}?}
 
 \item{seeds}{logical; remove the seed files
 saved when passing \code{save_seeds = TRUE}?}
-
-\item{temp}{logical; remove the temporary file saved when passing \code{save = TRUE}?}
 
 \item{save_details}{a list pertaining to information about how and where files were saved
 (see the corresponding list in \code{\link{runSimulation}})}
