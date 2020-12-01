@@ -22,7 +22,11 @@
 #' @param results (optional) the results of \code{\link{runSimulation}} when no
 #'   \code{summarise} function was provided. Can be either a \code{matrix}, indicating
 #'   that exactly one design condition was evaluated, or a \code{list} of \code{matrix}
-#'   objects indicating that multiple conditions were performed with no summarise evaluation
+#'   objects indicating that multiple conditions were performed with no summarise evaluation.
+#'
+#'   Alternatively, if \code{store_results = TRUE} in the \code{runSimulation()} execution then
+#'   the final SimDesign object may be passed, where the generate-analyse information will be
+#'   extracted from the object instead
 #'
 #' @param Design (optional) if \code{results} input used, and design condition information
 #'   important in the summarise step, then the original \code{design} object from
@@ -110,10 +114,35 @@
 #' res <- reSummarise(Summarise, results=results, boot_method = 'basic')
 #' res
 #'
+#' ###
+#' # Also similar, but storing the results within the summarised simulation
+#'
+#' Summarise <- function(condition, results, fixed_objects = NULL){
+#'     ret <- c(mu=mean(results), SE=sd(results))
+#'     ret
+#' }
+#'
+#' res <- runSimulation(design=Design, replications=50, store_results = TRUE,
+#'                      generate=Generate, analyse=Analyse, summarise=Summarise)
+#' res
+#'
+#' # internal results stored
+#' results <- SimExtract(res, what = 'results')
+#' str(results)
+#'
+#' # pass SimDesign object to results
+#' res <- reSummarise(Summarise, results=res, boot_method = 'basic')
+#' res
+#'
 reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Design = NULL,
                         fixed_objects = NULL, boot_method = 'none', boot_draws = 1000L, CI = .95){
     if(!is.null(results)){
         read_files <- FALSE
+        if(is(results, 'SimDesign')){
+            old_results <- results
+            Design <- SimExtract(results, 'Design')
+            results <- SimExtract(results, 'results')
+        }
         if(!is.list(results)) results <- list(results)
         files <- 1L:length(results)
     } else {
