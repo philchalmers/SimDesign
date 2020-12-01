@@ -24,7 +24,7 @@
 #'   that exactly one design condition was evaluated, or a \code{list} of \code{matrix}
 #'   objects indicating that multiple conditions were performed with no summarise evaluation
 #'
-#' @param design (optional) if \code{results} input used, and design condition information
+#' @param Design (optional) if \code{results} input used, and design condition information
 #'   important in the summarise step, then the original \code{design} object from
 #'   \code{\link{runSimulation}} should be included
 #'

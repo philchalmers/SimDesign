@@ -33,6 +33,10 @@ located within \code{dir} will be used}
 that exactly one design condition was evaluated, or a \code{list} of \code{matrix}
 objects indicating that multiple conditions were performed with no summarise evaluation}
 
+\item{Design}{(optional) if \code{results} input used, and design condition information
+important in the summarise step, then the original \code{design} object from
+\code{\link{runSimulation}} should be included}
+
 \item{fixed_objects}{(optional) see \code{\link{runSimulation}} for details}
 
 \item{boot_method}{method for performing non-parametric bootstrap confidence intervals
@@ -43,10 +47,6 @@ See \code{\link{runSimulation}} for details}
 function after the generate-analyse replications are collected. Default is 1000}
 
 \item{CI}{bootstrap confidence interval level (default is 95\%)}
-
-\item{design}{(optional) if \code{results} input used, and design condition information
-important in the summarise step, then the original \code{design} object from
-\code{\link{runSimulation}} should be included}
 }
 \description{
 When \code{runSimulation()} uses the option \code{save_results = TRUE}
