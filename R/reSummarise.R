@@ -19,6 +19,15 @@
 #' @param files (optional) names of files to read-in. If \code{NULL} all files
 #'   located within \code{dir} will be used
 #'
+#' @param results (optional) the results of \code{\link{runSimulation}} when no
+#'   \code{summarise} function was provided. Can be either a \code{matrix}, indicating
+#'   that exactly one design condition was evaluated, or a \code{list} of \code{matrix}
+#'   objects indicating that multiple conditions were performed with no summarise evaluation
+#'
+#' @param design (optional) if \code{results} input used, and design condition information
+#'   important in the summarise step, then the original \code{design} object from
+#'   \code{\link{runSimulation}} should be included
+#'
 #' @param fixed_objects (optional) see \code{\link{runSimulation}} for details
 #'
 #' @param boot_method method for performing non-parametric bootstrap confidence intervals
@@ -46,8 +55,6 @@
 #'
 #' @examples
 #'
-#' \dontrun{
-#'
 #' Design <- data.frame(N = c(10, 20, 30))
 #'
 #' Generate <- function(condition, fixed_objects = NULL) {
@@ -72,8 +79,6 @@
 #'     ret
 #' }
 #'
-#' SimClean('SimDesign-results.rds')
-#'
 #' res <- reSummarise(Summarise, dir = 'simresults/')
 #' res
 #'
@@ -85,39 +90,81 @@
 #' res2
 #'
 #' SimClean('simresults/')
+#'
 #' }
+#'
+#' ###
+#' # similar to above, but using objects defined in workspace
+#' results <- runSimulation(design=Design, replications=50,
+#'                          generate=Generate, analyse=Analyse)
+#' str(results)
+#'
+#' Summarise <- function(condition, results, fixed_objects = NULL){
+#'     ret <- c(mu=mean(results), SE=sd(results))
+#'     ret
 #' }
-reSummarise <- function(summarise, dir = NULL, files = NULL, fixed_objects = NULL,
-                        boot_method = 'none', boot_draws = 1000L, CI = .95){
-    current_wd <- getwd()
-    on.exit(setwd(current_wd))
-    if(!is.null(dir)) setwd(dir)
-    if(is.null(files)) files <- dir()
-    expect_filenames <- paste0(paste0('results-row-'), 1L:length(files), '.rds')
-    if(!all(files %in% expect_filenames))
-        stop('Filenames in select directory did not follow the \'results-row-#\' pattern. Please fix')
+#'
+#' res <- reSummarise(Summarise, results=results, Design=Design)
+#' res
+#'
+#' res <- reSummarise(Summarise, results=results, boot_method = 'basic')
+#' res
+#'
+reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Design = NULL,
+                        fixed_objects = NULL, boot_method = 'none', boot_draws = 1000L, CI = .95){
+    if(!is.null(results)){
+        read_files <- FALSE
+        if(!is.list(results)) results <- list(results)
+        files <- 1L:length(results)
+    } else {
+        read_files <- TRUE
+        current_wd <- getwd()
+        on.exit(setwd(current_wd))
+        if(!is.null(dir)) setwd(dir)
+        if(is.null(files)) files <- dir()
+        expect_filenames <- paste0(paste0('results-row-'), 1L:length(files), '.rds')
+        if(!all(files %in% expect_filenames))
+            stop('Filenames in select directory did not follow the \'results-row-#\' pattern. Please fix')
+    }
     res <- vector('list', length(files))
     conditions <- vector('list', length(files))
 
     for(i in 1L:length(files)){
-        inp <- readRDS(files[i])
-        conditions[[i]] <- inp$condition
-        summ <- try(summarise(condition=inp$condition, results=inp$results,
-                          fixed_objects=fixed_objects))
-        if(is(summ, 'try-error'))
-            stop(sprintf("File \'%s\' threw an error in the summarise() function", files[i]))
+        if(read_files){
+            inp <- readRDS(files[i])
+            conditions[[i]] <- inp$condition
+            summ <- try(summarise(condition=inp$condition, results=inp$results,
+                              fixed_objects=fixed_objects))
+            if(is(summ, 'try-error'))
+                stop(sprintf("File \'%s\' threw an error in the summarise() function", files[i]))
+        } else {
+            summ <- try(summarise(condition=Design[i,], results=results[[i]],
+                                  fixed_objects=fixed_objects))
+            if(is(summ, 'try-error'))
+                stop(sprintf("Results objec \'%s\' threw an error in the summarise() function", files[i]))
+        }
+
         res[[i]] <- try(sim_results_check(summ))
         if(is(res[[i]], 'try-error'))
             stop(sprintf("File \'%s\' did not return a valid summarise() output", files[i]))
         if(boot_method != 'none'){
-            CIs <- SimBoot(inp$results, summarise=summarise, condition=inp$condition,
-                           fixed_objects=inp$fixed_objects,
-                           boot_method=boot_method,
-                           boot_draws=boot_draws, CI=CI)
+            CIs <- if(read_files){
+                SimBoot(inp$results, summarise=summarise, condition=inp$condition,
+                        fixed_objects=if(is.null(fixed_objects)) inp$fixed_objects else fixed_objects,
+                        boot_method=boot_method,
+                        boot_draws=boot_draws, CI=CI)
+            } else {
+                SimBoot(results[[i]], summarise=summarise, condition=Design[i,],
+                        fixed_objects=fixed_objects, boot_method=boot_method,
+                        boot_draws=boot_draws, CI=CI)
+            }
             res[[i]] <- c(res[[i]], CIs)
         }
     }
-    res <- cbind(plyr::rbind.fill(conditions), do.call(rbind, res))
-    res$REPLICATION <- res$ID <- NULL
+    if(read_files){
+        res <- cbind(plyr::rbind.fill(conditions), do.call(rbind, res))
+        res$REPLICATION <- res$ID <- NULL
+    } else
+        res <- cbind(Design, do.call(rbind, res))
     dplyr::as_tibble(res)
 }
