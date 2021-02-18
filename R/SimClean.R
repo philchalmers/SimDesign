@@ -10,8 +10,8 @@
 #'
 #' @param dirs a character vector indicating which directories to remove
 #'
-#' @param generate_data logical; remove the \code{.rds} data-set files
-#'   saved when passing \code{save_generate_data = TRUE}?
+# @param generate_data logical; remove the \code{.rds} data-set files
+#   saved when passing \code{save_generate_data = TRUE}?
 #'
 #' @param results logical; remove the \code{.rds} results files
 #'   saved when passing \code{save_results = TRUE}?
@@ -48,15 +48,13 @@
 #' # remove default temp file
 #' SimClean(temp = TRUE)
 #'
-#' # remove default saved-data directory
-#' SimClean(generate_data = TRUE)
-#'
 #' # remove customized saved-results directory called 'mydir'
 #' SimClean(results = TRUE, save_details = list(save_results_dirname = 'mydir'))
 #'
 #' }
-SimClean <- function(..., dirs = NULL, temp = TRUE, generate_data = FALSE, results = FALSE,
+SimClean <- function(..., dirs = NULL, temp = TRUE, results = FALSE,
                      seeds = FALSE, save_details = list()){
+    generate_data <- FALSE
     compname <- save_details$compname; tmpfilename <- save_details$tmpfilename
     out_rootdir <- save_details$out_rootdir
     if(!is.null(out_rootdir)){
