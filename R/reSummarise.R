@@ -151,8 +151,8 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
         on.exit(setwd(current_wd))
         if(!is.null(dir)) setwd(dir)
         if(is.null(files)) files <- dir()
-        expect_filenames <- paste0(paste0('results-row-'), 1L:length(files), '.rds')
-        if(!all(files %in% expect_filenames))
+        expect_filenames <- 'results-row-'
+        if(!all(grepl(expect_filenames, files)))
             stop('Filenames in select directory did not follow the \'results-row-#\' pattern. Please fix')
     }
     res <- vector('list', length(files))
