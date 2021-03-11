@@ -97,7 +97,7 @@
 #' hist(dat, 100)
 #'
 #' #------------------------------------------------------
-#' # sample from wonky (and non-normed) pdf, like below
+#' # sample from wonky (and non-normalized) density function, like below
 #' df <- function(x){
 #'     ret <- numeric(length(x))
 #'     ret[x <= .5] <- dnorm(x[x <= .5])
@@ -147,10 +147,11 @@ rejectionSampling <- function(n, df, dg, rg, M = NULL, returnM = FALSE,
     npar <- length(rg(1L))
     multipar <- npar > 1L
     df_dg <- function(y) df(y) / dg(y)
+    log.df_dg <- function(y) log(df(y)) - log(dg(y))
     if(is.null(M)){
         if(!multipar){
-            M <- try(optimize(df_dg, interval = c(0,1),
-                              maximum = TRUE)$objective, TRUE)
+            M <- try(exp(optimize(log.df_dg, interval = c(0,1),
+                              maximum = TRUE)$objective), TRUE)
             if(is(M, "try-error"))
                 stop(c("Optimizer could not find suitable maximum for M input. ",
                        "Please explicitly provide a value for M"))
@@ -164,11 +165,11 @@ rejectionSampling <- function(n, df, dg, rg, M = NULL, returnM = FALSE,
 
     while(n.remaining != 0L) {
         y <- if(vectorized) rg(n.remaining) else rg(1L)
-        u <- if(vectorized) runif(n.remaining, 0, 1) else runif(1L, 0, 1)
+        u <- log(if(vectorized) runif(n.remaining, 0, 1) else runif(1L, 0, 1))
         pick <- if(multipar){
             y <- matrix(y, ncol = npar)
-            u <= apply(y, MARGIN = 1L, function(y, M) df(y)/(M * dg(y)), M=M)
-        } else u <= df(y)/(M * dg(y))
+            u <= apply(y, MARGIN = 1L, function(y, M) log(df(y)) - log(M * dg(y)), M=M)
+        } else u <= log(df(y)) - log(M * dg(y))
         sumpick <- sum(pick)
         if(sumpick >= 1L){
             if(multipar){

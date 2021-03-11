@@ -93,7 +93,7 @@ dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg)
 hist(dat, 100)
 
 #------------------------------------------------------
-# sample from wonky (and non-normed) pdf, like below
+# sample from wonky (and non-normalized) density function, like below
 df <- function(x){
     ret <- numeric(length(x))
     ret[x <= .5] <- dnorm(x[x <= .5])
