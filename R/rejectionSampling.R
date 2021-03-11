@@ -196,7 +196,7 @@ rejectionSampling <- function(n, df, dg, rg, M = NULL,
         }
         if(ESRS){
             iter <- iter + 1L
-            if(iter > 100)
+            if( (vectorized & iter > 100) || (!vectorized && iter > 100*n))
                 stop('ESRS estimate not stable. Final value of M:', exp(logM))
             logM <- max(c(logM, log_diff + logM))
         }
