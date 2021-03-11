@@ -4,7 +4,16 @@
 \alias{rejectionSampling}
 \title{Rejection sampling (i.e., accept-reject method) to draw samples from difficult probability density functions}
 \usage{
-rejectionSampling(n, df, dg, rg, M = NULL, returnM = FALSE, vectorized = TRUE)
+rejectionSampling(
+  n,
+  df,
+  dg,
+  rg,
+  M = NULL,
+  ESRS = FALSE,
+  returnM = FALSE,
+  vectorized = TRUE
+)
 }
 \arguments{
 \item{n}{number of samples to draw}
@@ -32,6 +41,10 @@ minimize the number of discarded draws. By default, \code{M} is computed
 internally by finding the maximum of the ratio \code{df(x) / dg(x)} within the
 range [0,1]. When both \code{df} and \code{dg} are true probability density functions
 (i.e., integrate to 1) then the acceptance probability is equal to 1/M}
+
+\item{ESRS}{logical; instead of estimating M or providing a constant, estimate this
+value through the rejection sequence using the "Empirical Supremum Rejection Sampling"
+method?}
 
 \item{returnM}{logical; return the value of \code{M} located from the internal
 optimization results?}
@@ -101,7 +114,7 @@ df <- function(x){
     ret
 }
 y <- seq(-5,5, length.out = 1000)
-plot(y, df(y), type = 'l', main = "pdf to sample")
+plot(y, df(y), type = 'l', main = "Function to sample from")
 
 # choose dg/rg functions that have support within the range [-inf, inf]
 rg <- function(n) rnorm(n, sd=2)
