@@ -44,7 +44,8 @@ range [0,1]. When both \code{df} and \code{dg} are true probability density func
 
 \item{ESRS}{logical; instead of estimating M or providing a constant, estimate this
 value through the rejection sequence using the "Empirical Supremum Rejection Sampling"
-method?}
+method? Using this returns the last estimated M value after performing the samples,
+which should be supplied on the next run of the rejection sampler}
 
 \item{returnM}{logical; return the value of \code{M} located from the internal
 optimization results?}
@@ -94,14 +95,17 @@ hist(rbeta(10000, 2.7, 6.3), 100) # compare
 # when df and dg both integrate to 1, acceptance probability = 1/M
 rejectionSampling(df=df, dg=dg, rg=rg, returnM=TRUE)
 
-# user supplied M. Here, M = 4, indicating 25\% acceptance rate
+# obtain empirical estimate of M via ESRS method
+rejectionSampling(1000, df=df, dg=dg, rg=rg, ESRS=TRUE)
+
+# User supplied M. Here, M = 4, indicating 1/M = 25\% acceptance rate
 dat2 <- rejectionSampling(10000, df=df, dg=dg, rg=rg, M=4)
 hist(dat2, 100)
 
 # generate using better support function (here, Y ~ beta(2,6))
 dg <- function(x) dbeta(x, shape1 = 2, shape2 = 6)
 rg <- function(n) rbeta(n, shape1 = 2, shape2 = 6)
-rejectionSampling(10000, df=df, dg=dg, rg=rg, returnM=TRUE) # more efficient
+rejectionSampling(10000, df=df, dg=dg, rg=rg, returnM=TRUE) # more efficient M
 dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg)
 hist(dat, 100)
 
@@ -150,6 +154,9 @@ plot(dat)
 
 }
 \references{
+Caffo, B. S., Booth, J. G., and Davison, A. C. (2002). Empirical supremum rejection sampling.
+  \code{Biometrika}, 89, 745--754.
+
 Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 \doi{10.20982/tqmp.16.4.p248}
