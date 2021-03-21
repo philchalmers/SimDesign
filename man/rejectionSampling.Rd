@@ -9,12 +9,13 @@ rejectionSampling(
   df,
   dg,
   rg,
-  M = NULL,
+  M,
+  method = "optimize",
   interval = NULL,
-  ESRS = FALSE,
-  printM = TRUE,
+  logfuns = TRUE,
   vectorized = TRUE,
-  maxM = 1e+05
+  maxM = 1e+05,
+  parstart = rg(1L)
 )
 }
 \arguments{
@@ -22,14 +23,16 @@ rejectionSampling(
 
 \item{df}{the desired (potentially un-normed) probability density function to
 draw samples from. Must be in the form of a \code{function} with a single input
-corresponding to the values sampled from \code{rg}}
+corresponding to the values sampled from \code{rg}. By default this is assumed to be
+in log-density scale}
 
 \item{dg}{the proxy (potentially un-normed) probability density function to
 draw samples from in lieu of drawing samples from \code{df}. The support for
 this density function should be the same as \code{df}
 (i.e., when \code{df(x) > 0} then \code{dg(x) > 0}).
 Must be in the form of a \code{function} with a single input
-corresponding to the values sampled from \code{rg}}
+corresponding to the values sampled from \code{rg}. By default this is assumed to be
+in log-density scale}
 
 \item{rg}{the proxy random number generation function, associated with \code{dg},
 used to draw samples from in lieu of drawing samples from \code{df}.
@@ -40,21 +43,24 @@ a unique row)}
 
 \item{M}{the upper-bound of the ratio of probability density functions to help
 minimize the number of discarded draws. By default, \code{M} is computed
-internally by finding the maximum of the ratio \code{df(x) / dg(x)} within the
-range [0,1]. When both \code{df} and \code{dg} are true probability density functions
+internally by finding a reasonable maximum of \code{log(df(x)) - log(dg(x))}.
+When both \code{df} and \code{dg} are true probability density functions
 (i.e., integrate to 1) then the acceptance probability is equal to 1/M}
+
+\item{method}{when M is missing the optimization of M is done either by finding the
+mode of the log-density values (\code{"optimize"}) or by using the
+"Empirical Supremum Rejection Sampling"
+method (\code{"ESRS"})}
 
 \item{interval}{interval to search within via the \code{\link{optimize}} function. If
 not specified a sample of 5000 values from the \code{rg} function definition will be
 collected, and the min/max will be obtained via this random sample}
 
-\item{ESRS}{logical; instead of estimating M or providing a constant, estimate this
-value through the rejection sequence using the "Empirical Supremum Rejection Sampling"
-method? Using this returns the last estimated M value after performing the samples,
-which should be supplied on the next run of the rejection sampler}
-
-\item{printM}{logical; print the value of \code{M} located from the internal
-optimization results to the console?}
+\item{logfuns}{logical; have the \code{df} and \code{dg} function been written to
+return log-densities instead of the original densities? The FALSE default assumes
+the original densities are returned, so the scaled likelihood ratio
+\code{U <= f(x) / [M * g(x)]} is used instead of the more numerically accurate
+\code{log(U) <= log(f(x)) - log(g(x)) - log(M)]}}
 
 \item{vectorized}{logical; have the input function been vectorized (i.e., do they
 support a vector of input values rather than only a single sample)? This can
@@ -64,6 +70,9 @@ vectorized instead since these are more efficient when \code{n} is large or
 
 \item{maxM}{logical; if when optimizing M the value is greater than this cut-off
 then stop; ampler would likelihood be too efficient, or optimization is failing}
+
+\item{parstart}{starting value vector for optimization of M in multidimensional
+distributions}
 }
 \value{
 returns a vector or matrix of draws (corresponding to the
@@ -93,72 +102,83 @@ may be required, which decreases the computational efficiency.
 
 # Generate X ~ beta(a,b), where a and b are a = 2.7 and b = 6.3,
 # and the support is Y ~ Unif(0,1)
-df <- function(x) dbeta(x, shape1 = 2.7, shape2 = 6.3)
-dg <- function(x) dunif(x, min = 0, max = 1)
-rg <- function(n) runif(n, min = 0, max = 1)
+dfn <- function(x) dbeta(x, shape1 = 2.7, shape2 = 6.3)
+dgn <- function(x) dunif(x, min = 0, max = 1)
+rgn <- function(n) runif(n, min = 0, max = 1)
 
 # when df and dg both integrate to 1, acceptance probability = 1/M
-dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg)
+M <- rejectionSampling(df=dfn, dg=dgn, rg=rgn, logfuns=FALSE)
+M
+dat <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, M=M, logfuns=FALSE)
 hist(dat, 100)
 hist(rbeta(10000, 2.7, 6.3), 100) # compare
 
 # obtain empirical estimate of M via ESRS method
-dat <- rejectionSampling(1000, df=df, dg=dg, rg=rg, ESRS=TRUE)
-hist(dat, 100)
+M <- rejectionSampling(1000, df=dfn, dg=dgn, rg=rgn,
+                       logfuns=FALSE, method='ESRS')
+M
 
-# User supplied M. Here, M = 4, indicating 1/M = 25\% acceptance rate
-dat2 <- rejectionSampling(10000, df=df, dg=dg, rg=rg, M=4)
-hist(dat2, 100)
-
-# generate using better support function (here, Y ~ beta(2,6))
-dg <- function(x) dbeta(x, shape1 = 2, shape2 = 6)
-rg <- function(n) rbeta(n, shape1 = 2, shape2 = 6)
-dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg) # more efficient M
+# generate using better support function (here, Y ~ beta(2,6)),
+#   and use log setup since it's more numerically accurate
+dfn <- function(x) dbeta(x, shape1 = 2.7, shape2 = 6.3, log = TRUE)
+dgn <- function(x) dbeta(x, shape1 = 2, shape2 = 6, log = TRUE)
+rgn <- function(n) rbeta(n, shape1 = 2, shape2 = 6)
+M <- rejectionSampling(df=dfn, dg=dgn, rg=rgn) # more efficient M
+M
+## Alternative estimation of M
+## M <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, method='ESRS')
+dat <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, M=M)
 hist(dat, 100)
 
 #------------------------------------------------------
 # sample from wonky (and non-normalized) density function, like below
-df <- function(x){
+dfn <- function(x){
     ret <- numeric(length(x))
     ret[x <= .5] <- dnorm(x[x <= .5])
     ret[x > .5] <-  dnorm(x[x > .5]) + dchisq(x[x > .5], df = 2)
     ret
 }
 y <- seq(-5,5, length.out = 1000)
-plot(y, df(y), type = 'l', main = "Function to sample from")
+plot(y, dfn(y), type = 'l', main = "Function to sample from")
 
 # choose dg/rg functions that have support within the range [-inf, inf]
-rg <- function(n) rnorm(n, sd=4)
-dg <- function(x) dnorm(x, sd=4)
+rgn <- function(n) rnorm(n, sd=4)
+dgn <- function(x) dnorm(x, sd=4)
 
 ## example M height from above graphic
 ##  (M selected explicitly to avoid local maximum problems)
 M <- 7.5
-lines(y, dg(y)*M, lty = 2)
-dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg, M=7.5)
+lines(y, dgn(y)*M, lty = 2)
+dat <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, M=7.5,
+                         logfuns=FALSE)
 hist(dat, 100, prob=TRUE)
-lines(density(dat), col = 'red')
+
+# true density (normalized)
+C <- integrate(dfn, -Inf, Inf)$value
+ndfn <- function(x) dfn(x) / C
+curve(ndfn, col='red', lwd=2, add=TRUE)
 
 # same as above, but df not vectorized (much slower)
-df2 <- function(x){
+dfn2 <- function(x){
     ret <- if(x <= .5) dnorm(x)
     else if(x > .5) dnorm(x) + dchisq(x, df = 2)
     ret
 }
 system.time(dat2 <-
-   rejectionSampling(100000, df=df2, dg=dg, rg=rg, vectorized=FALSE))
+   rejectionSampling(100000, df=dfn2, dg=dgn, rg=rgn, M=M,
+      logfuns=FALSE, vectorized=FALSE))
 system.time(dat <-
-   rejectionSampling(100000, df=df, dg=dg, rg=rg))
+   rejectionSampling(100000, df=dfn, dg=dgn, rg=rgn, M=M, logfuns=FALSE))
 
 #-----------------------------------------------------
 # multivariate distribution
-df <- function(x) prod(c(dnorm(x[1]) + dchisq(x[1], df = 5),
-                   dnorm(x[2], -1, 2)))
-rg <- function(n) c(rnorm(n, sd=3), rnorm(n, sd=3))
-dg <- function(x) prod(c(dnorm(x[1], sd=3), dnorm(x[1], sd=3)))
+dfn <- function(x) sum(log(c(dnorm(x[1]) + dchisq(x[1], df = 5),
+                   dnorm(x[2], -1, 2))))
+rgn <- function(n) c(rnorm(n, sd=3), rnorm(n, sd=3))
+dgn <- function(x) sum(log(c(dnorm(x[1], sd=3), dnorm(x[1], sd=3))))
 
-# dat <- rejectionSampling(1L, df=df, dg=dg, rg=rg) # find reasonable M
-dat <- rejectionSampling(5000, df=df, dg=dg, rg=rg, M=5)
+# M <- rejectionSampling(df=dfn, dg=dgn, rg=rgn) # find reasonable M
+dat <- rejectionSampling(5000, df=dfn, dg=dgn, rg=rgn, M=4.6)
 hist(dat[,1], 30)
 hist(dat[,2], 30)
 plot(dat)
