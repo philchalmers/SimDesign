@@ -43,19 +43,35 @@
 #'   range [0,1]. When both \code{df} and \code{dg} are true probability density functions
 #'   (i.e., integrate to 1) then the acceptance probability is equal to 1/M
 #'
+#' @param interval interval to search within via the \code{\link{optimize}} function. If
+#'   not specified a sample of 5000 values from the \code{rg} function definition will be
+#'   collected, and the min/max will be obtained via this random sample
+#'
 #' @param ESRS logical; instead of estimating M or providing a constant, estimate this
 #'   value through the rejection sequence using the "Empirical Supremum Rejection Sampling"
 #'   method? Using this returns the last estimated M value after performing the samples,
 #'   which should be supplied on the next run of the rejection sampler
 #'
-#' @param returnM logical; return the value of \code{M} located from the internal
-#'   optimization results?
+#' @param printM logical; print the value of \code{M} located from the internal
+#'   optimization results to the console?
 #'
 #' @param vectorized logical; have the input function been vectorized (i.e., do they
 #'   support a vector of input values rather than only a single sample)? This can
 #'   be disabled, however it's recommended to redefine the input functions to be
 #'   vectorized instead since these are more efficient when \code{n} is large or
 #'   1/M is small
+#'
+#' @param logfuns logical; have the \code{df} and \code{dg} function been written to
+#'   return log-densities instead of the original densities? The FALSE default assumes
+#'   the original densities are returned, so the scaled likelihood ratio
+#'   \code{U <= f(x) / [M * g(x)]} is used instead of the more numerically accurate
+#'   \code{log(U) <= log(f(x)) - log(g(x)) - log(M)]}
+#'
+#' @param maxM logical; if when optimizing M the value is greater than this cut-off
+#'   then stop; ampler would likelihood be too efficient, or optimization is failing
+#'
+#' @param parstart starting value vector for optimization of M in multidimensional
+#'    distributions
 #'
 #' @return returns a vector or matrix of draws (corresponding to the
 #'   output class from \code{rg}) from the desired \code{df}
@@ -87,15 +103,14 @@
 #' dg <- function(x) dunif(x, min = 0, max = 1)
 #' rg <- function(n) runif(n, min = 0, max = 1)
 #'
+#' # when df and dg both integrate to 1, acceptance probability = 1/M
 #' dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg)
 #' hist(dat, 100)
 #' hist(rbeta(10000, 2.7, 6.3), 100) # compare
 #'
-#' # when df and dg both integrate to 1, acceptance probability = 1/M
-#' rejectionSampling(df=df, dg=dg, rg=rg, returnM=TRUE)
-#'
 #' # obtain empirical estimate of M via ESRS method
-#' rejectionSampling(1000, df=df, dg=dg, rg=rg, ESRS=TRUE)
+#' dat <- rejectionSampling(1000, df=df, dg=dg, rg=rg, ESRS=TRUE)
+#' hist(dat, 100)
 #'
 #' # User supplied M. Here, M = 4, indicating 1/M = 25% acceptance rate
 #' dat2 <- rejectionSampling(10000, df=df, dg=dg, rg=rg, M=4)
@@ -104,8 +119,7 @@
 #' # generate using better support function (here, Y ~ beta(2,6))
 #' dg <- function(x) dbeta(x, shape1 = 2, shape2 = 6)
 #' rg <- function(n) rbeta(n, shape1 = 2, shape2 = 6)
-#' rejectionSampling(10000, df=df, dg=dg, rg=rg, returnM=TRUE) # more efficient M
-#' dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg)
+#' dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg) # more efficient M
 #' hist(dat, 100)
 #'
 #' #------------------------------------------------------
@@ -120,9 +134,14 @@
 #' plot(y, df(y), type = 'l', main = "Function to sample from")
 #'
 #' # choose dg/rg functions that have support within the range [-inf, inf]
-#' rg <- function(n) rnorm(n, sd=2)
-#' dg <- function(x) dnorm(x, sd=2)
-#' dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg)
+#' rg <- function(n) rnorm(n, sd=4)
+#' dg <- function(x) dnorm(x, sd=4)
+#'
+#' ## example M height from above graphic
+#' ##  (M selected explicitly to avoid local maximum problems)
+#' M <- 7.5
+#' lines(y, dg(y)*M, lty = 2)
+#' dat <- rejectionSampling(10000, df=df, dg=dg, rg=rg, M=7.5)
 #' hist(dat, 100, prob=TRUE)
 #' lines(density(dat), col = 'red')
 #'
@@ -144,36 +163,50 @@
 #' rg <- function(n) c(rnorm(n, sd=3), rnorm(n, sd=3))
 #' dg <- function(x) prod(c(dnorm(x[1], sd=3), dnorm(x[1], sd=3)))
 #'
-#' dat <- rejectionSampling(5000, df=df, dg=dg, rg=rg, M=10)
+#' # dat <- rejectionSampling(1L, df=df, dg=dg, rg=rg) # find reasonable M
+#' dat <- rejectionSampling(5000, df=df, dg=dg, rg=rg, M=5)
 #' hist(dat[,1], 30)
 #' hist(dat[,2], 30)
 #' plot(dat)
 #'
 #' }
 #'
-rejectionSampling <- function(n, df, dg, rg, M = NULL,
-                              ESRS = FALSE, returnM = FALSE,
-                              vectorized = TRUE) {
+rejectionSampling <- function(n, df, dg, rg, M = NULL, interval = NULL,
+                              ESRS = FALSE, logfuns = FALSE, printM = TRUE,
+                              vectorized = TRUE, maxM = 1e5, parstart = rg(1L)) {
     stopifnot(!missing(rg))
     stopifnot(!missing(dg))
     stopifnot(!missing(df))
     npar <- length(rg(1L))
     if(!is.null(M))
         logM <- log(M)
+    if(is.null(interval) && npar == 1L){
+        tmp <- rg(5000L)
+        interval <- c(min(tmp), max(tmp))
+        rm(tmp)
+    }
     if(ESRS) logM <- log(1.0001)
     multipar <- npar > 1L
-    df_dg <- function(y) df(y) / dg(y)
-    log.df_dg <- function(y) log(df(y)) - log(dg(y))
+    if(logfuns) log.df_dg <- function(y) df(y) - dg(y)
+    else log.df_dg <- function(y) log(df(y)) - log(dg(y))
     if(is.null(M) && !ESRS){
         if(!multipar){
-            logM <- try(optimize(log.df_dg, interval = c(0,1),
+            logM <- try(optimize(log.df_dg, interval = interval,
                               maximum = TRUE)$objective, TRUE)
             if(is(logM, "try-error"))
                 stop(c("Optimizer could not find suitable maximum for M input. ",
                        "Please explicitly provide a value for M"))
-            if(returnM) return(exp(logM))
-        } else stop("Multivariate functions require M to be specified by the user")
+            if(printM) cat('Optimized M = ', exp(logM))
+        } else {
+            logM <- try(optim(par = parstart, log.df_dg,
+                              control = list(fnscale = -1))$value, TRUE)
+            if(is(logM, "try-error"))
+                stop(c("Optimizer could not find suitable maximum for M input. ",
+                       "Please explicitly provide a value for M"))
+            if(printM) cat('Optimized M = ', exp(logM))
+        }
     }
+    stopifnot(exp(logM) < maxM)
     stopifnot(!missing(n))
     res <- if(multipar) matrix(0, nrow = n, ncol = npar) else numeric(n)
     n.remaining <- n
@@ -185,11 +218,12 @@ rejectionSampling <- function(n, df, dg, rg, M = NULL,
         u <- if(vectorized) runif(n.remaining, 0, 1) else runif(1L, 0, 1)
         pick <- if(multipar){
             y <- matrix(y, ncol = npar)
-            log_diff <- apply(y, MARGIN = 1L,
-                    function(y) log(df(y)) - log(dg(y)) - logM)
+            log_diff <-
+                apply(y, MARGIN = 1L,
+                      function(y) log.df_dg(y) - logM)
             log(u) <= log_diff
         } else {
-            log_diff <- log(df(y)) - log(dg(y)) - logM
+            log_diff <- log.df_dg(y) - logM
             log(u) <= log_diff
         }
         sumpick <- sum(pick)
@@ -208,8 +242,10 @@ rejectionSampling <- function(n, df, dg, rg, M = NULL,
                 stop('ESRS estimate not stable. Final value of M: ',
                      round(exp(logM), 3))
             logM <- max(c(logM, log_diff + logM))
+            stopifnot(exp(logM) < maxM)
         }
     }
-    if(ESRS) return(exp(logM))
+    if(ESRS)
+        if(printM) cat('Optimized M = ', exp(logM))
     res
 }
