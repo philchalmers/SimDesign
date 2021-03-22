@@ -4,7 +4,9 @@
 #' from seemingly difficult, and potentially non-normed, probability density functions by
 #' sampling values from a more manageable proxy distribution. This function is
 #' optimized to work efficiently when the defined functions are vectorized; otherwise,
-#' the accept-reject algorithm will loop over candidate sample-draws in isolation.
+#' the accept-reject algorithm will loop over candidate sample-draws in isolation. Note that by
+#' default all relavent density functions assume that the functions return log-densities for
+#' better numerical behaviour.
 #'
 #' The accept-reject algorithm is a flexible approach to obtaining i.i.d.'s from a
 #' difficult to sample from probability density function (pdf) where either the
@@ -128,43 +130,44 @@
 #'
 #' #------------------------------------------------------
 #' # sample from wonky (and non-normalized) density function, like below
-#' dfn <- function(x){
+#' dfn <- function(x, log=TRUE){
 #'     ret <- numeric(length(x))
 #'     ret[x <= .5] <- dnorm(x[x <= .5])
 #'     ret[x > .5] <-  dnorm(x[x > .5]) + dchisq(x[x > .5], df = 2)
+#'     if(log) ret <- log(ret)
 #'     ret
 #' }
 #' y <- seq(-5,5, length.out = 1000)
-#' plot(y, dfn(y), type = 'l', main = "Function to sample from")
+#' plot(y, dfn(y, log=FALSE), type = 'l', main = "Function to sample from")
 #'
 #' # choose dg/rg functions that have support within the range [-inf, inf]
 #' rgn <- function(n) rnorm(n, sd=4)
-#' dgn <- function(x) dnorm(x, sd=4)
+#' dgn <- function(x, log=TRUE) dnorm(x, sd=4, log=log)
 #'
 #' ## example M height from above graphic
 #' ##  (M selected explicitly to avoid local maximum problems)
 #' M <- 7.5
-#' lines(y, dgn(y)*M, lty = 2)
-#' dat <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, M=7.5,
-#'                          logfuns=FALSE)
+#' lines(y, dgn(y, log=FALSE)*M, lty = 2)
+#' dat <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, M=7.5)
 #' hist(dat, 100, prob=TRUE)
 #'
 #' # true density (normalized)
-#' C <- integrate(dfn, -Inf, Inf)$value
-#' ndfn <- function(x) dfn(x) / C
+#' C <- integrate(dfn, -Inf, Inf, log=FALSE)$value
+#' ndfn <- function(x) dfn(x, log=FALSE) / C
 #' curve(ndfn, col='red', lwd=2, add=TRUE)
 #'
 #' # same as above, but df not vectorized (much slower)
-#' dfn2 <- function(x){
+#' dfn2 <- function(x, log=TRUE){
 #'     ret <- if(x <= .5) dnorm(x)
 #'     else if(x > .5) dnorm(x) + dchisq(x, df = 2)
+#'     if(log) ret <- log(ret)
 #'     ret
 #' }
 #' system.time(dat2 <-
 #'    rejectionSampling(100000, df=dfn2, dg=dgn, rg=rgn, M=M,
-#'       logfuns=FALSE, vectorized=FALSE))
+#'        vectorized=FALSE))
 #' system.time(dat <-
-#'    rejectionSampling(100000, df=dfn, dg=dgn, rg=rgn, M=M, logfuns=FALSE))
+#'    rejectionSampling(100000, df=dfn, dg=dgn, rg=rgn, M=M))
 #'
 #' #-----------------------------------------------------
 #' # multivariate distribution
@@ -220,8 +223,13 @@ rejectionSampling <- function(n, df, dg, rg, M, method = 'optimize',
     n.remaining <- n
     lowest <- 1L
     if(ESRS) iter <- 0L
+    while_iter <- 0L
 
     while(n.remaining != 0L) {
+        while_iter <- while_iter + 1L
+        if(while_iter == 30L)
+            if(n.remaining == n)
+                stop("No sucessful draws computed after 30 iterations")
         y <- if(vectorized) rg(n.remaining) else rg(1L)
         u <- if(vectorized) runif(n.remaining, 0, 1) else runif(1L, 0, 1)
         pick <- if(multipar){
