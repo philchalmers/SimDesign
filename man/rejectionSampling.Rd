@@ -20,21 +20,21 @@ rejectionSampling(
 \arguments{
 \item{n}{number of samples to draw}
 
-\item{df}{the desired (potentially un-normed) probability density function to
-draw samples from. Must be in the form of a \code{function} with a single
-input corresponding to the values sampled from \code{rg}. Function is
-assumed to be vectorized (if not, see \code{\link{Vectorize}})}
+\item{df}{the desired (potentially un-normed) density function to draw
+independent samples from. Must be in the form of a \code{function} with a
+single input corresponding to the values sampled from \code{rg}. Function
+is assumed to be vectorized (if not, see \code{\link{Vectorize}})}
 
-\item{dg}{the proxy (potentially un-normed) probability density function to
-draw samples from in lieu of drawing samples from \code{df}. The support for
-this density function should be the same as \code{df}
+\item{dg}{the proxy (potentially un-normed) density function to
+draw samples from in lieu of drawing samples from \code{df}.
+The support for this density function should be the same as \code{df}
 (i.e., when \code{df(x) > 0} then \code{dg(x) > 0}).
 Must be in the form of a \code{function} with a single input
 corresponding to the values sampled from \code{rg}. Function is
 assumed to be vectorized (if not, see \code{\link{Vectorize}})}
 
 \item{rg}{the proxy random number generation function, associated with
-\code{dg}, used to draw samples from in lieu of drawing samples from \code{df}.
+\code{dg}, used to draw proposal samples from.
 Must be in the form of a \code{function} with a single input corresponding
 to the number of values to draw, while the output can either be a vector
 or a matrix (if a matrix, each independent observation must be stored in
@@ -42,33 +42,35 @@ a unique row). Function is assumed to be vectorized (if not, see
 \code{\link{Vectorize}})}
 
 \item{M}{the upper-bound of the ratio of probability density functions to help
-minimize the number of discarded draws. By default, \code{M} is computed
-internally by finding a reasonable maximum of \code{log(df(x)) - log(dg(x))}.
+minimize the number of discarded draws and define the corresponding
+rescaled proposal envelope. When missing, \code{M} is computed
+internally by finding a reasonable maximum of \code{log(df(x)) - log(dg(x))},
+and this value is returned to the console.
 When both \code{df} and \code{dg} are true probability density functions
-(i.e., integrate to 1) then the acceptance probability is equal to 1/M}
+(i.e., integrate to 1) the acceptance probability is equal to 1/M}
 
-\item{method}{when M is missing the optimization of M is done either by
+\item{method}{when M is missing, the optimization of M is done either by
 finding the mode of the log-density values (\code{"optimize"}) or by
-using the "Empirical Supremum Rejection Sampling"
-method (\code{"ESRS"})}
+using the "Empirical Supremum Rejection Sampling" method (\code{"ESRS"})}
 
-\item{interval}{interval to search within via the \code{\link{optimize}}
-function. If not specified a sample of 5000 values from the \code{rg}
+\item{interval}{when M is missing, for univariate density function draws,
+the interval to search within via \code{\link{optimize}}.
+If not specified, a sample of 5000 values from the \code{rg}
 function definition will be
 collected, and the min/max will be obtained via this random sample}
 
-\item{logfuns}{logical; have the \code{df} and \code{dg} function been written to
-return log-densities instead of the original densities? The FALSE default assumes
-the original densities are returned, so the scaled likelihood ratio
-\code{U <= f(x) / [M * g(x)]} is used instead of the more numerically accurate
-\code{log(U) <= log(f(x)) - log(g(x)) - log(M)]} (use TRUE when high accuracy
-is required)}
+\item{logfuns}{logical; have the \code{df} and \code{dg} function been
+written so as to return log-densities instead of the original densities?
+The FALSE default assumes the original densities are returned
+(use TRUE when higher accuracy is required when generating each density
+definition)}
 
-\item{maxM}{logical; if when optimizing M the value is greater than this cut-off
-then stop; ampler would likelihood be too efficient, or optimization is failing}
+\item{maxM}{logical; if when optimizing M the value is greater than this
+cut-off then stop; ampler would likelihood be too efficient,
+or optimization is failing}
 
-\item{parstart}{starting value vector for optimization of M in multidimensional
-distributions}
+\item{parstart}{starting value vector for optimization of M in
+multidimensional distributions}
 }
 \value{
 returns a vector or matrix of draws (corresponding to the
@@ -76,20 +78,18 @@ returns a vector or matrix of draws (corresponding to the
 }
 \description{
 This function supports the rejection sampling (i.e., accept-reject) approach
-to drawing values from seemingly difficult, and potentially non-normed,
-(probability) density functions by sampling values from a more manageable
-proxy distribution. This function is optimized to work efficiently when
-the defined functions are vectorized; otherwise, the accept-reject algorithm
-will loop over candidate sample-draws in isolation.
+to drawing values from seemingly difficult (probability) density functions
+by sampling values from more manageable proxy distributions.
 }
 \details{
 The accept-reject algorithm is a flexible approach to obtaining i.i.d.'s from
-a difficult to sample from probability density function (pdf) where either the
-transformation method fails or inverse of the cumulative distribution function
-is too difficult to manage. The algorithm does so by sampling from
+a difficult to sample from (probability) density function  where either the
+transformation method fails or inverse transform method is
+difficult to manage. The algorithm does so by sampling from
 a more "well-behaved" proxy distribution (with identical support, up to some
-proportionality constant \code{M}), and accepts the
-draws if they are likely within the proposed pdf. Hence, the closer the
+proportionality constant \code{M} that reshapes the proposal density
+to envelope the target density), and accepts the
+draws if they are likely within the target density. Hence, the closer the
 shape of \code{dg(x)} is to the desired \code{df(x)}, the more likely the draws
 are to be accepted; otherwise, many iterations of the accept-reject algorithm
 may be required, which decreases the computational efficiency.
