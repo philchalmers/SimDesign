@@ -2,7 +2,7 @@
 % Please edit documentation in R/rejectionSampling.R
 \name{rejectionSampling}
 \alias{rejectionSampling}
-\title{Rejection sampling (i.e., accept-reject method) to draw samples from difficult probability density functions}
+\title{Rejection sampling (i.e., accept-reject method)}
 \usage{
 rejectionSampling(
   n,
@@ -13,7 +13,6 @@ rejectionSampling(
   method = "optimize",
   interval = NULL,
   logfuns = TRUE,
-  vectorized = TRUE,
   maxM = 1e+05,
   parstart = rg(1L)
 )
@@ -22,24 +21,27 @@ rejectionSampling(
 \item{n}{number of samples to draw}
 
 \item{df}{the desired (potentially un-normed) probability density function to
-draw samples from. Must be in the form of a \code{function} with a single input
-corresponding to the values sampled from \code{rg}. By default this is assumed to be
-in log-density scale}
+draw samples from. Must be in the form of a \code{function} with a single
+input corresponding to the values sampled from \code{rg}. By default this
+is assumed to be in log-density scale. Function is assumed to be vectorized
+ (if not, see \code{\link{Vectorize}})}
 
 \item{dg}{the proxy (potentially un-normed) probability density function to
 draw samples from in lieu of drawing samples from \code{df}. The support for
 this density function should be the same as \code{df}
 (i.e., when \code{df(x) > 0} then \code{dg(x) > 0}).
 Must be in the form of a \code{function} with a single input
-corresponding to the values sampled from \code{rg}. By default this is assumed to be
-in log-density scale}
+corresponding to the values sampled from \code{rg}. By default this is
+assumed to be in log-density scale. Function is assumed to be
+vectorized (if not, see \code{\link{Vectorize}})}
 
-\item{rg}{the proxy random number generation function, associated with \code{dg},
-used to draw samples from in lieu of drawing samples from \code{df}.
-Must be in the form of a \code{function} with a single input
-corresponding to the number of values to draw, while the output can either
-be a vector or a matrix (if a matrix, each independent observation must be stored in
-a unique row)}
+\item{rg}{the proxy random number generation function, associated with
+\code{dg}, used to draw samples from in lieu of drawing samples from \code{df}.
+Must be in the form of a \code{function} with a single input corresponding
+to the number of values to draw, while the output can either be a vector
+or a matrix (if a matrix, each independent observation must be stored in
+a unique row). Function is assumed to be vectorized (if not, see
+\code{\link{Vectorize}})}
 
 \item{M}{the upper-bound of the ratio of probability density functions to help
 minimize the number of discarded draws. By default, \code{M} is computed
@@ -47,13 +49,14 @@ internally by finding a reasonable maximum of \code{log(df(x)) - log(dg(x))}.
 When both \code{df} and \code{dg} are true probability density functions
 (i.e., integrate to 1) then the acceptance probability is equal to 1/M}
 
-\item{method}{when M is missing the optimization of M is done either by finding the
-mode of the log-density values (\code{"optimize"}) or by using the
-"Empirical Supremum Rejection Sampling"
+\item{method}{when M is missing the optimization of M is done either by
+finding the mode of the log-density values (\code{"optimize"}) or by
+using the "Empirical Supremum Rejection Sampling"
 method (\code{"ESRS"})}
 
-\item{interval}{interval to search within via the \code{\link{optimize}} function. If
-not specified a sample of 5000 values from the \code{rg} function definition will be
+\item{interval}{interval to search within via the \code{\link{optimize}}
+function. If not specified a sample of 5000 values from the \code{rg}
+function definition will be
 collected, and the min/max will be obtained via this random sample}
 
 \item{logfuns}{logical; have the \code{df} and \code{dg} function been written to
@@ -62,34 +65,35 @@ the original densities are returned, so the scaled likelihood ratio
 \code{U <= f(x) / [M * g(x)]} is used instead of the more numerically accurate
 \code{log(U) <= log(f(x)) - log(g(x)) - log(M)]}}
 
-\item{vectorized}{logical; have the input function been vectorized (i.e., do they
-support a vector of input values rather than only a single sample)? This can
-be disabled, however it's recommended to redefine the input functions to be
-vectorized instead since these are more efficient when \code{n} is large or
-1/M is small}
-
 \item{maxM}{logical; if when optimizing M the value is greater than this cut-off
 then stop; ampler would likelihood be too efficient, or optimization is failing}
 
 \item{parstart}{starting value vector for optimization of M in multidimensional
 distributions}
+
+\item{vectorized}{logical; have the input function been vectorized (i.e., do they
+support a vector of input values rather than only a single sample)? This can
+be disabled, however it's recommended to redefine the input functions to be
+vectorized instead since these are more efficient when \code{n} is large or
+1/M is small}
 }
 \value{
 returns a vector or matrix of draws (corresponding to the
   output class from \code{rg}) from the desired \code{df}
 }
 \description{
-This function supports the rejection sampling (i.e., accept-reject) approach to drawing values
-from seemingly difficult, and potentially non-normed, probability density functions by
-sampling values from a more manageable proxy distribution. This function is
-optimized to work efficiently when the defined functions are vectorized; otherwise,
-the accept-reject algorithm will loop over candidate sample-draws in isolation. Note that by
-default all relavent density functions assume that the functions return log-densities for
-better numerical behaviour.
+This function supports the rejection sampling (i.e., accept-reject) approach
+to drawing values from seemingly difficult, and potentially non-normed,
+(probability) density functions by sampling values from a more manageable
+proxy distribution. This function is optimized to work efficiently when
+the defined functions are vectorized; otherwise, the accept-reject algorithm
+will loop over candidate sample-draws in isolation. Note that by
+default all relevant density functions assume that the functions return
+log-densities for better numerical behaviour.
 }
 \details{
-The accept-reject algorithm is a flexible approach to obtaining i.i.d.'s from a
-difficult to sample from probability density function (pdf) where either the
+The accept-reject algorithm is a flexible approach to obtaining i.i.d.'s from
+a difficult to sample from probability density function (pdf) where either the
 transformation method fails or inverse of the cumulative distribution function
 is too difficult to manage. The algorithm does so by sampling from
 a more "well-behaved" proxy distribution (with identical support, up to some
@@ -160,18 +164,6 @@ C <- integrate(dfn, -Inf, Inf, log=FALSE)$value
 ndfn <- function(x) dfn(x, log=FALSE) / C
 curve(ndfn, col='red', lwd=2, add=TRUE)
 
-# same as above, but df not vectorized (much slower)
-dfn2 <- function(x, log=TRUE){
-    ret <- if(x <= .5) dnorm(x)
-    else if(x > .5) dnorm(x) + dchisq(x, df = 2)
-    if(log) ret <- log(ret)
-    ret
-}
-system.time(dat2 <-
-   rejectionSampling(100000, df=dfn2, dg=dgn, rg=rgn, M=M,
-       vectorized=FALSE))
-system.time(dat <-
-   rejectionSampling(100000, df=dfn, dg=dgn, rg=rgn, M=M))
 
 #-----------------------------------------------------
 # multivariate distribution
@@ -190,16 +182,17 @@ plot(dat)
 
 }
 \references{
-Caffo, B. S., Booth, J. G., and Davison, A. C. (2002). Empirical supremum rejection sampling.
-  \code{Biometrika}, 89, 745--754.
+Caffo, B. S., Booth, J. G., and Davison, A. C. (2002). Empirical supremum
+  rejection sampling. \code{Biometrika}, 89, 745--754.
 
-Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
-with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
-\doi{10.20982/tqmp.16.4.p248}
+Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable
+  Monte Carlo Simulations with the SimDesign Package.
+  \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
+  \doi{10.20982/tqmp.16.4.p248}
 
-Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
-Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-\doi{10.1080/10691898.2016.1246953}
+Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics
+  with Monte Carlo simulation. \code{Journal of Statistics Education, 24}(3),
+  136-156. \doi{10.1080/10691898.2016.1246953}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}
