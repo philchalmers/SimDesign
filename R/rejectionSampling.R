@@ -70,6 +70,8 @@
 #' @param parstart starting value vector for optimization of M in
 #'   multidimensional distributions
 #'
+#' @param ESRS_Mstart starting M value for the ESRS algorithm
+#'
 #' @return returns a vector or matrix of draws (corresponding to the
 #'   output class from \code{rg}) from the desired \code{df}
 #'
@@ -120,7 +122,7 @@
 #' M
 #' ## Alternative estimation of M
 #' ## M <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, logfuns=TRUE,
-#'                           method='ESRS')
+#' ##                        method='ESRS')
 #' dat <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, M=M, logfuns=TRUE)
 #' hist(dat, 100)
 #'
@@ -169,7 +171,8 @@
 #'
 rejectionSampling <- function(n, df, dg, rg, M, method = 'optimize',
                               interval = NULL, logfuns = FALSE,
-                              maxM = 1e5, parstart = rg(1L)) {
+                              maxM = 1e5, parstart = rg(1L),
+                              ESRS_Mstart = 1.0001) {
     stopifnot(!missing(rg))
     stopifnot(!missing(dg))
     stopifnot(!missing(df))
@@ -198,7 +201,7 @@ rejectionSampling <- function(n, df, dg, rg, M, method = 'optimize',
                    "Please explicitly provide a value for M"))
         return(exp(logM))
     }
-    logM <- if(ESRS) log(1.0001) else log(M)
+    logM <- if(ESRS) log(ESRS_Mstart) else log(M)
 
     stopifnot(exp(logM) < maxM)
     stopifnot(!missing(n))

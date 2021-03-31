@@ -14,7 +14,8 @@ rejectionSampling(
   interval = NULL,
   logfuns = FALSE,
   maxM = 1e+05,
-  parstart = rg(1L)
+  parstart = rg(1L),
+  ESRS_Mstart = 1.0001
 )
 }
 \arguments{
@@ -71,6 +72,8 @@ or optimization is failing}
 
 \item{parstart}{starting value vector for optimization of M in
 multidimensional distributions}
+
+\item{ESRS_Mstart}{starting M value for the ESRS algorithm}
 }
 \value{
 returns a vector or matrix of draws (corresponding to the
@@ -123,7 +126,7 @@ M <- rejectionSampling(df=dfn, dg=dgn, rg=rgn, logfuns=TRUE) # better M
 M
 ## Alternative estimation of M
 ## M <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, logfuns=TRUE,
-                          method='ESRS')
+##                        method='ESRS')
 dat <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, M=M, logfuns=TRUE)
 hist(dat, 100)
 
