@@ -146,10 +146,11 @@ rgn <- function(n) rnorm(n, sd=4)
 dgn <- function(x) dnorm(x, sd=4)
 
 ## example M height from above graphic
-##  (M selected explicitly to avoid local maximum problems)
-M <- 7.5
+##  (M selected using ESRS to help stochastically avoid local mins)
+M <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, method='ESRS')
+M
 lines(y, dgn(y)*M, lty = 2)
-dat <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, M=7.5)
+dat <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, M=M)
 hist(dat, 100, prob=TRUE)
 
 # true density (normalized)
