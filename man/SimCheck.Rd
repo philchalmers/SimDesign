@@ -16,7 +16,8 @@ This function reads the temporary file saved by \code{\link{runSimulation}}
 by collapsing the information into a suitable (albeit temporary) object of
 class \code{'SimDesign'}. This is useful when taking a quick-peak at how the
 early simulation results are performing (useful long running simulation
-results with many rows in the \code{Design} object).
+results with many rows in the \code{Design} object). Returns a tibble-based
+data.frame object (\code{tbl_df}).
 }
 \examples{
 \dontrun{

@@ -4,7 +4,8 @@
 #' by collapsing the information into a suitable (albeit temporary) object of
 #' class \code{'SimDesign'}. This is useful when taking a quick-peak at how the
 #' early simulation results are performing (useful long running simulation
-#' results with many rows in the \code{Design} object).
+#' results with many rows in the \code{Design} object). Returns a tibble-based
+#' data.frame object (\code{tbl_df}).
 #'
 #' @param file the temp file currently saving the simulation state. If missing
 #'   the file is assumed to be in the current working directory, and start with the
@@ -45,7 +46,6 @@ SimCheck <- function(file){
         files <- dir()
         readRDS(files[grepl(pat, files)][1L])
     } else readRDS(file)
-    ret <- plyr::rbind.fill(input)
-    class(ret) <- c('SimDesign', class(ret))
+    ret <-  dplyr::as_tibble(plyr::rbind.fill(input))
     ret
 }
