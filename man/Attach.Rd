@@ -2,12 +2,13 @@
 % Please edit documentation in R/Attach.R
 \name{Attach}
 \alias{Attach}
-\title{Attach the simulation conditions for easier reference}
+\title{Attach objects for easier reference}
 \usage{
-Attach(condition, check = TRUE, attach_listone = TRUE)
+Attach(..., check = TRUE, attach_listone = TRUE)
 }
 \arguments{
-\item{condition}{a \code{data.frame} or \code{tibble} containing the \code{condition} names}
+\item{...}{a comma separated list of \code{data.frame} or \code{tibble} objects
+containing elements that should be placed in the current working environment}
 
 \item{check}{logical; check to see if the function will accidentally replace previously defined
 variables with the same names as in \code{condition}? Default is \code{TRUE}, which will avoid
@@ -18,18 +19,14 @@ then assign the first element of this list with the associated name. This genera
 adding an often unnecessary list 1 index, such as \code{name <- list[[1L]]}}
 }
 \description{
-This function accepts the \code{condition} object used to indicate the design conditions
-and makes the variable names available in the environment from which it is called. This
-is useful primarily as a convenience function when you prefer to call the variable names
-in \code{condition} directly rather than indexing with \code{condition$sample_size} or
-\code{with(condition, sample_size)}, for example.
-}
-\details{
-The behavior of this function is very similar to \code{\link{attach}},
+The behaviour of this function is very similar to \code{\link{attach}},
 however it is environment specific, and
 therefore only remains defined in a given function rather than in the Global Environment.
 Hence, this function is much safer to use than the \code{\link{attach}}, which
-incidentally should never be used in your code.
+incidentally should never be used in your code. This
+is useful primarily as a convenience function when you prefer to call the variable names
+in \code{condition} directly rather than indexing with \code{condition$sample_size} or
+\code{with(condition, sample_size)}, for example.
 }
 \examples{
 \dontrun{

@@ -1,18 +1,16 @@
-#' Attach the simulation conditions for easier reference
+#' Attach objects for easier reference
 #'
-#' This function accepts the \code{condition} object used to indicate the design conditions
-#' and makes the variable names available in the environment from which it is called. This
+#' The behaviour of this function is very similar to \code{\link{attach}},
+#' however it is environment specific, and
+#' therefore only remains defined in a given function rather than in the Global Environment.
+#' Hence, this function is much safer to use than the \code{\link{attach}}, which
+#' incidentally should never be used in your code. This
 #' is useful primarily as a convenience function when you prefer to call the variable names
 #' in \code{condition} directly rather than indexing with \code{condition$sample_size} or
 #' \code{with(condition, sample_size)}, for example.
 #'
-#' The behavior of this function is very similar to \code{\link{attach}},
-#' however it is environment specific, and
-#' therefore only remains defined in a given function rather than in the Global Environment.
-#' Hence, this function is much safer to use than the \code{\link{attach}}, which
-#' incidentally should never be used in your code.
-#'
-#' @param condition a \code{data.frame} or \code{tibble} containing the \code{condition} names
+#' @param ... a comma separated list of \code{data.frame} or \code{tibble} objects
+#'   containing elements that should be placed in the current working environment
 #'
 #' @param check logical; check to see if the function will accidentally replace previously defined
 #'   variables with the same names as in \code{condition}? Default is \code{TRUE}, which will avoid
@@ -68,19 +66,22 @@
 #' }
 #'
 #' }
-Attach <- function(condition, check = TRUE, attach_listone = TRUE){
+Attach <- function(..., check = TRUE, attach_listone = TRUE){
     envir <- as.environment(-1L)
-    if(check)
-        if(any(ls(envir = envir) %in% names(condition)))
-            stop(sprintf('Using Attach() will mask the previously defined variable(s): %s',
-                         paste(ls(envir = envir)[ls(envir = envir) %in% names(condition)], collapse=' ')),
-                         call. = FALSE)
-    for(n in names(condition)){
-        if(attach_listone && is.list(condition[[n]]) && length(condition[[n]]) == 1L){
-            assign(n, condition[[n]][[1L]], envir = envir)
-            next
+    dots <- list(...)
+    for(i in 1L:length(dots)){
+        if(check)
+            if(any(ls(envir = envir) %in% names(dots[[i]])))
+                stop(sprintf('Using Attach() will mask the previously defined variable(s): %s',
+                             paste(ls(envir = envir)[ls(envir = envir) %in% names(dots[[i]])],
+                                   collapse=' ')), call. = FALSE)
+        for(n in names(dots[[i]])){
+            if(attach_listone && is.list(dots[[i]][[n]]) && length(dots[[i]][[n]]) == 1L){
+                assign(n, dots[[i]][[n]][[1L]], envir = envir)
+                next
+            }
+            assign(n, dots[[i]][[n]], envir = envir)
         }
-        assign(n, condition[[n]], envir = envir)
     }
     invisible()
 }
