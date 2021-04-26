@@ -44,8 +44,19 @@ SimCheck <- function(file){
     pat <- 'SIMDESIGN-TEMPFILE'
     input <- if(missing(file)){
         files <- dir()
-        readRDS(files[grepl(pat, files)][1L])
-    } else readRDS(file)
+        pick <- grepl(pat, files)
+        if(!any(pick)){
+            message("No temporary file found")
+            return(invisible(NULL))
+        }
+        readRDS(files[pick][1L])
+    } else {
+        if(!file.exists(file)){
+            message("file name does not exist")
+            return(invisible(NULL))
+        }
+        readRDS(file)
+    }
     ret <-  dplyr::as_tibble(plyr::rbind.fill(input))
     ret
 }
