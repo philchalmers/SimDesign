@@ -58,5 +58,6 @@ SimCheck <- function(file){
         readRDS(file)
     }
     ret <-  dplyr::as_tibble(plyr::rbind.fill(input))
+    ret <- select(ret, select = !(names(ret) %in% c('ID', 'REPLICATION')))
     ret
 }
