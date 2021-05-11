@@ -1103,7 +1103,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!is.null(filename)) pick <- c(save, pick)
     attr(Final, "ERROR_msg") <- dplyr::as_tibble(ERROR_msg)
     attr(Final, "WARNING_msg") <- dplyr::as_tibble(WARNING_msg)
-    attr(Final, 'extra_info') <- list(sessionInfo = sessionInfo(), packages=pack_vers,
+    attr(Final, 'extra_info') <- list(sessionInfo = sessioninfo::session_info(), packages=pack_vers,
                                       save_info = c(filename=filename,
                                                     save_results_dirname=save_results_dirname,
                                                     save_seeds_dirname=save_seeds_dirname)[pick],
