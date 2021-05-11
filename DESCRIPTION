@@ -5,14 +5,13 @@ Authors@R: c(person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com", ro
                     comment = c(ORCID="0000-0001-5332-2810")),
              person("Matthew", "Sigal", role = c("ctb")),
              person("Ogreden", family="Oguzhan", role = c("ctb")))
-Description: Provides tools to help safely and efficiently organize Monte Carlo simulations in R.
+Description: Provides tools to safely and efficiently organize Monte Carlo simulations in R.
     The package controls the structure and back-end of Monte Carlo simulations
-    by utilizing a general generate-analyse-summarise strategy. The functions provided control
-    common simulation issues such as re-simulating non-convergent results, support parallel
-    back-end and MPI distributed computations, save and restore temporary files,
-    aggregate results across independent nodes, and provide native support for debugging.
-    For a pedagogical introduction to the package refer to 
-    Sigal and Chalmers (2016) <doi:10.1080/10691898.2016.1246953>, and for an in-depth overview of 
+    by utilizing a generate-analyse-summarise workflow strategy. The workflow safeguards against 
+    common simulation issues, such as re-simulating non-convergent results or inadvertantly 
+    overwriting simulation files, and implicilty support parallel processsing.
+    For a pedagogical introduction to the package see
+    Sigal and Chalmers (2016) <doi:10.1080/10691898.2016.1246953>. For a more in-depth overview of 
     the package and its design philosophy see Chalmers and Adkins (2020) <doi:10.20982/tqmp.16.4.p248>.
 VignetteBuilder: knitr
 Depends:
