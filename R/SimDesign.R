@@ -20,7 +20,7 @@
 #' @import foreach methods parallel stats
 #' @importFrom plyr rbind.fill
 #' @importFrom sessioninfo session_info
-#' @importFrom pbapply pblapply
+#' @importFrom pbapply pblapply pboptions
 #' @importFrom dplyr as_tibble
 #' @importFrom utils recover packageVersion sessionInfo head tail capture.output
 #' @keywords package

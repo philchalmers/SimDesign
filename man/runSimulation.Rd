@@ -38,6 +38,7 @@ runSimulation(
   MPI = FALSE,
   save_details = list(),
   progress = TRUE,
+  load_balancing = TRUE,
   verbose = TRUE
 )
 
@@ -316,6 +317,10 @@ in parallel on a cluster? Default is \code{FALSE}}
 \item{progress}{logical; display a progress bar (using the \code{pbapply} package) for each simulation condition?
 This is useful when simulations conditions take a long time to run (see also the \code{notifications} argument).
 Default is \code{TRUE}}
+
+\item{load_balancing}{logical; should load balancing be used in parallel processing
+executions? Default is TRUE for better computational efficiency, though at the
+risk of higher memory usage}
 
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 

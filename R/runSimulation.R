@@ -373,6 +373,10 @@
 #'
 #' @param CI bootstrap confidence interval level (default is 95\%)
 #'
+#' @param load_balancing logical; should load balancing be used in parallel processing
+#'   executions? Default is TRUE for better computational efficiency, though at the
+#'   risk of higher memory usage
+#'
 #' @param store_results logical; store the complete tables of simulation results
 #'   in the returned object? This is \code{FALSE} by default to help avoid RAM
 #'   issues (see \code{save_results} as a more suitable alternative). However, if the \code{Design}
@@ -707,9 +711,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           save = TRUE, store_results = FALSE, store_warning_seeds = FALSE,
                           warnings_as_errors = FALSE, max_errors = 50L,
                           allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = FALSE, MPI = FALSE,
-                          save_details = list(), progress = TRUE, verbose = TRUE)
+                          save_details = list(), progress = TRUE, load_balancing = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
+    pbapply::pboptions(use_lb=load_balancing)
     if(missing(generate) && !missing(analyse))
         generate <- function(condition, dat, fixed_objects = NULL){}
     NA_summarise <- FALSE
@@ -960,6 +965,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
                                          progress=progress, store_results=FALSE, use_try=use_try,
+                                         load_balancing=load_balancing,
                                          stop_on_fatal=stop_on_fatal)
             time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
@@ -987,6 +993,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             load_seed=load_seed, export_funs=export_funs,
                             warnings_as_errors=warnings_as_errors,
                             progress=progress, store_results=store_results, use_try=use_try,
+                            load_balancing=load_balancing,
                             stop_on_fatal=stop_on_fatal)
             if(store_results){
                 stored_Results_list[[i]] <- attr(tmp, 'full_results')
