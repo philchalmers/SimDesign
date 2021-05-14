@@ -36,15 +36,15 @@ of Linux, have password-less open-SSH access, IP addresses have been added to th
 or `~/.ssh/config`, etc). More generally though, these resources are widely available through professional
 organizations dedicated to super-computing.
 
-To setup the R code for an MPI cluster one need only add the argument `MPI = TRUE`,
-wrap the appropriate MPI directives around `runSimulation`, and submit the
-files using the suitable BASH commands to execute the `mpirun` tool. For example,
+To setup the R code for an MPI cluster the argument `MPI = TRUE` needs to be added to the 
+`extra_options` list input, which wraps the appropriate MPI directives around `runSimulation`.
+At this point the source files can be submitted using suitable BASH commands to execute the `mpirun` tool. For example,
 ```{r eval=FALSE}
 library(doMPI)
 cl <- startMPIcluster()
 registerDoMPI(cl)
 runSimulation(design=Design, replications=1000, filename='mysimulation',
-    generate=Generate, analyse=Analyse, summarise=Summarise, MPI=TRUE)
+    generate=Generate, analyse=Analyse, summarise=Summarise, extra_options = list(MPI=TRUE))
 closeCluster(cl)
 mpi.quit()
 ```

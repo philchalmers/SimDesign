@@ -126,7 +126,7 @@ SimClean('my-simple-sim.rds')
 
 Notice that when complete, the temporary file is removed from the hard-drive.
 
-# Option: `save_results = TRUE` 
+# Option: `save_results = TRUE` (`FALSE` by default; recommended during official simulation run)
 
 Continuing on, the `save_results` argument will output the elements which are passed to `Summarise()` to separate `.rds` files containing all the analysis results. Note that when using `save_results` the `save` flag is automatically set to `TRUE` to ensure that the simulation state is correctly tracked.
 
@@ -170,7 +170,7 @@ Should the need arise to remove the results directory then the `SimClean()` func
 SimClean(results = TRUE)
 ```
 
-# Option: `store_results = TRUE`
+# Option: `store_results = TRUE` (`FALSE` by default, and not recommended for serious use)
 
 Similar to `save_results = TRUE`, though less recommended for RAM related reasons (if the number of replications/`design` conditions is too large then the R session may run out of memory as the simulation progresses), users can pass `store_results = TRUE` to store the complete simulation results in the returned object. 
 

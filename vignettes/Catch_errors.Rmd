@@ -27,8 +27,9 @@ options(digits=4)
 par(mar=c(3,3,1,1)+.1)
 ```
 
-Error catching is an important area to consider when creating Monte Carlo simulations. Sometimes, iterative algorithms will 'fail to converge', or otherwise crash for other reasons (e.g., sparse data). However,
-`SimDesign` makes this process much easier because the internal functions are automatically wrapped within  `try` blocks, and therefore simulations will not terminate unexpectedly. This type of information is also collected in the final simulation object since it may be relevant to the writer that something unknown is going wrong in the code-base. Below we demonstrate what happens when errors are thrown and caught, and how this information is tracked in the returned object.
+Error catching is an important area to consider when creating Monte Carlo simulations. Sometimes, iterative algorithms will 'fail to converge', or otherwise crash for other reasons (e.g., sparse data). Moreover, errors may happen in unexpected combinations of the design factors under investigation, which can lead to abrupt termination of a simulation's execution. 
+
+`SimDesign` makes managing errors  much easier because the internal functions are automatically wrapped within  `try` blocks, and therefore simulations will not terminate unexpectedly. This type of information is also collected in the final simulation object since it may be relevant to the writer that something unknown is going wrong in the code-base. Below we demonstrate what happens when errors are thrown and caught, and how this information is tracked in the returned object.
 
 # Define the functions
 
