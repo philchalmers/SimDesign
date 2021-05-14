@@ -174,7 +174,9 @@
 #'   If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
 #'   selects the maximum number cores available
 #'   and will be stopped when the simulation is complete. Note that supplying a \code{cl}
-#'   object will automatically set the \code{parallel} argument to \code{TRUE}
+#'   object will automatically set the \code{parallel} argument to \code{TRUE}. Define and supply this
+#'   cluster object yourself whenever you have multiple nodes to chain together (note in this case
+#'   that you must  use either the "MPI" or "PSOCK" clusters)
 #'
 #' @param packages a character vector of external packages to be used during the simulation (e.g.,
 #'   \code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when \code{parallel = TRUE} or
@@ -713,7 +715,7 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL, debug = 'none', load_seed = NULL,
                           save_results = FALSE, parallel = FALSE, ncores = parallel::detectCores(),
-                          type = ifelse(.Platform$OS.type == 'Windows', 'PFORK', 'FORK'), cl = NULL,
+                          type = ifelse(.Platform$OS.type == 'Windows', 'PSOCK', 'FORK'), cl = NULL,
                           notification = NULL, boot_method='none', boot_draws = 1000L, CI = .95,
                           seed = rint(nrow(design), min=1L, max = 2147483647L), save_seeds = FALSE,
                           save = TRUE, store_results = FALSE, max_errors = 50L,
