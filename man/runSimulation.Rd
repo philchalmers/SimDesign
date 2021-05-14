@@ -20,6 +20,7 @@ runSimulation(
   save_results = FALSE,
   parallel = FALSE,
   ncores = parallel::detectCores(),
+  type = ifelse(.Platform$OS.type == "Windows", "PFORK", "FORK"),
   cl = NULL,
   notification = NULL,
   boot_method = "none",
@@ -146,6 +147,9 @@ exact seed for the corresponding design row. Default is \code{NULL}}
 unique condition?}
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
+
+\item{type}{default type of cluster to create for the \code{cl} object if no supplied. For Windows OS this
+defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected (suitable for Linux and Mac OSX)}
 
 \item{cl}{cluster object defined by \code{\link{makeCluster}} used to run code in parallel.
 If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which

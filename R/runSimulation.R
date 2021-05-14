@@ -157,6 +157,9 @@
 #' @param replications number of independent replications to perform per condition (i.e., each row in \code{design}).
 #'   Must be greater than 0
 #'
+#' @param type default type of cluster to create for the \code{cl} object if no supplied. For Windows OS this
+#'   defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected (suitable for Linux and Mac OSX)
+#'
 #' @param fixed_objects (optional) an object (usually a named \code{list})
 #'   containing additional user-defined objects
 #'   that should remain fixed across conditions. This is useful when including
@@ -709,7 +712,8 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL, debug = 'none', load_seed = NULL,
-                          save_results = FALSE, parallel = FALSE, ncores = parallel::detectCores(), cl = NULL,
+                          save_results = FALSE, parallel = FALSE, ncores = parallel::detectCores(),
+                          type = ifelse(.Platform$OS.type == 'Windows', 'PFORK', 'FORK'), cl = NULL,
                           notification = NULL, boot_method='none', boot_draws = 1000L, CI = .95,
                           seed = rint(nrow(design), min=1L, max = 2147483647L), save_seeds = FALSE,
                           save = TRUE, store_results = FALSE, max_errors = 50L,
@@ -861,7 +865,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     export_funs <- parent_env_fun()
     if(parallel){
         if(is.null(cl)){
-            cl <- parallel::makeCluster(ncores)
+            cl <- parallel::makeCluster(ncores, type=type)
             on.exit(parallel::stopCluster(cl))
         }
         parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
