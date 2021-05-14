@@ -213,19 +213,6 @@
 #'  }
 #'  However, note that this may be less reliable since the email message could be directed to a spam folder.
 #'
-#' @param store_warning_seeds logical; in addition to storing the \code{.Random.seed} states whenever error messages
-#'   are raised, also store the \code{.Random.seed} states when warnings are raised? This is disabled by default
-#'   since warnings are generally less problematic than errors, and because many more warnings messages may be raised
-#'   throughout the simulation (potentially causing RAM related issues when constructing the final simulation object as
-#'   any given simulation replicate could generate numerous warnings, and storing the seeds states could add up quickly).
-#'
-#'   Set this to \code{TRUE} when replicating warning messages is important, however be aware that too many warnings
-#'   messages raised during the simulation implementation could cause RAM related issues.
-#'
-#' @param warnings_as_errors logical; treat warning messages as error messages during the simulation? Default is FALSE,
-#'   therefore warnings are only collected and not used to restart the data generation step, and the seeds associated with
-#'   the warning message conditions are not stored within the final simulation object
-#'
 #' @param save_results logical; save the results returned from \code{\link{Analyse}} to external
 #'   \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
 #'   Use this if you would like to keep track of the individual parameters returned from the \code{analysis} function.
@@ -276,6 +263,43 @@
 #'   file will be generated instead and a warning will be thrown. This helps to avoid accidentally overwriting
 #'   existing files. Default is \code{NULL}, indicating no file will be saved by default
 #'
+#' @param extra_options a list for extra information flags no commonly used. These can be
+#'
+#'   \describe{
+#'
+#'     \item{\code{stop_on_fatal}}{logical (default is \code{TRUE}); should the simulation be terminated immediately when
+#'       the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
+#'       the simulation will continue as though errors did not occur, however a column
+#'       \code{FATAL_TERMINATION} will be included in the resulting object indicating the final
+#'       error message observed, and \code{NA} placeholders will be placed in all other row-elements. Default is
+#'       \code{FALSE}}
+#'
+#'      \item{\code{warnings_as_errors}}{logical (default is \code{FALSE});
+#'      treat warning messages as error messages during the simulation? Default is FALSE,
+#'      therefore warnings are only collected and not used to restart the data generation step, and the seeds associated with
+#'      the warning message conditions are not stored within the final simulation object}
+#'
+#'      \item{\code{store_warning_seeds}}{logical (default is \code{FALSE});
+#'       in addition to storing the \code{.Random.seed} states whenever error messages
+#'       are raised, also store the \code{.Random.seed} states when warnings are raised? This is disabled by default
+#'       since warnings are generally less problematic than errors, and because many more warnings messages may be raised
+#'       throughout the simulation (potentially causing RAM related issues when constructing the final simulation object as
+#'       any given simulation replicate could generate numerous warnings, and storing the seeds states could add up quickly).
+#'
+#'       Set this to \code{TRUE} when replicating warning messages is important, however be aware that too many warnings
+#'       messages raised during the simulation implementation could cause RAM related issues.}
+#'
+#'      \item{\code{allow_na}}{logical (default is \code{FALSE}); should \code{NA}s be allowed in the
+#'       analyse step as a valid result from the simulation analysis?}
+#'
+#'      \item{\code{allow_nan}}{logical (default is \code{FALSE}); should \code{NaN}s be allowed in the
+#'        analyse step as a valid result from the simulation analysis?}
+#'
+#'      \item{\code{MPI}}{logical (default is \code{FALSE}); use the \code{foreach} package in a
+#'        form usable by MPI to run simulation in parallel on a cluster? }
+#'
+#'    }
+#'
 #' @param save_details a list pertaining to information regarding how and where files should be saved
 #'   when the \code{save} or \code{save_results} flags are triggered.
 #'
@@ -310,16 +334,7 @@
 #'   This is included to avoid getting stuck in infinite re-draws, and to indicate that something fatally problematic
 #'   is going wrong in the generate-analyse phases. Default is 50
 #'
-#' @param allow_na logical; should \code{NA}s be allowed in the analyse step as a valid result from the simulation
-#'   analysis? Default is FALSE
-#'
-#' @param allow_nan logical; should \code{NaN}s be allowed in the analyse step as a valid result from the simulation
-#'   analysis? Default is FALSE
-#'
 #' @param ncores number of cores to be used in parallel execution. Default uses all available
-#'
-#' @param MPI logical; use the \code{foreach} package in a form usable by MPI to run simulation
-#'   in parallel on a cluster? Default is \code{FALSE}
 #'
 #' @param save logical; save the temporary simulation state to the hard-drive? This is useful
 #'   for simulations which require an extended amount of time, though for shorter simulations
@@ -373,10 +388,6 @@
 #'
 #' @param CI bootstrap confidence interval level (default is 95\%)
 #'
-#' @param load_balancing logical; should load balancing be used in parallel processing
-#'   executions? Default is TRUE for better computational efficiency, though at the
-#'   risk of higher memory usage
-#'
 #' @param store_results logical; store the complete tables of simulation results
 #'   in the returned object? This is \code{FALSE} by default to help avoid RAM
 #'   issues (see \code{save_results} as a more suitable alternative). However, if the \code{Design}
@@ -388,13 +399,6 @@
 #'   pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
 #'   of all the simulation results for each condition if \code{nrow(Design) > 1}; otherwise, if
 #'   \code{nrow(Design) == 1} or \code{Design} was missing the \code{results} object will be stored as-is
-#'
-#' @param stop_on_fatal logical; should the simulation be terminated immediately when
-#'   the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
-#'   the simulation will continue as though errors did not occur, however a column
-#'   \code{FATAL_TERMINATION} will be included in the resulting object indicating the final
-#'   error message observed, and \code{NA} placeholders will be placed in all other row-elements. Default is
-#'   \code{FALSE}
 #'
 #' @param verbose logical; print messages to the R console? Default is \code{TRUE}
 #'
@@ -708,13 +712,23 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           save_results = FALSE, parallel = FALSE, ncores = parallel::detectCores(), cl = NULL,
                           notification = NULL, boot_method='none', boot_draws = 1000L, CI = .95,
                           seed = rint(nrow(design), min=1L, max = 2147483647L), save_seeds = FALSE,
-                          save = TRUE, store_results = FALSE, store_warning_seeds = FALSE,
-                          warnings_as_errors = FALSE, max_errors = 50L,
-                          allow_na = FALSE, allow_nan = FALSE, stop_on_fatal = FALSE, MPI = FALSE,
-                          save_details = list(), progress = TRUE, load_balancing = TRUE, verbose = TRUE)
+                          save = TRUE, store_results = FALSE, max_errors = 50L,
+                          save_details = list(), extra_options = list(),
+                          progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
-    pbapply::pboptions(use_lb=load_balancing)
+    store_warning_seeds <- ifelse(is.null(extra_options$store_warning_seeds),
+                                  FALSE, extra_options$store_warning_seeds)
+    warnings_as_errors <- ifelse(is.null(extra_options$warnings_as_errors),
+                                 FALSE, extra_options$warnings_as_errors)
+    allow_na <- ifelse(is.null(extra_options$allow_na),
+                       FALSE, extra_options$allow_na)
+    allow_nan <- ifelse(is.null(extra_options$allow_nan),
+                        FALSE, extra_options$allow_nan)
+    stop_on_fatal <- ifelse(is.null(extra_options$stop_on_fatal),
+                            TRUE, extra_options$stop_on_fatal)
+    MPI <- ifelse(is.null(extra_options$MPI),
+                  FALSE, extra_options$MPI)
     if(missing(generate) && !missing(analyse))
         generate <- function(condition, dat, fixed_objects = NULL){}
     NA_summarise <- FALSE
@@ -965,7 +979,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
                                          progress=progress, store_results=FALSE, use_try=use_try,
-                                         load_balancing=load_balancing,
                                          stop_on_fatal=stop_on_fatal)
             time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
@@ -993,7 +1006,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             load_seed=load_seed, export_funs=export_funs,
                             warnings_as_errors=warnings_as_errors,
                             progress=progress, store_results=store_results, use_try=use_try,
-                            load_balancing=load_balancing,
                             stop_on_fatal=stop_on_fatal)
             if(store_results){
                 stored_Results_list[[i]] <- attr(tmp, 'full_results')

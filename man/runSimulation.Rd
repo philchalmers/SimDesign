@@ -29,16 +29,10 @@ runSimulation(
   save_seeds = FALSE,
   save = TRUE,
   store_results = FALSE,
-  store_warning_seeds = FALSE,
-  warnings_as_errors = FALSE,
   max_errors = 50L,
-  allow_na = FALSE,
-  allow_nan = FALSE,
-  stop_on_fatal = FALSE,
-  MPI = FALSE,
   save_details = list(),
+  extra_options = list(),
   progress = TRUE,
-  load_balancing = TRUE,
   verbose = TRUE
 )
 
@@ -251,39 +245,10 @@ Default randomly generates seeds within the range 1 to 2147483647 for each condi
   of all the simulation results for each condition if \code{nrow(Design) > 1}; otherwise, if
   \code{nrow(Design) == 1} or \code{Design} was missing the \code{results} object will be stored as-is}
 
-\item{store_warning_seeds}{logical; in addition to storing the \code{.Random.seed} states whenever error messages
-  are raised, also store the \code{.Random.seed} states when warnings are raised? This is disabled by default
-  since warnings are generally less problematic than errors, and because many more warnings messages may be raised
-  throughout the simulation (potentially causing RAM related issues when constructing the final simulation object as
-  any given simulation replicate could generate numerous warnings, and storing the seeds states could add up quickly).
-
-  Set this to \code{TRUE} when replicating warning messages is important, however be aware that too many warnings
-  messages raised during the simulation implementation could cause RAM related issues.}
-
-\item{warnings_as_errors}{logical; treat warning messages as error messages during the simulation? Default is FALSE,
-therefore warnings are only collected and not used to restart the data generation step, and the seeds associated with
-the warning message conditions are not stored within the final simulation object}
-
 \item{max_errors}{the simulation will terminate when more than this number of consecutive errors are thrown in any
 given condition, causing the simulation to continue to the next unique \code{design} condition.
 This is included to avoid getting stuck in infinite re-draws, and to indicate that something fatally problematic
 is going wrong in the generate-analyse phases. Default is 50}
-
-\item{allow_na}{logical; should \code{NA}s be allowed in the analyse step as a valid result from the simulation
-analysis? Default is FALSE}
-
-\item{allow_nan}{logical; should \code{NaN}s be allowed in the analyse step as a valid result from the simulation
-analysis? Default is FALSE}
-
-\item{stop_on_fatal}{logical; should the simulation be terminated immediately when
-the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
-the simulation will continue as though errors did not occur, however a column
-\code{FATAL_TERMINATION} will be included in the resulting object indicating the final
-error message observed, and \code{NA} placeholders will be placed in all other row-elements. Default is
-\code{FALSE}}
-
-\item{MPI}{logical; use the \code{foreach} package in a form usable by MPI to run simulation
-in parallel on a cluster? Default is \code{FALSE}}
 
 \item{save_details}{a list pertaining to information regarding how and where files should be saved
   when the \code{save} or \code{save_results} flags are triggered.
@@ -314,13 +279,46 @@ in parallel on a cluster? Default is \code{FALSE}}
 
   }}
 
+\item{extra_options}{a list for extra information flags no commonly used. These can be
+
+  \describe{
+
+    \item{\code{stop_on_fatal}}{logical (default is \code{TRUE}); should the simulation be terminated immediately when
+      the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
+      the simulation will continue as though errors did not occur, however a column
+      \code{FATAL_TERMINATION} will be included in the resulting object indicating the final
+      error message observed, and \code{NA} placeholders will be placed in all other row-elements. Default is
+      \code{FALSE}}
+
+     \item{\code{warnings_as_errors}}{logical (default is \code{FALSE});
+     treat warning messages as error messages during the simulation? Default is FALSE,
+     therefore warnings are only collected and not used to restart the data generation step, and the seeds associated with
+     the warning message conditions are not stored within the final simulation object}
+
+     \item{\code{store_warning_seeds}}{logical (default is \code{FALSE});
+      in addition to storing the \code{.Random.seed} states whenever error messages
+      are raised, also store the \code{.Random.seed} states when warnings are raised? This is disabled by default
+      since warnings are generally less problematic than errors, and because many more warnings messages may be raised
+      throughout the simulation (potentially causing RAM related issues when constructing the final simulation object as
+      any given simulation replicate could generate numerous warnings, and storing the seeds states could add up quickly).
+
+      Set this to \code{TRUE} when replicating warning messages is important, however be aware that too many warnings
+      messages raised during the simulation implementation could cause RAM related issues.}
+
+     \item{\code{allow_na}}{logical (default is \code{FALSE}); should \code{NA}s be allowed in the
+      analyse step as a valid result from the simulation analysis?}
+
+     \item{\code{allow_nan}}{logical (default is \code{FALSE}); should \code{NaN}s be allowed in the
+       analyse step as a valid result from the simulation analysis?}
+
+     \item{\code{MPI}}{logical (default is \code{FALSE}); use the \code{foreach} package in a
+       form usable by MPI to run simulation in parallel on a cluster? }
+
+   }}
+
 \item{progress}{logical; display a progress bar (using the \code{pbapply} package) for each simulation condition?
 This is useful when simulations conditions take a long time to run (see also the \code{notifications} argument).
 Default is \code{TRUE}}
-
-\item{load_balancing}{logical; should load balancing be used in parallel processing
-executions? Default is TRUE for better computational efficiency, though at the
-risk of higher memory usage}
 
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 

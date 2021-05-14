@@ -95,7 +95,8 @@ test_that('SimDesign', {
 
     # resume
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute2, summarise=mycollect,
-                           replications = 2, save=TRUE, verbose = FALSE, stop_on_fatal=TRUE))
+                           replications = 2, save=TRUE, verbose = FALSE,
+                           extra_options = list(stop_on_fatal=TRUE)))
     compname = Sys.info()["nodename"]
     tmp <- readRDS(paste0('SIMDESIGN-TEMPFILE_', compname, '.rds'))
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
@@ -254,7 +255,7 @@ test_that('SimDesign', {
 
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 1, parallel=TRUE, ncores=2L,
-                               save=TRUE, verbose = FALSE, stop_on_fatal = TRUE))
+                               save=TRUE, verbose = FALSE, extra_options = list(stop_on_fatal = TRUE)))
 
     mycompute <- function(condition, dat, fixed_objects = NULL){
         ret <- does_not_exist(TRUE)
@@ -310,11 +311,13 @@ test_that('SimDesign', {
     expect_true(any(grepl('WARNING', names(results))))
     results <- runSimulation(Design, replications = 1, packages = 'extraDistr',
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
-                             parallel=FALSE, save=FALSE, verbose = FALSE, store_warning_seeds = TRUE)
+                             parallel=FALSE, save=FALSE, verbose = FALSE,
+                             extra_options = list(store_warning_seeds = TRUE))
     expect_true(length(SimExtract(results, what = 'warning_seeds')) > 0)
     results <- runSimulation(Design, replications = 1, packages = 'extraDistr', max_errors = Inf,
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
-                             parallel=FALSE, save=FALSE, verbose = FALSE, warnings_as_errors=TRUE)
+                             parallel=FALSE, save=FALSE, verbose = FALSE,
+                             extra_options = list(warnings_as_errors=TRUE))
     expect_true(any(grepl('ERROR', names(results))))
     results <- runSimulation(Design, replications = 1, packages = 'extraDistr',
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
@@ -493,19 +496,24 @@ test_that('SimDesign', {
 
     Summarise <- function(condition, results, fixed_objects = NULL)
         bias(results, 0)
-    expect_error(runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile.rds'),
-                  generate=Generate, analyse=Analyse1, summarise=Summarise, verbose=FALSE, stop_on_fatal=TRUE))
+    expect_error(runSimulation(Design, replications = 10, save=TRUE,
+                               save_details = list(tmpfilename = 'thisfile.rds'),
+                  generate=Generate, analyse=Analyse1, summarise=Summarise, verbose=FALSE,
+                  extra_options = list(stop_on_fatal=TRUE)))
     expect_true('thisfile.rds' %in% dir())
     SimClean('thisfile.rds')
-    results <- runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile'),
-                               generate=Generate, analyse=Analyse2, summarise=Summarise, filename = 'thatfile', verbose=FALSE)
+    results <- runSimulation(Design, replications = 10, save=TRUE,
+                             save_details = list(tmpfilename = 'thisfile'),
+                               generate=Generate, analyse=Analyse2, summarise=Summarise,
+                             filename = 'thatfile', verbose=FALSE)
     expect_true('thatfile.rds' %in% dir())
     SimClean('thatfile.rds')
 
     if(Sys.info()["sysname"] != 'Windows'){
-        results <- runSimulation(Design, replications = 10, save=TRUE, save_details = list(tmpfilename = 'thisfile', out_rootdir = "~/mytmpdir"),
-                                 generate=Generate, analyse=Analyse2, summarise=Summarise, filename = 'thatfile',
-                                 verbose=FALSE)
+        results <- runSimulation(Design, replications = 10, save=TRUE,
+                                 save_details = list(tmpfilename='thisfile', out_rootdir="~/mytmpdir"),
+                                 generate=Generate, analyse=Analyse2, summarise=Summarise,
+                                 filename = 'thatfile', verbose=FALSE)
         expect_true('thatfile.rds' %in% dir("~/mytmpdir"))
         SimClean('thatfile.rds', save_details = list(out_rootdir = "~/mytmpdir"))
         expect_false('thatfile.rds' %in% dir("~/mytmpdir"))

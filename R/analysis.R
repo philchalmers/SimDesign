@@ -1,7 +1,7 @@
 Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI, seed, save,
                      save_results, save_results_out_rootdir, save_results_dirname, max_errors,
                      boot_method, boot_draws, CI, save_seeds, save_seeds_dirname, load_seed, export_funs, packages,
-                     summarise_asis, warnings_as_errors, progress, store_results, load_balancing,
+                     summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
@@ -58,8 +58,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
                                     allow_nan=allow_nan, use_try=use_try, cl=cl), TRUE)
             } else {
-                usefun <- if(load_balancing) parallel::parLapplyLB else parallel::parLapply
-                try(usefun(cl, 1L:replications, mainsim,
+                try(parallel::parLapply(cl, 1L:replications, mainsim,
                                     condition=condition, generate=Functions$generate,
                                     analyse=Functions$analyse, load_seed=load_seed,
                                     fixed_objects=fixed_objects, packages=packages, save=save,
