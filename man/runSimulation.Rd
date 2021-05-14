@@ -20,7 +20,7 @@ runSimulation(
   save_results = FALSE,
   parallel = FALSE,
   ncores = parallel::detectCores(),
-  type = ifelse(.Platform$OS.type == "Windows", "PFORK", "FORK"),
+  type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
   cl = NULL,
   notification = NULL,
   boot_method = "none",
