@@ -272,7 +272,7 @@
 #'
 #'   \describe{
 #'
-#'     \item{\code{stop_on_fatal}}{logical (default is \code{TRUE}); should the simulation be terminated immediately when
+#'     \item{\code{stop_on_fatal}}{logical (default is \code{FALSE}); should the simulation be terminated immediately when
 #'       the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
 #'       the simulation will continue as though errors did not occur, however a column
 #'       \code{FATAL_TERMINATION} will be included in the resulting object indicating the final
@@ -732,7 +732,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     allow_nan <- ifelse(is.null(extra_options$allow_nan),
                         FALSE, extra_options$allow_nan)
     stop_on_fatal <- ifelse(is.null(extra_options$stop_on_fatal),
-                            TRUE, extra_options$stop_on_fatal)
+                            FALSE, extra_options$stop_on_fatal)
     MPI <- ifelse(is.null(extra_options$MPI),
                   FALSE, extra_options$MPI)
     if(missing(generate) && !missing(analyse))

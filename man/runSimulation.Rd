@@ -289,7 +289,7 @@ is going wrong in the generate-analyse phases. Default is 50}
 
   \describe{
 
-    \item{\code{stop_on_fatal}}{logical (default is \code{TRUE}); should the simulation be terminated immediately when
+    \item{\code{stop_on_fatal}}{logical (default is \code{FALSE}); should the simulation be terminated immediately when
       the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
       the simulation will continue as though errors did not occur, however a column
       \code{FATAL_TERMINATION} will be included in the resulting object indicating the final
