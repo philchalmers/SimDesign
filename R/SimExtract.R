@@ -69,6 +69,7 @@
 #' }
 SimExtract <- function(object, what){
     stopifnot(is(object, "SimDesign"))
+    what <- tolower(what)
     pick <- attr(object, 'design_names')$design
     Design <- if(any(pick != 'dummy_run'))
         object[,attr(object, 'design_names')$design]
