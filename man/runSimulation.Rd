@@ -155,7 +155,9 @@ defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected (suitable for Li
 If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
 selects the maximum number cores available
 and will be stopped when the simulation is complete. Note that supplying a \code{cl}
-object will automatically set the \code{parallel} argument to \code{TRUE}}
+object will automatically set the \code{parallel} argument to \code{TRUE}. Define and supply this
+cluster object yourself whenever you have multiple nodes to chain together (note in this case
+that you must  use either the "MPI" or "PSOCK" clusters)}
 
 \item{notification}{an optional, empty argument function to be executed upon completion of the simulation. This can be used, for
   instance, to trigger email or SMS notifications that indicate the simulation has been completed. For example,
