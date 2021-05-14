@@ -715,7 +715,7 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL, debug = 'none', load_seed = NULL,
                           save_results = FALSE, parallel = FALSE, ncores = parallel::detectCores(),
-                          type = ifelse(.Platform$OS.type == 'Windows', 'PSOCK', 'FORK'), cl = NULL,
+                          type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'), cl = NULL,
                           notification = NULL, boot_method='none', boot_draws = 1000L, CI = .95,
                           seed = rint(nrow(design), min=1L, max = 2147483647L), save_seeds = FALSE,
                           save = TRUE, store_results = FALSE, max_errors = 50L,
