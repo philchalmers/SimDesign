@@ -65,7 +65,7 @@ res <- runSimulation(design=Design, replications=1, seed = 1:nrow(Design),
 
 
 ```{r}
-str(res)
+dplyr::glimpse(res[1:2])
 
 # person 100 from the first condition
 plot(res$`nitems=100; discrimination=0.5`[[1]][[100]], SE = 1.96)
