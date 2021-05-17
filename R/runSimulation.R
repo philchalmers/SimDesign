@@ -1071,7 +1071,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                 rownames(ret))
         t(ret)
     })))
-    Final <- plyr::rbind.fill(Result_list)
+    Final <- dplyr::bind_rows(Result_list)
     if(!stop_on_fatal && any(colnames(Final) == 'FATAL_TERMINATION')){
         warning('One or more design rows were fatally terminated. Please inspect/debug row(s): ',
                 paste(which(!is.na(Final$FATAL_TERMINATION)), collapse=','), call.=FALSE)

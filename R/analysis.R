@@ -85,11 +85,11 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     }
     if(summarise_asis || store_results){
         tabled_results <- if(is.data.frame(results[[1]]) && nrow(results[[1L]]) == 1L){
-            plyr::rbind.fill(results)
+            dplyr::bind_rows(results)
         } else if((is.data.frame(results[[1]]) && nrow(results[[1]]) > 1L) || is.list(results[[1L]])){
             results
         } else {
-            do.call(rbind, results)
+            dplyr::bind_rows(as.data.frame(do.call(rbind, results)))
         }
         if(save_results){
             tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')

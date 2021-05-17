@@ -170,10 +170,9 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #' estimates such as RMSE, bias, Type I error rates, coverage rates, etc. See the
 #' \code{See Also} section below for useful functions to be used within \code{Summarise}.
 #'
-#' @param results a \code{data.frame} (if \code{Analyse} returned a named numeric vector of any
-#'   length), a vector (if \code{Analyse} returned a single unnamed numeric value), or a \code{list}
-#'   (if \code{Analyse} returned a \code{list} or multi-rowed \code{data.frame}) containing the analysis
-#'   results from \code{\link{Analyse}},
+#' @param results a \code{tibble} data frame (if \code{Analyse} returned a named numeric vector of any
+#'   length) or a \code{list} (if \code{Analyse} returned a \code{list} or multi-rowed \code{data.frame})
+#'   containing the analysis results from \code{\link{Analyse}},
 #'   where each cell is stored in a unique row/list element
 #'
 #' @param condition a single row from the \code{design} input from \code{\link{runSimulation}}

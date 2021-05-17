@@ -29,8 +29,9 @@ the .rds files}
 located within \code{dir} will be used}
 
 \item{results}{(optional) the results of \code{\link{runSimulation}} when no
-  \code{summarise} function was provided. Can be either a \code{matrix}, indicating
-  that exactly one design condition was evaluated, or a \code{list} of \code{matrix}
+  \code{summarise} function was provided. Can be either a \code{tibble} or
+  \code{matrix} (indicating that exactly one design condition was evaluated),
+  or a \code{list} of \code{matrix}/\code{tibble}
   objects indicating that multiple conditions were performed with no summarise evaluation.
 
   Alternatively, if \code{store_results = TRUE} in the \code{runSimulation()} execution then
@@ -63,7 +64,7 @@ and final collection of the respective results.
 }
 \examples{
 
-Design <- data.frame(N = c(10, 20, 30))
+Design <- createDesign(N = c(10, 20, 30))
 
 Generate <- function(condition, fixed_objects = NULL) {
     dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
@@ -71,7 +72,7 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL) {
-    ret <- mean(dat) # mean of the sample data vector
+    ret <- c(mean=mean(dat), median=median(dat)) # mean/median of sample data
     ret
 }
 
@@ -83,15 +84,16 @@ runSimulation(design=Design, replications=50,
               save_details = list(save_results_dirname='simresults'))
 
 Summarise <- function(condition, results, fixed_objects = NULL){
-    ret <- c(mu=mean(results), SE=sd(results))
-    ret
+    apply(results, 2, mean)
 }
 
 res <- reSummarise(Summarise, dir = 'simresults/')
 res
 
-Summarise2 <- function(condition, results, fixed_objects = NULL) {
-    mean(results)
+Summarise2 <- function(condition, results, fixed_objects = NULL){
+    ret <- c(mean_ests=apply(results, 2, mean),
+             SE=apply(results, 2, sd))
+    ret
 }
 
 res2 <- reSummarise(Summarise2, dir = 'simresults/')
@@ -108,7 +110,8 @@ results <- runSimulation(design=Design, replications=50,
 str(results)
 
 Summarise <- function(condition, results, fixed_objects = NULL){
-    ret <- c(mu=mean(results), SE=sd(results))
+    ret <- c(mean_ests=apply(results, 2, mean),
+             SE=apply(results, 2, sd))
     ret
 }
 
@@ -122,7 +125,8 @@ res
 # Also similar, but storing the results within the summarised simulation
 
 Summarise <- function(condition, results, fixed_objects = NULL){
-    ret <- c(mu=mean(results), SE=sd(results))
+    ret <- c(mean_ests=apply(results, 2, mean),
+             SE=apply(results, 2, sd))
     ret
 }
 

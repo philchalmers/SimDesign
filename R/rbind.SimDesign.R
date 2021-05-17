@@ -85,7 +85,7 @@ rbind.SimDesign <- function(...){
     extra_info <- attr(dots[[1L]], 'extra_info')
     design_names <- attr(dots[[1L]], 'design_names')
     for(i in 2L:length(dots)){
-        ret <- plyr::rbind.fill(ret, as.data.frame(dots[[i]]))
+        ret <- dplyr::bind_rows(ret, as.data.frame(dots[[i]]))
         tmp_design_names <- attr(dots[[i]], 'design_names')
         tmp_extra_info <- attr(dots[[i]], 'extra_info')
         design_names$errors <- unique(design_names$errors, tmp_design_names$errors)

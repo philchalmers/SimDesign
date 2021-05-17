@@ -232,7 +232,7 @@ test_that('SimDesign', {
 
     expect_message(tmp <- runSimulation(Design, generate=mysim, analyse=mycompute3, verbose=FALSE,
                          replications = 2, parallel=FALSE, save_results = TRUE))
-    expect_true(all(sapply(tmp, function(x) length(x)) == 4L))
+    expect_true(all(sapply(tmp, function(x) nrow(x)) == 2L))
 
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute3, summarise=NA,
                          verbose=FALSE, replications = 2, parallel=FALSE, save_results = TRUE)
@@ -461,7 +461,7 @@ test_that('SimDesign', {
 
     results <- runSimulation(replications = 10, generate = Generate,
                              analyse=Analyse, verbose=FALSE)
-    expect_is(results, 'matrix')
+    expect_is(results, 'data.frame')
     expect_equal(ncol(results), 2L)
 
     results <- runSimulation(replications = 10, generate = Generate,

@@ -10,10 +10,9 @@ Summarise(condition, results, fixed_objects = NULL)
 \item{condition}{a single row from the \code{design} input from \code{\link{runSimulation}}
 (as a \code{data.frame}), indicating the simulation conditions}
 
-\item{results}{a \code{data.frame} (if \code{Analyse} returned a named numeric vector of any
-length), a vector (if \code{Analyse} returned a single unnamed numeric value), or a \code{list}
-(if \code{Analyse} returned a \code{list} or multi-rowed \code{data.frame}) containing the analysis
-results from \code{\link{Analyse}},
+\item{results}{a \code{tibble} data frame (if \code{Analyse} returned a named numeric vector of any
+length) or a \code{list} (if \code{Analyse} returned a \code{list} or multi-rowed \code{data.frame})
+containing the analysis results from \code{\link{Analyse}},
 where each cell is stored in a unique row/list element}
 
 \item{fixed_objects}{object passed down from \code{\link{runSimulation}}}
