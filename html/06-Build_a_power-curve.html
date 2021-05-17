@@ -504,25 +504,25 @@ summary(res)</code></pre>
 ## [1] 33
 ## 
 ## $date_completed
-## [1] &quot;Mon May 17 03:40:31 2021&quot;
+## [1] &quot;Mon May 17 16:48:59 2021&quot;
 ## 
 ## $total_elapsed_time
-## [1] &quot;21.97s&quot;</code></pre>
+## [1] &quot;20.54s&quot;</code></pre>
 <pre class="r"><code># print results
 print(res)</code></pre>
 <pre><code>## # A tibble: 33 x 7
 ##    mean_diff sample_size      p REPLICATIONS SIM_TIME COMPLETED             SEED
 ##        &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                &lt;int&gt;
-##  1       0            10 0.0492        10000    0.528 Mon May 17 03:40…   1.14e9
-##  2       0.1          10 0.054         10000    0.570 Mon May 17 03:40…   3.13e8
-##  3       0.2          10 0.069         10000    0.499 Mon May 17 03:40…   8.66e8
-##  4       0.3          10 0.0999        10000    0.468 Mon May 17 03:40…   1.91e9
-##  5       0.4          10 0.135         10000    0.758 Mon May 17 03:40…   5.55e8
-##  6       0.5          10 0.186         10000    0.898 Mon May 17 03:40…   8.85e8
-##  7       0.6          10 0.245         10000    0.530 Mon May 17 03:40…   8.03e8
-##  8       0.7          10 0.316         10000    0.532 Mon May 17 03:40…   1.16e9
-##  9       0.8          10 0.387         10000    0.727 Mon May 17 03:40…   9.35e8
-## 10       0.9          10 0.467         10000    0.738 Mon May 17 03:40…   1.63e9
+##  1       0            10 0.0492        10000    0.568 Mon May 17 16:48…   1.14e9
+##  2       0.1          10 0.054         10000    0.528 Mon May 17 16:48…   3.13e8
+##  3       0.2          10 0.069         10000    0.519 Mon May 17 16:48…   8.66e8
+##  4       0.3          10 0.0999        10000    0.522 Mon May 17 16:48…   1.91e9
+##  5       0.4          10 0.135         10000    0.572 Mon May 17 16:48…   5.55e8
+##  6       0.5          10 0.186         10000    0.461 Mon May 17 16:48…   8.85e8
+##  7       0.6          10 0.245         10000    0.492 Mon May 17 16:48…   8.03e8
+##  8       0.7          10 0.316         10000    0.587 Mon May 17 16:48…   1.16e9
+##  9       0.8          10 0.387         10000    0.476 Mon May 17 16:48…   9.35e8
+## 10       0.9          10 0.467         10000    0.937 Mon May 17 16:48…   1.63e9
 ## # … with 23 more rows</code></pre>
 <p>A power curve is created by placing the detection rates on a <span class="math inline">\(y\)</span>-axis and including different factors on the x-axis and other aesthetics (shading, colours, etc). Here we use <code>ggplot2</code> to construct suitable power-curves.</p>
 <pre class="r"><code>library(ggplot2)
@@ -548,7 +548,7 @@ ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom
 <pre><code>## # A tibble: 1 x 7
 ##   mean_diff sample_size     p REPLICATIONS SIM_TIME COMPLETED               SEED
 ##       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                  &lt;int&gt;
-## 1       0.5          30 0.484        10000    0.641 Mon May 17 03:40:2…   3.04e8</code></pre>
+## 1       0.5          30 0.484        10000    0.625 Mon May 17 16:48:5…   3.04e8</code></pre>
 <pre class="r"><code>pwr.t.test(d=0.5, n=10, sig.level=0.05, type=&quot;two.sample&quot;, alternative=&quot;two.sided&quot;)</code></pre>
 <pre><code>## 
 ##      Two-sample t test power calculation 
@@ -564,7 +564,7 @@ ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom
 <pre><code>## # A tibble: 1 x 7
 ##   mean_diff sample_size     p REPLICATIONS SIM_TIME COMPLETED               SEED
 ##       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                  &lt;int&gt;
-## 1       0.5          10 0.186        10000    0.898 Mon May 17 03:40:1…   8.85e8</code></pre>
+## 1       0.5          10 0.186        10000    0.461 Mon May 17 16:48:4…   8.85e8</code></pre>
 </div>
 </div>
 <div id="power-curve-with-bootstrapped-confidence-intervals" class="section level1">
@@ -579,16 +579,16 @@ res</code></pre>
 <pre><code>## # A tibble: 33 x 9
 ##    mean_diff sample_size     p BOOT_p_2.5 BOOT_p_97.5 REPLICATIONS SIM_TIME
 ##        &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt;
-##  1       0            10 0.052      0.039      0.065          1000    0.752
-##  2       0.1          10 0.064      0.048      0.079          1000    0.701
-##  3       0.2          10 0.071      0.054      0.0860         1000    0.704
-##  4       0.3          10 0.091      0.073      0.108          1000    0.704
-##  5       0.4          10 0.126      0.105      0.146          1000    0.692
-##  6       0.5          10 0.203      0.178      0.228          1000    0.707
-##  7       0.6          10 0.251      0.222      0.278          1000    0.702
-##  8       0.7          10 0.299      0.269      0.327          1000    0.704
-##  9       0.8          10 0.395      0.363      0.424          1000    0.745
-## 10       0.9          10 0.489      0.459      0.519          1000    0.712
+##  1       0            10 0.052      0.039      0.065          1000    0.774
+##  2       0.1          10 0.064      0.048      0.079          1000    1.39 
+##  3       0.2          10 0.071      0.054      0.0860         1000    0.711
+##  4       0.3          10 0.091      0.073      0.108          1000    0.709
+##  5       0.4          10 0.126      0.105      0.146          1000    0.770
+##  6       0.5          10 0.203      0.178      0.228          1000    0.726
+##  7       0.6          10 0.251      0.222      0.278          1000    0.727
+##  8       0.7          10 0.299      0.269      0.327          1000    0.707
+##  9       0.8          10 0.395      0.363      0.424          1000    0.714
+## 10       0.9          10 0.489      0.459      0.519          1000    0.704
 ## # … with 23 more rows, and 2 more variables: COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
 <pre class="r"><code>library(ggplot2)
 ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom_line() +
@@ -605,16 +605,16 @@ res</code></pre>
 <pre><code>## # A tibble: 33 x 9
 ##    mean_diff sample_size      p BOOT_p_2.5 BOOT_p_97.5 REPLICATIONS SIM_TIME
 ##        &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt;
-##  1       0            10 0.0537     0.0493      0.0584        10000     6.92
-##  2       0.1          10 0.0532     0.0488      0.0578        10000     7.27
-##  3       0.2          10 0.0746     0.0695      0.0795        10000     6.72
-##  4       0.3          10 0.0956     0.0899      0.101         10000     6.78
-##  5       0.4          10 0.133      0.126       0.139         10000     7.23
-##  6       0.5          10 0.189      0.182       0.197         10000     6.79
-##  7       0.6          10 0.253      0.245       0.262         10000     6.47
-##  8       0.7          10 0.325      0.316       0.334         10000     6.50
-##  9       0.8          10 0.396      0.387       0.405         10000     6.84
-## 10       0.9          10 0.476      0.467       0.486         10000     6.65
+##  1       0            10 0.0537     0.0493      0.0584        10000     6.72
+##  2       0.1          10 0.0532     0.0488      0.0578        10000     6.75
+##  3       0.2          10 0.0746     0.0695      0.0795        10000     6.60
+##  4       0.3          10 0.0956     0.0899      0.101         10000     6.55
+##  5       0.4          10 0.133      0.126       0.139         10000     7.02
+##  6       0.5          10 0.189      0.182       0.197         10000     6.40
+##  7       0.6          10 0.253      0.245       0.262         10000     7.06
+##  8       0.7          10 0.325      0.316       0.334         10000     6.84
+##  9       0.8          10 0.396      0.387       0.405         10000     6.79
+## 10       0.9          10 0.476      0.467       0.486         10000     6.53
 ## # … with 23 more rows, and 2 more variables: COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
 <pre class="r"><code>library(ggplot2)
 ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom_line() +
