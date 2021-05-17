@@ -60,6 +60,15 @@ if (!!window.navigator.userAgent.match("MSIE 8")) {
 !function(a){"use strict";a.matchMedia=a.matchMedia||function(a){var b,c=a.documentElement,d=c.firstElementChild||c.firstChild,e=a.createElement("body"),f=a.createElement("div");return f.id="mq-test-1",f.style.cssText="position:absolute;top:-100em",e.style.background="none",e.appendChild(f),function(a){return f.innerHTML='&shy;<style media="'+a+'"> #mq-test-1 { width: 42px; }</style>',c.insertBefore(e,d),b=42===f.offsetWidth,c.removeChild(e),{matches:b,media:a}}}(a.document)}(this),function(a){"use strict";function b(){u(!0)}var c={};a.respond=c,c.update=function(){};var d=[],e=function(){var b=!1;try{b=new a.XMLHttpRequest}catch(c){b=new a.ActiveXObject("Microsoft.XMLHTTP")}return function(){return b}}(),f=function(a,b){var c=e();c&&(c.open("GET",a,!0),c.onreadystatechange=function(){4!==c.readyState||200!==c.status&&304!==c.status||b(c.responseText)},4!==c.readyState&&c.send(null))};if(c.ajax=f,c.queue=d,c.regex={media:/@media[^\{]+\{([^\{\}]*\{[^\}\{]*\})+/gi,keyframes:/@(?:\-(?:o|moz|webkit)\-)?keyframes[^\{]+\{(?:[^\{\}]*\{[^\}\{]*\})+[^\}]*\}/gi,urls:/(url\()['"]?([^\/\)'"][^:\)'"]+)['"]?(\))/g,findStyles:/@media *([^\{]+)\{([\S\s]+?)$/,only:/(only\s+)?([a-zA-Z]+)\s?/,minw:/\([\s]*min\-width\s*:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/,maxw:/\([\s]*max\-width\s*:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/},c.mediaQueriesSupported=a.matchMedia&&null!==a.matchMedia("only all")&&a.matchMedia("only all").matches,!c.mediaQueriesSupported){var g,h,i,j=a.document,k=j.documentElement,l=[],m=[],n=[],o={},p=30,q=j.getElementsByTagName("head")[0]||k,r=j.getElementsByTagName("base")[0],s=q.getElementsByTagName("link"),t=function(){var a,b=j.createElement("div"),c=j.body,d=k.style.fontSize,e=c&&c.style.fontSize,f=!1;return b.style.cssText="position:absolute;font-size:1em;width:1em",c||(c=f=j.createElement("body"),c.style.background="none"),k.style.fontSize="100%",c.style.fontSize="100%",c.appendChild(b),f&&k.insertBefore(c,k.firstChild),a=b.offsetWidth,f?k.removeChild(c):c.removeChild(b),k.style.fontSize=d,e&&(c.style.fontSize=e),a=i=parseFloat(a)},u=function(b){var c="clientWidth",d=k[c],e="CSS1Compat"===j.compatMode&&d||j.body[c]||d,f={},o=s[s.length-1],r=(new Date).getTime();if(b&&g&&p>r-g)return a.clearTimeout(h),h=a.setTimeout(u,p),void 0;g=r;for(var v in l)if(l.hasOwnProperty(v)){var w=l[v],x=w.minw,y=w.maxw,z=null===x,A=null===y,B="em";x&&(x=parseFloat(x)*(x.indexOf(B)>-1?i||t():1)),y&&(y=parseFloat(y)*(y.indexOf(B)>-1?i||t():1)),w.hasquery&&(z&&A||!(z||e>=x)||!(A||y>=e))||(f[w.media]||(f[w.media]=[]),f[w.media].push(m[w.rules]))}for(var C in n)n.hasOwnProperty(C)&&n[C]&&n[C].parentNode===q&&q.removeChild(n[C]);n.length=0;for(var D in f)if(f.hasOwnProperty(D)){var E=j.createElement("style"),F=f[D].join("\n");E.type="text/css",E.media=D,q.insertBefore(E,o.nextSibling),E.styleSheet?E.styleSheet.cssText=F:E.appendChild(j.createTextNode(F)),n.push(E)}},v=function(a,b,d){var e=a.replace(c.regex.keyframes,"").match(c.regex.media),f=e&&e.length||0;b=b.substring(0,b.lastIndexOf("/"));var g=function(a){return a.replace(c.regex.urls,"$1"+b+"$2$3")},h=!f&&d;b.length&&(b+="/"),h&&(f=1);for(var i=0;f>i;i++){var j,k,n,o;h?(j=d,m.push(g(a))):(j=e[i].match(c.regex.findStyles)&&RegExp.$1,m.push(RegExp.$2&&g(RegExp.$2))),n=j.split(","),o=n.length;for(var p=0;o>p;p++)k=n[p],l.push({media:k.split("(")[0].match(c.regex.only)&&RegExp.$2||"all",rules:m.length-1,hasquery:k.indexOf("(")>-1,minw:k.match(c.regex.minw)&&parseFloat(RegExp.$1)+(RegExp.$2||""),maxw:k.match(c.regex.maxw)&&parseFloat(RegExp.$1)+(RegExp.$2||"")})}u()},w=function(){if(d.length){var b=d.shift();f(b.href,function(c){v(c,b.href,b.media),o[b.href]=!0,a.setTimeout(function(){w()},0)})}},x=function(){for(var b=0;b<s.length;b++){var c=s[b],e=c.href,f=c.media,g=c.rel&&"stylesheet"===c.rel.toLowerCase();e&&g&&!o[e]&&(c.styleSheet&&c.styleSheet.rawCssText?(v(c.styleSheet.rawCssText,e,f),o[e]=!0):(!/^([a-zA-Z:]*\/\/)/.test(e)&&!r||e.replace(RegExp.$1,"").split("/")[0]===a.location.host)&&("//"===e.substring(0,2)&&(e=a.location.protocol+e),d.push({href:e,media:f})))}w()};x(),c.update=x,c.getEmValue=t,a.addEventListener?a.addEventListener("resize",b,!1):a.attachEvent&&a.attachEvent("onresize",b)}}(this);
 };
 </script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script>
 
 /**
@@ -229,14 +238,9 @@ color: #d14;
   div.column{display: inline-block; vertical-align: top; width: 50%;}
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   ul.task-list{list-style: none;}
-      </style>
+    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -249,32 +253,7 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+
 
 
 
@@ -284,10 +263,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -304,6 +279,9 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
@@ -316,7 +294,6 @@ summary {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -380,7 +357,7 @@ summary {
 
 
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -431,50 +408,88 @@ res &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel=TRUE
 <pre class="r"><code># summary of simulation object
 summary(res)</code></pre>
 <pre><code>## $sessionInfo
-## R version 3.6.3 (2020-02-29)
-## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 18.04.5 LTS
+## ─ Session info ───────────────────────────────────────────────────────────────
+##  setting  value                       
+##  version  R version 3.6.3 (2020-02-29)
+##  os       Ubuntu 18.04.5 LTS          
+##  system   x86_64, linux-gnu           
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  ctype    en_US.UTF-8                 
+##  tz       Etc/UTC                     
+##  date     2021-05-17                  
 ## 
-## Matrix products: default
-## BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
-## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+## ─ Packages ───────────────────────────────────────────────────────────────────
+##  package     * version   date       lib source        
+##  bslib         0.2.4     2021-01-25 [2] CRAN (R 3.6.3)
+##  cli           2.5.0     2021-04-26 [1] CRAN (R 3.6.3)
+##  cluster       2.1.2     2021-04-17 [1] CRAN (R 3.6.3)
+##  codetools     0.2-18    2020-11-04 [1] CRAN (R 3.6.3)
+##  colorspace    2.0-1     2021-05-04 [1] CRAN (R 3.6.3)
+##  crayon        1.4.1     2021-02-08 [1] CRAN (R 3.6.3)
+##  dcurver       0.9.2     2020-11-04 [1] CRAN (R 3.6.3)
+##  Deriv         4.1.3     2021-02-24 [1] CRAN (R 3.6.3)
+##  digest        0.6.27    2020-10-24 [1] CRAN (R 3.6.3)
+##  dplyr         1.0.6     2021-05-05 [1] CRAN (R 3.6.3)
+##  ellipsis      0.3.2     2021-04-29 [1] CRAN (R 3.6.3)
+##  evaluate      0.14      2019-05-28 [1] CRAN (R 4.1.0)
+##  fansi         0.4.2     2021-01-15 [1] CRAN (R 3.6.3)
+##  farver        2.1.0     2021-02-28 [1] CRAN (R 3.6.3)
+##  foreach       1.5.1     2020-10-15 [1] CRAN (R 3.6.3)
+##  generics      0.1.0     2020-10-31 [1] CRAN (R 3.6.3)
+##  ggplot2     * 3.3.3     2020-12-30 [1] CRAN (R 3.6.3)
+##  glue          1.4.2     2020-08-27 [1] CRAN (R 3.6.3)
+##  GPArotation   2014.11-1 2014-11-25 [1] CRAN (R 4.1.0)
+##  gtable        0.3.0     2019-03-25 [1] CRAN (R 4.1.0)
+##  highr         0.9       2021-04-16 [1] CRAN (R 3.6.3)
+##  htmltools     0.5.1.1   2021-01-22 [1] CRAN (R 3.6.3)
+##  iterators     1.0.13    2020-10-15 [1] CRAN (R 3.6.3)
+##  jquerylib     0.1.4     2021-04-26 [1] CRAN (R 3.6.3)
+##  jsonlite      1.7.2     2020-12-09 [1] CRAN (R 3.6.3)
+##  knitr         1.33      2021-04-24 [1] CRAN (R 3.6.3)
+##  labeling      0.4.2     2020-10-20 [1] CRAN (R 3.6.3)
+##  lattice     * 0.20-44   2021-05-02 [1] CRAN (R 3.6.3)
+##  lifecycle     1.0.0     2021-02-15 [1] CRAN (R 3.6.3)
+##  magrittr      2.0.1     2020-11-17 [1] CRAN (R 3.6.3)
+##  MASS          7.3-54    2021-05-03 [1] CRAN (R 3.6.3)
+##  Matrix        1.3-3     2021-05-04 [4] CRAN (R 3.6.3)
+##  mgcv          1.8-35    2021-04-18 [4] CRAN (R 3.6.3)
+##  mirt        * 1.33.10   2021-05-12 [1] CRAN (R 3.6.3)
+##  munsell       0.5.0     2018-06-12 [1] CRAN (R 3.6.3)
+##  nlme          3.1-152   2021-02-04 [1] CRAN (R 3.6.3)
+##  pander        0.6.3     2018-11-06 [1] CRAN (R 3.6.3)
+##  pbapply       1.4-3     2020-08-18 [1] CRAN (R 3.6.3)
+##  permute       0.9-5     2019-03-12 [1] CRAN (R 4.1.0)
+##  pillar        1.6.0     2021-04-13 [1] CRAN (R 3.6.3)
+##  pkgconfig     2.0.3     2019-09-22 [1] CRAN (R 4.1.0)
+##  plyr          1.8.6     2020-03-03 [1] CRAN (R 3.6.3)
+##  ps            1.6.0     2021-02-28 [1] CRAN (R 3.6.3)
+##  purrr         0.3.4     2020-04-17 [1] CRAN (R 4.1.0)
+##  R6            2.5.0     2020-10-28 [1] CRAN (R 3.6.3)
+##  Rcpp          1.0.6     2021-01-15 [1] CRAN (R 3.6.3)
+##  reshape2    * 1.4.4     2020-04-09 [1] CRAN (R 3.6.3)
+##  rlang         0.4.11    2021-04-30 [1] CRAN (R 3.6.3)
+##  rmarkdown   * 2.8       2021-05-07 [1] CRAN (R 3.6.3)
+##  rstudioapi    0.13      2020-11-12 [1] CRAN (R 3.6.3)
+##  sass          0.4.0     2021-05-12 [1] CRAN (R 3.6.3)
+##  scales        1.1.1     2020-05-11 [1] CRAN (R 3.6.3)
+##  sessioninfo   1.1.1     2018-11-05 [1] CRAN (R 4.1.0)
+##  SimDesign   * 2.3.4     2021-05-17 [1] local         
+##  stringi       1.6.1     2021-05-10 [1] CRAN (R 3.6.3)
+##  stringr       1.4.0     2019-02-10 [1] CRAN (R 4.1.0)
+##  tibble        3.1.1     2021-04-18 [1] CRAN (R 3.6.3)
+##  tidyselect    1.1.1     2021-04-30 [1] CRAN (R 3.6.3)
+##  utf8          1.2.1     2021-03-12 [1] CRAN (R 3.6.3)
+##  vctrs         0.3.8     2021-04-29 [1] CRAN (R 3.6.3)
+##  vegan         2.5-7     2020-11-28 [1] CRAN (R 3.6.3)
+##  withr         2.4.2     2021-04-18 [1] CRAN (R 3.6.3)
+##  xfun          0.22      2021-03-11 [1] CRAN (R 3.6.3)
 ## 
-## locale:
-##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-## 
-## attached base packages:
-## [1] stats4    stats     graphics  grDevices utils     datasets  methods  
-## [8] base     
-## 
-## other attached packages:
-## [1] mirt_1.32.10    lattice_0.20-41 ggplot2_3.3.2   reshape2_1.4.4 
-## [5] SimDesign_2.1.2 rmarkdown_2.4  
-## 
-## loaded via a namespace (and not attached):
-##  [1] tidyselect_1.1.0      xfun_0.18             purrr_0.3.4          
-##  [4] pander_0.6.3          pbapply_1.4-3         splines_3.6.3        
-##  [7] colorspace_1.4-1      vctrs_0.3.4           generics_0.0.2       
-## [10] htmltools_0.5.0       mgcv_1.8-33           utf8_1.1.4           
-## [13] rlang_0.4.8           pillar_1.4.6          glue_1.4.2           
-## [16] withr_2.3.0           foreach_1.5.0         lifecycle_0.2.0      
-## [19] plyr_1.8.6            GPArotation_2014.11-1 stringr_1.4.0        
-## [22] munsell_0.5.0         gtable_0.3.0          codetools_0.2-16     
-## [25] evaluate_0.14         labeling_0.3          knitr_1.30           
-## [28] permute_0.9-5         dcurver_0.9.1         parallel_3.6.3       
-## [31] fansi_0.4.1           Rcpp_1.0.5            scales_1.1.1         
-## [34] vegan_2.5-6           farver_2.0.3          Deriv_4.1.0          
-## [37] digest_0.6.25         stringi_1.5.3         dplyr_1.0.2          
-## [40] grid_3.6.3            cli_2.0.2             tools_3.6.3          
-## [43] magrittr_1.5          tibble_3.0.3          cluster_2.1.0        
-## [46] crayon_1.3.4          pkgconfig_2.0.3       ellipsis_0.3.1       
-## [49] MASS_7.3-53           Matrix_1.2-18         assertthat_0.2.1     
-## [52] iterators_1.0.12      R6_2.4.1              nlme_3.1-149         
-## [55] compiler_3.6.3       
+## [1] /home/phil/R/x86_64-pc-linux-gnu-library/3.6
+## [2] /usr/local/lib/R/site-library
+## [3] /usr/lib/R/site-library
+## [4] /usr/lib/R/library
 ## 
 ## $packages
 ## NULL
@@ -489,28 +504,25 @@ summary(res)</code></pre>
 ## [1] 33
 ## 
 ## $date_completed
-## [1] &quot;Fri Nov  6 21:40:38 2020&quot;
+## [1] &quot;Mon May 17 03:40:31 2021&quot;
 ## 
 ## $total_elapsed_time
-## [1] &quot;17.63s&quot;
-## 
-## $warning_seeds
-## # A tibble: 0 x 0</code></pre>
+## [1] &quot;21.97s&quot;</code></pre>
 <pre class="r"><code># print results
 print(res)</code></pre>
 <pre><code>## # A tibble: 33 x 7
 ##    mean_diff sample_size      p REPLICATIONS SIM_TIME COMPLETED             SEED
 ##        &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                &lt;int&gt;
-##  1       0            10 0.0492        10000    0.829 Fri Nov  6 21:40…   1.14e9
-##  2       0.1          10 0.054         10000    0.502 Fri Nov  6 21:40…   3.13e8
-##  3       0.2          10 0.069         10000    0.516 Fri Nov  6 21:40…   8.66e8
-##  4       0.3          10 0.0999        10000    0.541 Fri Nov  6 21:40…   1.91e9
-##  5       0.4          10 0.135         10000    0.535 Fri Nov  6 21:40…   5.55e8
-##  6       0.5          10 0.186         10000    0.55  Fri Nov  6 21:40…   8.85e8
-##  7       0.6          10 0.245         10000    0.501 Fri Nov  6 21:40…   8.03e8
-##  8       0.7          10 0.316         10000    0.518 Fri Nov  6 21:40…   1.16e9
-##  9       0.8          10 0.387         10000    0.547 Fri Nov  6 21:40…   9.35e8
-## 10       0.9          10 0.467         10000    0.587 Fri Nov  6 21:40…   1.63e9
+##  1       0            10 0.0492        10000    0.528 Mon May 17 03:40…   1.14e9
+##  2       0.1          10 0.054         10000    0.570 Mon May 17 03:40…   3.13e8
+##  3       0.2          10 0.069         10000    0.499 Mon May 17 03:40…   8.66e8
+##  4       0.3          10 0.0999        10000    0.468 Mon May 17 03:40…   1.91e9
+##  5       0.4          10 0.135         10000    0.758 Mon May 17 03:40…   5.55e8
+##  6       0.5          10 0.186         10000    0.898 Mon May 17 03:40…   8.85e8
+##  7       0.6          10 0.245         10000    0.530 Mon May 17 03:40…   8.03e8
+##  8       0.7          10 0.316         10000    0.532 Mon May 17 03:40…   1.16e9
+##  9       0.8          10 0.387         10000    0.727 Mon May 17 03:40…   9.35e8
+## 10       0.9          10 0.467         10000    0.738 Mon May 17 03:40…   1.63e9
 ## # … with 23 more rows</code></pre>
 <p>A power curve is created by placing the detection rates on a <span class="math inline">\(y\)</span>-axis and including different factors on the x-axis and other aesthetics (shading, colours, etc). Here we use <code>ggplot2</code> to construct suitable power-curves.</p>
 <pre class="r"><code>library(ggplot2)
@@ -536,7 +548,7 @@ ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom
 <pre><code>## # A tibble: 1 x 7
 ##   mean_diff sample_size     p REPLICATIONS SIM_TIME COMPLETED               SEED
 ##       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                  &lt;int&gt;
-## 1       0.5          30 0.484        10000    0.535 Fri Nov  6 21:40:3…   3.04e8</code></pre>
+## 1       0.5          30 0.484        10000    0.641 Mon May 17 03:40:2…   3.04e8</code></pre>
 <pre class="r"><code>pwr.t.test(d=0.5, n=10, sig.level=0.05, type=&quot;two.sample&quot;, alternative=&quot;two.sided&quot;)</code></pre>
 <pre><code>## 
 ##      Two-sample t test power calculation 
@@ -552,7 +564,7 @@ ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom
 <pre><code>## # A tibble: 1 x 7
 ##   mean_diff sample_size     p REPLICATIONS SIM_TIME COMPLETED               SEED
 ##       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                  &lt;int&gt;
-## 1       0.5          10 0.186        10000     0.55 Fri Nov  6 21:40:2…   8.85e8</code></pre>
+## 1       0.5          10 0.186        10000    0.898 Mon May 17 03:40:1…   8.85e8</code></pre>
 </div>
 </div>
 <div id="power-curve-with-bootstrapped-confidence-intervals" class="section level1">
@@ -567,16 +579,16 @@ res</code></pre>
 <pre><code>## # A tibble: 33 x 9
 ##    mean_diff sample_size     p BOOT_p_2.5 BOOT_p_97.5 REPLICATIONS SIM_TIME
 ##        &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt;
-##  1       0            10 0.052     0.0390      0.065          1000    0.807
-##  2       0.1          10 0.064     0.048       0.079          1000    0.759
-##  3       0.2          10 0.071     0.0540      0.0860         1000    1.04 
-##  4       0.3          10 0.091     0.073       0.108          1000    1.08 
-##  5       0.4          10 0.126     0.105       0.146          1000    0.764
-##  6       0.5          10 0.203     0.178       0.228          1000    0.738
-##  7       0.6          10 0.251     0.222       0.278          1000    0.757
-##  8       0.7          10 0.299     0.269       0.327          1000    0.761
-##  9       0.8          10 0.395     0.363       0.424          1000    0.740
-## 10       0.9          10 0.489     0.459       0.519          1000    0.763
+##  1       0            10 0.052      0.039      0.065          1000    0.752
+##  2       0.1          10 0.064      0.048      0.079          1000    0.701
+##  3       0.2          10 0.071      0.054      0.0860         1000    0.704
+##  4       0.3          10 0.091      0.073      0.108          1000    0.704
+##  5       0.4          10 0.126      0.105      0.146          1000    0.692
+##  6       0.5          10 0.203      0.178      0.228          1000    0.707
+##  7       0.6          10 0.251      0.222      0.278          1000    0.702
+##  8       0.7          10 0.299      0.269      0.327          1000    0.704
+##  9       0.8          10 0.395      0.363      0.424          1000    0.745
+## 10       0.9          10 0.489      0.459      0.519          1000    0.712
 ## # … with 23 more rows, and 2 more variables: COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
 <pre class="r"><code>library(ggplot2)
 ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom_line() +
@@ -593,16 +605,16 @@ res</code></pre>
 <pre><code>## # A tibble: 33 x 9
 ##    mean_diff sample_size      p BOOT_p_2.5 BOOT_p_97.5 REPLICATIONS SIM_TIME
 ##        &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt;
-##  1       0            10 0.0537     0.0493      0.0584        10000     7.12
-##  2       0.1          10 0.0532     0.0488      0.0578        10000     7.31
-##  3       0.2          10 0.0746     0.0695      0.0795        10000     6.56
-##  4       0.3          10 0.0956     0.0899      0.101         10000     6.72
-##  5       0.4          10 0.133      0.126       0.139         10000     6.42
-##  6       0.5          10 0.189      0.182       0.197         10000     6.64
-##  7       0.6          10 0.253      0.245       0.262         10000     6.57
-##  8       0.7          10 0.325      0.316       0.334         10000     6.40
-##  9       0.8          10 0.396      0.387       0.405         10000     6.52
-## 10       0.9          10 0.476      0.467       0.486         10000     6.46
+##  1       0            10 0.0537     0.0493      0.0584        10000     6.92
+##  2       0.1          10 0.0532     0.0488      0.0578        10000     7.27
+##  3       0.2          10 0.0746     0.0695      0.0795        10000     6.72
+##  4       0.3          10 0.0956     0.0899      0.101         10000     6.78
+##  5       0.4          10 0.133      0.126       0.139         10000     7.23
+##  6       0.5          10 0.189      0.182       0.197         10000     6.79
+##  7       0.6          10 0.253      0.245       0.262         10000     6.47
+##  8       0.7          10 0.325      0.316       0.334         10000     6.50
+##  9       0.8          10 0.396      0.387       0.405         10000     6.84
+## 10       0.9          10 0.476      0.467       0.486         10000     6.65
 ## # … with 23 more rows, and 2 more variables: COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
 <pre class="r"><code>library(ggplot2)
 ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom_line() +
@@ -658,7 +670,7 @@ ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
@@ -676,7 +688,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>

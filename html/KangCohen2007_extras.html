@@ -9,10 +9,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Phil Chalmers" />
+<meta name="author" content="phil" />
 
+<meta name="date" content="2021-05-17" />
 
-<title>Brown and Forsythe (1974) simulation</title>
+<title>KangCohen2007_extras.R</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -361,214 +362,98 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">Brown and Forsythe (1974) simulation</h1>
-<h4 class="author">Phil Chalmers</h4>
+<h1 class="title toc-ignore">KangCohen2007_extras.R</h1>
+<h4 class="author">phil</h4>
+<h4 class="date">2021-05-17</h4>
 
 </div>
 
 
-<p>Simulation from:</p>
-<ul>
-<li>Brown, M. B. and Forsythe, A. B. (1974). Robust tests for the equality of variances. Journal of the American Statistical Association, 69(346), 364–367.</li>
-</ul>
-<div id="user-defined-functions-for-analyses" class="section level1">
-<h1>User-defined functions for analyses</h1>
-<pre class="r"><code>#-------------------------------------------------------------------
-# Custom functions required (not defined in other R packages)
+<pre class="r"><code># replicate generation of Table 4?
+nitems &lt;- 40
+if(FALSE){
+    a &lt;- if(model == &#39;1PL&#39;) rep(1, nitems) else rlnorm(nitems, meanlog = 0, sdlog=1/2)
+    b &lt;- rnorm(nitems)
+    c &lt;- if(model == &#39;3PL&#39;) rbeta(nitems, 5, 17) else rep(0, nitems)
+} else {
+    mat &lt;- matrix(c(
+        1.1005,  0.4078, 0.2228,   
+        2.2093,  0.5696, 0.2332,   
+        1.4493, -1.0610, 0.2337,  
+        0.7514, -0.2437, 0.1445,  
+        1.5789,  0.3206, 0.2581,   
+        0.6425, -1.3762, 0.2712,  
+        1.6254, -0.9800, 0.1232,  
+        1.3415, -0.6881, 0.1954,  
+        0.9180, -0.3526, 0.2709,  
+        1.8027,  0.2400, 0.2984,   
+        0.8159,  0.5917, 0.0587,   
+        0.9375,  1.8891, 0.1405,   
+        0.9126, -0.2690, 0.2339,  
+        1.9395,  0.3673, 0.2387,   
+        0.3746, -0.9681, 0.3527,  
+        0.6730, -1.2601, 0.1206,  
+        0.4166,  0.5225, 0.1244,   
+        1.2093, -1.3356, 0.1167,  
+        0.9486,  0.9515, 0.2787,   
+        1.4916,  0.9811, 0.1923,
+        0.5659, -0.1257, 0.3426,
+        0.6128, -0.7826, 0.1925,
+        1.1037,  0.0615, 0.2324,
+        1.9886,  0.4244, 0.1396,
+        0.5691, -0.7350, 0.2059,
+        1.0346,  0.9836, 0.3124,
+        1.1384, -1.2651, 0.1832,
+        3.3488, -0.2252, 0.1811,
+        2.6306, -0.6576, 0.2537,
+        0.6652,  1.7007, 0.2184,
+        1.0342,  1.0805, 0.2261,
+        1.0163, -2.0452, 0.3464,
+        1.2945,  0.1627, 0.1455,
+        1.6521,  0.0573, 0.3861,
+        0.9696,  1.2171, 0.1046,
+        1.2369,  2.1226, 0.1656,
+        0.7812,  0.4228, 0.2696,
+        0.7728, -0.1656, 0.1780,
+        0.5441, -0.2055, 0.1961,
+        1.4025,  1.2841, 0.2917), ncol=3, byrow=TRUE)
+    a &lt;- mat[,1]; b &lt;- mat[,2]; c &lt;- mat[,3]
+}
+fo &lt;- list(a=a, b=b, c=c) 
 
-#&#39; Jacknife variance test
-#&#39; 
-#&#39; @param DV a numeric vector
-#&#39; @param group a character/factor vector containing the group membership
-Jacknife_vartest &lt;- function(DV, group){
-    stopifnot(length(DV) == length(group))
-    nms &lt;- unique(group)
-    g &lt;- length(nms)
-    Ns &lt;- s2 &lt;- Ui. &lt;- numeric(g)
-    Uij &lt;- vector(&#39;list&#39;, g)
-    for(i in 1:g){
-        pick &lt;- group == nms[i]
-        sub &lt;- subset(DV, pick)
-        Ns[i] &lt;- length(sub)
-        s2[i] &lt;- var(sub)
-        sij2 &lt;- numeric(Ns[i])
-        for(j in 1:length(sub))
-            sij2[j] &lt;- var(sub[-j])
-        Uij[[i]] &lt;- Ns[i] * log(s2[i]) - (Ns[i]-1) * log(sij2)
-        Ui.[i] &lt;- mean(Uij[[i]])
-    }
-    U.. &lt;- mean(do.call(c, Uij))
-    num &lt;- sum(Ns * (Ui. - U..)^2) / (g-1)
-    den &lt;- 0
-    for(i in 1:g)
-        den &lt;- den + sum((Uij[[i]] - Ui.[i])^2) / sum(Ns-1)
-    J &lt;- num/den
-    df1 &lt;- g-1; df2 &lt;- sum(Ns-1)
-    p.value &lt;- pf(J, df1, df2, lower.tail = FALSE)
-    data.frame(J=J, df1=df1, df2=df2, p.value=p.value, row.names=&quot;&quot;)
+
+
+#################################################################
+# Helper functions
+
+# transform difficulty parameters to intercepts (for mirt)
+b2d &lt;- function(a,b,c){
+    nitems &lt;- length(a)
+    d &lt;- numeric(nitems)
+    for(i in 1:nitems)
+        d[i] &lt;- mirt::traditional2mirt(c(&#39;a&#39;=a[i], &#39;b&#39;=b[i], 
+                                         &#39;g&#39;=c[i], &#39;u&#39;=1), cls=&#39;3PL&#39;, ncat = 2)[2]
+    d
 }
 
-#&#39; Layard&#39;s variance test
-#&#39; 
-#&#39; @param DV a numeric vector
-#&#39; @param group a character/factor vector containing the group membership
-Layard_vartest &lt;- function(DV, group){
-    stopifnot(length(DV) == length(group))
-    nms &lt;- unique(group)
-    Ns &lt;- table(group)
-    N &lt;- sum(Ns)
-    g &lt;- length(nms)
-    log_s2 &lt;- numeric(g)
-    deviation &lt;- numeric(N)
-    for(i in 1:g){
-        pick &lt;- group == nms[i]
-        sub &lt;- subset(DV, pick)
-        xbar &lt;- mean(sub)
-        deviation[pick] &lt;- sub - xbar
-        log_s2[i] &lt;- log(var(sub))
-    }
-    gamma &lt;- N * sum(deviation^4) / (sum(deviation^2)^2) - 3
-    tau2 &lt;- 2 + (1 - g/N) * gamma
-    S &lt;- sum( (Ns-1) * (log_s2 - sum((Ns-1) * log_s2)/sum(Ns-1))^2) / tau2
-    df &lt;- g - 1
-    p.value &lt;- pchisq(S, df, lower.tail=FALSE)
-    data.frame(S=S, df=df, p.value=p.value, row.names = &quot;&quot;)
-}</code></pre>
-</div>
-<div id="simulation-code" class="section level1">
-<h1>Simulation code</h1>
-<pre class="r"><code>#-------------------------------------------------------------------
-# Define the design conditions
-
-library(SimDesign)
-
-Design &lt;- createDesign(var_ratio=c(4, 2, 1, 1/2, 1/4),
-                       N=c(80, 20),
-                       groups_equal=c(TRUE, FALSE),
-                       distribution=c(&#39;Gaussian&#39;, &#39;t4&#39;, &#39;Chi4&#39;, &#39;Cauchy&#39;),
-                       # remove redundant or not-applicable rows
-                       subset = !(groups_equal &amp; var_ratio &lt; 1) |
-                           !(distribution != &#39;Gaussian&#39; &amp; var_ratio != 1))
-
-# Brown and Forsythe use different sample sizes when groups were unequal
-pick1 &lt;- with(Design, !groups_equal &amp; N == 80)
-pick2 &lt;- with(Design, !groups_equal &amp; N == 20)
-Design$N[pick1] &lt;- 60
-Design$N[pick2] &lt;- 30
-
-Design
-
-#-------------------------------------------------------------------
-
-Generate &lt;- function(condition, fixed_objects = NULL) {
-    Attach(condition)
-    sd1 &lt;- ifelse(var_ratio &lt;= 1, 1, sqrt(var_ratio))
-    sd2 &lt;- ifelse(var_ratio &lt;= 1, sqrt(1/var_ratio), 1)
-    if(groups_equal){
-        N1 &lt;- N2 &lt;- N/2
-    } else {
-        N1 &lt;- N * 1/3
-        N2 &lt;- N - N1
-    }
-    dv &lt;- switch(distribution,
-                 Gaussian = c(rnorm(N1, sd = sd1), rnorm(N2, sd = sd2)),
-                 t4 = c(rt(N1, df = 4), rt(N2, df = 4)),
-                 Chi4 = c(rchisq(N1, df = 4), rchisq(N2, df = 4)),
-                 Cauchy = c(rcauchy(N1), rcauchy(N2))
-    )
-    dat &lt;- data.frame(DV=dv,
-                      group=c(rep(&#39;G1&#39;, N1), rep(&#39;G2&#39;, N2)))
-    dat
-}
-
-Analyse &lt;- function(condition, dat, fixed_objects = NULL) {
-    Attach(dat)
-    F_test &lt;- var.test(DV ~ group)$p.value
-    Jacknife &lt;- Jacknife_vartest(DV, group)$p.value
-    Layard &lt;- Layard_vartest(DV, group)$p.value
-    W50 &lt;- levene.test(DV, group=group, location = &#39;median&#39;)$p.value
-    W10 &lt;- levene.test(DV, group=group, location = &#39;trim.mean&#39;,
-                       trim.alpha = .1)$p.value
-    Levene &lt;- levene.test(DV, group=group, location = &#39;mean&#39;)$p.value
-    ret &lt;- c(F=F_test, Jacknife=Jacknife, Layard=Layard,
-             Levene=Levene, W10=W10, W50=W50)
+# helper function for organizing parameter sets
+get_parameters &lt;- function(condition, fixed_objects){
+    nitems &lt;- condition$nitems
+    model &lt;- condition$model
+    pick &lt;- 1:nitems
+    b &lt;- fixed_objects$b[pick]
+    d &lt;- fixed_objects$d[pick]
+    a &lt;- if(model == &quot;1PL&quot;) rep(1, nitems) else 
+        fixed_objects$a[pick]
+    c &lt;- if(model  == &#39;3PL&#39;) rbeta(nitems, 5, 7) else rep(0, nitems)
+    d &lt;- b2d(a=a, b=b, c=c)
+    ret &lt;- list(a=a, b=b, c=c, d=d)
     ret
 }
 
-Summarise &lt;- function(condition, results, fixed_objects = NULL) {
-    ret &lt;- EDR(results, alpha = .05)
-    ret
-}
-
-#-------------------------------------------------------------------
-# Run the MCS
-
-res &lt;- runSimulation(design=Design, replications=1000, parallel=TRUE,
-                     generate=Generate, analyse=Analyse,
-                     summarise=Summarise, packages=&#39;lawstat&#39;,
-                     filename=&#39;BF_simulation&#39;)
-res</code></pre>
-<pre><code>## # A tibble: 68 x 14
-##    var_ratio     N groups_equal distribution     F Jacknife Layard Levene   W10
-##        &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt;        &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-##  1      4       80 TRUE         Gaussian     0.995    0.99   0.99   0.978 0.978
-##  2      2       80 TRUE         Gaussian     0.538    0.52   0.533  0.478 0.472
-##  3      1       80 TRUE         Gaussian     0.047    0.039  0.041  0.039 0.04 
-##  4      0.5     80 TRUE         Gaussian     0.577    0.56   0.564  0.51  0.501
-##  5      0.25    80 TRUE         Gaussian     0.99     0.984  0.986  0.978 0.975
-##  6      4       20 TRUE         Gaussian     0.517    0.421  0.517  0.439 0.42 
-##  7      2       20 TRUE         Gaussian     0.153    0.134  0.177  0.152 0.137
-##  8      1       20 TRUE         Gaussian     0.047    0.059  0.07   0.059 0.052
-##  9      0.5     20 TRUE         Gaussian     0.166    0.134  0.189  0.135 0.129
-## 10      0.25    20 TRUE         Gaussian     0.513    0.412  0.52   0.435 0.403
-## # … with 58 more rows, and 5 more variables: W50 &lt;dbl&gt;, REPLICATIONS &lt;int&gt;,
-## #   SIM_TIME &lt;dbl&gt;, COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
-</div>
-<div id="extras" class="section level1">
-<h1>Extras</h1>
-<pre class="r"><code># Type I errors
-TypeI &lt;- subset(res, var_ratio == 1)
-TypeI</code></pre>
-<pre><code>## # A tibble: 16 x 14
-##    var_ratio     N groups_equal distribution     F Jacknife Layard Levene   W10
-##        &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt;        &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-##  1         1    80 TRUE         Gaussian     0.047    0.039  0.041  0.039 0.04 
-##  2         1    20 TRUE         Gaussian     0.047    0.059  0.07   0.059 0.052
-##  3         1    60 FALSE        Gaussian     0.056    0.059  0.063  0.055 0.053
-##  4         1    30 FALSE        Gaussian     0.049    0.044  0.059  0.053 0.05 
-##  5         1    80 TRUE         t4           0.264    0.078  0.06   0.046 0.046
-##  6         1    20 TRUE         t4           0.14     0.055  0.075  0.055 0.045
-##  7         1    60 FALSE        t4           0.207    0.081  0.06   0.055 0.049
-##  8         1    30 FALSE        t4           0.173    0.066  0.069  0.058 0.049
-##  9         1    80 TRUE         Chi4         0.189    0.066  0.059  0.086 0.066
-## 10         1    20 TRUE         Chi4         0.132    0.071  0.102  0.093 0.077
-## 11         1    60 FALSE        Chi4         0.161    0.081  0.072  0.112 0.078
-## 12         1    30 FALSE        Chi4         0.162    0.098  0.101  0.109 0.079
-## 13         1    80 TRUE         Cauchy       0.782    0.194  0.295  0.134 0.025
-## 14         1    20 TRUE         Cauchy       0.633    0.175  0.394  0.176 0.042
-## 15         1    60 FALSE        Cauchy       0.766    0.2    0.303  0.165 0.027
-## 16         1    30 FALSE        Cauchy       0.666    0.204  0.349  0.177 0.051
-## # … with 5 more variables: W50 &lt;dbl&gt;, REPLICATIONS &lt;int&gt;, SIM_TIME &lt;dbl&gt;,
-## #   COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
-<pre class="r"><code># Power
-Power &lt;- subset(res, var_ratio != 1)
-Power</code></pre>
-<pre><code>## # A tibble: 52 x 14
-##    var_ratio     N groups_equal distribution     F Jacknife Layard Levene   W10
-##        &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt;        &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-##  1      4       80 TRUE         Gaussian     0.995    0.99   0.99   0.978 0.978
-##  2      2       80 TRUE         Gaussian     0.538    0.52   0.533  0.478 0.472
-##  3      0.5     80 TRUE         Gaussian     0.577    0.56   0.564  0.51  0.501
-##  4      0.25    80 TRUE         Gaussian     0.99     0.984  0.986  0.978 0.975
-##  5      4       20 TRUE         Gaussian     0.517    0.421  0.517  0.439 0.42 
-##  6      2       20 TRUE         Gaussian     0.153    0.134  0.177  0.152 0.137
-##  7      0.5     20 TRUE         Gaussian     0.166    0.134  0.189  0.135 0.129
-##  8      0.25    20 TRUE         Gaussian     0.513    0.412  0.52   0.435 0.403
-##  9      4       60 FALSE        Gaussian     0.92     0.903  0.876  0.895 0.89 
-## 10      2       60 FALSE        Gaussian     0.43     0.389  0.371  0.36  0.353
-## # … with 42 more rows, and 5 more variables: W50 &lt;dbl&gt;, REPLICATIONS &lt;int&gt;,
-## #   SIM_TIME &lt;dbl&gt;, COMPLETED &lt;chr&gt;, SEED &lt;int&gt;</code></pre>
-</div>
+# find lowest information value and counts corresponding to lowest model (Table 9)
+best_info &lt;- function(infomat)
+    colMeans(infomat == apply(infomat, 1, min))</code></pre>
 
 
 
