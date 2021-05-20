@@ -186,37 +186,12 @@
 #'   Alternatively, functions can be called explicitly without attaching the package with the \code{::} operator
 #'   (e.g., \code{extraDistr::rgumbel()})
 #'
-#' @param notification an optional, empty argument function to be executed upon completion of the simulation. This can be used, for
-#'   instance, to trigger email or SMS notifications that indicate the simulation has been completed. For example,
-#'   to utilize the \code{RPushbullet} package (and assuming users have previously a) registered for a Pushbullet account,
-#'   and b) installed the application on their mobile device and computer), use the following:
-#'
-#'   \describe{
-#'
-#'     \item{Prior Setup}{Prior to defining \code{notification}, load the \code{RPushbullet} library via \code{library(RPushbullet)}. If
-#'       this is the first time you have used the package then a suitable \code{rpushbullet.json} file will not exist on your computer,
-#'       and you'll need to supply a suitable token and the devise to push the notification to via the \code{pbSetup()} setup}
-#'
-#'      \item{Execution}{Supply a definition of \code{notification} that utilizes the \code{pbPost} function. E.g.,
-#'      \code{runSimulation(...,
-#'           notification = function() pbPost(type = "note", title = "SimDesign", body = "Simulation Complete"))}}
-#'
-#'   }
-#'
-#'   Alternatively, if users wish to have an email sent upon completion then the following template that uses the \code{sendmailR}
-#'   package could be used:
-#'
-#'   \describe{
-#'
-#'     \item{Using \code{sendmailR}}{
-#'
-#'        \code{runSimulation(...,
-#'             notification = function() sendmailR::sendmail(from="<sendmailR@your.computer>",
-#'                                                           to="<your.email@address>", subject="SimDesign", msg="Simulation Complete",
-#'                                                           control=list(smtpServer="ASPMX.L.GOOGLE.COM")))}.
-#'                                                            }
-#'  }
-#'  However, note that this may be less reliable since the email message could be directed to a spam folder.
+#' @param notification an optional character vector input that can be used to send Pushbullet notifications from a configured
+#'   computer. To utilize the \code{RPushbullet} package (and assuming users have previously a) registered for a Pushbullet account,
+#'   and b) installed the application on their mobile device and computer), use \code{library(RPushbullet} prior to calling
+#'   \code{runSimulation()} and pass one of the following options: \code{'none'} (default; send no
+#'   notification), \code{'condition'} to send a notification after each condition has completed, or \code{'complete'} to send
+#'   a notification only when the simulation has finished.
 #'
 #' @param save_results logical; save the results returned from \code{\link{Analyse}} to external
 #'   \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
@@ -716,13 +691,18 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL, debug = 'none', load_seed = NULL,
                           save_results = FALSE, parallel = FALSE, ncores = parallel::detectCores(),
                           type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'), cl = NULL,
-                          notification = NULL, boot_method='none', boot_draws = 1000L, CI = .95,
+                          notification = 'none', boot_method='none', boot_draws = 1000L, CI = .95,
                           seed = rint(nrow(design), min=1L, max = 2147483647L), save_seeds = FALSE,
                           save = TRUE, store_results = FALSE, max_errors = 50L,
                           save_details = list(), extra_options = list(),
                           progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
+    stopifnot(notification %in% c('none', 'condition', 'complete'))
+    if(notification != 'none')
+        if(!("RPushbullet" %in% (.packages())))
+            stop('Please use library(RPushbullet) to load the default ~/.rpushbullet.json file',
+                 call. = FALSE)
     store_warning_seeds <- ifelse(is.null(extra_options$store_warning_seeds),
                                   FALSE, extra_options$store_warning_seeds)
     warnings_as_errors <- ifelse(is.null(extra_options$warnings_as_errors),
@@ -988,6 +968,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          stop_on_fatal=stop_on_fatal)
             time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
+            if(notification == 'condition')
+                notification_condition(design[i,], Result_list[[i]], nrow(design))
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
@@ -1027,7 +1009,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 saveRDS(Result_list, file.path(out_rootdir, tmpfilename))
             time1 <- proc.time()[3L]
             Result_list[[i]]$SIM_TIME <- time1 - time0
-
+            if(notification == 'condition')
+                notification_condition(design[i,], Result_list[[i]], nrow(design))
         }
     }
     attr(Result_list, 'SimDesign_names') <- NULL
@@ -1148,7 +1131,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         saveRDS(Final, file.path(out_rootdir, filename))
     }
     if(save || save_results || save_seeds) file.remove(file.path(out_rootdir, tmpfilename))
-    if(!is.null(notification)) notification()
+    if(notification %in% c('condition', 'complete')) notification_final(Final)
     return(Final)
 }
 

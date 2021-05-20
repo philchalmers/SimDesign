@@ -18,7 +18,7 @@ This function is used to suppress information printed from external functions
 that make internal use of \code{link{message}} and \code{\link{cat}}, which
 provide information in interactive R sessions. For simulations, the session
 is not interactive, and therefore this type of output should be suppressed.
-For similar behavior for suppressing warning messages see
+For similar behaviour for suppressing warning messages see
 \code{\link{suppressWarnings}}, though use this function carefully as some
 warnings can be meaningful and unexpected.
 }

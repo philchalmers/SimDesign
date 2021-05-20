@@ -51,13 +51,34 @@ print_progress <- function(row, trow, stored_time, progress){
 
 myundebug <- function(fun) if(isdebugged(fun)) undebug(fun)
 
+notification_condition <- function(condition, results, total){
+    RPushbullet::pbPost(type = 'note',
+                        title = sprintf("Condition %i/%i completed", condition$ID, total),
+                        body = sprintf("Execution time: %s \nErrors: %i \nWarnings: %i",
+                                       timeFormater(results$SIM_TIME),
+                                       ifelse(is.null(results$ERRORS), 0, results$ERRORS),
+                                       ifelse(is.null(results$WARNINGS), 0, results$WARNINGS)))
+
+    invisible(NULL)
+}
+
+notification_final <- function(Final){
+    RPushbullet::pbPost(type = 'note',
+                        title = "Simulation completed",
+                        body = sprintf("Total execution time: %s \nTotal Errors: %i \nTotal Warnings: %i",
+                                       timeFormater(sum(Final$SIM_TIME)),
+                                       ifelse(is.null(Final$ERRORS), 0, sum(Final$ERRORS)),
+                                       ifelse(is.null(Final$WARNINGS), 0, sum(Final$WARNINGS))))
+    invisible(NULL)
+}
+
 #' Suppress function messages and Concatenate and Print (cat)
 #'
 #' This function is used to suppress information printed from external functions
 #' that make internal use of \code{link{message}} and \code{\link{cat}}, which
 #' provide information in interactive R sessions. For simulations, the session
 #' is not interactive, and therefore this type of output should be suppressed.
-#' For similar behavior for suppressing warning messages see
+#' For similar behaviour for suppressing warning messages see
 #' \code{\link{suppressWarnings}}, though use this function carefully as some
 #' warnings can be meaningful and unexpected.
 #'
