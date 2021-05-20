@@ -187,10 +187,15 @@
 #'   (e.g., \code{extraDistr::rgumbel()})
 #'
 #' @param notification an optional character vector input that can be used to send Pushbullet notifications from a configured
-#'   computer. To utilize the \code{RPushbullet} package (and assuming users have previously a) registered for a Pushbullet account,
-#'   and b) installed the application on their mobile device and computer), use \code{library(RPushbullet} prior to calling
-#'   \code{runSimulation()} and pass one of the following options: \code{'none'} (default; send no
-#'   notification), \code{'condition'} to send a notification after each condition has completed, or \code{'complete'} to send
+#'   computer. This reports information such as the total execution time, the condition completed, and error/warning
+#'   messages recorded. This arguments assumes that users have already A) registered for a Pushbullet account,
+#'   B) installed the application on their mobile device and computer, and C) created an associated JSON file of the form
+#'   \code{~/.rpushbullet.json} using \code{RPushbullet::pbSetup()}).
+#'
+#'   To utilize the \code{RPushbullet} in \code{SimDesign} first call \code{library(RPushbullet} before running
+#'   \code{runSimulation()} to read-in the default JSON file. Next, pass one of the following supported
+#'   options: \code{'none'} (default; send no notification),
+#'   \code{'condition'} to send a notification after each condition has completed, or \code{'complete'} to send
 #'   a notification only when the simulation has finished.
 #'
 #' @param save_results logical; save the results returned from \code{\link{Analyse}} to external
@@ -594,7 +599,11 @@
 #' runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
 #'               generate=Generate, analyse=Analyse, summarise=Summarise)
 #'
-#'
+#' ## same as above, but send a notification via Pushbullet upon completion
+#' library(RPushbullet) # read-in default JSON file
+#' runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
+#'               generate=Generate, analyse=Analyse, summarise=Summarise,
+#'               notification = 'complete')
 #'
 #' ## Debug the generate function. See ?browser for help on debugging
 #' ##   Type help to see available commands (e.g., n, c, where, ...),

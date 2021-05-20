@@ -19,9 +19,10 @@
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #' @import foreach methods parallel stats
 #' @importFrom sessioninfo session_info
+#' @importFrom RPushbullet pbPost
 #' @importFrom pbapply pblapply pboptions
 #' @importFrom dplyr as_tibble bind_rows
-#' @importFrom utils recover packageVersion sessionInfo head tail capture.output
+#' @importFrom utils recover packageVersion head tail capture.output
 #' @keywords package
 #' @references
 #'

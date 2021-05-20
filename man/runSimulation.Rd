@@ -160,11 +160,16 @@ cluster object yourself whenever you have multiple nodes to chain together (note
 that you must  use either the "MPI" or "PSOCK" clusters)}
 
 \item{notification}{an optional character vector input that can be used to send Pushbullet notifications from a configured
-computer. To utilize the \code{RPushbullet} package (and assuming users have previously a) registered for a Pushbullet account,
-and b) installed the application on their mobile device and computer), use \code{library(RPushbullet} prior to calling
-\code{runSimulation()} and pass one of the following options: \code{'none'} (default; send no
-notification), \code{'condition'} to send a notification after each condition has completed, or \code{'complete'} to send
-a notification only when the simulation has finished.}
+  computer. This reports information such as the total execution time, the condition completed, and error/warning
+  messages recorded. This arguments assumes that users have already A) registered for a Pushbullet account,
+  B) installed the application on their mobile device and computer, and C) created an associated JSON file of the form
+  \code{~/.rpushbullet.json} using \code{RPushbullet::pbSetup()}).
+
+  To utilize the \code{RPushbullet} in \code{SimDesign} first call \code{library(RPushbullet} before running
+  \code{runSimulation()} to read-in the default JSON file. Next, pass one of the following supported
+  options: \code{'none'} (default; send no notification),
+  \code{'condition'} to send a notification after each condition has completed, or \code{'complete'} to send
+  a notification only when the simulation has finished.}
 
 \item{boot_method}{method for performing non-parametric bootstrap confidence intervals
 for the respective meta-statistics computed by the \code{Summarise} function.
@@ -633,7 +638,11 @@ View(res)
 runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
               generate=Generate, analyse=Analyse, summarise=Summarise)
 
-
+## same as above, but send a notification via Pushbullet upon completion
+library(RPushbullet) # read-in default JSON file
+runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
+              generate=Generate, analyse=Analyse, summarise=Summarise,
+              notification = 'complete')
 
 ## Debug the generate function. See ?browser for help on debugging
 ##   Type help to see available commands (e.g., n, c, where, ...),
