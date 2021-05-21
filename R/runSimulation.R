@@ -861,7 +861,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         }
         parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
         if(verbose)
-            message(sprintf("Number of parallel clusters in use: %i", length(cl)))
+            message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
     }
     Result_list <- stored_Results_list <- vector('list', nrow(design))
     names(Result_list) <- names(stored_Results_list) <- rownames(design)

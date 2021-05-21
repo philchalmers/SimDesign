@@ -10,7 +10,7 @@ load_packages <- function(packages){
     if(!is.null(packages))
         for(pack in packages)
             require(substitute(pack), character.only = TRUE)
-    invisible()
+    invisible(NULL)
 }
 
 get_packages <- function(packages){
@@ -46,7 +46,7 @@ print_progress <- function(row, trow, stored_time, progress){
     if(progress) cat('\n')
     cat(sprintf('\rDesign row: %i/%i;   Started: %s;   Total elapsed time: %s \n',
                 row, trow, date(), timeFormater(sum(stored_time))))
-    invisible()
+    invisible(NULL)
 }
 
 myundebug <- function(fun) if(isdebugged(fun)) undebug(fun)
