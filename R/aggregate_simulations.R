@@ -81,10 +81,13 @@ aggregate_simulations <- function(files = NULL, dirs = NULL, results_dirname = '
         }
         return(invisible(NULL))
     }
-    filenames <- dir()
-    filenames <- filenames[grepl('*\\.rds', tolower(filenames))]
-    if(!length(filenames)) stop('There are no .rds files in the working directory')
-    if(!is.null(files)) filenames <- files
+    if(!is.null(files)){
+        filenames <- files
+    } else {
+        filenames <- dir()
+        filenames <- filenames[grepl('*\\.rds', tolower(filenames))]
+        if(!length(filenames)) stop('There are no .rds files in the working directory')
+    }
     readin <- vector('list', length(filenames))
     for(i in 1:length(filenames))
         readin[[i]] <- readRDS(filenames[i])
