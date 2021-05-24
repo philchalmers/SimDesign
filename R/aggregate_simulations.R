@@ -8,6 +8,9 @@
 #' @param files a \code{character} vector containing the names of the simulation files. If \code{NULL},
 #'   all files in the working directory ending in \code{.rds} will be used
 #'
+#' @param file_name name of .rds file to save aggregate simulation file to. Default is
+#'   \code{'SimDesign_aggregate.rds'}
+#'
 #' @param dirs a \code{character} vector containing the names of the \code{save_results} directories to be
 #'   aggregated. A new folder will be created and placed in the \code{results_dirname} output folder
 #'
@@ -42,19 +45,22 @@
 #' # runSimulation(..., filename='file1')
 #' # runSimulation(..., filename='file2')
 #'
-#' final <- aggregate_simulations()
-#' saveRDS(final, 'my_final_simulation.rds')
+#' # saves to the hard-drive and stores in workspace
+#' final <- aggregate_simulations(c('file1.rds', 'file2.rds'))
+#' final
 #'
-#' # aggregate saved results
+#' # aggregate saved results for .rds files and results directories
 #' # runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir1'))
 #' # runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir2'))
 #'
-#' # place new saved results in 'SimDesign_results/' directory by default
-#' aggregate_simulations(dirs = c('dir1', 'dir2'))
+#' # place new saved results in 'SimDesign_results/' by default
+#' aggregate_simulations(c('file1.rds', 'file2.rds'),
+#'                       dirs = c('dir1', 'dir2'))
 #'
 #'
 #' }
-aggregate_simulations <- function(files = NULL, dirs = NULL, results_dirname = 'SimDesign_aggregate_results'){
+aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate.rds',
+                                  dirs = NULL, results_dirname = 'SimDesign_aggregate_results'){
     if(!is.null(dirs)){
         if(!all(sapply(dirs, dir.exists))) stop('One or more directories not found')
         files <- lapply(dirs, function(x) dir(x))
@@ -62,6 +68,8 @@ aggregate_simulations <- function(files = NULL, dirs = NULL, results_dirname = '
             stop('File names are not all the same')
         files <- files[[1L]]
         ndirs <- length(dirs)
+        if(dir.exists(results_dirname))
+            stop(sprintf('Directory \'%s/\' already exists. Please fix', results_dirname), call.=FALSE)
         dir.create(results_dirname)
         for(f in files){
             readin <- lapply(1:ndirs, function(x) readRDS(paste0(dirs[x], '/', f)))
@@ -79,7 +87,6 @@ aggregate_simulations <- function(files = NULL, dirs = NULL, results_dirname = '
                 ret$errors <- table(do.call(c, lapply(1:length(nms), function(x) rep(nms[x], each = tmp[x]))))
             saveRDS(ret, paste0(results_dirname, '/', f))
         }
-        return(invisible(NULL))
     }
     if(!is.null(files)){
         filenames <- files
@@ -88,6 +95,8 @@ aggregate_simulations <- function(files = NULL, dirs = NULL, results_dirname = '
         filenames <- filenames[grepl('*\\.rds', tolower(filenames))]
         if(!length(filenames)) stop('There are no .rds files in the working directory')
     }
+    if(file_name %in% dir())
+        stop(sprintf('File \'%s\' already exists in working directory', file_name), call.=FALSE)
     readin <- vector('list', length(filenames))
     for(i in 1:length(filenames))
         readin[[i]] <- readRDS(filenames[i])
@@ -118,5 +127,6 @@ aggregate_simulations <- function(files = NULL, dirs = NULL, results_dirname = '
     }
     out <- dplyr::as_tibble(data.frame(ret, try_errors, check.names = FALSE))
     out$SEED <- NULL
-    out
+    saveRDS(out, file_name)
+    invisible(out)
 }

@@ -2,6 +2,8 @@
 
 ## Changes in SimDesign 2.4
 
+- Prevent `aggregate_simulations()` from overwriting files and directories accidentally
+
 - Removed `plyr::rbind.fill` in favour of `dplyr::bind_row()`, which removed `plyr` as a dependency
 
 - `Attach()` now accepts multiple list-like objects as inputs

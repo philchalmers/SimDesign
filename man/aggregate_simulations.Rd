@@ -6,6 +6,7 @@
 \usage{
 aggregate_simulations(
   files = NULL,
+  file_name = "SimDesign_aggregate.rds",
   dirs = NULL,
   results_dirname = "SimDesign_aggregate_results"
 )
@@ -13,6 +14,9 @@ aggregate_simulations(
 \arguments{
 \item{files}{a \code{character} vector containing the names of the simulation files. If \code{NULL},
 all files in the working directory ending in \code{.rds} will be used}
+
+\item{file_name}{name of .rds file to save aggregate simulation file to. Default is
+\code{'SimDesign_aggregate.rds'}}
 
 \item{dirs}{a \code{character} vector containing the names of the \code{save_results} directories to be
 aggregated. A new folder will be created and placed in the \code{results_dirname} output folder}
@@ -38,15 +42,17 @@ setwd('my_working_directory')
 # runSimulation(..., filename='file1')
 # runSimulation(..., filename='file2')
 
-final <- aggregate_simulations()
-saveRDS(final, 'my_final_simulation.rds')
+# saves to the hard-drive and stores in workspace
+final <- aggregate_simulations(c('file1.rds', 'file2.rds'))
+final
 
-# aggregate saved results
+# aggregate saved results for .rds files and results directories
 # runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir1'))
 # runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir2'))
 
-# place new saved results in 'SimDesign_results/' directory by default
-aggregate_simulations(dirs = c('dir1', 'dir2'))
+# place new saved results in 'SimDesign_results/' by default
+aggregate_simulations(c('file1.rds', 'file2.rds'),
+                      dirs = c('dir1', 'dir2'))
 
 
 }
