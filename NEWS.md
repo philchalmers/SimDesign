@@ -2,7 +2,9 @@
 
 ## Changes in SimDesign 2.4
 
-- Prevent `aggregate_simulations()` from overwriting files and directories accidentally
+- Prevent `aggregate_simulations()` from overwriting files and directories accidentally. As well,
+  the auto-detection of suitable .rds files has been removed as explicitly stating the files/directories
+  to be aggregated is less error prone
 
 - Removed `plyr::rbind.fill` in favour of `dplyr::bind_row()`, which removed `plyr` as a dependency
 

@@ -120,7 +120,7 @@ test_that('SimDesign', {
                            replications = 2, parallel=FALSE, save=TRUE, verbose = FALSE)
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile', verbose = FALSE)
-    Final <- aggregate_simulations()
+    Final <- aggregate_simulations(files = c('file.rds', 'newfile.rds'))
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
     SimClean(dir()[grepl('\\.rds', dir())])
@@ -165,7 +165,7 @@ test_that('SimDesign', {
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, max_errors=Inf,
                          replications = 2, parallel=FALSE, filename = 'newfile', save=TRUE,
                          verbose = FALSE)
-    Final <- aggregate_simulations()
+    Final <- aggregate_simulations(c('this.rds', 'newfile.rds'))
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
     SimClean(dir()[grepl('\\.rds', dir())])
