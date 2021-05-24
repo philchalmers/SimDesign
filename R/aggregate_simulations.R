@@ -71,6 +71,7 @@ aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate
         if(dir.exists(results_dirname))
             stop(sprintf('Directory \'%s/\' already exists. Please fix', results_dirname), call.=FALSE)
         dir.create(results_dirname)
+        message(sprintf('Writing aggregate results to \"%s\"', results_dirname))
         for(f in files){
             readin <- lapply(1:ndirs, function(x) readRDS(paste0(dirs[x], '/', f)))
             ret <- readin[[1L]]
