@@ -60,6 +60,7 @@
 #' }
 aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate.rds',
                                   dirs = NULL, results_dirname = 'SimDesign_aggregate_results'){
+    oldfiles <- files
     if(!is.null(dirs)){
         if(!all(sapply(dirs, dir.exists))) stop('One or more directories not found')
         files <- lapply(dirs, function(x) dir(x))
@@ -87,6 +88,7 @@ aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate
             saveRDS(ret, paste0(results_dirname, '/', f))
         }
     }
+    files <- oldfiles
     if(!is.null(files)){
         filenames <- files
     } else {
