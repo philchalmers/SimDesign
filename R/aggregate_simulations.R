@@ -71,7 +71,7 @@ aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate
         if(dir.exists(results_dirname))
             stop(sprintf('Directory \'%s/\' already exists. Please fix', results_dirname), call.=FALSE)
         dir.create(results_dirname)
-        message(sprintf('Writing aggregate results to \"%s\"', results_dirname))
+        message(sprintf('Writing aggregate results folders to \"%s\"', results_dirname))
         for(f in files){
             readin <- lapply(1:ndirs, function(x) readRDS(paste0(dirs[x], '/', f)))
             ret <- readin[[1L]]
@@ -114,7 +114,8 @@ aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate
     weights <- sapply(readin, function(x) x$REPLICATIONS[1L])
     stopifnot(all(sapply(readin, function(x) length(unique(x$REPLICATIONS)) == 1L)))
     weights <- weights / sum(weights)
-    message('Aggregating ', length(filenames), ' simulation files.')
+    message(sprintf('Writing combinded file from %i simulations to \"%s\"',
+                    length(filenames), file_name))
     for(i in seq_len(length(filenames))){
         tmp <- stats::na.omit(match(nms, names(errors[[i]])))
         if(length(tmp) > 0L){
