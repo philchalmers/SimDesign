@@ -157,9 +157,6 @@
 #' @param replications number of independent replications to perform per condition (i.e., each row in \code{design}).
 #'   Must be greater than 0
 #'
-#' @param type default type of cluster to create for the \code{cl} object if no supplied. For Windows OS this
-#'   defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected (suitable for Linux and Mac OSX)
-#'
 #' @param fixed_objects (optional) an object (usually a named \code{list})
 #'   containing additional user-defined objects
 #'   that should remain fixed across conditions. This is useful when including
@@ -271,14 +268,19 @@
 #'       throughout the simulation (potentially causing RAM related issues when constructing the final simulation object as
 #'       any given simulation replicate could generate numerous warnings, and storing the seeds states could add up quickly).
 #'
-#'       Set this to \code{TRUE} when replicating warning messages is important, however be aware that too many warnings
-#'       messages raised during the simulation implementation could cause RAM related issues.}
+#'       Set this to \code{TRUE} when replicating warning messages is important, however be aware
+#'       that too many warnings messages raised during the simulation implementation could cause
+#'       RAM related issues.}
 #'
 #'      \item{\code{allow_na}}{logical (default is \code{FALSE}); should \code{NA}s be allowed in the
 #'       analyse step as a valid result from the simulation analysis?}
 #'
 #'      \item{\code{allow_nan}}{logical (default is \code{FALSE}); should \code{NaN}s be allowed in the
 #'        analyse step as a valid result from the simulation analysis?}
+#'
+#'      \item{\code{type}}{default type of cluster to create for the \code{cl} object if no supplied.
+#'        For Windows OS this defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected
+#'        (suitable for Linux and Mac OSX). This is ignored if the user specifies their own \code{cl} object}
 #'
 #'      \item{\code{MPI}}{logical (default is \code{FALSE}); use the \code{foreach} package in a
 #'        form usable by MPI to run simulation in parallel on a cluster? }
@@ -697,16 +699,21 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          fixed_objects = NULL, packages = NULL, filename = NULL, debug = 'none', load_seed = NULL,
+                          fixed_objects = NULL, packages = NULL, filename = NULL,
+                          debug = 'none', load_seed = NULL,
                           save_results = FALSE, parallel = FALSE, ncores = parallel::detectCores(),
-                          type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'), cl = NULL,
-                          notification = 'none', boot_method='none', boot_draws = 1000L, CI = .95,
-                          seed = rint(nrow(design), min=1L, max = 2147483647L), save_seeds = FALSE,
-                          save = TRUE, store_results = FALSE, max_errors = 50L,
+                          cl = NULL, notification = 'none', CI = .95, seed = NULL,
+                          boot_method='none', boot_draws = 1000L, max_errors = 50L,
+                          save_seeds = FALSE, save = TRUE, store_results = FALSE,
                           save_details = list(), extra_options = list(),
                           progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
+    if(is.null(seed)){
+        seed <- if(missing(design))
+            rint(1L, min=1L, max = 2147483647L)
+        else rint(nrow(design), min=1L, max = 2147483647L)
+    }
     stopifnot(notification %in% c('none', 'condition', 'complete'))
     if(notification != 'none')
         if(!("RPushbullet" %in% (.packages())))
@@ -724,6 +731,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             FALSE, extra_options$stop_on_fatal)
     MPI <- ifelse(is.null(extra_options$MPI),
                   FALSE, extra_options$MPI)
+    type <- if(is.null(extra_options$type))
+        ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK')
+        else extra_options$type
     if(missing(generate) && !missing(analyse))
         generate <- function(condition, dat, fixed_objects = NULL){}
     NA_summarise <- FALSE

@@ -20,17 +20,16 @@ runSimulation(
   save_results = FALSE,
   parallel = FALSE,
   ncores = parallel::detectCores(),
-  type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
   cl = NULL,
   notification = "none",
+  CI = 0.95,
+  seed = NULL,
   boot_method = "none",
   boot_draws = 1000L,
-  CI = 0.95,
-  seed = rint(nrow(design), min = 1L, max = 2147483647L),
+  max_errors = 50L,
   save_seeds = FALSE,
   save = TRUE,
   store_results = FALSE,
-  max_errors = 50L,
   save_details = list(),
   extra_options = list(),
   progress = TRUE,
@@ -148,9 +147,6 @@ unique condition?}
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
-\item{type}{default type of cluster to create for the \code{cl} object if no supplied. For Windows OS this
-defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected (suitable for Linux and Mac OSX)}
-
 \item{cl}{cluster object defined by \code{\link{makeCluster}} used to run code in parallel.
 If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
 selects the maximum number cores available
@@ -171,6 +167,15 @@ that you must  use either the "MPI" or "PSOCK" clusters)}
   \code{'condition'} to send a notification after each condition has completed, or \code{'complete'} to send
   a notification only when the simulation has finished.}
 
+\item{CI}{bootstrap confidence interval level (default is 95\%)}
+
+\item{seed}{a vector of integers to be used for reproducibility.
+The length of the vector must be equal the number of rows in \code{design}.
+This argument calls \code{\link{set.seed}} or
+\code{\link{clusterSetRNGStream}} for each condition, respectively,
+but will not be run when \code{MPI = TRUE}.
+Default randomly generates seeds within the range 1 to 2147483647 for each condition.}
+
 \item{boot_method}{method for performing non-parametric bootstrap confidence intervals
 for the respective meta-statistics computed by the \code{Summarise} function.
 Can be \code{'basic'} for the empirical bootstrap CI, \code{'percentile'}
@@ -181,14 +186,10 @@ computational intensity). Default is \code{'none'}, which performs no bootstrapp
 \item{boot_draws}{number of non-parametric bootstrap draws to sample for the \code{summarise}
 function after the generate-analyse replications are collected. Default is 1000}
 
-\item{CI}{bootstrap confidence interval level (default is 95\%)}
-
-\item{seed}{a vector of integers to be used for reproducibility.
-The length of the vector must be equal the number of rows in \code{design}.
-This argument calls \code{\link{set.seed}} or
-\code{\link{clusterSetRNGStream}} for each condition, respectively,
-but will not be run when \code{MPI = TRUE}.
-Default randomly generates seeds within the range 1 to 2147483647 for each condition.}
+\item{max_errors}{the simulation will terminate when more than this number of consecutive errors are thrown in any
+given condition, causing the simulation to continue to the next unique \code{design} condition.
+This is included to avoid getting stuck in infinite re-draws, and to indicate that something fatally problematic
+is going wrong in the generate-analyse phases. Default is 50}
 
 \item{save_seeds}{logical; save the \code{.Random.seed} states prior to performing each replication into
   plain text files located in the defined \code{save_seeds_dirname} directory/folder?
@@ -230,11 +231,6 @@ Default randomly generates seeds within the range 1 to 2147483647 for each condi
   pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
   of all the simulation results for each condition if \code{nrow(Design) > 1}; otherwise, if
   \code{nrow(Design) == 1} or \code{Design} was missing the \code{results} object will be stored as-is}
-
-\item{max_errors}{the simulation will terminate when more than this number of consecutive errors are thrown in any
-given condition, causing the simulation to continue to the next unique \code{design} condition.
-This is included to avoid getting stuck in infinite re-draws, and to indicate that something fatally problematic
-is going wrong in the generate-analyse phases. Default is 50}
 
 \item{save_details}{a list pertaining to information regarding how and where files should be saved
   when the \code{save} or \code{save_results} flags are triggered.
@@ -288,14 +284,19 @@ is going wrong in the generate-analyse phases. Default is 50}
       throughout the simulation (potentially causing RAM related issues when constructing the final simulation object as
       any given simulation replicate could generate numerous warnings, and storing the seeds states could add up quickly).
 
-      Set this to \code{TRUE} when replicating warning messages is important, however be aware that too many warnings
-      messages raised during the simulation implementation could cause RAM related issues.}
+      Set this to \code{TRUE} when replicating warning messages is important, however be aware
+      that too many warnings messages raised during the simulation implementation could cause
+      RAM related issues.}
 
      \item{\code{allow_na}}{logical (default is \code{FALSE}); should \code{NA}s be allowed in the
       analyse step as a valid result from the simulation analysis?}
 
      \item{\code{allow_nan}}{logical (default is \code{FALSE}); should \code{NaN}s be allowed in the
        analyse step as a valid result from the simulation analysis?}
+
+     \item{\code{type}}{default type of cluster to create for the \code{cl} object if no supplied.
+       For Windows OS this defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected
+       (suitable for Linux and Mac OSX). This is ignored if the user specifies their own \code{cl} object}
 
      \item{\code{MPI}}{logical (default is \code{FALSE}); use the \code{foreach} package in a
        form usable by MPI to run simulation in parallel on a cluster? }
