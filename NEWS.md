@@ -1,6 +1,6 @@
 # NEWS file for SimDesign
 
-## Changes in SimDesign 2.4
+## Changes in SimDesign 2.5
 
 - Prevent `aggregate_simulations()` from overwriting files and directories accidentally. As well,
   the auto-detection of suitable .rds files has been removed as explicitly stating the files/directories

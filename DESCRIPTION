@@ -1,6 +1,6 @@
 Package: SimDesign
 Title: Structure for Organizing Monte Carlo Simulation Designs
-Version: 2.4
+Version: 2.5
 Authors@R: c(person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com", role = c("aut", "cre"),
                     comment = c(ORCID="0000-0001-5332-2810")),
              person("Matthew", "Sigal", role = c("ctb")),
@@ -9,9 +9,9 @@ Description: Provides tools to safely and efficiently organize and execute
     Monte Carlo simulation experiments in R.
     The package controls the structure and back-end of Monte Carlo simulation experiments
     by utilizing a generate-analyse-summarise workflow. The workflow safeguards against 
-    common simulation issues, such as autmatically re-simulating non-convergent results, 
-    prevents inadvertant overwriting of simulation files, catches error and warning messages
-    during execution, and implicilty support parallel processsing.
+    common simulation issues, such as automatically re-simulating non-convergent results, 
+    prevents inadvertently overwriting of simulation files, catches error and warning messages
+    during execution, and implicitly supports parallel processing.
     For a pedagogical introduction to the package see
     Sigal and Chalmers (2016) <doi:10.1080/10691898.2016.1246953>. For a more in-depth overview of 
     the package and its design philosophy see Chalmers and Adkins (2020) <doi:10.20982/tqmp.16.4.p248>.
