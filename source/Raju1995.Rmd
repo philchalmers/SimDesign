@@ -1,0 +1,166 @@
+%\VignetteIndexEntry{SimDesign}
+%\VignetteEngine{knitr::knitr}
+---
+title: "Raju, van der Linden, & Fleer (1995) simulation"
+author: "Phil Chalmers"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+```{r include=FALSE}
+options(digits = 3)
+cache_ <- TRUE
+```
+
+Simulation from:
+
+- Raju, N. S.; van der Linden, W. J. & Fleer, P. F. (1995). IRT-based internal measures of differential functioning of items and tests. Applied Psychological Measurement, 19, 353-368.
+
+However, this is not a perfect replication of the results presented in this study. Specifically, the authors never actually performed a replication experiment to evaluate their presented statistics, and instead analyzed the results based on single data-set generations only. The following performs a more realistic presentation of the behaviour of the DFIT statistics under the conditions studied. Additionally, estimation is performed using marginal ML estimation via `mirt` rather than marginal MAP via BILOG-MG with the defaults at the time of publication. This was selected since the authors were interested in the frequentest properties of their detection statistics, and therefore to remove the potential influence of prior parameter distributions it makes more sense to start with non-informative priors. 
+
+Finally, a linking method was not adopted since the parameters were already on the same metric at the time of data generation, and therefore is not required (had linking been required, suitable anchor items could have been selected so that the scale of the focal group could be freely estimated). 
+
+# Simulation code
+
+```{r eval=FALSE}
+#-------------------------------------------------------------------
+
+library(SimDesign)
+
+Design <- createDesign(N = c(500, 1000),
+                       focal = c('reference', 'focal1', 'focal2', 'focal3'),
+                       direction = c('uni', 'bi'))
+
+source('Raju1995_extras.R')  ## read-in large tables of parameter sets
+source('DFIT.R')             ## read-in DFIT function for multi-group mirt object
+
+#-------------------------------------------------------------------
+
+Generate <- function(condition, fixed_objects = NULL) {
+    Attach(condition)
+    refpars <- fixed_objects[[direction]]$reference
+    if(direction == 'bi' && focal == 'focal3') # for modified reference group combination
+        refpars <- fixed_objects[['bi']]$reference_focal3
+    focalpars <- fixed_objects[[direction]][[focal]]
+    datref <- simdata(a=refpars[,"a1"], d=refpars[,"d"], N=N/2, itemtype='2PL')
+    datfocal <- simdata(a=focalpars[,"a1"], d=focalpars[,"d"], N=N/2, itemtype='2PL')
+    dat <- data.frame(group = rep(c('ref', 'focal'), each=N/2),
+                      rbind(datref, datfocal))
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL) {
+    group <- dat$group
+    items <- subset(dat, select = -group)
+
+    ##  MML estimation instead of MMAP
+    ##    Following is equivalent to fitting independent single-group models
+    ##    (linking not required since both groups generated from same scale)
+    mod <- multipleGroup(items, 1, group=group, verbose=FALSE)
+    stopifnot(extract.mirt(mod, 'converged'))
+
+    DTF <- DFIT(mod)
+    DIF <- DFIT(mod, DIF = TRUE)
+
+    ret <- c(DTF=DTF$DTF, DTF.p=DTF$p.X2,
+             CDIF=DIF$CDIF, NCDIF=DIF$NCDIF, NCDIF.p=DIF$p.X2)
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL) {
+    pick <- subset(results, select = c(DTF, CDIF1:CDIF40, NCDIF1:NCDIF40))
+    means <- colMeans(pick)
+    SDs <- apply(pick, 2, sd)
+    pick.p <- subset(results, select = c(DTF.p, NCDIF.p1:NCDIF.p40))
+    ps <- EDR(pick.p, .01)
+    pick.NCDIF <- subset(results, select = NCDIF1:NCDIF40)
+    NCDIF.006 <- colMeans(pick.NCDIF > .006)
+    ret <- c(mean=means, SD=SDs, ps, NCDIF.006=unname(NCDIF.006))
+    ret
+}
+
+#-------------------------------------------------------------------
+
+res <- runSimulation(design=Design, replications=5000, generate=Generate,
+                     analyse=Analyse, summarise=Summarise,
+                     fixed_objects=fo, packages = 'mirt', parallel=TRUE,
+                     save_results = FALSE, filename = 'Raju1995')
+res
+```
+
+```{r echo=FALSE}
+library(SimDesign)
+res <- readRDS("../extras/Raju1995/Raju1995.rds")
+res
+```
+
+# Extras
+
+Explore the results. 
+
+```{r eval=FALSE}
+library(SimDesign)
+
+res <- readRDS('Raju1995.rds')
+```
+
+```{r}
+library(dplyr)
+
+# average close to 1 for DTF, and too powerful (should be at alpha = .01)
+res %>%
+    group_by(direction, focal) %>%
+    summarise(mean(mean.DTF), mean(DTF.p))
+
+# Some Type I error examples
+res %>%
+    group_by(direction, focal) %>%
+    summarise(CDF1=mean(mean.CDIF1), sd_CDF1=sd(mean.CDIF1),
+              CDF2=mean(mean.CDIF2), sd_CDF2=sd(mean.CDIF2))
+
+res %>%
+    group_by(direction, focal) %>%
+    summarise(NCDF1=mean(mean.NCDIF1), sd_CDF1=sd(mean.NCDIF1),
+              NCDF2=mean(mean.NCDIF2), sd_CDF2=sd(mean.NCDIF2))
+
+# These should be at alpha = .01.....wayyyyy too powerful
+res %>%
+    group_by(direction, focal) %>%
+    summarise(mean(NCDIF.p1), mean(NCDIF.p2))
+
+# Ad-hoc cut-offs not much better, and don't reach alpha = .01
+res %>%
+    group_by(direction, focal) %>%
+    summarise(mean(NCDIF.0061), mean(NCDIF.0062))
+
+#############################################
+
+# Power ones
+res %>%
+    group_by(direction, focal) %>%
+    summarise(CDF5=mean(mean.CDIF5), sd_CDF5=sd(mean.CDIF5),
+              CDF10=mean(mean.CDIF10), sd_CDF10=sd(mean.CDIF10))
+
+res %>%
+    group_by(direction, focal) %>%
+    summarise(NCDF5=mean(mean.NCDIF5), sd_CDF5=sd(mean.NCDIF5),
+              NCDF10=mean(mean.NCDIF10), sd_CDF10=sd(mean.NCDIF10))
+
+# Power still not even at 1.00 despite massive inflation
+res %>%
+    group_by(direction, focal) %>%
+    summarise(mean(NCDIF.p5), mean(NCDIF.p10))
+
+res %>%
+    group_by(direction, focal) %>%
+    summarise(mean(NCDIF.0065), mean(NCDIF.00610))
+```
+
+# Summary
+
+The above simulation reflects my initial impression of the DFIT statistics in that they are a bit too wild to be of much practical use. This is largely due to the two-step nature of the statistics, where the model-implied components in the IRT models are treated independently for each response pattern observation. Moreover, with the MML estimation instead of the MMAP estimation from BILOG-MG, it appears even the .006 cutoff for NCDIF is not a great choice as it does not result in Type I error control close to the nominal rate of $\alpha = .05$ or .01. 
+
+Finally, while it is also possible to estimate the bias and RMSD of these estimates this information was not presented in the original article, and therefore does not appear above either. However, I suspect that, in light of what was observed, the bias and RMSD likely will not provide convincing results at recovering the population parameters either....
+

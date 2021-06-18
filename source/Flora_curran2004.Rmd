@@ -20,7 +20,7 @@ Simulation from:
 
 # User-defined functions
 
-User-defined helpter function for the generate-analyse steps to generate appropriate syntax for `lavaan` (could be placed in an external .R file and sourced in prior to running `runSimulation()` instead).
+User-defined helper function for the generate-analyse steps to generate appropriate syntax for `lavaan` (could be placed in an external .R file and sourced in prior to running `runSimulation()` instead).
 
 ```{r}
 #' @param J number of variables
