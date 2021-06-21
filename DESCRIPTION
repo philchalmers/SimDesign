@@ -9,8 +9,8 @@ Description: Provides tools to safely and efficiently organize and execute
     Monte Carlo simulation experiments in R.
     The package controls the structure and back-end of Monte Carlo simulation experiments
     by utilizing a generate-analyse-summarise workflow. The workflow safeguards against 
-    common simulation issues, such as automatically re-simulating non-convergent results, 
-    prevents inadvertently overwriting of simulation files, catches error and warning messages
+    common simulation coding issues, such as automatically re-simulating non-convergent results, 
+    prevents inadvertently overwriting simulation files, catches error and warning messages
     during execution, and implicitly supports parallel processing.
     For a pedagogical introduction to the package see
     Sigal and Chalmers (2016) <doi:10.1080/10691898.2016.1246953>. For a more in-depth overview of 
