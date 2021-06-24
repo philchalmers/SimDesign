@@ -1,5 +1,16 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.6
+
+- Added `sublist()` function to create a list subset from a larger named list. This is useful
+  when `Analyse()` returns a named list to be indexed in `Summarise()`
+  
+- Meta-statistical functions now support a `fun(list, matrix)` input form to compute element-wise
+  summaries that return a `matrix` structure
+  
+- `Summarise()` can now return `list` arguments that can later be extracted 
+  via `SimExtract(sim, what = 'summarise')`
+
 ## Changes in SimDesign 2.5
 
 - Prevent `aggregate_simulations()` from overwriting files and directories accidentally. As well,

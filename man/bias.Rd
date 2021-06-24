@@ -14,10 +14,12 @@ bias(
 )
 }
 \arguments{
-\item{estimate}{a \code{numeric} vector or \code{matrix}/\code{data.frame}
+\item{estimate}{a \code{numeric} vector, \code{matrix}/\code{data.frame}, or \code{list}
 of parameter estimates. If a vector,
 the length is equal to the number of replications. If a \code{matrix}/\code{data.frame},
-the number of rows must equal the number of replications}
+the number of rows must equal the number of replications. \code{list} objects will be looped
+over using the same rules after above after first translating the information into one-dimensional
+vectors and re-creating the structure upon return}
 
 \item{parameter}{a \code{numeric} scalar/vector indicating the fixed parameters.
 If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame}

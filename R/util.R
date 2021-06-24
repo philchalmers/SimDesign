@@ -140,3 +140,18 @@ sim_results_check <- function(sim_results){
             stop('summarise() must return a named vector or data.frame object with 1 row', call.=FALSE)
     sim_results
 }
+
+unwind_apply_wind.list <- function(lst, mat, fun, ...){
+    long_list <- do.call(rbind, lapply(lst, as.numeric))
+    long_mat <- if(!is.null(mat)) as.numeric(mat) else NULL
+    ret <- fun(long_list, long_mat, ...)
+    if(!is.null(mat)){
+        was_matrix <- is.matrix(mat)
+        if(was_matrix){
+            ret <- matrix(ret, nrow(mat), ncol(mat))
+            rownames(ret) <- rownames(mat)
+            colnames(ret) <- colnames(mat)
+        } else names(ret) <- names(mat)
+    }
+    ret
+}

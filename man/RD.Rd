@@ -7,10 +7,11 @@
 RD(est, pop, as.vector = TRUE, unname = FALSE)
 }
 \arguments{
-\item{est}{a \code{numeric} vector or matrix containing the parameter estimates}
+\item{est}{a \code{numeric} vector, \code{matrix/data.frame}, or \code{list} containing
+the parameter estimates}
 
 \item{pop}{a \code{numeric} vector or matrix containing the true parameter values. Must be
-of the same dimensions as \code{est}}
+of comparable dimension to \code{est}}
 
 \item{as.vector}{logical; always wrap the result in a \code{\link{as.vector}} function
 before returning?}
