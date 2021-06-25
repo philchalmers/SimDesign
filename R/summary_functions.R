@@ -98,7 +98,7 @@
 #'
 bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE,
                  percent = FALSE, unname = FALSE){
-    if(!is.data.frame(estimate) && is.list(estimate)){
+    if(isList(estimate)){
         return(unwind_apply_wind.list(
             lst=estimate, mat=parameter, fun=bias,
             type=type, abs=abs, percent=percent, unname=unname))
@@ -233,10 +233,10 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE,
 #'
 RMSE <- function(estimate, parameter = NULL, type = 'RMSE', MSE = FALSE,
                  percent = FALSE, unname = FALSE){
-    if(!is.data.frame(estimate) && is.list(estimate)){
+    if(isList(estimate)){
         return(unwind_apply_wind.list(
             lst=estimate, mat=parameter, fun=RMSE,
-            type=type, abs=abs, percent=percent, unname=unname))
+            type=type, MSE=MSE, percent=percent, unname=unname))
     }
 
     if(is.data.frame(estimate)) estimate <- as.matrix(estimate)
@@ -450,7 +450,7 @@ IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
 #'
 MAE <- function(estimate, parameter = NULL, type = 'MAE',
                 percent = FALSE, unname = FALSE){
-    if(!is.data.frame(estimate) && is.list(estimate)){
+    if(isList(estimate)){
         return(unwind_apply_wind.list(
             lst=estimate, mat=parameter, fun=MAE,
             type=type, abs=abs, percent=percent, unname=unname))
@@ -752,7 +752,7 @@ MSRSE <- function(SE, SD, percent = FALSE, unname = FALSE){
 #'
 #'
 RD <- function(est, pop, as.vector = TRUE, unname = FALSE){
-    if(!is.data.frame(est) && is.list(est)){
+    if(isList(est)){
         return(unwind_apply_wind.list(
             lst=est, mat=pop, fun=RD,
             as.vector=as.vector, unname=unname))

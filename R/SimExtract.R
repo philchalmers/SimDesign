@@ -134,5 +134,11 @@ extract_warning_seeds <- function(object){
 }
 
 extract_summarise <- function(object){
-    attr(object, 'summarise_list')
+    extra_info <- attr(object, 'extra_info')
+    Design <- SimExtract(object, 'Design')
+    nms <- apply(Design, 1L, function(x)
+        paste0(colnames(Design), "=", x, collapse = ' ; '))
+    ret <- extra_info$summarise_list
+    names(ret) <- nms
+    ret
 }

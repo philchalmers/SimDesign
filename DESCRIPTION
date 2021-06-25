@@ -31,6 +31,7 @@ Suggests:
     knitr,
     ggplot2,
     tidyr,
+    purrr,
     shiny,
     doMPI,
     copula,

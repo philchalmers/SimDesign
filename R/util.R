@@ -125,19 +125,32 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
     out
 }
 
+isList <- function(x) !is.data.frame(x) && is.list(x)
+
 sim_results_check <- function(sim_results){
     if(is.data.frame(sim_results)){
         if(nrow(sim_results) > 1L)
-            stop('When returning a data.frame in summarise() there should only be 1 row', call.=FALSE)
+            stop('When returning a data.frame in summarise() there should only be 1 row',
+                 call.=FALSE)
         nms <- names(sim_results)
         sim_results <- as.numeric(sim_results)
         names(sim_results) <- nms
     }
-    if(length(sim_results) == 1L)
+    if(isList(sim_results)){
+        if(is.null(names(sim_results)))
+            stop("List elements must be named in Summarise() definition",
+                 call.=FALSE)
+        ret <- numeric(0)
+        attr(ret, 'summarise_list') <- sim_results
+        return(ret)
+    }
+    if(length(sim_results) == 1L){
         if(is.null(names(sim_results)))
             names(sim_results) <- 'value'
         if(!is.vector(sim_results) || is.null(names(sim_results)))
-            stop('summarise() must return a named vector or data.frame object with 1 row', call.=FALSE)
+            stop('summarise() must return a named vector or data.frame object with 1 row',
+                 call.=FALSE)
+    }
     sim_results
 }
 

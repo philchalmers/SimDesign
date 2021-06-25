@@ -1090,6 +1090,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                            check.names=FALSE)
             attr(Result_list[[i]], 'error_seeds') <- attr(tmp, 'error_seeds')
             attr(Result_list[[i]], 'warning_seeds') <- attr(tmp, 'warning_seeds')
+            attr(Result_list[[i]], 'summarise_list') <- attr(tmp, 'summarise_list')
             Result_list[[i]]$SIM_TIME <- proc.time()[3L] - time0
             Result_list[[i]]$COMPLETED <- date()
             if(save || save_results)
@@ -1119,7 +1120,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             for(i in seq_len(length(Result_list)))
                 attr(Result_list[[i]][[1L]], 'try_errors') <-
                 attr(Result_list[[i]][[1L]], 'try_error_seeds') <-
-                attr(Result_list[[i]][[1L]], 'warning_seeds') <- NULL
+                attr(Result_list[[i]][[1L]], 'warning_seeds') <-
+                attr(Result_list[[i]][[1L]], 'summarise_list') <- NULL
         if(nrow(design) == 1L) Result_list <- Result_list[[1L]]
         return(Result_list)
     }
@@ -1142,6 +1144,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                 rownames(ret))
         t(ret)
     })))
+    summarise_list <- lapply(1L:length(Result_list), function(x)
+        attr(Result_list[[x]], "summarise_list")
+    )
     Final <- dplyr::bind_rows(Result_list)
     if(!stop_on_fatal && any(colnames(Final) == 'FATAL_TERMINATION')){
         warning('One or more design rows were fatally terminated. Please inspect/debug row(s): ',
@@ -1211,7 +1216,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       error_seeds=dplyr::as_tibble(error_seeds),
                                       warning_seeds=dplyr::as_tibble(warning_seeds),
                                       stored_results = if(store_results) stored_Results_list else NULL,
-                                      summarise_list = NULL)       # TODO
+                                      summarise_list=summarise_list)
     if(dummy_run) Final$dummy_run <- NULL
     class(Final) <- c('SimDesign', class(Final))
     if(!is.null(filename)){ #save file

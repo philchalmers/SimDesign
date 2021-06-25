@@ -143,10 +143,12 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         }
     }
     sim_results <- sim_results_check(sim_results)
+    summarise_list <- attr(sim_results, 'summarise_list')
     ret <- c(sim_results, 'REPLICATIONS'=replications, 'ERROR: '=try_errors,
              'WARNING: '=warnings)
     if(boot_method != 'none'){
         # could parallelize, but likely not worth the overhead
+        # TODO test whether this works with Summarise() list outputs
         CIs <- SimBoot(results, summarise=Functions$summarise,
                        condition=condition, fixed_objects=fixed_objects,
                        boot_method=boot_method,
@@ -155,6 +157,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     }
     attr(ret, 'error_seeds') <- try_error_seeds
     attr(ret, 'warning_seeds') <- warning_message_seeds
+    attr(ret, 'summarise_list') <- summarise_list
     if(store_results)
         attr(ret, 'full_results') <- tabled_results
     ret
