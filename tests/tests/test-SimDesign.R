@@ -563,5 +563,44 @@ test_that('SimDesign', {
     expect_true(all(names(SimExtract(result, what = 'warnings')) %in% c("N",
         'WARNING: .greater than 5', 'WARNING: .greater than 5 in analyse')))
 
+    # Summarise returns a list
+    Design <- createDesign(N=c(250, 500))
+
+    fo <- list(mean = c(10,10),
+               sigma = matrix(c(10,4,4,20), 2, 2))
+
+    generate <- function(condition, fixed_objects = NULL) {
+        Attach(fixed_objects)
+        dat <- rmvnorm(condition$N, mean=mean, sigma=sigma)
+        dat
+    }
+
+    analyse <- function(condition, dat, fixed_objects = NULL) {
+        meanest <- colMeans(dat)
+        names(meanest) <- paste0("M", 1:ncol(dat))
+        covest <- cov(dat)
+        colnames(covest) <- rownames(covest) <- paste0("M", 1:ncol(dat))
+        ret <- list(meanest=meanest, covest=covest)
+        ret
+    }
+
+    summarise <- function(condition, results, fixed_objects = NULL) {
+        means <- map(results, 'meanest')
+        mean_res <- list(bias=bias(means, fixed_objects$mean),
+                         RMSD=RMSD(means, fixed_objects$mean))
+        sigmas <- map(results, 'covest')
+        sigma_res <- list(bias=bias(sigmas, fixed_objects$sigma),
+                          RMSD=RMSD(sigmas, fixed_objects$sigma))
+        ret <- list(mean=mean_res, sigmas=sigma_res)
+        ret
+    }
+
+    res <- runSimulation(design=Design, replications=10, generate=generate,
+                         analyse=analyse, summarise=summarise, fixed_objects=fo,
+                         packages = 'purrr', verbose=FALSE)
+
+    lst <- SimExtract(res, 'summarise_list')
+    expect_equal(names(lst), c("N=250", "N=500"))
+
 })
 

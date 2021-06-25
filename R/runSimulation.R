@@ -1217,6 +1217,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       warning_seeds=dplyr::as_tibble(warning_seeds),
                                       stored_results = if(store_results) stored_Results_list else NULL,
                                       summarise_list=summarise_list)
+    if(!is.null(summarise_list[[1L]]) && verbose)
+        message('Note: To extract Summarise() results use SimExtract(., what = \'summarise\')')
     if(dummy_run) Final$dummy_run <- NULL
     class(Final) <- c('SimDesign', class(Final))
     if(!is.null(filename)){ #save file

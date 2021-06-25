@@ -15,7 +15,7 @@ SimExtract(object, what)
   counts of any warning messages, \code{'error_seeds'} and \code{'warning_seeds'}
   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
   \code{'results'} to extract the simulation results if the option \code{store_results} was passed to
-  \code{\link{runSimulation}}, and \code{'summarise_list'} if the \code{\link{Summarise}}
+  \code{\link{runSimulation}}, and \code{'summarise'} if the \code{\link{Summarise}}
   definition returned a named \code{list} rather than a named numeric vector.
 
   Note that \code{'warning_seeds'} are not stored automatically in

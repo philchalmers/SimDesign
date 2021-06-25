@@ -18,8 +18,9 @@ where each cell is stored in a unique row/list element}
 \item{fixed_objects}{object passed down from \code{\link{runSimulation}}}
 }
 \value{
-must return a named \code{numeric} vector or \code{data.frame}
-  with the desired meta-simulation results
+for best results should return a named \code{numeric} vector or \code{data.frame}
+  with the desired meta-simulation results. Named \code{list} objects can also be returned,
+  however the subsequent results must be extracted via \code{\link{SimExtract}}
 }
 \description{
 This collapses the simulation results within each condition to composite
@@ -53,5 +54,5 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 }
 \seealso{
 \code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}},
-  \code{\link{ECR}}, \code{\link{MAE}}
+  \code{\link{ECR}}, \code{\link{MAE}}, \code{\link{SimExtract}}
 }

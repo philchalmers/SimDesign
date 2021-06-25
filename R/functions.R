@@ -182,11 +182,12 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #'
 #' @aliases Summarise
 #'
-#' @return must return a named \code{numeric} vector or \code{data.frame}
-#'   with the desired meta-simulation results
+#' @return for best results should return a named \code{numeric} vector or \code{data.frame}
+#'   with the desired meta-simulation results. Named \code{list} objects can also be returned,
+#'   however the subsequent results must be extracted via \code{\link{SimExtract}}
 #'
 #' @seealso \code{\link{bias}}, \code{\link{RMSE}}, \code{\link{RE}}, \code{\link{EDR}},
-#'   \code{\link{ECR}}, \code{\link{MAE}}
+#'   \code{\link{ECR}}, \code{\link{MAE}}, \code{\link{SimExtract}}
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
