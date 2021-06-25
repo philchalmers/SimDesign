@@ -1,9 +1,10 @@
 #' Collapse separate simulation files into a single result
 #'
 #' This function aggregates the results from SimDesign's \code{\link{runSimulation}} into a single
-#' objects suitable for post-analyses, or combines all the saved results directories and combines them into one.
-#' This is useful when results are run piecewise on one node (e.g., 500 replications in one batch, 500
-#' again at a later date) or run independently across different nodes/computers that are not on the same network.
+#' objects suitable for post-analyses, or combines all the saved results directories and combines
+#' them into one. This is useful when results are run piecewise on one node (e.g., 500 replications
+#' in one batch, 500 again at a later date) or run independently across different
+#' nodes/computers that are not on the same network.
 #'
 #' @param files a \code{character} vector containing the names of the simulation's final \code{.rds} files
 #'
@@ -69,7 +70,8 @@ aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate
         files <- files[[1L]]
         ndirs <- length(dirs)
         if(dir.exists(results_dirname))
-            stop(sprintf('Directory \'%s/\' already exists. Please fix', results_dirname), call.=FALSE)
+            stop(sprintf('Directory \'%s/\' already exists. Please fix', results_dirname),
+                 call.=FALSE)
         dir.create(results_dirname)
         message(sprintf('Writing aggregate results folders to \"%s\"', results_dirname))
         for(f in files){
@@ -81,11 +83,13 @@ aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate
             tmp <- do.call(c, lapply(readin, function(x) x$warnings))
             nms <- names(tmp)
             if(length(nms))
-                ret$warnings <- table(do.call(c, lapply(1:length(nms), function(x) rep(nms[x], each = tmp[x]))))
+                ret$warnings <- table(do.call(c, lapply(1:length(nms),
+                                                        function(x) rep(nms[x], each = tmp[x]))))
             tmp <- do.call(c, lapply(readin, function(x) x$errors))
             nms <- names(tmp)
             if(length(nms))
-                ret$errors <- table(do.call(c, lapply(1:length(nms), function(x) rep(nms[x], each = tmp[x]))))
+                ret$errors <- table(do.call(c, lapply(1:length(nms),
+                                                      function(x) rep(nms[x], each = tmp[x]))))
             saveRDS(ret, paste0(results_dirname, '/', f))
         }
     }
@@ -96,7 +100,8 @@ aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate
         return(invisible(NULL))
     }
     if(file_name %in% dir())
-        stop(sprintf('File \'%s\' already exists in working directory', file_name), call.=FALSE)
+        stop(sprintf('File \'%s\' already exists in working directory', file_name),
+             call.=FALSE)
     readin <- vector('list', length(filenames))
     for(i in 1:length(filenames))
         readin[[i]] <- readRDS(filenames[i])

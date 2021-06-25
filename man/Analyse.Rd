@@ -39,8 +39,8 @@ is internally wrapped in a \code{\link{try}} call. Therefore, if a function stop
 then this will cause the function to halt internally, the message which triggered the \code{\link{stop}}
 will be recorded, and \code{\link{Generate}} will be called again to obtain a different dataset.
 That said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
-should be re-drawn for other reasons (e.g., an estimated model terminated correctly but the maximum number of
-iterations were reached).
+should be re-drawn for other reasons (e.g., an estimated model terminated correctly
+but the maximum number of iterations were reached).
 }
 \examples{
 \dontrun{

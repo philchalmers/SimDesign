@@ -112,7 +112,8 @@ boot_predict <- function(condition, generate, analyse, summarise, fixed_objects 
     nms <- names(summarise(results=results, condition=condition, fixed_objects=fixed_objects))
     tmp_SEs <- vector("list", length(Rstar))
     for(r in 1L:length(Rstar)){
-        boots <- sapply(1L:boot_draws, function(ind, r, results, replications, boot_draws, summarise, condition){
+        boots <- sapply(1L:boot_draws,
+                        function(ind, r, results, replications, boot_draws, summarise, condition){
             pick <- rint(n = r, min = 1L, max = replications)
             # results could be a list? TODO
             tmp <- results[pick, , drop=FALSE]

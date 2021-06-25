@@ -41,12 +41,13 @@ data sets drawn and will avoid repetitive computations. Must be the object retur
 \item{control}{a list of control parameters when locating the polynomial coefficients}
 }
 \description{
-Generate multivariate non-normal distributions using the fifth-order polynomial method described by Headrick (2002).
+Generate multivariate non-normal distributions using the fifth-order polynomial
+method described by Headrick (2002).
 }
 \details{
-This function is primarily a wrapper for the code written by Oscar L. Olvera Astivia (last edited Feb 26, 2015)
-with some modifications (e.g., better starting values for the Newton optimizer, passing previously saved
-coefs, etc).
+This function is primarily a wrapper for the code written by Oscar L. Olvera Astivia
+(last edited Feb 26, 2015) with some modifications (e.g., better starting values
+for the Newton optimizer, passing previously saved coefs, etc).
 }
 \examples{
 

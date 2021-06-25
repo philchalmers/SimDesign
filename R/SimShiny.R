@@ -5,8 +5,8 @@
 #' generated is relatively minimalistic, but allows the user to quickly and easily
 #' edit the saved files to customize the associated shiny elements as they see fit.
 #'
-#' @param filename an optional name of a text file to save the server and UI components (e.g., 'mysimGUI.R').
-#'   If omitted, the code will be printed to the R console instead
+#' @param filename an optional name of a text file to save the server and UI components
+#'   (e.g., 'mysimGUI.R'). If omitted, the code will be printed to the R console instead
 #'
 #' @param dir the directory to write the files to. Default is the working directory
 #'
@@ -99,7 +99,7 @@ SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
         cat(sprintf('        choices = c(%s)),\n\n',
                     if(is_numeric) paste0(cond, collapse = ',')
                     else paste0('"', cond, '"', collapse = ',')))
-        invisible()
+        invisible(NULL)
     }
 
     if(!is.null(filename)){
@@ -175,5 +175,5 @@ SimShiny <- function(filename = NULL, dir = getwd(), design, ...){
 
     cat('shinyApp(ui=ui, server=server)\n\n')
 
-    invisible()
+    invisible(NULL)
 }

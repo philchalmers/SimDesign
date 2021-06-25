@@ -83,5 +83,5 @@ Attach <- function(..., check = TRUE, attach_listone = TRUE){
             assign(n, dots[[i]][[n]], envir = envir)
         }
     }
-    invisible()
+    invisible(NULL)
 }

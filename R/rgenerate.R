@@ -259,11 +259,12 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 
 #' Generate non-normal data with Headrick's (2002) method
 #'
-#' Generate multivariate non-normal distributions using the fifth-order polynomial method described by Headrick (2002).
+#' Generate multivariate non-normal distributions using the fifth-order polynomial
+#' method described by Headrick (2002).
 #'
-#' This function is primarily a wrapper for the code written by Oscar L. Olvera Astivia (last edited Feb 26, 2015)
-#' with some modifications (e.g., better starting values for the Newton optimizer, passing previously saved
-#' coefs, etc).
+#' This function is primarily a wrapper for the code written by Oscar L. Olvera Astivia
+#' (last edited Feb 26, 2015) with some modifications (e.g., better starting values
+#' for the Newton optimizer, passing previously saved coefs, etc).
 #'
 #' @param n number of samples to draw
 #' @param mean a vector of k elements for the mean of the variables

@@ -32,8 +32,8 @@ Default is \code{TRUE}}
 
 \item{generate}{include \code{generate} function? Default is \code{TRUE}}
 
-\item{openFiles}{logical; after files have been generated, open them in your text editor (e.g., if Rstudio is running
-the scripts will open in a new tab)?}
+\item{openFiles}{logical; after files have been generated, open them in your text editor
+(e.g., if Rstudio is running the scripts will open in a new tab)?}
 }
 \description{
 This function prints template versions of the required \code{Design} and Generate-Analyse-Summarise functions
@@ -45,8 +45,10 @@ in \code{\link{runSimulation}} for how to edit this template to make a working s
 }
 \details{
 The recommended approach to organizing Monte Carlo simulation files is to first save the template generated
-by this function to the hard-drive by passing a suitable \code{filename} argument (which, if users are interacting
-with R via the RStudio IDE, will also open the template file after it has been saved). For larger simulations, two
+by this function to the hard-drive by passing a suitable \code{filename} argument
+(which, if users are interacting
+with R via the RStudio IDE, will also open the template file after it has been saved).
+For larger simulations, two
 separate files could also be used (achieved by passing \code{singlefile = FALSE}),
 and may be easier for debugging/sourcing the simulation code; however, this is a
 matter of preference and does not change any functionality in the package.

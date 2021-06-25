@@ -389,7 +389,8 @@ IRMSE <- function(estimate, parameter, fn, density = function(theta, ...) 1,
 #'   vectors and re-creating the structure upon return
 #'
 #' @param parameter a \code{numeric} scalar/vector or \code{matrix} indicating the fixed parameter values.
-#'   If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame} then the value will be
+#'   If a single value is supplied and \code{estimate} is a \code{matrix}/\code{data.frame}
+#'   then the value will be
 #'   recycled for each column; otherwise, each element will be associated
 #'   with each respective column in the \code{estimate} input.
 #'   If \code{NULL}, then it will be assumed that the \code{estimate} input is in a deviation
@@ -773,15 +774,15 @@ RD <- function(est, pop, as.vector = TRUE, unname = FALSE){
 
 #' Compute the empirical detection rate for Type I errors and Power
 #'
-#' Computes the detection rate for determining empirical Type I error and power rates using information
-#' from p-values.
+#' Computes the detection rate for determining empirical Type I error and power rates
+#' using information from p-values.
 #'
 #' @param p a \code{numeric} vector or \code{matrix}/\code{data.frame} of p-values from the
 #'   desired statistical estimator. If a \code{matrix}, each statistic must be organized by
 #'   column, where the number of rows is equal to the number of replications
 #'
-#' @param alpha the nominal detection rate to be studied (typical values are .10, .05, and .01). Default
-#'   is .05
+#' @param alpha the nominal detection rate to be studied (typical values are .10, .05, and .01).
+#'   Default is .05
 #'
 #' @param unname logical; apply \code{\link{unname}} to the results to remove any variable
 #'   names?

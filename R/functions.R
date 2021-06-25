@@ -13,8 +13,8 @@
 #' then this will cause the function to halt internally, the message which triggered the \code{\link{stop}}
 #' will be recorded, and \code{Generate} will be called again to obtain a different dataset.
 #' That said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
-#' should be re-drawn for other reasons (e.g., an estimated model terminated correctly but the maximum number of
-#' iterations were reached).
+#' should be re-drawn for other reasons (e.g., an estimated model terminated correctly
+#' but the maximum number of iterations were reached).
 #'
 #' @param condition a single row from the \code{design} input (as a \code{data.frame}), indicating the
 #'   simulation conditions
@@ -106,8 +106,8 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #' then this will cause the function to halt internally, the message which triggered the \code{\link{stop}}
 #' will be recorded, and \code{\link{Generate}} will be called again to obtain a different dataset.
 #' That said, it may be useful for users to throw their own \code{\link{stop}} commands if the data
-#' should be re-drawn for other reasons (e.g., an estimated model terminated correctly but the maximum number of
-#' iterations were reached).
+#' should be re-drawn for other reasons (e.g., an estimated model terminated correctly
+#' but the maximum number of iterations were reached).
 #'
 #' @param dat the \code{dat} object returned from the \code{\link{Generate}} function
 #'   (usually a \code{data.frame}, \code{matrix}, \code{vector}, or \code{list})
@@ -306,7 +306,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                 try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
                 rownames(try_error_seeds) <- paste0('Error_seed_', 1L:nrow(try_error_seeds))
                 stop(paste0('Row ', condition$ID, ' in design was terminated because it had ', max_errors,
-                            ' consecutive errors. \n\nLast error message was: \n\n  ', simlist[1L]), call.=FALSE)
+                            ' consecutive errors. \n\nLast error message was: \n\n  ', simlist[1L]),
+                     call.=FALSE)
             }
             try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
             next

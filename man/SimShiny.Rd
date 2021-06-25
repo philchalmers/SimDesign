@@ -7,8 +7,8 @@
 SimShiny(filename = NULL, dir = getwd(), design, ...)
 }
 \arguments{
-\item{filename}{an optional name of a text file to save the server and UI components (e.g., 'mysimGUI.R').
-If omitted, the code will be printed to the R console instead}
+\item{filename}{an optional name of a text file to save the server and UI components
+(e.g., 'mysimGUI.R'). If omitted, the code will be printed to the R console instead}
 
 \item{dir}{the directory to write the files to. Default is the working directory}
 

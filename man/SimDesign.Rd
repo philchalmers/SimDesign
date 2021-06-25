@@ -15,7 +15,8 @@ simulation issues such as re-simulating non-convergent results, support parallel
 back-end and MPI distributed computations, save and restore temporary files,
 aggregate results across independent nodes, and provide native support for debugging.
 The primary function for organizing the simulations is \code{\link{runSimulation}}.
-For an in-depth tutorial of the package please refer to Chalmers and Adkins (2020; \doi{10.20982/tqmp.16.4.p248}).
+For an in-depth tutorial of the package please refer to
+Chalmers and Adkins (2020; \doi{10.20982/tqmp.16.4.p248}).
 For an earlier didactic presentation of the package users can refer to Sigal and Chalmers
 (2016; \doi{10.1080/10691898.2016.1246953}). Finally, see the associated
 wiki on Github (\url{https://github.com/philchalmers/SimDesign/wiki})

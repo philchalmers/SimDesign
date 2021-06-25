@@ -43,7 +43,7 @@ Monte Carlo simulation (e.g., remove files and folders which contained bugs/bias
 SimClean('results.rds')
 
 # remove default temp file
-SimClean(temp = TRUE)
+SimClean()
 
 # remove customized saved-results directory called 'mydir'
 SimClean(results = TRUE, save_details = list(save_results_dirname = 'mydir'))

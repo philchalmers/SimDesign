@@ -28,9 +28,10 @@ if \code{files} is used the function returns a \code{data.frame} with the (weigh
 }
 \description{
 This function aggregates the results from SimDesign's \code{\link{runSimulation}} into a single
-objects suitable for post-analyses, or combines all the saved results directories and combines them into one.
-This is useful when results are run piecewise on one node (e.g., 500 replications in one batch, 500
-again at a later date) or run independently across different nodes/computers that are not on the same network.
+objects suitable for post-analyses, or combines all the saved results directories and combines
+them into one. This is useful when results are run piecewise on one node (e.g., 500 replications
+in one batch, 500 again at a later date) or run independently across different
+nodes/computers that are not on the same network.
 }
 \examples{
 \dontrun{

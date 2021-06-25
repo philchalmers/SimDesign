@@ -8,8 +8,10 @@
 #' in \code{\link{runSimulation}} for how to edit this template to make a working simulation study.
 #'
 #' The recommended approach to organizing Monte Carlo simulation files is to first save the template generated
-#' by this function to the hard-drive by passing a suitable \code{filename} argument (which, if users are interacting
-#' with R via the RStudio IDE, will also open the template file after it has been saved). For larger simulations, two
+#' by this function to the hard-drive by passing a suitable \code{filename} argument
+#' (which, if users are interacting
+#' with R via the RStudio IDE, will also open the template file after it has been saved).
+#' For larger simulations, two
 #' separate files could also be used (achieved by passing \code{singlefile = FALSE}),
 #' and may be easier for debugging/sourcing the simulation code; however, this is a
 #' matter of preference and does not change any functionality in the package.
@@ -31,8 +33,8 @@
 #'
 #' @param generate include \code{generate} function? Default is \code{TRUE}
 #'
-#' @param openFiles logical; after files have been generated, open them in your text editor (e.g., if Rstudio is running
-#'   the scripts will open in a new tab)?
+#' @param openFiles logical; after files have been generated, open them in your text editor
+#'   (e.g., if Rstudio is running the scripts will open in a new tab)?
 #'
 #' @aliases SimFunctions
 #'
@@ -57,7 +59,7 @@
 #' SimFunctions()
 #' SimFunctions(comments = TRUE) #with helpful comments
 #'
-#'\dontrun{
+#' \dontrun{
 #'
 #' # write output to two files (recommended for larger MCSs)
 #' SimFunctions('mysim', singlefile = FALSE)
@@ -122,7 +124,8 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
     #main
     if(!is.null(filename)){
         if(file.exists(paste0(filename, '.R')))
-            stop('File already exists! Please rename input or rename/remove existing files', call.=FALSE)
+            stop('File already exists! Please rename input or rename/remove existing files',
+                 call.=FALSE)
     }
     if(is.null(filename) || singlefile){
         if(singlefile){
@@ -152,5 +155,5 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
         if(!singlefile) file.show(paste0(filename, '-functions.R'))
         file.show(paste0(filename, '.R'))
     }
-    invisible()
+    invisible(NULL)
 }

@@ -1,24 +1,3 @@
-# Function to present bootstrap standard errors estimates for Monte Carlo simulation meta-statistics
-#
-# This function generates bootstrap confidence intervals for the meta-statistics called within the
-# \code{summarise} function with \code{\link{runSimulation}}
-# that included the argument \code{bootSE = TRUE}.
-#
-# @param results object returned from \code{\link{runSimulation}} where \code{bootSE = TRUE}
-#   was used
-#
-# @param CI desired confidence interval level for each meta-statistic using the bootstrap
-#  SE estimate. Default is .99, which constructs a 99\% confidence interval
-#
-# @references
-# Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
-# Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-# \doi{10.1080/10691898.2016.1246953}
-#
-# @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
-#
-# @export
-#
 SimBoot <- function(results, summarise, condition, fixed_objects, boot_method,
                     boot_draws, CI)
 {

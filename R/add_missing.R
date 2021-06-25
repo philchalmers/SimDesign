@@ -8,7 +8,8 @@
 #' inside (X) and outside (Z) the data-set, the three types of missingness are:
 #'
 #' \describe{
-#'   \item{MCAR}{Missing completely at random (MCAR). This is realized by randomly sampling the values of the
+#'   \item{MCAR}{Missing completely at random (MCAR). This is realized by randomly
+#'     sampling the values of the
 #'     input vector (y) irrespective of the possible values in X and Z.
 #'     Therefore missing values are randomly sampled and do not depend on any data characteristics and
 #'     are truly random}
