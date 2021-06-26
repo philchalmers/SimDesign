@@ -128,6 +128,8 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
 isList <- function(x) !is.data.frame(x) && is.list(x)
 
 sim_results_check <- function(sim_results){
+    if(is(sim_results, 'try-error'))
+        stop(c("Summarise() should not throw errors. Message was:\n    ", sim_results), call.=FALSE)
     if(is.data.frame(sim_results)){
         if(nrow(sim_results) > 1L)
             stop('When returning a data.frame in summarise() there should only be 1 row',
