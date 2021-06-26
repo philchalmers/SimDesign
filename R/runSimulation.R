@@ -1006,7 +1006,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         }
     }
     if(safe && (parallel || MPI)){
-        # this is great because it also primes the pipes
         tmp <- packages[packages != 'SimDesign']
         if(!length(tmp)) tmp <- 'stats'
         for(i in 1:length(tmp)){
