@@ -1005,6 +1005,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             dir.create(file.path(out_rootdir, save_seeds_dirname))
         }
     }
+    load_packages(packages)
     if(safe && (parallel || MPI)){
         tmp <- packages[packages != 'SimDesign']
         if(!length(tmp)) tmp <- 'stats'

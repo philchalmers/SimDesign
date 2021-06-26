@@ -134,7 +134,6 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      warnings=warnings, warning_seeds=warning_message_seeds),
                 file.path(save_results_out_rootdir, tmpfilename))
     }
-    load_packages(packages)
     sim_results <- try(Functions$summarise(results=results,
                            condition=condition, fixed_objects=fixed_objects), TRUE)
     if(!use_try){
