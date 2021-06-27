@@ -1009,6 +1009,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(safe && (parallel || MPI)){
         tmp <- packages[packages != 'SimDesign']
         if(!length(tmp)) tmp <- 'stats'
+        if(parallel){
+            parallel::parSapply(cl, 1L:(length(cl)*2),
+                                function(ind, packages) load_packages(packages),
+                                packages=packages)
+        } else {
+            foreach(p=1L:(length(cl)*2), packages=packages) %dopar% load_packages(packages)
+        }
         for(i in 1:length(tmp)){
             packs <- if(parallel){
                 try(table(parallel::parSapply(cl, rep(tmp[i], each=length(cl)*2),
@@ -1047,7 +1054,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          save_results_dirname=save_results_dirname,
                                          save_seeds=save_seeds, summarise_asis=summarise_asis,
                                          save_seeds_dirname=save_seeds_dirname,
-                                         max_errors=max_errors, packages=packages,
+                                         max_errors=max_errors,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
                                          progress=progress, store_results=FALSE, use_try=use_try,
@@ -1077,7 +1084,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             save_results_dirname=save_results_dirname,
                             save_seeds=save_seeds, summarise_asis=summarise_asis,
                             save_seeds_dirname=save_seeds_dirname,
-                            max_errors=max_errors, packages=packages,
+                            max_errors=max_errors,
                             load_seed=load_seed, export_funs=export_funs,
                             warnings_as_errors=warnings_as_errors,
                             progress=progress, store_results=store_results, use_try=use_try,

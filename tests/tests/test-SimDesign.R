@@ -599,7 +599,7 @@ test_that('SimDesign', {
                          analyse=analyse, summarise=summarise, fixed_objects=fo,
                          packages = 'purrr', verbose=FALSE)
 
-    lst <- SimExtract(res, 'summarise_list')
+    lst <- SimExtract(res, 'summarise')
     expect_equal(names(lst), c("N=250", "N=500"))
 
 })

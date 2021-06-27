@@ -258,9 +258,8 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
                     save, allow_na, allow_nan, save_seeds, save_seeds_dirname, load_seed,
-                    warnings_as_errors, store_warning_seeds, packages = NULL, use_try){
+                    warnings_as_errors, store_warning_seeds, use_try){
 
-    load_packages(packages)
     condition$REPLICATION <- index
     try_error <- character()
     try_error_seeds <- warning_message_seeds <- matrix(0L, 0L, length(.GlobalEnv$.Random.seed))
