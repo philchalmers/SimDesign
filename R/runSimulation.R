@@ -811,6 +811,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!all(names(save_results) %in%
             c('compname', 'save_results_dirname')))
         stop('save_details contains elements that are not supported', call.=FALSE)
+    Generate <- compiler::cmpfun(Generate)
+    Analyse <- compiler::cmpfun(Analyse)
 
     compname <- save_details$compname
     safe <- save_details$safe
@@ -1054,7 +1056,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          save_results_dirname=save_results_dirname,
                                          save_seeds=save_seeds, summarise_asis=summarise_asis,
                                          save_seeds_dirname=save_seeds_dirname,
-                                         max_errors=max_errors,
+                                         max_errors=max_errors, packages=packages,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
                                          progress=progress, store_results=FALSE, use_try=use_try,
@@ -1084,7 +1086,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             save_results_dirname=save_results_dirname,
                             save_seeds=save_seeds, summarise_asis=summarise_asis,
                             save_seeds_dirname=save_seeds_dirname,
-                            max_errors=max_errors,
+                            max_errors=max_errors, packages=packages,
                             load_seed=load_seed, export_funs=export_funs,
                             warnings_as_errors=warnings_as_errors,
                             progress=progress, store_results=store_results, use_try=use_try,

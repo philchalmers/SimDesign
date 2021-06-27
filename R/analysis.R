@@ -1,7 +1,7 @@
 Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI, seed, save,
                      save_results, save_results_out_rootdir, save_results_dirname, max_errors,
                      boot_method, boot_draws, CI, save_seeds, save_seeds_dirname, load_seed,
-                     export_funs, summarise_asis, warnings_as_errors, progress, store_results,
+                     export_funs, summarise_asis, warnings_as_errors, progress, packages, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
@@ -134,6 +134,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      warnings=warnings, warning_seeds=warning_message_seeds),
                 file.path(save_results_out_rootdir, tmpfilename))
     }
+    load_packages(packages)
     sim_results <- try(Functions$summarise(results=results,
                            condition=condition, fixed_objects=fixed_objects), TRUE)
     if(!use_try){
