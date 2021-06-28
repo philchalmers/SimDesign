@@ -117,7 +117,7 @@ res <- runSimulation(design=Design, fixed_objects=fo, replications=100, generate
 
 This example is the same as above, but is now run using all available cores on the computer for (potentially) lower estimation time. However, there are a number of important issues that arise when executing code in parallel using the `system()` calling form. 
 
-To start, the above example code cannot be used in parallel because when multiple instances of R are spawned, the data will constantly be over-written by the independent cores. This implies that the independent cores may actually be analyzing the same data file during the replications rather than generating and analyzing independent replications. Therefore, to ensure that the data are generated and analyzed uniquely we must be more careful about saving and reading files. Fortunately, `SimDesign` tracks which replication number is currently being executed via the `condition$REPLICATION` element, and so saving and reading unique files within each processor is relatively painless.
+To start, the above example code cannot be used in parallel because when multiple instances of R are spawned, the data will constantly be over-written by the independent cores. This implies that the independent cores may actually be analyzing the same data file during the replications rather than generating and analyzing independent replications. Therefore, to ensure that the data are generated and analyzed uniquely we must be more careful about saving and reading files. Fortunately, `SimDesign` tracks which replication number is currently being executed via a `condition$REPLICATION` element after adding the input `extra_options = list(include_replication_index = TRUE)`, and so saving and reading unique files within each processor is relatively painless.
 
 Compared to the above serial implementation, the following code:
 
@@ -174,7 +174,9 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 #-------------------------------------------------------------------
 
 res <- runSimulation(design=Design, fixed_objects=fo, replications=100, generate=Generate,
-                     analyse=Analyse, summarise=Summarise, packages='MplusAutomation', parallel=TRUE)
+                     analyse=Analyse, summarise=Summarise, 
+                     packages='MplusAutomation', parallel=TRUE,
+                     extra_options = list(include_replication_index = TRUE))
 ```
 
 
