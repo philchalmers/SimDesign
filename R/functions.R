@@ -261,8 +261,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                     warnings_as_errors, store_warning_seeds, use_try){
 
     condition$REPLICATION <- index
-    try_error <- character()
-    try_error_seeds <- warning_message_seeds <- matrix(0L, 0L, length(.GlobalEnv$.Random.seed))
+    try_error <- try_error_seeds <- warning_message_seeds <- NULL
 
     while(TRUE){
 
@@ -374,7 +373,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         if(!is.list(res) && !is.numeric(res))
             stop('analyse() did not return a list or numeric vector', call.=FALSE)
 
-        rownames(try_error_seeds) <- try_error
+        if(length(try_error))
+            rownames(try_error_seeds) <- try_error
         if(store_warning_seeds)
             rownames(warning_message_seeds) <- Warnings
         attr(res, 'try_errors') <- try_error
