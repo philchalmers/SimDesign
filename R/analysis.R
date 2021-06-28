@@ -2,7 +2,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      save_results, save_results_out_rootdir, save_results_dirname, max_errors,
                      boot_method, boot_draws, CI, save_seeds, save_seeds_dirname, load_seed,
                      export_funs, summarise_asis, warnings_as_errors, progress, store_results,
-                     allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds)
+                     allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds,
+                     include_replication_index)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -19,6 +20,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    save_seeds=save_seeds, load_seed=load_seed,
                    save_seeds_dirname=save_seeds_dirname,
                    warnings_as_errors=warnings_as_errors,
+                   include_replication_index=include_replication_index,
                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try), TRUE)
         } else {
             try(lapply(1L:replications, mainsim, condition=condition,
@@ -31,6 +33,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    store_warning_seeds=store_warning_seeds,
                    save_seeds_dirname=save_seeds_dirname,
                    warnings_as_errors=warnings_as_errors,
+                   include_replication_index=include_replication_index,
                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try), TRUE)
         }
     } else {
@@ -43,6 +46,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                      save_results_out_rootdir=save_results_out_rootdir,
                      store_warning_seeds=store_warning_seeds,
+                     include_replication_index=include_replication_index,
                      warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan,
                      use_try=use_try), TRUE)
         } else {
@@ -56,6 +60,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     max_errors=max_errors, store_warning_seeds=store_warning_seeds,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
+                                    include_replication_index=include_replication_index,
                                     allow_nan=allow_nan, use_try=use_try, cl=cl), TRUE)
             } else {
                 try(parallel::parLapply(cl, 1L:replications, mainsim,
@@ -66,6 +71,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     max_errors=max_errors, store_warning_seeds=store_warning_seeds,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
+                                    include_replication_index=include_replication_index,
                                     allow_nan=allow_nan, use_try=use_try), TRUE)
             }
         }

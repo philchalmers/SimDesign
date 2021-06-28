@@ -2,6 +2,9 @@
 
 ## Changes in SimDesign 2.6
 
+- Various performance improvements to reduce execution overhead (e.g., `REPLICATION` ID now moved
+  to an `extra_option` as this was identified as a bottleneck)
+
 - Meta-statistical functions now support a `fun(list, matrix)` input form to compute element-wise
   summaries that return a `matrix` structure
   

@@ -341,6 +341,13 @@ errors are thrown in any
       that too many warnings messages raised during the simulation implementation could cause
       RAM related issues.}
 
+     \item{\code{include_replication_index}}{logical (default is \code{FALSE});
+       should a REPLICATION element be added to
+       the \code{condition} object when performing the simulation to track which specific
+       replication experiment is being evaluated? This is useful when, for instance, attempting
+       to run external software programs (e.g., Mplus) that require saving temporary datasets
+       to the hard-drive (see the Wiki for examples)}
+
      \item{\code{allow_na}}{logical (default is \code{FALSE}); should \code{NA}s be allowed in the
       analyse step as a valid result from the simulation analysis?}
 

@@ -322,6 +322,13 @@
 #'       that too many warnings messages raised during the simulation implementation could cause
 #'       RAM related issues.}
 #'
+#'      \item{\code{include_replication_index}}{logical (default is \code{FALSE});
+#'        should a REPLICATION element be added to
+#'        the \code{condition} object when performing the simulation to track which specific
+#'        replication experiment is being evaluated? This is useful when, for instance, attempting
+#'        to run external software programs (e.g., Mplus) that require saving temporary datasets
+#'        to the hard-drive (see the Wiki for examples)}
+#'
 #'      \item{\code{allow_na}}{logical (default is \code{FALSE}); should \code{NA}s be allowed in the
 #'       analyse step as a valid result from the simulation analysis?}
 #'
@@ -796,6 +803,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     type <- if(is.null(extra_options$type))
         ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK')
         else extra_options$type
+    include_replication_index <- ifelse(is.null(extra_options$include_replication_index),
+                                        FALSE, extra_options$include_replication_index)
     if(missing(generate) && !missing(analyse))
         generate <- function(condition, dat, fixed_objects = NULL){}
     NA_summarise <- FALSE
@@ -908,10 +917,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         stop('number of replications must be greater than or equal to 1', call. = FALSE)
     if(!(debug %in% c('none', 'analyse', 'generate', 'summarise', 'all', 'error')))
         stop('debug input is not valid', call. = FALSE)
-    if(any(names(design) == 'REPLICATION'))
+    if(any(names(design) == 'REPLICATION')){
         stop("REPLICATION is a reserved keyword in the design object. Please use another name",
              call.=FALSE)
-    else design <- data.frame(REPLICATION=integer(nrow(design)), design)
+    } else if(include_replication_index){
+        design <- data.frame(REPLICATION=integer(nrow(design)), design)
+    }
     if(!any(names(design) == 'ID')){
         design <- data.frame(ID=1L:nrow(design), design)
     } else stopifnot(length(unique(design$ID)) == nrow(design))
@@ -1057,6 +1068,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          save_seeds=save_seeds, summarise_asis=summarise_asis,
                                          save_seeds_dirname=save_seeds_dirname,
                                          max_errors=max_errors,
+                                         include_replication_index=include_replication_index,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
                                          progress=progress, store_results=FALSE, use_try=use_try,
@@ -1087,6 +1099,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             save_seeds=save_seeds, summarise_asis=summarise_asis,
                             save_seeds_dirname=save_seeds_dirname,
                             max_errors=max_errors,
+                            include_replication_index=include_replication_index,
                             load_seed=load_seed, export_funs=export_funs,
                             warnings_as_errors=warnings_as_errors,
                             progress=progress, store_results=store_results, use_try=use_try,

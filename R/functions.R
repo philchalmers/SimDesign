@@ -258,9 +258,9 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
                     save, allow_na, allow_nan, save_seeds, save_seeds_dirname, load_seed,
-                    warnings_as_errors, store_warning_seeds, use_try){
+                    warnings_as_errors, store_warning_seeds, use_try, include_replication_index){
 
-    condition$REPLICATION <- index
+    if(include_replication_index) condition$REPLICATION <- index
     try_error <- try_error_seeds <- warning_message_seeds <- NULL
 
     while(TRUE){
