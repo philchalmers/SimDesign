@@ -1263,6 +1263,7 @@ summary.SimDesign <- function(object, ...){
     ret$stored_results <- NULL
     ret$error_seeds <- NULL
     ret$warning_seeds <- NULL
+    ret$summarise_list <- NULL
     ret
 }
 
