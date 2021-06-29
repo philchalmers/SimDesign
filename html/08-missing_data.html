@@ -411,6 +411,11 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 res &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
                      generate=Generate, analyse=Analyse, summarise=Summarise, 
                      packages = &#39;mvtnorm&#39;)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;mvtnorm&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:SimDesign&#39;:
+## 
+##     rmvnorm, rmvt</code></pre>
 <pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 3 x 11
 ##       N bias.listwise bias.pairwise RMSE.listwise RMSE.pairwise RE.listwise

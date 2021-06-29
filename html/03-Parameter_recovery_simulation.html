@@ -488,8 +488,10 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 <p>Because this simulation takes considerably longer it is recommended to pass the <code>save = TRUE</code> to temporarily save results in case of power outages. Results can be continued by running the identical simulation code as the initial run, and the function will automatically detect whether any temp files are available and resume the simulation at the previously saved location.</p>
 <pre class="r"><code>res &lt;- runSimulation(Design, replications=100, verbose=FALSE, save=TRUE, parallel=TRUE,
                      generate=Generate, analyse=Analyse, summarise=Summarise, 
-                     packages=c(&#39;mirt&#39;, &#39;lavaan&#39;), fixed_objects=pars)
-res</code></pre>
+                     packages=c(&#39;mirt&#39;, &#39;lavaan&#39;), fixed_objects=pars)</code></pre>
+<pre><code>## This is lavaan 0.6-9
+## lavaan is FREE software! Please report any bugs.</code></pre>
+<pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 6 x 86
 ##   sample_size nitems bias.FIML_as1 bias.FIML_as2 bias.FIML_as3 bias.FIML_as4
 ##         &lt;dbl&gt;  &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;

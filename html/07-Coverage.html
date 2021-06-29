@@ -418,15 +418,15 @@ res &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel = TR
 <pre><code>## # A tibble: 9 x 8
 ##      mu sample_size  t_CI  z_CI REPLICATIONS SIM_TIME COMPLETED             SEED
 ##   &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                &lt;int&gt;
-## 1     0          10 0.953 0.922        10000    0.576 Tue May 25 18:48…   4.88e8
-## 2     5          10 0.946 0.916        10000    0.580 Tue May 25 18:48…   4.69e8
-## 3    10          10 0.950 0.918        10000    0.562 Tue May 25 18:48…   1.55e9
-## 4     0          20 0.948 0.933        10000    0.468 Tue May 25 18:48…   4.08e7
-## 5     5          20 0.953 0.938        10000    0.471 Tue May 25 18:48…   7.13e8
-## 6    10          20 0.953 0.938        10000    0.755 Tue May 25 18:48…   8.31e8
-## 7     0          30 0.949 0.941        10000    0.546 Tue May 25 18:48…   1.21e9
-## 8     5          30 0.947 0.938        10000    0.637 Tue May 25 18:48…   1.26e9
-## 9    10          30 0.950 0.940        10000    0.453 Tue May 25 18:48…   1.23e9</code></pre>
+## 1     0          10 0.953 0.922        10000    0.555 Tue Jun 29 02:08…   4.88e8
+## 2     5          10 0.946 0.916        10000    0.523 Tue Jun 29 02:08…   4.69e8
+## 3    10          10 0.950 0.918        10000    0.440 Tue Jun 29 02:08…   1.55e9
+## 4     0          20 0.948 0.933        10000    0.429 Tue Jun 29 02:08…   4.08e7
+## 5     5          20 0.953 0.938        10000    0.369 Tue Jun 29 02:08…   7.13e8
+## 6    10          20 0.953 0.938        10000    0.366 Tue Jun 29 02:08…   8.31e8
+## 7     0          30 0.949 0.941        10000    0.396 Tue Jun 29 02:08…   1.21e9
+## 8     5          30 0.947 0.938        10000    0.367 Tue Jun 29 02:08…   1.26e9
+## 9    10          30 0.950 0.940        10000    0.365 Tue Jun 29 02:08…   1.23e9</code></pre>
 <p>From these results it’s clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distribution CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.</p>
 <p>Note that the <code>ECR()</code> function was used within the <code>Analyse()</code> function rather than in <code>Summarise()</code>. When only the three values are supplied (CIs + population value) then <code>ECR()</code> will return either a 1 if the population value was within the CI or 0 if it was not. Hence, in the <code>Summarise()</code> function all that is required to obtain the coverage estimate is to find the mean of these 1’s and 0’s. The next section demonstrates how to use <code>ECR()</code> in the <code>Summarise()</code> instead, and it’s really a matter of preference which style you prefer.</p>
 </div>

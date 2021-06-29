@@ -458,7 +458,7 @@ res &lt;- runSimulation(design=Design, fixed_objects=fo, replications=100, gener
 <div id="mplus-example-multi-coreparallel-processing" class="section level1">
 <h1>Mplus example (multi-core/parallel processing)</h1>
 <p>This example is the same as above, but is now run using all available cores on the computer for (potentially) lower estimation time. However, there are a number of important issues that arise when executing code in parallel using the <code>system()</code> calling form.</p>
-<p>To start, the above example code cannot be used in parallel because when multiple instances of R are spawned, the data will constantly be over-written by the independent cores. This implies that the independent cores may actually be analyzing the same data file during the replications rather than generating and analyzing independent replications. Therefore, to ensure that the data are generated and analyzed uniquely we must be more careful about saving and reading files. Fortunately, <code>SimDesign</code> tracks which replication number is currently being executed via the <code>condition$REPLICATION</code> element, and so saving and reading unique files within each processor is relatively painless.</p>
+<p>To start, the above example code cannot be used in parallel because when multiple instances of R are spawned, the data will constantly be over-written by the independent cores. This implies that the independent cores may actually be analyzing the same data file during the replications rather than generating and analyzing independent replications. Therefore, to ensure that the data are generated and analyzed uniquely we must be more careful about saving and reading files. Fortunately, <code>SimDesign</code> tracks which replication number is currently being executed via a <code>condition$REPLICATION</code> element after adding the input <code>extra_options = list(include_replication_index = TRUE)</code>, and so saving and reading unique files within each processor is relatively painless.</p>
 <p>Compared to the above serial implementation, the following code:</p>
 <ol style="list-style-type: decimal">
 <li>Generates data the same, but saves the <code>.dat</code> files to their own unique file name based on the value of <code>condition$REPLICATION</code> (e.g., <code>reg-99.dat</code>, representing the 99th replication in the simulation experiment).</li>
@@ -515,7 +515,9 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 #-------------------------------------------------------------------
 
 res &lt;- runSimulation(design=Design, fixed_objects=fo, replications=100, generate=Generate,
-                     analyse=Analyse, summarise=Summarise, packages=&#39;MplusAutomation&#39;, parallel=TRUE)</code></pre>
+                     analyse=Analyse, summarise=Summarise, 
+                     packages=&#39;MplusAutomation&#39;, parallel=TRUE,
+                     extra_options = list(include_replication_index = TRUE))</code></pre>
 </div>
 
 
