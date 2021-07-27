@@ -820,8 +820,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!all(names(save_results) %in%
             c('compname', 'save_results_dirname')))
         stop('save_details contains elements that are not supported', call.=FALSE)
-    Generate <- compiler::cmpfun(Generate)
-    Analyse <- compiler::cmpfun(Analyse)
+    generate <- compiler::cmpfun(generate)
+    analyse <- compiler::cmpfun(analyse)
 
     compname <- save_details$compname
     safe <- save_details$safe
