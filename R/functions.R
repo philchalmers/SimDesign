@@ -92,8 +92,11 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #' Compute estimates and statistics
 #'
 #' Compute all relevant test statistics, parameter estimates, detection rates, and so on.
-#' This is the computational heavy lifting portion of the Monte Carlo simulation. If
-#' a suitable \code{\link{Generate}} function was not supplied then this function
+#' This is the computational heavy lifting portion of the Monte Carlo simulation. Users
+#' may define a single Analysis function to perform all the analyses in the same function environment,
+#' or may define a \code{list} of named functions to \code{\link{runSimulation}} to allow for a more
+#' modularized approach to performing the analyses in independent blocks (but that share the same generated
+#' data). Note that if a suitable \code{\link{Generate}} function was not supplied then this function
 #' can be used to be generate and analyse the Monte Carlo data (though in general this
 #' setup is not recommended for larger simulations).
 #'
@@ -155,6 +158,23 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #'
 #'     return(ret)
 #' }
+#'
+#' # A more modularized example approach
+#'
+#' analysis_welch <- function(condition, dat, fixed_objects = NULL) {
+#'     welch <- t.test(DV ~ group, dat)
+#'     ret <- c(p=welch$p.value)
+#'     ret
+#' }
+#'
+#' analysis_ind <- function(condition, dat, fixed_objects = NULL) {
+#'     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
+#'     ret <- c(p=ind$p.value)
+#'     ret
+#' }
+#'
+#' # pass functions as a named list
+#' # runSimulation(..., analyse=list(welch=analyse_welch, independent=analysis_ind))
 #'
 #' }
 Analyse <- function(condition, dat, fixed_objects = NULL) NULL

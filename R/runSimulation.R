@@ -138,7 +138,8 @@
 #'   user if they wish to generate the data with the \code{analyse} step, but for real-world
 #'   simulations this is generally not recommended
 #'
-#' @param analyse user-defined analysis function that acts on the data generated from
+#' @param analyse user-defined analysis function (or named list of functions)
+#'   that acts on the data generated from
 #'   \code{\link{Generate}} (or, if \code{generate} was omitted, can be used to generate and
 #'   analyses the simulated data). See \code{\link{Analyse}} for details
 #'
@@ -778,6 +779,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
+    ANALYSE_FUNCTIONS <<- NULL
+    if(is.list(analyse)){
+        ANALYSE_FUNCTIONS <<- analyse
+        analyse <- combined_Analyses
+    }
+    on.exit(rm(ANALYSE_FUNCTIONS, envir = globalenv()))
     if(is.null(seed)){
         seed <- if(missing(design))
             rint(1L, min=1L, max = 2147483647L)
@@ -947,6 +954,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             on.exit(parallel::stopCluster(cl))
         }
         parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
+        parallel::clusterExport(cl=cl, "ANALYSE_FUNCTIONS")
         if(verbose)
             message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
     }

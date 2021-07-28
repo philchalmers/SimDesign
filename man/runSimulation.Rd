@@ -55,7 +55,8 @@ See \code{\link{Generate}} for details. Note that this argument may be omitted b
 user if they wish to generate the data with the \code{analyse} step, but for real-world
 simulations this is generally not recommended}
 
-\item{analyse}{user-defined analysis function that acts on the data generated from
+\item{analyse}{user-defined analysis function (or named list of functions)
+that acts on the data generated from
 \code{\link{Generate}} (or, if \code{generate} was omitted, can be used to generate and
 analyses the simulated data). See \code{\link{Analyse}} for details}
 

@@ -170,3 +170,17 @@ unwind_apply_wind.list <- function(lst, mat, fun, ...){
     }
     ret
 }
+
+combined_Analyses <- function(condition, dat, fixed_objects = NULL){
+    nfuns <- length(ANALYSE_FUNCTIONS)
+    nms <- names(ANALYSE_FUNCTIONS)
+    ret <- vector('list', nfuns)
+    names(ret) <- nms
+    for(i in nms)
+        ret[[i]] <- ANALYSE_FUNCTIONS[[i]](condition=condition, dat=dat,
+                                           fixed_objects=fixed_objects)
+    if(all(sapply(ret, function(x) is.numeric(x) ||
+                  (is.data.frame(x) && nrow(x) == 1L))))
+        ret <- unlist(ret)
+    ret
+}
