@@ -1,5 +1,15 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.7
+
+- The `analyse` argument to `runSimulation()` now accepts a named list of functions rather than a 
+  single analysis function. This allows the user to separate the independent analyses into distinct
+  functional blocks rather than having all analyses within the same function, and potentially allows
+  for better modularity
+  
+- `SimFunctions()` gains an `nanalysis` argument to specify how many analysis functions should 
+  be templated (default is 1, retaining the previous package defaults)
+
 ## Changes in SimDesign 2.6
 
 - Various performance improvements to reduce execution overhead (e.g., `REPLICATION` ID now moved
