@@ -602,5 +602,34 @@ test_that('SimDesign', {
     lst <- SimExtract(res, 'summarise')
     expect_equal(names(lst), c("N=250", "N=500"))
 
+    ## modular
+    Design <- createDesign(factor1 = 1,
+                           factor2 = c(1,2))
+
+    generate <- function(condition, fixed_objects = NULL) {
+        dat <- 1
+        dat
+    }
+
+    analyse1 <- function(condition, dat, fixed_objects = NULL) {
+        ret <- c(a1=1)
+        ret
+    }
+
+    analyse2 <- function(condition, dat, fixed_objects = NULL) {
+        ret <- c(a2=2)
+        ret
+    }
+
+    summarise <- function(condition, results, fixed_objects = NULL) {
+        ret <- colMeans(results)
+        ret
+    }
+
+    res <- runSimulation(design=Design, replications=5, generate=generate,
+                         analyse=list(analyse1=analyse1, analyse2=analyse2),
+                         summarise=summarise, parallel=FALSE, verbose=FALSE)
+    expect_true(all(c("analyse1.a1", "analyse2.a2") %in% names(res)))
+
 })
 
