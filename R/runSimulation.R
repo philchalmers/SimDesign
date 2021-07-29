@@ -792,6 +792,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                    'saving will be disabled while visible'))
                 save <- save_results <- save_seeds <- parallel <- MPI <- FALSE
             }
+            ANALYSE_FUNCTIONS[[i]] <- compiler::cmpfun(ANALYSE_FUNCTIONS[[i]])
         }
     }
     on.exit(rm(ANALYSE_FUNCTIONS, envir = globalenv()))
