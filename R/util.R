@@ -186,6 +186,6 @@ combined_Analyses <- function(condition, dat, fixed_objects = NULL){
     }
     if(all(sapply(ret, function(x) is.numeric(x) ||
                   (is.data.frame(x) && nrow(x) == 1L))))
-        ret <- unlist(ret)
+        ret <- as.matrix(unlist(ret))
     ret
 }
