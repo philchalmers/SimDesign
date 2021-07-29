@@ -126,7 +126,8 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #'   \code{parameters}). If a \code{data.frame} is returned with more than 1 row then these
 #'   objects will be wrapped into suitable \code{list} objects
 #'
-#' @seealso \code{\link{stop}}
+#' @seealso \code{\link{stop}}, \code{\link{AnalyseIf}}
+#'
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations

@@ -483,7 +483,7 @@
 #'   \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
 #'   \code{\link{SimExtract}},
 #'   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
-#'   \code{\link{aggregate_simulations}}, \code{\link{Attach}},
+#'   \code{\link{aggregate_simulations}}, \code{\link{Attach}}, \code{\link{AnalyseIf}},
 #'   \code{\link{SimShiny}}
 #'
 #' @export runSimulation
@@ -781,8 +781,18 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     stopifnot(!missing(analyse))
     ANALYSE_FUNCTIONS <<- NULL
     if(is.list(analyse)){
+        stopifnot(length(names(analyse)))
         ANALYSE_FUNCTIONS <<- analyse
         analyse <- combined_Analyses
+        for(i in 1L:length(ANALYSE_FUNCTIONS)){
+            char_functions <- deparse(substitute(ANALYSE_FUNCTIONS[[i]]))
+            if(any(grepl('browser\\(', char_functions))){
+                if(verbose && parallel)
+                    message(paste0('A browser() call was detected. Parallel processing/object ',
+                                   'saving will be disabled while visible'))
+                save <- save_results <- save_seeds <- parallel <- MPI <- FALSE
+            }
+        }
     }
     on.exit(rm(ANALYSE_FUNCTIONS, envir = globalenv()))
     if(is.null(seed)){

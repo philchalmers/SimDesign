@@ -176,9 +176,14 @@ combined_Analyses <- function(condition, dat, fixed_objects = NULL){
     nms <- names(ANALYSE_FUNCTIONS)
     ret <- vector('list', nfuns)
     names(ret) <- nms
-    for(i in nms)
-        ret[[i]] <- ANALYSE_FUNCTIONS[[i]](condition=condition, dat=dat,
-                                           fixed_objects=fixed_objects)
+    for(i in nms){
+        tried <- try(ANALYSE_FUNCTIONS[[i]](condition=condition, dat=dat,
+                                            fixed_objects=fixed_objects), silent=TRUE)
+        if(is(tried, 'try-error'))
+            if(tried == 'Error : ANALYSEIF RAISED ERROR\n')
+                tried <- NULL
+        ret[[i]] <- tried
+    }
     if(all(sapply(ret, function(x) is.numeric(x) ||
                   (is.data.frame(x) && nrow(x) == 1L))))
         ret <- unlist(ret)

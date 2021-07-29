@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.7
 
+- Added `AnalyseIf()` function to allow specific analysis function to be included explicitly. Useful
+  when the defined analysis function is not compatible with a row-condition in the `Design` object. 
+  Only relevant when the `analyse` argument was defined as a named list of functions
+
 - The `analyse` argument to `runSimulation()` now accepts a named list of functions rather than a 
   single analysis function. This allows the user to separate the independent analyses into distinct
   functional blocks rather than having all analyses within the same function, and potentially allows
