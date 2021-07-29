@@ -936,6 +936,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         stop('number of replications must be greater than or equal to 1', call. = FALSE)
     if(!(debug %in% c('none', 'analyse', 'generate', 'summarise', 'all', 'error')))
         stop('debug input is not valid', call. = FALSE)
+    if(!is.null(ANALYSE_FUNCTIONS) && debug == 'analyse')
+        stop(c('debug = \"analyse" not supported when functions are a list. Please place a browser()',
+             " in the respective function location that you are trying to debug"), call.=FALSE)
     if(any(names(design) == 'REPLICATION')){
         stop("REPLICATION is a reserved keyword in the design object. Please use another name",
              call.=FALSE)
