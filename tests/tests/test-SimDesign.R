@@ -631,5 +631,18 @@ test_that('SimDesign', {
                          summarise=summarise, parallel=FALSE, verbose=FALSE)
     expect_true(all(c("analyse1.a1", "analyse2.a2") %in% names(res)))
 
+    # skip over some
+    analyse1 <- function(condition, dat, fixed_objects = NULL) {
+        AnalyseIf(factor2 != 2, condition)
+        ret <- c(a1=1)
+        ret
+    }
+
+    res <- runSimulation(design=Design, replications=5, generate=generate,
+                         analyse=list(analyse1=analyse1, analyse2=analyse2),
+                         summarise=summarise, parallel=TRUE, verbose=FALSE)
+    expect_true(all(c("analyse1.a1", "analyse2.a2") %in% names(res)))
+    expect_true(is.na(res$analyse1.a1[2]))
+
 })
 

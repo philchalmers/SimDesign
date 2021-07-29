@@ -781,7 +781,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     stopifnot(!missing(analyse))
     ANALYSE_FUNCTIONS <<- NULL
     if(is.list(analyse)){
-        stopifnot(length(names(analyse)))
+        stopifnot(length(names(analyse)) > 0L)
         for(i in 1L:length(analyse))
             analyse[[i]] <- compiler::cmpfun(analyse[[i]])
         ANALYSE_FUNCTIONS <<- analyse
