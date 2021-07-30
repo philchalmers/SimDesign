@@ -186,6 +186,32 @@ combined_Analyses <- function(condition, dat, fixed_objects = NULL){
     }
     if(all(sapply(ret, function(x) is.numeric(x) ||
                   (is.data.frame(x) && nrow(x) == 1L))))
-        ret <- as.matrix(unlist(ret))
+        ret <- unlist(ret)
     ret
 }
+
+toTabledResults <- function(results){
+    tabled_results <- if(is.data.frame(results[[1]]) && nrow(results[[1L]]) == 1L){
+        dplyr::bind_rows(results)
+    } else if((is.data.frame(results[[1]]) && nrow(results[[1]]) > 1L) || is.list(results[[1L]])){
+        results
+    } else {
+        dplyr::bind_rows(as.data.frame(do.call(rbind, results)))
+    }
+    tabled_results
+}
+
+stackResults <- function(results){
+    if(!is.list(results[[1L]]) || (is.data.frame(results[[1L]]) &&
+                                   nrow(results[[1L]]) == 1L)){
+        old_nms <- names(results[[1L]])
+        results <- as.data.frame(do.call(rbind, results))
+        if(length(unique(colnames(results))) != ncol(results) && ncol(results) > 1L)
+            stop('Object of results returned from analyse must have unique names', call.=FALSE)
+        rownames(results) <- NULL
+        if(ncol(results) == 1L && is.null(old_nms)) results <- results[,1]
+    }
+    results
+}
+
+

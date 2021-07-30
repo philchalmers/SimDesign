@@ -91,13 +91,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         }
     }
     if(summarise_asis || store_results){
-        tabled_results <- if(is.data.frame(results[[1]]) && nrow(results[[1L]]) == 1L){
-            dplyr::bind_rows(results)
-        } else if((is.data.frame(results[[1]]) && nrow(results[[1]]) > 1L) || is.list(results[[1L]])){
-            results
-        } else {
-            dplyr::bind_rows(as.data.frame(do.call(rbind, results)))
-        }
+        tabled_results <- toTabledResults(results)
         if(save_results){
             tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
             saveRDS(list(condition=condition, results=tabled_results),
@@ -124,15 +118,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         attr(results[[i]], 'try_error_seeds') <- attr(results[[i]], 'warning_message_seeds') <- NULL
 
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
-    if(!is.list(results[[1L]]) ||
-       (is.data.frame(results[[1L]]) && nrow(results[[1L]]) == 1L)){
-        old_nms <- names(results[[1L]])
-        results <- as.data.frame(do.call(rbind, results))
-        if(length(unique(colnames(results))) != ncol(results) && ncol(results) > 1L)
-            stop('Object of results returned from analyse must have unique names', call.=FALSE)
-        rownames(results) <- NULL
-        if(ncol(results) == 1L && is.null(old_nms)) results <- results[,1]
-    }
+    results <- stackResults(results)
     if(save_results){
         tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
         saveRDS(list(condition=condition, results=results, errors=try_errors,
