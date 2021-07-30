@@ -1,3 +1,5 @@
+.SIMDENV <- new.env(parent=emptyenv())
+
 # return a character vector of functions defined in .GlobalEnv
 parent_env_fun <- function(){
     nms <- ls(envir = parent.frame(2L))
@@ -172,6 +174,8 @@ unwind_apply_wind.list <- function(lst, mat, fun, ...){
 }
 
 combined_Analyses <- function(condition, dat, fixed_objects = NULL){
+    if(!is.null(.SIMDENV$ANALYSE_FUNCTIONS))
+        ANALYSE_FUNCTIONS <- .SIMDENV$ANALYSE_FUNCTIONS
     nfuns <- length(ANALYSE_FUNCTIONS)
     nms <- names(ANALYSE_FUNCTIONS)
     ret <- vector('list', nfuns)
