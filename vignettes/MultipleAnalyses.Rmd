@@ -72,7 +72,7 @@ P_logit <- function(a, d, Theta) exp(a * Theta + d) / (1 + exp(a * Theta + d))
 P_ogive <- function(a, d, Theta) pnorm(a * Theta + d)
 ```
 
-```{r}
+```{r eval=FALSE}
 Generate <- function(condition, fixed_objects = NULL) {
 
     N <- condition$sample_size
