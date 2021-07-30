@@ -11,7 +11,7 @@
   functional blocks rather than having all analyses within the same function, and potentially allows
   for better modularity
   
-- `SimFunctions()` gains an `nanalysis` argument to specify how many analysis functions should 
+- `SimFunctions()` gains an `nAnalyses` argument to specify how many analysis functions should 
   be templated (default is 1, retaining the previous package defaults)
 
 ## Changes in SimDesign 2.6

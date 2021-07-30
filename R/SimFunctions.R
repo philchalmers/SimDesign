@@ -33,7 +33,7 @@
 #'
 #' @param generate include \code{generate} function? Default is \code{TRUE}
 #'
-#' @param nanalyse number of analysis functions to create (default is 1). Increasing the value
+#' @param nAnalyses number of analysis functions to create (default is 1). Increasing the value
 #'   of this argument when independent analysis are being performed allows function definitions
 #'   to be better partitioned and potentially more modular
 #'
@@ -70,11 +70,15 @@
 #'
 #' # write output files to a single file with comments
 #' SimFunctions('mysim', comments = TRUE)
+#'
+#' # Multiple analysis functions for optional partitioning
+#' SimFunctions(nAnalyses = 2)
+#' SimFunctions(nAnalyses = 3)
 #' }
 #'
 SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
                          singlefile = TRUE, summarise = TRUE, generate = TRUE,
-                         nanalyse=1, openFiles = TRUE){
+                         nAnalyses=1, openFiles = TRUE){
     LINE <- function()
         cat('#-------------------------------------------------------------------\n')
     HEAD <- function(){
@@ -102,15 +106,15 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
             cat('\n    dat\n}')
             cat('\n')
         }
-        if(nanalyse == 1L){
-            cat('\nAnalyse <- function(condition, dat, fixed_objects = NULL) {')
+        if(nAnalyses == 1L){
+            cat('\nAnalyses <- function(condition, dat, fixed_objects = NULL) {')
             if(comments) cat('\n    # Run statistical analyses of interest ... \n')
             if(comments) cat('\n    # Return a named vector or list')
             cat('\n    ret <- c(stat1 = NaN, stat2 = NaN)\n    ret\n}')
             cat('\n\n')
         } else {
-            for(i in 1L:nanalyse){
-                cat(sprintf('\nAnalyse%i <- function(condition, dat, fixed_objects = NULL) {', i))
+            for(i in 1L:nAnalyses){
+                cat(sprintf('\nAnalyses%i <- function(condition, dat, fixed_objects = NULL) {', i))
                 if(comments) cat('\n    # Run statistical analyses of interest ... \n')
                 if(comments) cat('\n    # Return a named vector or list')
                 cat('\n    ret <- c(stat1 = NaN, stat2 = NaN)\n    ret\n}')
@@ -129,15 +133,15 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
     TAIL <- function(){
         LINE()
         if(comments) cat('\n### Run the simulation\n')
-        if(nanalyse==1L){
+        if(nAnalyses==1L){
             cat('\nres <- runSimulation(design=Design, replications=1000,',
                 if(generate) 'generate=Generate, ')
             cat(sprintf('\n                     analyse=Analyse%s',
                         if(summarise) ', summarise=Summarise)' else ')'))
         } else {
             Analyse_string <- sprintf("list(%s)",
-                                      paste0(paste0('analyse', 1L:nanalyse, sep='='),
-                                      paste0('Analyse', 1L:nanalyse), collapse=', '))
+                                      paste0(paste0('analyse', 1L:nAnalyses, sep='='),
+                                      paste0('Analyse', 1L:nAnalyses), collapse=', '))
             cat('\nres <- runSimulation(design=Design, replications=1000,',
                 if(generate) 'generate=Generate, ')
             cat(sprintf('\n                     analyse=%s%s', Analyse_string,

@@ -11,7 +11,7 @@ SimFunctions(
   singlefile = TRUE,
   summarise = TRUE,
   generate = TRUE,
-  nanalyse = 1,
+  nAnalyses = 1,
   openFiles = TRUE
 )
 }
@@ -33,7 +33,7 @@ Default is \code{TRUE}}
 
 \item{generate}{include \code{generate} function? Default is \code{TRUE}}
 
-\item{nanalyse}{number of analysis functions to create (default is 1). Increasing the value
+\item{nAnalyses}{number of analysis functions to create (default is 1). Increasing the value
 of this argument when independent analysis are being performed allows function definitions
 to be better partitioned and potentially more modular}
 
@@ -70,6 +70,10 @@ SimFunctions('mysim', singlefile = FALSE)
 
 # write output files to a single file with comments
 SimFunctions('mysim', comments = TRUE)
+
+# Multiple analysis functions for optional partitioning
+SimFunctions(nAnalyses = 2)
+SimFunctions(nAnalyses = 3)
 }
 
 }

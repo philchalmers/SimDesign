@@ -30,18 +30,19 @@ par(mar=c(3,3,1,1)+.1)
 This vignette demonstrates one of the newer features in the `SimDesign` package pertaining to multiple analysis function definitions. The purpose of providing multiple analysis functions is to 
 
 1) Remove the less readable if-then-else combinations that sometimes appear when writing simulation code where some analysis functions are not intended to be used on a given dataset, 
-2) Provide better automatic naming of the results across independent analyses subroutines, and to
+2) Provide better automatic naming of the results across independent analyses subroutines, 
+3) Construct more readable code when the `Analyse()` function contains too many analyses to easily track, and to
 3) Create a more modular approach to isolating the analysis functions for the purpose of redistribution or reusing the analysis in related projects
 
-Functionality speaking this type of organization does not change much, as so for that reason the coding style could generally be considered optional. However, if any of the above points resonate well then following the details of this vignette may prove useful. 
+Functionality speaking this type of organization does not change how `SimDesign` operates, as so for that reason the coding style is generally considered optional. However, if any of the above points resonate well then following the details of this vignette may prove useful. 
 
 # Description of structure
 
-The usual workflow with `SimDesign` requires first calling `SimFunctions()` to generate a working template. In the context of multiple analysis functions, however, users should pass the number of analysis functions they believe they will need in their simulation by way of the `nanalyse` argument (e.g., if analyzing a $t$-test setup to compare the Welch versus independent samples t-test, then two analysis functions should be used). This creates the following output:
+The usual workflow with `SimDesign` requires first calling `SimFunctions()` to generate a working template. In the context of multiple analysis functions, however, users should pass the number of analysis functions they believe they will need in their simulation by way of the `nAnalyses` argument (e.g., if analyzing a $t$-test setup to compare the Welch versus independent samples t-test, then two analysis functions should be used). This creates the following output:
 
 
 ```{r}
-SimDesign::SimFunctions(nanalyse = 2)
+SimDesign::SimFunctions(nAnalyses = 2)
 ```
 
 Notice in this case that there were two `Analyse()` definitions constructed, and when passed to `runSimulation()` these are organized as a named list. The names of the list will ultimately be pretended to the names of the analysis objects so that there is no ambiguity in the outputted information. By default users will see output such as `analyse1.some_statistic`, `analyse1.some_other_statistic`, ..., `analyse2.some_other_statistic`, and so on. Note that all the rules about objects and object naming from the typical single Analyse function still apply and are properly checked internally for suitable names and consistency. 
@@ -53,7 +54,7 @@ The following code is [adopted from the Wiki](http://philchalmers.github.io/SimD
 
 ```{r}
 library(SimDesign)
-# SimFunctions(nanalyse=2)
+# SimFunctions(nAnalyses = 2)
 
 sample_sizes <- c(250, 500, 1000)
 nitems <- c(10, 20)
@@ -544,8 +545,9 @@ In this case, `lavaan` could be used as it supports such indicator types, howeve
 ```{r}
 Analyse1 <- function(condition, dat, fixed_objects = NULL) {
     AnalyseIf(condition$indicators == 'discrete')
-    # alternatively: 
+    # equivalently: 
     #   AnalyseIf(indicators == 'discrete', condition)
+    #   with(condition, AnalyseIf(indicators == 'discrete'))
     mod <- mirt(dat, 1L, verbose=FALSE)
     if(!extract.mirt(mod, 'converged')) stop('mirt did not converge')
     cfs <- coef(mod, simplify = TRUE, digits = Inf)
