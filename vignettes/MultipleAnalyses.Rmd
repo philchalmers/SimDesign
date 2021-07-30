@@ -1,0 +1,560 @@
+---
+title: "Multiple Analysis Functions"
+author: "Phil Chalmers"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_caption: false
+    number_sections: true 
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+vignette: >
+  %\VignetteIndexEntry{Catching errors}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r nomessages, echo = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  fig.height = 5,
+  fig.width = 5
+)
+options(digits=4)
+par(mar=c(3,3,1,1)+.1)
+```
+
+This vignette demonstrates one of the newer features in the `SimDesign` package pertaining to multiple analysis function definitions. The purpose of providing multiple analysis functions is to 
+
+1) Remove the less readable if-then-else combinations that sometimes appear when writing simulation code where some analysis functions are not intended to be used on a given dataset, 
+2) Provide better automatic naming of the results across independent analyses subroutines, and to
+3) Create a more modular approach to isolating the analysis functions for the purpose of redistribution or reusing the analysis in related projects
+
+Functionality speaking this type of organization does not change much, as so for that reason the coding style could generally be considered optional. However, if any of the above points resonate well then following the details of this vignette may prove useful. 
+
+# Description of structure
+
+The usual workflow with `SimDesign` requires first calling `SimFunctions()` to generate a working template. In the context of multiple analysis functions, however, users should pass the number of analysis functions they believe they will need in their simulation by way of the `nanalyse` argument (e.g., if analyzing a $t$-test setup to compare the Welch versus independent samples t-test, then two analysis functions should be used). This creates the following output:
+
+
+```{r}
+SimDesign::SimFunctions(nanalyse = 2)
+```
+
+Notice in this case that there were two `Analyse()` definitions constructed, and when passed to `runSimulation()` these are organized as a named list. The names of the list will ultimately be pretended to the names of the analysis objects so that there is no ambiguity in the outputted information. By default users will see output such as `analyse1.some_statistic`, `analyse1.some_other_statistic`, ..., `analyse2.some_other_statistic`, and so on. Note that all the rules about objects and object naming from the typical single Analyse function still apply and are properly checked internally for suitable names and consistency. 
+
+
+# An example
+
+The following code is [adopted from the Wiki](http://philchalmers.github.io/SimDesign/html/03-Parameter_recovery_simulation.html), and so details about the simulation should be obtained from that source. 
+
+```{r}
+library(SimDesign)
+# SimFunctions(nanalyse=2)
+
+sample_sizes <- c(250, 500, 1000)
+nitems <- c(10, 20)
+Design <- createDesign(sample_size = sample_sizes, 
+                       nitems = nitems)
+
+# create list of additional parameters which are fixed across conditions
+set.seed(1)
+pars_10 <- rbind(a = round(rlnorm(10, .3, .5)/1.702, 2),
+                 d = round(rnorm(10, 0, .5)/1.702, 2))
+pars_20 <- rbind(a = round(rlnorm(20, .3, .5)/1.702, 2),
+                 d = round(rnorm(20, 0, .5)/1.702, 2))
+pars <- list(ten=pars_10, twenty=pars_20)
+
+P_logit <- function(a, d, Theta) exp(a * Theta + d) / (1 + exp(a * Theta + d))
+P_ogive <- function(a, d, Theta) pnorm(a * Theta + d)
+```
+
+```{r}
+Generate <- function(condition, fixed_objects = NULL) {
+
+    N <- condition$sample_size
+    nitems <- condition$nitems
+    nitems_name <- ifelse(nitems == 10, 'ten', 'twenty')
+
+    #extract objects from fixed_objects
+    a <- fixed_objects[[nitems_name]]['a', ]
+    d <- fixed_objects[[nitems_name]]['d', ]
+
+    dat <- matrix(NA, N, nitems)
+    colnames(dat) <- paste0('item_', 1:nitems)
+    Theta <- rnorm(N)
+    for(j in 1:nitems){
+        p <- P_ogive(a[j], d[j], Theta)
+        for(i in 1:N)
+            dat[i,j] <- sample(c(1,0), 1, prob = c(p[i], 1 - p[i]))
+    }
+    as.data.frame(dat) #data.frame works nicer with lavaan
+}
+
+Analyse1 <- function(condition, dat, fixed_objects = NULL) {
+    mod <- mirt(dat, 1L, verbose=FALSE)
+    if(!extract.mirt(mod, 'converged')) stop('mirt did not converge')
+    cfs <- mirt::coef(mod, simplify = TRUE, digits = Inf)
+    FIML_as <- cfs$items[,1L] / 1.702
+    
+    ret <- c(as=unname(FIML_as))
+    ret
+}
+
+Analyse2 <- function(condition, dat, fixed_objects = NULL) {
+    nitems <- condition$nitems
+    lavmod <- paste0('F =~ ', paste0('NA*', colnames(dat)[1L], ' + '),
+                     paste0(colnames(dat)[-1L], collapse = ' + '),
+                     '\nF ~~ 1*F')
+    lmod <- sem(lavmod, dat, ordered = colnames(dat))
+    if(!lavInspect(lmod, 'converged')) stop('lavaan did not converge')
+    cfs2 <- lavaan::coef(lmod)
+    DWLS_alpha <- cfs2[1L:nitems]
+    const <- sqrt(1 - DWLS_alpha^2)
+    DWLS_as <- DWLS_alpha / const
+
+    ret <- c(as=unname(DWLS_as))
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL) {
+    nitems <- condition$nitems
+    nitems_name <- ifelse(nitems == 10, 'ten', 'twenty')
+
+    #extract objects from fixed_objects
+    a <- fixed_objects[[nitems_name]]['a', ]
+    pop <- c(a, a)
+
+    obt_bias <- bias(results, pop)
+    obt_RMSE <- RMSE(results, pop)
+    ret <- c(bias=obt_bias, RMSE=obt_RMSE)
+    ret
+}
+```
+
+```{r eval=FALSE}
+res <- runSimulation(Design, replications=100, verbose=FALSE, parallel=TRUE,
+                     generate=Generate, 
+                     analyse=list(FIML=Analyse1, DWLS=Analyse2), 
+                     summarise=Summarise, filename = 'mirt_lavaan',
+                     packages=c('mirt', 'lavaan'), fixed_objects=pars)
+```
+
+```{r include=FALSE}
+res <- structure(list(sample_size = c(250, 500, 1000, 250, 500, 1000
+), nitems = c(10, 10, 10, 20, 20, 20), bias.FIML.as1 = c(0.156270956171524, 
+-0.0992987616115192, -0.0111987622074766, 0.0259843115664613, 
+0.119350461250298, 0.079345637413953), bias.FIML.as2 = c(0.00150669900854783, 
+0.0944704281188902, -0.00570353475451602, -0.0157524835636274, 
+0.0944621702815819, -0.0675403197154255), bias.FIML.as3 = c(0.210120088877163, 
+-0.0870682626575122, -0.0169715695503964, 0.00379356505928113, 
+0.0489771744660116, -0.018386920948666), bias.FIML.as4 = c(-0.056379930933949, 
+0.352479722195651, 0.153689192938392, -0.0630535852423979, -0.051965039497794, 
+-0.0080608339185855), bias.FIML.as5 = c(0.0599421811845937, -0.0006994974845691, 
+-0.0539287310404725, -0.109347658024557, 0.00165289692811621, 
+-0.0333455547699688), bias.FIML.as6 = c(0.0473328806413908, -0.0276731707489688, 
+-0.0917374260142827, -0.0952456808596997, -0.0237490661933941, 
+-0.0137545585819542), bias.FIML.as7 = c(0.0289985895013467, -0.0849934850076378, 
+0.0549724688582045, 0.058885833783257, 0.011362815155615, 0.0569284310094845
+), bias.FIML.as8 = c(0.597819021838697, 0.00204620209886941, 
+0.048917876230721, 0.0600244158450737, 0.0222540632398624, -0.0291797655791899
+), bias.FIML.as9 = c(0.104098748983841, -0.0285105051141098, 
+-0.0331679665010367, 0.110059449779402, 0.0062971720116923, 0.0295387906335211
+), bias.FIML.as10 = c(0.141913263058037, 0.0963578703973892, 
+-0.00192231248112668, -0.0983477921705984, 0.0550311125372404, 
+-0.0867699001459026), bias.DWLS.as1 = c(0.166113859908287, -0.0861260004841721, 
+0.0160814627727123, 0.0480350770050587, 0.090813127628607, 0.0543820260776284
+), bias.DWLS.as2 = c(0.0240240394628389, 0.0948057407236374, 
+0.0117034394559377, 0.0150021287814882, 0.0785638370232539, -0.0758284892443563
+), bias.DWLS.as3 = c(0.229813617658861, -0.0740388229284509, 
+0.00612837688830903, 0.0198066886265591, 0.0693178969350179, 
+-0.0110894369837879), bias.DWLS.as4 = c(-0.139188190369082, 0.250093885768536, 
+0.0896346452543093, -0.0635524183487099, -0.0364126674565659, 
+0.00524728131788679), bias.DWLS.as5 = c(0.0887664755692646, 9.92695825319245e-05, 
+-0.0438850603644586, -0.0596881252356589, -0.0120801854801975, 
+-0.0473232761090919), bias.DWLS.as6 = c(0.0934788250016354, -0.00643988866172351, 
+-0.0665908225625314, -0.0741364463268692, -0.0203963763042919, 
+0.000117442201739315), bias.DWLS.as7 = c(0.0506383083790402, 
+-0.0616713760261771, 0.0610849759751679, 0.0660069544070714, 
+0.0281538959215277, 0.0751113636295603), bias.DWLS.as8 = c(0.56072381059483, 
+-0.00356844424039815, 0.0477913036873427, 0.0742423203969559, 
+0.0420312193588021, -0.0134213483425288), bias.DWLS.as9 = c(0.120972873093748, 
+-0.0271467960115078, -0.0212789606634942, 0.153827187112934, 
+0.0335480423317951, 0.0440301042464674), bias.DWLS.as10 = c(0.149853994039373, 
+0.124119369188231, 0.0230179396698479, -0.0735706696102002, 0.0647207787531965, 
+-0.0905112289758063), RMSE.FIML.as1 = c(0.157179257647936, 0.130294399498893, 
+0.0145764332090076, 0.0517681805316878, 0.122923405505814, 0.0813092023609043
+), RMSE.FIML.as2 = c(0.00297796386170013, 0.200910352392597, 
+0.0150552125643224, 0.211907236683758, 0.155793610188709, 0.0928574334440197
+), RMSE.FIML.as3 = c(0.220992180979339, 0.135331255690997, 0.0197398225882767, 
+0.00424115923259752, 0.147510257343641, 0.051931873468811), RMSE.FIML.as4 = c(0.0720598978109079, 
+0.365253954229683, 0.186693923441974, 0.0815181392587551, 0.0532817896515513, 
+0.0416660174679223), RMSE.FIML.as5 = c(0.21980148994969, 0.0772661365853238, 
+0.0700796050932046, 0.140015262093705, 0.104579776402794, 0.0593768421806194
+), RMSE.FIML.as6 = c(0.154906233251476, 0.0278586175873162, 0.0921305870919345, 
+0.0953499634333683, 0.0353016223767788, 0.0534681904419898), 
+    RMSE.FIML.as7 = c(0.174138593228314, 0.125856612177867, 0.0705916279509518, 
+    0.0881152590871834, 0.0365041986885384, 0.0623859901640986
+    ), RMSE.FIML.as8 = c(0.713312296411881, 0.0567247960229423, 
+    0.108925445546929, 0.101834980096488, 0.0229481318537577, 
+    0.0305573889379051), RMSE.FIML.as9 = c(0.217042855095238, 
+    0.126118220364394, 0.0364345898483938, 0.122981336196937, 
+    0.172388923145755, 0.0343975828939077), RMSE.FIML.as10 = c(0.146081371890772, 
+    0.102514153710674, 0.0163137807795969, 0.118014904728756, 
+    0.0971638806713425, 0.091735443725234), RMSE.DWLS.as1 = c(0.166811087862968, 
+    0.128808151428258, 0.0184029335840578, 0.114488336194881, 
+    0.0978995797032009, 0.0553877100033698), RMSE.DWLS.as2 = c(0.0241322216325724, 
+    0.201845783924301, 0.0157791894938204, 0.257002936971252, 
+    0.156038734365861, 0.0888112289767942), RMSE.DWLS.as3 = c(0.239335457048637, 
+    0.129887360729385, 0.0139859550766582, 0.0241616222339513, 
+    0.144351220253612, 0.0477344520032785), RMSE.DWLS.as4 = c(0.154052009157823, 
+    0.275371005695317, 0.124070038573764, 0.0856886248425983, 
+    0.0400434875461114, 0.0422550344526377), RMSE.DWLS.as5 = c(0.244008170614032, 
+    0.0691359778422733, 0.0710295381057834, 0.0991201298609095, 
+    0.0963118868748157, 0.0673421309219265), RMSE.DWLS.as6 = c(0.172371427798781, 
+    0.00855462281062041, 0.0681507515183633, 0.0744014677891381, 
+    0.0281745380596043, 0.0455269576427987), RMSE.DWLS.as7 = c(0.18994586034625, 
+    0.103304196086306, 0.0765413267448536, 0.0810355959740216, 
+    0.0400351435646727, 0.0799870072183006), RMSE.DWLS.as8 = c(0.685030880001255, 
+    0.0454382318765702, 0.0955080623936722, 0.10143099009955, 
+    0.0420395948475856, 0.0144171607552034), RMSE.DWLS.as9 = c(0.233003402021062, 
+    0.119326662089433, 0.0224719578444489, 0.165326388136289, 
+    0.186572745252198, 0.0462635781398637), RMSE.DWLS.as10 = c(0.156588717811266, 
+    0.131376988181698, 0.0277534267588693, 0.127345027918424, 
+    0.103448586058662, 0.0951525527665362), bias.FIML.as11 = c(NA, 
+    NA, NA, 0.0182607753140654, 0.0707686420244124, 0.23994497978579
+    ), bias.FIML.as12 = c(NA, NA, NA, 0.0134467734525814, -0.0182990100630074, 
+    -0.064438708762749), bias.FIML.as13 = c(NA, NA, NA, -0.0266123075201014, 
+    -0.0137676755462819, 0.0292381943663939), bias.FIML.as14 = c(NA, 
+    NA, NA, -0.195114215826404, -0.0315649699025979, -0.0158591562467668
+    ), bias.FIML.as15 = c(NA, NA, NA, -0.0672303892469063, -0.0439742511272272, 
+    0.0500798729907305), bias.FIML.as16 = c(NA, NA, NA, 0.154971659496846, 
+    0.00572426838259293, -0.0379077903065056), bias.FIML.as17 = c(NA, 
+    NA, NA, -0.0425356204888519, -0.0583376135572687, -0.024429188726231
+    ), bias.FIML.as18 = c(NA, NA, NA, -0.145968975793472, -0.080652855006432, 
+    0.0424230993955115), bias.FIML.as19 = c(NA, NA, NA, 0.226713508348104, 
+    -0.0368355864979295, 0.181268737685036), bias.FIML.as20 = c(NA, 
+    NA, NA, -0.0539731039849569, -0.00592672379076864, -0.0588881641327342
+    ), bias.DWLS.as11 = c(NA, NA, NA, -0.00240353656097358, 0.045281925478947, 
+    0.169258381312772), bias.DWLS.as12 = c(NA, NA, NA, 0.0407290469641824, 
+    0.0107560089823113, -0.0508424869733414), bias.DWLS.as13 = c(NA, 
+    NA, NA, 0.00493844515658309, 0.00070277990581552, 0.0281889213709554
+    ), bias.DWLS.as14 = c(NA, NA, NA, -0.186902458071752, -0.0242976153555018, 
+    -0.00394640636378207), bias.DWLS.as15 = c(NA, NA, NA, -0.051524761040384, 
+    -0.0332355767310998, 0.0582958881887319), bias.DWLS.as16 = c(NA, 
+    NA, NA, 0.166063662355494, 0.027298165886848, -0.0275474388105452
+    ), bias.DWLS.as17 = c(NA, NA, NA, -0.0216528220825979, -0.0367376584340233, 
+    -0.0117268316494886), bias.DWLS.as18 = c(NA, NA, NA, -0.0952977879286633, 
+    -0.0610789785907136, 0.0528904428087715), bias.DWLS.as19 = c(NA, 
+    NA, NA, 0.244528026979826, -0.0553333459447174, 0.136567588642499
+    ), bias.DWLS.as20 = c(NA, NA, NA, -0.0510188356639774, 0.00121407017437158, 
+    -0.0735007088827482), RMSE.FIML.as11 = c(NA, NA, NA, 0.270884769659088, 
+    0.163275120624863, 0.260654844607955), RMSE.FIML.as12 = c(NA, 
+    NA, NA, 0.0669447221139782, 0.142801005480057, 0.0735142198262435
+    ), RMSE.FIML.as13 = c(NA, NA, NA, 0.110920129250564, 0.131245579256878, 
+    0.116616290645916), RMSE.FIML.as14 = c(NA, NA, NA, 0.202140362169373, 
+    0.036966139535284, 0.0723192428800741), RMSE.FIML.as15 = c(NA, 
+    NA, NA, 0.0817396739981969, 0.157051029472343, 0.0507398327270313
+    ), RMSE.FIML.as16 = c(NA, NA, NA, 0.190105120744264, 0.0787981136786997, 
+    0.0828565485675756), RMSE.FIML.as17 = c(NA, NA, NA, 0.0446022621233692, 
+    0.0773239249949352, 0.0257966276758078), RMSE.FIML.as18 = c(NA, 
+    NA, NA, 0.17919344590712, 0.147642420309562, 0.0545567535921826
+    ), RMSE.FIML.as19 = c(NA, NA, NA, 0.235695936520518, 0.0563090481615795, 
+    0.237776474150509), RMSE.FIML.as20 = c(NA, NA, NA, 0.108659837529265, 
+    0.195486763343648, 0.0595099683247399), RMSE.DWLS.as11 = c(NA, 
+    NA, NA, 0.180511768202316, 0.154655070977692, 0.20492656356235
+    ), RMSE.DWLS.as12 = c(NA, NA, NA, 0.0844756515484048, 0.159419170212042, 
+    0.0593972518049199), RMSE.DWLS.as13 = c(NA, NA, NA, 0.110022543459437, 
+    0.131494429388986, 0.104075996955575), RMSE.DWLS.as14 = c(NA, 
+    NA, NA, 0.194591549946996, 0.028693866652612, 0.0678522558348504
+    ), RMSE.DWLS.as15 = c(NA, NA, NA, 0.0831160499775505, 0.154538006257435, 
+    0.0584612068643672), RMSE.DWLS.as16 = c(NA, NA, NA, 0.209532318899385, 
+    0.0744535990314664, 0.0832002883936985), RMSE.DWLS.as17 = c(NA, 
+    NA, NA, 0.0235726991765955, 0.0670535557477052, 0.014831195345439
+    ), RMSE.DWLS.as18 = c(NA, NA, NA, 0.141588038653554, 0.134666858231328, 
+    0.065670128630785), RMSE.DWLS.as19 = c(NA, NA, NA, 0.290714207581715, 
+    0.0765364680471898, 0.200336912897132), RMSE.DWLS.as20 = c(NA, 
+    NA, NA, 0.0796535912489976, 0.189950909870878, 0.0743460468059342
+    ), REPLICATIONS = c(2L, 2L, 2L, 2L, 2L, 2L), SIM_TIME = c(1, 
+    0.939999999999998, 0.950000000000003, 1.39, 1.67, 2.55999999999999
+    ), COMPLETED = c("Thu Jul 29 23:15:23 2021", "Thu Jul 29 23:15:24 2021", 
+    "Thu Jul 29 23:15:25 2021", "Thu Jul 29 23:15:27 2021", "Thu Jul 29 23:15:28 2021", 
+    "Thu Jul 29 23:15:31 2021"), SEED = c(2112454368L, 2080255079L, 
+    1094415411L, 47985954L, 982096001L, 321524667L)), row.names = c(NA, 
+-6L), class = c("SimDesign", "tbl_df", "tbl", "data.frame"), design_names = list(
+    design = c("sample_size", "nitems"), sim = c("bias.FIML.as1", 
+    "bias.FIML.as2", "bias.FIML.as3", "bias.FIML.as4", "bias.FIML.as5", 
+    "bias.FIML.as6", "bias.FIML.as7", "bias.FIML.as8", "bias.FIML.as9", 
+    "bias.FIML.as10", "bias.DWLS.as1", "bias.DWLS.as2", "bias.DWLS.as3", 
+    "bias.DWLS.as4", "bias.DWLS.as5", "bias.DWLS.as6", "bias.DWLS.as7", 
+    "bias.DWLS.as8", "bias.DWLS.as9", "bias.DWLS.as10", "RMSE.FIML.as1", 
+    "RMSE.FIML.as2", "RMSE.FIML.as3", "RMSE.FIML.as4", "RMSE.FIML.as5", 
+    "RMSE.FIML.as6", "RMSE.FIML.as7", "RMSE.FIML.as8", "RMSE.FIML.as9", 
+    "RMSE.FIML.as10", "RMSE.DWLS.as1", "RMSE.DWLS.as2", "RMSE.DWLS.as3", 
+    "RMSE.DWLS.as4", "RMSE.DWLS.as5", "RMSE.DWLS.as6", "RMSE.DWLS.as7", 
+    "RMSE.DWLS.as8", "RMSE.DWLS.as9", "RMSE.DWLS.as10", "bias.FIML.as11", 
+    "bias.FIML.as12", "bias.FIML.as13", "bias.FIML.as14", "bias.FIML.as15", 
+    "bias.FIML.as16", "bias.FIML.as17", "bias.FIML.as18", "bias.FIML.as19", 
+    "bias.FIML.as20", "bias.DWLS.as11", "bias.DWLS.as12", "bias.DWLS.as13", 
+    "bias.DWLS.as14", "bias.DWLS.as15", "bias.DWLS.as16", "bias.DWLS.as17", 
+    "bias.DWLS.as18", "bias.DWLS.as19", "bias.DWLS.as20", "RMSE.FIML.as11", 
+    "RMSE.FIML.as12", "RMSE.FIML.as13", "RMSE.FIML.as14", "RMSE.FIML.as15", 
+    "RMSE.FIML.as16", "RMSE.FIML.as17", "RMSE.FIML.as18", "RMSE.FIML.as19", 
+    "RMSE.FIML.as20", "RMSE.DWLS.as11", "RMSE.DWLS.as12", "RMSE.DWLS.as13", 
+    "RMSE.DWLS.as14", "RMSE.DWLS.as15", "RMSE.DWLS.as16", "RMSE.DWLS.as17", 
+    "RMSE.DWLS.as18", "RMSE.DWLS.as19", "RMSE.DWLS.as20"), bootCI = character(0), 
+    extra = c("REPLICATIONS", "SIM_TIME", "COMPLETED", "SEED"
+    ), errors = "ERRORS", warnings = "WARNINGS"), ERROR_msg = structure(list(), .Names = character(0), row.names = c(NA, 
+-6L), class = c("tbl_df", "tbl", "data.frame")), WARNING_msg = structure(list(), .Names = character(0), row.names = c(NA, 
+-6L), class = c("tbl_df", "tbl", "data.frame")), extra_info = list(
+    sessionInfo = structure(list(platform = structure(list(version = "R version 4.0.2 (2020-06-22)", 
+        os = "Windows 10 x64", system = "x86_64, mingw32", ui = "RStudio", 
+        language = "(EN)", collate = "English_United States.1252", 
+        ctype = "English_United States.1252", tz = "America/New_York", 
+        date = "2021-07-29"), class = "platform_info"), packages = structure(list(
+        package = c("assertthat", "cachem", "callr", "cli", "cluster", 
+        "codetools", "crayon", "curl", "DBI", "dcurver", "Deriv", 
+        "desc", "devtools", "digest", "dplyr", "ellipsis", "evaluate", 
+        "fansi", "fastmap", "foreach", "fs", "generics", "glue", 
+        "GPArotation", "htmltools", "iterators", "jsonlite", 
+        "knitr", "lattice", "lavaan", "lifecycle", "magrittr", 
+        "MASS", "Matrix", "memoise", "mgcv", "mirt", "mnormt", 
+        "nlme", "pbapply", "pbivnorm", "permute", "pillar", "pkgbuild", 
+        "pkgconfig", "pkgload", "prettyunits", "processx", "ps", 
+        "purrr", "R6", "Rcpp", "remotes", "rlang", "rmarkdown", 
+        "rprojroot", "RPushbullet", "sessioninfo", "SimDesign", 
+        "testthat", "tibble", "tidyselect", "tmvnsim", "usethis", 
+        "utf8", "vctrs", "vegan", "withr", "xfun", "yaml"), ondiskversion = c("0.2.1", 
+        "1.0.5", "3.7.0", "3.0.1", "2.1.2", "0.2.18", "1.4.1", 
+        "4.3.2", "1.1.1", "0.9.2", "4.1.3", "1.3.0", "2.4.2", 
+        "0.6.27", "1.0.7", "0.3.2", "0.14", "0.5.0", "1.1.0", 
+        "1.5.1", "1.5.0", "0.1.0", "1.4.2", "2014.11.1", "0.5.1.1", 
+        "1.0.13", "1.7.2", "1.33", "0.20.44", "0.6.9", "1.0.0", 
+        "2.0.1", "7.3.54", "1.3.4", "2.0.0", "1.8.36", "1.34.1", 
+        "2.0.2", "3.1.152", "1.4.3", "0.6.0", "0.9.5", "1.6.1", 
+        "1.2.0", "2.0.3", "1.2.1", "1.1.1", "3.5.2", "1.6.0", 
+        "0.3.4", "2.5.0", "1.0.7", "2.4.0", "0.4.11", "2.9", 
+        "2.0.2", "0.3.4", "1.1.1", "2.6.3", "3.0.4", "3.1.3", 
+        "1.1.1", "1.0.2", "2.0.1", "1.2.2", "0.3.8", "2.5.7", 
+        "2.4.2", "0.24", "2.2.1"), loadedversion = c("0.2.1", 
+        "1.0.5", "3.7.0", "3.0.1", "2.1.2", "0.2-18", "1.4.1", 
+        "4.3.2", "1.1.1", "0.9.2", "4.1.3", "1.3.0", "2.4.2", 
+        "0.6.27", "1.0.7", "0.3.2", "0.14", "0.5.0", "1.1.0", 
+        "1.5.1", "1.5.0", "0.1.0", "1.4.2", "2014.11-1", "0.5.1.1", 
+        "1.0.13", "1.7.2", "1.33", "0.20-44", "0.6-9", "1.0.0", 
+        "2.0.1", "7.3-54", "1.3-4", "2.0.0", "1.8-36", "1.34.1", 
+        "2.0.2", "3.1-152", "1.4-3", "0.6.0", "0.9-5", "1.6.1", 
+        "1.2.0", "2.0.3", "1.2.1", "1.1.1", "3.5.2", "1.6.0", 
+        "0.3.4", "2.5.0", "1.0.7", "2.4.0", "0.4.11", "2.9", 
+        "2.0.2", "0.3.4", "1.1.1", "2.6.3", "3.0.4", "3.1.3", 
+        "1.1.1", "1.0-2", "2.0.1", "1.2.2", "0.3.8", "2.5-7", 
+        "2.4.2", "0.24", "2.2.1"), path = c("C:/R/R-4.0.2/library/assertthat", 
+        "C:/R/R-4.0.2/library/cachem", "C:/R/R-4.0.2/library/callr", 
+        "C:/R/R-4.0.2/library/cli", "C:/R/R-4.0.2/library/cluster", 
+        "C:/R/R-4.0.2/library/codetools", "C:/R/R-4.0.2/library/crayon", 
+        "C:/R/R-4.0.2/library/curl", "C:/R/R-4.0.2/library/DBI", 
+        "C:/R/R-4.0.2/library/dcurver", "C:/R/R-4.0.2/library/Deriv", 
+        "C:/R/R-4.0.2/library/desc", "C:/R/R-4.0.2/library/devtools", 
+        "C:/R/R-4.0.2/library/digest", "C:/R/R-4.0.2/library/dplyr", 
+        "C:/R/R-4.0.2/library/ellipsis", "C:/R/R-4.0.2/library/evaluate", 
+        "C:/R/R-4.0.2/library/fansi", "C:/R/R-4.0.2/library/fastmap", 
+        "C:/R/R-4.0.2/library/foreach", "C:/R/R-4.0.2/library/fs", 
+        "C:/R/R-4.0.2/library/generics", "C:/R/R-4.0.2/library/glue", 
+        "C:/R/R-4.0.2/library/GPArotation", "C:/R/R-4.0.2/library/htmltools", 
+        "C:/R/R-4.0.2/library/iterators", "C:/R/R-4.0.2/library/jsonlite", 
+        "C:/R/R-4.0.2/library/knitr", "C:/R/R-4.0.2/library/lattice", 
+        "C:/R/R-4.0.2/library/lavaan", "C:/R/R-4.0.2/library/lifecycle", 
+        "C:/R/R-4.0.2/library/magrittr", "C:/R/R-4.0.2/library/MASS", 
+        "C:/R/R-4.0.2/library/Matrix", "C:/R/R-4.0.2/library/memoise", 
+        "C:/R/R-4.0.2/library/mgcv", "C:/R/R-4.0.2/library/mirt", 
+        "C:/R/R-4.0.2/library/mnormt", "C:/R/R-4.0.2/library/nlme", 
+        "C:/R/R-4.0.2/library/pbapply", "C:/R/R-4.0.2/library/pbivnorm", 
+        "C:/R/R-4.0.2/library/permute", "C:/R/R-4.0.2/library/pillar", 
+        "C:/R/R-4.0.2/library/pkgbuild", "C:/R/R-4.0.2/library/pkgconfig", 
+        "C:/R/R-4.0.2/library/pkgload", "C:/R/R-4.0.2/library/prettyunits", 
+        "C:/R/R-4.0.2/library/processx", "C:/R/R-4.0.2/library/ps", 
+        "C:/R/R-4.0.2/library/purrr", "C:/R/R-4.0.2/library/R6", 
+        "C:/R/R-4.0.2/library/Rcpp", "C:/R/R-4.0.2/library/remotes", 
+        "C:/R/R-4.0.2/library/rlang", "C:/R/R-4.0.2/library/rmarkdown", 
+        "C:/R/R-4.0.2/library/rprojroot", "C:/R/R-4.0.2/library/RPushbullet", 
+        "C:/R/R-4.0.2/library/sessioninfo", "C:/R/R-4.0.2/library/SimDesign", 
+        "C:/R/R-4.0.2/library/testthat", "C:/R/R-4.0.2/library/tibble", 
+        "C:/R/R-4.0.2/library/tidyselect", "C:/R/R-4.0.2/library/tmvnsim", 
+        "C:/R/R-4.0.2/library/usethis", "C:/R/R-4.0.2/library/utf8", 
+        "C:/R/R-4.0.2/library/vctrs", "C:/R/R-4.0.2/library/vegan", 
+        "C:/R/R-4.0.2/library/withr", "C:/R/R-4.0.2/library/xfun", 
+        "C:/R/R-4.0.2/library/yaml"), loadedpath = c("C:/R/R-4.0.2/library/assertthat", 
+        "C:/R/R-4.0.2/library/cachem", "C:/R/R-4.0.2/library/callr", 
+        "C:/R/R-4.0.2/library/cli", "C:/R/R-4.0.2/library/cluster", 
+        "C:/R/R-4.0.2/library/codetools", "C:/R/R-4.0.2/library/crayon", 
+        "C:/R/R-4.0.2/library/curl", "C:/R/R-4.0.2/library/DBI", 
+        "C:/R/R-4.0.2/library/dcurver", "C:/R/R-4.0.2/library/Deriv", 
+        "C:/R/R-4.0.2/library/desc", "C:/R/R-4.0.2/library/devtools", 
+        "C:/R/R-4.0.2/library/digest", "C:/R/R-4.0.2/library/dplyr", 
+        "C:/R/R-4.0.2/library/ellipsis", "C:/R/R-4.0.2/library/evaluate", 
+        "C:/R/R-4.0.2/library/fansi", "C:/R/R-4.0.2/library/fastmap", 
+        "C:/R/R-4.0.2/library/foreach", "C:/R/R-4.0.2/library/fs", 
+        "C:/R/R-4.0.2/library/generics", "C:/R/R-4.0.2/library/glue", 
+        "C:/R/R-4.0.2/library/GPArotation", "C:/R/R-4.0.2/library/htmltools", 
+        "C:/R/R-4.0.2/library/iterators", "C:/R/R-4.0.2/library/jsonlite", 
+        "C:/R/R-4.0.2/library/knitr", "C:/R/R-4.0.2/library/lattice", 
+        "C:/R/R-4.0.2/library/lavaan", "C:/R/R-4.0.2/library/lifecycle", 
+        "C:/R/R-4.0.2/library/magrittr", "C:/R/R-4.0.2/library/MASS", 
+        "C:/R/R-4.0.2/library/Matrix", "C:/R/R-4.0.2/library/memoise", 
+        "C:/R/R-4.0.2/library/mgcv", "C:/R/R-4.0.2/library/mirt", 
+        "C:/R/R-4.0.2/library/mnormt", "C:/R/R-4.0.2/library/nlme", 
+        "C:/R/R-4.0.2/library/pbapply", "C:/R/R-4.0.2/library/pbivnorm", 
+        "C:/R/R-4.0.2/library/permute", "C:/R/R-4.0.2/library/pillar", 
+        "C:/R/R-4.0.2/library/pkgbuild", "C:/R/R-4.0.2/library/pkgconfig", 
+        "C:/R/R-4.0.2/library/pkgload", "C:/R/R-4.0.2/library/prettyunits", 
+        "C:/R/R-4.0.2/library/processx", "C:/R/R-4.0.2/library/ps", 
+        "C:/R/R-4.0.2/library/purrr", "C:/R/R-4.0.2/library/R6", 
+        "C:/R/R-4.0.2/library/Rcpp", "C:/R/R-4.0.2/library/remotes", 
+        "C:/R/R-4.0.2/library/rlang", "C:/R/R-4.0.2/library/rmarkdown", 
+        "C:/R/R-4.0.2/library/rprojroot", "C:/R/R-4.0.2/library/RPushbullet", 
+        "C:/R/R-4.0.2/library/sessioninfo", "C:/R/R-4.0.2/library/SimDesign", 
+        "C:/R/R-4.0.2/library/testthat", "C:/R/R-4.0.2/library/tibble", 
+        "C:/R/R-4.0.2/library/tidyselect", "C:/R/R-4.0.2/library/tmvnsim", 
+        "C:/R/R-4.0.2/library/usethis", "C:/R/R-4.0.2/library/utf8", 
+        "C:/R/R-4.0.2/library/vctrs", "C:/R/R-4.0.2/library/vegan", 
+        "C:/R/R-4.0.2/library/withr", "C:/R/R-4.0.2/library/xfun", 
+        "C:/R/R-4.0.2/library/yaml"), attached = c(FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        TRUE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE), is_base = c(FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+        FALSE, FALSE, FALSE, FALSE), date = c("2019-03-21", "2021-05-15", 
+        "2021-04-20", "2021-07-17", "2021-04-17", "2020-11-04", 
+        "2021-02-08", "2021-06-23", "2021-01-15", "2020-11-04", 
+        "2021-02-24", "2021-03-05", "2021-06-07", "2020-10-24", 
+        "2021-06-18", "2021-04-29", "2019-05-28", "2021-05-25", 
+        "2021-01-25", "2020-10-15", "2020-07-31", "2020-10-31", 
+        "2020-08-27", "2014-11-25", "2021-01-22", "2020-10-15", 
+        "2020-12-09", "2021-04-24", "2021-05-02", "2021-06-27", 
+        "2021-02-15", "2020-11-17", "2021-05-03", "2021-06-01", 
+        "2021-01-26", "2021-06-01", "2021-07-08", "2020-09-01", 
+        "2021-02-04", "2020-08-18", "2015-01-23", "2019-03-12", 
+        "2021-05-16", "2020-12-15", "2019-09-22", "2021-04-06", 
+        "2020-01-24", "2021-04-30", "2021-02-28", "2020-04-17", 
+        "2020-10-28", "2021-07-07", "2021-06-02", "2021-04-30", 
+        "2021-06-15", "2020-11-15", "2021-03-01", "2018-11-05", 
+        "2021-07-30", "2021-07-01", "2021-07-23", "2021-04-30", 
+        "2016-12-15", "2021-02-10", "2021-07-24", "2021-04-29", 
+        "2020-11-28", "2021-04-18", "2021-06-15", "2020-02-01"
+        ), source = c("CRAN (R 4.0.0)", "CRAN (R 4.0.5)", "CRAN (R 4.0.5)", 
+        "CRAN (R 4.0.5)", "CRAN (R 4.0.5)", "CRAN (R 4.0.3)", 
+        "CRAN (R 4.0.2)", "CRAN (R 4.0.5)", "CRAN (R 4.0.2)", 
+        "CRAN (R 4.0.3)", "CRAN (R 4.0.2)", "CRAN (R 4.0.2)", 
+        "CRAN (R 4.0.2)", "CRAN (R 4.0.3)", "CRAN (R 4.0.2)", 
+        "CRAN (R 4.0.5)", "CRAN (R 4.0.0)", "CRAN (R 4.0.2)", 
+        "CRAN (R 4.0.3)", "CRAN (R 4.0.3)", "CRAN (R 4.0.2)", 
+        "CRAN (R 4.0.3)", "CRAN (R 4.0.2)", "CRAN (R 4.0.0)", 
+        "CRAN (R 4.0.3)", "CRAN (R 4.0.3)", "CRAN (R 4.0.3)", 
+        "CRAN (R 4.0.5)", "CRAN (R 4.0.5)", "CRAN (R 4.0.5)", 
+        "CRAN (R 4.0.4)", "CRAN (R 4.0.3)", "CRAN (R 4.0.5)", 
+        "CRAN (R 4.0.5)", "CRAN (R 4.0.3)", "CRAN (R 4.0.5)", 
+        "CRAN (R 4.0.2)", "CRAN (R 4.0.2)", "CRAN (R 4.0.3)", 
+        "CRAN (R 4.0.2)", "CRAN (R 4.0.0)", "CRAN (R 4.0.0)", 
+        "CRAN (R 4.0.2)", "CRAN (R 4.0.4)", "CRAN (R 4.0.0)", 
+        "CRAN (R 4.0.2)", "CRAN (R 4.0.0)", "CRAN (R 4.0.5)", 
+        "CRAN (R 4.0.4)", "CRAN (R 4.0.0)", "CRAN (R 4.0.3)", 
+        "CRAN (R 4.0.5)", "CRAN (R 4.0.5)", "CRAN (R 4.0.5)", 
+        "CRAN (R 4.0.5)", "CRAN (R 4.0.3)", "CRAN (R 4.0.4)", 
+        "CRAN (R 4.0.2)", "local", "CRAN (R 4.0.5)", "CRAN (R 4.0.2)", 
+        "CRAN (R 4.0.5)", "CRAN (R 4.0.0)", "CRAN (R 4.0.2)", 
+        "CRAN (R 4.0.2)", "CRAN (R 4.0.5)", "CRAN (R 4.0.3)", 
+        "CRAN (R 4.0.5)", "CRAN (R 4.0.5)", "CRAN (R 4.0.0)"), 
+        md5ok = c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 
+        TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, NA, TRUE, TRUE, NA, 
+        TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 
+        TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 
+        NA, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 
+        TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 
+        TRUE, TRUE, TRUE, TRUE, TRUE, NA, TRUE, TRUE, TRUE, NA, 
+        TRUE, TRUE, TRUE, TRUE, TRUE), library = structure(c(1L, 
+        1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
+        1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
+        1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
+        1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
+        1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L), .Label = "C:/R/R-4.0.2/library", class = "factor")), row.names = c("assertthat", 
+    "cachem", "callr", "cli", "cluster", "codetools", "crayon", 
+    "curl", "DBI", "dcurver", "Deriv", "desc", "devtools", "digest", 
+    "dplyr", "ellipsis", "evaluate", "fansi", "fastmap", "foreach", 
+    "fs", "generics", "glue", "GPArotation", "htmltools", "iterators", 
+    "jsonlite", "knitr", "lattice", "lavaan", "lifecycle", "magrittr", 
+    "MASS", "Matrix", "memoise", "mgcv", "mirt", "mnormt", "nlme", 
+    "pbapply", "pbivnorm", "permute", "pillar", "pkgbuild", "pkgconfig", 
+    "pkgload", "prettyunits", "processx", "ps", "purrr", "R6", 
+    "Rcpp", "remotes", "rlang", "rmarkdown", "rprojroot", "RPushbullet", 
+    "sessioninfo", "SimDesign", "testthat", "tibble", "tidyselect", 
+    "tmvnsim", "usethis", "utf8", "vctrs", "vegan", "withr", 
+    "xfun", "yaml"), class = c("packages_info", "data.frame"))), class = "session_info"), 
+    packages = structure(list(packages = c("mirt", "lavaan"), 
+        versions = c("1.34.1", "0.6.9")), class = "data.frame", row.names = c(NA, 
+    -2L)), save_info = c(filename = "mirt_lavaan.rds"), ncores = 8L, 
+    number_of_conditions = 6L, date_completed = "Thu Jul 29 23:15:32 2021", 
+    total_elapsed_time = 8.50999999999999, error_seeds = structure(list(), .Names = character(0), row.names = integer(0), class = c("tbl_df", 
+    "tbl", "data.frame")), warning_seeds = structure(list(), .Names = character(0), row.names = integer(0), class = c("tbl_df", 
+    "tbl", "data.frame")), stored_results = NULL, summarise_list = list(
+        NULL, NULL, NULL, NULL, NULL, NULL)))
+```
+
+```{r}
+res
+```
+
+
+
+In this particular formulation the `mirt` and `lavaan` package analyses have been completely
+isolated into their own respective functions, and in principle could therefore be analyzed 
+independently in future simulation studies. 
+
+
+# `AnalyseIf()`
+
+In situations where specific analysis functions defining in the `analyse` list should only be applied in certain situations but not others, users can specify an `AnalyseIf()` logical definition at the beginning of their respective functions. This logical ensures the data generation conditions are suitable for the analysis function to be investigated, otherwise it is skipped over in the generate-analyse-summarise workflow. 
+
+As a continuation from above, say that an investigator was also interested in recovering the slope parameters of a factor analysis model where the observed indicator variable were continuous rather than discrete. 
+
+```{r}
+Design <- createDesign(sample_size = sample_sizes, 
+                       nitems = nitems, 
+                       indicators = c('discrete', 'continuous'))
+Design
+```
+
+In this case, `lavaan` could be used as it supports such indicator types, however `mirt` cannot. So, to ensure that only the analysis function pertaining to `lavaan` is used one could include the following replacement definition that used `mirt` above.
+
+```{r}
+Analyse1 <- function(condition, dat, fixed_objects = NULL) {
+    AnalyseIf(condition$indicators == 'discrete')
+    # alternatively: 
+    #   AnalyseIf(indicators == 'discrete', condition)
+    mod <- mirt(dat, 1L, verbose=FALSE)
+    if(!extract.mirt(mod, 'converged')) stop('mirt did not converge')
+    cfs <- coef(mod, simplify = TRUE, digits = Inf)
+    FIML_as <- cfs$items[,1L] / 1.702
+    
+    ret <- c(as=unname(FIML_as))
+    ret
+}
+```
+
+Using this definition the final object returned by `runSimulation()` will provide suitable `NA` placeholders (where appropriate), otherwise if different names were returned by the `Analyse2()` definition for continuous indicators the results will be presented as though `mirt` was never used for the continuous indicator conditions controlled by the `Design` object. 
+
