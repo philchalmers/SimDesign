@@ -114,7 +114,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
             cat('\n\n')
         } else {
             for(i in 1L:nAnalyses){
-                cat(sprintf('\nAnalyse%i <- function(condition, dat, fixed_objects = NULL) {', i))
+                cat(sprintf('\nAnalyse.A%i <- function(condition, dat, fixed_objects = NULL) {', i))
                 if(comments) cat('\n    # Run statistical analyses of interest ... \n')
                 if(comments) cat('\n    # Return a named vector or list')
                 cat('\n    ret <- c(stat1 = NaN, stat2 = NaN)\n    ret\n}')
@@ -142,8 +142,8 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
                         if(summarise) ', summarise=Summarise)' else ')'))
         } else {
             Analyse_string <- sprintf("list(%s)",
-                                      paste0(paste0('analyse', 1L:nAnalyses, sep='='),
-                                      paste0('Analyse', 1L:nAnalyses), collapse=', '))
+                                      paste0(paste0('A', 1L:nAnalyses, sep='='),
+                                      paste0('Analyse.A', 1L:nAnalyses), collapse=', '))
             cat('\nres <- runSimulation(design=Design, replications=1000,',
                 if(generate) 'generate=Generate, ')
             cat(sprintf('\n                     analyse=%s%s', Analyse_string,
