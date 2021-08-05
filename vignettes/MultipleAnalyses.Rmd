@@ -547,9 +547,9 @@ independently in future simulation studies. This adds a nicer layer of potential
 
 # `AnalyseIf()`
 
-In situations where specific analysis functions defining in the `analyse` list should only be applied in certain situations but not others, users can specify an `AnalyseIf()` logical definition at the beginning of their respective functions. This logical ensures the data generation conditions are suitable for the analysis function to be investigated, otherwise it is skipped over in the generate-analyse-summarise work-flow. 
+In situations where analysis functions defined in the `analyse` list should only be applied in certain design conditions, users can include an  `AnalyseIf()` definition at the beginning of their respective functions to ensure the analyses are only executed when the provided logical is `TRUE`. This logical ensures the data generation conditions are suitable for the analysis function to be investigated; otherwise, it is skipped over in the generate-analyse-summarise work-flow. 
 
-As a continuation from above, say that an investigator was also interested in recovering the slope parameters of a factor analysis model where the observed indicator variable were continuous rather than discrete. 
+As a continuation from above, say that an investigator was also interested in recovering the slope parameters of a factor analysis model where the observed indicator variable were continuous as well as discrete. The `Design` definition may therefore look like the following.
 
 ```{r}
 Design <- createDesign(sample_size = sample_sizes, 
@@ -558,7 +558,7 @@ Design <- createDesign(sample_size = sample_sizes,
 Design
 ```
 
-In this case, `lavaan` could be used as it supports such indicator types, however `mirt` cannot. So, to ensure that only the analysis function pertaining to `lavaan` is used one could include the following replacement definition that used `mirt` above.
+Provided that the `Generate()` step utilized this `indicators` factor, this would imply that the `dat` object returned from `Generate()` could consist of discrete or continuous data. In the case of continuous indicator variables, `lavaan` could be used as it supports such indicator types; however, `mirt` cannot. So, to ensure that only the analysis function pertaining to `lavaan` is used one could include the following replacement definition that used `mirt`, but now includes an `AnalyseIf()` logical given the `indicators` variable's state.
 
 ```{r}
 Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
@@ -576,5 +576,5 @@ Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
 }
 ```
 
-Using this definition the final object returned by `runSimulation()` will provide suitable `NA` placeholders (where appropriate), otherwise if different names were returned by the `Analyse.FIML()` definition for continuous indicators the results will be presented as though `mirt` was never used for the continuous indicator conditions controlled by the `Design` object. 
+Using this definition the final object returned by `runSimulation()` will provide suitable `NA` placeholders (where appropriate). For continuous indicators the results will be presented as though `mirt` was never used for the continuous indicator conditions controlled by the `Design` object. 
 
