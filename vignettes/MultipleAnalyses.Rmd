@@ -27,34 +27,34 @@ options(digits=4)
 par(mar=c(3,3,1,1)+.1)
 ```
 
-This vignette demonstrates one of the newer features in the `SimDesign` package pertaining to multiple analysis function definitions. The purpose of providing multiple analysis functions is to 
+This vignette demonstrates one of the newer features in the `SimDesign` package pertaining to multiple analysis function definitions that can be selected for each `Design` condition or whenever they are applicable. The purpose of providing multiple analysis functions is to 
 
-1) Remove the less readable if-then-else combinations that sometimes appear when writing simulation code where some analysis functions are not intended to be used on a given dataset, 
-2) Provide better automatic naming of the results across independent analyses subroutines, 
-3) Construct more readable code when the `Analyse()` function contains too many analyses to easily track, and to
-3) Create a more modular approach to isolating the analysis functions for the purpose of redistribution or reusing the analysis in related projects
+1) Remove the less readable if-then-else combinations that can appear when writing simulation code, where specific analysis functions are not intended to be used on a given generated dataset, 
+2) Provide better automatic naming of the analysis results across independent subroutines, 
+3) Construct more readable code when the `Analyse()` function contains too much code to easily track, and to
+3) Create a more modular approach to isolating the analysis functions for the purpose of redistribution or reusing in related projects
 
-Functionality speaking this type of organization does not change how `SimDesign` operates, as so for that reason the coding style is generally considered optional. However, if any of the above points resonate well then following the details of this vignette may prove useful. 
+Functionality speaking, this type of organization does not change how `SimDesign` generally operates. For that reason, the coding style presented in this vignette can be considered optional. However, if any of the above points resonate well with you then following the details of this coding organization style may prove useful. 
 
 # Description of structure
 
-The usual workflow with `SimDesign` requires first calling `SimFunctions()` to generate a working template, such as the following. 
+The usual work-flow with `SimDesign` requires first calling `SimFunctions()` to generate a working template, such as the following. 
 
 ```{r}
 SimDesign::SimFunctions()
 ```
-
-
-In the context of multiple analysis functions, however, users may be more interested in passing the number of analysis functions they believe they will need in their simulation by way of the `nAnalyses` argument (e.g., if analyzing a $t$-test setup to compare the Welch versus independent samples t-test, then two analysis functions should be used). This creates the following output:
+which uses the default `nAnalyses=1` to generate only a single `Analyse()` function. In the context of multiple analysis functions, however, users may be more interested in passing the number of analysis functions they believe they will need in their simulation (e.g., if analyzing a $t$-test setup to compare the Welch versus independent samples t-test, then two analysis functions should be used). Passing `nAnalyses=2` to `SimFunctions()` creates the following template:
 
 
 ```{r}
 SimDesign::SimFunctions(nAnalyses = 2)
 ```
 
-Notice in this case that there were two `Analyse()` definitions constructed, and when passed to `runSimulation()` these are organized as a named list. The names of the list will ultimately be attached to the names of the analysis objects so that there is no ambiguity in the outputted information. By default users will see output such as `analyse.some_statistic`, `analyse.some_other_statistic`, ..., `analyse.some_other_other_statistic`, and so on, where the number of `Analyse.#` function definitions will ultimately end up in the `runSimulation(..., Analyse=list())` input. 
+Notice in this case that there are two `Analyse.#()` definitions constructed, and when passed to `runSimulation()` these are organized as a named `list`. The names of the list will ultimately be attached to the names of the analysis objects so that there is no ambiguity in the outputted information. However, the inputs to the `Analyse()` functions will always be the same, as the `dat` object formed by the `Generate()` call will be passed to each of these Analyse definitions (hence, the generate data is held constant across the respective analyses).
 
-Note that all the rules about objects and object naming from the typical single Analyse function still apply and are properly checked internally for suitable names and consistency. The independently defined Analyse functions are also *interchangable* and *removable*/*replaceable*, which makes the structure of the Generate-Analyse-Summarise setup more modular with respect to the analysis components. 
+The above template should of course be modified to replace the less useful names of the `Analyse.#()` components. By default users will want to change these to something like `Analyse.some_statistic`, `Analyse.some_other_statistic`, ..., `Analyse.some_other_other_statistic`, and so on, where the number of `Analyse.#` function definitions will ultimately end up in the `runSimulation(..., Analyse=list())` input. Supplying better names to the named `list` component is also recommended as these will be used to name the associated results in the `Summarise()` step. 
+
+Finally, note that all the rules about objects and object naming from the typical single Analyse function still apply and are properly checked internally for suitable names and consistency. The independently defined Analyse functions are also *interchangable* and *removable*/*replaceable*, which makes the structure of the Generate-Analyse-Summarise setup more modular with respect to the analysis components. 
 
 
 # An example
@@ -542,12 +542,12 @@ res
 
 In this particular formulation the `mirt` and `lavaan` package analyses have been completely
 isolated into their own respective functions, and in principle could therefore be analyzed 
-independently in future simulation studies. 
+independently in future simulation studies. This adds a nicer layer of potential modularity to the Analyse portion of the `SimDesign` framework, where re-using or modifying previous `SimDesign` code should be less painful. 
 
 
 # `AnalyseIf()`
 
-In situations where specific analysis functions defining in the `analyse` list should only be applied in certain situations but not others, users can specify an `AnalyseIf()` logical definition at the beginning of their respective functions. This logical ensures the data generation conditions are suitable for the analysis function to be investigated, otherwise it is skipped over in the generate-analyse-summarise workflow. 
+In situations where specific analysis functions defining in the `analyse` list should only be applied in certain situations but not others, users can specify an `AnalyseIf()` logical definition at the beginning of their respective functions. This logical ensures the data generation conditions are suitable for the analysis function to be investigated, otherwise it is skipped over in the generate-analyse-summarise work-flow. 
 
 As a continuation from above, say that an investigator was also interested in recovering the slope parameters of a factor analysis model where the observed indicator variable were continuous rather than discrete. 
 
@@ -576,5 +576,5 @@ Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
 }
 ```
 
-Using this definition the final object returned by `runSimulation()` will provide suitable `NA` placeholders (where appropriate), otherwise if different names were returned by the `Analyse2()` definition for continuous indicators the results will be presented as though `mirt` was never used for the continuous indicator conditions controlled by the `Design` object. 
+Using this definition the final object returned by `runSimulation()` will provide suitable `NA` placeholders (where appropriate), otherwise if different names were returned by the `Analyse.FIML()` definition for continuous indicators the results will be presented as though `mirt` was never used for the continuous indicator conditions controlled by the `Design` object. 
 
