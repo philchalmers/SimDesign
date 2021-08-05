@@ -38,14 +38,23 @@ Functionality speaking this type of organization does not change how `SimDesign`
 
 # Description of structure
 
-The usual workflow with `SimDesign` requires first calling `SimFunctions()` to generate a working template. In the context of multiple analysis functions, however, users should pass the number of analysis functions they believe they will need in their simulation by way of the `nAnalyses` argument (e.g., if analyzing a $t$-test setup to compare the Welch versus independent samples t-test, then two analysis functions should be used). This creates the following output:
+The usual workflow with `SimDesign` requires first calling `SimFunctions()` to generate a working template, such as the following. 
+
+```{r}
+SimDesign::SimFunctions()
+```
+
+
+In the context of multiple analysis functions, however, users may be more interested in passing the number of analysis functions they believe they will need in their simulation by way of the `nAnalyses` argument (e.g., if analyzing a $t$-test setup to compare the Welch versus independent samples t-test, then two analysis functions should be used). This creates the following output:
 
 
 ```{r}
 SimDesign::SimFunctions(nAnalyses = 2)
 ```
 
-Notice in this case that there were two `Analyse()` definitions constructed, and when passed to `runSimulation()` these are organized as a named list. The names of the list will ultimately be pretended to the names of the analysis objects so that there is no ambiguity in the outputted information. By default users will see output such as `analyse1.some_statistic`, `analyse1.some_other_statistic`, ..., `analyse2.some_other_statistic`, and so on. Note that all the rules about objects and object naming from the typical single Analyse function still apply and are properly checked internally for suitable names and consistency. 
+Notice in this case that there were two `Analyse()` definitions constructed, and when passed to `runSimulation()` these are organized as a named list. The names of the list will ultimately be attached to the names of the analysis objects so that there is no ambiguity in the outputted information. By default users will see output such as `analyse.some_statistic`, `analyse.some_other_statistic`, ..., `analyse.some_other_other_statistic`, and so on, where the number of `Analyse.#` function definitions will ultimately end up in the `runSimulation(..., Analyse=list())` input. 
+
+Note that all the rules about objects and object naming from the typical single Analyse function still apply and are properly checked internally for suitable names and consistency. The independently defined Analyse functions are also *interchangable* and *removable*/*replaceable*, which makes the structure of the Generate-Analyse-Summarise setup more modular with respect to the analysis components. 
 
 
 # An example
@@ -95,7 +104,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     as.data.frame(dat) #data.frame works nicer with lavaan
 }
 
-Analyse1 <- function(condition, dat, fixed_objects = NULL) {
+Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
     mod <- mirt(dat, 1L, verbose=FALSE)
     if(!extract.mirt(mod, 'converged')) stop('mirt did not converge')
     cfs <- mirt::coef(mod, simplify = TRUE, digits = Inf)
@@ -105,7 +114,7 @@ Analyse1 <- function(condition, dat, fixed_objects = NULL) {
     ret
 }
 
-Analyse2 <- function(condition, dat, fixed_objects = NULL) {
+Analyse.DWLS <- function(condition, dat, fixed_objects = NULL) {
     nitems <- condition$nitems
     lavmod <- paste0('F =~ ', paste0('NA*', colnames(dat)[1L], ' + '),
                      paste0(colnames(dat)[-1L], collapse = ' + '),
@@ -139,13 +148,13 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 ```{r eval=FALSE}
 res <- runSimulation(Design, replications=100, verbose=FALSE, parallel=TRUE,
                      generate=Generate, 
-                     analyse=list(FIML=Analyse1, DWLS=Analyse2), 
+                     analyse=list(FIML=Analyse.FIML, DWLS=Analyse.DWLS), 
                      summarise=Summarise, filename = 'mirt_lavaan',
                      packages=c('mirt', 'lavaan'), fixed_objects=pars)
 ```
 
 ```{r include=FALSE}
-structure(list(sample_size = c(250, 500, 1000, 250, 500, 1000
+res <- structure(list(sample_size = c(250, 500, 1000, 250, 500, 1000
 ), nitems = c(10, 10, 10, 20, 20, 20), bias.FIML.as1 = c(0.00998872755798466, 
 -0.0211364605578725, -0.0039472918051987, 0.0606466866510326, 
 0.0192019747460773, 0.019976239470624), bias.FIML.as2 = c(0.0134569433967216, 
@@ -552,7 +561,7 @@ Design
 In this case, `lavaan` could be used as it supports such indicator types, however `mirt` cannot. So, to ensure that only the analysis function pertaining to `lavaan` is used one could include the following replacement definition that used `mirt` above.
 
 ```{r}
-Analyse1 <- function(condition, dat, fixed_objects = NULL) {
+Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
     AnalyseIf(condition$indicators == 'discrete')
     # equivalently: 
     #   AnalyseIf(indicators == 'discrete', condition)
