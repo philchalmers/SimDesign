@@ -107,19 +107,21 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
             cat('\n')
         }
         if(nAnalyses == 1L){
-            cat('\nAnalyses <- function(condition, dat, fixed_objects = NULL) {')
+            cat('\nAnalyse <- function(condition, dat, fixed_objects = NULL) {')
             if(comments) cat('\n    # Run statistical analyses of interest ... \n')
             if(comments) cat('\n    # Return a named vector or list')
             cat('\n    ret <- c(stat1 = NaN, stat2 = NaN)\n    ret\n}')
             cat('\n\n')
         } else {
             for(i in 1L:nAnalyses){
-                cat(sprintf('\nAnalyses%i <- function(condition, dat, fixed_objects = NULL) {', i))
+                cat(sprintf('\nAnalyse%i <- function(condition, dat, fixed_objects = NULL) {', i))
                 if(comments) cat('\n    # Run statistical analyses of interest ... \n')
                 if(comments) cat('\n    # Return a named vector or list')
                 cat('\n    ret <- c(stat1 = NaN, stat2 = NaN)\n    ret\n}')
                 cat('\n')
             }
+            cat('\n')
+            LINE()
             cat('\n')
         }
         if(summarise){
