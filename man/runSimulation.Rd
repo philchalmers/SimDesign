@@ -118,7 +118,7 @@ simulation results to. If the extension
 
 \item{debug}{a string indicating where to initiate a \code{browser()} call for editing
 and debugging, and pairs
-  particularly well with the \code{load_seed} argument for precice debugging.
+  particularly well with the \code{load_seed} argument for precise debugging.
   General options are \code{'none'} (default; no debugging), \code{'error'}, which
   starts the debugger
   when any error in the code is detected in one of three generate-analyse-summarise functions,
@@ -127,6 +127,12 @@ and debugging, and pairs
   or not. Specific options include: \code{'generate'}
   to debug the data simulation function, \code{'analyse'} to debug the computational function, and
   \code{'summarise'} to debug the aggregation function.
+
+  If the \code{Analyse} argument is supplied as a named list of functions then it is also possible
+  to debug the specific function of interest by passing the name of the respective function in the list.
+  For instance, if \code{analyse = list(A1=Analyse.A1, A2=Analyse.A2)} then passing
+  \code{debug = 'A1'} will debug only the first function in this list, and all remaining analysis
+  functions will be ignored.
 
   Alternatively, users may place \code{\link{browser}} calls within the respective functions for
   debugging at specific lines, which is useful when debugging based on conditional evaluations (e.g.,
