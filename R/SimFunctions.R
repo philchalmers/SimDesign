@@ -65,15 +65,13 @@
 #'
 #' \dontrun{
 #'
-#' # write output to two files (recommended for larger MCSs)
-#' SimFunctions('mysim', singlefile = FALSE)
-#'
 #' # write output files to a single file with comments
 #' SimFunctions('mysim', comments = TRUE)
 #'
 #' # Multiple analysis functions for optional partitioning
 #' SimFunctions(nAnalyses = 2)
 #' SimFunctions(nAnalyses = 3)
+#'
 #' }
 #'
 SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
