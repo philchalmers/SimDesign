@@ -6,10 +6,11 @@
   when the defined analysis function is not compatible with a row-condition in the `Design` object. 
   Only relevant when the `analyse` argument was defined as a named list of functions
 
-- The `analyse` argument to `runSimulation()` now accepts a named list of functions rather than a 
+- The `analyse` argument to `runSimulation()` now accepts a named `list` of functions rather than a 
   single analysis function. This allows the user to separate the independent analyses into distinct
   functional blocks rather than having all analyses within the same function, and potentially allows
-  for better modularity
+  for better modularity. The `debug` argument now also accepts the names of these respective
+  list elements to debug these function definitions quickly
   
 - `SimFunctions()` gains an `nAnalyses` argument to specify how many analysis functions should 
   be templated (default is 1, retaining the previous package defaults)
