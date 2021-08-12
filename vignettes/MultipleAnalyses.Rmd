@@ -57,7 +57,7 @@ The above template should of course be modified to replace the less useful names
 Finally, note that all the rules about objects and object naming from the typical single Analyse function still apply and are properly checked internally for suitable names and consistency. The independently defined Analyse functions are also *interchangable* and *removable*/*replaceable*, which makes the structure of the Generate-Analyse-Summarise setup more modular with respect to the analysis components. 
 
 
-# An example
+## An example
 
 The following code is [adopted from the Wiki](http://philchalmers.github.io/SimDesign/html/03-Parameter_recovery_simulation.html), and so details about the simulation should be obtained from that source. 
 
@@ -577,4 +577,32 @@ Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
 ```
 
 Using this definition the final object returned by `runSimulation()` will provide suitable `NA` placeholders (where appropriate). For continuous indicators the results will be presented as though `mirt` was never used for the continuous indicator conditions controlled by the `Design` object. 
+
+## Applying one analyse function per-condition
+
+Interestingly, `AnalyseIf()` could also be used to select only one analysis function at a time given the components in the `Design` object. For instance, if the `Design` definition were constructed using 
+
+```{r}
+Design <- createDesign(sample_size = sample_sizes, 
+                       nitems = nitems, 
+                       method = c('FIML', 'DWLS'))
+Design
+```
+
+and the analysis functions above were supplied defined as 
+
+```{r}
+Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
+    AnalyseIf(method == 'FIML', condition)
+    #...
+}
+
+Analyse.DWLS <- function(condition, dat, fixed_objects = NULL) {
+    AnalyseIf(method == 'DWLS', condition)
+    # ...
+}
+```
+
+then only one analysis function will be applied at a time in the simulation experiment. Users may find this a more natural setup than having to merge all analysis information into a single `Analyse()` definition. The downside, however, is that the analysis function will be applied to different generated datasets, which while theoretically unbiased could have ramifications should the analysis functions throw errors at different rates (even when explicitly supplying a `seed` vector input to `runSimulation()`).  
+
 
