@@ -2,6 +2,13 @@
 
 ## Changes in SimDesign 2.7
 
+- `SimExtract()` gains a `fuzzy` argument to allow fuzzy matching of error and warning messages.
+  This helps collapse very similar errors messages in the recorded tables,
+  thereby improving how to discern any pattern in the errors/warnings (e.g., Messages such as 
+  *"ERROR: system is computationally singular: reciprocal condition number = 9.63735e-18"* and 
+  *"ERROR: system is computationally singular: reciprocal condition number = 6.74615e-17"* are 
+  effectively the same, and so their number of recorded occurrences should be collapsed)
+
 - Added `AnalyseIf()` function to allow specific analysis function to be included explicitly. Useful
   when the defined analysis function is not compatible with a row-condition in the `Design` object. 
   Only relevant when the `analyse` argument was defined as a named list of functions

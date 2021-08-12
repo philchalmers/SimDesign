@@ -4,7 +4,7 @@
 \alias{SimExtract}
 \title{Function to extract extra information from SimDesign objects}
 \usage{
-SimExtract(object, what)
+SimExtract(object, what, fuzzy = TRUE)
 }
 \arguments{
 \item{object}{object returned from \code{\link{runSimulation}}}
@@ -20,6 +20,12 @@ SimExtract(object, what)
 
   Note that \code{'warning_seeds'} are not stored automatically in
   simulations and require passing \code{store_warning_seeds = TRUE} to \code{\link{runSimulation}}.}
+
+\item{fuzzy}{logical; use fuzzy string matching to reduce effectively identical messages?
+For example, when attempting to invert a matrix the error message
+\emph{"System is computationally singular: reciprocal condition number = 1.92747e-17"} and
+\emph{"System is computationally singular: reciprocal condition number = 2.15321e-16"} are
+effectively the same, and likely should be reported in the same columns of the extracted output}
 }
 \description{
 Function used to extract any error or warnings messages, the seeds associated

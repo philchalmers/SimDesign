@@ -644,5 +644,28 @@ test_that('SimDesign', {
     expect_true(all(c("analyse1.a1", "analyse2.a2") %in% names(res)))
     expect_true(is.na(res$analyse1.a1[2]))
 
+    # fuzzy strings
+    Analyse <- function(condition, dat, fixed_objects = NULL) {
+        C <- matrix(c(1,.2, 0, 1), 2)
+        if(sample(c(TRUE, FALSE), 1))
+            C[2,2] <- runif(1, -1e-8, 1e-8)
+        ret <- det(solve(C %*% t(C)))
+        ret
+    }
+
+    Summarise <- function(condition, results, fixed_objects = NULL) {
+        ret <- c(bias = NaN, RMSE = NaN)
+        ret
+    }
+
+    #-------------------------------------------------------------------
+
+    res <- runSimulation(replications=200, analyse=Analyse, summarise=Summarise,
+                         verbose=FALSE, seed = 1234)
+    out <- SimExtract(res, what = 'errors')
+    expect_true(ncol(out) == 2L)
+    out <- SimExtract(res, what = 'errors', fuzzy = FALSE)
+    expect_true(ncol(out) > 2L)
+
 })
 

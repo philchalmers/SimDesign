@@ -18,6 +18,12 @@
 #'   Note that \code{'warning_seeds'} are not stored automatically in
 #'   simulations and require passing \code{store_warning_seeds = TRUE} to \code{\link{runSimulation}}.
 #'
+#' @param fuzzy logical; use fuzzy string matching to reduce effectively identical messages?
+#'   For example, when attempting to invert a matrix the error message
+#'   \emph{"System is computationally singular: reciprocal condition number = 1.92747e-17"} and
+#'   \emph{"System is computationally singular: reciprocal condition number = 2.15321e-16"} are
+#'   effectively the same, and likely should be reported in the same columns of the extracted output
+#'
 #' @export
 #'
 #' @references
@@ -70,7 +76,7 @@
 #'
 #'
 #' }
-SimExtract <- function(object, what){
+SimExtract <- function(object, what, fuzzy = TRUE){
     stopifnot(is(object, "SimDesign"))
     what <- tolower(what)
     pick <- attr(object, 'design_names')$design
@@ -82,25 +88,31 @@ SimExtract <- function(object, what){
     ret <- if(what == 'results'){
         extract_results(object)
     } else if(what == 'errors'){
-        cbind(Design, extract_errors(object))
+        cbind(Design, extract_errors(object, fuzzy=fuzzy))
     } else if(what == 'summarise'){
         extract_summarise(object)
     } else if(what == 'error_seeds'){
         extract_error_seeds(object)
     } else if(what == 'warnings'){
-        cbind(Design, extract_warnings(object))
+        cbind(Design, extract_warnings(object, fuzzy=fuzzy))
     } else if(what == 'warning_seeds'){
         extract_warning_seeds(object)
     } else stop('Input provided to \"what" is not supported')
     ret
 }
 
-extract_errors <- function(object){
-    attr(object, 'ERROR_msg')
+extract_errors <- function(object, fuzzy){
+    ret <- attr(object, 'ERROR_msg')
+    if(fuzzy)
+        ret <- fuzzy_reduce(ret)
+    ret
 }
 
-extract_warnings <- function(object){
-    attr(object, 'WARNING_msg')
+extract_warnings <- function(object, fuzzy){
+    ret <- attr(object, 'WARNING_msg')
+    if(fuzzy)
+        ret <- fuzzy_reduce(ret)
+    ret
 }
 
 extract_results <- function(object){
@@ -141,4 +153,20 @@ extract_summarise <- function(object){
     ret <- extra_info$summarise_list
     names(ret) <- nms
     ret
+}
+
+fuzzy_reduce <- function(df){
+    nms <- colnames(df)
+    matched <- logical(length(nms))
+    unames <- c()
+    udf <- df[,0]
+    for(i in 1L:length(nms)){
+        if(matched[i]) next
+        unames <- c(unames, nms[i])
+        udf <- cbind(udf, df[,i])
+        temp_matched <- agrepl(nms[i], nms)
+        udf[,ncol(udf)] <- rowSums(df[,temp_matched], na.rm = TRUE)
+        matched <- matched | temp_matched
+    }
+    udf
 }
