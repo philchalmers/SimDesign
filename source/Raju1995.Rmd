@@ -1,7 +1,7 @@
 %\VignetteIndexEntry{SimDesign}
 %\VignetteEngine{knitr::knitr}
 ---
-title: "Raju, van der Linden, & Fleer (1995) simulation"
+title: "Raju, van der Linden, and Fleer (1995) simulation"
 author: "Phil Chalmers"
 output:
   html_document:
