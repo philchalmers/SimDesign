@@ -352,6 +352,9 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                              replacement = '', Warnings, fixed = TRUE)
             Warnings <- gsub('Warning in analyse(dat = simlist, condition = condition, fixed_objects = fixed_objects) : ',
                  replacement = '', Warnings, fixed = TRUE)
+            Warnings <-
+                gsub('Warning in ANALYSE_FUNCTIONS\\[\\[i\\]\\]\\(condition = condition, dat = dat, fixed_objects = fixed_objects) : ',
+                     replacement = '', Warnings)
             if(warnings_as_errors){
                 res <- try(stop(Warnings[1L]), TRUE)
                 res[1L] <- Warnings[1L]
@@ -379,6 +382,9 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         if(is(res, 'try-error')){
             res[1L] <-
                 gsub('Error in analyse\\(dat = simlist, condition = condition, fixed_objects = fixed_objects) : \\n  ',
+                     replacement = '', res[1L])
+            res[1L] <-
+                gsub('Error in ANALYSE_FUNCTIONS\\[\\[i\\]\\]\\(condition = condition, dat = dat, fixed_objects = fixed_objects) : \\n  ',
                      replacement = '', res[1L])
             try_error <- c(try_error, res[1L])
             if(length(try_error) == max_errors){

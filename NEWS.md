@@ -1,5 +1,9 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.8
+
+- Bugfix for new list input for analysis functions when error raised (reported by Mark Lai)
+
 ## Changes in SimDesign 2.7
 
 - `SimExtract()` gains a `fuzzy` argument to allow fuzzy matching of error and warning messages.

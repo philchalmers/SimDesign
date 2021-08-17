@@ -183,9 +183,11 @@ combined_Analyses <- function(condition, dat, fixed_objects = NULL){
     for(i in nms){
         tried <- try(ANALYSE_FUNCTIONS[[i]](condition=condition, dat=dat,
                                             fixed_objects=fixed_objects), silent=TRUE)
-        if(is(tried, 'try-error'))
+        if(is(tried, 'try-error')){
             if(tried == 'Error : ANALYSEIF RAISED ERROR\n')
                 tried <- NULL
+            else return(tried)
+        }
         ret[[i]] <- tried
     }
     if(all(sapply(ret, function(x) is.numeric(x) ||
