@@ -552,6 +552,66 @@ RE <- function(x, MSE = FALSE, percent = FALSE, unname = FALSE){
     ret
 }
 
+#' Compute the relative standard error ratio
+#'
+#' Computes the relative standard error ratio given the set of estimated standard errors (SE) and the
+#' deviation across the R simulation replications (SD). The ratio is formed by finding the expectation
+#' of the SE terms, and compares this expectation to the general variability of their respective parameter
+#' estimates across the R replications (ratio should equal 1).
+#'
+#' @param SE a \code{numeric} matrix of SE estimates across the replications (extracted
+#'   from the \code{results} object in the Summarise step). Alternatively, can be a vector containing
+#'   the mean of the SE estimates across the R simulation replications
+#'
+#' @param ests a \code{numeric} matrix object containing the parameter estimates under investigation
+#'   found within the \code{\link{Summarise}} function. This input is used to compute the
+#'   standard deviation/variance estimates for each column to evaluate how well the expected SE
+#'   matches the standard deviation
+#'
+#' @param unname logical; apply \code{\link{unname}} to the results to remove any variable
+#'   names?
+#'
+#' @return returns vector of variance ratios, (RSV = SE^2/SD^2)
+#'
+#' @export
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#' @references
+#'
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
+#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
+#' \doi{10.20982/tqmp.16.4.p248}
+#'
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
+#'
+#' @examples
+#'
+#' R <- 10000
+#' par_ests <- cbind(rnorm(R), rnorm(R, sd=1/10),
+#'                   rnorm(R, sd=1/15))
+#' colnames(par_ests) <- paste0("par", 1:3)
+#' (SDs <- apply(par_ests, 2, sd))
+#'
+#' SEs <- cbind(1 + rnorm(R, sd=.01),
+#'              1/10 + + rnorm(R, sd=.01),
+#'              1/15 + rnorm(R, sd=.01))
+#' (E_SEs <- colMeans(SEs))
+#' RSE(SEs, par_ests)
+#'
+#' # equivalent to the form
+#' colMeans(SEs) / (SDs)
+#'
+#'
+RSE <- function(SE, ests, unname = FALSE){
+    if(is.matrix(SE)) SE <- colMeans(SE)
+    SD <- apply(ests, 2L, sd)
+    ret <- SE / SD
+    if(unname) ret <- unname(ret)
+    ret
+}
+
 #' Compute the relative absolute bias of multiple estimators
 #'
 #' Computes the relative absolute bias given the bias estimates for multiple estimators.
