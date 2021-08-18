@@ -557,7 +557,9 @@ RE <- function(x, MSE = FALSE, percent = FALSE, unname = FALSE){
 #' Computes the relative standard error ratio given the set of estimated standard errors (SE) and the
 #' deviation across the R simulation replications (SD). The ratio is formed by finding the expectation
 #' of the SE terms, and compares this expectation to the general variability of their respective parameter
-#' estimates across the R replications (ratio should equal 1).
+#' estimates across the R replications (ratio should equal 1). This is used to roughly evaluate whether the
+#' SEs being advertised by a given estimation method matches the sampling variability of the respective
+#' estimates across samples.
 #'
 #' @param SE a \code{numeric} matrix of SE estimates across the replications (extracted
 #'   from the \code{results} object in the Summarise step). Alternatively, can be a vector containing

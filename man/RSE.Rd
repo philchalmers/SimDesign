@@ -26,7 +26,9 @@ returns vector of variance ratios, (RSV = SE^2/SD^2)
 Computes the relative standard error ratio given the set of estimated standard errors (SE) and the
 deviation across the R simulation replications (SD). The ratio is formed by finding the expectation
 of the SE terms, and compares this expectation to the general variability of their respective parameter
-estimates across the R replications (ratio should equal 1).
+estimates across the R replications (ratio should equal 1). This is used to roughly evaluate whether the
+SEs being advertised by a given estimation method matches the sampling variability of the respective
+estimates across samples.
 }
 \examples{
 
