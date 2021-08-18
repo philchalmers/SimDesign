@@ -658,14 +658,61 @@ test_that('SimDesign', {
         ret
     }
 
-    #-------------------------------------------------------------------
-
     res <- runSimulation(replications=200, analyse=Analyse, summarise=Summarise,
                          verbose=FALSE, seed = 1234)
     out <- SimExtract(res, what = 'errors')
     expect_true(ncol(out) == 2L)
     out <- SimExtract(res, what = 'errors', fuzzy = FALSE)
     expect_true(ncol(out) > 2L)
+
+    #-------------------------------------------------------------------
+    ## multi-errors and warnings
+    Design <- createDesign(N = c(10, 20, 30))
+
+    Generate <- function(condition, fixed_objects = NULL) {
+        ret <- with(condition, rnorm(N))
+        ret
+    }
+
+    Analyse.a1 <- function(condition, dat, fixed_objects = NULL) {
+        whc <- sample(c(0, 1, 2, 3), 1, prob = c(.7, .20, .05, .05))
+        if (whc == 0) {
+            ret <- mean(dat)
+        } else if (whc == 1) {
+            ret <- t.test() # missing arguments
+        } else if (whc == 2) {
+            ret <- t.test("invalid") # invalid arguments
+        } else if (whc == 3) {
+            # throw error manually
+            stop("Manual error thrown")
+        }
+        # manual warnings
+        if (sample(c(TRUE, FALSE), 1, prob = c(.1, .9))) {
+            warning("This warning happens rarely")
+        }
+        if (sample(c(TRUE, FALSE), 1, prob = c(.5, .5))) {
+            warning("This warning happens much more often")
+        }
+        ret
+    }
+
+    Analyse.a2 <- function(condition, dat, fixed_objects = NULL) {
+        ret <- median(dat)
+        ret
+    }
+
+    Summarise <- function(condition, results, fixed_objects = NULL) {
+        ret <- c(bias = bias(results, 0))
+        ret
+    }
+
+    result <- runSimulation(Design,
+                            replications = 10, seed = 3:1,
+                            generate = Generate,
+                            analyse = list(a1 = Analyse.a1, a2 = Analyse.a2),
+                            summarise = Summarise, verbose=FALSE, save=FALSE)
+    expect_equal(result$ERRORS, c(2,4,2))
+    expect_equal(result$WARNINGS, c(6,5,4))
 
 })
 
