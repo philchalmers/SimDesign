@@ -1,6 +1,6 @@
 # NEWS file for SimDesign
 
-## Changes in SimDesign 2.8
+## Changes in SimDesign 2.7.1
 
 - Added `RSE()` function to compute the relative behaviour of the average standard error to the 
   standard deviation of a set of parameter estimates across the replications 
