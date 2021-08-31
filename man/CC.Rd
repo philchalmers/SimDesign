@@ -9,7 +9,7 @@ CC(x, y = NULL, unname = FALSE)
 \arguments{
 \item{x}{a vector or \code{data.frame}/\code{matrix} containing the
 variables to use. If a vector then the input \code{y} is required,
-otherwise the cogruence coefficient is computed for all bivariate
+otherwise the congruence coefficient is computed for all bivariate
 combinations}
 
 \item{y}{(optional) the second vector input to use if
