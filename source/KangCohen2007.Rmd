@@ -27,7 +27,7 @@ could have been replaced with a Bayes factor computation via bridge-sampling met
 
 # Simulation code
 
-The following code uses TODO placeholders in case users are interested in investigating
+The following code uses *TODO* placeholders in case users are interested in investigating
 the MCMC results themselves in the context of this code-base.
 
 ```{r include=FALSE}
@@ -35,6 +35,7 @@ library(SimDesign)
 ```
 
 ```{r eval=FALSE}
+# SimDesign::SimFunctions(nAnalyse=2)
 library(SimDesign)
 
 Design <- createDesign(nitems = c(20,40),
@@ -46,7 +47,6 @@ Design
 
 # source in helper functions + fixed_objects definition
 source("KangCohen2007_extras.R")
-
 
 #-------------------------------------------------------------------
 
@@ -64,40 +64,37 @@ Generate <- function(condition, fixed_objects = NULL) {
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse.MML <- function(condition, dat, fixed_objects = NULL) {
     Attach(condition)
+    AnalyseIf(estimator == "MML")
     
-    if(estimator == 'MML'){
-        
-        # MML estimation
-        fit <- sprintf("Theta = 1-%i
-                       START = (1-%i, a1, 1.0)
-                       FIXED = (1-%i, a1)", nitems, nitems, nitems)
-        mod1PL <- mirt(dat, model=fit, itemtype='2PL', verbose = FALSE)
-        mod2PL <- mirt(dat, model=1, itemtype='2PL', verbose = FALSE)
-        mod3PL <- mirt(dat, model=1, itemtype='3PL', verbose = FALSE)
-        
-        stopifnot(extract.mirt(mod1PL, 'converged'))
-        stopifnot(extract.mirt(mod2PL, 'converged'))
-        stopifnot(extract.mirt(mod3PL, 'converged'))
-        
-    } else if(estimator == 'MCMC'){
-        
-        # TODO
-        
-    }
+    # MML estimation
+    fit <- sprintf("Theta = 1-%i
+                   START = (1-%i, a1, 1.0)
+                   FIXED = (1-%i, a1)", nitems, nitems, nitems)
+    mod1PL <- mirt(dat, model=fit, itemtype='2PL', verbose = FALSE)
+    mod2PL <- mirt(dat, model=1, itemtype='2PL', verbose = FALSE)
+    mod3PL <- mirt(dat, model=1, itemtype='3PL', verbose = FALSE)
+      
+    stopifnot(extract.mirt(mod1PL, 'converged'))
+    stopifnot(extract.mirt(mod2PL, 'converged'))
+    stopifnot(extract.mirt(mod3PL, 'converged'))
     
     # just return model comparison information (main purpose of the paper)
-    if(estimator == "MML"){
-        ret <- as.data.frame(c(M1PL=anova(mod1PL)[c('AIC', 'BIC')], 
-                               M2PL=anova(mod2PL)[c('AIC', 'BIC')],
-                               M3PL=anova(mod3PL)[c('AIC', 'BIC')],
-                      LR12=anova(mod1PL, mod2PL, verbose=FALSE)[2, c('X2', 'p')],
-                      LR23=anova(mod2PL, mod3PL, verbose=FALSE)[2, c('X2', 'p')]))
-    } else {
-        # TODO
-    }
+    ret <- as.data.frame(c(M1PL=anova(mod1PL)[c('AIC', 'BIC')], 
+                           M2PL=anova(mod2PL)[c('AIC', 'BIC')],
+                           M3PL=anova(mod3PL)[c('AIC', 'BIC')],
+                           LR12=anova(mod1PL, mod2PL, verbose=FALSE)[2, c('X2', 'p')],
+                           LR23=anova(mod2PL, mod3PL, verbose=FALSE)[2, c('X2', 'p')]))
     ret
+}
+
+Analyse.MCMC <- function(condition, dat, fixed_objects = NULL) {
+    Attach(condition)
+    AnalyseIf(estimator == "MCMC")
+    
+    # TODO
+    
 }
 
 Summarise <- function(condition, results, fixed_objects = NULL) {
@@ -120,7 +117,8 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 #-------------------------------------------------------------------
 
 res <- runSimulation(design=Design, replications=500, generate=Generate, 
-                     analyse=Analyse, summarise=Summarise, fixed_objects=fo,
+                     analyse=list(MML=Analyse.MML, MCMC=Analyse.MCMC), 
+                     summarise=Summarise, fixed_objects=fo,
                      packages='mirt', parallel=TRUE, max_errors = Inf, 
                      filename='KangCohen')
 res
