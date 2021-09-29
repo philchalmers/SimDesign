@@ -601,8 +601,17 @@ Analyse.DWLS <- function(condition, dat, fixed_objects = NULL) {
     AnalyseIf(method == 'DWLS', condition)
     # ...
 }
+
+# ...
+res <- runSimulation(Design, replications=100, verbose=FALSE, parallel=TRUE,
+                     generate=Generate, 
+                     analyse=list(Analyse.FIML, Analyse.DWLS), 
+                     summarise=Summarise, filename = 'mirt_lavaan',
+                     packages=c('mirt', 'lavaan'), fixed_objects=pars)
 ```
 
-then only one analysis function will be applied at a time in the simulation experiment. Users may find this a more natural setup than having to merge all analysis information into a single `Analyse()` definition. The downside, however, is that the analysis function will be applied to different generated datasets, which while theoretically unbiased could have ramifications should the analysis functions throw errors at different rates (even when explicitly supplying a `seed` vector input to `runSimulation()`).  
+then only one analysis function will be applied at a time in the simulation experiment. Note that in this case there is no need to append 'MML' or 'DWLS' to the `results` objects as this becomes redundant with the `method` column in the `Design` object, and so the `analyse` list input is specified as an unnamed list (cf. earlier when the input was named, which appended `MML.` and `DWLS.` to the `results` output in `Summarise()`).
+
+Users may find this a more natural setup than having to merge all analysis information into a single `Analyse()` definition. The downside, however, is that the analysis function will be applied to different generated datasets, which while theoretically unbiased could have ramifications should the analysis functions throw errors at different rates (even when explicitly supplying a `seed` vector input to `runSimulation()`).  
 
 
