@@ -60,10 +60,16 @@
 #'
 #' #-------------------------------------------------------------------
 #'
+#' # append names 'Welch' and 'independent' to associated output
 #' res <- runSimulation(design=Design, replications=100, generate=Generate,
 #'                      analyse=list(Welch=Analyse1, independent=Analyse2),
 #'                      summarise=Summarise)
 #' res
+#'
+#' # leave results unnamed
+#' res <- runSimulation(design=Design, replications=100, generate=Generate,
+#'                      analyse=list(Analyse1, Analyse2),
+#'                      summarise=Summarise)
 #'
 #'
 #' }

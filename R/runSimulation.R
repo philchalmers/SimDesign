@@ -787,7 +787,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     stopifnot(!missing(analyse))
     ANALYSE_FUNCTIONS <- NULL
     if(is.list(analyse)){
-        stopifnot(length(names(analyse)) > 0L)
+        # stopifnot(length(names(analyse)) > 0L)
         if(debug %in% c('all', 'analyse'))
             stop('debug input not supported when analyse is a list', call.=FALSE)
         if(any(debug == names(analyse))){

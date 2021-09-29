@@ -177,9 +177,10 @@ combined_Analyses <- function(condition, dat, fixed_objects = NULL){
     if(!is.null(.SIMDENV$ANALYSE_FUNCTIONS))
         ANALYSE_FUNCTIONS <- .SIMDENV$ANALYSE_FUNCTIONS
     nfuns <- length(ANALYSE_FUNCTIONS)
-    nms <- names(ANALYSE_FUNCTIONS)
     ret <- vector('list', nfuns)
+    nms <- names(ANALYSE_FUNCTIONS)
     names(ret) <- nms
+    if(is.null(nms)) nms <- 1L:nfuns
     for(i in nms){
         tried <- try(ANALYSE_FUNCTIONS[[i]](condition=condition, dat=dat,
                                             fixed_objects=fixed_objects), silent=TRUE)
