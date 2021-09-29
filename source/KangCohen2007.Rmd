@@ -117,7 +117,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 #-------------------------------------------------------------------
 
 res <- runSimulation(design=Design, replications=500, generate=Generate, 
-                     analyse=list(MML=Analyse.MML, MCMC=Analyse.MCMC), 
+                     analyse=list(Analyse.MML, Analyse.MCMC), # unnamed list to avoid extra labels
                      summarise=Summarise, fixed_objects=fo,
                      packages='mirt', parallel=TRUE, max_errors = Inf, 
                      filename='KangCohen')
