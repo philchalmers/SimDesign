@@ -122,6 +122,7 @@ printDesign <- function(x, whichlist, ..., n = NULL, width = NULL, n_extra = NUL
     if(length(whichlist)){
         if(grepl("\\[23m", ff[3])){ # for Rstudio formatting
             ff3 <- strsplit(ff[3], "\\[23m")[[1]]
+            ff3 <- ff3[2L:length(ff3) - 1L]
             for(w in whichlist)
                 ff3[w] <- gsub('chr', 'lst', ff3[w])
             ff3 <- paste0(ff3, '[23m', collapse='')
