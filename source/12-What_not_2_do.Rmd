@@ -93,7 +93,7 @@ sobel_test <- function(X, M, Y){
     stderb <- summary(Y_XM)$coefficients[3,2]
     sobelz <- a*b / sqrt(b^2 * stdera^2 + a^2 * stderb^2)
     sobelp <- pnorm(abs(sobelz), lower.tail = FALSE)*2
-    ret <- data.frame(a=a, SE_a=stdera, b=b, SE_b=stdera, 
+    ret <- data.frame(a=a, SE_a=stdera, b=b, SE_b=stderb, 
                       z=sobelz, p=sobelp)
     ret
 }
