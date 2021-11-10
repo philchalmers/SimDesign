@@ -212,7 +212,7 @@ that you must  use either the "MPI" or "PSOCK" clusters)}
 
 \item{beep}{logical; call the \code{beepr} package when the simulation is completed?}
 
-\item{sound}{\code{sound} argument passed to \link{beepr::beep()}}
+\item{sound}{\code{sound} argument passed to \code{beepr::beep()}}
 
 \item{CI}{bootstrap confidence interval level (default is 95\%)}
 
@@ -717,9 +717,9 @@ res <- runSimulation(design=Design, replications=1000, parallel=TRUE,
 res
 View(res)
 
-## save final results to a file upon completion (not run)
+## save final results to a file upon completion, and play a beep when done
 runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
-              generate=Generate, analyse=Analyse, summarise=Summarise)
+              generate=Generate, analyse=Analyse, summarise=Summarise, beep=TRUE)
 
 ## same as above, but send a notification via Pushbullet upon completion
 library(RPushbullet) # read-in default JSON file

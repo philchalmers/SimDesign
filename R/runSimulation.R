@@ -203,7 +203,7 @@
 #'
 #' @param beep logical; call the \code{beepr} package when the simulation is completed?
 #'
-#' @param sound \code{sound} argument passed to \link{beepr::beep()}
+#' @param sound \code{sound} argument passed to \code{beepr::beep()}
 #'
 #' @param notification an optional character vector input that can be used to send
 #'   Pushbullet notifications from a configured
@@ -677,9 +677,9 @@
 #' res
 #' View(res)
 #'
-#' ## save final results to a file upon completion (not run)
+#' ## save final results to a file upon completion, and play a beep when done
 #' runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
-#'               generate=Generate, analyse=Analyse, summarise=Summarise)
+#'               generate=Generate, analyse=Analyse, summarise=Summarise, beep=TRUE)
 #'
 #' ## same as above, but send a notification via Pushbullet upon completion
 #' library(RPushbullet) # read-in default JSON file
