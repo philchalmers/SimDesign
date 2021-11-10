@@ -1,5 +1,9 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.8
+
+- Added `beep` argument to `runSimulation()` to play a beep message via the `beepr`
+
 ## Changes in SimDesign 2.7.1
 
 - Added `RSE()` function to compute the relative behaviour of the average standard error to the 

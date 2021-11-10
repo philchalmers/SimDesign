@@ -201,6 +201,10 @@
 #'   with the \code{::} operator
 #'   (e.g., \code{extraDistr::rgumbel()})
 #'
+#' @param beep logical; call the \code{beepr} package when the simulation is completed?
+#'
+#' @param sound \code{sound} argument passed to \link{beepr::beep()}
+#'
 #' @param notification an optional character vector input that can be used to send
 #'   Pushbullet notifications from a configured
 #'   computer. This reports information such as the total execution time, the condition
@@ -778,7 +782,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL,
                           debug = 'none', load_seed = NULL,
                           save_results = FALSE, parallel = FALSE, ncores = parallel::detectCores(),
-                          cl = NULL, notification = 'none', CI = .95, seed = NULL,
+                          cl = NULL, notification = 'none', beep = FALSE, sound = 1,
+                          CI = .95, seed = NULL,
                           boot_method='none', boot_draws = 1000L, max_errors = 50L,
                           save_seeds = FALSE, save = TRUE, store_results = FALSE,
                           save_details = list(), extra_options = list(),
@@ -1285,6 +1290,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(save || save_results || save_seeds) file.remove(file.path(out_rootdir, tmpfilename))
     if(notification %in% c('condition', 'complete')) notification_final(Final)
+    if(beep)
+        beepr::beep(sound=sound)
     return(Final)
 }
 

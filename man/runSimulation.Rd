@@ -22,6 +22,8 @@ runSimulation(
   ncores = parallel::detectCores(),
   cl = NULL,
   notification = "none",
+  beep = FALSE,
+  sound = 1,
   CI = 0.95,
   seed = NULL,
   boot_method = "none",
@@ -207,6 +209,10 @@ that you must  use either the "MPI" or "PSOCK" clusters)}
   \code{'condition'} to send a notification after each condition has completed,
   or \code{'complete'} to send
   a notification only when the simulation has finished.}
+
+\item{beep}{logical; call the \code{beepr} package when the simulation is completed?}
+
+\item{sound}{\code{sound} argument passed to \link{beepr::beep()}}
 
 \item{CI}{bootstrap confidence interval level (default is 95\%)}
 
