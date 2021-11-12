@@ -331,8 +331,21 @@
 #'        should a REPLICATION element be added to
 #'        the \code{condition} object when performing the simulation to track which specific
 #'        replication experiment is being evaluated? This is useful when, for instance, attempting
-#'        to run external software programs (e.g., Mplus) that require saving temporary datasets
+#'        to run external software programs (e.g., Mplus) that require saving temporary data sets
 #'        to the hard-drive (see the Wiki for examples)}
+#'
+#'      \item{\code{try_all_analyse}}{logical; when \code{analyse} is a list, should every generated
+#'        data set be analyzed by each function definition in the \code{analyse} list?
+#'        Default is \code{TRUE}.
+#'
+#'        Note that this \code{TRUE} default can be computationally demanding when some analysis
+#'        functions require more computational resources than others, and the data should be
+#'        discarded early as an invalid candidate (e.g., estimating a model via maximum-likelihood
+#'        in on analyze component, while estimating a model using MCMC estimation on another). Hence,
+#'        the main benefit of using \code{FALSE} instead is that the data set may be rejected earlier,
+#'        where easier/faster to estimate \code{analyse} definitions should be placed earlier in the list
+#'        as the functions are evaluated in sequence
+#'        (e.g., \code{Analyse = list(MLE=MLE_definition, MCMC=MCMC_definition)}) }
 #'
 #'      \item{\code{allow_na}}{logical (default is \code{FALSE}); should \code{NA}s be allowed in the
 #'       analyse step as a valid result from the simulation analysis?}
@@ -406,8 +419,7 @@
 #'   Default is \code{TRUE}
 #'
 #' @param debug a string indicating where to initiate a \code{browser()} call for editing
-#' and debugging, and pairs
-#'   particularly well with the \code{load_seed} argument for precise debugging.
+#'   and debugging, and pairs particularly well with the \code{load_seed} argument for precise debugging.
 #'   General options are \code{'none'} (default; no debugging), \code{'error'}, which
 #'   starts the debugger
 #'   when any error in the code is detected in one of three generate-analyse-summarise functions,
@@ -802,6 +814,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             for(i in 1L:length(analyse))
                 analyse[[i]] <- compiler::cmpfun(analyse[[i]])
             .SIMDENV$ANALYSE_FUNCTIONS <- ANALYSE_FUNCTIONS <- analyse
+            .SIMDENV$TRY_ALL_ANALYSE <- ifelse(is.null(extra_options$try_all_analyse),
+                                               TRUE, extra_options$try_all_analyse)
             analyse <- combined_Analyses
             for(i in 1L:length(ANALYSE_FUNCTIONS)){
                 char_functions <- deparse(substitute(ANALYSE_FUNCTIONS[[i]]))
@@ -1245,6 +1259,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     wen <- colnames(Final)[grepl('WARNING:', colnames(Final))]
     ERROR_msg <- Final[ ,ten, drop=FALSE]
     WARNING_msg <- Final[ ,wen, drop=FALSE]
+    colnames(ERROR_msg) <- gsub("ERROR: ." , "ERROR:  ", colnames(ERROR_msg))
+    colnames(WARNING_msg) <- gsub("WARNING: ." , "WARNING:  ", colnames(WARNING_msg))
     ERRORS <- as.integer(rowSums(ERROR_msg, na.rm = TRUE))
     WARNINGS <- as.integer(rowSums(WARNING_msg, na.rm = TRUE))
     en <- c('REPLICATIONS', 'SIM_TIME', 'COMPLETED', 'SEED')

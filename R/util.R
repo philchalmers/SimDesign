@@ -174,8 +174,10 @@ unwind_apply_wind.list <- function(lst, mat, fun, ...){
 }
 
 combined_Analyses <- function(condition, dat, fixed_objects = NULL){
-    if(!is.null(.SIMDENV$ANALYSE_FUNCTIONS))
+    if(!is.null(.SIMDENV$ANALYSE_FUNCTIONS)){
         ANALYSE_FUNCTIONS <- .SIMDENV$ANALYSE_FUNCTIONS
+        TRY_ALL_ANALYSE <- .SIMDENV$TRY_ALL_ANALYSE
+    }
     nfuns <- length(ANALYSE_FUNCTIONS)
     ret <- vector('list', nfuns)
     nms <- names(ANALYSE_FUNCTIONS)
@@ -187,9 +189,21 @@ combined_Analyses <- function(condition, dat, fixed_objects = NULL){
         if(is(tried, 'try-error')){
             if(tried == 'Error : ANALYSEIF RAISED ERROR\n')
                 tried <- NULL
-            else return(tried)
+            else if(!TRY_ALL_ANALYSE) return(tried)
         }
         ret[[i]] <- tried
+    }
+    if(TRY_ALL_ANALYSE){
+        try_error <- sapply(ret, function(x) is(x, 'try-error'))
+        if(any(try_error)){
+            msg <- paste0(names(ANALYSE_FUNCTIONS)[try_error], ".ERROR:   ", as.character(ret[try_error]))
+            if(length(msg) > 1L)
+                msg[1L] <- sprintf("%i INDEPENDENT ERRORS THROWN:   %s", length(msg), msg[1L])
+            msg <- paste0(msg, collapse = '  ')
+            ret <- try(stop(msg), silent = TRUE)
+            ret <- gsub("Error in try\\(stop\\(msg\\), silent = TRUE\\) : \\\n  ", "", ret)
+            return(ret)
+        }
     }
     if(all(sapply(ret, function(x) is.numeric(x) ||
                   (is.data.frame(x) && nrow(x) == 1L))))
