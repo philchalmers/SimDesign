@@ -802,7 +802,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
-    ANALYSE_FUNCTIONS <- NULL
+    ANALYSE_FUNCTIONS <- TRY_ALL_ANALYSE <- NULL
     if(is.list(analyse)){
         # stopifnot(length(names(analyse)) > 0L)
         if(debug %in% c('all', 'analyse'))
@@ -814,8 +814,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             for(i in 1L:length(analyse))
                 analyse[[i]] <- compiler::cmpfun(analyse[[i]])
             .SIMDENV$ANALYSE_FUNCTIONS <- ANALYSE_FUNCTIONS <- analyse
-            .SIMDENV$TRY_ALL_ANALYSE <- ifelse(is.null(extra_options$try_all_analyse),
-                                               TRUE, extra_options$try_all_analyse)
+            .SIMDENV$TRY_ALL_ANALYSE <- TRY_ALL_ANALYSE  <-
+                ifelse(is.null(extra_options$try_all_analyse),
+                       TRUE, extra_options$try_all_analyse)
             analyse <- combined_Analyses
             for(i in 1L:length(ANALYSE_FUNCTIONS)){
                 char_functions <- deparse(substitute(ANALYSE_FUNCTIONS[[i]]))
@@ -1001,6 +1002,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         }
         parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
         parallel::clusterExport(cl=cl, "ANALYSE_FUNCTIONS", envir = environment())
+        parallel::clusterExport(cl=cl, "TRY_ALL_ANALYSE", envir = environment())
         if(verbose)
             message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
     }

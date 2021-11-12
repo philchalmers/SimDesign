@@ -550,18 +550,18 @@ test_that('SimDesign', {
     expect_equal(ncol(result), 7L)
 
     expect_true(all(names(SimExtract(result, what = 'errors')) %in% c(
-        'ERROR: .generate error in analyse\n', 'ERROR: .generate error\n')))
+        'ERROR:  generate error in analyse\n', 'ERROR:  generate error\n')))
     expect_true(all(names(SimExtract(result, what = 'warnings')) %in% c(
-        'WARNING: .greater than 5', 'WARNING: .greater than 5 in analyse')))
+        'WARNING:  greater than 5', 'WARNING:  greater than 5 in analyse')))
 
     result <- runSimulation(design=createDesign(N=c(100, 200)), replications = 100,
                                                 seed=c(1234, 4321), verbose=FALSE,
                             generate=mygenerate, analyse=mycompute, summarise=mycollect)
     expect_equal(ncol(result), 8L)
     expect_true(all(names(SimExtract(result, what = 'errors')) %in% c("N",
-        'ERROR: .generate error in analyse\n', 'ERROR: .generate error\n')))
+        'ERROR:  generate error in analyse\n', 'ERROR:  generate error\n')))
     expect_true(all(names(SimExtract(result, what = 'warnings')) %in% c("N",
-        'WARNING: .greater than 5', 'WARNING: .greater than 5 in analyse')))
+        'WARNING:  greater than 5', 'WARNING:  greater than 5 in analyse')))
 
     # Summarise returns a list
     Design <- createDesign(N=c(250, 500))
