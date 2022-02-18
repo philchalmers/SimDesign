@@ -1,0 +1,184 @@
+%\VignetteIndexEntry{SimDesign}
+%\VignetteEngine{knitr::knitr}
+---
+title: "Pre-compiled Binary Files in Simulation Studies"
+author: "Mark Lai and Phil Chalmers"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+```{r include=FALSE}
+options(digits = 3)
+cache_ <- TRUE
+```
+
+
+# Reusing pre-compiled binaries in simulation studies
+
+The following example demonstrate the logic of how to reuse pre-compiled binary files in the context of Monte Carlo simulations. The goal in this case is to:
+
+1) Pre-compile the necessary binary files before running `runSimulation()`,
+2) Include tractable extraction information in the `Design`/`fixed_objects` inputs to point to and extract the necessary binary object associated with the respective simulation conditions under investigation, respectively, and
+3) Sit around for a while, as no doubt the use of pre-compiled binaries suggests the computational problem is already intensive!
+
+The following code example is an adaption of [Mark Lai's example](https://quantscience.rbind.io/2021/07/14/using-cmdstanr-in-simdesign/) using `cmdstanr` alongside `SimDesign`. See https://mc-stan.org/cmdstanr/articles/cmdstanr.html for further information on using the `cmdstanr` package. 
+
+# Example using Stan
+
+## Step 1: Define and compile binary files 
+
+```{r}
+# if you haven't done so, install the cmdstanr package using the following:
+# install.packages("cmdstanr", 
+#   repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+#
+# and follow all the necessary setup instructions to get the package working
+```
+
+The first step in the process would be to generate all the necessary Stan objects and store them into a meaningfully named list. Below two objects are generated to perform the same estimation of a population mean, however the first uses a weak normal prior ($\mu \sim N(0, 10)$) while the latter uses a much stronger prior ($\mu \sim N(0,2$)).
+
+```{r include=FALSE}
+library(cmdstanr)
+```
+
+
+```{r}
+library(cmdstanr)
+
+bmean_stan_weak <- "
+    data {
+        int<lower=0> N;
+        array[N] real x;
+    }
+    parameters {
+        real mu;
+        real<lower=0> sigma;
+    }
+    model {
+        target += normal_lpdf(mu | 0, 10);  // weakly informative prior
+        target += normal_lpdf(x | mu, sigma);
+    }
+"
+
+bmean_stan_strong <- "
+    data {
+        int<lower=0> N;
+        array[N] real x;
+    }
+    parameters {
+        real mu;
+        real<lower=0> sigma;
+    }
+    model {
+        target += normal_lpdf(mu | 0, 2);  // more informative prior
+        target += normal_lpdf(x | mu, sigma);
+    }
+"
+
+# Save files and compile
+stan_path_weak <- write_stan_file(bmean_stan_weak)
+stan_path_strong <- write_stan_file(bmean_stan_strong)
+
+# compile and store within fixed objects for use in runSimulation()
+fo <- list(weak=cmdstan_model(stan_path_weak), 
+		   strong=cmdstan_model(stan_path_strong))
+```
+
+
+
+## Step 2: Define suitable simulation flow
+
+Elements in the above `fo` object (passed to `runSimulation()` via the `fixed_objects` input) are correctly pointed to when needed.
+
+```{r}
+# function to run MCMC and extract associated mean estimate
+stan_fit <- function(mod, dat){
+	
+	# Stan is noisy, so tell it to be more quiet()
+	mcmc <- quiet(mod$sample(list(x = dat, N = length(dat)),
+							 refresh = 0, chains = 1, 
+							 show_messages = FALSE))
+    if (mcmc$summary("mu")[1, "rhat"] > 1.01) {
+        # Gives an error when the convergence criterion is not met
+        stop("MCMC did not converge.")
+    }
+    MB <- mcmc$summary("mu", mean)$mean[1]
+    MB
+}
+```
+
+```{r}
+# SimDesign::SimFunctions()
+library(SimDesign)
+
+Design <- createDesign(sample_size = c(30, 60, 120, 240), 
+                       distribution = c('norm', 'chi'))
+Design
+```
+
+```{r}
+Generate <- function(condition, fixed_objects = NULL) {
+	Attach(condition)
+    if(distribution == 'norm'){
+        dat <- rnorm(sample_size, mean = 3)
+    } else if(distribution == 'chi'){
+        dat <- rchisq(sample_size, df = 3)
+    }
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL) {
+	Attach(condition)
+	
+    M0 <- mean(dat)
+    M1 <- mean(dat, trim = .1)
+    M2 <- mean(dat, trim = .2)
+    med <- median(dat)
+    
+    # extract suitable pre-compiled Stan object
+    MB_weak <- stan_fit(fixed_objects$weak, dat)
+    MB_strong <- stan_fit(fixed_objects$strong, dat)
+    
+    ret <- c(mean_no_trim = M0, mean_trim.1 = M1, 
+             mean_trim.2 = M2, median = med, 
+             mean_weak_prior = MB_weak, 
+    		 mean_strong_prior = MB_strong)
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL) {
+    obs_bias <- bias(results, parameter = 3)
+    obs_RMSE <- RMSE(results, parameter = 3)
+    ret <- c(bias = obs_bias, RMSE = obs_RMSE, RE = RE(obs_RMSE))
+    ret
+}
+```
+
+
+## Step 3: Run the simulation in parallel
+
+```{r}
+res <- runSimulation(Design, replications = 1000, generate = Generate, 
+                     analyse = Analyse, summarise = Summarise, 
+					 fixed_objects = fo, parallel=TRUE, 
+					 packages = "cmdstanr")
+res
+```
+
+
+
+```{r}
+# render output better
+knitr::kable(res)
+```
+
+
+# Notes about parallel processing
+
+Much like the philosophy of constructing simulation code that can be executed using multiple cores in the package, it is generally better to let `SimDesign` perform any necessary parallel processing distribution of the workload. Hence, while Stan supports parallel computations and the execution of multiple chains in parallel, it is generally advisable to execute each instance of Stan code on a single core so that within a given simulation replication there will not be any competition for available processor resources. 
+
+# Notes on convergence of MCMC
+
+The above example uses Stan for Markov Chain Monte Carlo (MCMC) sampling via the Hamiltonian method. While convergence is likely not an issue for this particular example, it is possible that convergence issues will appear in more complex models. One way to ensure the resulting replications have converged is to give an error when some convergence diagnostic statistic, such as $\hat R$, is below a recommended threshold. In the `stan_fit()` function above, an error is thrown whenever $\hat R$ > 1.01 (see [this paper](https://doi.org/10.1214/20-BA1221)). Another possibility is to call Stan again with more iterations if convergence failed.
