@@ -51,8 +51,8 @@
 #'
 #' DFIT(mod)
 #' tail(round(DFIT(mod, DIF=TRUE), 3))
-#' DFIT(mod, method = 'ML')
-#' tail(round(DFIT(mod, method = 'ML', DIF=TRUE), 3))
+#' DFIT(mod, method = 'MAP')
+#' tail(round(DFIT(mod, method = 'MAP', DIF=TRUE), 3))
 #' 
 #' DRF(mod)
 #' tail(DRF(mod, DIF=TRUE))
@@ -66,11 +66,9 @@
 #'
 #' DFIT(mod2) # very different p-values
 #' tail(round(DFIT(mod2, DIF=TRUE), 3))
-#' DFIT(mod2, method = 'ML')
-#' tail(round(DFIT(mod2, method = 'ML', DIF=TRUE), 3))
 #' 
-#' DRF(mod)
-#' tail(DRF(mod, DIF=TRUE))
+#' DRF(mod2) #same, just flipped
+#' tail(DRF(mod2, DIF=TRUE))
 #' 
 #' 
 #'
@@ -83,15 +81,48 @@
 #' mod3 <- multipleGroup(dat, model, group=group,
 #'   invariance=c('free_means', 'free_var'))
 #' plot(mod3) #visible DTF happening
+#' plot(mod3, type ='itemscore')
 #'
 #' # DIF(mod3, c('a1', 'd'), items2test=16:30)
 #' DFIT(mod3) 
 #' tail(round(DFIT(mod3, DIF=TRUE), 3))
-#' DFIT(mod3, method = 'ML')
-#' tail(round(DFIT(mod3, method = 'ML', DIF=TRUE), 3))
 #' 
 #' DRF(mod3)
 #' tail(DRF(mod3, DIF=TRUE))
+#' 
+#' 
+#' #############
+#' # complete cancellation
+#' N <- 10000
+#' a <- a2 <- matrix(rlnorm(n, .2, .2))
+#' d <- d2 <- matrix(rnorm(n))
+#' group <- c(rep('G1', N), rep('G2', N))
+#' 
+#' a2[1:2] <- 1
+#' a[1:2] <- 2
+#' d2[1:2] <- -1
+#' d[1:2] <- 1
+#' 
+#' a[3:4] <- 1
+#' a2[3:4] <- 2
+#' d[3:4] <- -1
+#' d2[3:4] <- 1
+#' 
+#' dat1 <- simdata(a, d, N, itemtype = 'dich')
+#' dat2 <- simdata(a2, d2, N, itemtype = 'dich')
+#' dat <- rbind(dat1, dat2)
+#' mod <- multipleGroup(dat, 1, group=group,
+#'   invariance=c('free_means', 'free_var', colnames(dat)[-c(1:4)]))
+#'   
+#' plot(mod, type = 'itemscore')
+#' plot(mod)
+#' 
+#' DRF(mod)
+#' DRF(mod, DIF=TRUE)
+#' DRF(mod, focal_items = c(1:4))
+#' 
+#' DFIT(mod)
+#' DFIT(mod, DIF=TRUE)
 #'
 #' }
 DFIT <- function(mod, focal_items, method = 'EAP', DIF = FALSE, ...){
@@ -110,21 +141,21 @@ DFIT <- function(mod, focal_items, method = 'EAP', DIF = FALSE, ...){
                    mean = gp$gmeans, cov = gp$gcov, ...)
     T1 <- expected.test(mod, fs1, group=1L, individual=TRUE, which.items = focal_items)
     T2 <- expected.test(mod, fs2, group=2L, individual=TRUE, which.items = focal_items)
+    d <- T2 - T1
+    D <- rowSums(d)
+    NCDIF <- colMeans(d^2)
+    CDIF <- apply(d, 2, function(dj) 
+        cov(dj, D) + mean(dj) * mean(D))
+    vars <- apply(d, 2L, var)
+    df <- nrow(d)
     if(DIF){
-        D <- T2 - T1
-        CDIF <- colMeans(D)
-        NCDIF <- colMeans(D^2)
-        vars <- apply(D, 2L, var)
-        df <- nrow(D)
         X2 <- df * NCDIF / vars
         p.X2 <- 1 - pchisq(X2, df=df)
         ret <- data.frame(CDIF, NCDIF, X2, df, p.X2)
         rownames(ret) <- colnames(mod@Data$data)[focal_items]
     } else {
-        D <- rowSums(T2 - T1)
-        DTF <- (mean(D))^2
+        DTF <- sum(CDIF)
         X2 <- sum(D^2) / var(D)
-        df <- length(D)
         p.X2 <- 1 - pchisq(X2, df=df)
         ret <- data.frame(DTF=DTF, X2=X2, df=df, p.X2=p.X2)
     }
