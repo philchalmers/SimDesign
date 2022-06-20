@@ -459,7 +459,9 @@
 #'  Can be \code{'basic'} for the empirical bootstrap CI, \code{'percentile'}
 #'  for percentile CIs, \code{'norm'} for normal approximations CIs, or \code{'studentized'}
 #'  for Studentized CIs (should only be used for simulations with lower replications due to its
-#'  computational intensity). Default is \code{'none'}, which performs no bootstrapping
+#'  computational intensity). Alternatively, CIs can be constructed using the argument \code{'CLT'},
+#'  which computes the intervals according to the large-sample standard error
+#'  approximation \eqn{SD(results)/\sqrt{R}}. Default is \code{'none'}, which performs no CI computations
 #'
 #' @param boot_draws number of non-parametric bootstrap draws to sample for the \code{summarise}
 #'   function after the generate-analyse replications are collected. Default is 1000

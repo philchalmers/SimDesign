@@ -21,7 +21,7 @@ SimBoot <- function(results, summarise, condition, fixed_objects, boot_method,
         ret
     }
 
-    stopifnot(boot_method %in% c('basic', 'percentile', 'norm', 'studentized'))
+    stopifnot(boot_method %in% c('basic', 'percentile', 'norm', 'studentized', 'CLT'))
     replications <- if(is.data.frame(results)) nrow(results) else length(results)
     t0 <- summarise(condition=condition, results=results, fixed_objects=fixed_objects)
     if(boot_method %in% c('basic', 'percentile', 'norm'))
@@ -48,9 +48,16 @@ SimBoot <- function(results, summarise, condition, fixed_objects, boot_method,
         qu <- apply(qs, 2L, quantile, prob = 1 - (1-CI)/2)
         lower <- t0 + ql * SEs
         upper <- t0 + qu * SEs
+    } else if(boot_method == 'CLT'){
+        SEs <- apply(results, 2, sd) / sqrt(replications)
+        ql <- qnorm((1-CI)/2)
+        qu <- qnorm(1 - (1-CI)/2)
+        lower <- t0 + ql * SEs
+        upper <- t0 + qu * SEs
     }
     CIs <- as.vector(rbind(lower, upper))
-    names(CIs) <- paste0(as.vector(sapply(paste0("BOOT_", names(t0), "_"), function(x)
+    names(CIs) <- paste0(as.vector(sapply(paste0(ifelse(boot_method != 'CLT', "BOOT_", "CI_"),
+                                                 names(t0), "_"), function(x)
         paste0(x, c( (1 - CI)/2 * 100, (1 - (1 - CI)/2)*100)))))
     CIs
 }
