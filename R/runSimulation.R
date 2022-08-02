@@ -1085,7 +1085,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                 function(ind, packages) load_packages(packages),
                                 packages=packages)
         } else {
-            foreach(p=1L:(length(cl)*2), packages=packages) %dopar% load_packages(packages)
+            foreach(p=1L:(length(cl)*2), packages=packages,
+                    .packages = 'SimDesign') %dopar% load_packages(packages)
         }
         for(i in 1:length(tmp)){
             packs <- if(parallel){
@@ -1093,7 +1094,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                    get_packages)))
             } else {
                 p <- character()
-                try(table(foreach(p=rep(tmp[i], each=length(cl)*2L)) %dopar% get_packages(p)))
+                try(table(foreach(p=rep(tmp[i], each=length(cl)*2L),
+                                  .packages = 'SimDesign') %dopar% get_packages(p)))
             }
             if(tmp[i] == 'stats') next
             if(length(packs) > 1L)
