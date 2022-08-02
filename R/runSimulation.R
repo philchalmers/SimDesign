@@ -1084,19 +1084,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             parallel::parSapply(cl, 1L:(length(cl)*2),
                                 function(ind, packages) load_packages(packages),
                                 packages=packages)
-        } else {
-            foreach(p=1L:(length(cl)*2), packages=packages,
-                    .packages = 'SimDesign') %dopar% load_packages(packages)
-        }
+        } # foreach() doesn't like load_packages()
         for(i in 1:length(tmp)){
             packs <- if(parallel){
                 try(table(parallel::parSapply(cl, rep(tmp[i], each=length(cl)*2),
                                                    get_packages)))
-            } else {
-                p <- character()
-                try(table(foreach(p=rep(tmp[i], each=length(cl)*2L),
-                                  .packages = 'SimDesign') %dopar% get_packages(p)))
-            }
+            } else "" # for foreach()
             if(tmp[i] == 'stats') next
             if(length(packs) > 1L)
                 message(sprintf('Warning message:\nVersions of %s differ across clusters: %s',
@@ -1127,7 +1120,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          save_results_dirname=save_results_dirname,
                                          save_seeds=save_seeds, summarise_asis=summarise_asis,
                                          save_seeds_dirname=save_seeds_dirname,
-                                         max_errors=max_errors,
+                                         max_errors=max_errors, packages=packages,
                                          include_replication_index=include_replication_index,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
@@ -1158,7 +1151,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             save_results_dirname=save_results_dirname,
                             save_seeds=save_seeds, summarise_asis=summarise_asis,
                             save_seeds_dirname=save_seeds_dirname,
-                            max_errors=max_errors,
+                            max_errors=max_errors, packages=packages,
                             include_replication_index=include_replication_index,
                             load_seed=load_seed, export_funs=export_funs,
                             warnings_as_errors=warnings_as_errors,

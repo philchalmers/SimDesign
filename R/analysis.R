@@ -3,7 +3,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      boot_method, boot_draws, CI, save_seeds, save_seeds_dirname, load_seed,
                      export_funs, summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds,
-                     include_replication_index)
+                     include_replication_index, packages)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -39,7 +39,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     } else {
         if(MPI){
             i <- 1L
-            results <- try(foreach(i=1L:replications, .export=export_funs) %dopar%
+            results <- try(foreach(i=1L:replications, .export=export_funs, .packages=packages) %dopar%
                 mainsim(i, condition=condition, generate=Functions$generate,
                      analyse=Functions$analyse, fixed_objects=fixed_objects, load_seed=load_seed,
                      max_errors=max_errors, save=save,
