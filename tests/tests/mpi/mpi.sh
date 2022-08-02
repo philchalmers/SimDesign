@@ -1,0 +1,1 @@
+mpirun -np 4 R --slave -f simulation.R
