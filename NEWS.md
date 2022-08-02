@@ -1,5 +1,10 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.9
+
+- `Attach()` gains an `omit` argument to omit specific elements from being attached
+  to the working environment (default still attaches all objects supplied)
+
 ## Changes in SimDesign 2.8
 
 - Using a list definition for `Analyse` input now executes all functions by default

@@ -4,11 +4,16 @@
 \alias{Attach}
 \title{Attach objects for easier reference}
 \usage{
-Attach(..., check = TRUE, attach_listone = TRUE)
+Attach(..., omit = NULL, check = TRUE, attach_listone = TRUE)
 }
 \arguments{
 \item{...}{a comma separated list of \code{data.frame} or \code{tibble} objects
 containing elements that should be placed in the current working environment}
+
+\item{omit}{an optional character vector containing the names of objects that should not
+be attached to the current environment. For instance, if the objects named 'a' and 'b' should
+not be attached then use \code{omit = c('a', 'b')}.
+When NULL (default) all objects are attached}
 
 \item{check}{logical; check to see if the function will accidentally replace previously defined
 variables with the same names as in \code{condition}? Default is \code{TRUE}, which will avoid
