@@ -120,8 +120,9 @@ notification_final <- function(Final){
 #'
 quiet <- function(..., messages=FALSE, cat=FALSE){
     if(!cat){
-        sink(tempfile())
-        on.exit(sink())
+        tmpf <- tempfile()
+        sink(tmpf)
+        on.exit({sink(); file.remove(tmpf)})
     }
     out <- if(messages) eval(...) else suppressMessages(eval(...))
     out
