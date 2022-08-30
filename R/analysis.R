@@ -3,7 +3,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      boot_method, boot_draws, CI, save_seeds, save_seeds_dirname, load_seed,
                      export_funs, summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds,
-                     include_replication_index, packages)
+                     include_replication_index, packages, .options.mpi)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -48,7 +48,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      store_warning_seeds=store_warning_seeds,
                      include_replication_index=include_replication_index,
                      warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan,
-                     use_try=use_try), TRUE)
+                     use_try=use_try, .options.mpi=.options.mpi), TRUE)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
             results <- if(progress){

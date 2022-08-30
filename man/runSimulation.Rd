@@ -388,6 +388,11 @@ errors are thrown in any
      \item{\code{MPI}}{logical (default is \code{FALSE}); use the \code{foreach} package in a
        form usable by MPI to run simulation in parallel on a cluster? }
 
+     \item{\code{.options.mpi}}{list of arguments passed to \code{foreach()} to control the MPI execution
+       properties. Only used when \code{MPI = TRUE}}
+
+
+
    }}
 
 \item{progress}{logical; display a progress bar (using the \code{pbapply} package)
@@ -554,12 +559,12 @@ in the R console to remove any previously saved temporary objects.
 When running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE})
 R objects defined in the global environment will generally \emph{not} be visible across nodes.
 Hence, you may see errors such as \code{Error: object 'something' not found} if you try to use
-an object that is defined in the workspace but is not passed to \code{runSimulation}.
+an object that is defined in the work space but is not passed to \code{runSimulation}.
 To avoid this type or error, simply pass additional objects to the
 \code{fixed_objects} input (usually it's convenient to supply a named list of these objects).
 Fortunately, however, \emph{custom functions defined in the global environment are exported across
 nodes automatically}. This makes it convenient when writing code because custom functions will
-always be available across nodes if they are visible in the R workspace. As well, note the
+always be available across nodes if they are visible in the R work space. As well, note the
 \code{packages} input to declare packages which must be loaded via \code{library()} in order to make
 specific non-standard R functions available across nodes.
 }
