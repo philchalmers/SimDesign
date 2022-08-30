@@ -39,7 +39,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     } else {
         if(MPI){
             i <- 1L
-            results <- try(foreach(i=1L:replications, .export=export_funs, .packages=packages) %dopar%
+            results <- try(foreach(i=1L:replications, .export=export_funs, .packages=packages,
+                                   .options.mpi=.options.mpi) %dopar%
                 mainsim(i, condition=condition, generate=Functions$generate,
                      analyse=Functions$analyse, fixed_objects=fixed_objects, load_seed=load_seed,
                      max_errors=max_errors, save=save,
@@ -48,7 +49,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      store_warning_seeds=store_warning_seeds,
                      include_replication_index=include_replication_index,
                      warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan,
-                     use_try=use_try, .options.mpi=.options.mpi), TRUE)
+                     use_try=use_try), TRUE)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
             results <- if(progress){
