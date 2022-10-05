@@ -25,12 +25,6 @@ set.seed(1234)
 
 The first simulation defined here is simply a missing at random scheme where 20% of the observation are missing. Three sample size conditions are studied to determine the effect of list-wise versus pairwise removal of missing data when computing correlation coefficients.
 
-Notice that in `Generate()` there is a call to `rmvnorm()` from the `mvtnorm` package. In order for this
-function to be available across different cores you can either put a `library()`/`require()` call above
-the desired functions, use `mvtnorm::rmvnorm()` to call the function without loading the package directly,
-or pass `'mvtnorm'` to the `packages` argument in `runSimulation()`. The last option is used in the 
-simulation below.
-
 ```{r}
 library(SimDesign)
 #SimFunctions(comments = FALSE)
@@ -43,7 +37,7 @@ Design <- createDesign(N = c(50, 100, 200))
 Generate <- function(condition, fixed_objects = NULL) {
     cormat <- matrix(.5, 3, 3)
     diag(cormat) <- 1
-    dat <- rmvnorm(condition$N, sigma = cormat)
+    dat <- rmvnorm(condition$N, sigma = cormat) # from SimDesign
     dat <- apply(dat, 2, add_missing, rate = .2)
     dat
 }
@@ -67,8 +61,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 ### Run the simulation
 res <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                     generate=Generate, analyse=Analyse, summarise=Summarise, 
-                     packages = 'mvtnorm')
+                     generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
 
 ```{r}
@@ -92,8 +85,7 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 res <- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRUE,
-                     generate=Generate, analyse=Analyse, summarise=Summarise, debug='none',
-                     packages = 'mvtnorm')
+                     generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
 
 ```{r}
