@@ -514,25 +514,25 @@ summary(res)</code></pre>
 ## [1] 33
 ## 
 ## $date_completed
-## [1] &quot;Thu Oct  6 14:29:29 2022&quot;
+## [1] &quot;Thu Oct  6 19:26:14 2022&quot;
 ## 
 ## $total_elapsed_time
-## [1] &quot;15.61s&quot;</code></pre>
+## [1] &quot;17.03s&quot;</code></pre>
 <pre class="r"><code># print results
 print(res)</code></pre>
 <pre><code>## # A tibble: 33 × 7
 ##    mean_diff sample_size      p REPLICATIONS SIM_TIME COMPLETED             SEED
 ##        &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                &lt;int&gt;
-##  1       0            10 0.0492        10000    0.605 Thu Oct  6 14:29:1… 1.14e9
-##  2       0.1          10 0.054         10000    0.524 Thu Oct  6 14:29:1… 3.13e8
-##  3       0.2          10 0.069         10000    0.495 Thu Oct  6 14:29:1… 8.66e8
-##  4       0.3          10 0.0999        10000    0.543 Thu Oct  6 14:29:1… 1.91e9
-##  5       0.4          10 0.135         10000    0.439 Thu Oct  6 14:29:1… 5.55e8
-##  6       0.5          10 0.186         10000    0.453 Thu Oct  6 14:29:1… 8.85e8
-##  7       0.6          10 0.245         10000    0.325 Thu Oct  6 14:29:1… 8.03e8
-##  8       0.7          10 0.316         10000    0.441 Thu Oct  6 14:29:1… 1.16e9
-##  9       0.8          10 0.387         10000    0.336 Thu Oct  6 14:29:1… 9.35e8
-## 10       0.9          10 0.467         10000    0.350 Thu Oct  6 14:29:1… 1.63e9
+##  1       0            10 0.0492        10000    0.579 Thu Oct  6 19:25:5… 1.14e9
+##  2       0.1          10 0.054         10000    0.506 Thu Oct  6 19:25:5… 3.13e8
+##  3       0.2          10 0.069         10000    0.525 Thu Oct  6 19:25:5… 8.66e8
+##  4       0.3          10 0.0999        10000    0.537 Thu Oct  6 19:25:5… 1.91e9
+##  5       0.4          10 0.135         10000    0.435 Thu Oct  6 19:25:5… 5.55e8
+##  6       0.5          10 0.186         10000    0.420 Thu Oct  6 19:26:0… 8.85e8
+##  7       0.6          10 0.245         10000    0.373 Thu Oct  6 19:26:0… 8.03e8
+##  8       0.7          10 0.316         10000    0.403 Thu Oct  6 19:26:0… 1.16e9
+##  9       0.8          10 0.387         10000    0.524 Thu Oct  6 19:26:0… 9.35e8
+## 10       0.9          10 0.467         10000    0.462 Thu Oct  6 19:26:0… 1.63e9
 ## # … with 23 more rows</code></pre>
 <p>A power curve is created by placing the detection rates on a <span class="math inline">\(y\)</span>-axis and including different factors on the x-axis and other aesthetics (shading, colours, etc). Here we use <code>ggplot2</code> to construct suitable power-curves.</p>
 <pre class="r"><code>library(ggplot2)
@@ -557,7 +557,7 @@ pwr.t.test(d=0.5, n=30, sig.level=0.05, type=&quot;two.sample&quot;, alternative
 <pre><code>## # A tibble: 1 × 7
 ##   mean_diff sample_size     p REPLICATIONS SIM_TIME COMPLETED               SEED
 ##       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                  &lt;int&gt;
-## 1       0.5          30 0.484        10000    0.798 Thu Oct  6 14:29:26 … 3.04e8</code></pre>
+## 1       0.5          30 0.484        10000    0.620 Thu Oct  6 19:26:11 … 3.04e8</code></pre>
 <pre class="r"><code>pwr.t.test(d=0.5, n=10, sig.level=0.05, type=&quot;two.sample&quot;, alternative=&quot;two.sided&quot;)</code></pre>
 <pre><code>## 
 ##      Two-sample t test power calculation 
@@ -573,7 +573,7 @@ pwr.t.test(d=0.5, n=30, sig.level=0.05, type=&quot;two.sample&quot;, alternative
 <pre><code>## # A tibble: 1 × 7
 ##   mean_diff sample_size     p REPLICATIONS SIM_TIME COMPLETED               SEED
 ##       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                  &lt;int&gt;
-## 1       0.5          10 0.186        10000    0.453 Thu Oct  6 14:29:16 … 8.85e8</code></pre>
+## 1       0.5          10 0.186        10000    0.420 Thu Oct  6 19:26:00 … 8.85e8</code></pre>
 </div>
 </div>
 <div id="power-curve-with-bootstrapped-confidence-intervals" class="section level1">
@@ -588,16 +588,16 @@ res</code></pre>
 <pre><code>## # A tibble: 33 × 9
 ##    mean_diff sample_size     p BOOT_p_2.5 BOOT_…¹ REPLI…² SIM_T…³ COMPL…⁴   SEED
 ##        &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;    &lt;int&gt;
-##  1       0            10 0.052      0.039  0.065     1000   0.899 Thu Oc… 2.06e9
-##  2       0.1          10 0.064      0.048  0.079     1000   0.759 Thu Oc… 3.62e8
-##  3       0.2          10 0.071      0.054  0.0860    1000   0.762 Thu Oc… 1.46e9
-##  4       0.3          10 0.091      0.073  0.108     1000   0.705 Thu Oc… 1.49e9
-##  5       0.4          10 0.126      0.105  0.146     1000   0.782 Thu Oc… 2.05e9
-##  6       0.5          10 0.203      0.178  0.228     1000   0.681 Thu Oc… 1.56e9
-##  7       0.6          10 0.251      0.222  0.278     1000   0.693 Thu Oc… 1.19e9
-##  8       0.7          10 0.299      0.269  0.327     1000   0.703 Thu Oc… 1.87e9
-##  9       0.8          10 0.395      0.363  0.424     1000   0.677 Thu Oc… 1.72e9
-## 10       0.9          10 0.489      0.459  0.519     1000   1.00  Thu Oc… 1.10e9
+##  1       0            10 0.052      0.039  0.065     1000   1.06  Thu Oc… 2.06e9
+##  2       0.1          10 0.064      0.048  0.079     1000   0.766 Thu Oc… 3.62e8
+##  3       0.2          10 0.071      0.054  0.0860    1000   0.737 Thu Oc… 1.46e9
+##  4       0.3          10 0.091      0.073  0.108     1000   0.697 Thu Oc… 1.49e9
+##  5       0.4          10 0.126      0.105  0.146     1000   0.686 Thu Oc… 2.05e9
+##  6       0.5          10 0.203      0.178  0.228     1000   0.699 Thu Oc… 1.56e9
+##  7       0.6          10 0.251      0.222  0.278     1000   0.718 Thu Oc… 1.19e9
+##  8       0.7          10 0.299      0.269  0.327     1000   0.700 Thu Oc… 1.87e9
+##  9       0.8          10 0.395      0.363  0.424     1000   0.724 Thu Oc… 1.72e9
+## 10       0.9          10 0.489      0.459  0.519     1000   0.724 Thu Oc… 1.10e9
 ## # … with 23 more rows, and abbreviated variable names ¹​BOOT_p_97.5,
 ## #   ²​REPLICATIONS, ³​SIM_TIME, ⁴​COMPLETED</code></pre>
 <pre class="r"><code>library(ggplot2)
@@ -615,16 +615,16 @@ res</code></pre>
 <pre><code>## # A tibble: 33 × 9
 ##    mean_diff sample_size      p BOOT_p_…¹ BOOT_…² REPLI…³ SIM_T…⁴ COMPL…⁵   SEED
 ##        &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;    &lt;int&gt;
-##  1       0            10 0.0537    0.0493  0.0584   10000    6.84 Thu Oc… 9.51e8
-##  2       0.1          10 0.0532    0.0488  0.0578   10000    6.54 Thu Oc… 1.74e9
-##  3       0.2          10 0.0746    0.0695  0.0795   10000    6.83 Thu Oc… 1.19e8
-##  4       0.3          10 0.0956    0.0899  0.101    10000    6.38 Thu Oc… 2.09e9
-##  5       0.4          10 0.133     0.126   0.139    10000    6.51 Thu Oc… 1.79e9
-##  6       0.5          10 0.189     0.182   0.197    10000    6.77 Thu Oc… 9.55e8
-##  7       0.6          10 0.253     0.245   0.262    10000    6.79 Thu Oc… 2.51e8
-##  8       0.7          10 0.325     0.316   0.334    10000    6.50 Thu Oc… 1.21e9
-##  9       0.8          10 0.396     0.387   0.405    10000    6.81 Thu Oc… 8.27e8
-## 10       0.9          10 0.476     0.467   0.486    10000    6.78 Thu Oc… 3.19e8
+##  1       0            10 0.0537    0.0493  0.0584   10000    7.13 Thu Oc… 9.51e8
+##  2       0.1          10 0.0532    0.0488  0.0578   10000    7.30 Thu Oc… 1.74e9
+##  3       0.2          10 0.0746    0.0695  0.0795   10000    7.17 Thu Oc… 1.19e8
+##  4       0.3          10 0.0956    0.0899  0.101    10000    7.67 Thu Oc… 2.09e9
+##  5       0.4          10 0.133     0.126   0.139    10000    6.60 Thu Oc… 1.79e9
+##  6       0.5          10 0.189     0.182   0.197    10000    6.69 Thu Oc… 9.55e8
+##  7       0.6          10 0.253     0.245   0.262    10000    7.27 Thu Oc… 2.51e8
+##  8       0.7          10 0.325     0.316   0.334    10000    7.16 Thu Oc… 1.21e9
+##  9       0.8          10 0.396     0.387   0.405    10000    6.91 Thu Oc… 8.27e8
+## 10       0.9          10 0.476     0.467   0.486    10000    6.94 Thu Oc… 3.19e8
 ## # … with 23 more rows, and abbreviated variable names ¹​BOOT_p_2.5,
 ## #   ²​BOOT_p_97.5, ³​REPLICATIONS, ⁴​SIM_TIME, ⁵​COMPLETED</code></pre>
 <pre class="r"><code>library(ggplot2)
