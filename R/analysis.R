@@ -7,7 +7,23 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
-    if(is.null(cl)){
+    if("future" %in% (.packages())){
+        if(!is.null(seed)) set.seed(seed[condition$ID])
+        results <- try(future.apply::future_lapply(1L:replications,
+                                        mainsim, condition=condition,
+                                        generate=Functions$generate,
+                                        analyse=Functions$analyse,
+                                        fixed_objects=fixed_objects,
+                                        max_errors=max_errors, save=save,
+                                        store_warning_seeds=store_warning_seeds,
+                                        save_results_out_rootdir=save_results_out_rootdir,
+                                        save_seeds=save_seeds, load_seed=load_seed,
+                                        save_seeds_dirname=save_seeds_dirname,
+                                        warnings_as_errors=warnings_as_errors,
+                                        include_replication_index=include_replication_index,
+                                        allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
+                                        future.seed = TRUE), TRUE)
+    } else if(is.null(cl)){
         if(!is.null(seed)) set.seed(seed[condition$ID])
         results <- if(progress){
             try(pbapply::pblapply(1L:replications, mainsim, condition=condition,

@@ -179,17 +179,23 @@ primarily useful for debugging purposes.
   simulation results}
 
 \item{parallel}{logical; use parallel processing from the \code{parallel}
-package over each unique condition?}
+package over each unique condition? Alternatively, if the \code{future} package has
+been attached prior to executing \code{runSimulation()} then the associated
+\code{plan()} will be followed}
 
 \item{ncores}{number of cores to be used in parallel execution. Default uses all available}
 
 \item{cl}{cluster object defined by \code{\link{makeCluster}} used to run code in parallel.
-If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
-selects the maximum number cores available
-and will be stopped when the simulation is complete. Note that supplying a \code{cl}
-object will automatically set the \code{parallel} argument to \code{TRUE}. Define and supply this
-cluster object yourself whenever you have multiple nodes to chain together (note in this case
-that you must  use either the "MPI" or "PSOCK" clusters)}
+  If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
+  selects the maximum number cores available
+  and will be stopped when the simulation is complete. Note that supplying a \code{cl}
+  object will automatically set the \code{parallel} argument to \code{TRUE}. Define and supply this
+  cluster object yourself whenever you have multiple nodes to chain together (note in this case
+  that you must  use either the "MPI" or "PSOCK" clusters).
+
+  Note that if the \code{future} package has
+  been attached prior to executing \code{runSimulation()} then the associated
+  \code{plan()} will be followed instead}
 
 \item{notification}{an optional character vector input that can be used to send
   Pushbullet notifications from a configured
@@ -795,6 +801,22 @@ runSimulation(design=Design, replications=1000,
 # cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)
 # res <- runSimulation(design=Design, replications=1000, parallel = TRUE,
 #                      generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
+
+
+# Finally, attaching the future package allows the future framework to be used instead
+# (to disable this behaviour, use detach("package:future"))
+
+library(future) # future structure to be used internally
+# plan(multisession) # specify different plan (default is sequential)
+
+# note that parallel and cl inputs no longer used
+res <- runSimulation(design=Design, replications=1000,
+                     generate=Generate, analyse=Analyse, summarise=Summarise)
+head(res)
+
+
+# stop using future package internally
+detach("package:future")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 ###### Post-analysis: Analyze the results via functions like lm() or SimAnova(), and create

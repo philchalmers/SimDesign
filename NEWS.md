@@ -1,5 +1,11 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.10
+
+- Make the package `future` ready by using `library(future)` to replace the built-in
+  parallel processing inputs. Attaching the `future` package make previous arguments
+  to `runSimulation()` unnecessary (e.g., `cl`, `parallel`, etc)
+
 ## Changes in SimDesign 2.9.1
 
 - `extra_options` gains support for `.options.mpi` to control the MPI properties
