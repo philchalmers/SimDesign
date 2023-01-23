@@ -27,6 +27,7 @@ Imports:
     beepr,
     pbapply (>= 1.3-0),
     RPushbullet,
+    future.apply,
     stats
 Suggests:
     knitr,
@@ -35,6 +36,7 @@ Suggests:
     purrr,
     shiny,
     doMPI,
+    future,
     copula,
     extraDistr,
     renv,
