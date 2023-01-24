@@ -9,7 +9,12 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     #  and number of replications desired
     if("future" %in% (.packages())){
         if(!is.null(seed)) set.seed(seed[condition$ID])
-        results <- try(future.apply::future_lapply(1L:replications,
+        useThisFun <- if(progress)
+            progressr::with_progress else progressr::without_progress
+        iters <- 1L:replications
+        results <- try(useThisFun({
+            p <- progressr::progressor(along = iters)
+            future.apply::future_lapply(iters,
                                         mainsim, condition=condition,
                                         generate=Functions$generate,
                                         analyse=Functions$analyse,
@@ -22,7 +27,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                         warnings_as_errors=warnings_as_errors,
                                         include_replication_index=include_replication_index,
                                         allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
-                                        future.seed = TRUE), TRUE)
+                                        p=p, future.seed=TRUE)}
+                                  ), silent=TRUE)
     } else if(is.null(cl)){
         if(!is.null(seed)) set.seed(seed[condition$ID])
         results <- if(progress){

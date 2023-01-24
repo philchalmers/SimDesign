@@ -733,7 +733,7 @@
 #'               parallel=TRUE)
 #'
 #'
-#'
+#' ####################################
 #' ## EXTRA: To run the simulation on a MPI cluster, use the following setup (not run)
 #' # library(doMPI)
 #' # cl <- startMPIcluster()
@@ -769,16 +769,29 @@
 #' library(future) # future structure to be used internally
 #' # plan(multisession) # specify different plan (default is sequential)
 #'
-#' # note that parallel and cl inputs no longer used
+#' # note that parallel and cl inputs no longer used, and progressr package
+#' # used for progress reporting (disable with progress = FALSE or redefine
+#' # using progressr::handlers())
 #' res <- runSimulation(design=Design, replications=1000,
 #'                      generate=Generate, analyse=Analyse, summarise=Summarise)
 #' head(res)
 #'
+#' # re-define progress bar
+#' library(progressr)
+#' handlers(handler_pbcol(
+#'    adjust = 1.0,
+#'    complete = function(s) cli::bg_red(cli::col_black(s)),
+#'    incomplete = function(s) cli::bg_cyan(cli::col_black(s))
+#' ))
+#'
+#' res <- runSimulation(design=Design, replications=1000,
+#'                      generate=Generate, analyse=Analyse, summarise=Summarise)
 #'
 #' # stop using future package internally
 #' detach("package:future")
 #'
-#' #~~~~~~~~~~~~~~~~~~~~~~~~
+#' ####################################
+#'
 #' ###### Post-analysis: Analyze the results via functions like lm() or SimAnova(), and create
 #' ###### tables(dplyr) or plots (ggplot2) to help visualize the results.
 #' ###### This is where you get to be a data analyst!

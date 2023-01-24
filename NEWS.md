@@ -5,6 +5,10 @@
 - Make the package `future` ready by using `library(future)` to replace the built-in
   parallel processing inputs. Attaching the `future` package make previous arguments
   to `runSimulation()` unnecessary (e.g., `cl`, `parallel`, etc)
+  
+- When using the `future` approach the `progressr` package is now used whenever 
+  `progress = TRUE` (default). Allows the progress bar to be modified by the front-end
+  user (see `?runSimulatino` for an example)
 
 ## Changes in SimDesign 2.9.1
 
