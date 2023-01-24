@@ -42,6 +42,7 @@ Suggests:
     extraDistr,
     renv,
     cli,
+    future.batchtools,
     rmarkdown
 License: GPL (>=2)
 ByteCompile: yes
