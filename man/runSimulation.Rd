@@ -97,8 +97,8 @@ common design matrix for linear regression models), or simply control
 constant global elements (e.g., a constant for sample size)}
 
 \item{packages}{a character vector of external packages to be used during the simulation (e.g.,
-\code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when \code{parallel = TRUE} or
-\code{MPI = TRUE} to use non-standard functions from additional packages,
+\code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when running code in
+parallel to use non-standard functions from additional packages,
 otherwise the functions must be made available by using explicit
 \code{\link{library}} or \code{\link{require}} calls within the provided simulation functions.
 Alternatively, functions can be called explicitly without attaching the package
@@ -179,13 +179,16 @@ primarily useful for debugging purposes.
   simulation results}
 
 \item{parallel}{logical; use parallel processing from the \code{parallel}
-package over each unique condition? Alternatively, if the \code{future} package has
-been attached prior to executing \code{runSimulation()} then the associated
-\code{plan()} will be followed}
+  package over each unique condition?
 
-\item{ncores}{number of cores to be used in parallel execution. Default uses all available}
+  Alternatively, if the \code{future} package has been attached prior to executing
+  \code{runSimulation()} then the associated \code{plan()} will be followed instead}
 
-\item{cl}{cluster object defined by \code{\link{makeCluster}} used to run code in parallel.
+\item{ncores}{number of cores to be used in parallel execution (ignored if using the
+\code{future} package approach). Default uses all available}
+
+\item{cl}{cluster object defined by \code{\link{makeCluster}} used to run code in parallel
+  (ignored if using the \code{future} package approach).
   If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
   selects the maximum number cores available
   and will be stopped when the simulation is complete. Note that supplying a \code{cl}
@@ -444,7 +447,8 @@ This function runs a Monte Carlo simulation study given a set of predefined simu
 design conditions, and number of replications. Results can be saved as temporary files in case of
 interruptions and may be restored by re-running \code{runSimulation}, provided that the respective temp
 file can be found in the working directory. \code{runSimulation} supports parallel
-and cluster computing, global and local debugging, error handling (including fail-safe
+and cluster computing (with the \code{parallel} and \code{future} packages),
+global and local debugging, error handling (including fail-safe
 stopping when functions fail too often, even across nodes), provides bootstrap estimates of the
 sampling variability (optional), and automatic tracking of error and warning messages
 and their associated \code{.Random.seed} states.
@@ -562,7 +566,8 @@ in the R console to remove any previously saved temporary objects.
 \section{A note on parallel computing}{
 
 
-When running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE})
+When running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE},
+or when using the \code{future} approach with a \code{plan()} other than sequential)
 R objects defined in the global environment will generally \emph{not} be visible across nodes.
 Hence, you may see errors such as \code{Error: object 'something' not found} if you try to use
 an object that is defined in the work space but is not passed to \code{runSimulation}.
@@ -809,14 +814,14 @@ runSimulation(design=Design, replications=1000,
 library(future) # future structure to be used internally
 # plan(multisession) # specify different plan (default is sequential)
 
-# note that parallel and cl inputs no longer used, and progressr package
-# used for progress reporting (disable with progress = FALSE or redefine
-# using progressr::handlers())
+# note that parallel and cl inputs no longer used, and the progressr package
+# is used for progress reporting (disable with progress = FALSE or redefine
+# using progressr::handlers(); see below)
 res <- runSimulation(design=Design, replications=1000,
                      generate=Generate, analyse=Analyse, summarise=Summarise)
 head(res)
 
-# re-define progress bar
+# re-define progress bar (requires cli)
 library(progressr)
 handlers(handler_pbcol(
    adjust = 1.0,
@@ -827,7 +832,7 @@ handlers(handler_pbcol(
 res <- runSimulation(design=Design, replications=1000,
                      generate=Generate, analyse=Analyse, summarise=Summarise)
 
-# stop using future package internally
+# to stop using future package internally use
 detach("package:future")
 
 ####################################
