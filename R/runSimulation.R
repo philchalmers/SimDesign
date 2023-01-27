@@ -997,17 +997,17 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             debug(Functions[['generate']]); debug(Functions[['analyse']])
             debug(Functions[['summarise']])
             on.exit({undebug(Functions[['generate']]); undebug(Functions[['analyse']])
-                undebug(Functions[['summarise']])})
+                undebug(Functions[['summarise']])}, add = TRUE)
         } else {
             debug(Functions[[debug]])
-            on.exit(undebug(Functions[[debug]]))
+            on.exit(undebug(Functions[[debug]]), add = TRUE)
         }
     }
     export_funs <- parent_env_fun()
     if(parallel){
         if(is.null(cl)){
             cl <- parallel::makeCluster(ncores, type=type)
-            on.exit(parallel::stopCluster(cl))
+            on.exit(parallel::stopCluster(cl), add = TRUE)
         }
         parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
         parallel::clusterExport(cl=cl, "ANALYSE_FUNCTIONS", envir = environment())
