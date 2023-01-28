@@ -23,6 +23,8 @@
 #' @importFrom RPushbullet pbPost
 #' @importFrom pbapply pblapply pboptions
 #' @importFrom dplyr as_tibble bind_rows
+#' @importFrom future.apply future_lapply
+#' @importFrom progressr progressor
 #' @importFrom beepr beep
 #' @importFrom utils recover packageVersion head tail capture.output
 #' @keywords package

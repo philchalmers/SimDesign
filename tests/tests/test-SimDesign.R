@@ -82,6 +82,18 @@ test_that('SimDesign', {
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
+    # test that future package works
+    suppressPackageStartupMessages(library(future))
+    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                           replications = 10, parallel='future', save=FALSE, verbose = FALSE)
+    expect_is(Final, 'data.frame')
+    plan(multisession, workers = 2L)
+    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                           replications = 10, parallel='future', save=FALSE, verbose = FALSE)
+    expect_is(Final, 'data.frame')
+    plan(sequential)
+    detach("package:future")
+
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE,
                            store_results = TRUE)

@@ -4,11 +4,12 @@
 #' design conditions, and number of replications. Results can be saved as temporary files in case of
 #' interruptions and may be restored by re-running \code{runSimulation}, provided that the respective temp
 #' file can be found in the working directory. \code{runSimulation} supports parallel
-#' and cluster computing, global and local debugging, error handling (including fail-safe
+#' and cluster computing (with the \code{parallel} and \code{future} packages),
+#' global and local debugging, error handling (including fail-safe
 #' stopping when functions fail too often, even across nodes), provides bootstrap estimates of the
 #' sampling variability (optional), and automatic tracking of error and warning messages
-#' and their associated \code{.Random.seed} states.
-#' For convenience, all functions available in the R work-space are exported across all computational nodes
+#' with their associated \code{.Random.seed} states.
+#' For convenience, all functions available in the R work-space are exported across all nodes
 #' so that they are more easily accessible (however, other R objects are not, and therefore
 #' must be passed to the \code{fixed_objects} input to become available across nodes).
 #' For an in-depth tutorial of the package please refer to Chalmers and Adkins (2020;
@@ -116,7 +117,8 @@
 #'
 #' @section A note on parallel computing:
 #'
-#' When running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE})
+#' When running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE},
+#' or when using the \code{\link{future}} approach with a \code{plan()} other than sequential)
 #' R objects defined in the global environment will generally \emph{not} be visible across nodes.
 #' Hence, you may see errors such as \code{Error: object 'something' not found} if you try to use
 #' an object that is defined in the work space but is not passed to \code{runSimulation}.
@@ -184,17 +186,31 @@
 #' @param parallel logical; use parallel processing from the \code{parallel}
 #'   package over each unique condition?
 #'
-#' @param cl cluster object defined by \code{\link{makeCluster}} used to run code in parallel.
+#'   Alternatively, if the \code{\link[future]{future}} package approach is desired then passing
+#'   \code{parallel = 'future'} to \code{runSimulation()} will use the defined
+#'   \code{\link[future]{plan}} for execution. This allows for greater flexibility when
+#'   specifying the general computing plan (e.g., \code{plan(multisession)}) for parallel computing
+#'   on the same machine, \code{plan(future.batchtools::batchtools_torque)} or
+#'   \code{plan(future.batchtools::batchtools_slurm)} for common MPI schedulers, etc).
+#'   However, it is the responsibility of the user to use \code{plan(sequential)} to reset the
+#'   computing plan when the jobs are completed
+#'
+#' @param cl cluster object defined by \code{\link{makeCluster}} used to run code in parallel
+#'   (ignored if using the \code{\link[future]{future}} package approach).
 #'   If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
 #'   selects the maximum number cores available
 #'   and will be stopped when the simulation is complete. Note that supplying a \code{cl}
 #'   object will automatically set the \code{parallel} argument to \code{TRUE}. Define and supply this
 #'   cluster object yourself whenever you have multiple nodes to chain together (note in this case
-#'   that you must  use either the "MPI" or "PSOCK" clusters)
+#'   that you must  use either the "MPI" or "PSOCK" clusters).
+#'
+#'   Note that if the \code{future} package has
+#'   been attached prior to executing \code{runSimulation()} then the associated
+#'   \code{plan()} will be followed instead
 #'
 #' @param packages a character vector of external packages to be used during the simulation (e.g.,
-#'   \code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when \code{parallel = TRUE} or
-#'   \code{MPI = TRUE} to use non-standard functions from additional packages,
+#'   \code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when running code in
+#'   parallel to use non-standard functions from additional packages,
 #'   otherwise the functions must be made available by using explicit
 #'   \code{\link{library}} or \code{\link{require}} calls within the provided simulation functions.
 #'   Alternatively, functions can be called explicitly without attaching the package
@@ -405,7 +421,8 @@
 #'   something fatally problematic
 #'   is going wrong in the generate-analyse phases. Default is 50
 #'
-#' @param ncores number of cores to be used in parallel execution. Default uses all available
+#' @param ncores number of cores to be used in parallel execution (ignored if using the
+#'   \code{future} package approach). Default uses all available
 #'
 #' @param save logical; save the temporary simulation state to the hard-drive? This is useful
 #'   for simulations which require an extended amount of time, though for shorter simulations
@@ -727,36 +744,66 @@
 #'               parallel=TRUE)
 #'
 #'
-#'
+#' ####################################
 #' ## EXTRA: To run the simulation on a MPI cluster, use the following setup (not run)
-#' # library(doMPI)
-#' # cl <- startMPIcluster()
-#' # registerDoMPI(cl)
-#' # Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
-#' #                        generate=Generate, analyse=Analyse, summarise=Summarise)
-#' # saveRDS(Final, 'mysim.rds')
-#' # closeCluster(cl)
-#' # mpi.quit()
+#' library(doMPI)
+#' cl <- startMPIcluster()
+#' registerDoMPI(cl)
+#' Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
+#'                        generate=Generate, analyse=Analyse, summarise=Summarise)
+#' saveRDS(Final, 'mysim.rds')
+#' closeCluster(cl)
+#' mpi.quit()
 #'
 #'
 #' ## Similarly, run simulation on a network linked via ssh
 #' ##  (two way ssh key-paired connection must be possible between master and slave nodes)
 #' ##
 #' ## define IP addresses, including primary IP
-#' # primary <- '192.168.2.20'
-#' # IPs <- list(
-#' #     list(host=primary, user='phil', ncore=8),
-#' #     list(host='192.168.2.17', user='phil', ncore=8)
-#' # )
-#' # spec <- lapply(IPs, function(IP)
-#' #                    rep(list(list(host=IP$host, user=IP$user)), IP$ncore))
-#' # spec <- unlist(spec, recursive=FALSE)
-#' #
-#' # cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)
-#' # res <- runSimulation(design=Design, replications=1000, parallel = TRUE,
-#' #                      generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
+#' primary <- '192.168.2.20'
+#' IPs <- list(
+#'     list(host=primary, user='phil', ncore=8),
+#'     list(host='192.168.2.17', user='phil', ncore=8)
+#' )
+#' spec <- lapply(IPs, function(IP)
+#'                    rep(list(list(host=IP$host, user=IP$user)), IP$ncore))
+#' spec <- unlist(spec, recursive=FALSE)
 #'
-#' #~~~~~~~~~~~~~~~~~~~~~~~~
+#' cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)
+#' res <- runSimulation(design=Design, replications=1000, parallel = TRUE,
+#'                      generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
+#'
+#'
+#' ## Using parallel='future' to allow the future framework to be used instead
+#' library(future) # future structure to be used internally
+#' plan(multisession) # specify different plan (default is sequential)
+#'
+#' res <- runSimulation(design=Design, replications=100, parallel='future',
+#'                      generate=Generate, analyse=Analyse, summarise=Summarise)
+#' head(res)
+#'
+#' # The progressr package is used for progress reporting with futures. To redefine
+#' #  use progressr::handlers() (see below)
+#' library(progressr)
+#' with_progress(res <- runSimulation(design=Design, replications=100, parallel='future',
+#'                      generate=Generate, analyse=Analyse, summarise=Summarise))
+#' head(res)
+#'
+#' # re-define progressr's bar (below requires cli)
+#' handlers(handler_pbcol(
+#'    adjust = 1.0,
+#'    complete = function(s) cli::bg_red(cli::col_black(s)),
+#'    incomplete = function(s) cli::bg_cyan(cli::col_black(s))
+#' ))
+#'
+#' with_progress(res <- runSimulation(design=Design, replications=100, parallel='future',
+#'                      generate=Generate, analyse=Analyse, summarise=Summarise))
+#'
+#' # reset future computing plan when complete (good practice)
+#' plan(sequential)
+#'
+#' ####################################
+#'
 #' ###### Post-analysis: Analyze the results via functions like lm() or SimAnova(), and create
 #' ###### tables(dplyr) or plots (ggplot2) to help visualize the results.
 #' ###### This is where you get to be a data analyst!
@@ -810,6 +857,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
 {
     stopifnot(!missing(analyse))
     ANALYSE_FUNCTIONS <- TRY_ALL_ANALYSE <- NULL
+    if(is.character(parallel)){
+        useFuture <- tolower(parallel) == 'future'
+        parallel <- TRUE
+    } else useFuture <- FALSE
     if(is.list(analyse)){
         # stopifnot(length(names(analyse)) > 0L)
         if(debug %in% c('all', 'analyse'))
@@ -831,7 +882,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                     if(verbose && parallel)
                         message(paste0('A browser() call was detected. Parallel processing/object ',
                                        'saving will be disabled while visible'))
-                    save <- save_results <- save_seeds <- parallel <- MPI <- FALSE
+                    save <- save_results <- save_seeds <- parallel <- MPI <- useFuture <- FALSE
                 }
             }
         }
@@ -940,7 +991,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     start <- 1L; end <- nrow(design)
     if(!is.null(load_seed)){
-        save <- save_seeds <- parallel <- MPI <- FALSE
+        save <- save_seeds <- parallel <- MPI <- useFuture <- FALSE
         replications <- 1L
         if(is.character(load_seed)){
             load_seed2 <- gsub('design-row-', '', load_seed)
@@ -962,7 +1013,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(verbose && parallel)
             message(paste0('A browser() call was detected. Parallel processing/object ',
                     'saving will be disabled while visible'))
-        save <- save_results <- save_seeds <- parallel <- MPI <- FALSE
+        save <- save_results <- save_seeds <- parallel <- MPI <- useFuture <- FALSE
     }
     if(any(grepl('attach\\(', char_functions)))
         stop('Did you mean to use Attach() instead of attach()?', call.=FALSE)
@@ -992,7 +1043,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     use_try  <- debug != 'error'
     if(debug != 'none' && use_try){
         save <- save_results <- save_seeds <- FALSE
-        if(!(debug %in% 'summarise')) parallel <- MPI <- FALSE
+        if(!(debug %in% 'summarise')) parallel <- MPI <- useFuture <- FALSE
         if(debug == 'all'){
             debug(Functions[['generate']]); debug(Functions[['analyse']])
             debug(Functions[['summarise']])
@@ -1005,15 +1056,17 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     export_funs <- parent_env_fun()
     if(parallel){
-        if(is.null(cl)){
+        if(!useFuture && is.null(cl)){
             cl <- parallel::makeCluster(ncores, type=type)
             on.exit(parallel::stopCluster(cl), add = TRUE)
         }
-        parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
-        parallel::clusterExport(cl=cl, "ANALYSE_FUNCTIONS", envir = environment())
-        parallel::clusterExport(cl=cl, "TRY_ALL_ANALYSE", envir = environment())
-        if(verbose)
-            message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
+        if(!useFuture){
+            parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
+            parallel::clusterExport(cl=cl, "ANALYSE_FUNCTIONS", envir = environment())
+            parallel::clusterExport(cl=cl, "TRY_ALL_ANALYSE", envir = environment())
+            if(verbose)
+                message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
+        }
     }
     Result_list <- stored_Results_list <- vector('list', nrow(design))
     names(Result_list) <- names(stored_Results_list) <- rownames(design)
@@ -1087,15 +1140,24 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(safe && (parallel || MPI)){
         tmp <- packages[packages != 'SimDesign']
         if(!length(tmp)) tmp <- 'stats'
-        if(parallel){
-            parallel::parSapply(cl, 1L:(length(cl)*2),
-                                function(ind, packages) load_packages(packages),
-                                packages=packages)
-        } # foreach() doesn't like load_packages()
-        for(i in 1:length(tmp)){
-            packs <- if(parallel){
+        if(!useFuture){
+            if(parallel){
+                parallel::parSapply(cl, 1L:(length(cl)*2),
+                                    function(ind, packages) load_packages(packages),
+                                    packages=packages)
+            } # foreach() doesn't like load_packages()
+        } else {
+            future.apply::future_lapply(1L:(future::nbrOfWorkers()*2),
+                                        function(ind, packages) load_packages(packages),
+                                        packages=packages)
+        }
+        for(i in 1L:length(tmp)){
+            packs <- if(useFuture){
+                try(future.apply::future_lapply(rep(tmp[i], each=future::nbrOfWorkers()*2),
+                                            get_packages))
+                } else if(parallel){
                 try(table(parallel::parSapply(cl, rep(tmp[i], each=length(cl)*2),
-                                                   get_packages)))
+                                              get_packages)))
             } else "" # for foreach()
             if(tmp[i] == 'stats') next
             if(length(packs) > 1L)
@@ -1121,7 +1183,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          cl=cl, MPI=MPI, .options.mpi=.options.mpi, seed=seed,
                                          boot_draws=boot_draws, boot_method=boot_method, CI=CI,
                                          save=save, allow_na=allow_na, allow_nan=allow_nan,
-                                         save_results=save_results,
+                                         save_results=save_results, useFuture=useFuture,
                                          store_warning_seeds=store_warning_seeds,
                                          save_results_out_rootdir=out_rootdir,
                                          save_results_dirname=save_results_dirname,
@@ -1152,7 +1214,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             cl=cl, MPI=MPI, .options.mpi=.options.mpi, seed=seed,
                             boot_method=boot_method, boot_draws=boot_draws, CI=CI,
                             save=save, allow_na=allow_na, allow_nan=allow_nan,
-                            save_results=save_results,
+                            save_results=save_results, useFuture=useFuture,
                             store_warning_seeds=store_warning_seeds,
                             save_results_out_rootdir = out_rootdir,
                             save_results_dirname=save_results_dirname,

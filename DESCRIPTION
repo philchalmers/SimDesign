@@ -1,6 +1,6 @@
 Package: SimDesign
 Title: Structure for Organizing Monte Carlo Simulation Designs
-Version: 2.9.1
+Version: 2.10.1
 Authors@R: c(person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com", role = c("aut", "cre"),
                     comment = c(ORCID="0000-0001-5332-2810")),
              person("Matthew", "Sigal", role = c("ctb")),
@@ -27,6 +27,9 @@ Imports:
     beepr,
     pbapply (>= 1.3-0),
     RPushbullet,
+    future,
+    future.apply,
+    progressr,
     stats
 Suggests:
     knitr,
@@ -38,6 +41,8 @@ Suggests:
     copula,
     extraDistr,
     renv,
+    cli,
+    future.batchtools,
     rmarkdown
 License: GPL (>=2)
 ByteCompile: yes

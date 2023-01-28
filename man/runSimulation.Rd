@@ -97,8 +97,8 @@ common design matrix for linear regression models), or simply control
 constant global elements (e.g., a constant for sample size)}
 
 \item{packages}{a character vector of external packages to be used during the simulation (e.g.,
-\code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when \code{parallel = TRUE} or
-\code{MPI = TRUE} to use non-standard functions from additional packages,
+\code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when running code in
+parallel to use non-standard functions from additional packages,
 otherwise the functions must be made available by using explicit
 \code{\link{library}} or \code{\link{require}} calls within the provided simulation functions.
 Alternatively, functions can be called explicitly without attaching the package
@@ -179,17 +179,32 @@ primarily useful for debugging purposes.
   simulation results}
 
 \item{parallel}{logical; use parallel processing from the \code{parallel}
-package over each unique condition?}
+  package over each unique condition?
 
-\item{ncores}{number of cores to be used in parallel execution. Default uses all available}
+  Alternatively, if the \code{\link[future]{future}} package approach is desired then passing
+  \code{parallel = 'future'} to \code{runSimulation()} will use the defined
+  \code{\link[future]{plan}} for execution. This allows for greater flexibility when
+  specifying the general computing plan (e.g., \code{plan(multisession)}) for parallel computing
+  on the same machine, \code{plan(future.batchtools::batchtools_torque)} or
+  \code{plan(future.batchtools::batchtools_slurm)} for common MPI schedulers, etc).
+  However, it is the responsibility of the user to use \code{plan(sequential)} to reset the
+  computing plan when the jobs are completed}
 
-\item{cl}{cluster object defined by \code{\link{makeCluster}} used to run code in parallel.
-If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
-selects the maximum number cores available
-and will be stopped when the simulation is complete. Note that supplying a \code{cl}
-object will automatically set the \code{parallel} argument to \code{TRUE}. Define and supply this
-cluster object yourself whenever you have multiple nodes to chain together (note in this case
-that you must  use either the "MPI" or "PSOCK" clusters)}
+\item{ncores}{number of cores to be used in parallel execution (ignored if using the
+\code{future} package approach). Default uses all available}
+
+\item{cl}{cluster object defined by \code{\link{makeCluster}} used to run code in parallel
+  (ignored if using the \code{\link[future]{future}} package approach).
+  If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
+  selects the maximum number cores available
+  and will be stopped when the simulation is complete. Note that supplying a \code{cl}
+  object will automatically set the \code{parallel} argument to \code{TRUE}. Define and supply this
+  cluster object yourself whenever you have multiple nodes to chain together (note in this case
+  that you must  use either the "MPI" or "PSOCK" clusters).
+
+  Note that if the \code{future} package has
+  been attached prior to executing \code{runSimulation()} then the associated
+  \code{plan()} will be followed instead}
 
 \item{notification}{an optional character vector input that can be used to send
   Pushbullet notifications from a configured
@@ -438,11 +453,12 @@ This function runs a Monte Carlo simulation study given a set of predefined simu
 design conditions, and number of replications. Results can be saved as temporary files in case of
 interruptions and may be restored by re-running \code{runSimulation}, provided that the respective temp
 file can be found in the working directory. \code{runSimulation} supports parallel
-and cluster computing, global and local debugging, error handling (including fail-safe
+and cluster computing (with the \code{parallel} and \code{future} packages),
+global and local debugging, error handling (including fail-safe
 stopping when functions fail too often, even across nodes), provides bootstrap estimates of the
 sampling variability (optional), and automatic tracking of error and warning messages
-and their associated \code{.Random.seed} states.
-For convenience, all functions available in the R work-space are exported across all computational nodes
+with their associated \code{.Random.seed} states.
+For convenience, all functions available in the R work-space are exported across all nodes
 so that they are more easily accessible (however, other R objects are not, and therefore
 must be passed to the \code{fixed_objects} input to become available across nodes).
 For an in-depth tutorial of the package please refer to Chalmers and Adkins (2020;
@@ -556,7 +572,8 @@ in the R console to remove any previously saved temporary objects.
 \section{A note on parallel computing}{
 
 
-When running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE})
+When running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE},
+or when using the \code{\link{future}} approach with a \code{plan()} other than sequential)
 R objects defined in the global environment will generally \emph{not} be visible across nodes.
 Hence, you may see errors such as \code{Error: object 'something' not found} if you try to use
 an object that is defined in the work space but is not passed to \code{runSimulation}.
@@ -767,36 +784,66 @@ runSimulation(design=Design, replications=1000,
               parallel=TRUE)
 
 
-
+####################################
 ## EXTRA: To run the simulation on a MPI cluster, use the following setup (not run)
-# library(doMPI)
-# cl <- startMPIcluster()
-# registerDoMPI(cl)
-# Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
-#                        generate=Generate, analyse=Analyse, summarise=Summarise)
-# saveRDS(Final, 'mysim.rds')
-# closeCluster(cl)
-# mpi.quit()
+library(doMPI)
+cl <- startMPIcluster()
+registerDoMPI(cl)
+Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
+                       generate=Generate, analyse=Analyse, summarise=Summarise)
+saveRDS(Final, 'mysim.rds')
+closeCluster(cl)
+mpi.quit()
 
 
 ## Similarly, run simulation on a network linked via ssh
 ##  (two way ssh key-paired connection must be possible between master and slave nodes)
 ##
 ## define IP addresses, including primary IP
-# primary <- '192.168.2.20'
-# IPs <- list(
-#     list(host=primary, user='phil', ncore=8),
-#     list(host='192.168.2.17', user='phil', ncore=8)
-# )
-# spec <- lapply(IPs, function(IP)
-#                    rep(list(list(host=IP$host, user=IP$user)), IP$ncore))
-# spec <- unlist(spec, recursive=FALSE)
-#
-# cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)
-# res <- runSimulation(design=Design, replications=1000, parallel = TRUE,
-#                      generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
+primary <- '192.168.2.20'
+IPs <- list(
+    list(host=primary, user='phil', ncore=8),
+    list(host='192.168.2.17', user='phil', ncore=8)
+)
+spec <- lapply(IPs, function(IP)
+                   rep(list(list(host=IP$host, user=IP$user)), IP$ncore))
+spec <- unlist(spec, recursive=FALSE)
 
-#~~~~~~~~~~~~~~~~~~~~~~~~
+cl <- parallel::makeCluster(type='PSOCK', master=primary, spec=spec)
+res <- runSimulation(design=Design, replications=1000, parallel = TRUE,
+                     generate=Generate, analyse=Analyse, summarise=Summarise, cl=cl)
+
+
+## Using parallel='future' to allow the future framework to be used instead
+library(future) # future structure to be used internally
+plan(multisession) # specify different plan (default is sequential)
+
+res <- runSimulation(design=Design, replications=100, parallel='future',
+                     generate=Generate, analyse=Analyse, summarise=Summarise)
+head(res)
+
+# The progressr package is used for progress reporting with futures. To redefine
+#  use progressr::handlers() (see below)
+library(progressr)
+with_progress(res <- runSimulation(design=Design, replications=100, parallel='future',
+                     generate=Generate, analyse=Analyse, summarise=Summarise))
+head(res)
+
+# re-define progressr's bar (below requires cli)
+handlers(handler_pbcol(
+   adjust = 1.0,
+   complete = function(s) cli::bg_red(cli::col_black(s)),
+   incomplete = function(s) cli::bg_cyan(cli::col_black(s))
+))
+
+with_progress(res <- runSimulation(design=Design, replications=100, parallel='future',
+                     generate=Generate, analyse=Analyse, summarise=Summarise))
+
+# reset future computing plan when complete (good practice)
+plan(sequential)
+
+####################################
+
 ###### Post-analysis: Analyze the results via functions like lm() or SimAnova(), and create
 ###### tables(dplyr) or plots (ggplot2) to help visualize the results.
 ###### This is where you get to be a data analyst!
