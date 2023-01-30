@@ -150,3 +150,22 @@ respective files, `aggregate_simulations()`
 can then collapse the files as if the simulations were run all at once. Hence, `SimDesign` makes submitting
 smaller jobs to super-computing resources considerably less error prone than managing a number of smaller
 jobs manually.
+
+# Using the `future` framework
+
+Finally, the `future` framework ([see here](https://cran.r-project.org/web/packages/future/index.html)) can be used
+by changing the logical input to `runSimulation(..., parallel)` to the character vector `parallel = 'future'`, while the computation plan is specified via `future::plan()`. For example,
+
+```{r eval=FALSE}
+library(future)
+plan(multisession)
+
+res <- runSimulation(design=Design, replications=1000, generate=Generate, 
+                     analyse=Analyse, summarise=Summarise,
+                     parallel = 'future')
+
+# reset when complete
+plan(sequential)
+```
+
+The benefit of using the `future` framework is the automatic support of many distinct back-ends, such as, for instance, HPC clusters that control the distribution of jobs via Slurm or TORQUE (e.g., see the `future.batchtools` package). For progress reporting, use the `progressr` package by wrapping the function `with_progress()` around `runSimulatino()` while having prespecificied the type of `handler()` to use. 
