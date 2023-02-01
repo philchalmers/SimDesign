@@ -29,7 +29,7 @@ par(mar=c(3,3,1,1)+.1)
 
 # Cluster computing
 
-SimDesign code may be released to a computing system which supports parallel cluster computations using
+`SimDesign` code may be released to a computing system which supports parallel cluster computations using
 the industry standard Message Passing Interface (MPI) form. This simply
 requires that the computers be setup using the usual MPI requirements (typically, running some flavor
 of Linux, have password-less open-SSH access, IP addresses have been added to the `/etc/hosts` file
@@ -55,6 +55,8 @@ will be summoned (1 master, 15 slaves) across the computers named `localhost`, `
 and `slave2` in the ssh `config` file.
 
 `mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R`
+
+A similar setup can also be used via the recently supported `future` interface (see below).
 
 # Network computing
 
@@ -123,6 +125,8 @@ Final <- runSimulation(..., cl=cl)
 stopCluster(cl)
 ```
 
+A similar setup can also be used via the recently supported `future` interface (see below).
+
 # Poor man's cluster computing for independent nodes
 
 In the event that you do not have access to a Beowulf-type cluster (described in the section on
@@ -153,19 +157,43 @@ jobs manually.
 
 # Using the `future` framework
 
-Finally, the `future` framework ([see here](https://cran.r-project.org/web/packages/future/index.html)) can be used
-by changing the logical input to `runSimulation(..., parallel)` to the character vector `parallel = 'future'`, while the computation plan is specified via `future::plan()`. For example,
+The `future` framework (see `help(future, package = 'future')`) can also be used for distributing the
+asynchronous function evaluations by changing the logical input in `runSimulation(..., parallel = TRUE/FALSE)` to the character vector `runSimulation(..., parallel = 'future')`, while the computation plan is pre-specified via `future::plan()`. For example, to initialize a local two-worker parallel processing computational plan one can use the follow:
 
 ```{r eval=FALSE}
 library(future)
-plan(multisession)
+plan(multisession, workers = 2)
 
 res <- runSimulation(design=Design, replications=1000, generate=Generate, 
                      analyse=Analyse, summarise=Summarise,
                      parallel = 'future')
-
-# reset when complete
-plan(sequential)
 ```
 
-The benefit of using the `future` framework is the automatic support of many distinct back-ends, such as, for instance, HPC clusters that control the distribution of jobs via Slurm or TORQUE (e.g., see the `future.batchtools` package). For progress reporting, use the `progressr` package by wrapping the function `with_progress()` around `runSimulatino()` while having prespecificied the type of `handler()` to use. 
+The benefit of using the `future` framework is the automatic support of many distinct back-ends, such as, for instance, HPC clusters that control the distribution of jobs via Slurm or TORQUE (e.g., see the `future.batchtools` package). 
+
+For progress reporting the `progressr` package is required and is intended as a wrapper around `runSimulation()`. Specifically, wrap the function `with_progress()` around `runSimulation()` after having specified the type of `handler()` to use, such as via the following. 
+
+```{r eval=FALSE}
+library(progressr)
+
+# Rstudio style handler (if using RStudio)
+handlers("rstudio")
+
+# or using the cli package for terminal-based progress 
+handlers('cli')
+
+# See help(progressr) for additional options and details
+
+# to use progressr, wrap/pipe inside with_progress() 
+res <- with_progress(runSimulation(design=Design, replications=1000, generate=Generate, 
+                     analyse=Analyse, summarise=Summarise,
+                     parallel = 'future'))
+```
+
+Finally, when the parallel computations are complete be sure to manually reset the computation plan to free any workers via 
+
+```{r eval=FALSE}
+plan(sequential) # release workers
+```
+
+
