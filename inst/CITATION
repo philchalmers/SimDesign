@@ -1,6 +1,6 @@
-citHeader("To cite SimDesign in publications use:")
-
-bibentry(bibtype = "Article",
+bibentry(
+  header = "To cite SimDesign in publications use:",
+  bibtype = "Article",
   title        = "Writing effective and reliable {Monte Carlo} simulations with the {SimDesign} package",
   author       = c(person(given = "R. Philip",
                           family = "Chalmers",
