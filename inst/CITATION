@@ -5,7 +5,7 @@ bibentry(bibtype = "Article",
   author       = c(person(given = "R. Philip",
                           family = "Chalmers",
                           email = "rphilip.chalmers@gmail.com"),
-                   person(given = "Mark C."
+                   person(given = "Mark C.",
                           family = "Adkins")),
   journal      = "The Quantitative Methods for Psychology",
   year         = "2020",
