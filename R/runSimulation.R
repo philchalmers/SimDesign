@@ -457,6 +457,13 @@
 #'   \code{debug = 'A1'} will debug only the first function in this list, and all remaining analysis
 #'   functions will be ignored.
 #'
+#'   For debugging specific rows in the \code{Design} input the specific row number can be appended to the
+#'   \code{debug} input to obtain this specific subset using a \code{'-'} separator.
+#'   For instance, debugging the \code{analyse}
+#'   function in the second row of \code{Design} can be declared via \code{debug = 'analyse-2'}. This feature
+#'   is included to avoid taking manual subsets of the \code{Design} object, however this still remains a
+#'   viable approach.
+#'
 #'   Alternatively, users may place \code{\link{browser}} calls within the respective functions for
 #'   debugging at specific lines, which is useful when debugging based on conditional evaluations (e.g.,
 #'   \code{if(this == 'problem') browser()}). Note that parallel computation flags
@@ -739,9 +746,11 @@
 #'     ret
 #' }
 #'
+#' ## The following debugs the analyse function for the
+#' ## second row of the Design input
 #' runSimulation(design=Design, replications=1000,
 #'               generate=Generate, analyse=Analyse, summarise=Summarise,
-#'               parallel=TRUE)
+#'               parallel=TRUE, debug='analyse-2')
 #'
 #'
 #' ####################################
@@ -861,6 +870,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         useFuture <- tolower(parallel) == 'future'
         parallel <- TRUE
     } else useFuture <- FALSE
+    if(debug != 'none'){
+        if(grepl('-', debug)){
+            tmp <- strsplit(debug, '-')[[1]]
+            debug <- tmp[1L]
+            Design <- Design[as.numeric(tmp[2L]), , drop=FALSE]
+        }
+    }
     if(is.list(analyse)){
         # stopifnot(length(names(analyse)) > 0L)
         if(debug %in% c('all', 'analyse'))
