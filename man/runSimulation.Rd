@@ -135,14 +135,14 @@ simulation results to. If the extension
   \code{debug = 'A1'} will debug only the first function in this list, and all remaining analysis
   functions will be ignored.
 
-  For debugging specific rows in the \code{Design} input the specific row number can be appended to the
-  \code{debug} input to obtain this specific subset using a \code{'-'} separator.
-  For instance, debugging the \code{analyse}
-  function in the second row of \code{Design} can be declared via \code{debug = 'analyse-2'}. This feature
-  is included to avoid taking manual subsets of the \code{Design} object, however this still remains a
-  viable approach.
+  For debugging specific rows in the \code{Design} input (e.g.,
+  when a number of initial rows successfully complete but the \code{k}th
+  row fails) the row number can be appended to the standard
+  \code{debug} input using a \code{'-'} separator.
+  For instance, debugging whenever an error is raised
+  in the second row of \code{Design} can be declared via \code{debug = 'error-2'}.
 
-  Alternatively, users may place \code{\link{browser}} calls within the respective functions for
+  Finally, users may place \code{\link{browser}} calls within the respective functions for
   debugging at specific lines, which is useful when debugging based on conditional evaluations (e.g.,
   \code{if(this == 'problem') browser()}). Note that parallel computation flags
   will automatically be disabled when a \code{browser()} is detected or when a debugging

@@ -1,5 +1,14 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.11
+
+- `debug` gains `'-'` structure to allow debugging on specific
+  rows of the `design` input. For instance, if the simulation 
+  ran successfully until row 10, and unknown errors terminated the simulation, 
+  then using `runSimulation(..., debug = 'error-10')` 
+  will initiate the debugger on the first instance for the 10th row 
+  conditions in the supplied `design` object
+
 ## Changes in SimDesign 2.10.1
 
 - Support the `future` package by using `runSimulation(..., parallel = 'future')` 
