@@ -1091,7 +1091,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     files <- dir(out_rootdir)
     if(!MPI && any(files == tmpfilename) && is.null(load_seed) && debug == 'none'){
         if(verbose)
-            message(sprintf('Resuming simulation from %s file with %i replications.',
+            message(sprintf(c('Resuming simulation from %s file with %i replications. ',
+                              '\nIf not intended, use SimClean() prior to calling runSimulation()'),
                             file.path(out_rootdir, tmpfilename), replications))
         Result_list <- readRDS(file.path(out_rootdir, tmpfilename))
         if(!is.null(Result_list[[1L]]$REPLICATIONS))
