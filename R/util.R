@@ -48,7 +48,7 @@ print_progress <- function(row, trow, stored_time, progress, condition){
     if(progress) cat('\n')
     tmp <- as.list(subset(condition, select=-ID))
     nms <- abbreviate(names(tmp), minlength = 6)
-    nms2 <- abbreviate(as.character(do.call(c, unname(tmp))))
+    nms2 <- abbreviate(do.call(c, lapply(tmp, as.character)))
     cat(sprintf('\rDesign row: %i/%i;   Started: %s;   Total elapsed time: %s ',
                 row, trow, date(), timeFormater(sum(stored_time))))
     cat(sprintf('\n Conditions: %s\n', paste0(nms, ':', nms2, collapse=', ')))
