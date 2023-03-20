@@ -1192,7 +1192,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         time0 <- proc.time()[3L]
         if(summarise_asis){
             if(verbose)
-                print_progress(i, nrow(design), stored_time=stored_time, progress=progress)
+                print_progress(i, nrow(design), stored_time=stored_time, progress=progress,
+                               condition=if(was_tibble) dplyr::as_tibble(design[i,])
+                               else design[i,])
             Result_list[[i]] <- Analysis(Functions=Functions,
                                          condition=if(was_tibble) dplyr::as_tibble(design[i,])
                                            else design[i,],
@@ -1220,7 +1222,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
-                print_progress(i, nrow(design), stored_time=stored_time, progress=progress)
+                print_progress(i, nrow(design), stored_time=stored_time, progress=progress,
+                               condition=if(was_tibble) dplyr::as_tibble(design[i,])
+                               else design[i,])
             if(save_seeds)
                 dir.create(file.path(out_rootdir,
                                      paste0(save_seeds_dirname, '/design-row-', i)),

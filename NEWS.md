@@ -8,6 +8,9 @@
   then using `runSimulation(..., debug = 'error-10')` 
   will initiate the debugger on the first instance for the 10th row 
   conditions in the supplied `design` object
+  
+- Progress reporting now includes abbreviated condition names and values
+  in the console per condition
 
 ## Changes in SimDesign 2.10.1
 
