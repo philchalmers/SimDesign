@@ -68,8 +68,12 @@
 #' }
 createDesign <- function(..., subset, tibble = TRUE, stringsAsFactors = FALSE){
     dots <- list(...)
+    if(any(sapply(dots, is, class2='data.frame') | sapply(dots, is, class2='tibble')))
+        stop('data.frame/tibble design elements not supported; please use a list input instead',
+             call. = FALSE)
     if(is.null(names(dots)) || any(names(dots) == ""))
-        stop("Please provide meaningful names for each supplied simulation factor")
+        stop("Please provide meaningful names for each supplied simulation factor",
+             call.=FALSE)
     ret <- expand.grid(..., stringsAsFactors = stringsAsFactors)
     if (!missing(subset)){
         e <- substitute(subset)
