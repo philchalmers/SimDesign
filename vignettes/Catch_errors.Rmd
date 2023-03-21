@@ -109,11 +109,23 @@ SimExtract(result, what = 'errors')
 
 Finally, `SimDesign` has a built-in safety feature controlled by with `max_errors` argument to avoid getting stuck in infinite redrawing loops. By default, if more than 50 errors are consecutively returned then the simulation condition will be halted, and a warning message will be printed to the console indicating the last observed fatal error. These safety features are built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code which should be fixed before continuing. However, when encountering fatal errors in a given simulation condition the remainder of the simulation experiment will still be executed as normal, where for the problematic conditions combinations `NA` placeholders will be assigned to these rows in the final output object. This is so that the entire experiment does not unexpectedly terminate due to one or more problematic row conditions in `Design`, and instead these conditions can be inspected and debugged at a later time. Of course, if inspecting the code directly, the simulation could be manually halted so that these terminal errors can be attended to immediately (e.g., using `Ctrl + c`, or clicking the 'Stop' icon in Rstudio).
 
-# What to do (explicit debug catch)
+# What to do (explicit debugging)
 
-If errors occur too often (but not in a fatal way) then the respective design conditions should either be extracted out of the simulation or further inspected to determine if they can be fixed (e.g., providing better starting values, increasing convergence criteria/number of iterations, etc). The use of the debugging features can also be useful to track down issues as well. For example, manually wrap the problematic functions in a `try()` call, and add the line `if(is(object, 'try-error')) browser()` to jump into the location/replication where the object unexpectedly witnessed an error. Jumping into the exact location where the error occurred will greatly help you determine what exactly went wrong in the simulation state, allowing you to quickly locate and fix the issue.
+If errors occur too often (but not in a fatal way) then the respective design conditions should either be extracted out of the simulation or further inspected to determine if they can be fixed (e.g., providing better starting values, increasing convergence criteria/number of iterations, etc). For instance, say that the fourth row of the `design` object raised a number of error messages that should be inspected further. One useful approach then would be to debug the 4th row on the instance that an error is raised, which can be achieved using the following:
 
-# What to do (stored error seed debuging)
+```{r eval=FALSE}
+runSimulation(..., debug = 'error-4')
+```
+
+The `error` flag is used to enter R's debugger on the first instance of an error, while the `-4` indicates that only the 4th row of `design` should be evaluated. This is also one instance where changing warning messages into error messages (i.e., `runSimulation(..., extra_options = list(warnings_as_errors=TRUE))`) is particularly useful so that the state that generated a warning can be inspected directly. Note that similar arguments can be made for explicitly debugging functions in the generate-analyse-summarise chain (e.g., `debug = 'analyse-4'`), though these are less useful for debugging (more useful for initial code design). 
+
+## Manual debugging via `try()`
+
+Failing the above approach, manually wrapping the problematic functions in a `try()` call. Adding the line `if(is(object, 'try-error')) browser()` will jump into the location/replication where the object unexpectedly witnessed, though admittedly this is more clunky approach than using `debug`. Nevertheless, jumping into the exact location where the error occurred, particularly in the case where an `analyse()` function is throwing multiple error messages, will greatly help you determine what exactly went wrong in the simulation state, allowing you to quickly locate and fix the issue.
+
+
+
+## Extracting error seeds for hard-to-find bugs
 
 An alternative approach to locating errors in general is to use information stored within the `SimDesign` objects at the time of completion. By default, all `.Random.seed` states associated with errors are stored within the final object, and these can be extracted using the `SimExtract(..., what='error_seeds')` option.  This function returns a `data.frame` object with each seed stored column-wise, where the associated error message is contained in the column name itself (and allowed to be coerced into a valid column name to make it easier to use the `$` operator). For example, 
 
@@ -124,11 +136,13 @@ head(seeds[,1:3])
 
 Given these seeds, replicating an exact error can be achieved by a) extracting a single column into an `integer` vector, and b) passing this vector to the `load_seed` input. For example, replicating the first error message can be achieved as follows, where it makes the most sense to immediately go into the debugging mode via the `debug` inputs. 
 
-Note: It is important to manually select the correct `Design` row using this error extraction approach; otherwise, the seed will clearly not replicate the exact problem state. 
+**Note**: It is important to manually select the correct `Design` row using this error extraction approach; otherwise, the seed will clearly not replicate the exact problem state. 
 
 ```{r eval=FALSE}
 picked_seed <- seeds$Design_row_1.1..Error.in.t.test.default..invalid.....not.enough..x..observations.
-runSimulation(Design[1,], replications = 100, load_seed=picked_seed, debug='analyse',
+
+# debug analyse() for first row of Design object via debug='analyse-1'
+runSimulation(Design, replications = 100, load_seed=picked_seed, debug='analyse-1',
               generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
 
