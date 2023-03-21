@@ -19,7 +19,7 @@ runSimulation(
   load_seed = NULL,
   save_results = FALSE,
   parallel = FALSE,
-  ncores = parallel::detectCores() - 1L,
+  ncores = max(c(parallel::detectCores() - 1L, 2)),
   cl = NULL,
   notification = "none",
   beep = FALSE,
