@@ -19,7 +19,7 @@ runSimulation(
   load_seed = NULL,
   save_results = FALSE,
   parallel = FALSE,
-  ncores = parallel::detectCores(),
+  ncores = parallel::detectCores() - 1L,
   cl = NULL,
   notification = "none",
   beep = FALSE,
@@ -198,7 +198,7 @@ primarily useful for debugging purposes.
   computing plan when the jobs are completed}
 
 \item{ncores}{number of cores to be used in parallel execution (ignored if using the
-\code{future} package approach). Default uses all available}
+\code{future} package approach). Default uses all available minus 1}
 
 \item{cl}{cluster object defined by \code{\link{makeCluster}} used to run code in parallel
   (ignored if using the \code{\link[future]{future}} package approach).

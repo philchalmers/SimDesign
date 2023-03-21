@@ -422,7 +422,7 @@
 #'   is going wrong in the generate-analyse phases. Default is 50
 #'
 #' @param ncores number of cores to be used in parallel execution (ignored if using the
-#'   \code{future} package approach). Default uses all available
+#'   \code{future} package approach). Default uses all available minus 1
 #'
 #' @param save logical; save the temporary simulation state to the hard-drive? This is useful
 #'   for simulations which require an extended amount of time, though for shorter simulations
@@ -856,7 +856,8 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL,
                           debug = 'none', load_seed = NULL,
-                          save_results = FALSE, parallel = FALSE, ncores = parallel::detectCores(),
+                          save_results = FALSE, parallel = FALSE,
+                          ncores = parallel::detectCores() - 1L,
                           cl = NULL, notification = 'none', beep = FALSE, sound = 1,
                           CI = .95, seed = NULL,
                           boot_method='none', boot_draws = 1000L, max_errors = 50L,
