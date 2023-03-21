@@ -1107,7 +1107,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 Result_list <- tmp_new
             }
         }
-        start <- min(which(sapply(Result_list, is.null)))
+        start <- min(c(which(sapply(Result_list, is.null)), nrow(design)))
         time0 <- time1 - Result_list[[start-1L]]$SIM_TIME
     }
     if(file.exists(tmpfilename)){
