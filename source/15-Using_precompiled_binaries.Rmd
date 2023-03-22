@@ -45,7 +45,7 @@ library(cmdstanr)
 ```
 
 
-```{r}
+```{r eval=FALSE}
 library(cmdstanr)
 
 bmean_stan_weak <- "
@@ -85,6 +85,10 @@ stan_path_strong <- write_stan_file(bmean_stan_strong)
 # compile and store within fixed objects for use in runSimulation()
 fo <- list(weak=cmdstan_model(stan_path_weak), 
 		   strong=cmdstan_model(stan_path_strong))
+```
+```{r include=FALSE}
+# saveRDS(fo, "../extras/stanfo.rds")
+fo <- readRDS("../extras/stanfo.rds")
 ```
 
 
