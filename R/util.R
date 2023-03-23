@@ -187,6 +187,13 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
 #' nc(this=A, this=B, C)
 #' nc(LetterC=A, B, C, use.names=TRUE)
 #'
+#' # poor input choice names
+#' nc(t.test(c(1:2))$p.value, t.test(c(3:4))$p.value)
+#'
+#' # better to explicitly provide name
+#' nc(T1 = t.test(c(1:2))$p.value,
+#'    T2 = t.test(c(3:4))$p.value)
+#'
 #' # List input
 #' A <- list(1)
 #' B <- list(2:3)
@@ -205,7 +212,7 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
 nc <- function(..., use.names=FALSE, error.on.duplicate = TRUE){
     dots <- list(...)
     object <- as.list(substitute(list(...)))[-1L]
-    nms <- sapply(object, function(x) as.character(x))
+    nms <- sapply(object, function(x) paste0(as.character(x), collapse='_'))
     nms[names(nms) != ""] <- names(nms[names(nms) != ""])
     if(use.names){
         tmp <- do.call(c, lapply(dots, function(x){
@@ -215,6 +222,7 @@ nc <- function(..., use.names=FALSE, error.on.duplicate = TRUE){
         }))
         nms[!is.na(tmp)] <- tmp[!is.na(tmp)]
     }
+    nms <- gsub("\\$\\_", "", nms)
     if(error.on.duplicate)
         if(any(duplicated(nms)))
             stop(sprintf('Vector/list contains the following duplicated names: %s',

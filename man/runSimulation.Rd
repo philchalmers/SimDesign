@@ -729,12 +729,12 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL) {
-    welch <- t.test(DV ~ group, dat)
-    ind <- t.test(DV ~ group, dat, var.equal=TRUE)
+    welch <- t.test(DV ~ group, dat)$p.value
+    independent <- t.test(DV ~ group, dat, var.equal=TRUE)$p.value
 
     # In this function the p values for the t-tests are returned,
     #  and make sure to name each element, for future reference
-    ret <- c(welch = welch$p.value, independent = ind$p.value)
+    ret <- nc(welch, independent)
     ret
 }
 

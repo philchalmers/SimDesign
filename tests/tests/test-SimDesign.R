@@ -34,7 +34,7 @@ test_that('SimDesign', {
 
         # In this function the p values for the t-tests are returned,
         #  and make sure to name each element, for future reference
-        ret <- c(welch = welch$p.value,
+        ret <- nc(welch = welch$p.value,
                  independent = ind$p.value)
 
         return(ret)
@@ -50,8 +50,7 @@ test_that('SimDesign', {
 
         # In this function the p values for the t-tests are returned,
         #  and make sure to name each element, for future reference
-        ret <- c(welch = welch$p.value,
-                 independent = ind$p.value)
+        ret <- nc(welch$p.value, ind$p.value)
 
         return(ret)
     }

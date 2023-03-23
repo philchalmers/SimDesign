@@ -38,6 +38,13 @@ nc(this=A, B, C, use.names = TRUE) # preserve original name
 nc(this=A, this=B, C)
 nc(LetterC=A, B, C, use.names=TRUE)
 
+# poor input choice names
+nc(t.test(c(1:2))$p.value, t.test(c(3:4))$p.value)
+
+# better to explicitly provide name
+nc(T1 = t.test(c(1:2))$p.value,
+   T2 = t.test(c(3:4))$p.value)
+
 # List input
 A <- list(1)
 B <- list(2:3)
