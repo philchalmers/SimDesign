@@ -1315,16 +1315,20 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         attr(Result_list[[x]], "summarise_list")
     )
     Final <- dplyr::bind_rows(Result_list)
+    FATAL_TERMINATION <- NA
     if(!stop_on_fatal && any(colnames(Final) == 'FATAL_TERMINATION')){
         warning('One or more design rows were fatally terminated. Please inspect/debug row(s): ',
                 paste(which(!is.na(Final$FATAL_TERMINATION)), collapse=','), call.=FALSE)
+        FATAL_TERMINATION <- Final$FATAL_TERMINATION
     }
     SIM_TIME <- Final$SIM_TIME
     COMPLETED <- Final$COMPLETED
     Final$SIM_TIME <- Final$ID <- Final$COMPLETED <-
-        Final$REPLICATIONS <- Final$REPLICATION <- NULL
-    Final <- data.frame(Final, REPLICATIONS=replications, SIM_TIME, COMPLETED, check.names=FALSE,
-                        stringsAsFactors=FALSE)
+        Final$REPLICATIONS <- Final$REPLICATION <- Final$FATAL_TERMINATION <- NULL
+    Final <- data.frame(Final, FATAL_TERMINATION,
+                        REPLICATIONS=replications, SIM_TIME, COMPLETED,
+                        check.names=FALSE, stringsAsFactors=FALSE)
+    if(all(is.na(Final$FATAL_TERMINATION))) Final$FATAL_TERMINATION <- NULL
     if(is.null(Final$SEED)) Final$SEED <- NA
     if(!is.null(seed)) Final$SEED <- seed
     if(!is.null(filename) && safe){ #save file
