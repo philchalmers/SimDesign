@@ -47,11 +47,21 @@ timeFormater <- function(time, decimals = TRUE){
 print_progress <- function(row, trow, stored_time, progress, condition){
     if(progress) cat('\n')
     tmp <- as.list(subset(condition, select=-ID))
-    nms <- abbreviate(names(tmp), minlength = 6)
-    nms2 <- abbreviate(do.call(c, lapply(tmp, as.character)))
+    nms <- names(tmp)
+    nms2 <- do.call(c, lapply(tmp, as.character))
+    wdth <- 85 - 13
+    condstring <- paste0(nms, '=', nms2, collapse=', ')
+    if(nchar(condstring) > wdth){
+        nms <- abbreviate(nms, minlength = 6)
+        condstring <- paste0(nms, '=', nms2, collapse=', ')
+        if(nchar(condstring) > wdth){
+            nms2 <- abbreviate(nms2)
+            condstring <- paste0(nms, '=', nms2, collapse=', ')
+        }
+    }
     cat(sprintf('\rDesign row: %i/%i;   Started: %s;   Total elapsed time: %s ',
                 row, trow, date(), timeFormater(sum(stored_time))))
-    cat(sprintf('\n Conditions: %s\n', paste0(nms, '=', nms2, collapse=', ')))
+    cat(sprintf('\n Conditions: %s\n', condstring))
     if(progress) cat('\r')
     invisible(NULL)
 }
