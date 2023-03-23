@@ -61,6 +61,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 .main-container {
   max-width: 940px;
@@ -82,6 +83,9 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+details > summary > p:only-child {
+  display: inline;
+}
 pre code {
   padding: 0;
 }
@@ -101,8 +105,8 @@ pre code {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -110,16 +114,9 @@ pre code {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -253,7 +250,7 @@ library(SimDesign)
 Design &lt;- createDesign(sample_size = c(30, 60, 120, 240), 
                        distribution = c(&#39;norm&#39;, &#39;chi&#39;))
 Design</code></pre>
-<pre><code>## # A tibble: 8 x 2
+<pre><code>## # A tibble: 8 × 2
 ##   sample_size distribution
 ##         &lt;dbl&gt; &lt;chr&gt;       
 ## 1          30 norm        
@@ -307,71 +304,81 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
                      fixed_objects = fo, parallel=TRUE, 
                      packages = &quot;cmdstanr&quot;)</code></pre>
 <pre><code>## 
-## Number of parallel clusters in use: 8</code></pre>
+## Number of parallel clusters in use: 47</code></pre>
+<pre><code>## Resuming simulation from ./SIMDESIGN-TEMPFILE_cruncher.rds file with 1000 replications. 
+## If not intended, use SimClean() prior to calling runSimulation()</code></pre>
 <pre><code>## 
 ## 
-Design row: 1/8;   Started: Thu Feb 17 20:56:41 2022;   Total elapsed time: 0.00s 
+Design row: 2/8;   Started: Thu Mar 23 01:52:25 2023;   Total elapsed time: 59m 23.43s 
+##  Conditions: smpl_s=60, dstrbt=norm
 ## 
 ## 
-Design row: 2/8;   Started: Thu Feb 17 21:03:04 2022;   Total elapsed time: 06m 23.53s 
+Design row: 3/8;   Started: Thu Mar 23 01:53:04 2023;   Total elapsed time: 01h 00m 2.44s 
+##  Conditions: smpl_s=120, dstrbt=norm
 ## 
 ## 
-Design row: 3/8;   Started: Thu Feb 17 21:09:06 2022;   Total elapsed time: 12m 25.72s 
+Design row: 4/8;   Started: Thu Mar 23 01:53:36 2023;   Total elapsed time: 01h 00m 34.71s 
+##  Conditions: smpl_s=240, dstrbt=norm
 ## 
 ## 
-Design row: 4/8;   Started: Thu Feb 17 21:15:02 2022;   Total elapsed time: 18m 21.41s 
+Design row: 5/8;   Started: Thu Mar 23 01:54:01 2023;   Total elapsed time: 01h 00m 59.67s 
+##  Conditions: smpl_s=30, dstrbt=chi
 ## 
 ## 
-Design row: 5/8;   Started: Thu Feb 17 21:21:13 2022;   Total elapsed time: 24m 32.41s 
+Design row: 6/8;   Started: Thu Mar 23 01:54:29 2023;   Total elapsed time: 01h 01m 27.42s 
+##  Conditions: smpl_s=60, dstrbt=chi
 ## 
 ## 
-Design row: 6/8;   Started: Thu Feb 17 21:26:19 2022;   Total elapsed time: 29m 38.03s 
+Design row: 7/8;   Started: Thu Mar 23 01:54:57 2023;   Total elapsed time: 01h 01m 56.11s 
+##  Conditions: smpl_s=120, dstrbt=chi
 ## 
 ## 
-Design row: 7/8;   Started: Thu Feb 17 21:31:15 2022;   Total elapsed time: 34m 34.61s 
-## 
-## 
-Design row: 8/8;   Started: Thu Feb 17 21:36:56 2022;   Total elapsed time: 40m 15.63s</code></pre>
+Design row: 8/8;   Started: Thu Mar 23 01:55:29 2023;   Total elapsed time: 01h 02m 28.28s 
+##  Conditions: smpl_s=240, dstrbt=chi
+## </code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 45m 56.58s</code></pre>
+## Simulation complete. Total execution time: 01h 03m 1.27s</code></pre>
+<pre><code>## Warning: One or more design rows were fatally terminated. Please inspect/debug
+## row(s):</code></pre>
 <pre class="r"><code>res</code></pre>
-<pre><code>## # A tibble: 8 x 25
-##   sample_size distribution bias.mean_no_trim bias.mean_trim.1 bias.mean_trim.2
-##         &lt;dbl&gt; &lt;chr&gt;                    &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
-## 1          30 norm                  0.00309          0.00492           0.00749
-## 2          60 norm                 -0.000562         0.000520          0.00144
-## 3         120 norm                 -0.000839        -0.00141          -0.00195
-## 4         240 norm                  0.00264          0.00309           0.00297
-## 5          30 chi                   0.00344         -0.312            -0.452  
-## 6          60 chi                  -0.0137          -0.346            -0.489  
-## 7         120 chi                   0.00906         -0.337            -0.484  
-## 8         240 chi                  -0.00146         -0.348            -0.492  
-## # ... with 20 more variables: bias.median &lt;dbl&gt;, bias.mean_weak_prior &lt;dbl&gt;,
-## #   bias.mean_strong_prior &lt;dbl&gt;, RMSE.mean_no_trim &lt;dbl&gt;,
-## #   RMSE.mean_trim.1 &lt;dbl&gt;, RMSE.mean_trim.2 &lt;dbl&gt;, RMSE.median &lt;dbl&gt;,
-## #   RMSE.mean_weak_prior &lt;dbl&gt;, RMSE.mean_strong_prior &lt;dbl&gt;,
-## #   RE.mean_no_trim &lt;dbl&gt;, RE.mean_trim.1 &lt;dbl&gt;, RE.mean_trim.2 &lt;dbl&gt;,
-## #   RE.median &lt;dbl&gt;, RE.mean_weak_prior &lt;dbl&gt;, RE.mean_strong_prior &lt;dbl&gt;,
-## #   REPLICATIONS &lt;int&gt;, SIM_TIME &lt;dbl&gt;, COMPLETED &lt;chr&gt;, SEED &lt;int&gt;, ...</code></pre>
+<pre><code>## # A tibble: 8 × 26
+##   sample…¹ distr…² FATAL…³ bias.m…⁴ bias.m…⁵ bias.m…⁶ bias.m…⁷ bias.m…⁸ bias.m…⁹
+##      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+## 1       30 norm    &lt;NA&gt;    NA       NA       NA       NA       NA       NA      
+## 2       60 norm    &lt;NA&gt;    -6.98e-3 -4.93e-3 -3.36e-3 -0.00536 -7.52e-3 -0.0199 
+## 3      120 norm    &lt;NA&gt;     4.72e-3  4.78e-3  4.76e-3  0.00346  4.38e-3 -0.00173
+## 4      240 norm    &lt;NA&gt;     4.58e-4  6.22e-4  5.73e-4 -0.00117  3.23e-4 -0.00271
+## 5       30 chi     &lt;NA&gt;    -2.13e-3 -3.16e-1 -4.58e-1 -0.596   -9.29e-3 -0.163  
+## 6       60 chi     &lt;NA&gt;    -6.62e-3 -3.45e-1 -4.91e-1 -0.631   -9.84e-3 -0.0846 
+## 7      120 chi     &lt;NA&gt;     3.45e-3 -3.37e-1 -4.81e-1 -0.622    1.68e-3 -0.0348 
+## 8      240 chi     &lt;NA&gt;     2.81e-3 -3.41e-1 -4.84e-1 -0.622    2.01e-3 -0.0163 
+## # … with 17 more variables: RMSE.mean_no_trim &lt;dbl&gt;, RMSE.mean_trim.1 &lt;dbl&gt;,
+## #   RMSE.mean_trim.2 &lt;dbl&gt;, RMSE.median &lt;dbl&gt;, RMSE.mean_weak_prior &lt;dbl&gt;,
+## #   RMSE.mean_strong_prior &lt;dbl&gt;, RE.mean_no_trim &lt;dbl&gt;, RE.mean_trim.1 &lt;dbl&gt;,
+## #   RE.mean_trim.2 &lt;dbl&gt;, RE.median &lt;dbl&gt;, RE.mean_weak_prior &lt;dbl&gt;,
+## #   RE.mean_strong_prior &lt;dbl&gt;, REPLICATIONS &lt;int&gt;, SIM_TIME &lt;dbl&gt;,
+## #   COMPLETED &lt;chr&gt;, SEED &lt;int&gt;, ERRORS &lt;int&gt;, and abbreviated variable names
+## #   ¹​sample_size, ²​distribution, ³​FATAL_TERMINATION, ⁴​bias.mean_no_trim, …</code></pre>
 <pre class="r"><code># render output better
 knitr::kable(res)</code></pre>
-<table style="width:100%;">
+<table>
 <colgroup>
-<col width="3%" />
+<col width="2%" />
 <col width="3%" />
 <col width="4%" />
 <col width="4%" />
 <col width="4%" />
-<col width="3%" />
+<col width="4%" />
+<col width="2%" />
 <col width="5%" />
 <col width="5%" />
 <col width="4%" />
 <col width="4%" />
 <col width="4%" />
+<col width="2%" />
+<col width="5%" />
+<col width="5%" />
 <col width="3%" />
-<col width="5%" />
-<col width="5%" />
-<col width="4%" />
 <col width="3%" />
 <col width="3%" />
 <col width="2%" />
@@ -379,7 +386,7 @@ knitr::kable(res)</code></pre>
 <col width="5%" />
 <col width="3%" />
 <col width="2%" />
-<col width="6%" />
+<col width="5%" />
 <col width="2%" />
 <col width="1%" />
 </colgroup>
@@ -387,6 +394,7 @@ knitr::kable(res)</code></pre>
 <tr class="header">
 <th align="right">sample_size</th>
 <th align="left">distribution</th>
+<th align="left">FATAL_TERMINATION</th>
 <th align="right">bias.mean_no_trim</th>
 <th align="right">bias.mean_trim.1</th>
 <th align="right">bias.mean_trim.2</th>
@@ -416,218 +424,226 @@ knitr::kable(res)</code></pre>
 <tr class="odd">
 <td align="right">30</td>
 <td align="left">norm</td>
-<td align="right">0.003</td>
-<td align="right">0.005</td>
-<td align="right">0.007</td>
-<td align="right">0.013</td>
-<td align="right">0.002</td>
-<td align="right">-0.025</td>
-<td align="right">0.179</td>
-<td align="right">0.184</td>
-<td align="right">0.193</td>
-<td align="right">0.221</td>
-<td align="right">0.179</td>
-<td align="right">0.180</td>
-<td align="right">1</td>
-<td align="right">1.06</td>
-<td align="right">1.15</td>
-<td align="right">1.51</td>
-<td align="right">1.000</td>
-<td align="right">1.002</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
 <td align="right">1000</td>
-<td align="right">384</td>
-<td align="left">Thu Feb 17 21:03:04 2022</td>
-<td align="right">7.16e+06</td>
-<td align="right">58</td>
+<td align="right">3563.4</td>
+<td align="left">Wed Mar 22 20:41:45 2023</td>
+<td align="right">5.52e+08</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="right">60</td>
 <td align="left">norm</td>
-<td align="right">-0.001</td>
-<td align="right">0.001</td>
-<td align="right">0.001</td>
-<td align="right">0.004</td>
-<td align="right">-0.001</td>
-<td align="right">-0.014</td>
+<td align="left">NA</td>
+<td align="right">-0.007</td>
+<td align="right">-0.005</td>
+<td align="right">-0.003</td>
+<td align="right">-0.005</td>
+<td align="right">-0.008</td>
+<td align="right">-0.020</td>
 <td align="right">0.130</td>
-<td align="right">0.133</td>
-<td align="right">0.139</td>
-<td align="right">0.165</td>
+<td align="right">0.135</td>
+<td align="right">0.140</td>
+<td align="right">0.163</td>
 <td align="right">0.130</td>
 <td align="right">0.130</td>
 <td align="right">1</td>
-<td align="right">1.06</td>
-<td align="right">1.14</td>
-<td align="right">1.62</td>
-<td align="right">1.001</td>
-<td align="right">1.005</td>
+<td align="right">1.08</td>
+<td align="right">1.17</td>
+<td align="right">1.58</td>
+<td align="right">1.003</td>
+<td align="right">1.011</td>
 <td align="right">1000</td>
-<td align="right">362</td>
-<td align="left">Thu Feb 17 21:09:06 2022</td>
-<td align="right">1.05e+08</td>
-<td align="right">37</td>
+<td align="right">39.0</td>
+<td align="left">Thu Mar 23 01:53:04 2023</td>
+<td align="right">2.13e+08</td>
+<td align="right">35</td>
 </tr>
 <tr class="odd">
 <td align="right">120</td>
 <td align="left">norm</td>
-<td align="right">-0.001</td>
-<td align="right">-0.001</td>
+<td align="left">NA</td>
+<td align="right">0.005</td>
+<td align="right">0.005</td>
+<td align="right">0.005</td>
+<td align="right">0.003</td>
+<td align="right">0.004</td>
 <td align="right">-0.002</td>
-<td align="right">-0.005</td>
-<td align="right">-0.001</td>
-<td align="right">-0.007</td>
-<td align="right">0.091</td>
 <td align="right">0.094</td>
-<td align="right">0.098</td>
-<td align="right">0.117</td>
-<td align="right">0.091</td>
-<td align="right">0.091</td>
+<td align="right">0.097</td>
+<td align="right">0.100</td>
+<td align="right">0.113</td>
+<td align="right">0.094</td>
+<td align="right">0.094</td>
 <td align="right">1</td>
-<td align="right">1.06</td>
-<td align="right">1.16</td>
-<td align="right">1.64</td>
-<td align="right">1.003</td>
-<td align="right">0.999</td>
+<td align="right">1.05</td>
+<td align="right">1.13</td>
+<td align="right">1.44</td>
+<td align="right">1.002</td>
+<td align="right">0.993</td>
 <td align="right">1000</td>
-<td align="right">356</td>
-<td align="left">Thu Feb 17 21:15:02 2022</td>
-<td align="right">5.90e+08</td>
-<td align="right">42</td>
+<td align="right">32.3</td>
+<td align="left">Thu Mar 23 01:53:36 2023</td>
+<td align="right">2.06e+09</td>
+<td align="right">34</td>
 </tr>
 <tr class="even">
 <td align="right">240</td>
 <td align="left">norm</td>
-<td align="right">0.003</td>
-<td align="right">0.003</td>
-<td align="right">0.003</td>
-<td align="right">0.006</td>
-<td align="right">0.003</td>
+<td align="left">NA</td>
+<td align="right">0.000</td>
+<td align="right">0.001</td>
+<td align="right">0.001</td>
 <td align="right">-0.001</td>
-<td align="right">0.063</td>
+<td align="right">0.000</td>
+<td align="right">-0.003</td>
 <td align="right">0.064</td>
-<td align="right">0.067</td>
-<td align="right">0.078</td>
-<td align="right">0.063</td>
-<td align="right">0.062</td>
+<td align="right">0.066</td>
+<td align="right">0.069</td>
+<td align="right">0.079</td>
+<td align="right">0.064</td>
+<td align="right">0.064</td>
 <td align="right">1</td>
-<td align="right">1.05</td>
+<td align="right">1.06</td>
 <td align="right">1.14</td>
-<td align="right">1.55</td>
-<td align="right">1.005</td>
-<td align="right">0.996</td>
+<td align="right">1.51</td>
+<td align="right">1.003</td>
+<td align="right">1.000</td>
 <td align="right">1000</td>
-<td align="right">371</td>
-<td align="left">Thu Feb 17 21:21:13 2022</td>
-<td align="right">6.50e+08</td>
-<td align="right">35</td>
+<td align="right">25.0</td>
+<td align="left">Thu Mar 23 01:54:01 2023</td>
+<td align="right">2.08e+09</td>
+<td align="right">42</td>
 </tr>
 <tr class="odd">
 <td align="right">30</td>
 <td align="left">chi</td>
-<td align="right">0.003</td>
-<td align="right">-0.312</td>
-<td align="right">-0.452</td>
-<td align="right">-0.592</td>
-<td align="right">-0.004</td>
-<td align="right">-0.159</td>
-<td align="right">0.457</td>
-<td align="right">0.541</td>
-<td align="right">0.632</td>
-<td align="right">0.769</td>
-<td align="right">0.454</td>
-<td align="right">0.424</td>
+<td align="left">NA</td>
+<td align="right">-0.002</td>
+<td align="right">-0.316</td>
+<td align="right">-0.458</td>
+<td align="right">-0.596</td>
+<td align="right">-0.009</td>
+<td align="right">-0.163</td>
+<td align="right">0.447</td>
+<td align="right">0.531</td>
+<td align="right">0.633</td>
+<td align="right">0.768</td>
+<td align="right">0.444</td>
+<td align="right">0.416</td>
 <td align="right">1</td>
-<td align="right">1.40</td>
-<td align="right">1.91</td>
-<td align="right">2.83</td>
-<td align="right">0.986</td>
-<td align="right">0.859</td>
+<td align="right">1.42</td>
+<td align="right">2.01</td>
+<td align="right">2.95</td>
+<td align="right">0.987</td>
+<td align="right">0.866</td>
 <td align="right">1000</td>
-<td align="right">306</td>
-<td align="left">Thu Feb 17 21:26:19 2022</td>
-<td align="right">7.43e+08</td>
-<td align="right">52</td>
+<td align="right">27.8</td>
+<td align="left">Thu Mar 23 01:54:29 2023</td>
+<td align="right">2.14e+09</td>
+<td align="right">50</td>
 </tr>
 <tr class="even">
 <td align="right">60</td>
 <td align="left">chi</td>
-<td align="right">-0.014</td>
-<td align="right">-0.346</td>
-<td align="right">-0.489</td>
-<td align="right">-0.625</td>
-<td align="right">-0.016</td>
-<td align="right">-0.090</td>
-<td align="right">0.309</td>
-<td align="right">0.456</td>
-<td align="right">0.573</td>
-<td align="right">0.713</td>
-<td align="right">0.309</td>
-<td align="right">0.301</td>
+<td align="left">NA</td>
+<td align="right">-0.007</td>
+<td align="right">-0.345</td>
+<td align="right">-0.491</td>
+<td align="right">-0.631</td>
+<td align="right">-0.010</td>
+<td align="right">-0.085</td>
+<td align="right">0.304</td>
+<td align="right">0.452</td>
+<td align="right">0.574</td>
+<td align="right">0.716</td>
+<td align="right">0.303</td>
+<td align="right">0.294</td>
 <td align="right">1</td>
-<td align="right">2.18</td>
-<td align="right">3.44</td>
-<td align="right">5.32</td>
-<td align="right">0.998</td>
-<td align="right">0.946</td>
+<td align="right">2.21</td>
+<td align="right">3.57</td>
+<td align="right">5.55</td>
+<td align="right">0.991</td>
+<td align="right">0.938</td>
 <td align="right">1000</td>
-<td align="right">297</td>
-<td align="left">Thu Feb 17 21:31:15 2022</td>
-<td align="right">1.28e+09</td>
-<td align="right">29</td>
+<td align="right">28.7</td>
+<td align="left">Thu Mar 23 01:54:57 2023</td>
+<td align="right">1.89e+09</td>
+<td align="right">38</td>
 </tr>
 <tr class="odd">
 <td align="right">120</td>
 <td align="left">chi</td>
-<td align="right">0.009</td>
+<td align="left">NA</td>
+<td align="right">0.003</td>
 <td align="right">-0.337</td>
-<td align="right">-0.484</td>
-<td align="right">-0.632</td>
-<td align="right">0.008</td>
-<td align="right">-0.030</td>
-<td align="right">0.233</td>
-<td align="right">0.401</td>
-<td align="right">0.530</td>
-<td align="right">0.678</td>
-<td align="right">0.233</td>
-<td align="right">0.226</td>
+<td align="right">-0.481</td>
+<td align="right">-0.622</td>
+<td align="right">0.002</td>
+<td align="right">-0.035</td>
+<td align="right">0.230</td>
+<td align="right">0.402</td>
+<td align="right">0.527</td>
+<td align="right">0.669</td>
+<td align="right">0.230</td>
+<td align="right">0.225</td>
 <td align="right">1</td>
-<td align="right">2.97</td>
-<td align="right">5.18</td>
-<td align="right">8.48</td>
-<td align="right">0.996</td>
-<td align="right">0.941</td>
+<td align="right">3.03</td>
+<td align="right">5.23</td>
+<td align="right">8.41</td>
+<td align="right">0.997</td>
+<td align="right">0.951</td>
 <td align="right">1000</td>
-<td align="right">341</td>
-<td align="left">Thu Feb 17 21:36:56 2022</td>
-<td align="right">6.69e+08</td>
-<td align="right">33</td>
+<td align="right">32.2</td>
+<td align="left">Thu Mar 23 01:55:29 2023</td>
+<td align="right">1.90e+08</td>
+<td align="right">34</td>
 </tr>
 <tr class="even">
 <td align="right">240</td>
 <td align="left">chi</td>
-<td align="right">-0.001</td>
-<td align="right">-0.348</td>
-<td align="right">-0.492</td>
-<td align="right">-0.630</td>
-<td align="right">-0.002</td>
-<td align="right">-0.020</td>
-<td align="right">0.152</td>
-<td align="right">0.376</td>
-<td align="right">0.513</td>
-<td align="right">0.651</td>
-<td align="right">0.152</td>
-<td align="right">0.151</td>
+<td align="left">NA</td>
+<td align="right">0.003</td>
+<td align="right">-0.341</td>
+<td align="right">-0.484</td>
+<td align="right">-0.622</td>
+<td align="right">0.002</td>
+<td align="right">-0.016</td>
+<td align="right">0.160</td>
+<td align="right">0.373</td>
+<td align="right">0.507</td>
+<td align="right">0.646</td>
+<td align="right">0.160</td>
+<td align="right">0.158</td>
 <td align="right">1</td>
-<td align="right">6.12</td>
-<td align="right">11.36</td>
-<td align="right">18.29</td>
-<td align="right">1.000</td>
-<td align="right">0.984</td>
+<td align="right">5.44</td>
+<td align="right">10.06</td>
+<td align="right">16.32</td>
+<td align="right">0.999</td>
+<td align="right">0.977</td>
 <td align="right">1000</td>
-<td align="right">341</td>
-<td align="left">Thu Feb 17 21:42:37 2022</td>
-<td align="right">1.01e+09</td>
-<td align="right">33</td>
+<td align="right">33.0</td>
+<td align="left">Thu Mar 23 01:56:02 2023</td>
+<td align="right">1.64e+09</td>
+<td align="right">26</td>
 </tr>
 </tbody>
 </table>
