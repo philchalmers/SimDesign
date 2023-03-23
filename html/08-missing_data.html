@@ -407,9 +407,9 @@ res &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRU
 <pre><code>## # A tibble: 3 × 11
 ##       N bias.listwise bias.pai…¹ RMSE.…² RMSE.…³ RE.li…⁴ RE.pa…⁵ REPLI…⁶ SIM_T…⁷
 ##   &lt;dbl&gt;         &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;dbl&gt;
-## 1    50     -0.0111    -0.00923   0.124   0.103        1   0.687    1000   0.515
-## 2   100     -0.00361   -0.00291   0.0799  0.0684       1   0.733    1000   0.570
-## 3   200     -0.000132  -0.000565  0.0569  0.0476       1   0.700    1000   1.00 
+## 1    50     -0.0111    -0.00923   0.124   0.103        1   0.687    1000   0.370
+## 2   100     -0.00361   -0.00291   0.0799  0.0684       1   0.733    1000   0.554
+## 3   200     -0.000132  -0.000565  0.0569  0.0476       1   0.700    1000   0.637
 ## # … with 2 more variables: COMPLETED &lt;chr&gt;, SEED &lt;int&gt;, and abbreviated
 ## #   variable names ¹​bias.pairwise, ²​RMSE.listwise, ³​RMSE.pairwise,
 ## #   ⁴​RE.listwise, ⁵​RE.pairwise, ⁶​REPLICATIONS, ⁷​SIM_TIME</code></pre>
@@ -433,9 +433,9 @@ res &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRU
 <pre><code>## # A tibble: 3 × 11
 ##       N bias.l…¹ bias.…² RMSE.…³ RMSE.…⁴ RE.li…⁵ RE.pa…⁶ REPLI…⁷ SIM_T…⁸ COMPL…⁹
 ##   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;  
-## 1    50  -0.0821 -0.0665  0.131   0.117        1   0.791    1000   0.408 Thu Ma…
-## 2   100  -0.0755 -0.0605  0.104   0.0903       1   0.758    1000   0.599 Thu Ma…
-## 3   200  -0.0738 -0.0585  0.0885  0.0744       1   0.707    1000   0.648 Thu Ma…
+## 1    50  -0.0821 -0.0665  0.131   0.117        1   0.791    1000   0.376 Thu Ma…
+## 2   100  -0.0755 -0.0605  0.104   0.0903       1   0.758    1000   0.634 Thu Ma…
+## 3   200  -0.0738 -0.0585  0.0885  0.0744       1   0.707    1000   0.832 Thu Ma…
 ## # … with 1 more variable: SEED &lt;int&gt;, and abbreviated variable names
 ## #   ¹​bias.listwise, ²​bias.pairwise, ³​RMSE.listwise, ⁴​RMSE.pairwise,
 ## #   ⁵​RE.listwise, ⁶​RE.pairwise, ⁷​REPLICATIONS, ⁸​SIM_TIME, ⁹​COMPLETED</code></pre>
