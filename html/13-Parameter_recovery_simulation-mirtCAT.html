@@ -299,8 +299,8 @@ pre code {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -308,16 +308,9 @@ pre code {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -411,22 +404,29 @@ res &lt;- runSimulation(design=Design, replications=1, seed = 1:nrow(Design),
                      generate=Generate, analyse=Analyse, fixed_objects=fo, debug=&#39;none&#39;)</code></pre>
 <pre><code>## 
 ## 
-Design row: 1/6;   Started: Thu Oct  6 19:42:06 2022;   Total elapsed time: 0.00s 
+Design row: 1/6;   Started: Thu Mar 23 14:30:01 2023;   Total elapsed time: 0.00s 
+##  Conditions: nitems=100, dscrmn=0.5
 ## 
 ## 
-Design row: 2/6;   Started: Thu Oct  6 19:42:25 2022;   Total elapsed time: 19.16s 
+Design row: 2/6;   Started: Thu Mar 23 14:30:20 2023;   Total elapsed time: 19.10s 
+##  Conditions: nitems=300, dscrmn=0.5
 ## 
 ## 
-Design row: 3/6;   Started: Thu Oct  6 19:42:42 2022;   Total elapsed time: 36.48s 
+Design row: 3/6;   Started: Thu Mar 23 14:30:37 2023;   Total elapsed time: 36.09s 
+##  Conditions: nitems=500, dscrmn=0.5
 ## 
 ## 
-Design row: 4/6;   Started: Thu Oct  6 19:43:02 2022;   Total elapsed time: 56.61s 
+Design row: 4/6;   Started: Thu Mar 23 14:30:58 2023;   Total elapsed time: 57.24s 
+##  Conditions: nitems=100, dscrmn=1.5
 ## 
 ## 
-Design row: 5/6;   Started: Thu Oct  6 19:43:15 2022;   Total elapsed time: 01m 9.34s 
+Design row: 5/6;   Started: Thu Mar 23 14:31:11 2023;   Total elapsed time: 01m 10.20s 
+##  Conditions: nitems=300, dscrmn=1.5
 ## 
 ## 
-Design row: 6/6;   Started: Thu Oct  6 19:43:31 2022;   Total elapsed time: 01m 25.30s</code></pre>
+Design row: 6/6;   Started: Thu Mar 23 14:31:26 2023;   Total elapsed time: 01m 25.57s 
+##  Conditions: nitems=500, dscrmn=1.5
+## </code></pre>
 <pre class="r"><code>dplyr::glimpse(res[1:2])</code></pre>
 <pre><code>## List of 2
 ##  $ nitems=100; discrimination=0.5:List of 1

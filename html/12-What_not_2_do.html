@@ -299,8 +299,8 @@ pre code {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -308,16 +308,9 @@ pre code {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -421,7 +414,7 @@ d = data.frame(d)
 # the following line was added to determine the computation time
 time1 &lt;- Sys.time()
 time1 - time0</code></pre>
-<pre><code>## Time difference of 6.06 mins</code></pre>
+<pre><code>## Time difference of 6.12 mins</code></pre>
 <pre class="r"><code>head(d)</code></pre>
 <pre><code>##   iteration    a    b   cp   N model Sobel_z
 ## 1         1 -0.3 -0.3 -0.2 100     1  1.7836
@@ -489,198 +482,253 @@ res &lt;- runSimulation(design=Design, replications=1000, generate=Generate,
                      analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 ## 
-Design row: 1/54;   Started: Thu Oct  6 19:36:58 2022;   Total elapsed time: 0.00s 
+Design row: 1/54;   Started: Thu Mar 23 14:24:40 2023;   Total elapsed time: 0.00s 
+##  Conditions: N=100, a=-0.3, b=-0.3, cp=-0.2
 ## 
 ## 
-Design row: 2/54;   Started: Thu Oct  6 19:37:04 2022;   Total elapsed time: 5.58s 
+Design row: 2/54;   Started: Thu Mar 23 14:24:46 2023;   Total elapsed time: 5.61s 
+##  Conditions: N=300, a=-0.3, b=-0.3, cp=-0.2
 ## 
 ## 
-Design row: 3/54;   Started: Thu Oct  6 19:37:10 2022;   Total elapsed time: 11.26s 
+Design row: 3/54;   Started: Thu Mar 23 14:24:52 2023;   Total elapsed time: 11.47s 
+##  Conditions: N=100, a=0, b=-0.3, cp=-0.2
 ## 
 ## 
-Design row: 4/54;   Started: Thu Oct  6 19:37:15 2022;   Total elapsed time: 16.80s 
+Design row: 4/54;   Started: Thu Mar 23 14:24:58 2023;   Total elapsed time: 17.11s 
+##  Conditions: N=300, a=0, b=-0.3, cp=-0.2
 ## 
 ## 
-Design row: 5/54;   Started: Thu Oct  6 19:37:21 2022;   Total elapsed time: 22.53s 
+Design row: 5/54;   Started: Thu Mar 23 14:25:03 2023;   Total elapsed time: 22.98s 
+##  Conditions: N=100, a=0.3, b=-0.3, cp=-0.2
 ## 
 ## 
-Design row: 6/54;   Started: Thu Oct  6 19:37:27 2022;   Total elapsed time: 28.19s 
+Design row: 6/54;   Started: Thu Mar 23 14:25:09 2023;   Total elapsed time: 28.62s 
+##  Conditions: N=300, a=0.3, b=-0.3, cp=-0.2
 ## 
 ## 
-Design row: 7/54;   Started: Thu Oct  6 19:37:32 2022;   Total elapsed time: 33.86s 
+Design row: 7/54;   Started: Thu Mar 23 14:25:15 2023;   Total elapsed time: 34.38s 
+##  Conditions: N=100, a=-0.3, b=0, cp=-0.2
 ## 
 ## 
-Design row: 8/54;   Started: Thu Oct  6 19:37:38 2022;   Total elapsed time: 39.33s 
+Design row: 8/54;   Started: Thu Mar 23 14:25:21 2023;   Total elapsed time: 40.25s 
+##  Conditions: N=300, a=-0.3, b=0, cp=-0.2
 ## 
 ## 
-Design row: 9/54;   Started: Thu Oct  6 19:37:43 2022;   Total elapsed time: 45.06s 
+Design row: 9/54;   Started: Thu Mar 23 14:25:27 2023;   Total elapsed time: 46.09s 
+##  Conditions: N=100, a=0, b=0, cp=-0.2
 ## 
 ## 
-Design row: 10/54;   Started: Thu Oct  6 19:37:49 2022;   Total elapsed time: 50.59s 
+Design row: 10/54;   Started: Thu Mar 23 14:25:32 2023;   Total elapsed time: 51.65s 
+##  Conditions: N=300, a=0, b=0, cp=-0.2
 ## 
 ## 
-Design row: 11/54;   Started: Thu Oct  6 19:37:55 2022;   Total elapsed time: 56.60s 
+Design row: 11/54;   Started: Thu Mar 23 14:25:38 2023;   Total elapsed time: 57.44s 
+##  Conditions: N=100, a=0.3, b=0, cp=-0.2
 ## 
 ## 
-Design row: 12/54;   Started: Thu Oct  6 19:38:01 2022;   Total elapsed time: 01m 2.11s 
+Design row: 12/54;   Started: Thu Mar 23 14:25:43 2023;   Total elapsed time: 01m 3.03s 
+##  Conditions: N=300, a=0.3, b=0, cp=-0.2
 ## 
 ## 
-Design row: 13/54;   Started: Thu Oct  6 19:38:06 2022;   Total elapsed time: 01m 7.80s 
+Design row: 13/54;   Started: Thu Mar 23 14:25:49 2023;   Total elapsed time: 01m 8.88s 
+##  Conditions: N=100, a=-0.3, b=0.3, cp=-0.2
 ## 
 ## 
-Design row: 14/54;   Started: Thu Oct  6 19:38:12 2022;   Total elapsed time: 01m 13.47s 
+Design row: 14/54;   Started: Thu Mar 23 14:25:55 2023;   Total elapsed time: 01m 14.58s 
+##  Conditions: N=300, a=-0.3, b=0.3, cp=-0.2
 ## 
 ## 
-Design row: 15/54;   Started: Thu Oct  6 19:38:18 2022;   Total elapsed time: 01m 19.38s 
+Design row: 15/54;   Started: Thu Mar 23 14:26:01 2023;   Total elapsed time: 01m 20.47s 
+##  Conditions: N=100, a=0, b=0.3, cp=-0.2
 ## 
 ## 
-Design row: 16/54;   Started: Thu Oct  6 19:38:23 2022;   Total elapsed time: 01m 24.78s 
+Design row: 16/54;   Started: Thu Mar 23 14:26:07 2023;   Total elapsed time: 01m 26.06s 
+##  Conditions: N=300, a=0, b=0.3, cp=-0.2
 ## 
 ## 
-Design row: 17/54;   Started: Thu Oct  6 19:38:29 2022;   Total elapsed time: 01m 30.56s 
+Design row: 17/54;   Started: Thu Mar 23 14:26:13 2023;   Total elapsed time: 01m 32.14s 
+##  Conditions: N=100, a=0.3, b=0.3, cp=-0.2
 ## 
 ## 
-Design row: 18/54;   Started: Thu Oct  6 19:38:35 2022;   Total elapsed time: 01m 36.58s 
+Design row: 18/54;   Started: Thu Mar 23 14:26:18 2023;   Total elapsed time: 01m 37.68s 
+##  Conditions: N=300, a=0.3, b=0.3, cp=-0.2
 ## 
 ## 
-Design row: 19/54;   Started: Thu Oct  6 19:38:41 2022;   Total elapsed time: 01m 42.99s 
+Design row: 19/54;   Started: Thu Mar 23 14:26:24 2023;   Total elapsed time: 01m 43.50s 
+##  Conditions: N=100, a=-0.3, b=-0.3, cp=0
 ## 
 ## 
-Design row: 20/54;   Started: Thu Oct  6 19:38:47 2022;   Total elapsed time: 01m 48.71s 
+Design row: 20/54;   Started: Thu Mar 23 14:26:30 2023;   Total elapsed time: 01m 49.12s 
+##  Conditions: N=300, a=-0.3, b=-0.3, cp=0
 ## 
 ## 
-Design row: 21/54;   Started: Thu Oct  6 19:38:53 2022;   Total elapsed time: 01m 54.65s 
+Design row: 21/54;   Started: Thu Mar 23 14:26:35 2023;   Total elapsed time: 01m 54.95s 
+##  Conditions: N=100, a=0, b=-0.3, cp=0
 ## 
 ## 
-Design row: 22/54;   Started: Thu Oct  6 19:38:59 2022;   Total elapsed time: 02m 0.16s 
+Design row: 22/54;   Started: Thu Mar 23 14:26:41 2023;   Total elapsed time: 02m 0.63s 
+##  Conditions: N=300, a=0, b=-0.3, cp=0
 ## 
 ## 
-Design row: 23/54;   Started: Thu Oct  6 19:39:04 2022;   Total elapsed time: 02m 5.88s 
+Design row: 23/54;   Started: Thu Mar 23 14:26:47 2023;   Total elapsed time: 02m 6.51s 
+##  Conditions: N=100, a=0.3, b=-0.3, cp=0
 ## 
 ## 
-Design row: 24/54;   Started: Thu Oct  6 19:39:10 2022;   Total elapsed time: 02m 11.60s 
+Design row: 24/54;   Started: Thu Mar 23 14:26:53 2023;   Total elapsed time: 02m 12.19s 
+##  Conditions: N=300, a=0.3, b=-0.3, cp=0
 ## 
 ## 
-Design row: 25/54;   Started: Thu Oct  6 19:39:16 2022;   Total elapsed time: 02m 17.25s 
+Design row: 25/54;   Started: Thu Mar 23 14:26:58 2023;   Total elapsed time: 02m 18.05s 
+##  Conditions: N=100, a=-0.3, b=0, cp=0
 ## 
 ## 
-Design row: 26/54;   Started: Thu Oct  6 19:39:21 2022;   Total elapsed time: 02m 22.71s 
+Design row: 26/54;   Started: Thu Mar 23 14:27:04 2023;   Total elapsed time: 02m 23.97s 
+##  Conditions: N=300, a=-0.3, b=0, cp=0
 ## 
 ## 
-Design row: 27/54;   Started: Thu Oct  6 19:39:27 2022;   Total elapsed time: 02m 28.43s 
+Design row: 27/54;   Started: Thu Mar 23 14:27:10 2023;   Total elapsed time: 02m 29.76s 
+##  Conditions: N=100, a=0, b=0, cp=0
 ## 
 ## 
-Design row: 28/54;   Started: Thu Oct  6 19:39:32 2022;   Total elapsed time: 02m 33.99s 
+Design row: 28/54;   Started: Thu Mar 23 14:27:16 2023;   Total elapsed time: 02m 35.28s 
+##  Conditions: N=300, a=0, b=0, cp=0
 ## 
 ## 
-Design row: 29/54;   Started: Thu Oct  6 19:39:38 2022;   Total elapsed time: 02m 39.66s 
+Design row: 29/54;   Started: Thu Mar 23 14:27:21 2023;   Total elapsed time: 02m 41.03s 
+##  Conditions: N=100, a=0.3, b=0, cp=0
 ## 
 ## 
-Design row: 30/54;   Started: Thu Oct  6 19:39:44 2022;   Total elapsed time: 02m 45.20s 
+Design row: 30/54;   Started: Thu Mar 23 14:27:27 2023;   Total elapsed time: 02m 46.71s 
+##  Conditions: N=300, a=0.3, b=0, cp=0
 ## 
 ## 
-Design row: 31/54;   Started: Thu Oct  6 19:39:49 2022;   Total elapsed time: 02m 50.92s 
+Design row: 31/54;   Started: Thu Mar 23 14:27:33 2023;   Total elapsed time: 02m 52.51s 
+##  Conditions: N=100, a=-0.3, b=0.3, cp=0
 ## 
 ## 
-Design row: 32/54;   Started: Thu Oct  6 19:39:55 2022;   Total elapsed time: 02m 56.40s 
+Design row: 32/54;   Started: Thu Mar 23 14:27:39 2023;   Total elapsed time: 02m 58.14s 
+##  Conditions: N=300, a=-0.3, b=0.3, cp=0
 ## 
 ## 
-Design row: 33/54;   Started: Thu Oct  6 19:40:01 2022;   Total elapsed time: 03m 2.33s 
+Design row: 33/54;   Started: Thu Mar 23 14:27:44 2023;   Total elapsed time: 03m 4.00s 
+##  Conditions: N=100, a=0, b=0.3, cp=0
 ## 
 ## 
-Design row: 34/54;   Started: Thu Oct  6 19:40:06 2022;   Total elapsed time: 03m 7.87s 
+Design row: 34/54;   Started: Thu Mar 23 14:27:50 2023;   Total elapsed time: 03m 9.63s 
+##  Conditions: N=300, a=0, b=0.3, cp=0
 ## 
 ## 
-Design row: 35/54;   Started: Thu Oct  6 19:40:12 2022;   Total elapsed time: 03m 13.70s 
+Design row: 35/54;   Started: Thu Mar 23 14:27:56 2023;   Total elapsed time: 03m 15.74s 
+##  Conditions: N=100, a=0.3, b=0.3, cp=0
 ## 
 ## 
-Design row: 36/54;   Started: Thu Oct  6 19:40:18 2022;   Total elapsed time: 03m 19.13s 
+Design row: 36/54;   Started: Thu Mar 23 14:28:02 2023;   Total elapsed time: 03m 21.31s 
+##  Conditions: N=300, a=0.3, b=0.3, cp=0
 ## 
 ## 
-Design row: 37/54;   Started: Thu Oct  6 19:40:23 2022;   Total elapsed time: 03m 24.82s 
+Design row: 37/54;   Started: Thu Mar 23 14:28:08 2023;   Total elapsed time: 03m 27.67s 
+##  Conditions: N=100, a=-0.3, b=-0.3, cp=0.2
 ## 
 ## 
-Design row: 38/54;   Started: Thu Oct  6 19:40:29 2022;   Total elapsed time: 03m 30.26s 
+Design row: 38/54;   Started: Thu Mar 23 14:28:14 2023;   Total elapsed time: 03m 33.46s 
+##  Conditions: N=300, a=-0.3, b=-0.3, cp=0.2
 ## 
 ## 
-Design row: 39/54;   Started: Thu Oct  6 19:40:34 2022;   Total elapsed time: 03m 35.97s 
+Design row: 39/54;   Started: Thu Mar 23 14:28:20 2023;   Total elapsed time: 03m 39.37s 
+##  Conditions: N=100, a=0, b=-0.3, cp=0.2
 ## 
 ## 
-Design row: 40/54;   Started: Thu Oct  6 19:40:40 2022;   Total elapsed time: 03m 41.49s 
+Design row: 40/54;   Started: Thu Mar 23 14:28:25 2023;   Total elapsed time: 03m 44.98s 
+##  Conditions: N=300, a=0, b=-0.3, cp=0.2
 ## 
 ## 
-Design row: 41/54;   Started: Thu Oct  6 19:40:46 2022;   Total elapsed time: 03m 47.29s 
+Design row: 41/54;   Started: Thu Mar 23 14:28:31 2023;   Total elapsed time: 03m 50.88s 
+##  Conditions: N=100, a=0.3, b=-0.3, cp=0.2
 ## 
 ## 
-Design row: 42/54;   Started: Thu Oct  6 19:40:51 2022;   Total elapsed time: 03m 52.96s 
+Design row: 42/54;   Started: Thu Mar 23 14:28:37 2023;   Total elapsed time: 03m 56.47s 
+##  Conditions: N=300, a=0.3, b=-0.3, cp=0.2
 ## 
 ## 
-Design row: 43/54;   Started: Thu Oct  6 19:40:57 2022;   Total elapsed time: 03m 58.60s 
+Design row: 43/54;   Started: Thu Mar 23 14:28:43 2023;   Total elapsed time: 04m 2.31s 
+##  Conditions: N=100, a=-0.3, b=0, cp=0.2
 ## 
 ## 
-Design row: 44/54;   Started: Thu Oct  6 19:41:03 2022;   Total elapsed time: 04m 4.13s 
+Design row: 44/54;   Started: Thu Mar 23 14:28:49 2023;   Total elapsed time: 04m 8.24s 
+##  Conditions: N=300, a=-0.3, b=0, cp=0.2
 ## 
 ## 
-Design row: 45/54;   Started: Thu Oct  6 19:41:08 2022;   Total elapsed time: 04m 9.84s 
+Design row: 45/54;   Started: Thu Mar 23 14:28:55 2023;   Total elapsed time: 04m 14.09s 
+##  Conditions: N=100, a=0, b=0, cp=0.2
 ## 
 ## 
-Design row: 46/54;   Started: Thu Oct  6 19:41:14 2022;   Total elapsed time: 04m 15.42s 
+Design row: 46/54;   Started: Thu Mar 23 14:29:00 2023;   Total elapsed time: 04m 19.66s 
+##  Conditions: N=300, a=0, b=0, cp=0.2
 ## 
 ## 
-Design row: 47/54;   Started: Thu Oct  6 19:41:20 2022;   Total elapsed time: 04m 21.13s 
+Design row: 47/54;   Started: Thu Mar 23 14:29:06 2023;   Total elapsed time: 04m 25.78s 
+##  Conditions: N=100, a=0.3, b=0, cp=0.2
 ## 
 ## 
-Design row: 48/54;   Started: Thu Oct  6 19:41:25 2022;   Total elapsed time: 04m 26.64s 
+Design row: 48/54;   Started: Thu Mar 23 14:29:12 2023;   Total elapsed time: 04m 31.40s 
+##  Conditions: N=300, a=0.3, b=0, cp=0.2
 ## 
 ## 
-Design row: 49/54;   Started: Thu Oct  6 19:41:31 2022;   Total elapsed time: 04m 32.46s 
+Design row: 49/54;   Started: Thu Mar 23 14:29:18 2023;   Total elapsed time: 04m 37.30s 
+##  Conditions: N=100, a=-0.3, b=0.3, cp=0.2
 ## 
 ## 
-Design row: 50/54;   Started: Thu Oct  6 19:41:36 2022;   Total elapsed time: 04m 37.97s 
+Design row: 50/54;   Started: Thu Mar 23 14:29:23 2023;   Total elapsed time: 04m 42.92s 
+##  Conditions: N=300, a=-0.3, b=0.3, cp=0.2
 ## 
 ## 
-Design row: 51/54;   Started: Thu Oct  6 19:41:42 2022;   Total elapsed time: 04m 43.86s 
+Design row: 51/54;   Started: Thu Mar 23 14:29:30 2023;   Total elapsed time: 04m 49.19s 
+##  Conditions: N=100, a=0, b=0.3, cp=0.2
 ## 
 ## 
-Design row: 52/54;   Started: Thu Oct  6 19:41:48 2022;   Total elapsed time: 04m 49.27s 
+Design row: 52/54;   Started: Thu Mar 23 14:29:35 2023;   Total elapsed time: 04m 54.98s 
+##  Conditions: N=300, a=0, b=0.3, cp=0.2
 ## 
 ## 
-Design row: 53/54;   Started: Thu Oct  6 19:41:53 2022;   Total elapsed time: 04m 55.02s 
+Design row: 53/54;   Started: Thu Mar 23 14:29:42 2023;   Total elapsed time: 05m 1.15s 
+##  Conditions: N=100, a=0.3, b=0.3, cp=0.2
 ## 
 ## 
-Design row: 54/54;   Started: Thu Oct  6 19:41:59 2022;   Total elapsed time: 05m 0.48s</code></pre>
+Design row: 54/54;   Started: Thu Mar 23 14:29:47 2023;   Total elapsed time: 05m 6.79s 
+##  Conditions: N=300, a=0.3, b=0.3, cp=0.2
+## </code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 05m 6.19s</code></pre>
+## Simulation complete. Total execution time: 05m 12.63s</code></pre>
 <pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 54 × 10
 ##        N     a     b    cp sobel sobel_incorrect REPLIC…¹ SIM_T…² COMPL…³   SEED
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;           &lt;dbl&gt;    &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;    &lt;int&gt;
-##  1   100  -0.3  -0.3  -0.2 0.487           0.063     1000    5.58 Thu Oc… 1.28e9
-##  2   300  -0.3  -0.3  -0.2 0.995           0.382     1000    5.68 Thu Oc… 1.28e9
-##  3   100   0    -0.3  -0.2 0.012           0.194     1000    5.53 Thu Oc… 8.70e8
-##  4   300   0    -0.3  -0.2 0.026           0.866     1000    5.73 Thu Oc… 2.01e9
-##  5   100   0.3  -0.3  -0.2 0.501           0.451     1000    5.66 Thu Oc… 3.57e8
-##  6   300   0.3  -0.3  -0.2 0.997           0.993     1000    5.68 Thu Oc… 8.53e8
-##  7   100  -0.3   0    -0.2 0.014           0.003     1000    5.47 Thu Oc… 7.06e8
-##  8   300  -0.3   0    -0.2 0.034           0.018     1000    5.73 Thu Oc… 1.85e9
-##  9   100   0     0    -0.2 0               0.002     1000    5.54 Thu Oc… 6.81e8
-## 10   300   0     0    -0.2 0               0.013     1000    6.00 Thu Oc… 1.76e9
+##  1   100  -0.3  -0.3  -0.2 0.487           0.063     1000    5.61 Thu Ma… 1.28e9
+##  2   300  -0.3  -0.3  -0.2 0.995           0.382     1000    5.86 Thu Ma… 1.28e9
+##  3   100   0    -0.3  -0.2 0.012           0.194     1000    5.64 Thu Ma… 8.70e8
+##  4   300   0    -0.3  -0.2 0.026           0.866     1000    5.87 Thu Ma… 2.01e9
+##  5   100   0.3  -0.3  -0.2 0.501           0.451     1000    5.63 Thu Ma… 3.57e8
+##  6   300   0.3  -0.3  -0.2 0.997           0.993     1000    5.77 Thu Ma… 8.53e8
+##  7   100  -0.3   0    -0.2 0.014           0.003     1000    5.87 Thu Ma… 7.06e8
+##  8   300  -0.3   0    -0.2 0.034           0.018     1000    5.84 Thu Ma… 1.85e9
+##  9   100   0     0    -0.2 0               0.002     1000    5.56 Thu Ma… 6.81e8
+## 10   300   0     0    -0.2 0               0.013     1000    5.78 Thu Ma… 1.76e9
 ## # … with 44 more rows, and abbreviated variable names ¹​REPLICATIONS, ²​SIM_TIME,
 ## #   ³​COMPLETED</code></pre>
 <pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 54 × 10
 ##        N     a     b    cp sobel sobel_incorrect REPLIC…¹ SIM_T…² COMPL…³   SEED
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;           &lt;dbl&gt;    &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;    &lt;int&gt;
-##  1   100  -0.3  -0.3  -0.2 0.487           0.063     1000    5.58 Thu Oc… 1.28e9
-##  2   300  -0.3  -0.3  -0.2 0.995           0.382     1000    5.68 Thu Oc… 1.28e9
-##  3   100   0    -0.3  -0.2 0.012           0.194     1000    5.53 Thu Oc… 8.70e8
-##  4   300   0    -0.3  -0.2 0.026           0.866     1000    5.73 Thu Oc… 2.01e9
-##  5   100   0.3  -0.3  -0.2 0.501           0.451     1000    5.66 Thu Oc… 3.57e8
-##  6   300   0.3  -0.3  -0.2 0.997           0.993     1000    5.68 Thu Oc… 8.53e8
-##  7   100  -0.3   0    -0.2 0.014           0.003     1000    5.47 Thu Oc… 7.06e8
-##  8   300  -0.3   0    -0.2 0.034           0.018     1000    5.73 Thu Oc… 1.85e9
-##  9   100   0     0    -0.2 0               0.002     1000    5.54 Thu Oc… 6.81e8
-## 10   300   0     0    -0.2 0               0.013     1000    6.00 Thu Oc… 1.76e9
+##  1   100  -0.3  -0.3  -0.2 0.487           0.063     1000    5.61 Thu Ma… 1.28e9
+##  2   300  -0.3  -0.3  -0.2 0.995           0.382     1000    5.86 Thu Ma… 1.28e9
+##  3   100   0    -0.3  -0.2 0.012           0.194     1000    5.64 Thu Ma… 8.70e8
+##  4   300   0    -0.3  -0.2 0.026           0.866     1000    5.87 Thu Ma… 2.01e9
+##  5   100   0.3  -0.3  -0.2 0.501           0.451     1000    5.63 Thu Ma… 3.57e8
+##  6   300   0.3  -0.3  -0.2 0.997           0.993     1000    5.77 Thu Ma… 8.53e8
+##  7   100  -0.3   0    -0.2 0.014           0.003     1000    5.87 Thu Ma… 7.06e8
+##  8   300  -0.3   0    -0.2 0.034           0.018     1000    5.84 Thu Ma… 1.85e9
+##  9   100   0     0    -0.2 0               0.002     1000    5.56 Thu Ma… 6.81e8
+## 10   300   0     0    -0.2 0               0.013     1000    5.78 Thu Ma… 1.76e9
 ## # … with 44 more rows, and abbreviated variable names ¹​REPLICATIONS, ²​SIM_TIME,
 ## #   ³​COMPLETED</code></pre>
 <p>To see all the analysis results from <code>Design[1,]</code>, for example, inspect the object returned from <code>SimResults()</code>.</p>
