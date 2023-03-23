@@ -11,6 +11,12 @@
   
 - Progress reporting now includes abbreviated condition names and values
   in the console per condition
+  
+- New function `nc()` to be used in situation where uniquely naming a vector or list
+  according to the object names is useful (cf. `x <- c(A,B,C)`, which typically
+  returns an unnamed vector, to `x <- nc(A,B,C)`, in which `names(x)` is `"A" "B" "C"`).
+  This is mainly useful in the `Analyse()` step where objects must be named uniquely
+  in order to track the results in `Summarise()`
 
 ## Changes in SimDesign 2.10.1
 

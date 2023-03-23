@@ -143,6 +143,88 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
     out
 }
 
+#' Auto-named Concatenation of Vector or List
+#'
+#' This is a wrapper to the function \code{\link{c}}, however names the respective elements
+#' according to their input object name.
+#'
+#' @param ... objects to be concatenated
+#'
+#' @param use.names logical indicating if \code{names} should be preserved (unlike \code{\link{c}},
+#'   default is \code{FALSE})
+#'
+#' @param error.on.duplicate logical; if the same object name appears in the returning object
+#'   should an error be thrown? Default is \code{TRUE}
+#'
+#' @export
+#'
+#' @references
+#'
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
+#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
+#' \doi{10.20982/tqmp.16.4.p248}
+#'
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
+#'
+#' @examples
+#'
+#' A <- 1
+#' B <- 2
+#' C <- 3
+#'
+#' names(C) <- 'LetterC'
+#'
+#' # compare the following
+#' c(A, B, C) # unnamed
+#'
+#' nc(A, B, C) # named
+#' nc(this=A, B, C) # respects override named (same as c() )
+#' nc(this=A, B, C, use.names = TRUE) # preserve original name
+#'
+#' # throws errors if names not unique
+#' nc(this=A, this=B, C)
+#' nc(LetterC=A, B, C, use.names=TRUE)
+#'
+#' # List input
+#' A <- list(1)
+#' B <- list(2:3)
+#' C <- list('C')
+#'
+#' names(C) <- 'LetterC'
+#'
+#' # compare the following
+#' c(A, B, C) # unnamed
+#'
+#' nc(A, B, C) # named
+#' nc(this=A, B, C) # respects override named (same as c() and list() )
+#' nc(this=A, B, C, use.names = TRUE) # preserve original name
+#'
+#'
+nc <- function(..., use.names=FALSE, error.on.duplicate = TRUE){
+    dots <- list(...)
+    object <- as.list(substitute(list(...)))[-1L]
+    nms <- sapply(object, function(x) as.character(x))
+    nms[names(nms) != ""] <- names(nms[names(nms) != ""])
+    if(use.names){
+        tmp <- do.call(c, lapply(dots, function(x){
+            ret <- names(x)
+            if(is.null(ret)) ret <- NA
+            ret
+        }))
+        nms[!is.na(tmp)] <- tmp[!is.na(tmp)]
+    }
+    if(error.on.duplicate)
+        if(any(duplicated(nms)))
+            stop(sprintf('Vector/list contains the following duplicated names: %s',
+                         paste0(nms[duplicated(nms)], collapse=', ')),
+                 call.=FALSE)
+    ret <- c(...)
+    names(ret) <- nms
+    ret
+}
+
 isList <- function(x) !is.data.frame(x) && is.list(x)
 
 sim_results_check <- function(sim_results){
