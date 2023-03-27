@@ -199,7 +199,8 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
 #' B <- c(100, 200)
 #'
 #' nc(A, B, C) # A's and B's numbered uniquely
-#' nc(beta=A, B, C)
+#' c(A, B, C)  # compare
+#' nc(beta=A, B, C) # replacement of object name
 #'
 #' # retain names attributes (but append object name, when appropriate)
 #' names(A) <- letters[1:5]
@@ -211,7 +212,7 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
 #' c( nc(A, B, use.names=TRUE), nc(C))
 #'
 #' # error, 'b' appears twice
-#' names(B) <- 'b'
+#' names(B) <- c('b', 'b2')
 #' nc(A, B, C, use.names=TRUE)
 #'
 #' # List input
@@ -239,7 +240,8 @@ nc <- function(..., use.names=FALSE, error.on.duplicate = TRUE){
         nms <- as.list(nms)
         for(i in length(nms):1L){
             if(len[i] > 1L)
-                nms[[i]] <- paste0(rep(nms[[i]], len[i]), '.',
+                nms[[i]] <- paste0(rep(nms[[i]], len[i]),
+                                   if(!is.null(names(dots[[i]]))) "." else NULL,
                                 if(is.null(names(dots[[i]]))) 1L:len[i]
                                 else names(dots[[i]]))
         }

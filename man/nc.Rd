@@ -50,7 +50,8 @@ A <- c(5,4,3,2,1)
 B <- c(100, 200)
 
 nc(A, B, C) # A's and B's numbered uniquely
-nc(beta=A, B, C)
+c(A, B, C)  # compare
+nc(beta=A, B, C) # replacement of object name
 
 # retain names attributes (but append object name, when appropriate)
 names(A) <- letters[1:5]
@@ -62,7 +63,7 @@ nc(A, B, C, use.names=TRUE)
 c( nc(A, B, use.names=TRUE), nc(C))
 
 # error, 'b' appears twice
-names(B) <- 'b'
+names(B) <- c('b', 'b2')
 nc(A, B, C, use.names=TRUE)
 
 # List input
