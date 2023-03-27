@@ -45,6 +45,26 @@ nc(t.test(c(1:2))$p.value, t.test(c(3:4))$p.value)
 nc(T1 = t.test(c(1:2))$p.value,
    T2 = t.test(c(3:4))$p.value)
 
+# vector of unnamed inputs
+A <- c(5,4,3,2,1)
+B <- c(100, 200)
+
+nc(A, B, C) # A's and B's numbered uniquely
+nc(beta=A, B, C)
+
+# retain names attributes (but append object name, when appropriate)
+names(A) <- letters[1:5]
+nc(A, B, C)
+nc(beta=A, B, C)
+nc(A, B, C, use.names=TRUE)
+
+# mix and match if some named elements work while others do not
+c( nc(A, B, use.names=TRUE), nc(C))
+
+# error, 'b' appears twice
+names(B) <- 'b'
+nc(A, B, C, use.names=TRUE)
+
 # List input
 A <- list(1)
 B <- list(2:3)

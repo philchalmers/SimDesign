@@ -194,6 +194,26 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
 #' nc(T1 = t.test(c(1:2))$p.value,
 #'    T2 = t.test(c(3:4))$p.value)
 #'
+#' # vector of unnamed inputs
+#' A <- c(5,4,3,2,1)
+#' B <- c(100, 200)
+#'
+#' nc(A, B, C) # A's and B's numbered uniquely
+#' nc(beta=A, B, C)
+#'
+#' # retain names attributes (but append object name, when appropriate)
+#' names(A) <- letters[1:5]
+#' nc(A, B, C)
+#' nc(beta=A, B, C)
+#' nc(A, B, C, use.names=TRUE)
+#'
+#' # mix and match if some named elements work while others do not
+#' c( nc(A, B, use.names=TRUE), nc(C))
+#'
+#' # error, 'b' appears twice
+#' names(B) <- 'b'
+#' nc(A, B, C, use.names=TRUE)
+#'
 #' # List input
 #' A <- list(1)
 #' B <- list(2:3)
@@ -211,13 +231,24 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
 #'
 nc <- function(..., use.names=FALSE, error.on.duplicate = TRUE){
     dots <- list(...)
+    len <- sapply(dots, length)
     object <- as.list(substitute(list(...)))[-1L]
     nms <- sapply(object, function(x) paste0(as.character(x), collapse='_'))
     nms[names(nms) != ""] <- names(nms[names(nms) != ""])
+    if(any(len > 1L)){
+        nms <- as.list(nms)
+        for(i in length(nms):1L){
+            if(len[i] > 1L)
+                nms[[i]] <- paste0(rep(nms[[i]], len[i]), '.',
+                                if(is.null(names(dots[[i]]))) 1L:len[i]
+                                else names(dots[[i]]))
+        }
+        nms <- do.call(c, nms)
+    }
     if(use.names){
         tmp <- do.call(c, lapply(dots, function(x){
             ret <- names(x)
-            if(is.null(ret)) ret <- NA
+            if(is.null(ret)) ret <- rep(NA, length(x))
             ret
         }))
         nms[!is.na(tmp)] <- tmp[!is.na(tmp)]
