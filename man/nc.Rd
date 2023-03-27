@@ -17,7 +17,9 @@ should an error be thrown? Default is \code{TRUE}}
 }
 \description{
 This is a wrapper to the function \code{\link{c}}, however names the respective elements
-according to their input object name.
+according to their input object name. For this reason, nesting \code{nc()} calls
+is not recommended (joining independent \code{nc()} calls via \code{c()}
+is however reasonable).
 }
 \examples{
 
