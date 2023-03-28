@@ -17,6 +17,9 @@
   returns an unnamed vector, to `x <- nc(A,B,C)`, in which `names(x)` is `"A" "B" "C"`).
   This is mainly useful in the `Analyse()` step where objects must be named uniquely
   in order to track the results in `Summarise()`
+  
+- Added `Bradley1978()` for test of Bradley's (1978) robustness interval for 
+  empirical detection statistics
 
 ## Changes in SimDesign 2.10.1
 
