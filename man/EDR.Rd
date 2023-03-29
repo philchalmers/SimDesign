@@ -47,7 +47,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
 }
 \seealso{
-\code{\link{ECR}}
+\code{\link{ECR}}, \code{\link{Bradley1978}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}

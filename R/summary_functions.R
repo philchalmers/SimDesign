@@ -853,7 +853,7 @@ RD <- function(est, pop, as.vector = TRUE, unname = FALSE){
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
-#' @seealso \code{\link{ECR}}
+#' @seealso \code{\link{ECR}}, \code{\link{Bradley1978}}
 #'
 #' @export EDR
 #' @references
