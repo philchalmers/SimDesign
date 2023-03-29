@@ -5,20 +5,26 @@
 \title{Bradley's (1978) empirical robustness interval}
 \usage{
 Bradley1978(
-  p,
+  rate,
   alpha = 0.05,
   type = "liberal",
-  unname = FALSE,
+  CI = FALSE,
   out.logical = FALSE,
-  out.labels = c("conservative", "robust", "liberal")
+  out.labels = c("conservative", "robust", "liberal"),
+  unname = FALSE
 )
 }
 \arguments{
-\item{p}{(optional) numeric vector containing the empirical detection
-rate(s) estimates. If supplied a character vector with elements defined in
-\code{out.labels} or a logical vector will be returned indicating whether the
-detection rate estimate is considered 'robust'. If missing, the
-interval criteria will be printed to the console}
+\item{rate}{(optional) numeric vector containing the empirical detection
+  rate(s) or empirical confidence interval estimates.
+  If supplied a character vector with elements defined in
+  \code{out.labels} or a logical vector will be returned indicating whether the
+  detection rate estimate is considered 'robust'.
+
+  When the input is an empirical coverage rate the argument \code{CI} must be
+  set to \code{TRUE}.
+
+  If this input is missing, the interval criteria will be printed to the console}
 
 \item{alpha}{Type I error rate to evaluated (default is .05)}
 
@@ -26,32 +32,49 @@ interval criteria will be printed to the console}
 Default is 'liberal', however can be 'stringent' to use Bradley's more
 stringent robustness criteria}
 
-\item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
-names?}
+\item{CI}{logical; should this robust interval be constructed on empirical detection
+rates (\code{FALSE}) or empirical coverage rates (\code{TRUE})?}
 
 \item{out.logical}{logical; should the output vector be TRUE/FALSE indicating whether
-the supplied empirical detection rate should be considered "robust"? Default is
+the supplied empirical detection rate/CI should be considered "robust"? Default is
 FALSE, in which case the out.labels elements are used instead}
 
 \item{out.labels}{character vector of length three indicating the classification
 labels according to the desired robustness interval}
+
+\item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
+names?}
 }
 \description{
-Robustness interval criteria for empirical detection rate estimates defined
-by Bradley (1978). See \code{\link{EDR}} to obtain such estimates.
+Robustness interval criteria for empirical detection rate estimates and
+empirical coverage estimates defined by Bradley (1978).
+See \code{\link{EDR}} and \code{\link{ECR}} to obtain such estimates.
 }
 \examples{
 
-# interval criteria used
+# interval criteria used for empirical detection rates
 Bradley1978()
 Bradley1978(type = 'stringent')
 Bradley1978(alpha = .01, type = 'stringent')
 
 # intervals applied to empirical detection rate estimates
-edr <- c(test1=.05, test2=.027, test3=.051, test4=.076, test5=.024)
+edr <- c(test1 = .05, test2 = .027, test3 = .051, test4 = .076, test5 = .024)
 
 Bradley1978(edr)
 Bradley1978(edr, out.logical=TRUE) # is robust?
+
+#####
+# interval criteria used for coverage estimates
+
+Bradley1978(CI = TRUE)
+Bradley1978(CI = TRUE, type = 'stringent')
+Bradley1978(CI = TRUE, alpha = .01, type = 'stringent')
+
+# intervals applied to empirical coverage rate estimates
+ecr <- c(test1 = .950, test2 = .973, test3 = .949, test4 = .924, test5 = .976)
+
+Bradley1978(ecr, CI=TRUE)
+Bradley1978(ecr, CI=TRUE, out.logical=TRUE) # is robust?
 
 }
 \references{
@@ -67,7 +90,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
 }
 \seealso{
-\code{\link{EDR}}, \code{\link{Serlin2000}}
+\code{\link{EDR}}, \code{\link{ECR}}, \code{\link{Serlin2000}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}

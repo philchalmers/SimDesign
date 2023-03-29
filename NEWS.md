@@ -19,7 +19,7 @@
   in order to track the results in `Summarise()`
   
 - Added `Bradley1978()` for test of Bradley's (1978) robustness interval for 
-  empirical detection statistics
+  empirical detection/coverage rate statistics
 
 ## Changes in SimDesign 2.10.1
 
