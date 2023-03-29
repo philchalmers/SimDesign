@@ -4,22 +4,37 @@
 \alias{Bradley1978}
 \title{Bradley's (1978) empirical robustness interval}
 \usage{
-Bradley1978(p, alpha = 0.05, type = "liberal", unname = FALSE)
+Bradley1978(
+  p,
+  alpha = 0.05,
+  type = "liberal",
+  unname = FALSE,
+  out.logical = FALSE,
+  out.labels = c("conservative", "robust", "liberal")
+)
 }
 \arguments{
-\item{p}{(optional) vector containing the empirical detection rate(s) estimates.
-If supplied a vector of TRUE/FALSE terms will be returned indicating whether the
-detection rate estimate is considered 'robust'; otherwise, if missing the
-interval criteria will be returned}
+\item{p}{(optional) numeric vector containing the empirical detection
+rate(s) estimates. If supplied a character vector with elements defined in
+\code{out.labels} or a logical vector will be returned indicating whether the
+detection rate estimate is considered 'robust'. If missing, the
+interval criteria will be printed to the console}
 
 \item{alpha}{Type I error rate to evaluated (default is .05)}
 
 \item{type}{character vector indicating the type of interval classification to use.
-Default is 'liberal', however can be 'stringent' or 'both' to Bradley's stringent
-criteria or both liberal and stringent criteria, respectively}
+Default is 'liberal', however can be 'stringent' to use Bradley's more
+stringent robustness criteria}
 
 \item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
 names?}
+
+\item{out.logical}{logical; should the output vector be TRUE/FALSE indicating whether
+the supplied empirical detection rate should be considered "robust"? Default is
+FALSE, in which case the out.labels elements are used instead}
+
+\item{out.labels}{character vector of length three indicating the classification
+labels according to the desired robustness interval}
 }
 \description{
 Robustness interval criteria for empirical detection rate estimates defined
@@ -33,9 +48,10 @@ Bradley1978(type = 'stringent')
 Bradley1978(alpha = .01, type = 'stringent')
 
 # intervals applied to empirical detection rate estimates
-edr <- c(test1=.05, test2=.027, test3=.051, test4=.076)
+edr <- c(test1=.05, test2=.027, test3=.051, test4=.076, test5=.024)
 
 Bradley1978(edr)
+Bradley1978(edr, out.logical=TRUE) # is robust?
 
 }
 \references{

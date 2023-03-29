@@ -3,16 +3,24 @@
 #' Robustness interval criteria for empirical detection rate estimates defined
 #' by Bradley (1978). See \code{\link{EDR}} to obtain such estimates.
 #'
-#' @param p (optional) vector containing the empirical detection rate(s) estimates.
-#'   If supplied a vector of TRUE/FALSE terms will be returned indicating whether the
-#'   detection rate estimate is considered 'robust'; otherwise, if missing the
-#'   interval criteria will be returned
+#' @param p (optional) numeric vector containing the empirical detection
+#'   rate(s) estimates. If supplied a character vector with elements defined in
+#'   \code{out.labels} or a logical vector will be returned indicating whether the
+#'   detection rate estimate is considered 'robust'. If missing, the
+#'   interval criteria will be printed to the console
 #'
 #' @param alpha Type I error rate to evaluated (default is .05)
 #'
 #' @param type character vector indicating the type of interval classification to use.
-#'   Default is 'liberal', however can be 'stringent' or 'both' to Bradley's stringent
-#'   criteria or both liberal and stringent criteria, respectively
+#'   Default is 'liberal', however can be 'stringent' to use Bradley's more
+#'   stringent robustness criteria
+#'
+#' @param out.logical logical; should the output vector be TRUE/FALSE indicating whether
+#'   the supplied empirical detection rate should be considered "robust"? Default is
+#'   FALSE, in which case the out.labels elements are used instead
+#'
+#' @param out.labels character vector of length three indicating the classification
+#'   labels according to the desired robustness interval
 #'
 #' @param unname logical; apply \code{\link{unname}} to the results to remove any variable
 #'   names?
@@ -44,11 +52,14 @@
 #' Bradley1978(alpha = .01, type = 'stringent')
 #'
 #' # intervals applied to empirical detection rate estimates
-#' edr <- c(test1=.05, test2=.027, test3=.051, test4=.076)
+#' edr <- c(test1=.05, test2=.027, test3=.051, test4=.076, test5=.024)
 #'
 #' Bradley1978(edr)
+#' Bradley1978(edr, out.logical=TRUE) # is robust?
 #'
-Bradley1978 <- function(p, alpha = .05, type = 'liberal', unname = FALSE){
+Bradley1978 <- function(p, alpha = .05, type = 'liberal', unname = FALSE,
+                        out.logical = FALSE,
+                        out.labels = c('conservative', 'robust', 'liberal')){
     stopifnot(type %in% c('liberal', 'stringent'))
     stopifnot(length(alpha) == 1L)
     stopifnot(alpha <= 1 && alpha >= 0)
@@ -61,7 +72,14 @@ Bradley1978 <- function(p, alpha = .05, type = 'liberal', unname = FALSE){
     } else {
         if(is.data.frame(p) || is.matrix(p)) p <- as.numeric(p)
         stopifnot(all(p <= 1 & p >= 0))
-        ret <- p >= bounds[1L] & p <= bounds[2]
+        if(out.logical){
+            ret <- p >= bounds[1L] & p <= bounds[2]
+        } else {
+            ret <- rep(out.labels[2], length(p))
+            names(ret) <- names(p)
+            ret[p < bounds[1L]] <- out.labels[1L]
+            ret[p > bounds[2L]] <- out.labels[3L]
+        }
         if(unname) ret <- unname(ret)
     }
     ret
