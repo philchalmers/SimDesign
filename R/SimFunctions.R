@@ -12,7 +12,7 @@
 #' (which, if users are interacting
 #' with R via the RStudio IDE, will also open the template file after it has been saved).
 #' For larger simulations, two
-#' separate files could also be used (achieved by passing \code{singlefile = FALSE}),
+#' separate files could also be used (achieved by changing \code{out.files}),
 #' and may be easier for debugging/sourcing the simulation code; however, this is a
 #' matter of preference and does not change any functionality in the package.
 #'
@@ -24,10 +24,13 @@
 #'
 #' @param comments logical; include helpful comments? Default is \code{FALSE}
 #'
-#' @param singlefile logical; when \code{filename} is included, put output in one files? When \code{FALSE} the
-#'   output is saved to two separate files containing the functions and design definitions. The two-file format
+#' @param out.files integer indicating the number of files to break the simulation code into
+#'   when \code{filename} is included (default is 1). When \code{out.files = 2} the
+#'   output is saved to two separate files containing the functions and design definitions,
+#'   \code{out.files = 4} separates the generate, analyse, summarise, and execution code into
+#'   separate files, while \code{out.files = 5} is the same as \code{out.files = 5} but includes
+#'   a file for user-defined functions and objects. The multi-file formats
 #'   often makes organization and debugging slightly easier, especially for larger Monte Carlo simulations.
-#'   Default is \code{TRUE}
 #'
 #' @param summarise include \code{summarise} function? Default is \code{TRUE}
 #'
@@ -36,6 +39,11 @@
 #' @param nAnalyses number of analysis functions to create (default is 1). Increasing the value
 #'   of this argument when independent analysis are being performed allows function definitions
 #'   to be better partitioned and potentially more modular
+#'
+#' @param nGenerate number of generate functions to create (default is 1). Increase the value
+#'   of this argument when when the data generation functions are very different and should
+#'   be isolated from each other (otherwise, if there is much in common between the generate
+#'   steps, the default of 1 should be preferred)
 #'
 #' @param openFiles logical; after files have been generated, open them in your text editor
 #'   (e.g., if Rstudio is running the scripts will open in a new tab)?
@@ -72,11 +80,16 @@
 #' SimFunctions(nAnalyses = 2)
 #' SimFunctions(nAnalyses = 3)
 #'
+#' #' Multiple analysis + generate functions
+#' SimFunctions(nAnalyses = 2, nGenerate=2)
+#'
 #' }
 #'
 SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
-                         singlefile = TRUE, summarise = TRUE, generate = TRUE,
-                         nAnalyses=1, openFiles = TRUE){
+                         out.files = 1, summarise = TRUE, generate = TRUE,
+                         nAnalyses = 1, nGenerate = 1, openFiles = TRUE){
+    stopifnot(out.files %in% c(1,2,4,5))
+    stopifnot(nAnalyses >= 1)
     LINE <- function()
         cat('#-------------------------------------------------------------------\n')
     HEAD <- function(){
@@ -86,43 +99,66 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
             cat('\n### Define design conditions')
         cat('\nDesign <- createDesign(factor1 = NA,
                        factor2 = NA)\n\n')
-        if(!is.null(filename) && !singlefile){
+        if(!is.null(filename) && out.files == 2L){
+            if(comments) cat('### Source in essential functions\n')
+            cat('# setwd(\"', dir, '\")', sep='')
+            cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')\n\n', sep='')
+        }
+        if(!is.null(filename) && out.files == 4L || out.files == 5L){
+            browser()
             if(comments) cat('### Source in essential functions\n')
             cat('# setwd(\"', dir, '\")', sep='')
             cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')\n\n', sep='')
         }
     }
 
-    FUNCTIONS <- function(){
+    FUNCTIONS <- function(add.gen=TRUE, add.analyse=TRUE, add.summarise=TRUE){
         LINE()
         if(comments) cat('\n### Define essential simulation functions\n')
-        if(generate){
-            cat('\nGenerate <- function(condition, fixed_objects = NULL) {')
-            if(comments) cat('\n    # Define data generation code ...\n')
-            if(comments) cat('\n    # Return a vector, matrix, data.frame, or list')
-            cat('\n    dat <- data.frame()')
-            cat('\n    dat\n}')
-            cat('\n')
+        if(generate && add.gen){
+            if(nGenerate == 1L){
+                cat('\nGenerate <- function(condition, fixed_objects = NULL) {')
+                if(comments) cat('\n    # Define data generation code ...\n')
+                if(comments) cat('\n    # Return a vector, matrix, data.frame, or list')
+                cat('\n    dat <- data.frame()')
+                cat('\n    dat\n}')
+                cat('\n')
+            } else {
+                for(i in 1L:nGenerate){
+                    cat(sprintf('\nGenerate.G%i <- function(condition, fixed_objects = NULL) {', i))
+                    if(i < nGenerate) cat("\n    GenerateIf(TRUE)")
+                    if(comments) cat('\n    # Define data generation code ...\n')
+                    if(comments) cat('\n    # Return a vector, matrix, data.frame, or list')
+                    cat('\n    dat <- data.frame()')
+                    cat('\n    dat\n}')
+                    cat('\n')
+                }
+                cat('\n')
+                LINE()
+                cat('\n')
+            }
         }
-        if(nAnalyses == 1L){
-            cat('\nAnalyse <- function(condition, dat, fixed_objects = NULL) {')
-            if(comments) cat('\n    # Run statistical analyses of interest ... \n')
-            if(comments) cat('\n    # Return a named vector or list')
-            cat('\n    ret <- nc(stat1 = NaN, stat2 = NaN)\n    ret\n}')
-            cat('\n\n')
-        } else {
-            for(i in 1L:nAnalyses){
-                cat(sprintf('\nAnalyse.A%i <- function(condition, dat, fixed_objects = NULL) {', i))
+        if(add.analyse){
+            if(nAnalyses == 1L){
+                cat('\nAnalyse <- function(condition, dat, fixed_objects = NULL) {')
                 if(comments) cat('\n    # Run statistical analyses of interest ... \n')
                 if(comments) cat('\n    # Return a named vector or list')
                 cat('\n    ret <- nc(stat1 = NaN, stat2 = NaN)\n    ret\n}')
+                cat('\n\n')
+            } else {
+                for(i in 1L:nAnalyses){
+                    cat(sprintf('\nAnalyse.A%i <- function(condition, dat, fixed_objects = NULL) {', i))
+                    if(comments) cat('\n    # Run statistical analyses of interest ... \n')
+                    if(comments) cat('\n    # Return a named vector or list')
+                    cat('\n    ret <- nc(stat1 = NaN, stat2 = NaN)\n    ret\n}')
+                    cat('\n')
+                }
+                cat('\n')
+                LINE()
                 cat('\n')
             }
-            cat('\n')
-            LINE()
-            cat('\n')
         }
-        if(summarise){
+        if(summarise && add.summarise){
             cat('Summarise <- function(condition, results, fixed_objects = NULL) {')
             if(comments) cat('\n    # Summarise the simulation results ...\n')
             if(comments) cat('\n    # Return a named vector of results')
@@ -133,17 +169,24 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
     TAIL <- function(){
         LINE()
         if(comments) cat('\n### Run the simulation\n')
-        if(nAnalyses==1L){
+        if(nAnalyses==1L && nGenerate==1L){
             cat('\nres <- runSimulation(design=Design, replications=1000,',
                 if(generate) 'generate=Generate, ')
             cat(sprintf('\n                     analyse=Analyse%s',
                         if(summarise) ', summarise=Summarise)' else ')'))
         } else {
-            Analyse_string <- sprintf("list(%s)",
-                                      paste0(paste0('A', 1L:nAnalyses, sep='='),
-                                      paste0('Analyse.A', 1L:nAnalyses), collapse=', '))
-            cat('\nres <- runSimulation(design=Design, replications=1000,',
-                if(generate) 'generate=Generate, ')
+            Analyse_string <- if(nAnalyses > 1L)
+                sprintf("list(%s)",paste0(paste0('A', 1L:nAnalyses, sep='='),
+                                          paste0('Analyse.A', 1L:nAnalyses), collapse=', '))
+            else "Analyse"
+            Generate_string <- if(nGenerate > 1L)
+                sprintf("list(%s)",paste0(paste0('G', 1L:nGenerate, sep='='),
+                                          paste0('Generate.G', 1L:nGenerate), collapse=', '))
+            else "Generate"
+            genspace <- if(nGenerate > 1L) '\n                     ' else ""
+            cat('\nres <- runSimulation(design=Design, replications=1000,')
+            if(generate)
+                cat(sprintf('%sgenerate=%s, ', genspace, Generate_string))
             cat(sprintf('\n                     analyse=%s%s', Analyse_string,
                         if(summarise) ', \n                     summarise=Summarise)' else ')'))
 
@@ -157,8 +200,8 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
             stop('File already exists! Please rename input or rename/remove existing files',
                  call.=FALSE)
     }
-    if(is.null(filename) || singlefile){
-        if(singlefile){
+    if(is.null(filename) || out.files == 1L){
+        if(out.files == 1L){
             if(!is.null(filename)){
                 cat(sprintf('Writing simulation components to file \"%s\" in \n  directory \"%s\"',
                             paste0(filename, '.R'), dir))
@@ -170,19 +213,35 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
         TAIL()
         if(!is.null(filename)) sink()
     } else {
-        cat(sprintf('Writing simulation components to files to \"%s\" and \"%s\" in \n  directory \"%s\"',
-                    paste0(filename, '.R'), paste0(filename, '-functions.R'), dir))
-        sink(paste0(filename, '.R'))
-        HEAD()
-        TAIL()
-        sink()
-        sink(paste0(filename, '-functions.R'))
-        FUNCTIONS()
-        sink()
+        if(out.files == 2L){
+            cat(sprintf('Writing simulation components to files to \"%s\" and \"%s\" in \n  directory \"%s\"',
+                        paste0(filename, '.R'), paste0(filename, '-functions.R'), dir))
+            sink(paste0(filename, '.R'))
+            HEAD()
+            TAIL()
+            sink()
+            sink(paste0(filename, '-functions.R'))
+            FUNCTIONS()
+            sink()
+        } else if(out.files == 4L){
+            browser()
+            cat(sprintf('Writing simulation components to files to \"%s\" and \"%s\" in \n  directory \"%s\"',
+                        paste0(filename, '.R'), paste0(filename, '-functions.R'), dir))
+            sink(paste0(filename, '.R'))
+            HEAD()
+            TAIL()
+            sink()
+            sink(paste0(filename, '-functions.R'))
+            FUNCTIONS()
+            sink()
+
+        } else if(out.files == 5L){
+
+        }
     }
     if(!is.null(filename) && openFiles){
         message('\n\nOpening file(s) in your current text editor...')
-        if(!singlefile) file.show(paste0(filename, '-functions.R'))
+        if(out.files > 1L) file.show(paste0(filename, '-functions.R'))
         file.show(paste0(filename, '.R'))
     }
     invisible(NULL)

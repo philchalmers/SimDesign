@@ -8,10 +8,11 @@ SimFunctions(
   filename = NULL,
   dir = getwd(),
   comments = FALSE,
-  singlefile = TRUE,
+  out.files = 1,
   summarise = TRUE,
   generate = TRUE,
   nAnalyses = 1,
+  nGenerate = 1,
   openFiles = TRUE
 )
 }
@@ -24,10 +25,13 @@ is generally the recommended approach when beginning to write a Monte Carlo simu
 
 \item{comments}{logical; include helpful comments? Default is \code{FALSE}}
 
-\item{singlefile}{logical; when \code{filename} is included, put output in one files? When \code{FALSE} the
-output is saved to two separate files containing the functions and design definitions. The two-file format
-often makes organization and debugging slightly easier, especially for larger Monte Carlo simulations.
-Default is \code{TRUE}}
+\item{out.files}{integer indicating the number of files to break the simulation code into
+when \code{filename} is included (default is 1). When \code{out.files = 2} the
+output is saved to two separate files containing the functions and design definitions,
+\code{out.files = 4} separates the generate, analyse, summarise, and execution code into
+separate files, while \code{out.files = 5} is the same as \code{out.files = 5} but includes
+a file for user-defined functions and objects. The multi-file formats
+often makes organization and debugging slightly easier, especially for larger Monte Carlo simulations.}
 
 \item{summarise}{include \code{summarise} function? Default is \code{TRUE}}
 
@@ -36,6 +40,11 @@ Default is \code{TRUE}}
 \item{nAnalyses}{number of analysis functions to create (default is 1). Increasing the value
 of this argument when independent analysis are being performed allows function definitions
 to be better partitioned and potentially more modular}
+
+\item{nGenerate}{number of generate functions to create (default is 1). Increase the value
+of this argument when when the data generation functions are very different and should
+be isolated from each other (otherwise, if there is much in common between the generate
+steps, the default of 1 should be preferred)}
 
 \item{openFiles}{logical; after files have been generated, open them in your text editor
 (e.g., if Rstudio is running the scripts will open in a new tab)?}
@@ -54,7 +63,7 @@ by this function to the hard-drive by passing a suitable \code{filename} argumen
 (which, if users are interacting
 with R via the RStudio IDE, will also open the template file after it has been saved).
 For larger simulations, two
-separate files could also be used (achieved by passing \code{singlefile = FALSE}),
+separate files could also be used (achieved by changing \code{out.files}),
 and may be easier for debugging/sourcing the simulation code; however, this is a
 matter of preference and does not change any functionality in the package.
 }
@@ -71,6 +80,9 @@ SimFunctions('mysim', comments = TRUE)
 # Multiple analysis functions for optional partitioning
 SimFunctions(nAnalyses = 2)
 SimFunctions(nAnalyses = 3)
+
+#' Multiple analysis + generate functions
+SimFunctions(nAnalyses = 2, nGenerate=2)
 
 }
 
