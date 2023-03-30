@@ -52,10 +52,13 @@ to create this simulation design object}
 condition (i.e., each row in \code{design}).
 Must be greater than 0}
 
-\item{generate}{user-defined data and parameter generating function.
+\item{generate}{user-defined data and parameter generating function (or named list of functions).
 See \code{\link{Generate}} for details. Note that this argument may be omitted by the
 user if they wish to generate the data with the \code{analyse} step, but for real-world
-simulations this is generally not recommended}
+simulations this is generally not recommended. If multiple generate functions are provided
+as a list then the list of generate functions are executed in order until the first valid
+generate function is executed, where the subsequent generation functions are then ignored
+(see \code{\link{GenerateIf}} to only apply data generation for specific conditions).}
 
 \item{analyse}{user-defined analysis function (or named list of functions)
 that acts on the data generated from

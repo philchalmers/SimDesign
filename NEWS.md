@@ -21,6 +21,13 @@
 - Added `Bradley1978()` for test of Bradley's (1978) robustness interval for 
   empirical detection/coverage rate statistics
   
+- `runSimulation(..., Generate)` can now be specified as a named list of functions
+  similar to `Analyse()`, however only the first valid data generation function
+  will be used as the constructor of the simulated data (see the new `GenerateIf()` 
+  function to control the flow of these generation steps). This list input should
+  really only be used when the population generation functions are differ widely
+  depending on the `condition` under investigation
+  
 - `SimFunctions()` adds a few new inputs for saving one or more files (`save_structure`),
   defining one or more generate function (`nGenerate`), and whether to include an extra
   file for user-defined objects and functions (`extra_file`)

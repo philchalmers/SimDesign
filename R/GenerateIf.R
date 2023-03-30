@@ -1,10 +1,10 @@
-#' Perform a test that indicates whether a given \code{Analyse()} function should be executed
+#' Perform a test that indicates whether a given \code{Generate()} function should be executed
 #'
-#' This function is designed to prevent specific analysis function executions when the
-#' design conditions are not met. Primarily useful when the \code{analyse} argument to
-#' \code{\link{runSimulation}} was input as a named list object, however some of the
-#' analysis functions are not interesting/compatible with the generated data and should
-#' therefore be skipped.
+#' This function is designed to prevent specific generate function executions when the
+#' design conditions are not met. Primarily useful when the \code{generate} argument to
+#' \code{\link{runSimulation}} was input as a named list object, however should only be
+#' applied for some specific design condition (otherwise, the data generation moves to the
+#' next function in the list).
 #'
 #' @param x logical statement to evaluate. If the statement evaluates to \code{TRUE}
 #'   then the remainder of the defined function will be evaluated
@@ -32,24 +32,27 @@
 #' @examples
 #' \dontrun{
 #'
+#' # SimFunctions(nGenerate = 2)
+#'
 #' Design <- createDesign(N=c(10,20,30), var.equal = c(TRUE, FALSE))
 #'
-#' Generate <- function(condition, fixed_objects = NULL) {
+#' Generate.G1 <- function(condition, fixed_objects = NULL) {
+#'   GenerateIf(condition$var.equal == FALSE) # only run when unequal vars
+#'   Attach(condition)
+#'   dat <- data.frame(DV = c(rnorm(N), rnorm(N, sd=2)),
+#'                     IV = gl(2, N, labels=c('G1', 'G2')))
+#'   dat
+#' }
+#'
+#' Generate.G2 <- function(condition, fixed_objects = NULL) {
 #'   Attach(condition)
 #'   dat <- data.frame(DV = rnorm(N*2), IV = gl(2, N, labels=c('G1', 'G2')))
 #'   dat
 #' }
 #'
 #' # always run this analysis for each row in Design
-#' Analyse1 <- function(condition, dat, fixed_objects = NULL) {
+#' Analyse <- function(condition, dat, fixed_objects = NULL) {
 #'   mod <- t.test(DV ~ IV, data=dat)
-#'   mod$p.value
-#' }
-#'
-#' # Only perform analysis when variances are equal and N = 20 or 30
-#' Analyse2 <- function(condition, dat, fixed_objects = NULL) {
-#'   AnalyseIf(var.equal && N %in% c(20, 30), condition)
-#'   mod <- t.test(DV ~ IV, data=dat, var.equal=TRUE)
 #'   mod$p.value
 #' }
 #'
@@ -61,25 +64,20 @@
 #' #-------------------------------------------------------------------
 #'
 #' # append names 'Welch' and 'independent' to associated output
-#' res <- runSimulation(design=Design, replications=100, generate=Generate,
-#'                      analyse=list(Welch=Analyse1, independent=Analyse2),
+#' res <- runSimulation(design=Design, replications=1000,
+#'                      generate=list(G1=Generate.G1, G2=Generate.G2),
+#'                      analyse=Analyse,
 #'                      summarise=Summarise)
 #' res
 #'
-#' # leave results unnamed
-#' res <- runSimulation(design=Design, replications=100, generate=Generate,
-#'                      analyse=list(Analyse1, Analyse2),
-#'                      summarise=Summarise)
-#'
-#'
 #' }
 #'
-AnalyseIf <- function(x, condition = NULL){
+GenerateIf <- function(x, condition = NULL){
     e <- substitute(x)
     r <- eval(e, condition, parent.frame())
     if (!is.logical(r) || length(r) != 1L)
-        stop("AnalyseIf must return a single logical value", call.=FALSE)
+        stop("GenerateIf must return a single logical value", call.=FALSE)
     if(!isTRUE(r))
-        stop('ANALYSEIF RAISED ERROR', call.=FALSE)
+        stop('GENERATEIF RAISED ERROR', call.=FALSE)
     invisible(NULL)
 }

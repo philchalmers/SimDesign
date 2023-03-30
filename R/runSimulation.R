@@ -135,10 +135,13 @@
 #'   to be varied. See \code{\link{createDesign}} for the standard approach
 #'   to create this simulation design object
 #'
-#' @param generate user-defined data and parameter generating function.
+#' @param generate user-defined data and parameter generating function (or named list of functions).
 #'   See \code{\link{Generate}} for details. Note that this argument may be omitted by the
 #'   user if they wish to generate the data with the \code{analyse} step, but for real-world
-#'   simulations this is generally not recommended
+#'   simulations this is generally not recommended. If multiple generate functions are provided
+#'   as a list then the list of generate functions are executed in order until the first valid
+#'   generate function is executed, where the subsequent generation functions are then ignored
+#'   (see \code{\link{GenerateIf}} to only apply data generation for specific conditions).
 #'
 #' @param analyse user-defined analysis function (or named list of functions)
 #'   that acts on the data generated from
@@ -882,6 +885,28 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             debug <- tmp[1L]
             design <- design[as.integer(tmp[2L]), , drop=FALSE]
             seed <- seed[as.integer(tmp[2L])]
+        }
+    }
+    if(is.list(generate)){
+        if(debug %in% c('all', 'generate'))
+            stop('debug input not supported when generate is a list', call.=FALSE)
+        if(any(debug == names(generate))){
+            generate <- generate[[which(debug == names(generate))]]
+            debug <- 'generate'
+        } else {
+            for(i in 1L:length(generate))
+                generate[[i]] <- compiler::cmpfun(generate[[i]])
+            .SIMDENV$GENERATE_FUNCTIONS <- generate
+            generate <- combined_Generate
+            for(i in 1L:length(generate)){
+                char_functions <- deparse(substitute(.SIMDENV$GENERATE_FUNCTIONS[[i]]))
+                if(any(grepl('browser\\(', char_functions))){
+                    if(verbose && parallel)
+                        message(paste0('A browser() call was detected. Parallel processing/object ',
+                                       'saving will be disabled while visible'))
+                    save <- save_results <- save_seeds <- parallel <- MPI <- useFuture <- FALSE
+                }
+            }
         }
     }
     if(is.list(analyse)){

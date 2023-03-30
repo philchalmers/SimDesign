@@ -352,6 +352,27 @@ combined_Analyses <- function(condition, dat, fixed_objects = NULL){
     ret
 }
 
+combined_Generate <- function(condition, fixed_objects = NULL){
+    if(!is.null(.SIMDENV$GENERATE_FUNCTIONS))
+        GENERATE_FUNCTIONS <- .SIMDENV$GENERATE_FUNCTIONS
+    nfuns <- length(GENERATE_FUNCTIONS)
+    ret <- vector('list', nfuns)
+    nms <- names(GENERATE_FUNCTIONS)
+    names(ret) <- nms
+    if(is.null(nms)) nms <- 1L:nfuns
+    for(i in nms){
+        tried <- try(GENERATE_FUNCTIONS[[i]](condition=condition,
+                                            fixed_objects=fixed_objects), silent=TRUE)
+        if(is(tried, 'try-error')){
+            if(tried == 'Error : GENERATEIF RAISED ERROR\n')
+                tried <- NULL
+        } else ret <- tried
+    }
+    if(is.null(ret))
+        stop('No data was generated for supplied condition. Please fix', call.=FALSE)
+    ret
+}
+
 toTabledResults <- function(results){
     tabled_results <- if(is.data.frame(results[[1]]) && nrow(results[[1L]]) == 1L){
         dplyr::bind_rows(results)
