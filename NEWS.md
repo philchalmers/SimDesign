@@ -20,6 +20,10 @@
   
 - Added `Bradley1978()` for test of Bradley's (1978) robustness interval for 
   empirical detection/coverage rate statistics
+  
+- `SimFunctions()` adds a few new inputs for saving one or more files (`save_structure`),
+  defining one or more generate function (`nGenerate`), and whether to include an extra
+  file for user-defined objects and functions (`extra_file`)
 
 ## Changes in SimDesign 2.10.1
 

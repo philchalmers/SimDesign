@@ -7,12 +7,12 @@
 SimFunctions(
   filename = NULL,
   dir = getwd(),
-  comments = FALSE,
-  out.files = 1,
-  summarise = TRUE,
-  generate = TRUE,
+  save_structure = "single",
+  extra_file = FALSE,
   nAnalyses = 1,
   nGenerate = 1,
+  summarise = TRUE,
+  comments = FALSE,
   openFiles = TRUE
 )
 }
@@ -23,19 +23,16 @@ is generally the recommended approach when beginning to write a Monte Carlo simu
 
 \item{dir}{the directory to write the files to. Default is the working directory}
 
-\item{comments}{logical; include helpful comments? Default is \code{FALSE}}
-
-\item{out.files}{integer indicating the number of files to break the simulation code into
-when \code{filename} is included (default is 1). When \code{out.files = 2} the
+\item{save_structure}{character indicating the number of files to break the simulation code into
+when \code{filename} is included (default is 'single' for one file). When \code{save_structure = 'double'} the
 output is saved to two separate files containing the functions and design definitions,
-\code{out.files = 4} separates the generate, analyse, summarise, and execution code into
-separate files, while \code{out.files = 5} is the same as \code{out.files = 5} but includes
-a file for user-defined functions and objects. The multi-file formats
-often makes organization and debugging slightly easier, especially for larger Monte Carlo simulations.}
+and when \code{save_structure = 'all'} the generate, analyse, summarise, and execution code area all saved into
+separate files. The purpose for this structure is because multiple structured files
+often makes organization and debugging slightly easier larger Monte Carlo simulations, though in principle
+all files could be stored into a single R script}
 
-\item{summarise}{include \code{summarise} function? Default is \code{TRUE}}
-
-\item{generate}{include \code{generate} function? Default is \code{TRUE}}
+\item{extra_file}{logical; should and extra file be saved containing user-defined functions or objects?
+Default is \code{FALSE}}
 
 \item{nAnalyses}{number of analysis functions to create (default is 1). Increasing the value
 of this argument when independent analysis are being performed allows function definitions
@@ -44,7 +41,13 @@ to be better partitioned and potentially more modular}
 \item{nGenerate}{number of generate functions to create (default is 1). Increase the value
 of this argument when when the data generation functions are very different and should
 be isolated from each other (otherwise, if there is much in common between the generate
-steps, the default of 1 should be preferred)}
+steps, the default of 1 should be preferred). Otherwise, if \code{nGenerate == 0}
+then no generate function will be provided and instead this data-generation
+step can be defined in the analysis function(s) (only recommended for smaller simulations)}
+
+\item{summarise}{include \code{summarise} function? Default is \code{TRUE}}
+
+\item{comments}{logical; include helpful comments? Default is \code{FALSE}}
 
 \item{openFiles}{logical; after files have been generated, open them in your text editor
 (e.g., if Rstudio is running the scripts will open in a new tab)?}
@@ -81,8 +84,14 @@ SimFunctions('mysim', comments = TRUE)
 SimFunctions(nAnalyses = 2)
 SimFunctions(nAnalyses = 3)
 
-#' Multiple analysis + generate functions
+# Multiple analysis + generate functions
 SimFunctions(nAnalyses = 2, nGenerate=2)
+
+# save multiple files for the purpose of designing larger simulations
+#  (also include extra_file for user-defined objects/functions)
+SimFunctions('myBigSim', save_structure = 'all',
+   nAnalyses = 3, nGenerate=2, extra_file = TRUE)
+
 
 }
 

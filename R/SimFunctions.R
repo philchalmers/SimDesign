@@ -24,17 +24,18 @@
 #'
 #' @param comments logical; include helpful comments? Default is \code{FALSE}
 #'
-#' @param out.files integer indicating the number of files to break the simulation code into
-#'   when \code{filename} is included (default is 1). When \code{out.files = 2} the
+#' @param save_structure character indicating the number of files to break the simulation code into
+#'   when \code{filename} is included (default is 'single' for one file). When \code{save_structure = 'double'} the
 #'   output is saved to two separate files containing the functions and design definitions,
-#'   \code{out.files = 4} separates the generate, analyse, summarise, and execution code into
-#'   separate files, while \code{out.files = 5} is the same as \code{out.files = 5} but includes
-#'   a file for user-defined functions and objects. The multi-file formats
-#'   often makes organization and debugging slightly easier, especially for larger Monte Carlo simulations.
+#'   and when \code{save_structure = 'all'} the generate, analyse, summarise, and execution code area all saved into
+#'   separate files. The purpose for this structure is because multiple structured files
+#'   often makes organization and debugging slightly easier larger Monte Carlo simulations, though in principle
+#'   all files could be stored into a single R script
+#'
+#' @param extra_file logical; should and extra file be saved containing user-defined functions or objects?
+#'   Default is \code{FALSE}
 #'
 #' @param summarise include \code{summarise} function? Default is \code{TRUE}
-#'
-#' @param generate include \code{generate} function? Default is \code{TRUE}
 #'
 #' @param nAnalyses number of analysis functions to create (default is 1). Increasing the value
 #'   of this argument when independent analysis are being performed allows function definitions
@@ -43,7 +44,9 @@
 #' @param nGenerate number of generate functions to create (default is 1). Increase the value
 #'   of this argument when when the data generation functions are very different and should
 #'   be isolated from each other (otherwise, if there is much in common between the generate
-#'   steps, the default of 1 should be preferred)
+#'   steps, the default of 1 should be preferred). Otherwise, if \code{nGenerate == 0}
+#'   then no generate function will be provided and instead this data-generation
+#'   step can be defined in the analysis function(s) (only recommended for smaller simulations)
 #'
 #' @param openFiles logical; after files have been generated, open them in your text editor
 #'   (e.g., if Rstudio is running the scripts will open in a new tab)?
@@ -80,15 +83,34 @@
 #' SimFunctions(nAnalyses = 2)
 #' SimFunctions(nAnalyses = 3)
 #'
-#' #' Multiple analysis + generate functions
+#' # Multiple analysis + generate functions
 #' SimFunctions(nAnalyses = 2, nGenerate=2)
+#'
+#' # save multiple files for the purpose of designing larger simulations
+#' #  (also include extra_file for user-defined objects/functions)
+#' SimFunctions('myBigSim', save_structure = 'all',
+#'    nAnalyses = 3, nGenerate=2, extra_file = TRUE)
+#'
 #'
 #' }
 #'
-SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
-                         out.files = 1, summarise = TRUE, generate = TRUE,
-                         nAnalyses = 1, nGenerate = 1, openFiles = TRUE){
-    stopifnot(out.files %in% c(1,2,4,5))
+SimFunctions <- function(filename = NULL, dir = getwd(),
+                         save_structure = 'single', extra_file = FALSE,
+                         nAnalyses = 1, nGenerate = 1,
+                         summarise = TRUE, comments = FALSE, openFiles = TRUE){
+    generate <- TRUE
+    if(nGenerate == 0L)
+        generate <- FALSE
+    if(save_structure == 'single'){
+        out.files <- 1
+    } else if(save_structure == 'double'){
+        out.files <- 2
+    } else if(save_structure == 'all'){
+        out.files <- 4
+    } else {
+        stop('Specified save_structure is invalid', call.=FALSE)
+    }
+    stopifnot(out.files %in% c(1,2,4))
     stopifnot(nAnalyses >= 1)
     LINE <- function()
         cat('#-------------------------------------------------------------------\n')
@@ -102,13 +124,20 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
         if(!is.null(filename) && out.files == 2L){
             if(comments) cat('### Source in essential functions\n')
             cat('# setwd(\"', dir, '\")', sep='')
-            cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')\n\n', sep='')
+            cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')', sep='')
+            if(extra_file)
+                cat('\nsource(\"', paste0(filename, '-extras.R\"'), ')', sep='')
+            cat('\n\n')
         }
-        if(!is.null(filename) && out.files == 4L || out.files == 5L){
-            browser()
+        if(!is.null(filename) && out.files == 4L){
             if(comments) cat('### Source in essential functions\n')
             cat('# setwd(\"', dir, '\")', sep='')
-            cat('\nsource(\"', paste0(filename, '-functions.R\"'), ')\n\n', sep='')
+            if(generate) cat('\nsource(\"', paste0(filename, '-generate.R\"'), ')', sep='')
+            cat('\nsource(\"', paste0(filename, '-analyse.R\"'), ')', sep='')
+            if(summarise) cat('\nsource(\"', paste0(filename, '-summarise.R\"'), ')', sep='')
+            if(extra_file)
+                cat('\nsource(\"', paste0(filename, '-extras.R\"'), ')\n', sep='')
+            cat('\n\n')
         }
     }
 
@@ -135,7 +164,6 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
                 }
                 cat('\n')
                 LINE()
-                cat('\n')
             }
         }
         if(add.analyse){
@@ -163,14 +191,15 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
             if(comments) cat('\n    # Summarise the simulation results ...\n')
             if(comments) cat('\n    # Return a named vector of results')
             cat('\n    ret <- c(bias = NaN, RMSE = NaN)\n    ret\n}\n\n')
+            LINE()
+            cat('\n')
         }
     }
 
     TAIL <- function(){
-        LINE()
-        if(comments) cat('\n### Run the simulation\n')
+        if(comments) cat('### Run the simulation\n')
         if(nAnalyses==1L && nGenerate==1L){
-            cat('\nres <- runSimulation(design=Design, replications=1000,',
+            cat('res <- runSimulation(design=Design, replications=1000,',
                 if(generate) 'generate=Generate, ')
             cat(sprintf('\n                     analyse=Analyse%s',
                         if(summarise) ', summarise=Summarise)' else ')'))
@@ -184,7 +213,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
                                           paste0('Generate.G', 1L:nGenerate), collapse=', '))
             else "Generate"
             genspace <- if(nGenerate > 1L) '\n                     ' else ""
-            cat('\nres <- runSimulation(design=Design, replications=1000,')
+            cat('res <- runSimulation(design=Design, replications=1000,')
             if(generate)
                 cat(sprintf('%sgenerate=%s, ', genspace, Generate_string))
             cat(sprintf('\n                     analyse=%s%s', Analyse_string,
@@ -223,25 +252,54 @@ SimFunctions <- function(filename = NULL, dir = getwd(), comments = FALSE,
             sink(paste0(filename, '-functions.R'))
             FUNCTIONS()
             sink()
+            if(extra_file){
+                sink(paste0(filename, '-extras.R'))
+                cat('# File for extra user-defined function and object definitions\n')
+                sink()
+            }
         } else if(out.files == 4L){
-            browser()
-            cat(sprintf('Writing simulation components to files to \"%s\" and \"%s\" in \n  directory \"%s\"',
-                        paste0(filename, '.R'), paste0(filename, '-functions.R'), dir))
+            cat(sprintf('Writing simulation components to multiple files (main file is \"%s\") in \n  directory \"%s\"',
+                        paste0(filename, '.R'), dir))
             sink(paste0(filename, '.R'))
             HEAD()
             TAIL()
             sink()
-            sink(paste0(filename, '-functions.R'))
-            FUNCTIONS()
+            if(generate){
+                sink(paste0(filename, '-generate.R'))
+                FUNCTIONS(add.analyse = FALSE, add.summarise = FALSE)
+                sink()
+            }
+            sink(paste0(filename, '-analyse.R'))
+            FUNCTIONS(add.gen = FALSE, add.summarise = FALSE)
             sink()
-
-        } else if(out.files == 5L){
-
+            if(summarise){
+                sink(paste0(filename, '-summarise.R'))
+                FUNCTIONS(add.gen = FALSE, add.analyse = FALSE)
+                sink()
+            }
+            if(extra_file){
+                sink(paste0(filename, '-extras.R'))
+                cat('# File for extra user-defined function and object definitions\n')
+                sink()
+            }
         }
     }
     if(!is.null(filename) && openFiles){
         message('\n\nOpening file(s) in your current text editor...')
-        if(out.files > 1L) file.show(paste0(filename, '-functions.R'))
+        if(out.files > 1L){
+            if(out.files == 2L){
+                file.show(paste0(filename, '-functions.R'))
+            } else {
+                if(file.exists(paste0(filename, '-summarise.R')))
+                    file.show(paste0(filename, '-summarise.R'))
+                if(file.exists(paste0(filename, '-analyse.R')))
+                    file.show(paste0(filename, '-analyse.R'))
+                if(file.exists(paste0(filename, '-generate.R')))
+                    file.show(paste0(filename, '-generate.R'))
+            }
+        }
+        if(file.exists(paste0(filename, '-extras.R')))
+            file.show(paste0(filename, '-extras.R'))
         file.show(paste0(filename, '.R'))
     }
     invisible(NULL)
