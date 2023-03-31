@@ -29,8 +29,9 @@
   depending on the `condition` under investigation
   
 - `SimFunctions()` adds a few new inputs for saving one or more files (`save_structure`),
-  defining one or more generate function (`nGenerate`), and whether to include an extra
-  file for user-defined objects and functions (`extra_file`)
+  defining one or more generate function (`nGenerate`), whether to include an extra
+  file for user-defined objects and functions (`extra_file`), and whether a basic
+  `knitr::spin()` header should be included when saving the files (`spin_header`)
 
 ## Changes in SimDesign 2.10.1
 

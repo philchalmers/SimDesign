@@ -51,6 +51,9 @@
 #' @param openFiles logical; after files have been generated, open them in your text editor
 #'   (e.g., if Rstudio is running the scripts will open in a new tab)?
 #'
+#' @param spin_header logical; include a basic \code{knitr::spin} header to allow the simulation
+#'   to be knitted? Default is \code{TRUE}
+#'
 #' @aliases SimFunctions
 #'
 #' @seealso \code{\link{runSimulation}}
@@ -97,7 +100,8 @@
 SimFunctions <- function(filename = NULL, dir = getwd(),
                          save_structure = 'single', extra_file = FALSE,
                          nAnalyses = 1, nGenerate = 1,
-                         summarise = TRUE, comments = FALSE, openFiles = TRUE){
+                         summarise = TRUE, comments = FALSE, openFiles = TRUE,
+                         spin_header = TRUE){
     generate <- TRUE
     if(nGenerate == 0L)
         generate <- FALSE
@@ -112,6 +116,17 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
     }
     stopifnot(out.files %in% c(1,2,4))
     stopifnot(nAnalyses >= 1)
+
+    SPIN <- function(){
+        if(is.null(filename)) return(invisible(NULL))
+        cat('#\' --- \n')
+        cat('#\' title: \"Simulation title\"\n')
+        cat('#\' output:\n')
+        cat('#\'   html_document:\n')
+        cat('#\'     theme: readable\n')
+        cat('#\'     code_download: true\n')
+        cat('#\' ---\n\n\n')
+    }
     LINE <- function()
         cat('#-------------------------------------------------------------------\n')
     HEAD <- function(){
@@ -237,6 +252,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
                 sink(paste0(filename, '.R'))
             }
         }
+        if(spin_header) SPIN()
         HEAD()
         FUNCTIONS()
         TAIL()
@@ -246,6 +262,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
             cat(sprintf('Writing simulation components to files to \"%s\" and \"%s\" in \n  directory \"%s\"',
                         paste0(filename, '.R'), paste0(filename, '-functions.R'), dir))
             sink(paste0(filename, '.R'))
+            if(spin_header) SPIN()
             HEAD()
             TAIL()
             sink()
@@ -261,6 +278,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
             cat(sprintf('Writing simulation components to multiple files (main file is \"%s\") in \n  directory \"%s\"',
                         paste0(filename, '.R'), dir))
             sink(paste0(filename, '.R'))
+            if(spin_header) SPIN()
             HEAD()
             TAIL()
             sink()

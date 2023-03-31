@@ -13,7 +13,8 @@ SimFunctions(
   nGenerate = 1,
   summarise = TRUE,
   comments = FALSE,
-  openFiles = TRUE
+  openFiles = TRUE,
+  spin_header = TRUE
 )
 }
 \arguments{
@@ -51,6 +52,9 @@ step can be defined in the analysis function(s) (only recommended for smaller si
 
 \item{openFiles}{logical; after files have been generated, open them in your text editor
 (e.g., if Rstudio is running the scripts will open in a new tab)?}
+
+\item{spin_header}{logical; include a basic \code{knitr::spin} header to allow the simulation
+to be knitted? Default is \code{TRUE}}
 }
 \description{
 This function prints template versions of the required \code{Design} and Generate-Analyse-Summarise functions
