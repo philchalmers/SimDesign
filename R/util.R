@@ -46,7 +46,7 @@ timeFormater <- function(time, decimals = TRUE){
 
 print_progress <- function(row, trow, stored_time, progress, condition){
     if(progress) cat('\n')
-    tmp <- as.list(subset(condition, select=-ID))
+    tmp <- as.list(subset(condition, select=colnames(condition) != "ID"))
     nms <- names(tmp)
     nms2 <- do.call(c, lapply(tmp, as.character))
     wdth <- 85 - 13
@@ -185,9 +185,11 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
 #' nc(this=A, B, C) # respects override named (same as c() )
 #' nc(this=A, B, C, use.names = TRUE) # preserve original name
 #'
+#' \dontrun{
 #' # throws errors if names not unique
 #' nc(this=A, this=B, C)
 #' nc(LetterC=A, B, C, use.names=TRUE)
+#' }
 #'
 #' # poor input choice names
 #' nc(t.test(c(1:2))$p.value, t.test(c(3:4))$p.value)
@@ -213,9 +215,11 @@ quiet <- function(..., messages=FALSE, cat=FALSE){
 #' # mix and match if some named elements work while others do not
 #' c( nc(A, B, use.names=TRUE), nc(C))
 #'
+#' \dontrun{
 #' # error, 'b' appears twice
 #' names(B) <- c('b', 'b2')
 #' nc(A, B, C, use.names=TRUE)
+#' }
 #'
 #' # List input
 #' A <- list(1)

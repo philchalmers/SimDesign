@@ -52,7 +52,8 @@
 #'   (e.g., if Rstudio is running the scripts will open in a new tab)?
 #'
 #' @param spin_header logical; include a basic \code{knitr::spin} header to allow the simulation
-#'   to be knitted? Default is \code{TRUE}
+#'   to be knitted? Default is \code{TRUE}. For those less familiar with \code{spin} documents
+#'   see \code{https://bookdown.org/yihui/rmarkdown-cookbook/spin.html} for further details
 #'
 #' @aliases SimFunctions
 #'

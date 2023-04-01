@@ -36,9 +36,11 @@ nc(A, B, C) # named
 nc(this=A, B, C) # respects override named (same as c() )
 nc(this=A, B, C, use.names = TRUE) # preserve original name
 
+\dontrun{
 # throws errors if names not unique
 nc(this=A, this=B, C)
 nc(LetterC=A, B, C, use.names=TRUE)
+}
 
 # poor input choice names
 nc(t.test(c(1:2))$p.value, t.test(c(3:4))$p.value)
@@ -64,9 +66,11 @@ nc(A, B, C, use.names=TRUE)
 # mix and match if some named elements work while others do not
 c( nc(A, B, use.names=TRUE), nc(C))
 
+\dontrun{
 # error, 'b' appears twice
 names(B) <- c('b', 'b2')
 nc(A, B, C, use.names=TRUE)
+}
 
 # List input
 A <- list(1)
