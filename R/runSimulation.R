@@ -887,6 +887,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             seed <- seed[as.integer(tmp[2L])]
         }
     }
+    if(missing(generate) && !missing(analyse))
+        generate <- function(condition, dat, fixed_objects = NULL){}
     if(is.list(generate)){
         if(debug %in% c('all', 'generate'))
             stop('debug input not supported when generate is a list', call.=FALSE)
@@ -959,8 +961,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         else extra_options$type
     include_replication_index <- ifelse(is.null(extra_options$include_replication_index),
                                         FALSE, extra_options$include_replication_index)
-    if(missing(generate) && !missing(analyse))
-        generate <- function(condition, dat, fixed_objects = NULL){}
     NA_summarise <- FALSE
     if(!missing(summarise)){
         NA_summarise <- if(!is.function(summarise) && is.na(summarise)) TRUE else FALSE
