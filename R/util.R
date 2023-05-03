@@ -401,4 +401,18 @@ stackResults <- function(results){
     results
 }
 
-
+collect_unique <- function(x){
+    if(any(duplicated(colnames(x)))){
+        uniq <- unique(colnames(x))
+        for(u in uniq){
+            pick <- colnames(x) %in% u
+            if(sum(pick) == 1L) next
+            whc <- sort(which(pick))
+            tmp <- rowSums(x[,pick, drop=FALSE], na.rm = TRUE)
+            tmp <- ifelse(tmp == 0, NA, tmp)
+            x[[whc[1L]]] <- tmp
+            x[whc[2L:length(whc)]] <- NULL
+        }
+    }
+    x
+}
