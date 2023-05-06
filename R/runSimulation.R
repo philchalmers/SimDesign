@@ -407,13 +407,17 @@
 #'     \item{\code{save_results_dirname}}{a string indicating the name of the folder to save
 #'       result objects to when \code{save_results = TRUE}. If a directory/folder does not exist
 #'       in the current working directory then a unique one will be created automatically. Default is
-#'       \code{'SimDesign-results_'} with the associated \code{compname} appended}
+#'       \code{'SimDesign-results_'} with the associated \code{compname} appended if no
+#'       \code{filename} is defined, otherwise the filename is used to replace 'SimDesign'
+#'       in the string}
 #'
 #'     \item{\code{save_seeds_dirname}}{a string indicating the name of the folder to save
 #'       \code{.Random.seed} objects to when \code{save_seeds = TRUE}. If a directory/folder
 #'       does not exist
 #'       in the current working directory then one will be created automatically. Default is
-#'       \code{'SimDesign-seeds_'} with the associated \code{compname} appended}
+#'       \code{'SimDesign-seeds_'} with the associated \code{compname} appended if no
+#'       \code{filename} is defined, otherwise the filename is used to replace 'SimDesign'
+#'       in the string}
 #'
 #'   }
 #'
@@ -987,10 +991,20 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!verbose) progress <- FALSE
     if(is.null(compname)) compname <- Sys.info()['nodename']
     if(is.null(safe)) safe <- TRUE
-    if(is.null(out_rootdir)) { out_rootdir <- '.' } else { dir.create(out_rootdir, showWarnings=FALSE) }
-    if(is.null(tmpfilename)) tmpfilename <- paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')
-    if(is.null(save_results_dirname)) save_results_dirname <- paste0('SimDesign-results_', compname)
-    if(is.null(save_seeds_dirname)) save_seeds_dirname <- paste0('SimDesign-seeds_', compname)
+    if(is.null(out_rootdir)) { out_rootdir <- '.' }
+       else { dir.create(out_rootdir, showWarnings=FALSE) }
+    if(is.null(tmpfilename))
+        tmpfilename <- paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')
+    if(is.null(save_results_dirname)){
+        save_results_dirname <-
+            if(!is.null(filename)) paste0(filename, '-results_', compname)
+            else paste0('SimDesign-results_', compname)
+    }
+    if(is.null(save_seeds_dirname)){
+        save_seeds_dirname <- if(!is.null(filename))
+            paste0(filename, '-seeds_', compname)
+            else paste0('SimDesign-seeds_', compname)
+    }
     if(!is.null(filename)){
         if(grepl('\\.rds', filename))
             filename <- gsub('\\.rds', '', filename)
