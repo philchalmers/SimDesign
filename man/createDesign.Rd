@@ -7,7 +7,7 @@
 \usage{
 createDesign(..., subset, tibble = TRUE, stringsAsFactors = FALSE)
 
-\method{print}{Design}(x, list2char = TRUE, ...)
+\method{print}{Design}(x, list2char = TRUE, pillar.sigfig = 5, ...)
 }
 \arguments{
 \item{...}{comma separated list of named input objects representing the simulation
@@ -29,6 +29,8 @@ to factors when building a \code{data.frame}? Default is FALSE}
 as character vectors for better printing of the levels? Note that this
 does not change the original classes of the object, just how they are printed.
 Default is TRUE}
+
+\item{pillar.sigfig}{number of significant digits to print. Default is 5}
 }
 \value{
 a \code{tibble} or \code{data.frame} containing the simulation experiment

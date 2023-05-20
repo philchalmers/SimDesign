@@ -26,6 +26,7 @@
 #' @importFrom future.apply future_lapply
 #' @importFrom progressr progressor
 #' @importFrom beepr beep
+# @importFrom robustbase glmrob
 #' @importFrom utils recover packageVersion head tail capture.output
 #' @keywords package
 #' @references

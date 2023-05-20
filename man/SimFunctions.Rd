@@ -14,7 +14,8 @@ SimFunctions(
   summarise = TRUE,
   comments = FALSE,
   openFiles = TRUE,
-  spin_header = TRUE
+  spin_header = TRUE,
+  SimSolve = FALSE
 )
 }
 \arguments{
@@ -56,6 +57,9 @@ step can be defined in the analysis function(s) (only recommended for smaller si
 \item{spin_header}{logical; include a basic \code{knitr::spin} header to allow the simulation
 to be knitted? Default is \code{TRUE}. For those less familiar with \code{spin} documents
 see \code{https://bookdown.org/yihui/rmarkdown-cookbook/spin.html} for further details}
+
+\item{SimSolve}{logical; should the template be generated that is intended for a
+\code{\link{SimSolve}} implementation? Default is \code{FALSE}}
 }
 \description{
 This function prints template versions of the required \code{Design} and Generate-Analyse-Summarise functions

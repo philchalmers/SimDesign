@@ -1032,6 +1032,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         verbose <- FALSE
         store_results <- TRUE
     }
+    SimSolveRun <- !is.null(attr(design, 'SimSolve'))
     stopifnot(!missing(replications))
     replications <- as.integer(replications)
     if(!is.null(seed))
@@ -1288,6 +1289,18 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             warnings_as_errors=warnings_as_errors,
                             progress=progress, store_results=store_results, use_try=use_try,
                             stop_on_fatal=stop_on_fatal)
+            if(SimSolveRun){
+                full_results <- attr(tmp, 'full_results')
+                condition <- if(was_tibble) dplyr::as_tibble(design[i,]) else design[i,]
+                summary_results <- sapply(1L:replications, function(i){
+                    summarise(condition=condition,
+                              results=if(!is.data.frame(full_results) &&
+                                         is.list(full_results)) full_results[i]
+                                      else full_results[i, , drop=FALSE],
+                              fixed_objects=fixed_objects)
+                })
+                return(list(value=tmp[1L], summary_results=summary_results))
+            }
             if(store_results){
                 stored_Results_list[[i]] <- attr(tmp, 'full_results')
                 attr(tmp, 'full_results') <- NULL

@@ -274,6 +274,20 @@ nc <- function(..., use.names=FALSE, error.on.duplicate = TRUE){
 
 isList <- function(x) !is.data.frame(x) && is.list(x)
 
+reduceTable <- function(tab){
+    tab <- plyr::rbind.fill(tab)
+    uniq <- sort(unique(tab$x))
+    reps <- val <- numeric(length(uniq))
+    for(i in seq_len(length(val))){
+        tmp <- tab[uniq[i] == tab$x, , drop=FALSE]
+        reps[i] <- sum(tmp$reps)
+        val[i] <- sum(as.numeric(tmp$y) * as.numeric(tmp$reps) / reps[i])
+    }
+    reduced <- data.frame(y=val, x=uniq, reps=reps)
+    reduced
+
+}
+
 sim_results_check <- function(sim_results){
     if(is(sim_results, 'try-error'))
         stop(c("Summarise() should not throw errors. Message was:\n    ", sim_results), call.=FALSE)
@@ -399,6 +413,42 @@ stackResults <- function(results){
         if(ncol(results) == 1L && is.null(old_nms)) results <- results[,1]
     }
     results
+}
+
+SimSolveData <- function(burnin, full = TRUE){
+    pick <- !sapply(.SIMDENV$stored_results, is.null)
+    pick[1L:burnin] <- FALSE
+    if(full){
+        DV <- do.call(c, .SIMDENV$stored_results[pick])
+        IV <- rep(.SIMDENV$stored_medhistory[pick],
+                  times=sapply(.SIMDENV$stored_results[pick], length))
+        ret <- data.frame(y=DV, x=IV)
+    } else {
+        ret <- do.call(rbind, .SIMDENV$stored_history[pick])
+        ret$weights <- 1/sqrt(ret$reps)
+    }
+    ret
+}
+
+SimSolveUniroot <- function(SimMod, b, interval, median){
+    f.root <- function(x, b)
+        predict(SimMod, newdata = data.frame(x=x), type = 'response') - b
+    res <- try(uniroot(f.root, b=b, interval = interval), silent = TRUE)
+    if(is(res, 'try-error')){ # in case original interval is poor for interpolation
+        for(i in seq_len(20L)){
+            if(grepl('end points not of opposite sign', res)){
+                diff <- abs(interval - median)
+                interval[which.max(diff)] <- mean(c(median, interval[which.max(diff)]))
+                res <- try(uniroot(f.root, b=b, interval = interval), silent = TRUE)
+                if(!is(res, 'try-error')) break
+            }
+        }
+    }
+    if(is(res, 'try-error')) return(c(NA, NA))
+    root <- res$root
+    # se <- predict(SimMod, newdata = data.frame(x=root),
+    #               se = TRUE, type = 'response')$se.fit
+    root
 }
 
 collect_unique <- function(x){

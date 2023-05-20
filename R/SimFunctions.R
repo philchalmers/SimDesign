@@ -51,6 +51,9 @@
 #' @param openFiles logical; after files have been generated, open them in your text editor
 #'   (e.g., if Rstudio is running the scripts will open in a new tab)?
 #'
+#' @param SimSolve logical; should the template be generated that is intended for a
+#'   \code{\link{SimSolve}} implementation? Default is \code{FALSE}
+#'
 #' @param spin_header logical; include a basic \code{knitr::spin} header to allow the simulation
 #'   to be knitted? Default is \code{TRUE}. For those less familiar with \code{spin} documents
 #'   see \code{https://bookdown.org/yihui/rmarkdown-cookbook/spin.html} for further details
@@ -102,7 +105,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
                          save_structure = 'single', extra_file = FALSE,
                          nAnalyses = 1, nGenerate = 1,
                          summarise = TRUE, comments = FALSE, openFiles = TRUE,
-                         spin_header = TRUE){
+                         spin_header = TRUE, SimSolve = FALSE){
     generate <- TRUE
     if(nGenerate == 0L)
         generate <- FALSE
@@ -206,7 +209,8 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
             cat('Summarise <- function(condition, results, fixed_objects = NULL) {')
             if(comments) cat('\n    # Summarise the simulation results ...\n')
             if(comments) cat('\n    # Return a named vector of results')
-            cat('\n    ret <- c(bias = NaN, RMSE = NaN)\n    ret\n}\n\n')
+            if(SimSolve) cat('\n    ret <- EDR(results)\n    ret\n}\n\n')
+            else cat('\n    ret <- c(bias = NaN, RMSE = NaN)\n    ret\n}\n\n')
             LINE()
             cat('\n')
         }
@@ -215,10 +219,18 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
     TAIL <- function(){
         if(comments) cat('### Run the simulation\n')
         if(nAnalyses==1L && nGenerate==1L){
-            cat('res <- runSimulation(design=Design, replications=1000,',
-                if(generate) 'generate=Generate, ')
-            cat(sprintf('\n                     analyse=Analyse%s',
-                        if(summarise) ', summarise=Summarise)' else ')'))
+            if(SimSolve){
+                cat('res <- SimSolve(design=Design, b=VALUE, inverval=RANGE,',
+                    if(generate) 'generate=Generate, ')
+                cat(sprintf('\n                     analyse=Analyse%s',
+                            if(summarise) ', summarise=Summarise)' else ')'))
+
+            } else {
+                cat('res <- runSimulation(design=Design, replications=1000,',
+                    if(generate) 'generate=Generate, ')
+                cat(sprintf('\n                     analyse=Analyse%s',
+                            if(summarise) ', summarise=Summarise)' else ')'))
+            }
         } else {
             Analyse_string <- if(nAnalyses > 1L)
                 sprintf("list(%s)",paste0(paste0('A', 1L:nAnalyses, sep='='),
@@ -229,7 +241,8 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
                                           paste0('Generate.G', 1L:nGenerate), collapse=', '))
             else "Generate"
             genspace <- if(nGenerate > 1L) '\n                     ' else ""
-            cat('res <- runSimulation(design=Design, replications=1000,')
+            if(SimSolve) cat('res <- SimSolve(design=Design, b=VALUE, inverval=RANGE,')
+            else cat('res <- runSimulation(design=Design, replications=1000,')
             if(generate)
                 cat(sprintf('%sgenerate=%s, ', genspace, Generate_string))
             cat(sprintf('\n                     analyse=%s%s', Analyse_string,

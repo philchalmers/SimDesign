@@ -2,6 +2,9 @@
 
 ## Changes in SimDesign 2.11
 
+- `PBA()` function added for probabilistic bisection algorithm, with associated
+  `print()` and `plot()` S3 methods
+
 - `debug` gains `'-'` structure to allow debugging on specific
   rows of the `design` input. For instance, if the simulation 
   ran successfully until row 10, and unknown errors terminated the simulation, 
