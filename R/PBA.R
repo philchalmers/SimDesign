@@ -134,7 +134,7 @@ PBA <- function(f, interval, ..., p = .6, CI = .95,
                 whc <- whc[-1L]
                 if(length(whc)){
                     dots <- list(...)
-                    cmp <- plyr::rbind.fill(.SIMDENV$stored_history[whc])
+                    cmp <- dplyr::bind_rows(.SIMDENV$stored_history[whc])
                     valp <- sum((cmp$y - .SIMDENV$FromSimSolve$b) * cmp$reps,
                              val * dots$replications) /
                         sum(cmp$reps, dots$replications)
