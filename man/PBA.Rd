@@ -11,7 +11,6 @@ PBA(
   interval,
   ...,
   p = 0.6,
-  CI = 0.95,
   integer = FALSE,
   tol = if (integer) 0.01 else 1e-04,
   maxiter = 300L,
@@ -37,8 +36,6 @@ to be searched for the root}
 
 \item{p}{assumed constant for probability of correct responses (must be > 0.5)}
 
-\item{CI}{advertised confidence level for Bayes interval}
-
 \item{integer}{logical; should the values of the root be considered integer
 or numeric? The former uses a discreet grid to track the updates, while the
 latter currently creates a grid with \code{resolution} points}
@@ -49,14 +46,14 @@ latter currently creates a grid with \code{resolution} points}
 \item{maxiter}{the maximum number of iterations}
 
 \item{mean_window}{last n iterations used to compute the final estimate of the root.
-This is used to avoid the strong influence of the early bisection steps in the
+This is used to avoid the influence of the early bisection steps in the
 final root estimate}
 
 \item{f.prior}{density function indicating the likely location of the prior
 (e.g., if root is within [0,1] then \code{\link{dunif}} works, otherwise custom
 functions will be required)}
 
-\item{resolution}{vector indicating the
+\item{resolution}{constant indicating the
 number of equally spaced grid points to track when \code{integer = FALSE}.}
 
 \item{check.interval}{logical; should an initial check be made to determine

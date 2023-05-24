@@ -49,14 +49,14 @@
 #'   can be useful when you are unsure about the root location interval and
 #'   may want to use a higher \code{replication} input from \code{\link{SimSolve}}
 #'
-#' @param resolution vector indicating the
+#' @param resolution constant indicating the
 #'   number of equally spaced grid points to track when \code{integer = FALSE}.
 #'
 #' @param mean_window last n iterations used to compute the final estimate of the root.
-#'   This is used to avoid the strong influence of the early bisection steps in the
+#'   This is used to avoid the influence of the early bisection steps in the
 #'   final root estimate
 #'
-#' @param CI advertised confidence level for Bayes interval
+# @param CI advertised confidence level for Bayes interval
 #'
 #' @param verbose logical; should the iterations and estimate be printed to the
 #'   console?
@@ -110,7 +110,7 @@
 #' plot(retpba.noise, type = 'history')
 #'
 #' }
-PBA <- function(f, interval, ..., p = .6, CI = .95,
+PBA <- function(f, interval, ..., p = .6,
                 integer = FALSE, tol = if(integer) .01 else .0001,
                 maxiter = 300L, mean_window = 100L,
                 f.prior = NULL, resolution = 10000L,
@@ -201,8 +201,6 @@ PBA <- function(f, interval, ..., p = .6, CI = .95,
         } else {
             fx <- fx + ifelse(x >= med, logq, logp)
         }
-
-        # BI <- belief_interval(x, fx, CI=CI)
         w <- if(!is.null(FromSimSolve)) 1/sqrt(replications) else rep(1/iter, iter)
         e.froot <- sum(roothistory[iter:1L] * w[iter:1] / sum(w[iter:1]))
 
@@ -250,11 +248,12 @@ PBA <- function(f, interval, ..., p = .6, CI = .95,
         cat("\n")
     fx <- exp(fx) / sum(exp(fx)) # normalize final result
     medhistory <- medhistory[1L:(iter-1L)]
+    # BI <- belief_interval(x, fx, CI=CI)
     root <- if(!interpolate) mean(medhistory[length(medhistory):
                                                  (length(medhistory)-mean_window+1L)])
         else glmpred[1L]
     ret <- list(iter=iter, root=root, converged=converged, integer=integer,
-                e.froot=e.froot, x=x, fx=fx, CI=CI, medhistory=medhistory)
+                e.froot=e.froot, x=x, fx=fx, medhistory=medhistory)
     if(!is.null(FromSimSolve)) ret$total.replications <- sum(replications[1L:iter])
     class(ret) <- 'PBA'
     ret
@@ -267,7 +266,7 @@ print.PBA <- function(x, ...)
 {
     out <- with(x,
          list(root = root,
-              confidence_level = CI,
+              #belief_interval=BI,
               converged=converged,
               iterations = iter))
     if(!is.null(x$total.replications))
