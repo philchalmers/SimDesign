@@ -210,11 +210,15 @@ PBA <- function(f, interval, ..., p = .6,
             #     suppressWarnings(robustbase::glmrob(formula = formula,
             #                          data=SimSolveData, family=family))
             #     else
-            SimMod <- suppressWarnings(glm(formula = formula,
-                                          data=SimSolveData, family=family))
-            glmpred <- suppressWarnings(SimSolveUniroot(SimMod=SimMod,
-                                                        b=dots$b, interval=interval,
-                                                        median=med))
+            SimMod <- try(suppressWarnings(glm(formula = formula,
+                                          data=SimSolveData, family=family)), silent=TRUE)
+            glmpred <- if(is(SimMod, 'try-error')){
+                c(NA, NA)
+            } else {
+                suppressWarnings(SimSolveUniroot(SimMod=SimMod,
+                                                 b=dots$b, interval=interval,
+                                                 median=med))
+            }
 
             # Should termination occur early when this changes very little and
             # roughly agrees with the median (latter rejects degenerate candidates)?
