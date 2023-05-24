@@ -220,7 +220,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
         if(comments) cat('### Run the simulation\n')
         if(nAnalyses==1L && nGenerate==1L){
             if(SimSolve){
-                cat('res <- SimSolve(design=Design, b=VALUE, inverval=RANGE,',
+                cat('res <- SimSolve(design=Design, b=VALUE, interval=RANGE,',
                     if(generate) 'generate=Generate, ')
                 cat(sprintf('\n                     analyse=Analyse%s',
                             if(summarise) ', summarise=Summarise)' else ')'))

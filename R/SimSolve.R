@@ -267,6 +267,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             add = TRUE)
     on.exit(.SIMDENV$FromSimSolve <- NULL, add = TRUE)
 
+    if(missing(generate) && !missing(analyse))
+        generate <- function(condition, dat, fixed_objects = NULL){}
     stopifnot(!missing(b))
     stopifnot(length(b) == 1L)
     stopifnot(!missing(interval))
