@@ -90,14 +90,12 @@
 #' plot(retpba)
 #' plot(retpba, type = 'history')
 #'
-#' \dontrun{
-#'
 #' # Same problem, however root function is noisy. Hence, need to solve
-#' #  f(x) - b + e = 0 where eventually E(e) = 0
+#' #  fhat(x) - b + e = 0, where E(e) = 0
 #' f.root_noisy <- function(x) 1 / (1 + exp(-x)) - .6 + rnorm(1, sd=.02)
 #' sapply(rep(.3, 10), f.root_noisy)
 #'
-#' # uniroot "converges" randomly
+#' # uniroot "converges" unreliably
 #' set.seed(123)
 #' uniroot(f.root_noisy, c(0,1))$root
 #' uniroot(f.root_noisy, c(0,1))$root
@@ -109,7 +107,6 @@
 #' plot(retpba.noise)
 #' plot(retpba.noise, type = 'history')
 #'
-#' }
 PBA <- function(f, interval, ..., p = .6,
                 integer = FALSE, tol = if(integer) .01 else .0001,
                 maxiter = 300L, mean_window = 100L,
