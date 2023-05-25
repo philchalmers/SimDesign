@@ -1378,7 +1378,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Final$SIM_TIME <- Final$ID <- Final$COMPLETED <-
         Final$REPLICATIONS <- Final$REPLICATION <- Final$FATAL_TERMINATION <- NULL
     Final <- data.frame(Final, FATAL_TERMINATION,
-                        REPLICATIONS=replications, SIM_TIME=sapply(SIM_TIME, timeFormater),
+                        REPLICATIONS=replications, SIM_TIME=SIM_TIME,
                         COMPLETED, check.names=FALSE, stringsAsFactors=FALSE)
     if(all(is.na(Final$FATAL_TERMINATION))) Final$FATAL_TERMINATION <- NULL
     if(is.null(Final$SEED)) Final$SEED <- NA
@@ -1480,6 +1480,8 @@ summary.SimDesign <- function(object, ...){
 #' @rdname runSimulation
 #' @export
 print.SimDesign <- function(x, list2char = TRUE, ...){
+    if(!is.null(x$SIM_TIME))
+        x$SIM_TIME <- sapply(x$SIM_TIME, function(x) noquote(timeFormater(x)))
     class(x) <- c('Design', class(x)[-1L])
     print(x=x, list2char=list2char, ...)
 }
