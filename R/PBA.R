@@ -168,6 +168,7 @@ PBA <- function(f, interval, ..., p = .6,
     fx <- log(fx / sum(fx)) # in log units
     medhistory <- roothistory <- numeric(maxiter)
     e.froot <- NA
+    start_time <- proc.time()[3L]
 
     if(check.interval){
         if(!is.null(FromSimSolve)){
@@ -257,7 +258,8 @@ PBA <- function(f, interval, ..., p = .6,
                                                  (length(medhistory)-mean_window+1L)])
         else glmpred[1L]
     ret <- list(iter=iter, root=root, converged=converged, integer=integer,
-                e.froot=e.froot, x=x, fx=fx, medhistory=medhistory)
+                e.froot=e.froot, x=x, fx=fx, medhistory=medhistory,
+                time=as.numeric(proc.time()[3L]-start_time))
     if(!is.null(FromSimSolve)) ret$total.replications <- sum(replications[1L:iter])
     class(ret) <- 'PBA'
     ret
@@ -270,8 +272,8 @@ print.PBA <- function(x, ...)
 {
     out <- with(x,
          list(root = root,
-              #belief_interval=BI,
               converged=converged,
+              time=timeFormater(time),
               iterations = iter))
     if(!is.null(x$total.replications))
         out$total.replications <- x$total.replications
