@@ -273,7 +273,7 @@ print.PBA <- function(x, ...)
     out <- with(x,
          list(root = root,
               converged=converged,
-              time=timeFormater(time),
+              time=noquote(timeFormater(time)),
               iterations = iter))
     if(!is.null(x$total.replications))
         out$total.replications <- x$total.replications
