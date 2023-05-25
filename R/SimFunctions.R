@@ -220,7 +220,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
         if(comments) cat('### Run the simulation\n')
         if(nAnalyses==1L && nGenerate==1L){
             if(SimSolve){
-                cat('res <- SimSolve(design=Design, b=VALUE, interval=RANGE,',
+                cat('solved <- SimSolve(design=Design, b=VALUE, interval=RANGE,',
                     if(generate) 'generate=Generate, ')
                 cat(sprintf('\n                     analyse=Analyse%s',
                             if(summarise) ', summarise=Summarise)' else ')'))
@@ -241,7 +241,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
                                           paste0('Generate.G', 1L:nGenerate), collapse=', '))
             else "Generate"
             genspace <- if(nGenerate > 1L) '\n                     ' else ""
-            if(SimSolve) cat('res <- SimSolve(design=Design, b=VALUE, inverval=RANGE,')
+            if(SimSolve) cat('solved <- SimSolve(design=Design, b=VALUE, inverval=RANGE,')
             else cat('res <- runSimulation(design=Design, replications=1000,')
             if(generate)
                 cat(sprintf('%sgenerate=%s, ', genspace, Generate_string))
@@ -249,7 +249,8 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
                         if(summarise) ', \n                     summarise=Summarise)' else ')'))
 
         }
-        cat('\nres\n\n')
+        if(SimSolve) cat('\nsolved\n\n')
+        else cat('\nres\n\n')
     }
 
     #main

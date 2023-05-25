@@ -275,7 +275,7 @@ nc <- function(..., use.names=FALSE, error.on.duplicate = TRUE){
 isList <- function(x) !is.data.frame(x) && is.list(x)
 
 reduceTable <- function(tab){
-    tab <- plyr::rbind.fill(tab)
+    tab <- dplyr::bind_rows(tab)
     uniq <- sort(unique(tab$x))
     reps <- val <- numeric(length(uniq))
     for(i in seq_len(length(val))){
