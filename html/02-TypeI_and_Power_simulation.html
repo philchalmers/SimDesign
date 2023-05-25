@@ -442,23 +442,24 @@ dim(Design)</code></pre>
 <p>Usually it is a good idea to split up analyses into Type I error and power rates data, and to make <code>design</code> conditions into <code>factor</code>s if/where necessary. More specifically, Power rates really should only be interpreted when the Type I errors are well behaved (liberal detection rates naturally will result in more powerful tests, while conservative detection rates will induce lower power).</p>
 <pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 72 × 10
-##    sample…¹ group…² stand…³ mean_…⁴ welch indep…⁵ REPLI…⁶ SIM_T…⁷ COMPL…⁸   SEED
-##       &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;    &lt;int&gt;
-##  1       30     0.5       1       0 0.042   0.041    1000   0.27  Thu Ma… 4.88e8
-##  2       60     0.5       1       0 0.051   0.053    1000   0.267 Thu Ma… 4.69e8
-##  3       90     0.5       1       0 0.05    0.05     1000   0.205 Thu Ma… 1.55e9
-##  4      120     0.5       1       0 0.051   0.05     1000   0.220 Thu Ma… 4.08e7
-##  5       30     1         1       0 0.053   0.053    1000   0.224 Thu Ma… 7.13e8
-##  6       60     1         1       0 0.05    0.05     1000   0.214 Thu Ma… 8.31e8
-##  7       90     1         1       0 0.051   0.051    1000   0.222 Thu Ma… 1.21e9
-##  8      120     1         1       0 0.052   0.052    1000   0.274 Thu Ma… 1.26e9
-##  9       30     2         1       0 0.053   0.046    1000   0.393 Thu Ma… 1.23e9
-## 10       60     2         1       0 0.051   0.045    1000   0.217 Thu Ma… 8.02e8
-## # … with 62 more rows, and abbreviated variable names ¹​sample_size,
-## #   ²​group_size_ratio, ³​standard_deviation_ratio, ⁴​mean_difference,
-## #   ⁵​independent, ⁶​REPLICATIONS, ⁷​SIM_TIME, ⁸​COMPLETED</code></pre>
+##    sample_size group_siz…¹ stand…² mean_…³ welch indep…⁴ REPLI…⁵ SIM_T…⁶ COMPL…⁷
+##          &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;  
+##  1          30         0.5       1       0 0.042   0.041    1000 0.24s   Thu Ma…
+##  2          60         0.5       1       0 0.051   0.053    1000 0.27s   Thu Ma…
+##  3          90         0.5       1       0 0.05    0.05     1000 0.22s   Thu Ma…
+##  4         120         0.5       1       0 0.051   0.05     1000 0.24s   Thu Ma…
+##  5          30         1         1       0 0.053   0.053    1000 0.22s   Thu Ma…
+##  6          60         1         1       0 0.05    0.05     1000 0.21s   Thu Ma…
+##  7          90         1         1       0 0.051   0.051    1000 0.23s   Thu Ma…
+##  8         120         1         1       0 0.052   0.052    1000 0.21s   Thu Ma…
+##  9          30         2         1       0 0.053   0.046    1000 0.29s   Thu Ma…
+## 10          60         2         1       0 0.051   0.045    1000 0.24s   Thu Ma…
+## # … with 62 more rows, 1 more variable: SEED &lt;int&gt;, and abbreviated variable
+## #   names ¹​group_size_ratio, ²​standard_deviation_ratio, ³​mean_difference,
+## #   ⁴​independent, ⁵​REPLICATIONS, ⁶​SIM_TIME, ⁷​COMPLETED</code></pre>
 <pre class="r"><code>res$REPLICATIONS &lt;- res$SIM_TIME &lt;- res$COMPLETED &lt;- res$SEED &lt;- NULL
 (TypeI &lt;- subset(res, mean_difference == 0))</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `SIM_TIME`.</code></pre>
 <pre><code>## # A tibble: 36 × 6
 ##    sample_size group_size_ratio standard_deviation_ratio mean_di…¹ welch indep…²
 ##          &lt;dbl&gt;            &lt;dbl&gt;                    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
@@ -475,6 +476,7 @@ dim(Design)</code></pre>
 ## # … with 26 more rows, and abbreviated variable names ¹​mean_difference,
 ## #   ²​independent</code></pre>
 <pre class="r"><code>(Power &lt;- subset(res, mean_difference != 0))</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `SIM_TIME`.</code></pre>
 <pre><code>## # A tibble: 36 × 6
 ##    sample_size group_size_ratio standard_deviation_ratio mean_di…¹ welch indep…²
 ##          &lt;dbl&gt;            &lt;dbl&gt;                    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
@@ -959,18 +961,18 @@ res &lt;- runSimulation(design = Design, replications = 1000, verbose = FALSE, p
                      generate = Generate, analyse = Analyse, summarise = Summarise)
 res</code></pre>
 <pre><code>## # A tibble: 72 × 10
-##    sample_s…¹ group…² stand…³ means welch indep…⁴ REPLI…⁵ SIM_T…⁶ COMPL…⁷   SEED
-##         &lt;dbl&gt; &lt;lst&gt;   &lt;lst&gt;   &lt;lst&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;    &lt;int
-##  1         30 [0.333… [1, 1]  [0, … 0.048   0.047    1000   0.248 Thu Ma… 1.53e9
-##  2         60 [0.333… [1, 1]  [0, … 0.052   0.051    1000   0.251 Thu Ma… 1.04e9
-##  3         90 [0.333… [1, 1]  [0, … 0.041   0.044    1000   0.275 Thu Ma… 2.06e9
-##  4        120 [0.333… [1, 1]  [0, … 0.047   0.051    1000   0.222 Thu Ma… 1.89e9
-##  5         30 [0.5, … [1, 1]  [0, … 0.046   0.046    1000   0.201 Thu Ma… 3.53e8
-##  6         60 [0.5, … [1, 1]  [0, … 0.041   0.041    1000   0.225 Thu Ma… 1.01e9
-##  7         90 [0.5, … [1, 1]  [0, … 0.049   0.049    1000   0.233 Thu Ma… 4.38e8
-##  8        120 [0.5, … [1, 1]  [0, … 0.067   0.067    1000   0.208 Thu Ma… 1.61e9
-##  9         30 [0.666… [1, 1]  [0, … 0.052   0.061    1000   0.226 Thu Ma… 1.84e9
-## 10         60 [0.666… [1, 1]  [0, … 0.056   0.052    1000   0.211 Thu Ma… 1.86e9
+##    sample…¹ group…² stand…³ means welch indep…⁴ REPLI…⁵ SIM_T…⁶ COMPL…⁷     SEED
+##       &lt;dbl&gt; &lt;lst&gt;   &lt;lst&gt;   &lt;lst&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;int
+##  1       30 [0.333… [1, 1]  [0, … 0.048   0.047    1000 0.38s   Thu Ma… 1.5333e9
+##  2       60 [0.333… [1, 1]  [0, … 0.052   0.051    1000 0.33s   Thu Ma… 1.0377e9
+##  3       90 [0.333… [1, 1]  [0, … 0.041   0.044    1000 0.37s   Thu Ma… 2.0649e9
+##  4      120 [0.333… [1, 1]  [0, … 0.047   0.051    1000 0.24s   Thu Ma… 1.8857e9
+##  5       30 [0.5, … [1, 1]  [0, … 0.046   0.046    1000 0.23s   Thu Ma… 3.5290e8
+##  6       60 [0.5, … [1, 1]  [0, … 0.041   0.041    1000 0.34s   Thu Ma… 1.0079e9
+##  7       90 [0.5, … [1, 1]  [0, … 0.049   0.049    1000 0.24s   Thu Ma… 4.3765e8
+##  8      120 [0.5, … [1, 1]  [0, … 0.067   0.067    1000 0.23s   Thu Ma… 1.6132e9
+##  9       30 [0.666… [1, 1]  [0, … 0.052   0.061    1000 0.22s   Thu Ma… 1.8445e9
+## 10       60 [0.666… [1, 1]  [0, … 0.056   0.052    1000 0.36s   Thu Ma… 1.8576e9
 ## # … with 62 more rows, and abbreviated variable names ¹​sample_size,
 ## #   ²​group_sizes, ³​standard_deviations, ⁴​independent, ⁵​REPLICATIONS, ⁶​SIM_TIME,
 ## #   ⁷​COMPLETED</code></pre>

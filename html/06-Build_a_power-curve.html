@@ -412,7 +412,7 @@ summary(res)</code></pre>
 ##  collate  en_US.UTF-8
 ##  ctype    en_US.UTF-8
 ##  tz       Etc/UTC
-##  date     2023-03-23
+##  date     2023-05-25
 ##  pandoc   2.9.1.1 @ /usr/bin/ (via rmarkdown)
 ## 
 ## ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -459,7 +459,7 @@ summary(res)</code></pre>
 ##  MASS           7.3-58.2  2023-01-23 [4] CRAN (R 4.2.2)
 ##  Matrix         1.5-3     2022-11-11 [4] CRAN (R 4.2.2)
 ##  mgcv           1.8-41    2022-10-21 [4] CRAN (R 4.2.1)
-##  mirt         * 1.38.1    2023-02-28 [1] CRAN (R 4.2.2)
+##  mirt         * 1.38.3    2023-05-25 [1] CRAN (R 4.2.2)
 ##  mnormt         2.1.1     2022-09-26 [1] CRAN (R 4.2.1)
 ##  munsell        0.5.0     2018-06-12 [1] CRAN (R 4.2.1)
 ##  nlme           3.1-162   2023-01-31 [4] CRAN (R 4.2.2)
@@ -482,7 +482,7 @@ summary(res)</code></pre>
 ##  sass           0.4.5     2023-01-24 [1] CRAN (R 4.2.2)
 ##  scales         1.2.1     2022-08-20 [1] CRAN (R 4.2.1)
 ##  sessioninfo    1.2.2     2021-12-06 [1] CRAN (R 4.2.1)
-##  SimDesign    * 2.10.3    2023-03-23 [1] local
+##  SimDesign    * 2.11      2023-05-25 [1] local
 ##  stringi        1.7.12    2023-01-11 [1] CRAN (R 4.2.2)
 ##  stringr        1.5.0     2022-12-02 [1] CRAN (R 4.2.2)
 ##  tibble         3.1.8     2022-07-22 [1] CRAN (R 4.2.1)
@@ -513,25 +513,25 @@ summary(res)</code></pre>
 ## [1] 33
 ## 
 ## $date_completed
-## [1] &quot;Thu Mar 23 15:22:10 2023&quot;
+## [1] Thu May 25 15:50:34 2023
 ## 
 ## $total_elapsed_time
-## [1] &quot;17.99s&quot;</code></pre>
+## [1] 17.26s</code></pre>
 <pre class="r"><code># print results
 print(res)</code></pre>
 <pre><code>## # A tibble: 33 × 7
 ##    mean_diff sample_size      p REPLICATIONS SIM_TIME COMPLETED             SEED
-##        &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                &lt;int&gt;
-##  1       0            10 0.0495        10000    0.575 Thu Mar 23 15:21:5… 1.14e9
-##  2       0.1          10 0.0541        10000    0.612 Thu Mar 23 15:21:5… 3.13e8
-##  3       0.2          10 0.0698        10000    0.571 Thu Mar 23 15:21:5… 8.66e8
-##  4       0.3          10 0.100         10000    0.550 Thu Mar 23 15:21:5… 1.91e9
-##  5       0.4          10 0.136         10000    0.429 Thu Mar 23 15:21:5… 5.55e8
-##  6       0.5          10 0.185         10000    0.490 Thu Mar 23 15:21:5… 8.85e8
-##  7       0.6          10 0.244         10000    0.484 Thu Mar 23 15:21:5… 8.03e8
-##  8       0.7          10 0.315         10000    0.795 Thu Mar 23 15:21:5… 1.16e9
-##  9       0.8          10 0.386         10000    0.427 Thu Mar 23 15:21:5… 9.35e8
-## 10       0.9          10 0.469         10000    0.436 Thu Mar 23 15:21:5… 1.63e9
+##        &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;                &lt;int&gt;
+##  1       0            10 0.0495        10000 0.54s    Thu May 25 15:50… 1.1404e9
+##  2       0.1          10 0.0541        10000 0.60s    Thu May 25 15:50… 3.1293e8
+##  3       0.2          10 0.0698        10000 0.50s    Thu May 25 15:50… 8.6625e8
+##  4       0.3          10 0.1002        10000 0.49s    Thu May 25 15:50… 1.9099e9
+##  5       0.4          10 0.1365        10000 0.42s    Thu May 25 15:50… 5.5450e8
+##  6       0.5          10 0.1847        10000 0.46s    Thu May 25 15:50… 8.8462e8
+##  7       0.6          10 0.2445        10000 0.40s    Thu May 25 15:50… 8.0323e8
+##  8       0.7          10 0.3149        10000 0.41s    Thu May 25 15:50… 1.1590e9
+##  9       0.8          10 0.3864        10000 0.46s    Thu May 25 15:50… 9.3467e8
+## 10       0.9          10 0.4686        10000 0.43s    Thu May 25 15:50… 1.6322e9
 ## # … with 23 more rows</code></pre>
 <p>A power curve is created by placing the detection rates on a <span class="math inline">\(y\)</span>-axis and including different factors on the x-axis and other aesthetics (shading, colours, etc). Here we use <code>ggplot2</code> to construct suitable power-curves.</p>
 <pre class="r"><code>library(ggplot2)
@@ -554,9 +554,9 @@ pwr.t.test(d=0.5, n=30, sig.level=0.05, type=&quot;two.sample&quot;, alternative
 ## NOTE: n is number in *each* group</code></pre>
 <pre class="r"><code>subset(res, mean_diff == .5 &amp; sample_size == 30)</code></pre>
 <pre><code>## # A tibble: 1 × 7
-##   mean_diff sample_size     p REPLICATIONS SIM_TIME COMPLETED               SEED
-##       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                  &lt;int&gt;
-## 1       0.5          30 0.483        10000    0.766 Thu Mar 23 15:22:07 … 3.04e8</code></pre>
+##   mean_diff sample_size      p REPLICATIONS SIM_TIME COMPLETED              SEED
+##       &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;                 &lt;int&gt;
+## 1       0.5          30 0.4827        10000 0.69s    Thu May 25 15:50:… 3.0357e8</code></pre>
 <pre class="r"><code>pwr.t.test(d=0.5, n=10, sig.level=0.05, type=&quot;two.sample&quot;, alternative=&quot;two.sided&quot;)</code></pre>
 <pre><code>## 
 ##      Two-sample t test power calculation 
@@ -570,9 +570,9 @@ pwr.t.test(d=0.5, n=30, sig.level=0.05, type=&quot;two.sample&quot;, alternative
 ## NOTE: n is number in *each* group</code></pre>
 <pre class="r"><code>subset(res, mean_diff == .5 &amp; sample_size == 10)</code></pre>
 <pre><code>## # A tibble: 1 × 7
-##   mean_diff sample_size     p REPLICATIONS SIM_TIME COMPLETED               SEED
-##       &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                  &lt;int&gt;
-## 1       0.5          10 0.185        10000    0.490 Thu Mar 23 15:21:55 … 8.85e8</code></pre>
+##   mean_diff sample_size      p REPLICATIONS SIM_TIME COMPLETED              SEED
+##       &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;                 &lt;int&gt;
+## 1       0.5          10 0.1847        10000 0.46s    Thu May 25 15:50:… 8.8462e8</code></pre>
 </div>
 </div>
 <div id="power-curve-with-bootstrapped-confidence-intervals" class="section level1">
@@ -585,20 +585,20 @@ res &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel=TRUE,
                      boot_method = &#39;basic&#39;)
 res</code></pre>
 <pre><code>## # A tibble: 33 × 9
-##    mean_diff sample_size     p BOOT_p_2.5 BOOT_…¹ REPLI…² SIM_T…³ COMPL…⁴   SEED
-##        &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;    &lt;int&gt;
-##  1       0            10 0.052      0.038   0.065    1000   0.988 Thu Ma… 2.06e9
-##  2       0.1          10 0.064      0.048   0.079    1000   0.744 Thu Ma… 3.62e8
-##  3       0.2          10 0.075      0.058   0.091    1000   0.711 Thu Ma… 1.46e9
-##  4       0.3          10 0.09       0.072   0.107    1000   0.726 Thu Ma… 1.49e9
-##  5       0.4          10 0.129      0.109   0.15     1000   0.703 Thu Ma… 2.05e9
-##  6       0.5          10 0.206      0.181   0.229    1000   0.709 Thu Ma… 1.56e9
-##  7       0.6          10 0.252      0.226   0.278    1000   0.720 Thu Ma… 1.19e9
-##  8       0.7          10 0.299      0.271   0.327    1000   1.00  Thu Ma… 1.87e9
-##  9       0.8          10 0.395      0.367   0.424    1000   0.696 Thu Ma… 1.72e9
-## 10       0.9          10 0.489      0.458   0.520    1000   0.682 Thu Ma… 1.10e9
-## # … with 23 more rows, and abbreviated variable names ¹​BOOT_p_97.5,
-## #   ²​REPLICATIONS, ³​SIM_TIME, ⁴​COMPLETED</code></pre>
+##    mean_diff sample_size     p BOOT_p…¹ BOOT_…² REPLI…³ SIM_T…⁴ COMPL…⁵     SEED
+##        &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;int&gt;
+##  1       0            10 0.052  0.038   0.065      1000 1.01s   Thu Ma… 2.0553e9
+##  2       0.1          10 0.064  0.048   0.079      1000 0.78s   Thu Ma… 3.6188e8
+##  3       0.2          10 0.075  0.058   0.091      1000 0.71s   Thu Ma… 1.4563e9
+##  4       0.3          10 0.09   0.072   0.10702    1000 0.72s   Thu Ma… 1.4890e9
+##  5       0.4          10 0.129  0.109   0.15       1000 0.71s   Thu Ma… 2.0460e9
+##  6       0.5          10 0.206  0.181   0.229      1000 0.73s   Thu Ma… 1.5648e9
+##  7       0.6          10 0.252  0.226   0.27802    1000 0.70s   Thu Ma… 1.1911e9
+##  8       0.7          10 0.299  0.27097 0.327      1000 0.70s   Thu Ma… 1.8668e9
+##  9       0.8          10 0.395  0.367   0.424      1000 0.71s   Thu Ma… 1.7180e9
+## 10       0.9          10 0.489  0.458   0.52002    1000 0.69s   Thu Ma… 1.1042e9
+## # … with 23 more rows, and abbreviated variable names ¹​BOOT_p_2.5,
+## #   ²​BOOT_p_97.5, ³​REPLICATIONS, ⁴​SIM_TIME, ⁵​COMPLETED</code></pre>
 <pre class="r"><code>library(ggplot2)
 ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom_line() +
     geom_ribbon(aes(ymin=BOOT_p_2.5, ymax=BOOT_p_97.5, fill=factor(sample_size)), alpha=.3, linetype=0) + 
@@ -612,20 +612,20 @@ res &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel=TRUE
                      boot_method = &#39;basic&#39;)
 res</code></pre>
 <pre><code>## # A tibble: 33 × 9
-##    mean_diff sample_size      p BOOT_p_…¹ BOOT_…² REPLI…³ SIM_T…⁴ COMPL…⁵   SEED
-##        &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;    &lt;int&gt;
-##  1       0            10 0.0528    0.0484  0.0571   10000    6.89 Thu Ma… 9.51e8
-##  2       0.1          10 0.053     0.0486  0.0574   10000    6.56 Thu Ma… 1.74e9
-##  3       0.2          10 0.0737    0.0685  0.0789   10000    7.00 Thu Ma… 1.19e8
-##  4       0.3          10 0.0962    0.0905  0.102    10000    6.47 Thu Ma… 2.09e9
-##  5       0.4          10 0.133     0.126   0.139    10000    6.43 Thu Ma… 1.79e9
-##  6       0.5          10 0.190     0.182   0.198    10000    6.97 Thu Ma… 9.55e8
-##  7       0.6          10 0.254     0.245   0.262    10000    6.63 Thu Ma… 2.51e8
-##  8       0.7          10 0.325     0.316   0.335    10000    6.36 Thu Ma… 1.21e9
-##  9       0.8          10 0.396     0.385   0.406    10000    7.26 Thu Ma… 8.27e8
-## 10       0.9          10 0.475     0.465   0.485    10000    6.51 Thu Ma… 3.19e8
-## # … with 23 more rows, and abbreviated variable names ¹​BOOT_p_2.5,
-## #   ²​BOOT_p_97.5, ³​REPLICATIONS, ⁴​SIM_TIME, ⁵​COMPLETED</code></pre>
+##    mean_diff sample_…¹      p BOOT_p…² BOOT_p…³ REPLI…⁴ SIM_T…⁵ COMPL…⁶     SEED
+##        &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;int&gt;
+##  1       0          10 0.0528 0.0484   0.057102   10000 6.98s   Thu Ma… 9.5130e8
+##  2       0.1        10 0.053  0.0486   0.0574     10000 6.83s   Thu Ma… 1.7398e9
+##  3       0.2        10 0.0737 0.068498 0.078902   10000 7.09s   Thu Ma… 1.1881e8
+##  4       0.3        10 0.0962 0.090497 0.10170    10000 6.62s   Thu Ma… 2.0853e9
+##  5       0.4        10 0.1328 0.1261   0.1394     10000 6.96s   Thu Ma… 1.7860e9
+##  6       0.5        10 0.1898 0.18250  0.1977     10000 6.93s   Thu Ma… 9.5519e8
+##  7       0.6        10 0.2539 0.24520  0.26240    10000 6.76s   Thu Ma… 2.5147e8
+##  8       0.7        10 0.3249 0.3159   0.33450    10000 7.83s   Thu Ma… 1.2109e9
+##  9       0.8        10 0.3959 0.38550  0.4059     10000 7.21s   Thu Ma… 8.2677e8
+## 10       0.9        10 0.475  0.46530  0.4848     10000 6.67s   Thu Ma… 3.1918e8
+## # … with 23 more rows, and abbreviated variable names ¹​sample_size,
+## #   ²​BOOT_p_2.5, ³​BOOT_p_97.5, ⁴​REPLICATIONS, ⁵​SIM_TIME, ⁶​COMPLETED</code></pre>
 <pre class="r"><code>library(ggplot2)
 ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom_line() +
     geom_ribbon(aes(ymin=BOOT_p_2.5, ymax=BOOT_p_97.5, fill=factor(sample_size)), alpha=.3, linetype=0) + 

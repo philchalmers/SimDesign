@@ -433,31 +433,31 @@ res &lt;- runSimulation(design=Design, replications=5000, generate=Generate,
                      save_results = FALSE, filename = &#39;Raju1995&#39;)
 res</code></pre>
 <pre><code>## # A tibble: 16 × 250
-##        N focal     direct…¹ mean.…² mean.C…³ mean.C…⁴ mean.C…⁵ mean.C…⁶ mean.C…⁷
-##    &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-##  1   500 reference uni        1.65  -4.49e-4 -9.45e-4  6.83e-4  8.75e-4 -1.05e-4
-##  2  1000 reference uni        0.800  3.29e-4 -4.01e-4 -3.24e-4  3.47e-4  4.18e-4
-##  3   500 focal1    uni        1.83   3.63e-3  2.66e-3  2.69e-3  2.80e-3  1.63e-1
-##  4  1000 focal1    uni        1.00   2.74e-3  2.73e-3  2.95e-3  3.59e-3  1.63e-1
-##  5   500 focal2    uni        2.45   5.63e-3  6.94e-3  7.75e-3  7.22e-3  1.68e-1
-##  6  1000 focal2    uni        1.61   6.06e-3  5.88e-3  7.73e-3  7.60e-3  1.67e-1
-##  7   500 focal3    uni        2.83   8.55e-3  7.80e-3  7.56e-3  7.68e-3  1.70e-1
-##  8  1000 focal3    uni        2.03   8.32e-3  6.95e-3  7.41e-3  8.82e-3  1.69e-1
-##  9   500 reference bi         1.58  -1.70e-3  1.39e-3  8.32e-4 -1.10e-3 -1.28e-3
-## 10  1000 reference bi         0.818 -4.57e-4  5.52e-4  1.94e-4  1.42e-4 -8.56e-5
-## 11   500 focal1    bi         1.60  -8.41e-4  6.78e-4  2.19e-4 -9.80e-4  1.59e-1
-## 12  1000 focal1    bi         0.793 -4.81e-4 -1.30e-4 -4.04e-4 -3.39e-4  1.58e-1
-## 13   500 focal2    bi         1.62   4.84e-5 -7.05e-4  5.35e-4  2.08e-4  1.60e-1
-## 14  1000 focal2    bi         0.785  7.35e-4 -4.01e-4 -1.15e-3  1.56e-4  1.60e-1
-## 15   500 focal3    bi         1.59  -1.82e-3 -1.87e-3 -1.45e-3 -1.35e-3 -3.28e-3
-## 16  1000 focal3    bi         0.828 -1.56e-3 -1.76e-3 -1.58e-3 -1.18e-3 -1.62e-3
-## # … with 241 more variables: mean.CDIF6 &lt;dbl&gt;, mean.CDIF7 &lt;dbl&gt;,
-## #   mean.CDIF8 &lt;dbl&gt;, mean.CDIF9 &lt;dbl&gt;, mean.CDIF10 &lt;dbl&gt;, mean.CDIF11 &lt;dbl&gt;,
-## #   mean.CDIF12 &lt;dbl&gt;, mean.CDIF13 &lt;dbl&gt;, mean.CDIF14 &lt;dbl&gt;, mean.CDIF15 &lt;dbl&gt;,
-## #   mean.CDIF16 &lt;dbl&gt;, mean.CDIF17 &lt;dbl&gt;, mean.CDIF18 &lt;dbl&gt;, mean.CDIF19 &lt;dbl&gt;,
-## #   mean.CDIF20 &lt;dbl&gt;, mean.CDIF21 &lt;dbl&gt;, mean.CDIF22 &lt;dbl&gt;, mean.CDIF23 &lt;dbl&gt;,
-## #   mean.CDIF24 &lt;dbl&gt;, mean.CDIF25 &lt;dbl&gt;, mean.CDIF26 &lt;dbl&gt;, mean.CDIF27 &lt;dbl&gt;,
-## #   mean.CDIF28 &lt;dbl&gt;, mean.CDIF29 &lt;dbl&gt;, mean.CDIF30 &lt;dbl&gt;, …</code></pre>
+##        N focal     direction mean.…¹ mean.CDIF1 mean.CDIF2 mean.CDIF3 mean.CDIF4
+##    &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+##  1   500 reference uni       1.6496  -4.4881e-4 -9.4495e-4  6.8298e-4  8.7543e-4
+##  2  1000 reference uni       0.79966  3.2853e-4 -4.0062e-4 -3.2408e-4  3.4686e-4
+##  3   500 focal1    uni       1.8263   3.6271e-3  2.6617e-3  2.6948e-3  2.7975e-3
+##  4  1000 focal1    uni       1.0031   2.7431e-3  2.7282e-3  2.9469e-3  3.5933e-3
+##  5   500 focal2    uni       2.4525   5.6284e-3  6.9448e-3  7.7482e-3  7.2218e-3
+##  6  1000 focal2    uni       1.6140   6.0639e-3  5.8814e-3  7.7320e-3  7.5962e-3
+##  7   500 focal3    uni       2.8337   8.5511e-3  7.7950e-3  7.5639e-3  7.6831e-3
+##  8  1000 focal3    uni       2.0253   8.3191e-3  6.9485e-3  7.4085e-3  8.8175e-3
+##  9   500 reference bi        1.5796  -1.7019e-3  1.3896e-3  8.3165e-4 -1.1015e-3
+## 10  1000 reference bi        0.81751 -4.5671e-4  5.5246e-4  1.9432e-4  1.4209e-4
+## 11   500 focal1    bi        1.6012  -8.4113e-4  6.7791e-4  2.1897e-4 -9.7950e-4
+## 12  1000 focal1    bi        0.79338 -4.8063e-4 -1.2972e-4 -4.0402e-4 -3.3937e-4
+## 13   500 focal2    bi        1.6176   4.8432e-5 -7.0522e-4  5.3535e-4  2.0785e-4
+## 14  1000 focal2    bi        0.78514  7.3518e-4 -4.0095e-4 -1.1517e-3  1.5601e-4
+## 15   500 focal3    bi        1.5887  -1.8218e-3 -1.8665e-3 -1.4468e-3 -1.3513e-3
+## 16  1000 focal3    bi        0.82812 -1.5600e-3 -1.7591e-3 -1.5820e-3 -1.1778e-3
+## # … with 242 more variables: mean.CDIF5 &lt;dbl&gt;, mean.CDIF6 &lt;dbl&gt;,
+## #   mean.CDIF7 &lt;dbl&gt;, mean.CDIF8 &lt;dbl&gt;, mean.CDIF9 &lt;dbl&gt;, mean.CDIF10 &lt;dbl&gt;,
+## #   mean.CDIF11 &lt;dbl&gt;, mean.CDIF12 &lt;dbl&gt;, mean.CDIF13 &lt;dbl&gt;, mean.CDIF14 &lt;dbl&gt;,
+## #   mean.CDIF15 &lt;dbl&gt;, mean.CDIF16 &lt;dbl&gt;, mean.CDIF17 &lt;dbl&gt;, mean.CDIF18 &lt;dbl&gt;,
+## #   mean.CDIF19 &lt;dbl&gt;, mean.CDIF20 &lt;dbl&gt;, mean.CDIF21 &lt;dbl&gt;, mean.CDIF22 &lt;dbl&gt;,
+## #   mean.CDIF23 &lt;dbl&gt;, mean.CDIF24 &lt;dbl&gt;, mean.CDIF25 &lt;dbl&gt;, mean.CDIF26 &lt;dbl&gt;,
+## #   mean.CDIF27 &lt;dbl&gt;, mean.CDIF28 &lt;dbl&gt;, mean.CDIF29 &lt;dbl&gt;, …</code></pre>
 </div>
 <div id="extras" class="section level1">
 <h1>Extras</h1>

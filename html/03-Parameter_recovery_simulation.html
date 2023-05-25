@@ -487,21 +487,21 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 ## lavaan is FREE software! Please report any bugs.</code></pre>
 <pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 6 × 86
-##   sample_…¹ nitems bias.…² bias.F…³ bias.F…⁴ bias.F…⁵ bias.F…⁶ bias.F…⁷ bias.F…⁸
-##       &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1       250     10 -0.0124  0.0293  -0.0136   0.166    2.76e-2 -1.66e-2  0.0216 
-## 2       500     10 -0.0165  0.00326 -0.0167   0.0408   4.31e-5  6.86e-4 -0.0113 
-## 3      1000     10 -0.0142 -0.0148  -0.0173   0.0931   4.73e-3 -1.89e-2 -0.00486
-## 4       250     20  0.0464  0.0349   0.00658 -0.0108   1.06e-2  7.02e-3 -0.00792
-## 5       500     20  0.0415  0.0556   0.00659 -0.00679 -1.21e-3  2.04e-3 -0.0108 
-## 6      1000     20  0.0257  0.0380  -0.00894 -0.00487  1.52e-2 -1.57e-2  0.00328
-## # … with 77 more variables: bias.FIML_as8 &lt;dbl&gt;, bias.FIML_as9 &lt;dbl&gt;,
-## #   bias.FIML_as10 &lt;dbl&gt;, bias.DWLS_as1 &lt;dbl&gt;, bias.DWLS_as2 &lt;dbl&gt;,
-## #   bias.DWLS_as3 &lt;dbl&gt;, bias.DWLS_as4 &lt;dbl&gt;, bias.DWLS_as5 &lt;dbl&gt;,
-## #   bias.DWLS_as6 &lt;dbl&gt;, bias.DWLS_as7 &lt;dbl&gt;, bias.DWLS_as8 &lt;dbl&gt;,
-## #   bias.DWLS_as9 &lt;dbl&gt;, bias.DWLS_as10 &lt;dbl&gt;, RMSE.FIML_as1 &lt;dbl&gt;,
-## #   RMSE.FIML_as2 &lt;dbl&gt;, RMSE.FIML_as3 &lt;dbl&gt;, RMSE.FIML_as4 &lt;dbl&gt;,
-## #   RMSE.FIML_as5 &lt;dbl&gt;, RMSE.FIML_as6 &lt;dbl&gt;, RMSE.FIML_as7 &lt;dbl&gt;, …</code></pre>
+##   sample_size nitems bias.FIML_as1 bias.FIML_…¹ bias.FIM…² bias.FIM…³ bias.FIM…⁴
+##         &lt;dbl&gt;  &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+## 1         250     10     -0.012443    0.029311  -0.013601   0.16573    2.7646e-2
+## 2         500     10     -0.016544    0.0032587 -0.016734   0.040801   4.3103e-5
+## 3        1000     10     -0.014192   -0.014803  -0.017341   0.093070   4.7291e-3
+## 4         250     20      0.046401    0.034873   0.0065848 -0.010772   1.0626e-2
+## 5         500     20      0.041533    0.055585   0.0065930 -0.0067927 -1.2091e-3
+## 6        1000     20      0.025724    0.037974  -0.0089383 -0.0048665  1.5197e-2
+## # … with 79 more variables: bias.FIML_as6 &lt;dbl&gt;, bias.FIML_as7 &lt;dbl&gt;,
+## #   bias.FIML_as8 &lt;dbl&gt;, bias.FIML_as9 &lt;dbl&gt;, bias.FIML_as10 &lt;dbl&gt;,
+## #   bias.DWLS_as1 &lt;dbl&gt;, bias.DWLS_as2 &lt;dbl&gt;, bias.DWLS_as3 &lt;dbl&gt;,
+## #   bias.DWLS_as4 &lt;dbl&gt;, bias.DWLS_as5 &lt;dbl&gt;, bias.DWLS_as6 &lt;dbl&gt;,
+## #   bias.DWLS_as7 &lt;dbl&gt;, bias.DWLS_as8 &lt;dbl&gt;, bias.DWLS_as9 &lt;dbl&gt;,
+## #   bias.DWLS_as10 &lt;dbl&gt;, RMSE.FIML_as1 &lt;dbl&gt;, RMSE.FIML_as2 &lt;dbl&gt;,
+## #   RMSE.FIML_as3 &lt;dbl&gt;, RMSE.FIML_as4 &lt;dbl&gt;, RMSE.FIML_as5 &lt;dbl&gt;, …</code></pre>
 </div>
 <div id="analyze-the-results" class="section level3">
 <h3>Analyze the results</h3>

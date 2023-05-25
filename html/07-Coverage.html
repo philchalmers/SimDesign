@@ -410,17 +410,17 @@ res &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel = TR
                      generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 9 × 8
-##      mu sample_size  t_CI  z_CI REPLICATIONS SIM_TIME COMPLETED             SEED
-##   &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                &lt;int&gt;
-## 1     0          10 0.953 0.922        10000    0.447 Thu Mar 23 15:26:3… 4.88e8
-## 2     5          10 0.947 0.917        10000    0.480 Thu Mar 23 15:26:3… 4.69e8
-## 3    10          10 0.950 0.917        10000    0.422 Thu Mar 23 15:26:3… 1.55e9
-## 4     0          20 0.948 0.932        10000    0.429 Thu Mar 23 15:26:3… 4.08e7
-## 5     5          20 0.953 0.937        10000    0.416 Thu Mar 23 15:26:3… 7.13e8
-## 6    10          20 0.952 0.938        10000    0.451 Thu Mar 23 15:26:3… 8.31e8
-## 7     0          30 0.949 0.941        10000    0.434 Thu Mar 23 15:26:3… 1.21e9
-## 8     5          30 0.948 0.938        10000    0.438 Thu Mar 23 15:26:3… 1.26e9
-## 9    10          30 0.949 0.939        10000    0.483 Thu Mar 23 15:26:3… 1.23e9</code></pre>
+##      mu sample_size   t_CI   z_CI REPLICATIONS SIM_TIME COMPLETED           SEED
+##   &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;              &lt;int&gt;
+## 1     0          10 0.9531 0.9221        10000 0.51s    Thu May 25 15:… 4.8835e8
+## 2     5          10 0.9466 0.9169        10000 0.52s    Thu May 25 15:… 4.6934e8
+## 3    10          10 0.9503 0.9173        10000 0.64s    Thu May 25 15:… 1.5501e9
+## 4     0          20 0.9481 0.9325        10000 0.70s    Thu May 25 15:… 4.0779e7
+## 5     5          20 0.9527 0.9373        10000 0.45s    Thu May 25 15:… 7.1333e8
+## 6    10          20 0.9523 0.9375        10000 0.43s    Thu May 25 15:… 8.3149e8
+## 7     0          30 0.9494 0.9408        10000 0.42s    Thu May 25 15:… 1.2144e9
+## 8     5          30 0.9476 0.9381        10000 0.50s    Thu May 25 15:… 1.2555e9
+## 9    10          30 0.9488 0.9392        10000 0.47s    Thu May 25 15:… 1.2293e9</code></pre>
 <p>From these results it’s clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distribution CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.</p>
 <p>Note that the <code>ECR()</code> function was used within the <code>Analyse()</code> function rather than in <code>Summarise()</code>. When only the three values are supplied (CIs + population value) then <code>ECR()</code> will return either a 1 if the population value was within the CI or 0 if it was not. Hence, in the <code>Summarise()</code> function all that is required to obtain the coverage estimate is to find the mean of these 1’s and 0’s. The next section demonstrates how to use <code>ECR()</code> in the <code>Summarise()</code> instead, and it’s really a matter of preference which style you prefer.</p>
 </div>

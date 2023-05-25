@@ -457,44 +457,45 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
                      generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
 ## 
-Design row: 1/6;   Started: Thu Mar 23 15:21:18 2023;   Total elapsed time: 0.00s 
+Design row: 1/6;   Started: Thu May 25 15:49:44 2023;   Total elapsed time: 0.00s 
 ##  Conditions: test_length=10, distribution=normal
 ## 
 ## 
-Design row: 2/6;   Started: Thu Mar 23 15:21:22 2023;   Total elapsed time: 3.74s 
+Design row: 2/6;   Started: Thu May 25 15:49:48 2023;   Total elapsed time: 3.67s 
 ##  Conditions: test_length=20, distribution=normal
 ## 
 ## 
-Design row: 3/6;   Started: Thu Mar 23 15:21:27 2023;   Total elapsed time: 9.11s 
+Design row: 3/6;   Started: Thu May 25 15:49:53 2023;   Total elapsed time: 9.15s 
 ##  Conditions: test_length=30, distribution=normal
 ## 
 ## 
-Design row: 4/6;   Started: Thu Mar 23 15:21:34 2023;   Total elapsed time: 15.61s 
+Design row: 4/6;   Started: Thu May 25 15:50:00 2023;   Total elapsed time: 15.61s 
 ##  Conditions: test_length=10, distribution=bimodal
 ## 
 ## 
-Design row: 5/6;   Started: Thu Mar 23 15:21:38 2023;   Total elapsed time: 19.56s 
+Design row: 5/6;   Started: Thu May 25 15:50:03 2023;   Total elapsed time: 19.11s 
 ##  Conditions: test_length=20, distribution=bimodal
 ## 
 ## 
-Design row: 6/6;   Started: Thu Mar 23 15:21:44 2023;   Total elapsed time: 25.58s 
+Design row: 6/6;   Started: Thu May 25 15:50:09 2023;   Total elapsed time: 24.75s 
 ##  Conditions: test_length=30, distribution=bimodal
 ## </code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 31.87s</code></pre>
+## Simulation complete. Total execution time: 31.03s</code></pre>
 <pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 6 × 14
-##   test_len…¹ distr…² bias_EAP bias_MAP  bias_ML bias_E…³ RMSE_…⁴ RMSE_…⁵ RMSE_ML
-##        &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-## 1         10 normal  -0.00155 -0.00136  0.0147  -0.00460   0.507   0.508   0.584
-## 2         20 normal   0.00940  0.00929  0.0116   0.00855   0.397   0.400   0.464
-## 3         30 normal  -0.00633 -0.00526 -0.00696 -0.00569   0.327   0.327   0.399
-## 4         10 bimodal  0.0193   0.0245   0.0360   0.0135    0.518   0.522   0.645
-## 5         20 bimodal -0.00890 -0.0112  -0.00903 -0.00503   0.370   0.369   0.464
-## 6         30 bimodal  0.0268   0.0268   0.0282   0.0227    0.307   0.305   0.381
-## # … with 5 more variables: RMSE_EAP_bimodal &lt;dbl&gt;, REPLICATIONS &lt;int&gt;,
-## #   SIM_TIME &lt;dbl&gt;, COMPLETED &lt;chr&gt;, SEED &lt;int&gt;, and abbreviated variable names
-## #   ¹​test_length, ²​distribution, ³​bias_EAP_bimodal, ⁴​RMSE_EAP, ⁵​RMSE_MAP</code></pre>
+##   test_len…¹ distr…²   bias_EAP   bias_MAP    bias_ML bias_EAP…³ RMSE_…⁴ RMSE_…⁵
+##        &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1         10 normal  -0.0015501 -0.0013642  0.014744  -0.0045993 0.50681 0.50828
+## 2         20 normal   0.0093989  0.0092882  0.011625   0.0085493 0.39728 0.40041
+## 3         30 normal  -0.0063332 -0.0052552 -0.0069644 -0.0056860 0.32671 0.32677
+## 4         10 bimodal  0.019335   0.024511   0.036004   0.013520  0.51807 0.52217
+## 5         20 bimodal -0.0088995 -0.011185  -0.0090255 -0.0050346 0.36995 0.36907
+## 6         30 bimodal  0.026843   0.026776   0.028189   0.022670  0.30747 0.30535
+## # … with 6 more variables: RMSE_ML &lt;dbl&gt;, RMSE_EAP_bimodal &lt;dbl&gt;,
+## #   REPLICATIONS &lt;int&gt;, SIM_TIME &lt;chr&gt;, COMPLETED &lt;chr&gt;, SEED &lt;int&gt;, and
+## #   abbreviated variable names ¹​test_length, ²​distribution, ³​bias_EAP_bimodal,
+## #   ⁴​RMSE_EAP, ⁵​RMSE_MAP</code></pre>
 </div>
 <div id="analyze-the-results" class="section level3">
 <h3>Analyze the results</h3>

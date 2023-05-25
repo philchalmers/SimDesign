@@ -476,7 +476,7 @@ res</code></pre>
 ## #   sds.M3PL.AIC &lt;dbl&gt;, sds.M3PL.BIC &lt;dbl&gt;, sds.LR12.X2 &lt;dbl&gt;,
 ## #   sds.LR23.X2 &lt;dbl&gt;, M1PL.BIC &lt;dbl&gt;, M2PL.BIC &lt;dbl&gt;, M3PL.BIC &lt;dbl&gt;,
 ## #   M1PL.AIC &lt;dbl&gt;, M2PL.AIC &lt;dbl&gt;, M3PL.AIC &lt;dbl&gt;, M1PL.LR &lt;dbl&gt;,
-## #   M2PL.LR &lt;dbl&gt;, M3PL.LR &lt;dbl&gt;, REPLICATIONS &lt;int&gt;, SIM_TIME &lt;dbl&gt;, …</code></pre>
+## #   M2PL.LR &lt;dbl&gt;, M3PL.LR &lt;dbl&gt;, REPLICATIONS &lt;int&gt;, SIM_TIME &lt;chr&gt;, …</code></pre>
 </div>
 <div id="replication-of-several-tables-and-figures" class="section level1">
 <h1>Replication of several Tables and Figures</h1>
@@ -488,6 +488,7 @@ Table6_means &lt;- res %&gt;% filter(model == &quot;1PL&quot;) %&gt;%
 Table6_sds &lt;- res %&gt;% filter(model == &quot;1PL&quot;) %&gt;%
     select(nitems:sample_size, estimator, sds.M1PL.AIC:sds.LR23.X2)
 Table6_means</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `SIM_TIME`.</code></pre>
 <pre><code>## # A tibble: 12 × 12
 ##    nitems ability_mean sample_…¹ estim…² means…³ means…⁴ means…⁵ means…⁶ means…⁷
 ##     &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
@@ -508,21 +509,22 @@ Table6_means</code></pre>
 ## #   ²​estimator, ³​means.M1PL.AIC, ⁴​means.M1PL.BIC, ⁵​means.M2PL.AIC,
 ## #   ⁶​means.M2PL.BIC, ⁷​means.M3PL.AIC</code></pre>
 <pre class="r"><code>Table6_sds</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `SIM_TIME`.</code></pre>
 <pre><code>## # A tibble: 12 × 12
 ##    nitems ability_mean sample_…¹ estim…² sds.M…³ sds.M…⁴ sds.M…⁵ sds.M…⁶ sds.M…⁷
 ##     &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-##  1     20            0       500 MML        89.8    89.8    89.8    89.8    89.9
-##  2     40            0       500 MML       171.    171.    172.    172.    172. 
-##  3     20           -1       500 MML       128.    128.    128.    128.    129. 
-##  4     40           -1       500 MML       242.    242.    243.    243.    244. 
-##  5     20            1       500 MML       140.    140.    140.    140.    140. 
-##  6     40            1       500 MML       211.    211.    212.    212.    211. 
-##  7     20            0      1000 MML       127.    127.    127.    127.    127. 
-##  8     40            0      1000 MML       237.    237.    236.    236.    237. 
-##  9     20           -1      1000 MML       170.    170.    170.    170.    170. 
-## 10     40           -1      1000 MML       330.    330.    330.    330.    330. 
-## 11     20            1      1000 MML       191.    191.    192.    192.    191. 
-## 12     40            1      1000 MML       330.    330.    330.    330.    330. 
+##  1     20            0       500 MML      89.760  89.760  89.778  89.778  89.902
+##  2     40            0       500 MML     171.49  171.49  171.76  171.76  172.05 
+##  3     20           -1       500 MML     128.20  128.20  128.12  128.12  128.86 
+##  4     40           -1       500 MML     242.41  242.41  242.67  242.67  243.71 
+##  5     20            1       500 MML     140.10  140.10  140.16  140.16  139.79 
+##  6     40            1       500 MML     211.36  211.36  211.54  211.54  211.42 
+##  7     20            0      1000 MML     126.89  126.89  126.99  126.99  127.39 
+##  8     40            0      1000 MML     236.82  236.82  236.38  236.38  236.74 
+##  9     20           -1      1000 MML     169.64  169.64  169.66  169.66  170.23 
+## 10     40           -1      1000 MML     330.16  330.16  329.76  329.76  330.25 
+## 11     20            1      1000 MML     191.37  191.37  191.81  191.81  191.12 
+## 12     40            1      1000 MML     330.26  330.26  330.26  330.26  329.71 
 ## # … with 3 more variables: sds.M3PL.BIC &lt;dbl&gt;, sds.LR12.X2 &lt;dbl&gt;,
 ## #   sds.LR23.X2 &lt;dbl&gt;, and abbreviated variable names ¹​sample_size, ²​estimator,
 ## #   ³​sds.M1PL.AIC, ⁴​sds.M1PL.BIC, ⁵​sds.M2PL.AIC, ⁶​sds.M2PL.BIC, ⁷​sds.M3PL.AIC</code></pre>
@@ -531,6 +533,7 @@ Table6_means</code></pre>
 Table7_sds &lt;- res %&gt;% filter(model == &quot;2PL&quot;) %&gt;%
     select(nitems:sample_size, estimator, sds.M1PL.AIC:sds.LR23.X2)
 Table7_means</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `SIM_TIME`.</code></pre>
 <pre><code>## # A tibble: 12 × 12
 ##    nitems ability_mean sample_…¹ estim…² means…³ means…⁴ means…⁵ means…⁶ means…⁷
 ##     &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
@@ -551,21 +554,22 @@ Table7_means</code></pre>
 ## #   ²​estimator, ³​means.M1PL.AIC, ⁴​means.M1PL.BIC, ⁵​means.M2PL.AIC,
 ## #   ⁶​means.M2PL.BIC, ⁷​means.M3PL.AIC</code></pre>
 <pre class="r"><code>Table7_sds</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `SIM_TIME`.</code></pre>
 <pre><code>## # A tibble: 12 × 12
 ##    nitems ability_mean sample_…¹ estim…² sds.M…³ sds.M…⁴ sds.M…⁵ sds.M…⁶ sds.M…⁷
 ##     &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-##  1     20            0       500 MML        86.3    86.3    92.3    92.3    92.4
-##  2     40            0       500 MML       151.    151.    165.    165.    166. 
-##  3     20           -1       500 MML       128.    128.    129.    129.    129. 
-##  4     40           -1       500 MML       222.    222.    221.    221.    222. 
-##  5     20            1       500 MML       125.    125.    127.    127.    127. 
-##  6     40            1       500 MML       220.    220.    221.    221.    220. 
-##  7     20            0      1000 MML       131.    131.    144.    144.    144. 
-##  8     40            0      1000 MML       216.    216.    234.    234.    234. 
-##  9     20           -1      1000 MML       172.    172.    173.    173.    174. 
-## 10     40           -1      1000 MML       319.    319.    318.    318.    319. 
-## 11     20            1      1000 MML       197.    197.    197.    197.    197. 
-## 12     40            1      1000 MML       304.    304.    310.    310.    310. 
+##  1     20            0       500 MML      86.271  86.271  92.308  92.308  92.434
+##  2     40            0       500 MML     151.07  151.07  165.31  165.31  166.14 
+##  3     20           -1       500 MML     128.38  128.38  128.61  128.61  128.71 
+##  4     40           -1       500 MML     221.59  221.59  220.88  220.88  221.87 
+##  5     20            1       500 MML     124.54  124.54  127.16  127.16  126.73 
+##  6     40            1       500 MML     219.77  219.77  220.58  220.58  220.19 
+##  7     20            0      1000 MML     131.34  131.34  143.67  143.67  143.86 
+##  8     40            0      1000 MML     215.62  215.62  233.98  233.98  234.21 
+##  9     20           -1      1000 MML     172.37  172.37  173.47  173.47  174.11 
+## 10     40           -1      1000 MML     318.69  318.69  318.42  318.42  319.26 
+## 11     20            1      1000 MML     196.67  196.67  196.81  196.81  196.58 
+## 12     40            1      1000 MML     304.49  304.49  310.08  310.08  309.90 
 ## # … with 3 more variables: sds.M3PL.BIC &lt;dbl&gt;, sds.LR12.X2 &lt;dbl&gt;,
 ## #   sds.LR23.X2 &lt;dbl&gt;, and abbreviated variable names ¹​sample_size, ²​estimator,
 ## #   ³​sds.M1PL.AIC, ⁴​sds.M1PL.BIC, ⁵​sds.M2PL.AIC, ⁶​sds.M2PL.BIC, ⁷​sds.M3PL.AIC</code></pre>
@@ -574,41 +578,43 @@ Table7_means</code></pre>
 Table8_sds &lt;- res %&gt;% filter(model == &quot;3PL&quot;) %&gt;%
     select(nitems:sample_size, estimator, sds.M1PL.AIC:sds.LR23.X2)
 Table8_means</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `SIM_TIME`.</code></pre>
 <pre><code>## # A tibble: 12 × 12
 ##    nitems ability_mean sample_…¹ estim…² means…³ means…⁴ means…⁵ means…⁶ means…⁷
 ##     &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-##  1     20            0       500 MML      11090.  11174.  10991.  11159.  10995.
-##  2     40            0       500 MML      22297.  22465.  22042.  22379.  22036.
-##  3     20           -1       500 MML      12674.  12758.  12497.  12665.  12498.
-##  4     40           -1       500 MML      25272.  25441.  24955.  25292.  24938.
-##  5     20            1       500 MML       8540.   8624.   8472.   8641.   8487.
-##  6     40            1       500 MML      17425.  17594.  17232.  17569.  17255.
-##  7     20            0      1000 MML      22268.  22366.  22044.  22241.  22033.
-##  8     40            0      1000 MML      44570.  44766.  44011.  44403.  43961.
-##  9     20           -1      1000 MML      25422.  25521.  25053.  25249.  25042.
-## 10     40           -1      1000 MML      50583.  50779.  49891.  50283.  49826.
-## 11     20            1      1000 MML      17146.  17244.  16989.  17185.  16996.
-## 12     40            1      1000 MML      34812.  35008.  34381.  34774.  34381.
+##  1     20            0       500 MML     11090.  11174.  10991.  11159.  10995. 
+##  2     40            0       500 MML     22297.  22465.  22042.  22379.  22036. 
+##  3     20           -1       500 MML     12674.  12758.  12497.  12665.  12498. 
+##  4     40           -1       500 MML     25272.  25441.  24955.  25292.  24938. 
+##  5     20            1       500 MML      8540.0  8624.3  8472.1  8640.7  8486.8
+##  6     40            1       500 MML     17425.  17594.  17232.  17569.  17255. 
+##  7     20            0      1000 MML     22268.  22366.  22044.  22241.  22033. 
+##  8     40            0      1000 MML     44570.  44766.  44011.  44403.  43961. 
+##  9     20           -1      1000 MML     25422.  25521.  25053.  25249.  25042. 
+## 10     40           -1      1000 MML     50583.  50779.  49891.  50283.  49826. 
+## 11     20            1      1000 MML     17146.  17244.  16989.  17185.  16996. 
+## 12     40            1      1000 MML     34812.  35008.  34381.  34774.  34381. 
 ## # … with 3 more variables: means.M3PL.BIC &lt;dbl&gt;, means.LR12.X2 &lt;dbl&gt;,
 ## #   means.LR23.X2 &lt;dbl&gt;, and abbreviated variable names ¹​sample_size,
 ## #   ²​estimator, ³​means.M1PL.AIC, ⁴​means.M1PL.BIC, ⁵​means.M2PL.AIC,
 ## #   ⁶​means.M2PL.BIC, ⁷​means.M3PL.AIC</code></pre>
 <pre class="r"><code>Table8_sds</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `SIM_TIME`.</code></pre>
 <pre><code>## # A tibble: 12 × 12
 ##    nitems ability_mean sample_…¹ estim…² sds.M…³ sds.M…⁴ sds.M…⁵ sds.M…⁶ sds.M…⁷
 ##     &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-##  1     20            0       500 MML        282.    282.    278.    278.    278.
-##  2     40            0       500 MML        414.    414.    408.    408.    407.
-##  3     20           -1       500 MML        246.    246.    239.    239.    240.
-##  4     40           -1       500 MML        337.    337.    329.    329.    330.
-##  5     20            1       500 MML        303.    303.    297.    297.    297.
-##  6     40            1       500 MML        421.    421.    413.    413.    412.
-##  7     20            0      1000 MML        486.    486.    480.    480.    478.
-##  8     40            0      1000 MML        763.    763.    753.    753.    752.
-##  9     20           -1      1000 MML        444.    444.    435.    435.    434.
-## 10     40           -1      1000 MML        664.    664.    648.    648.    648.
-## 11     20            1      1000 MML        569.    569.    561.    561.    560.
-## 12     40            1      1000 MML        796.    796.    783.    783.    782.
+##  1     20            0       500 MML      281.58  281.58  277.91  277.91  278.45
+##  2     40            0       500 MML      413.93  413.93  408.31  408.31  406.70
+##  3     20           -1       500 MML      246.03  246.03  239.49  239.49  239.93
+##  4     40           -1       500 MML      336.87  336.87  329.11  329.11  330.10
+##  5     20            1       500 MML      303.05  303.05  296.61  296.61  296.68
+##  6     40            1       500 MML      420.76  420.76  413.11  413.11  412.41
+##  7     20            0      1000 MML      486.20  486.20  479.90  479.90  478.16
+##  8     40            0      1000 MML      762.52  762.52  752.81  752.81  752.11
+##  9     20           -1      1000 MML      444.38  444.38  435.11  435.11  434.04
+## 10     40           -1      1000 MML      663.71  663.71  648.06  648.06  648.43
+## 11     20            1      1000 MML      568.87  568.87  560.85  560.85  559.88
+## 12     40            1      1000 MML      795.56  795.56  782.72  782.72  781.50
 ## # … with 3 more variables: sds.M3PL.BIC &lt;dbl&gt;, sds.LR12.X2 &lt;dbl&gt;,
 ## #   sds.LR23.X2 &lt;dbl&gt;, and abbreviated variable names ¹​sample_size, ²​estimator,
 ## #   ³​sds.M1PL.AIC, ⁴​sds.M1PL.BIC, ⁵​sds.M2PL.AIC, ⁶​sds.M2PL.BIC, ⁷​sds.M3PL.AIC</code></pre>
@@ -618,6 +624,7 @@ Table9 &lt;- res %&gt;% filter(estimator == &quot;MML&quot;) %&gt;%
     select(nitems:model, M1PL.BIC:M3PL.LR) %&gt;%
     arrange(nitems, sample_size, ability_mean, model)
 Table9</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `SIM_TIME`.</code></pre>
 <pre><code>## # A tibble: 36 × 13
 ##    nitems abilit…¹ sampl…² model M1PL.…³ M2PL.…⁴ M3PL.…⁵ M1PL.…⁶ M2PL.…⁷ M3PL.…⁸
 ##     &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
