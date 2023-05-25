@@ -1378,8 +1378,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Final$SIM_TIME <- Final$ID <- Final$COMPLETED <-
         Final$REPLICATIONS <- Final$REPLICATION <- Final$FATAL_TERMINATION <- NULL
     Final <- data.frame(Final, FATAL_TERMINATION,
-                        REPLICATIONS=replications, SIM_TIME, COMPLETED,
-                        check.names=FALSE, stringsAsFactors=FALSE)
+                        REPLICATIONS=replications, SIM_TIME=sapply(SIM_TIME, timeFormater),
+                        COMPLETED, check.names=FALSE, stringsAsFactors=FALSE)
     if(all(is.na(Final$FATAL_TERMINATION))) Final$FATAL_TERMINATION <- NULL
     if(is.null(Final$SEED)) Final$SEED <- NA
     if(!is.null(seed)) Final$SEED <- seed
@@ -1437,7 +1437,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                                     save_seeds_dirname=save_seeds_dirname)[pick],
                                       ncores = if(parallel) length(cl) else if(MPI) NA else 1L,
                                       number_of_conditions = nrow(design),
-                                      date_completed = date(), total_elapsed_time = sum(Final$SIM_TIME),
+                                      date_completed = noquote(date()), total_elapsed_time = sum(SIM_TIME),
                                       error_seeds=dplyr::as_tibble(error_seeds),
                                       warning_seeds=dplyr::as_tibble(warning_seeds),
                                       stored_results = if(store_results) stored_Results_list else NULL,
@@ -1464,7 +1464,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
 #' @export
 summary.SimDesign <- function(object, ...){
     ret <- attr(object, 'extra_info')
-    ret$total_elapsed_time <- timeFormater(ret$total_elapsed_time, TRUE)
+    ret$total_elapsed_time <- noquote(timeFormater(ret$total_elapsed_time, TRUE))
     ret$stored_results <- NULL
     ret$error_seeds <- NULL
     ret$warning_seeds <- NULL
