@@ -60,6 +60,9 @@
 #'
 #' @param cl see \code{\link{runSimulation}}
 #'
+#' @param k.success number of consecutive tolerance sucessess given rel.tol and
+#'   tol criteria (default is 3)
+#'
 #' @param tol tolerance criteria for early termination.
 #'
 #' @param rel.tol relative tolerance criteria for early termination.
@@ -252,8 +255,8 @@
 SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      replications = c(rep(100L, interpolate.burnin),
                                       seq(200L, by=10L, length.out=maxiter-interpolate.burnin)),
-                     integer = TRUE, tol = if(integer) .001 else .00001,
-                     rel.tol = .00001,
+                     integer = TRUE, tol = if(integer) .1 else .001,
+                     rel.tol = .0001, k.success = 3L,
                      interpolate.burnin = 15L, interpolate.R = 3000,
                      formula = y ~ poly(x, 2), family = 'binomial',
                      parallel = FALSE, cl = NULL,
@@ -341,6 +344,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       tol=tol,
                                       rel.tol=rel.tol,
                                       b=b,
+                                      k.success=k.success,
                                       # robust = robust,
                                       interpolate.burnin=interpolate.burnin)
         roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,

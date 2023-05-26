@@ -16,8 +16,9 @@ SimSolve(
   replications = c(rep(100L, interpolate.burnin), seq(200L, by = 10L, length.out =
     maxiter - interpolate.burnin)),
   integer = TRUE,
-  tol = if (integer) 0.001 else 1e-05,
-  rel.tol = 1e-05,
+  tol = if (integer) 0.1 else 0.001,
+  rel.tol = 1e-04,
+  k.success = 3L,
   interpolate.burnin = 15L,
   interpolate.R = 3000,
   formula = y ~ poly(x, 2),
@@ -76,6 +77,9 @@ throughout the search}
 \item{tol}{tolerance criteria for early termination.}
 
 \item{rel.tol}{relative tolerance criteria for early termination.}
+
+\item{k.success}{number of consecutive tolerance sucessess given rel.tol and
+tol criteria (default is 3)}
 
 \item{interpolate.burnin}{integer indicating the number of initial iterations
 to discard from the interpolation computations. This is included to further
