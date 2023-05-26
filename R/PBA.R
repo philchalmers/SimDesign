@@ -226,7 +226,6 @@ PBA <- function(f, interval, ..., p = .6,
                 if(abs_diff <= tol || rel_diff <= rel.tol){
                     close2med <- abs(glmpred[1L] - med) / abs(glmpred[1L]) < .1
                     if(close2med) break
-                    else glmpred <- c(NA, NA)
                 }
             }
             glmpred.last <- glmpred
