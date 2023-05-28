@@ -11,7 +11,8 @@ parent_env_fun <- function(){
 load_packages <- function(packages){
     if(!is.null(packages))
         for(pack in packages)
-            require(substitute(pack), character.only=TRUE, quietly=TRUE)
+            require(substitute(pack), character.only=TRUE,
+                    quietly=TRUE, warn.conflicts=FALSE)
     invisible(NULL)
 }
 
