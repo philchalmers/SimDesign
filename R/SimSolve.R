@@ -69,6 +69,9 @@
 #'
 #' @param ncores see \code{\link{runSimulation}}
 #'
+#' @param bolster logical; should the PBA evaluations use bolstering based on previous
+#'   evaluations? Only applicable when \code{integer = TRUE}
+#'
 #' @param type type of cluster object to define
 #'
 #' @param interpolate.R number of replications to collect prior to performing
@@ -262,7 +265,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      parallel = FALSE, cl = NULL,
                      ncores = parallel::detectCores() - 1L,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
-                     maxiter = 150L, verbose = TRUE, ...){
+                     maxiter = 150L, bolster = TRUE, verbose = TRUE, ...){
     # robust <- FALSE
 
     on.exit(.SIMDENV$stored_results <- .SIMDENV$stored_medhistory <-
@@ -344,6 +347,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       tol=tol,
                                       rel.tol=rel.tol,
                                       b=b,
+                                      bolster=bolster,
                                       k.success=k.success,
                                       # robust = robust,
                                       interpolate.burnin=interpolate.burnin)

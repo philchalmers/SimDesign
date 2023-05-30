@@ -28,6 +28,7 @@ SimSolve(
   ncores = parallel::detectCores() - 1L,
   type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
   maxiter = 150L,
+  bolster = TRUE,
   verbose = TRUE,
   ...
 )
@@ -110,6 +111,9 @@ then a \code{'gaussian'} family would be more appropriate)}
 \item{type}{type of cluster object to define}
 
 \item{maxiter}{the maximum number of iterations}
+
+\item{bolster}{logical; should the PBA evaluations use bolstering based on previous
+evaluations? Only applicable when \code{integer = TRUE}}
 
 \item{verbose}{logical; print information to the console?}
 

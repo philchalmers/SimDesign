@@ -125,7 +125,7 @@ PBA <- function(f, interval, ..., p = .6,
 
     bool.f <- function(f.root, median, ...){
         val <- valp <- f.root(median, ...)
-        if(integer && !is.null(.SIMDENV$FromSimSolve)){
+        if(integer && !is.null(.SIMDENV$FromSimSolve) && .SIMDENV$FromSimSolve$bolster){
             if(!all(is.na(.SIMDENV$stored_medhistory))){
                 whc <- which(median == .SIMDENV$stored_medhistory)
                 whc <- whc[-1L]
@@ -146,6 +146,7 @@ PBA <- function(f, interval, ..., p = .6,
     logq <- log(1-p)
 
     dots <- list(...)
+    bolster <- FALSE
     FromSimSolve <- .SIMDENV$FromSimSolve
     if(!is.null(FromSimSolve)){
         family <- FromSimSolve$family
