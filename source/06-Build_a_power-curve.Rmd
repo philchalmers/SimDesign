@@ -127,7 +127,9 @@ ggplot(res, aes(mean_diff, p, colour=factor(sample_size))) + geom_point() + geom
 
 # Power-curve for Solving Sample Size via Interpolations
 
-Power-curves can also be useful for obtaining estimates to satisfy particular power rates when sample size planning. Below a $d=.5$ effect size is assumed in the population, where $N$ is varied and linearly interpolated to obtain a sample size estimate. Note that this is a rather inefficient approach to solving sample sizes, though it has been very popular (see `?SimDesign::SimSolve` for a stochastic root-solving alternative). 
+Power-curves can also be useful for obtaining estimates to satisfy particular power rates when sample size planning. Note that this is a rather inefficient approach to solving sample sizes, though it has been very popular (see `?SimDesign::SimSolve` for a stochastic root-solving alternative). 
+
+In the following, a $d=.5$ effect size is assumed in the population, where the value of $N$ associated with a target power rate of $.80$ is desired. To obtain an $\hat{N}$ that is roughly associated with this target power a range of $N$ inputs are first evaluated, the adjacent points closest to .80 are isolated, and finally the $\hat{N}$ is solved using linear interpolations to obtain an approximate target sample size.
 
 ```{r}
 Design <- createDesign(mean_diff = .5, # equivalent to Cohen's "medium" d effect size
@@ -135,6 +137,8 @@ Design <- createDesign(mean_diff = .5, # equivalent to Cohen's "medium" d effect
 
 res <- runSimulation(Design, replications=10000, verbose=FALSE, parallel=TRUE,
                      generate=Generate, analyse=Analyse, summarise=Summarise)
+
+# target N somewhere between 60 and 65
 res
 
 # solve using linear interpolated power
@@ -143,7 +147,7 @@ pick <- res[c(pmin-1, pmin),]
 pick
 ```
 
-After the empirical power curve has been built, and it's clear the target power is within the range specified when building the power curve, interpolations can be used to solve for $\hat{N}$. In this case a linear interpolation is used between the closest points, though alternatives exist (e.g., fitting higher-order polynomials, splines, or other non-linear models).
+After the empirical power curve has been built, and it's clear the target power is within the range specified when building the power curve, interpolations can be used to solve for $\hat{N}$. In this case a linear interpolation is used between the closest points, though alternatives are of course possible (e.g., fitting higher-order polynomials, splines, or other non-linear models).
 
 ```{r}
 mod <- lm(p ~ sample_size, pick)
@@ -151,17 +155,20 @@ coef(mod)
 fn <- function(N, power = .8)
 	predict(mod, newdata = data.frame(sample_size=N)) - power
 root <- uniroot(fn, interval = c(10, 100))
+root  # sample size estimate from the root solver
 
-# sample size estimate from the root solver
-root$root
-
+# build power curve and include interpolation estimates
 ggplot(res, aes(sample_size, p)) + geom_point() + geom_line() + 
     xlab('N') + ylab('Detection Rate') + 
 	geom_abline(intercept = .80, slope=0, col='red', linetype='dashed') +
 	geom_vline(xintercept=root$root, col='blue', linetype='dashed') + 
 	annotate("text", x=80, y=.6, label = paste0('N estimate = ', round(root$root, 2))) + 
 	ggtitle('Power curve with linear interpolations')
+```
 
+Finally, in this case one can compare the $\hat{N}$ with the $N$ associated with a power of .80 given the well-known non-central $t$-distribution using the `pwr` package. Had the associated non-central distribution been unavailable further Monte Carlo simulations around the estimate would be required (e.g., using `runSimulation()` given the integer values for `sample_size` given `r floor(root$root)` and `r ceiling(root$root)`). 
+
+```{r}
 # true N from root-solving the deterministic power function
 pwr.t.test(d=0.5, sig.level=0.05, power=.8, type="two.sample", alternative="two.sided")
 ```
