@@ -43,6 +43,7 @@ Suggests:
     renv,
     cli,
     future.batchtools,
+    FrF2,
     rmarkdown
 License: GPL (>=2)
 ByteCompile: yes
