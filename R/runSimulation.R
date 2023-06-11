@@ -743,6 +743,13 @@
 #'               generate=Generate, analyse=Analyse, summarise=Summarise,
 #'               notification = 'complete')
 #'
+#' ## Submit as RStudio job (requires job package and active RStudio session)
+#' job::job({
+#'   res <- runSimulation(design=Design, replications=100,
+#'                        generate=Generate, analyse=Analyse, summarise=Summarise)
+#' }, title='t-test simulation')
+#' res  # object res returned to console when completed
+#'
 #' ## Debug the generate function. See ?browser for help on debugging
 #' ##   Type help to see available commands (e.g., n, c, where, ...),
 #' ##   ls() to see what has been defined, and type Q to quit the debugger
