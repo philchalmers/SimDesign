@@ -241,9 +241,9 @@ test_that('SimDesign', {
         return(ret)
     }
 
-    expect_message(tmp <- runSimulation(Design, generate=mysim, analyse=mycompute3, verbose=FALSE,
-                         replications = 2, parallel=FALSE, save_results = TRUE))
-    expect_true(all(sapply(tmp, function(x) nrow(x)) == 2L))
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute3,
+                         verbose=FALSE, replications = 2, parallel=FALSE)
+    expect_true(nrow(tmp) == nrow(Design)*2 && ncol(tmp) == 5)
 
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute3, summarise=NA,
                          verbose=FALSE, replications = 2, parallel=FALSE, save_results = TRUE)

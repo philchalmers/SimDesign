@@ -153,18 +153,25 @@
 #'   information after all the replications have completed within
 #'   each \code{design} condition.
 #'
-#'   Omitting this function will return a list of \code{data.frame}s (or a
-#'   single \code{data.frame}, if only one row in
-#'   \code{design} is supplied) or, for more general objects (such as \code{list}s), a \code{list}
+#'   Omitting this function will return a tibble with the \code{Design}
+#'   and associated results information for all
+#'   \code{nrow(Design) * repliations} evaluations if the results from each
+#'   \code{Analyse()} call was a one-dimensional vector.
+#'   For more general objects returned by \code{Analyse()}
+#'   (such as \code{list}s), a \code{list}
 #'   containing the results returned form \code{\link{Analyse}}.
+#'
 #'   Alternatively, the value \code{NA} can be passed to let the
 #'   generate-analyse-summarise process to run as usual,
 #'   where the summarise components are instead included only as a placeholder.
-#'   Omitting this input is only recommended for didactic purposes because it
+#'   Omitting this input is only generally only
+#'   recommended for didactic purposes because it
 #'   leaves out a large amount of
 #'   information (e.g., try-errors, warning messages, saving files, etc), can
 #'   witness memory related issues,
-#'   and generally is not as flexible internally.
+#'   and generally is not as flexible internally. However, it may be useful
+#'   when replications are expensive and ANOVA-based decompositions involving
+#'   the within-condition replication information are of interest
 #'
 #'   If users do not wish to supply a summarise function then it
 #'   is is recommended to pass \code{NA} to this argument while also supplying
@@ -1329,19 +1336,27 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(summarise_asis){
         design$ID <- design$REPLICATION <- NULL
-        nms <- colnames(design)
-        nms2 <- matrix(character(0L), nrow(design), ncol(design))
-        for(i in 1L:ncol(design))
-            nms2[,i] <- paste0(nms[i], '=', design[,i], if(i < ncol(design)) '; ')
-        nms2 <- apply(nms2, 1L, paste0, collapse='')
-        names(Result_list) <- nms2
-        if(is.list(Result_list[[1L]][[1L]]))
+        if(is(Result_list[[1L]], 'data.frame') || is(Result_list[[1L]], 'matrix')){
             for(i in seq_len(length(Result_list)))
-                attr(Result_list[[i]][[1L]], 'try_errors') <-
-                attr(Result_list[[i]][[1L]], 'try_error_seeds') <-
-                attr(Result_list[[i]][[1L]], 'warning_seeds') <-
-                attr(Result_list[[i]][[1L]], 'summarise_list') <- NULL
-        if(nrow(design) == 1L) Result_list <- Result_list[[1L]]
+                Result_list[[i]] <- cbind(Design[i,], Result_list[[i]])
+            ret <- dplyr::bind_rows(Result_list)
+            ret <- dplyr::as_tibble(ret)
+            return(ret)
+        } else {
+            nms <- colnames(design)
+            nms2 <- matrix(character(0L), nrow(design), ncol(design))
+            for(i in 1L:ncol(design))
+                nms2[,i] <- paste0(nms[i], '=', design[,i], if(i < ncol(design)) '; ')
+            nms2 <- apply(nms2, 1L, paste0, collapse='')
+            names(Result_list) <- nms2
+            if(is.list(Result_list[[1L]][[1L]]))
+                for(i in seq_len(length(Result_list)))
+                    attr(Result_list[[i]][[1L]], 'try_errors') <-
+                    attr(Result_list[[i]][[1L]], 'try_error_seeds') <-
+                    attr(Result_list[[i]][[1L]], 'warning_seeds') <-
+                    attr(Result_list[[i]][[1L]], 'summarise_list') <- NULL
+            if(nrow(design) == 1L) Result_list <- Result_list[[1L]]
+        }
         return(Result_list)
     }
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
