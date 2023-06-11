@@ -635,7 +635,7 @@ Generate <- function(condition, fixed_objects = NULL) {
 
 # help(Analyse)
 Analyse <- function(condition, dat, fixed_objects = NULL) {
-    ret <- mean(dat) # mean of the sample data vector
+    ret <- c(mean=mean(dat)) # mean of the sample data vector
     ret
 }
 
@@ -667,18 +667,17 @@ Final_rep
 5 / sqrt(Design$N)
 
 # To store the results from the analyse function either
-#   a) omit a definition of of summarise(), or
+#   a) omit a definition of summarise(), or
 #   b) pass save_results = TRUE to runSimulation() and read the results in with SimResults()
 # Note that the latter method should be adopted for longer simulations
 
 # e.g., the a) approach
-res <- runSimulation(design=Design, replications=1000,
+res <- runSimulation(design=Design, replications=5,
                      generate=Generate, analyse=Analyse)
-str(res)
-head(res[[1]])
+res
 
 # or b) approach
-Final <- runSimulation(design=Design, replications=1000, save_results=TRUE,
+Final <- runSimulation(design=Design, replications=5, save_results=TRUE,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 res <- SimResults(Final)
 str(res)
