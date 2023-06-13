@@ -533,6 +533,8 @@
 #' \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 #' \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 #' all the Monte Carlo replications for each respective design condition,
+#' \code{RAM_USED} amount of RAM that was in use at the time of completing
+#'   each simulation condition,
 #' \code{COMPLETED} to indicate the date in which the given simulation condition completed,
 #' \code{SEED} for the integer values in the \code{seed} argument, and, if applicable,
 #' \code{ERRORS} and \code{WARNINGS} which contain counts for the number of error or warning
@@ -1242,6 +1244,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         c(save_results_dirname=file.path(out_rootdir, save_results_dirname),
           save_seeds_dirname=file.path(out_rootdir, save_seeds_dirname))
     if(progress) verbose <- TRUE
+    memory_used <- character(nrow(Design))
     for(i in start:end){
         time0 <- proc.time()[3L]
         if(summarise_asis){
@@ -1273,6 +1276,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             stored_time <- stored_time + (time1 - time0)
             if(notification == 'condition')
                 notification_condition(design[i,], Result_list[[i]], nrow(design))
+            memory_used[i] <- RAM_used()
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
@@ -1331,6 +1335,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             Result_list[[i]]$SIM_TIME <- time1 - time0
             if(notification == 'condition')
                 notification_condition(design[i,], Result_list[[i]], nrow(design))
+            memory_used[i] <- RAM_used()
         }
     }
     attr(Result_list, 'SimDesign_names') <- NULL
@@ -1400,6 +1405,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         Final$REPLICATIONS <- Final$REPLICATION <- Final$FATAL_TERMINATION <- NULL
     Final <- data.frame(Final, FATAL_TERMINATION,
                         REPLICATIONS=replications, SIM_TIME=SIM_TIME,
+                        RAM_USED=memory_used,
                         COMPLETED, check.names=FALSE, stringsAsFactors=FALSE)
     if(all(is.na(Final$FATAL_TERMINATION))) Final$FATAL_TERMINATION <- NULL
     if(is.null(Final$SEED)) Final$SEED <- NA
@@ -1431,7 +1437,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     colnames(WARNING_msg) <- gsub("WARNING: ." , "WARNING:  ", colnames(WARNING_msg))
     ERRORS <- as.integer(rowSums(ERROR_msg, na.rm = TRUE))
     WARNINGS <- as.integer(rowSums(WARNING_msg, na.rm = TRUE))
-    en <- c('REPLICATIONS', 'SIM_TIME', 'COMPLETED', 'SEED')
+    en <- c('REPLICATIONS', 'SIM_TIME', 'RAM_USED', 'COMPLETED', 'SEED')
     bsen <- colnames(Final)[grepl('BOOT_', colnames(Final))]
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen, bsen))]
     Final <- data.frame(Final[ ,c(dn, sn, bsen, en)], ERRORS, WARNINGS,

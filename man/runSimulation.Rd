@@ -458,6 +458,8 @@ The right-most column information for each condition are:
 \code{REPLICATIONS} to indicate the number of Monte Carlo replications,
 \code{SIM_TIME} to indicate how long (in seconds) it took to complete
 all the Monte Carlo replications for each respective design condition,
+\code{RAM_USED} amount of RAM that was in use at the time of completing
+  each simulation condition,
 \code{COMPLETED} to indicate the date in which the given simulation condition completed,
 \code{SEED} for the integer values in the \code{seed} argument, and, if applicable,
 \code{ERRORS} and \code{WARNINGS} which contain counts for the number of error or warning

@@ -467,3 +467,16 @@ collect_unique <- function(x){
     }
     x
 }
+
+RAM_used <- function(){
+    # borrowed and modified from pryr::node_size(), 13-06-2023
+    bit <- 8L * .Machine$sizeof.pointer
+    if (!(bit == 32L || bit == 64L)) {
+        stop("Unknown architecture", call. = FALSE)
+    }
+    val <- if (bit == 32L) 28L else 56L
+    # end borrowed portion
+    bytes <- sum(gc()[, 1] * c(val, 8))
+    size <- structure(bytes, class="object_size")
+    format(size, 'MB')
+}
