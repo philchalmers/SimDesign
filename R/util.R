@@ -60,8 +60,8 @@ print_progress <- function(row, trow, stored_time, RAM, progress, condition){
             condstring <- paste0(nms, '=', nms2, collapse=', ')
         }
     }
-    cat(sprintf('\rDesign row: %i/%i;   RAM used: %s;   Started: %s;   Total elapsed time: %s ',
-                row, trow, RAM, date(), timeFormater(sum(stored_time))))
+    cat(sprintf('\rDesign row: %i/%i;   RAM used: %s;   Total elapsed time: %s ',
+                row, trow, RAM, timeFormater(sum(stored_time))))
     cat(sprintf('\n Conditions: %s\n', condstring))
     if(progress) cat('\r')
     invisible(NULL)
