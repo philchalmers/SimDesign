@@ -1244,12 +1244,14 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         c(save_results_dirname=file.path(out_rootdir, save_results_dirname),
           save_seeds_dirname=file.path(out_rootdir, save_seeds_dirname))
     if(progress) verbose <- TRUE
-    memory_used <- character(nrow(Design))
+    memory_used <- character(nrow(Design)+1L)
+    memory_used[1L] <- RAM_used()
     for(i in start:end){
         time0 <- proc.time()[3L]
         if(summarise_asis){
             if(verbose)
-                print_progress(i, nrow(design), stored_time=stored_time, progress=progress,
+                print_progress(i, nrow(design), stored_time=stored_time,
+                               RAM=memory_used[i], progress=progress,
                                condition=if(was_tibble) dplyr::as_tibble(design[i,])
                                else design[i,])
             Result_list[[i]] <- Analysis(Functions=Functions,
@@ -1276,11 +1278,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             stored_time <- stored_time + (time1 - time0)
             if(notification == 'condition')
                 notification_condition(design[i,], Result_list[[i]], nrow(design))
-            memory_used[i] <- RAM_used()
+            memory_used[i+1L] <- RAM_used()
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
-                print_progress(i, nrow(design), stored_time=stored_time, progress=progress,
+                print_progress(i, nrow(design), stored_time=stored_time,
+                               RAM=memory_used[i], progress=progress,
                                condition=if(was_tibble) dplyr::as_tibble(design[i,])
                                else design[i,])
             if(save_seeds)
@@ -1335,9 +1338,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             Result_list[[i]]$SIM_TIME <- time1 - time0
             if(notification == 'condition')
                 notification_condition(design[i,], Result_list[[i]], nrow(design))
-            memory_used[i] <- RAM_used()
+            memory_used[i+1L] <- RAM_used()
         }
     }
+    memory_used <- memory_used[-1L]
     attr(Result_list, 'SimDesign_names') <- NULL
     if(NA_summarise){
         Result_list <- lapply(Result_list, function(x){
@@ -1437,7 +1441,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     colnames(WARNING_msg) <- gsub("WARNING: ." , "WARNING:  ", colnames(WARNING_msg))
     ERRORS <- as.integer(rowSums(ERROR_msg, na.rm = TRUE))
     WARNINGS <- as.integer(rowSums(WARNING_msg, na.rm = TRUE))
-    en <- c('REPLICATIONS', 'SIM_TIME', 'RAM_USED', 'COMPLETED', 'SEED')
+    en <- c('REPLICATIONS', 'SIM_TIME', 'RAM_USED', 'SEED', 'COMPLETED')
     bsen <- colnames(Final)[grepl('BOOT_', colnames(Final))]
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen, bsen))]
     Final <- data.frame(Final[ ,c(dn, sn, bsen, en)], ERRORS, WARNINGS,
