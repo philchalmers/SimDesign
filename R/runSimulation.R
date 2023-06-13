@@ -1244,7 +1244,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         c(save_results_dirname=file.path(out_rootdir, save_results_dirname),
           save_seeds_dirname=file.path(out_rootdir, save_seeds_dirname))
     if(progress) verbose <- TRUE
-    memory_used <- character(nrow(Design)+1L)
+    memory_used <- character(nrow(design)+1L)
     memory_used[1L] <- RAM_used()
     for(i in start:end){
         time0 <- proc.time()[3L]
