@@ -1353,7 +1353,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         design$ID <- design$REPLICATION <- NULL
         if(is(Result_list[[1L]], 'data.frame') || is(Result_list[[1L]], 'matrix')){
             for(i in seq_len(length(Result_list)))
-                Result_list[[i]] <- cbind(Design[i,], Result_list[[i]])
+                Result_list[[i]] <- cbind(design[i,], Result_list[[i]], row.names = NULL)
             ret <- dplyr::bind_rows(Result_list)
             ret <- dplyr::as_tibble(ret)
             return(ret)
