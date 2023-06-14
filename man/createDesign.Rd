@@ -5,7 +5,13 @@
 \alias{print.Design}
 \title{Create the simulation Design object}
 \usage{
-createDesign(..., subset, tibble = TRUE, stringsAsFactors = FALSE)
+createDesign(
+  ...,
+  subset,
+  fractional = NULL,
+  tibble = TRUE,
+  stringsAsFactors = FALSE
+)
 
 \method{print}{Design}(x, list2char = TRUE, pillar.sigfig = 5, ...)
 }
@@ -16,6 +22,11 @@ factors to completely cross. Note that these arguments are passed to
 
 \item{subset}{(optional) a logical vector indicating elements or rows to keep
 to create a partially crossed simulation design}
+
+\item{fractional}{a fractional design matrix returned from the
+\code{FrF2} package.
+Note that the order of the factor names/labels are associated with the
+respective \code{...} inputs}
 
 \item{tibble}{logical; return a \code{tibble} object instead of a
 \code{data.frame}? Default is TRUE}
@@ -70,6 +81,29 @@ Design <- createDesign(N = c(10, 20),
                        combo2 = list(c(5,10,5), c(6,7)))
 Design
 print(Design, list2char = FALSE)   # standard tibble output
+
+## fractional factorial example
+
+library(FrF2)
+# help(FrF2)
+
+# 7 factors in 32 runs
+fr <- FrF2(32,7)
+dim(fr)
+fr[1:6,]
+
+# Create working simulation design given -1/1 combinations
+fDesign <- createDesign(sample_size=c(100,200),
+                        mean_diff=c(.25, 1, 2),
+                        variance.ratio=c(1,4, 8),
+                        equal_size=c(TRUE, FALSE),
+                        dists=c('norm', 'skew'),
+                        same_dists=c(TRUE, FALSE),
+                        symmetric=c(TRUE, FALSE),
+                        # remove same-normal combo
+                        subset = !(symmetric & dists == 'norm'),
+                        fractional=fr)
+fDesign
 
 }
 }

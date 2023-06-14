@@ -12,6 +12,11 @@
 #' @param subset (optional) a logical vector indicating elements or rows to keep
 #'   to create a partially crossed simulation design
 #'
+#' @param fractional a fractional design matrix returned from the
+#'   \code{FrF2} package.
+#'   Note that the order of the factor names/labels are associated with the
+#'   respective \code{...} inputs
+#'
 #' @param tibble logical; return a \code{tibble} object instead of a
 #'   \code{data.frame}? Default is TRUE
 #'
@@ -65,8 +70,32 @@
 #' Design
 #' print(Design, list2char = FALSE)   # standard tibble output
 #'
+#' ## fractional factorial example
+#'
+#' library(FrF2)
+#' # help(FrF2)
+#'
+#' # 7 factors in 32 runs
+#' fr <- FrF2(32,7)
+#' dim(fr)
+#' fr[1:6,]
+#'
+#' # Create working simulation design given -1/1 combinations
+#' fDesign <- createDesign(sample_size=c(100,200),
+#'                         mean_diff=c(.25, 1, 2),
+#'                         variance.ratio=c(1,4, 8),
+#'                         equal_size=c(TRUE, FALSE),
+#'                         dists=c('norm', 'skew'),
+#'                         same_dists=c(TRUE, FALSE),
+#'                         symmetric=c(TRUE, FALSE),
+#'                         # remove same-normal combo
+#'                         subset = !(symmetric & dists == 'norm'),
+#'                         fractional=fr)
+#' fDesign
+#'
 #' }
-createDesign <- function(..., subset, tibble = TRUE, stringsAsFactors = FALSE){
+createDesign <- function(..., subset, fractional = NULL,
+                         tibble = TRUE, stringsAsFactors = FALSE){
     dots <- list(...)
     if(any(sapply(dots, is, class2='data.frame') | sapply(dots, is, class2='tibble')))
         stop('data.frame/tibble design elements not supported; please use a list input instead',
@@ -74,7 +103,18 @@ createDesign <- function(..., subset, tibble = TRUE, stringsAsFactors = FALSE){
     if(is.null(names(dots)) || any(names(dots) == ""))
         stop("Please provide meaningful names for each supplied simulation factor",
              call.=FALSE)
-    ret <- expand.grid(..., stringsAsFactors = stringsAsFactors)
+    if(!is.null(fractional)){
+        dots <- list(dots)
+        ret <- as.data.frame(fractional)
+        for(i in 1:length(dots[[1L]])){
+            vals <- unique(dots[[1]][[i]])
+            uniq <- ret[[i]]
+            ret[[i]] <- ifelse(ret[[i]] == uniq[1L], vals[1L], vals[2L])
+        }
+        colnames(ret) <- names(dots[[1L]])
+    } else {
+        ret <- expand.grid(..., stringsAsFactors = stringsAsFactors)
+    }
     if (!missing(subset)){
         e <- substitute(subset)
         r <- eval(e, ret, parent.frame())
