@@ -399,7 +399,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
             next
         }
-        if(!is.list(res) && !is.numeric(res))
+        if(!is.list(res) && !is.numeric(res) && !is.logical(res))
             stop('analyse() did not return a list or numeric vector', call.=FALSE)
 
         if(length(try_error))
