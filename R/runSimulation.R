@@ -603,7 +603,8 @@
 #'
 #' # help(Summarise)
 #' Summarise <- function(condition, results, fixed_objects = NULL) {
-#'     ret <- c(mu=mean(results), SE=sd(results)) # mean and SD summary of the sample means
+#'     # mean and SD summary of the sample means
+#'     ret <- c(mu=mean(results$mean), SE=sd(results$mean))
 #'     ret
 #' }
 #'
@@ -629,21 +630,38 @@
 #' 5 / sqrt(Design$N)
 #'
 #' # To store the results from the analyse function either
-#' #   a) omit a definition of summarise(), or
-#' #   b) pass save_results = TRUE to runSimulation() and read the results in with SimResults()
-#' # Note that the latter method should be adopted for longer simulations
+#' #   a) omit a definition of summarise() to return all results,
+#' #   b) use store_results = TRUE to store results internally and later
+#'        extract with SimExtract(..., what = 'results'), or
+#' #   c) pass save_results = TRUE to runSimulation() and read the results in with SimResults()
+#' #
+#' #   Note that method c) should be adopted for larger simulations, particularly
+#' #   if RAM storage could be an issue and error/warning message information is important.
 #'
-#' # e.g., the a) approach
+#' # a) approach
 #' res <- runSimulation(design=Design, replications=5,
 #'                      generate=Generate, analyse=Analyse)
 #' res
 #'
-#' # or b) approach
+#' # b) approach
+#' res <- runSimulation(design=Design, replications=5, store_results=TRUE,
+#'                      generate=Generate, analyse=Analyse, summarise=Summarise)
+#' res
+#' SimExtract(res, 'results')
+#'
+#' # c) approach
 #' Final <- runSimulation(design=Design, replications=5, save_results=TRUE,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
+#'
+#' # read-in all conditions (can be memory heavy)
 #' res <- SimResults(Final)
+#' res
 #' str(res)
 #' head(res[[1]]$results)
+#'
+#' # just first condition
+#' res <- SimResults(Final, which=1)
+#' head(res$results)
 #'
 #'
 #' # obtain empirical bootstrapped CIs during an initial run
@@ -1349,12 +1367,27 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             x
         })
     }
+    if(store_results){
+        if(is(stored_Results_list[[1L]], 'data.frame') ||
+           is(stored_Results_list[[1L]], 'matrix')){
+            nms <- c(colnames(design), colnames(stored_Results_list[[1L]]))
+            for(i in seq_len(length(stored_Results_list)))
+                stored_Results_list[[i]] <- cbind(design[i,],
+                                                 stored_Results_list[[i]], row.names=NULL)
+            stored_Results_list <- dplyr::bind_rows(stored_Results_list)
+            colnames(stored_Results_list) <- nms
+            stored_Results_list$ID <- NULL
+            stored_Results_list <- dplyr::as_tibble(stored_Results_list)
+        }
+    }
     if(summarise_asis){
         design$ID <- design$REPLICATION <- NULL
         if(is(Result_list[[1L]], 'data.frame') || is(Result_list[[1L]], 'matrix')){
+            nms <- c(colnames(design), colnames(Result_list[[1L]]))
             for(i in seq_len(length(Result_list)))
                 Result_list[[i]] <- cbind(design[i,], Result_list[[i]], row.names = NULL)
             ret <- dplyr::bind_rows(Result_list)
+            colnames(ret) <- nms
             ret <- dplyr::as_tibble(ret)
             return(ret)
         } else {

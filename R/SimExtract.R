@@ -118,6 +118,8 @@ extract_warnings <- function(object, fuzzy){
 extract_results <- function(object){
     extra_info <- attr(object, 'extra_info')
     if(is.null(extra_info$stored_results)) return(NULL)
+    if(is(extra_info$stored_results, 'tbl_df'))
+        return(extra_info$stored_results)
     design_names <- attr(object, "design_names")
     pick <- design_names$design
     if(length(extra_info$stored_results) == 1L)
