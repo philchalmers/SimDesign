@@ -1,0 +1,150 @@
+%\VignetteIndexEntry{SimDesign}
+%\VignetteEngine{knitr::knitr}
+---
+title: "SimDesign"
+author: "Phil Chalmers"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_download: true
+---
+
+```{r include=FALSE}
+options(digits = 3)
+cache_ <- TRUE
+```
+
+
+# Fully-crossed simulation designs
+
+In situations where researchers are unaware which variables or combinations of variables influence a given outcome, and when computing the relevant models is very expensive, Monte Carlo simulations can be used. In this case computer-driven experimental designs can be constructed with the goal of detecting (or screening) which factors affect a given outcome variable through statistical inference. Montgomery (2017) describes this class of screening experiments as "... tests in which many factors are considered and the objective is to identify those factors that have significant effects", which are typically relevant in early stages of a given project.
+
+The most common designs implemented (and indeed, the default used by \code{createDesign()}) are those which fully-cross the factor variables, leading to a set of $C_1\times C_2 \times \cdots \times C_n$ unique conditions to study. Fully-crossed designs are beneficial when detecting main effects, two-way interactions, and up to $n$-way interactions (provided that the number of replications per unique condition is greater than 1).
+
+For example, consider the following fully-crossed experimental design that combines five simulation factors in the context of an independent samples $t$-test's ability to detect true mean differences: sample size, the magnitude of the mean difference, group variances, distributions, whether the group sizes were equal or unequal, if the distributions were symmetric/asymmetric.
+
+## Fully-crossed design example
+
+```{r}
+library(SimDesign)
+
+Design <- createDesign(sample_size=c(100,200),
+                       mean_diff=c(.25, 1, 2),
+                       variance.ratio=c(1,4, 8),
+                       equal_size=c(TRUE, FALSE),
+                       dists=c('norm', 'skew'),
+                       same_dists=c(TRUE, FALSE),
+                       symmetric=c(TRUE, FALSE),
+                       # remove same-normal combo
+                       subset = !(symmetric & dists == 'norm'))
+Design
+dim(Design)
+
+#-------------------------------------------------------------------
+
+Generate <- function(condition, fixed_objects = NULL) {
+    Attach(condition)
+    N1 <- ifelse(equal_size, sample_size/2, sample_size/4)
+    N2 <- sample_size - N1
+    DV1 <- if(dists == 'norm') rnorm(N1, sd=1) else rchisq(N1, df=5) - 5
+    if(dists == 'norm' && same_dists){ 
+        DV2 <- rnorm(N2, sd=sqrt(variance.ratio))
+    } else {
+        DV2 <- (rchisq(N2, df=5) - 5) * sqrt(variance.ratio)
+        if(!symmetric) DV2 <- abs(0 - DV2)
+    }
+    dat <- data.frame(DV=c(DV1, DV2 + mean_diff), 
+                      group=c(rep('g1', N1), rep('g2', N2)))
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL) {
+    test <- t.test(DV ~ group, data=dat, var.equal=TRUE)
+    ret <- c(detect=test$p.value < .05)
+    ret
+}
+
+#-------------------------------------------------------------------
+
+# note the omission of the summarise function
+res <- runSimulation(design=Design, replications=20, 
+                     generate=Generate, analyse=Analyse, verbose=FALSE)
+res
+```
+
+Given these collected results, ANOVA-based approaches can be employed to investigate main and interaction effects for the recorded outcome variable.
+
+```{r}
+# main effects only
+mod <- aov(detect ~ ., data=res)
+summary(mod)
+
+# all two-way effects
+mod2 <- aov(detect ~ (.)^2, data=res)
+summary(mod2)
+
+# all three-way effects
+mod3 <- aov(detect ~ (.)^3, data=res)
+summary(mod3)
+```
+and so on. 
+
+## Fractional factorial experiments
+
+When interest is primarily in detecting main and two-way interaction effects only then substantial gains can be made by using *fractional factorial* designs. A fractional factorial design is a reduced version of the fully factorial design, allowing for a more efficient use of resources as it reduces the sample size and number of conditions studied by way of discarding higher-order factor combinations. 
+
+Note that to use the `FrF2` package each factor must consist of exactly two-levels. 
+
+```{r include=FALSE}
+library(FrF2)
+```
+
+
+```{r}
+library(FrF2)
+# help(FrF2)
+
+# 7 factors with resolution 5
+fr <- FrF2(nfactors=7, resolution=5)
+fr[1:6,]
+
+# Create working simulation design given -1/1 combinations
+fDesign <- createDesign(sample_size=c(100,200),
+                        mean_diff=c(.25, 1, 2),
+                        variance.ratio=c(1,4, 8),
+                        equal_size=c(TRUE, FALSE),
+                        dists=c('norm', 'skew'),
+                        same_dists=c(TRUE, FALSE),
+                        symmetric=c(TRUE, FALSE),
+                        # remove same-normal combo
+                        subset = !(symmetric & dists == 'norm'),
+					    fractional=fr)
+fDesign
+dim(fDesign)
+```
+
+Notice that the fractional factor design has many fewer condition than the fully crossed version above. However, despite this reduced number of conditions valid main and two-way interaction effects are still estimable.
+
+```{r}
+# note the omission of the summarise function
+fres <- runSimulation(design=fDesign, replications=20, 
+                     generate=Generate, analyse=Analyse, verbose=FALSE)
+fres
+```
+
+```{r}
+# main effects only
+mod <- aov(detect ~ ., data=fres)
+summary(mod)
+
+# all two-way effects
+mod2 <- aov(detect ~ (.)^2, data=fres)
+summary(mod2)
+```
+
+
+
+### References
+
+- Montgomery, Douglas C. (2017). *Design and Analysis of Experiments (9th ed.)*. John Wiley & Sons, Inc.
