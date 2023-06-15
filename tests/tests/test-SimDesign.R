@@ -97,7 +97,7 @@ test_that('SimDesign', {
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE,
                            store_results = TRUE)
     out <- SimExtract(Final, what = 'results')
-    expect_equal(nrow(out[[1L]]), 2L)
+    expect_equal(nrow(out), nrow(Design) * 2)
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = parallel::detectCores(),
