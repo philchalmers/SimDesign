@@ -140,7 +140,9 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     results <- stackResults(results)
     if(save_results){
         tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
-        saveRDS(list(condition=condition, results=results, errors=try_errors,
+        tmpcondition <- condition
+        tmpcondition$ID <- NULL
+        saveRDS(list(condition=tmpcondition, results=results, errors=try_errors,
                      error_seeds=try_error_seeds,
                      warnings=warnings, warning_seeds=warning_message_seeds),
                 file.path(save_results_out_rootdir, tmpfilename))

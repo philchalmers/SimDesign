@@ -672,7 +672,7 @@ Final_rep
 # To store the results from the analyse function either
 #   a) omit a definition of summarise() to return all results,
 #   b) use store_results = TRUE to store results internally and later
-       extract with SimExtract(..., what = 'results'), or
+#      extract with SimExtract(..., what = 'results'), or
 #   c) pass save_results = TRUE to runSimulation() and read the results in with SimResults()
 #
 #   Note that method c) should be adopted for larger simulations, particularly
@@ -696,12 +696,12 @@ Final <- runSimulation(design=Design, replications=5, save_results=TRUE,
 # read-in all conditions (can be memory heavy)
 res <- SimResults(Final)
 res
-str(res)
 head(res[[1]]$results)
 
 # just first condition
 res <- SimResults(Final, which=1)
 head(res$results)
+dplyr::tibble(res$condition, res$results)
 
 
 # obtain empirical bootstrapped CIs during an initial run
