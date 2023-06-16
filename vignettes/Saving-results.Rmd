@@ -151,12 +151,14 @@ head(row1$results)
 or, equivalently, with the `SimResults()` function
 
 ```{r}
-row1 <- SimResults(res, 1)
+# first row
+row1 <- SimResults(res, which = 1)
 str(row1)
 ```
 
 The `SimResults()` function has the added benefit that it can read-in all simulation 
-results at once, or simply hand pick which ones should be inspected. For example,
+results at once (only recommended if RAM can hold all the information), 
+or simply hand pick which ones should be inspected. For example,
 here is how all the saved results can be inspected:
 
 ```{r}
@@ -164,30 +166,28 @@ input <- SimResults(res)
 str(input)
 ```
 
-Should the need arise to remove the results directory then the `SimClean()` function is the easiest way to remove unwanted files and directories. 
+Should the need arise to remove the results directory then the `SimClean()` function is the easiest way to remove all unwanted files and directories. 
 
 ```{r}
 SimClean(results = TRUE)
 ```
 
-# Option: `store_results = TRUE` (`FALSE` by default, and not recommended for serious use)
+# Option: `store_results = TRUE` (`FALSE` by default, and not recommended if RAM is an issue)
 
-Similar to `save_results = TRUE`, though less recommended for RAM related reasons (if the number of replications/`design` conditions is too large then the R session may run out of memory as the simulation progresses), users can pass `store_results = TRUE` to store the complete simulation results in the returned object. 
-
-After the simulation is complete, these results can be extracted using `SimExtract(results, what = 'results')`. For example,
+Similar to `save_results = TRUE`, though less recommended for RAM related reasons, users can pass `store_results = TRUE` to store the complete simulation results in the returned object.  This should only be used if the number of replications/`design` conditions is small enough, otherwise the R session may run out of memory as the simulation progresses. After the simulation is complete, these results can be extracted using `SimExtract(results, what = 'results')`. For example,
 
 ```{r}
 res <- runSimulation(Design, replications = 3, store_results=TRUE,
               generate=Generate, analyse=Analyse, summarise=Summarise)
-list_results <- SimExtract(res, what = 'results')
-list_results
+results <- SimExtract(res, what = 'results')
+results
 ```
 
 # My recommendations
 
 My general recommendation when running simulations is to supply a `filename = 'some_simulation_name'` when your simulation is finally ready for run time (particularly for simulations which take a long time to finish), and to leave the default `save = TRUE` to track any temporary files in the event of unexpected crashes. As the aggregation of the simulation results is often what you are interested in then this approach will ensure that the results are stored in a succinct manner for later analyses. 
 
-As well, passing `save_results = TRUE` will save all the results from the input `Analysis()` function which was passed to `Summarise()`, as well as save a final file to your hard-drive (but with the built-in safety feature that it will never over-write previously saved files). Hence, you'll be able to inspect all the elements manually if the need were to arise (e.g., to inspect `ECR(res1, alpha = .01)` instead of the `ECR(results, alpha = .05)` which may have only been used in the `Summarise()` function). However, do this **only** if your hard-drive can store all of the analysis results; if you are not careful, you could easily fill up your entire drive with the analysis results alone.
+As well, passing either `store_results = TRUE` or `save_results = TRUE`, depending on RAM considerations, will save all the `results` objects passed to `Summarise()`. Hence, you'll be able to inspect all the elements manually if the need were to arise (e.g., to inspect `ECR(results, alpha = .01)` instead of `ECR(results, alpha = .05)` which may have only been used in the initial `Summarise()` function; see `reSummarise()` as well). However, do this **only** if your hard-drive/RAM can store all of the analysis results.
 
 Finally, if you are worried about reproducibility, particularly during the debugging states, then the `seed` and `save_seeds` are the arguments you should utilize. `seed` sets the global seed for each design row, while `save_seed` writes the `.Random.seed` state to the hard-disk for complete reproducibility within each design condition (note that all seeds can be saved in parallel or when running simulations on single cores). If `save_seed` were used then the exact simulation state can be reloaded to the generated data by passing the specific saved seed file to `load_seed`. That said, problematic error states are automatically stored within the returned simulation object (which can be extracted via `SimExtract()`), and therefore if the purpose of saving the seeds is to help with debugging the package already automatically collects such information to replicate potentially hard-to-find errors/bugs within each design condition. 
 
