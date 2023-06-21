@@ -76,16 +76,17 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
     ret
 }
 
+Summarise <- function(condition, results, fixed_objects = NULL){
+    apply(results, 2, mean)
+}
+
 \dontrun{
 # run the simulation
 runSimulation(design=Design, replications=50,
               generate=Generate, analyse=Analyse,
-              summarise=NA, save_results=TRUE,
+              summarise=Summarise, save_results=TRUE,
               save_details = list(save_results_dirname='simresults'))
 
-Summarise <- function(condition, results, fixed_objects = NULL){
-    apply(results, 2, mean)
-}
 
 res <- reSummarise(Summarise, dir = 'simresults/')
 res
@@ -104,43 +105,15 @@ SimClean('simresults/')
 }
 
 ###
-# similar to above, but using objects defined in workspace
-results <- runSimulation(design=Design, replications=50,
-                         generate=Generate, analyse=Analyse)
-str(results)
-
-Summarise <- function(condition, results, fixed_objects = NULL){
-    ret <- c(mean_ests=apply(results, 2, mean),
-             SE=apply(results, 2, sd))
-    ret
-}
-
-res <- reSummarise(Summarise, results=results, Design=Design)
-res
-
-res <- reSummarise(Summarise, results=results, boot_method = 'basic')
-res
-
-###
-# Also similar, but storing the results within the summarised simulation
-
-Summarise <- function(condition, results, fixed_objects = NULL){
-    ret <- c(mean_ests=apply(results, 2, mean),
-             SE=apply(results, 2, sd))
-    ret
-}
+# Similar, but with results stored within the final object
 
 res <- runSimulation(design=Design, replications=50, store_results = TRUE,
                      generate=Generate, analyse=Analyse, summarise=Summarise)
 res
 
-# internal results stored
-results <- SimExtract(res, what = 'results')
-str(results)
-
-# pass SimDesign object to results
-res <- reSummarise(Summarise, results=res, boot_method = 'basic')
-res
+# same summarise but with bootstrapping
+res2 <- reSummarise(Summarise, results = res, boot_method = 'basic')
+res2
 
 }
 \references{

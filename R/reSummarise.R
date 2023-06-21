@@ -72,16 +72,17 @@
 #'     ret
 #' }
 #'
+#' Summarise <- function(condition, results, fixed_objects = NULL){
+#'     apply(results, 2, mean)
+#' }
+#'
 #' \dontrun{
 #' # run the simulation
 #' runSimulation(design=Design, replications=50,
 #'               generate=Generate, analyse=Analyse,
-#'               summarise=NA, save_results=TRUE,
+#'               summarise=Summarise, save_results=TRUE,
 #'               save_details = list(save_results_dirname='simresults'))
 #'
-#' Summarise <- function(condition, results, fixed_objects = NULL){
-#'     apply(results, 2, mean)
-#' }
 #'
 #' res <- reSummarise(Summarise, dir = 'simresults/')
 #' res
@@ -100,53 +101,35 @@
 #' }
 #'
 #' ###
-#' # similar to above, but using objects defined in workspace
-#' results <- runSimulation(design=Design, replications=50,
-#'                          generate=Generate, analyse=Analyse)
-#' str(results)
-#'
-#' Summarise <- function(condition, results, fixed_objects = NULL){
-#'     ret <- c(mean_ests=apply(results, 2, mean),
-#'              SE=apply(results, 2, sd))
-#'     ret
-#' }
-#'
-#' res <- reSummarise(Summarise, results=results, Design=Design)
-#' res
-#'
-#' res <- reSummarise(Summarise, results=results, boot_method = 'basic')
-#' res
-#'
-#' ###
-#' # Also similar, but storing the results within the summarised simulation
-#'
-#' Summarise <- function(condition, results, fixed_objects = NULL){
-#'     ret <- c(mean_ests=apply(results, 2, mean),
-#'              SE=apply(results, 2, sd))
-#'     ret
-#' }
+#' # Similar, but with results stored within the final object
 #'
 #' res <- runSimulation(design=Design, replications=50, store_results = TRUE,
 #'                      generate=Generate, analyse=Analyse, summarise=Summarise)
 #' res
 #'
-#' # internal results stored
-#' results <- SimExtract(res, what = 'results')
-#' str(results)
-#'
-#' # pass SimDesign object to results
-#' res <- reSummarise(Summarise, results=res, boot_method = 'basic')
-#' res
+#' # same summarise but with bootstrapping
+#' res2 <- reSummarise(Summarise, results = res, boot_method = 'basic')
+#' res2
 #'
 reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Design = NULL,
                         fixed_objects = NULL, boot_method = 'none', boot_draws = 1000L, CI = .95){
     if(!is.null(results)){
         read_files <- FALSE
         if(is(results, 'SimDesign')){
-            Design <- SimExtract(results, 'Design')
-            results <- SimExtract(results, 'results')
+            obj <- results
+            Design <- SimExtract(obj, 'Design')
+            results <- SimExtract(obj, 'results')
         }
-        if(!is.list(results)) results <- list(results)
+        if(is(results, 'tbl')){
+            results <- results[,!(colnames(results) %in% colnames(Design))]
+            tmp <- vector('list', nrow(Design))
+            reps <- obj$REPLICATIONS[1L]
+            for(i in 1L:length(tmp)){
+                pick <- 1:reps + (i-1)*reps
+                tmp[[i]] <- results[pick, ]
+            }
+            results <- tmp
+        }
         files <- 1L:length(results)
     } else {
         read_files <- TRUE
