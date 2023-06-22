@@ -895,13 +895,13 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL,
-                          debug = 'none', load_seed = NULL,
-                          save_results = FALSE, parallel = FALSE,
-                          ncores = parallel::detectCores() - 1L,
+                          debug = 'none', load_seed = NULL, save = TRUE,
+                          save_results = FALSE, store_results = FALSE,
+                          parallel = FALSE, ncores = parallel::detectCores() - 1L,
                           cl = NULL, notification = 'none', beep = FALSE, sound = 1,
                           CI = .95, seed = NULL,
                           boot_method='none', boot_draws = 1000L, max_errors = 50L,
-                          save_seeds = FALSE, save = TRUE, store_results = FALSE,
+                          save_seeds = FALSE,
                           save_details = list(), extra_options = list(),
                           progress = TRUE, verbose = TRUE)
 {
@@ -998,6 +998,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         else extra_options$type
     include_replication_index <- ifelse(is.null(extra_options$include_replication_index),
                                         FALSE, extra_options$include_replication_index)
+    if(verbose){
+        if(replications >= 200)
+            if(!save_results && !store_results)
+                message(c('NOTE: save_results = TRUE or store_results = TRUE ',
+                        'are recommended for higher replication simulations'))
+    }
     NA_summarise <- FALSE
     if(!missing(summarise)){
         NA_summarise <- if(!is.function(summarise) && is.na(summarise)) TRUE else FALSE

@@ -17,7 +17,9 @@ runSimulation(
   filename = NULL,
   debug = "none",
   load_seed = NULL,
+  save = TRUE,
   save_results = FALSE,
+  store_results = FALSE,
   parallel = FALSE,
   ncores = parallel::detectCores() - 1L,
   cl = NULL,
@@ -30,8 +32,6 @@ runSimulation(
   boot_draws = 1000L,
   max_errors = 50L,
   save_seeds = FALSE,
-  save = TRUE,
-  store_results = FALSE,
   save_details = list(),
   extra_options = list(),
   progress = TRUE,
@@ -178,6 +178,22 @@ primarily useful for debugging purposes.
   then it WILL be important to modify the \code{design} input in order to load this
   exact seed for the corresponding design row. Default is \code{NULL}}
 
+\item{save}{logical; save the temporary simulation state to the hard-drive? This is useful
+  for simulations which require an extended amount of time, though for shorter simulations
+  can be disabled to slightly improve computational efficiency. When \code{TRUE}, a temp file
+  will be created in the working directory which allows the simulation state to be saved
+  and recovered (in case of power outages, crashes, etc). As well, triggering this flag will
+  save any fatal \code{.Random.seed} states when conditions unexpectedly crash (where each seed
+  is stored row-wise in an external .rds file), which provides a much easier mechanism
+  to debug issues (see \code{load_seed} for details). Upon completion, this temp file will
+  be removed.
+
+  To recover your simulation at the last known location (having patched the issues in the
+   previous execution code)
+  simply re-run the code you used to
+  initially define the simulation and the external file will automatically be detected and read-in.
+  Default is \code{TRUE}}
+
 \item{save_results}{logical; save the results returned from \code{\link{Analyse}} to external
   \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
   Use this if you would like to keep track of the individual parameters returned from
@@ -194,6 +210,18 @@ primarily useful for debugging purposes.
   Carlo simulation is performed.
   See also \code{\link{reSummarise}} for applying summarise functions from saved
   simulation results}
+
+\item{store_results}{logical; store the complete tables of simulation results
+  in the returned object? This is \code{FALSE} by default to help avoid RAM
+  issues (see \code{save_results} as a more suitable alternative). However, if the \code{Design}
+  object is omitted from the call to \code{runSimulation()}, or the number of rows in \code{Design}
+  is exactly 1, then this argument is automatically set to \code{TRUE} as RAM storage will no
+  longer be an issue.
+
+  To extract these results
+  pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
+  of all the simulation results for each condition if \code{nrow(Design) > 1}; otherwise, if
+  \code{nrow(Design) == 1} or \code{Design} was missing the \code{results} object will be stored as-is}
 
 \item{parallel}{logical; use parallel processing from the \code{parallel}
   package over each unique condition?
@@ -294,34 +322,6 @@ errors are thrown in any
   Hence, this option is only of
   interest when \emph{all} of the replications must be reproducible (which occurs very rarely),
   otherwise the defaults to \code{runSimulation} should be sufficient}
-
-\item{save}{logical; save the temporary simulation state to the hard-drive? This is useful
-  for simulations which require an extended amount of time, though for shorter simulations
-  can be disabled to slightly improve computational efficiency. When \code{TRUE}, a temp file
-  will be created in the working directory which allows the simulation state to be saved
-  and recovered (in case of power outages, crashes, etc). As well, triggering this flag will
-  save any fatal \code{.Random.seed} states when conditions unexpectedly crash (where each seed
-  is stored row-wise in an external .rds file), which provides a much easier mechanism
-  to debug issues (see \code{load_seed} for details). Upon completion, this temp file will
-  be removed.
-
-  To recover your simulation at the last known location (having patched the issues in the
-   previous execution code)
-  simply re-run the code you used to
-  initially define the simulation and the external file will automatically be detected and read-in.
-  Default is \code{TRUE}}
-
-\item{store_results}{logical; store the complete tables of simulation results
-  in the returned object? This is \code{FALSE} by default to help avoid RAM
-  issues (see \code{save_results} as a more suitable alternative). However, if the \code{Design}
-  object is omitted from the call to \code{runSimulation()}, or the number of rows in \code{Design}
-  is exactly 1, then this argument is automatically set to \code{TRUE} as RAM storage will no
-  longer be an issue.
-
-  To extract these results
-  pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
-  of all the simulation results for each condition if \code{nrow(Design) > 1}; otherwise, if
-  \code{nrow(Design) == 1} or \code{Design} was missing the \code{results} object will be stored as-is}
 
 \item{save_details}{a list pertaining to information regarding how and where files should be saved
   when the \code{save} or \code{save_results} flags are triggered.
