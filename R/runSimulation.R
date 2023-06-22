@@ -148,10 +148,14 @@
 #'   \code{\link{Generate}} (or, if \code{generate} was omitted, can be used to generate and
 #'   analyses the simulated data). See \code{\link{Analyse}} for details
 #'
-#' @param summarise optional (but highly recommended) user-defined summary function
+#' @param summarise optional (but strongly recommended) user-defined summary function
 #'   from \code{\link{Summarise}} to be used to compute meta-statistical summary
 #'   information after all the replications have completed within
-#'   each \code{design} condition.
+#'   each \code{design} condition. Note that unlike the Generate and Analyse
+#'   steps, the Summarise portion is not as important to perfectly organize
+#'   as the results can be summarised later on by using the built-in
+#'   \code{\link{reSummarise}} function (provided either
+#'   \code{store_results = TRUE} or \code{save_results = TRUE} were included).
 #'
 #'   Omitting this function will return a tibble with the \code{Design}
 #'   and associated results information for all
@@ -160,26 +164,16 @@
 #'   For more general objects returned by \code{Analyse()}
 #'   (such as \code{list}s), a \code{list}
 #'   containing the results returned form \code{\link{Analyse}}.
-#'
-#'   Alternatively, the value \code{NA} can be passed to let the
-#'   generate-analyse-summarise process to run as usual,
-#'   where the summarise components are instead included only as a placeholder.
-#'   Omitting this input is only generally only
-#'   recommended for didactic purposes because it
-#'   leaves out a large amount of
+#'   This is generally only recommended for didactic purposes because the results
+#'   will leave out a large amount of
 #'   information (e.g., try-errors, warning messages, saving files, etc), can
-#'   witness memory related issues,
+#'   witness memory related issues if the Analyse function returns larger objects,
 #'   and generally is not as flexible internally. However, it may be useful
 #'   when replications are expensive and ANOVA-based decompositions involving
-#'   the within-condition replication information are of interest
-#'
-#'   If users do not wish to supply a summarise function then it
-#'   is is recommended to pass \code{NA} to this argument while also supplying
-#'   passing \code{save_results = TRUE} to
-#'   save the results to the hard-drive during the simulation. This provides a
-#'   more RAM friendly alternative to storing all the Generate-Analyse results
-#'   in the working environment, where
-#'   the Analysis results can be summarised at a later time
+#'   the within-condition replication information are of interest, though
+#'   of course this  can be circumvented by using \code{store_results = TRUE} or
+#'   \code{save_results = TRUE} with or without a supplied \code{summarise}
+#'   definition.
 #'
 #' @param replications number of independent replications to perform per
 #'   condition (i.e., each row in \code{design}).
