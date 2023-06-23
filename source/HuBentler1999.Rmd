@@ -178,15 +178,15 @@ res
 
 # Specific cut-offs
 
-Above simulation does not contain the specific cut-offs utilized by the authors (e.g., CFI > .9 or RMSEA < .05). However, because the results were stored in the final object via `store_results = TRUE` these can be obtained 
+Above simulation does not contain the specific cut-offs utilized by the authors (e.g., CFI > .9 or RMSEA < .08). However, because the results were stored in the final object via `store_results = TRUE` these can be obtained 
 by resummarising the results. Doing so just requires applying the `reSummarise()` function.
 
 ```{r}
 # new summarise function for obtaining specific cut-offs
 Summarise <- function(condition, results, fixed_objects = NULL) {
    cut1 <- colMeans(results[,c('cfi', 'tli', 'nnfi', 'gfi', 'agfi', 'mfi')] > .90)
-   cut2 <- colMeans(results[,c('rmsea', 'srmr')] < .05)
-   ret <- c(cut90=cut1, cut05=cut2)
+   cut2 <- colMeans(results[,c('rmsea', 'srmr')] < .08)
+   ret <- c(cut90=cut1, cut08=cut2)
    ret
 }
 
@@ -205,12 +205,35 @@ library(dplyr)
 library(dplyr)
 
 newres %>% group_by(fit_model, model) %>% 
-    summarise(cfi=mean(cut90.cfi), rmsea=mean(cut05.rmsea)) -> tab1
+    summarise(cfi=mean(cut90.cfi), rmsea=mean(cut08.rmsea)) -> tab1
 knitr::kable(tab1)
 
 newres %>% group_by(fit_model, model, gen_condition) %>% 
-    summarise(cfi=mean(cut90.cfi), rmsea=mean(cut05.rmsea)) -> tab2
+    summarise(cfi=mean(cut90.cfi), rmsea=mean(cut08.rmsea)) -> tab2
 knitr::kable(tab2)
+```
+
+Same as above, but now with more strict cutoffs (CFI >.95, RMSEA < .05).
+
+```{r}
+# new summarise function for obtaining specific cut-offs
+Summarise <- function(condition, results, fixed_objects = NULL) {
+   cut1 <- colMeans(results[,c('cfi', 'tli', 'nnfi', 'gfi', 'agfi', 'mfi')] > .95)
+   cut2 <- colMeans(results[,c('rmsea', 'srmr')] < .05)
+   ret <- c(cut95=cut1, cut05=cut2)
+   ret
+}
+
+newres2 <- reSummarise(Summarise, results=res)
+newres2
+
+newres2 %>% group_by(fit_model, model) %>% 
+    summarise(cfi=mean(cut95.cfi), rmsea=mean(cut05.rmsea)) -> tab3
+knitr::kable(tab3)
+
+newres2 %>% group_by(fit_model, model, gen_condition) %>% 
+    summarise(cfi=mean(cut95.cfi), rmsea=mean(cut05.rmsea)) -> tab4
+knitr::kable(tab4)
 ```
 
 

@@ -538,7 +538,7 @@ res</code></pre>
 <div id="specific-cut-offs" class="section level1">
 <h1>Specific cut-offs</h1>
 <p>Above simulation does not contain the specific cut-offs utilized by
-the authors (e.g., CFI &gt; .9 or RMSEA &lt; .05). However, because the
+the authors (e.g., CFI &gt; .9 or RMSEA &lt; .08). However, because the
 results were stored in the final object via
 <code>store_results = TRUE</code> these can be obtained by resummarising
 the results. Doing so just requires applying the
@@ -546,8 +546,8 @@ the results. Doing so just requires applying the
 <pre class="r"><code># new summarise function for obtaining specific cut-offs
 Summarise &lt;- function(condition, results, fixed_objects = NULL) {
    cut1 &lt;- colMeans(results[,c(&#39;cfi&#39;, &#39;tli&#39;, &#39;nnfi&#39;, &#39;gfi&#39;, &#39;agfi&#39;, &#39;mfi&#39;)] &gt; .90)
-   cut2 &lt;- colMeans(results[,c(&#39;rmsea&#39;, &#39;srmr&#39;)] &lt; .05)
-   ret &lt;- c(cut90=cut1, cut05=cut2)
+   cut2 &lt;- colMeans(results[,c(&#39;rmsea&#39;, &#39;srmr&#39;)] &lt; .08)
+   ret &lt;- c(cut90=cut1, cut08=cut2)
    ret
 }
 
@@ -567,14 +567,14 @@ newres</code></pre>
 ##  9 simple elliptical      150 true          0.994     0.983      0.983     0.994
 ## 10 compl… elliptical      150 true          0.955     0.859      0.859     0.777
 ## # ℹ 242 more rows
-## # ℹ 4 more variables: cut90.agfi &lt;dbl&gt;, cut90.mfi &lt;dbl&gt;, cut05.rmsea &lt;dbl&gt;,
-## #   cut05.srmr &lt;dbl&gt;</code></pre>
+## # ℹ 4 more variables: cut90.agfi &lt;dbl&gt;, cut90.mfi &lt;dbl&gt;, cut08.rmsea &lt;dbl&gt;,
+## #   cut08.srmr &lt;dbl&gt;</code></pre>
 <p>Some brief analyses of the results given the data generation
 conditions.</p>
 <pre class="r"><code>library(dplyr)
 
 newres %&gt;% group_by(fit_model, model) %&gt;% 
-    summarise(cfi=mean(cut90.cfi), rmsea=mean(cut05.rmsea)) -&gt; tab1</code></pre>
+    summarise(cfi=mean(cut90.cfi), rmsea=mean(cut08.rmsea)) -&gt; tab1</code></pre>
 <pre><code>## `summarise()` has grouped output by &#39;fit_model&#39;. You can override using the
 ## `.groups` argument.</code></pre>
 <pre class="r"><code>knitr::kable(tab1)</code></pre>
@@ -592,42 +592,42 @@ newres %&gt;% group_by(fit_model, model) %&gt;%
 <td align="left">mis1</td>
 <td align="left">complex</td>
 <td align="right">0.957</td>
-<td align="right">0.048</td>
+<td align="right">0.206</td>
 </tr>
 <tr class="even">
 <td align="left">mis1</td>
 <td align="left">simple</td>
 <td align="right">0.997</td>
-<td align="right">0.708</td>
+<td align="right">0.999</td>
 </tr>
 <tr class="odd">
 <td align="left">mis2</td>
 <td align="left">complex</td>
 <td align="right">0.059</td>
-<td align="right">0.002</td>
+<td align="right">0.135</td>
 </tr>
 <tr class="even">
 <td align="left">mis2</td>
 <td align="left">simple</td>
 <td align="right">0.991</td>
-<td align="right">0.200</td>
+<td align="right">0.997</td>
 </tr>
 <tr class="odd">
 <td align="left">true</td>
 <td align="left">complex</td>
 <td align="right">0.990</td>
-<td align="right">0.117</td>
+<td align="right">0.516</td>
 </tr>
 <tr class="even">
 <td align="left">true</td>
 <td align="left">simple</td>
 <td align="right">1.000</td>
-<td align="right">0.995</td>
+<td align="right">1.000</td>
 </tr>
 </tbody>
 </table>
 <pre class="r"><code>newres %&gt;% group_by(fit_model, model, gen_condition) %&gt;% 
-    summarise(cfi=mean(cut90.cfi), rmsea=mean(cut05.rmsea)) -&gt; tab2</code></pre>
+    summarise(cfi=mean(cut90.cfi), rmsea=mean(cut08.rmsea)) -&gt; tab2</code></pre>
 <pre><code>## `summarise()` has grouped output by &#39;fit_model&#39;, &#39;model&#39;. You can override
 ## using the `.groups` argument.</code></pre>
 <pre class="r"><code>knitr::kable(tab2)</code></pre>
@@ -647,105 +647,105 @@ newres %&gt;% group_by(fit_model, model) %&gt;%
 <td align="left">complex</td>
 <td align="left">elliptical</td>
 <td align="right">0.978</td>
-<td align="right">0.334</td>
+<td align="right">0.998</td>
 </tr>
 <tr class="even">
 <td align="left">mis1</td>
 <td align="left">complex</td>
 <td align="left">nonnormal1</td>
 <td align="right">0.945</td>
-<td align="right">0.000</td>
+<td align="right">0.067</td>
 </tr>
 <tr class="odd">
 <td align="left">mis1</td>
 <td align="left">complex</td>
 <td align="left">nonnormal2</td>
 <td align="right">0.946</td>
-<td align="right">0.000</td>
+<td align="right">0.061</td>
 </tr>
 <tr class="even">
 <td align="left">mis1</td>
 <td align="left">complex</td>
 <td align="left">nonnormal3</td>
 <td align="right">0.960</td>
-<td align="right">0.000</td>
+<td align="right">0.083</td>
 </tr>
 <tr class="odd">
 <td align="left">mis1</td>
 <td align="left">complex</td>
 <td align="left">nonnormal_dep1</td>
 <td align="right">0.964</td>
-<td align="right">0.000</td>
+<td align="right">0.082</td>
 </tr>
 <tr class="even">
 <td align="left">mis1</td>
 <td align="left">complex</td>
 <td align="left">nonnormal_dep2</td>
 <td align="right">0.946</td>
-<td align="right">0.000</td>
+<td align="right">0.062</td>
 </tr>
 <tr class="odd">
 <td align="left">mis1</td>
 <td align="left">complex</td>
 <td align="left">normal</td>
 <td align="right">0.960</td>
-<td align="right">0.000</td>
+<td align="right">0.088</td>
 </tr>
 <tr class="even">
 <td align="left">mis1</td>
 <td align="left">simple</td>
 <td align="left">elliptical</td>
 <td align="right">0.977</td>
-<td align="right">0.909</td>
+<td align="right">1.000</td>
 </tr>
 <tr class="odd">
 <td align="left">mis1</td>
 <td align="left">simple</td>
 <td align="left">nonnormal1</td>
 <td align="right">1.000</td>
-<td align="right">0.746</td>
+<td align="right">0.999</td>
 </tr>
 <tr class="even">
 <td align="left">mis1</td>
 <td align="left">simple</td>
 <td align="left">nonnormal2</td>
 <td align="right">1.000</td>
-<td align="right">0.744</td>
+<td align="right">1.000</td>
 </tr>
 <tr class="odd">
 <td align="left">mis1</td>
 <td align="left">simple</td>
 <td align="left">nonnormal3</td>
 <td align="right">1.000</td>
-<td align="right">0.596</td>
+<td align="right">0.999</td>
 </tr>
 <tr class="even">
 <td align="left">mis1</td>
 <td align="left">simple</td>
 <td align="left">nonnormal_dep1</td>
 <td align="right">1.000</td>
-<td align="right">0.599</td>
+<td align="right">0.999</td>
 </tr>
 <tr class="odd">
 <td align="left">mis1</td>
 <td align="left">simple</td>
 <td align="left">nonnormal_dep2</td>
 <td align="right">1.000</td>
-<td align="right">0.753</td>
+<td align="right">0.999</td>
 </tr>
 <tr class="even">
 <td align="left">mis1</td>
 <td align="left">simple</td>
 <td align="left">normal</td>
 <td align="right">1.000</td>
-<td align="right">0.606</td>
+<td align="right">0.999</td>
 </tr>
 <tr class="odd">
 <td align="left">mis2</td>
 <td align="left">complex</td>
 <td align="left">elliptical</td>
 <td align="right">0.362</td>
-<td align="right">0.017</td>
+<td align="right">0.946</td>
 </tr>
 <tr class="even">
 <td align="left">mis2</td>
@@ -794,104 +794,497 @@ newres %&gt;% group_by(fit_model, model) %&gt;%
 <td align="left">simple</td>
 <td align="left">elliptical</td>
 <td align="right">0.939</td>
-<td align="right">0.702</td>
+<td align="right">0.999</td>
 </tr>
 <tr class="odd">
 <td align="left">mis2</td>
 <td align="left">simple</td>
 <td align="left">nonnormal1</td>
 <td align="right">1.000</td>
-<td align="right">0.143</td>
+<td align="right">0.996</td>
 </tr>
 <tr class="even">
 <td align="left">mis2</td>
 <td align="left">simple</td>
 <td align="left">nonnormal2</td>
 <td align="right">1.000</td>
-<td align="right">0.142</td>
+<td align="right">0.998</td>
 </tr>
 <tr class="odd">
 <td align="left">mis2</td>
 <td align="left">simple</td>
 <td align="left">nonnormal3</td>
 <td align="right">1.000</td>
-<td align="right">0.091</td>
+<td align="right">0.995</td>
 </tr>
 <tr class="even">
 <td align="left">mis2</td>
 <td align="left">simple</td>
 <td align="left">nonnormal_dep1</td>
 <td align="right">1.000</td>
-<td align="right">0.086</td>
+<td align="right">0.995</td>
 </tr>
 <tr class="odd">
 <td align="left">mis2</td>
 <td align="left">simple</td>
 <td align="left">nonnormal_dep2</td>
 <td align="right">1.000</td>
-<td align="right">0.148</td>
+<td align="right">0.998</td>
 </tr>
 <tr class="even">
 <td align="left">mis2</td>
 <td align="left">simple</td>
 <td align="left">normal</td>
 <td align="right">1.000</td>
-<td align="right">0.086</td>
+<td align="right">0.996</td>
 </tr>
 <tr class="odd">
 <td align="left">true</td>
 <td align="left">complex</td>
 <td align="left">elliptical</td>
 <td align="right">0.992</td>
-<td align="right">0.807</td>
+<td align="right">0.999</td>
 </tr>
 <tr class="even">
 <td align="left">true</td>
 <td align="left">complex</td>
 <td align="left">nonnormal1</td>
 <td align="right">0.989</td>
-<td align="right">0.001</td>
+<td align="right">0.332</td>
 </tr>
 <tr class="odd">
 <td align="left">true</td>
 <td align="left">complex</td>
 <td align="left">nonnormal2</td>
 <td align="right">0.987</td>
-<td align="right">0.001</td>
+<td align="right">0.330</td>
 </tr>
 <tr class="even">
 <td align="left">true</td>
 <td align="left">complex</td>
 <td align="left">nonnormal3</td>
 <td align="right">0.991</td>
-<td align="right">0.002</td>
+<td align="right">0.529</td>
 </tr>
 <tr class="odd">
 <td align="left">true</td>
 <td align="left">complex</td>
 <td align="left">nonnormal_dep1</td>
 <td align="right">0.992</td>
-<td align="right">0.002</td>
+<td align="right">0.539</td>
 </tr>
 <tr class="even">
 <td align="left">true</td>
 <td align="left">complex</td>
 <td align="left">nonnormal_dep2</td>
 <td align="right">0.988</td>
-<td align="right">0.001</td>
+<td align="right">0.336</td>
 </tr>
 <tr class="odd">
 <td align="left">true</td>
 <td align="left">complex</td>
 <td align="left">normal</td>
 <td align="right">0.992</td>
-<td align="right">0.002</td>
+<td align="right">0.546</td>
 </tr>
 <tr class="even">
 <td align="left">true</td>
 <td align="left">simple</td>
 <td align="left">elliptical</td>
 <td align="right">0.999</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">true</td>
+<td align="left">simple</td>
+<td align="left">nonnormal1</td>
+<td align="right">1.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">true</td>
+<td align="left">simple</td>
+<td align="left">nonnormal2</td>
+<td align="right">1.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">true</td>
+<td align="left">simple</td>
+<td align="left">nonnormal3</td>
+<td align="right">1.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">true</td>
+<td align="left">simple</td>
+<td align="left">nonnormal_dep1</td>
+<td align="right">1.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">true</td>
+<td align="left">simple</td>
+<td align="left">nonnormal_dep2</td>
+<td align="right">1.000</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">true</td>
+<td align="left">simple</td>
+<td align="left">normal</td>
+<td align="right">1.000</td>
+<td align="right">1.000</td>
+</tr>
+</tbody>
+</table>
+<p>Same as above, but now with more strict cutoffs (CFI &gt;.95, RMSEA
+&lt; .05).</p>
+<pre class="r"><code># new summarise function for obtaining specific cut-offs
+Summarise &lt;- function(condition, results, fixed_objects = NULL) {
+   cut1 &lt;- colMeans(results[,c(&#39;cfi&#39;, &#39;tli&#39;, &#39;nnfi&#39;, &#39;gfi&#39;, &#39;agfi&#39;, &#39;mfi&#39;)] &gt; .95)
+   cut2 &lt;- colMeans(results[,c(&#39;rmsea&#39;, &#39;srmr&#39;)] &lt; .05)
+   ret &lt;- c(cut95=cut1, cut05=cut2)
+   ret
+}
+
+newres2 &lt;- reSummarise(Summarise, results=res)
+newres2</code></pre>
+<pre><code>## # A tibble: 252 × 12
+##    model  gen_condition     N fit_model cut95.cfi cut95.tli cut95.nnfi cut95.gfi
+##    &lt;chr&gt;  &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+##  1 simple normal          150 true          0.998     0.99       0.99      0.004
+##  2 compl… normal          150 true          0.195     0.084      0.084     0    
+##  3 simple nonnormal1      150 true          0.998     0.994      0.994     0.009
+##  4 compl… nonnormal1      150 true          0.156     0.058      0.058     0    
+##  5 simple nonnormal2      150 true          1         0.997      0.997     0.009
+##  6 compl… nonnormal2      150 true          0.153     0.059      0.059     0    
+##  7 simple nonnormal3      150 true          0.998     0.992      0.992     0.009
+##  8 compl… nonnormal3      150 true          0.186     0.065      0.065     0    
+##  9 simple elliptical      150 true          0.901     0.866      0.866     0.009
+## 10 compl… elliptical      150 true          0.525     0.397      0.397     0.001
+## # ℹ 242 more rows
+## # ℹ 4 more variables: cut95.agfi &lt;dbl&gt;, cut95.mfi &lt;dbl&gt;, cut05.rmsea &lt;dbl&gt;,
+## #   cut05.srmr &lt;dbl&gt;</code></pre>
+<pre class="r"><code>newres2 %&gt;% group_by(fit_model, model) %&gt;% 
+    summarise(cfi=mean(cut95.cfi), rmsea=mean(cut05.rmsea)) -&gt; tab3</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;fit_model&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<pre class="r"><code>knitr::kable(tab3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">fit_model</th>
+<th align="left">model</th>
+<th align="right">cfi</th>
+<th align="right">rmsea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">mis1</td>
+<td align="left">complex</td>
+<td align="right">0.040</td>
+<td align="right">0.048</td>
+</tr>
+<tr class="even">
+<td align="left">mis1</td>
+<td align="left">simple</td>
+<td align="right">0.900</td>
+<td align="right">0.708</td>
+</tr>
+<tr class="odd">
+<td align="left">mis2</td>
+<td align="left">complex</td>
+<td align="right">0.001</td>
+<td align="right">0.002</td>
+</tr>
+<tr class="even">
+<td align="left">mis2</td>
+<td align="left">simple</td>
+<td align="right">0.770</td>
+<td align="right">0.200</td>
+</tr>
+<tr class="odd">
+<td align="left">true</td>
+<td align="left">complex</td>
+<td align="right">0.157</td>
+<td align="right">0.117</td>
+</tr>
+<tr class="even">
+<td align="left">true</td>
+<td align="left">simple</td>
+<td align="right">0.997</td>
+<td align="right">0.995</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>newres2 %&gt;% group_by(fit_model, model, gen_condition) %&gt;% 
+    summarise(cfi=mean(cut95.cfi), rmsea=mean(cut05.rmsea)) -&gt; tab4</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;fit_model&#39;, &#39;model&#39;. You can override
+## using the `.groups` argument.</code></pre>
+<pre class="r"><code>knitr::kable(tab4)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">fit_model</th>
+<th align="left">model</th>
+<th align="left">gen_condition</th>
+<th align="right">cfi</th>
+<th align="right">rmsea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">mis1</td>
+<td align="left">complex</td>
+<td align="left">elliptical</td>
+<td align="right">0.215</td>
+<td align="right">0.334</td>
+</tr>
+<tr class="even">
+<td align="left">mis1</td>
+<td align="left">complex</td>
+<td align="left">nonnormal1</td>
+<td align="right">0.009</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">mis1</td>
+<td align="left">complex</td>
+<td align="left">nonnormal2</td>
+<td align="right">0.008</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">mis1</td>
+<td align="left">complex</td>
+<td align="left">nonnormal3</td>
+<td align="right">0.012</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">mis1</td>
+<td align="left">complex</td>
+<td align="left">nonnormal_dep1</td>
+<td align="right">0.013</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">mis1</td>
+<td align="left">complex</td>
+<td align="left">nonnormal_dep2</td>
+<td align="right">0.010</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">mis1</td>
+<td align="left">complex</td>
+<td align="left">normal</td>
+<td align="right">0.011</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">mis1</td>
+<td align="left">simple</td>
+<td align="left">elliptical</td>
+<td align="right">0.495</td>
+<td align="right">0.909</td>
+</tr>
+<tr class="odd">
+<td align="left">mis1</td>
+<td align="left">simple</td>
+<td align="left">nonnormal1</td>
+<td align="right">0.969</td>
+<td align="right">0.746</td>
+</tr>
+<tr class="even">
+<td align="left">mis1</td>
+<td align="left">simple</td>
+<td align="left">nonnormal2</td>
+<td align="right">0.971</td>
+<td align="right">0.744</td>
+</tr>
+<tr class="odd">
+<td align="left">mis1</td>
+<td align="left">simple</td>
+<td align="left">nonnormal3</td>
+<td align="right">0.966</td>
+<td align="right">0.596</td>
+</tr>
+<tr class="even">
+<td align="left">mis1</td>
+<td align="left">simple</td>
+<td align="left">nonnormal_dep1</td>
+<td align="right">0.966</td>
+<td align="right">0.599</td>
+</tr>
+<tr class="odd">
+<td align="left">mis1</td>
+<td align="left">simple</td>
+<td align="left">nonnormal_dep2</td>
+<td align="right">0.974</td>
+<td align="right">0.753</td>
+</tr>
+<tr class="even">
+<td align="left">mis1</td>
+<td align="left">simple</td>
+<td align="left">normal</td>
+<td align="right">0.962</td>
+<td align="right">0.606</td>
+</tr>
+<tr class="odd">
+<td align="left">mis2</td>
+<td align="left">complex</td>
+<td align="left">elliptical</td>
+<td align="right">0.009</td>
+<td align="right">0.017</td>
+</tr>
+<tr class="even">
+<td align="left">mis2</td>
+<td align="left">complex</td>
+<td align="left">nonnormal1</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">mis2</td>
+<td align="left">complex</td>
+<td align="left">nonnormal2</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">mis2</td>
+<td align="left">complex</td>
+<td align="left">nonnormal3</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">mis2</td>
+<td align="left">complex</td>
+<td align="left">nonnormal_dep1</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">mis2</td>
+<td align="left">complex</td>
+<td align="left">nonnormal_dep2</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">mis2</td>
+<td align="left">complex</td>
+<td align="left">normal</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">mis2</td>
+<td align="left">simple</td>
+<td align="left">elliptical</td>
+<td align="right">0.086</td>
+<td align="right">0.702</td>
+</tr>
+<tr class="odd">
+<td align="left">mis2</td>
+<td align="left">simple</td>
+<td align="left">nonnormal1</td>
+<td align="right">0.905</td>
+<td align="right">0.143</td>
+</tr>
+<tr class="even">
+<td align="left">mis2</td>
+<td align="left">simple</td>
+<td align="left">nonnormal2</td>
+<td align="right">0.906</td>
+<td align="right">0.142</td>
+</tr>
+<tr class="odd">
+<td align="left">mis2</td>
+<td align="left">simple</td>
+<td align="left">nonnormal3</td>
+<td align="right">0.870</td>
+<td align="right">0.091</td>
+</tr>
+<tr class="even">
+<td align="left">mis2</td>
+<td align="left">simple</td>
+<td align="left">nonnormal_dep1</td>
+<td align="right">0.865</td>
+<td align="right">0.086</td>
+</tr>
+<tr class="odd">
+<td align="left">mis2</td>
+<td align="left">simple</td>
+<td align="left">nonnormal_dep2</td>
+<td align="right">0.909</td>
+<td align="right">0.148</td>
+</tr>
+<tr class="even">
+<td align="left">mis2</td>
+<td align="left">simple</td>
+<td align="left">normal</td>
+<td align="right">0.853</td>
+<td align="right">0.086</td>
+</tr>
+<tr class="odd">
+<td align="left">true</td>
+<td align="left">complex</td>
+<td align="left">elliptical</td>
+<td align="right">0.745</td>
+<td align="right">0.807</td>
+</tr>
+<tr class="even">
+<td align="left">true</td>
+<td align="left">complex</td>
+<td align="left">nonnormal1</td>
+<td align="right">0.047</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">true</td>
+<td align="left">complex</td>
+<td align="left">nonnormal2</td>
+<td align="right">0.044</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="even">
+<td align="left">true</td>
+<td align="left">complex</td>
+<td align="left">nonnormal3</td>
+<td align="right">0.068</td>
+<td align="right">0.002</td>
+</tr>
+<tr class="odd">
+<td align="left">true</td>
+<td align="left">complex</td>
+<td align="left">nonnormal_dep1</td>
+<td align="right">0.076</td>
+<td align="right">0.002</td>
+</tr>
+<tr class="even">
+<td align="left">true</td>
+<td align="left">complex</td>
+<td align="left">nonnormal_dep2</td>
+<td align="right">0.044</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">true</td>
+<td align="left">complex</td>
+<td align="left">normal</td>
+<td align="right">0.075</td>
+<td align="right">0.002</td>
+</tr>
+<tr class="even">
+<td align="left">true</td>
+<td align="left">simple</td>
+<td align="left">elliptical</td>
+<td align="right">0.983</td>
 <td align="right">0.994</td>
 </tr>
 <tr class="odd">
