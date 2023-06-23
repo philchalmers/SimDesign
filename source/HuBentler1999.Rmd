@@ -1,0 +1,216 @@
+%\VignetteIndexEntry{SimDesign}
+%\VignetteEngine{knitr::knitr}
+---
+title: "Hu and Bentler (1999) simulation"
+author: "Phil Chalmers"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_download: true
+---
+
+```{r include=FALSE}
+options(digits = 3)
+cache_ <- TRUE
+```
+
+Simulation from:
+
+- Hu, L. & Bentler, P. M. (1999). Cutoff criteria for fit indices in covariance structure analysis: Conventional criteria versus new alternatives. Structural Equation Modeling,  6, 1-31
+
+# User-defined functions
+
+User-defined helper function for the generate-analyse steps to generate appropriate syntax for `lavaan`, as well as defined fixed objects re-used throughout the simulation (could be placed in an external .R file and sourced in prior to running `runSimulation()` instead).
+
+```{r}
+# L' matrix
+simple <- complex <- matrix(c(.7, .7, .75, .8, .8, numeric(15),
+                              .7, .7, .75, .8, .8, numeric(15),
+                              .7, .7, .75, .8, .8), nrow=3, byrow=TRUE)
+complex[c(3,11,27)] <- c(.7, .7, .7)
+
+# residual variances
+simple.resids <- complex.resids <- 1 - colSums(simple^2)
+complex.resids[c(1,4,9)] <- c(.51, .36, .36)
+
+# latent correlations
+fcor <- matrix(1,3,3)
+fcor[lower.tri(fcor)] <- fcor[upper.tri(fcor)] <- c(.5, .4, .3)
+
+# variable distribution properties
+kurtosis.common_2.3 <- c(-1, 2, 5)
+kurtosis.unique_2.4 <- c(-1,.5,2.5,4.5,6.5,-1,1,3,5,7,
+                         -.5,1.5,3.5,5.5,7.5)
+Ztransform <- function(n=1) sqrt(rchisq(n, df=5)) / sqrt(3)
+
+
+# organize all into fixed_object list
+fo <- list(simple=simple, simple.resids=simple.resids,
+           complex=complex, complex.resids=complex.resids,
+           fcor=fcor, kurtosis.unique_2.4=kurtosis.unique_2.4,
+           kurtosis.common_2.3=kurtosis.common_2.3,
+           Ztransform=Ztransform)
+
+rm(list=setdiff(ls(), "fo"))
+
+
+#' Generate lavaan syntax for Hu and Bentler (1999) simulation
+#'
+#' @param model simple/complex
+#' @param fit_model true/mis1/mis2
+#' @examples
+#' cat(genLavaanSyntax('simple', 'true'))
+#' cat(genLavaanSyntax('complex', 'mis2'))
+#'
+genLavaanSyntax <- function(model, fit_model){
+    ret <- if(model == 'simple'){
+        add <- switch(fit_model,
+                      true = "",
+                      mis1 = "\nf1 ~~ 0*f2",
+                      mis2 = "\nf1 ~~ 0*f2\nf1 ~~ 0*f3")
+        sprintf("
+        f1 =~ NA*V1 + V2 + V3 + V4 + 0.8*V5
+        f2 =~ NA*V6 + V7 + V8 + V9 + 0.8*V10
+        f3 =~ NA*V11 + V12 + V13 + V14 + 0.8*V15%s", add)
+    } else if(model == 'complex'){
+        # complex
+        add <- switch(fit_model,
+                      true = c(' + V1', '+ V9'),
+                      mis1 = c('', '+ V9'),
+                      mis2 = c('', ''))
+        sprintf("
+        f1 =~ NA*V1 + V2 + V3 + V4 + 0.8*V5
+        f2 =~ NA*V6 + V7 + V8 + V9 + 0.8*V10%s
+        f3 =~ NA*V11 + V12 + V13 + V14 + 0.8*V15 + V4%s", add[1], add[2])
+    } else stop('model type not included')
+    ret
+}
+```
+
+# Simulation code
+
+The follow implements the data generation conditions and subsequent analyses using the `lavaan` packages ML criteria. Note that in the summarise step only the general behaviour of the fit statistics is reported rather the cut-values. However, use of `reSummarise()` is demonstrated in the following section to obtain the cut-off criteria decided by the front-end user.
+
+```{r eval=FALSE}
+library(SimDesign)
+
+Design <- createDesign(model=c('simple', 'complex'),
+                       gen_condition=c('normal', paste0('nonnormal', 1:3),
+                                       'elliptical',
+                                       paste0('nonnormal_dep', 1:2)),
+                       N = c(150, 250, 500, 1000, 2500, 5000),
+                       fit_model=c('true', 'mis1', 'mis2'))
+# source('HuBentler1999_extras.R')  # source instead of defining in same document
+# str(fo)
+
+#-------------------------------------------------------------------
+
+Generate <- function(condition, fixed_objects = NULL) {
+    Attach(condition)
+    L <- with(fixed_objects, if(model == 'simple') simple else complex)
+    sigma.e <- diag(with(fixed_objects,
+                    if(model == 'simple') simple.resids else complex.resids))
+    sigma <- fixed_objects$fcor
+    Z <- ifelse(gen_condition %in% c(paste0('nonnormal_dep', 1:2), 'elliptical'),
+                fixed_objects$Ztransform(), 1)
+
+    # theta
+    theta <- if(gen_condition %in% c('normal', 'nonnormal3', 'nonnormal_dep1')){
+        rmvnorm(N, sigma=sigma) / Z
+    } else if(gen_condition %in% c('nonnormal1', 'nonnormal2', 'nonnormal_dep2')){
+        rValeMaurelli(N, sigma = sigma, kurt=fixed_objects$kurtosis.common_2.3) / Z
+    } else if(gen_condition == 'elliptical'){
+        Sigma <- diag(18)
+        Sigma[1:3, 1:3] <- sigma
+        tmp <- rtelliptical(N, mu=numeric(18),
+                            lower=rep(-Inf, 18), upper=rep(Inf, 18),
+                            Sigma=Sigma, dist = 'Normal') / Z
+        epsilon <- tmp[,4:18]
+        tmp[,1:3]
+    }
+
+    # epsilon
+    epsilon <- if(gen_condition == 'normal'){
+        rmvnorm(N, sigma=sigma.e) / Z
+    } else if(gen_condition == 'elliptical'){
+        epsilon
+    } else {
+        rValeMaurelli(N, sigma=sigma.e,
+                      kurt=fixed_objects$kurtosis.unique_2.4) / Z
+    }
+
+    # X = L * theta + e
+    dat <- as.data.frame(t(t(L) %*% t(theta)) + epsilon)
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL) {
+    Attach(condition)
+    syntax <- genLavaanSyntax(model=model, fit_model=fit_model)
+    mod <- sem(syntax, data=dat)
+    if(!lavInspect(mod, 'converged')) stop('Model did not converge')
+    ret <- fitMeasures(mod)
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL) {
+    ret <- c(mean=colMeans(results), sd=apply(results, 2, sd))
+    ret
+}
+
+#-------------------------------------------------------------------
+
+res <- runSimulation(design=Design, replications=1000, parallel=TRUE,
+                     debug='none', store_results=TRUE,
+                     generate=Generate, fixed_objects=fo,
+                     analyse=Analyse, summarise=Summarise,
+                     packages=c("relliptical", "lavaan"),
+                     filename='HuBentler1999')
+res
+```
+
+```{r echo=FALSE}
+library(SimDesign)
+res <- readRDS("../extras/HuBentler1999/HuBentler1999.rds")
+res
+```
+
+# Specific cut-offs
+
+Above simulation does not contain the specific cut-offs utilized by the authors (e.g., CFI > .9 or RMSEA < .05). However, because the results were stored in the final object via `store_results = TRUE` these can be obtained 
+by resummarising the results. Doing so just requires applying the `reSummarise()` function.
+
+```{r}
+# new summarise function for obtaining specific cut-offs
+Summarise <- function(condition, results, fixed_objects = NULL) {
+   cut1 <- colMeans(results[,c('cfi', 'tli', 'nnfi', 'gfi', 'agfi', 'mfi')] > .90)
+   cut2 <- colMeans(results[,c('rmsea', 'srmr')] < .05)
+   ret <- c(cut90=cut1, cut05=cut2)
+   ret
+}
+
+newres <- reSummarise(Summarise, results=res)
+newres
+```
+
+Some brief analyses of the results given the data generation conditions.
+
+```{r include=FALSE}
+library(dplyr)
+```
+
+
+```{r}
+library(dplyr)
+
+newres %>% group_by(fit_model, model) %>% 
+    summarise(cfi=mean(cut90.cfi), rmsea=mean(cut05.rmsea)) -> tab1
+knitr::kable(tab1)
+
+newres %>% group_by(fit_model, model, gen_condition) %>% 
+    summarise(cfi=mean(cut90.cfi), rmsea=mean(cut05.rmsea)) -> tab2
+knitr::kable(tab2)
+```
+
+
