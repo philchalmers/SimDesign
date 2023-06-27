@@ -217,7 +217,10 @@ PBA <- function(f, interval, ..., p = .6,
                 c(NA, NA)
             } else {
                 suppressWarnings(SimSolveUniroot(SimMod=SimMod,
-                                                 b=dots$b, interval=interval,
+                                                 b=dots$b,
+                                                 interval=quantile(medhistory[medhistory != 0],
+                                                                   probs = c(.05, .95)),
+                                                 max.interval=interval,
                                                  median=med))
             }
 

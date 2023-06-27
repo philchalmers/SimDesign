@@ -431,11 +431,12 @@ SimSolveData <- function(burnin, full = TRUE){
     ret
 }
 
-SimSolveUniroot <- function(SimMod, b, interval, median){
+SimSolveUniroot <- function(SimMod, b, interval, max.interval, median){
     f.root <- function(x, b)
         predict(SimMod, newdata = data.frame(x=x), type = 'response') - b
     res <- try(uniroot(f.root, b=b, interval = interval), silent = TRUE)
     if(is(res, 'try-error')){ # in case original interval is poor for interpolation
+        interval <- max.interval
         for(i in seq_len(20L)){
             if(grepl('end points not of opposite sign', res)){
                 diff <- abs(interval - median)
