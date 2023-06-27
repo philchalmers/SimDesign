@@ -282,6 +282,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     stopifnot(length(replications) == maxiter)
     interpolate <- interpolate.R > 0L
     interpolate.after <- max(which(cumsum(replications) <= interpolate.R)) + 1L
+    dots <- list(...)
 
     root.fun <- function(x, b, design.row, replications, store = TRUE, ...){
         design.row[1L, which(is.na(design.row))] <- x
@@ -362,6 +363,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             next
         }
         tab <- .SIMDENV$stored_history[!sapply(.SIMDENV$stored_history, is.null)]
+        if(!is.null(dots$ReturnSimSolveInternals)) return(tab)
         attr(roots[[i]], 'stored_tab') <- if(integer) reduceTable(tab) else tab
         if(verbose){
             cat("\r")
