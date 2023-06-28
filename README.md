@@ -1,7 +1,7 @@
  [![](http://www.r-pkg.org/badges/version/SimDesign)](http://www.r-pkg.org/pkg/SimDesign) [![](http://cranlogs.r-pkg.org/badges/grand-total/SimDesign)](https://CRAN.R-project.org/package=SimDesign)
 
 
-# SimDesign
+# SimDesign <img src="SimDesign-logo.png" align="right" height="200px" />
 
 Structure for Organizing Monte Carlo Simulation Designs
 
