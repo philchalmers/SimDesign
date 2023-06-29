@@ -611,13 +611,12 @@
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' Final
 #'
-#'
+#' \dontrun{
 #' # reproduce exact simulation
 #' Final_rep <- runSimulation(design=Design, replications=10, seed=Final$SEED,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' Final_rep
 #'
-#' \dontrun{
 #' # run with more standard number of replications (note the storage message)
 #' Final <- runSimulation(design=Design, replications=1000,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
