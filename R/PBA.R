@@ -191,6 +191,9 @@ PBA <- function(f, interval, ..., p = .6,
 
     for(iter in 1L:maxiter){
         med <- getMedian(fx, x)
+        if(!is.null(FromSimSolve) && integer && iter >= FromSimSolve$single_step.iter)
+            med <- ifelse(abs(med - medhistory[iter-1L]) == 1,
+                          med, medhistory[iter-1L] + sign(med - medhistory[iter-1L]))
         medhistory[iter] <- med
         feval <- if(!is.null(FromSimSolve))
             bool.f(f.root=f, med, replications=replications[iter], ...)

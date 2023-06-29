@@ -55,33 +55,40 @@
 #'
 #' @param verbose logical; print information to the console?
 #'
+#' @param control a \code{list} of the algorithm control parameters. If not specified,
+#'   the defaults described below are used.
+#'
+#' \describe{
+#'    \item{\code{tol}}{tolerance criteria for early termination (.1 for
+#'      \code{integer = TRUE} searches; .001 for non-integer searches}
+#'    \item{\code{rel.tol}}{relative tolerance criteria for early termination (default .00001)}
+#'    \item{\code{k.success}}{number of consecutive tolerance success given \code{rel.tol} and
+#'      \code{tol} criteria (default is 3)}
+#'    \item{\code{bolster}}{logical; should the PBA evaluations use bolstering based on previous
+#'      evaluations? Default is \code{TRUE}, though only applicable when \code{integer = TRUE} }
+#'    \item{\code{single_step.iter}}{when \code{integer = TRUE}, do not take steps larger than
+#'      size 1 after this iteration number (default is 40). This prevents wide oscillations
+#'      around the probable root}
+#'    \item{\code{interpolate.R}}{number of replications to collect prior to performing
+#'      the interpolation step (default is 3000 after accounting for data exclusion
+#'      from \code{interpolate.burnin}). Setting this to 0 will disable any
+#'      interpolation computations}
+#'    }
+#'
+#' @param interpolate.burnin integer indicating the number of initial iterations
+#'      to discard from the interpolation computations. This is included to further
+#'      remove the effect of early estimates that are far away from the solution
+#'
+#' @param maxiter the maximum number of iterations (default 150)
+#'
 #' @param parallel for parallel computing for slower simulation experiments
 #'   (see \code{\link{runSimulation}} for details)
 #'
 #' @param cl see \code{\link{runSimulation}}
 #'
-#' @param k.success number of consecutive tolerance sucessess given rel.tol and
-#'   tol criteria (default is 3)
-#'
-#' @param tol tolerance criteria for early termination.
-#'
-#' @param rel.tol relative tolerance criteria for early termination.
-#'
 #' @param ncores see \code{\link{runSimulation}}
 #'
-#' @param bolster logical; should the PBA evaluations use bolstering based on previous
-#'   evaluations? Only applicable when \code{integer = TRUE}
-#'
 #' @param type type of cluster object to define
-#'
-#' @param interpolate.R number of replications to collect prior to performing
-#'   the interpolation step (default is 3000 after accounting for data exclusion
-#'   from \code{interpolate.burnin}). Setting this to 0 will disable any
-#'   interpolation computations
-#'
-#' @param interpolate.burnin integer indicating the number of initial iterations
-#'   to discard from the interpolation computations. This is included to further
-#'   remove the effect of early estimates that are far away from the solution
 #'
 #' @param formula regression formula to use when \code{interpolate = TRUE}. Default
 #'   fits an orthogonal polynomial of degree 2
@@ -92,12 +99,7 @@
 #'   return 0/1s, however other families should be used had \code{summarise}
 #'   returned something else (e.g., if solving for a particular standard error
 #'   then a \code{'gaussian'} family would be more appropriate)
-#
-# @param robust logical; if TRUE the function \code{robustbase::glmrob()} is used
-#   for the model fitting, otherwise \code{glm()} will be used
-#
-#' @param maxiter the maximum number of iterations
-#
+#'
 #' @param ... additional arguments to be pasted to \code{\link{PBA}}
 #'
 #' @return the filled-in \code{design} object containing the associated lower and upper interval
@@ -258,15 +260,20 @@
 SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      replications = c(rep(100L, interpolate.burnin),
                                       seq(200L, by=10L, length.out=maxiter-interpolate.burnin)),
-                     integer = TRUE, tol = if(integer) .1 else .001,
-                     rel.tol = .0001, k.success = 3L,
-                     interpolate.burnin = 15L, interpolate.R = 3000,
-                     formula = y ~ poly(x, 2), family = 'binomial',
+                     integer = TRUE, formula = y ~ poly(x, 2), family = 'binomial',
                      parallel = FALSE, cl = NULL,
                      ncores = parallel::detectCores() - 1L,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
-                     maxiter = 150L, bolster = TRUE, verbose = TRUE, ...){
+                     maxiter = 150L, interpolate.burnin = 15L,
+                     verbose = TRUE, control = list(), ...){
+
     # robust <- FALSE
+    if(is.null(control$tol)) control$tol <- if(integer) .1 else .001
+    if(is.null(control$rel.tol)) control$rel.tol <- .0001
+    if(is.null(control$k.sucess)) control$k.success <- 3L
+    if(is.null(control$interpolate.R)) control$interpolate.R <- 3000L
+    if(is.null(control$bolster)) control$bolster <- TRUE
+    if(is.null(control$single_step.iter)) control$single_step.iter <- 40L
 
     on.exit(.SIMDENV$stored_results <- .SIMDENV$stored_medhistory <-
                 .SIMDENV$stored_history <- NULL,
@@ -280,8 +287,9 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     stopifnot(!missing(interval))
     if(length(replications) == 1L) replications <- rep(replications, maxiter)
     stopifnot(length(replications) == maxiter)
-    interpolate <- interpolate.R > 0L
-    interpolate.after <- max(which(cumsum(replications) <= interpolate.R)) + 1L
+    interpolate <- control$interpolate.R > 0L
+    interpolate.after <- max(which(cumsum(replications) <=
+                                       control$interpolate.R)) + 1L
     ReturnSimSolveInternals <- FALSE
     if(!is.null(attr(verbose, 'ReturnSimSolveInternals')))
         ReturnSimSolveInternals <- TRUE
@@ -347,11 +355,12 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       family=family,
                                       formula=formula,
                                       replications=replications,
-                                      tol=tol,
-                                      rel.tol=rel.tol,
+                                      tol=control$tol,
+                                      rel.tol=control$rel.tol,
                                       b=b,
-                                      bolster=bolster,
-                                      k.success=k.success,
+                                      bolster=control$bolster,
+                                      k.success=control$k.success,
+                                      single_step.iter=control$single_step.iter,
                                       # robust = robust,
                                       interpolate.burnin=interpolate.burnin)
         roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,

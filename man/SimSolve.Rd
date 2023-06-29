@@ -16,11 +16,6 @@ SimSolve(
   replications = c(rep(100L, interpolate.burnin), seq(200L, by = 10L, length.out =
     maxiter - interpolate.burnin)),
   integer = TRUE,
-  tol = if (integer) 0.1 else 0.001,
-  rel.tol = 1e-04,
-  k.success = 3L,
-  interpolate.burnin = 15L,
-  interpolate.R = 3000,
   formula = y ~ poly(x, 2),
   family = "binomial",
   parallel = FALSE,
@@ -28,8 +23,9 @@ SimSolve(
   ncores = parallel::detectCores() - 1L,
   type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
   maxiter = 150L,
-  bolster = TRUE,
+  interpolate.burnin = 15L,
   verbose = TRUE,
+  control = list(),
   ...
 )
 
@@ -75,22 +71,6 @@ or numeric? If \code{TRUE} then bolstered directional decisions will be
 made in the \code{pba} function based on the collected sampling history
 throughout the search}
 
-\item{tol}{tolerance criteria for early termination.}
-
-\item{rel.tol}{relative tolerance criteria for early termination.}
-
-\item{k.success}{number of consecutive tolerance sucessess given rel.tol and
-tol criteria (default is 3)}
-
-\item{interpolate.burnin}{integer indicating the number of initial iterations
-to discard from the interpolation computations. This is included to further
-remove the effect of early estimates that are far away from the solution}
-
-\item{interpolate.R}{number of replications to collect prior to performing
-the interpolation step (default is 3000 after accounting for data exclusion
-from \code{interpolate.burnin}). Setting this to 0 will disable any
-interpolation computations}
-
 \item{formula}{regression formula to use when \code{interpolate = TRUE}. Default
 fits an orthogonal polynomial of degree 2}
 
@@ -110,12 +90,33 @@ then a \code{'gaussian'} family would be more appropriate)}
 
 \item{type}{type of cluster object to define}
 
-\item{maxiter}{the maximum number of iterations}
+\item{maxiter}{the maximum number of iterations (default 150)}
 
-\item{bolster}{logical; should the PBA evaluations use bolstering based on previous
-evaluations? Only applicable when \code{integer = TRUE}}
+\item{interpolate.burnin}{integer indicating the number of initial iterations
+to discard from the interpolation computations. This is included to further
+remove the effect of early estimates that are far away from the solution}
 
 \item{verbose}{logical; print information to the console?}
+
+\item{control}{a \code{list} of the algorithm control parameters. If not specified,
+  the defaults described below are used.
+
+\describe{
+   \item{\code{tol}}{tolerance criteria for early termination (.1 for
+     \code{integer = TRUE} searches; .001 for non-integer searches}
+   \item{\code{rel.tol}}{relative tolerance criteria for early termination (default .00001)}
+   \item{\code{k.success}}{number of consecutive tolerance success given \code{rel.tol} and
+     \code{tol} criteria (default is 3)}
+   \item{\code{bolster}}{logical; should the PBA evaluations use bolstering based on previous
+     evaluations? Default is \code{TRUE}, though only applicable when \code{integer = TRUE} }
+   \item{\code{single_step.iter}}{when \code{integer = TRUE}, do not take steps larger than
+     size 1 after this iteration number (default is 40). This prevents wide oscillations
+     around the probable root}
+   \item{\code{interpolate.R}}{number of replications to collect prior to performing
+     the interpolation step (default is 3000 after accounting for data exclusion
+     from \code{interpolate.burnin}). Setting this to 0 will disable any
+     interpolation computations}
+   }}
 
 \item{...}{additional arguments to be pasted to \code{\link{PBA}}}
 

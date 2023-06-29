@@ -607,19 +607,24 @@
 #' #### Step 3 --- Collect results by looping over the rows in design
 #'
 #' # run the simulation
+#' Final <- runSimulation(design=Design, replications=10,
+#'                        generate=Generate, analyse=Analyse, summarise=Summarise)
+#' Final
+#'
+#'
+#' # reproduce exact simulation
+#' Final_rep <- runSimulation(design=Design, replications=10, seed=Final$SEED,
+#'                        generate=Generate, analyse=Analyse, summarise=Summarise)
+#' Final_rep
+#'
+#' \dontrun{
+#' # run with more standard number of replications (note the storage message)
 #' Final <- runSimulation(design=Design, replications=1000,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' Final
 #'
-#' # reproduce exact simulation
-#' Final_rep <- runSimulation(design=Design, replications=1000, seed=Final$SEED,
-#'                        generate=Generate, analyse=Analyse, summarise=Summarise)
-#' Final_rep
-#'
-#'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Extras
-#' \dontrun{
 #' # compare SEs estimates to the true SEs from the formula sigma/sqrt(N)
 #' 5 / sqrt(Design$N)
 #'
