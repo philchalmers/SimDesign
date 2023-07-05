@@ -115,8 +115,9 @@ set.seed(1234)
 
 
 ```{r}
-res <- runSimulation(design = Design, replications = 1000, verbose = FALSE, parallel = TRUE,
-                     generate = Generate, analyse = Analyse, summarise = Summarise)
+res <- runSimulation(design = Design, replications = 1000, 
+                     generate = Generate, analyse = Analyse, summarise = Summarise,
+                     verbose = FALSE, parallel = TRUE)
 ```
 
 ### Analyse the results
@@ -126,9 +127,8 @@ Usually it is a good idea to split up analyses into Type I error and power rates
 
 ```{r}
 res
-res$REPLICATIONS <- res$SIM_TIME <- res$COMPLETED <- res$SEED <- NULL
-(TypeI <- subset(res, mean_difference == 0))
-(Power <- subset(res, mean_difference != 0))
+(TypeI <- subset(res, mean_difference == 0, select=sample_size:independent))
+(Power <- subset(res, mean_difference != 0, select=sample_size:independent))
 ```
 
 Lets start off by looking at some descriptive tables, and performing simple ANOVA analyses with effect sizes
