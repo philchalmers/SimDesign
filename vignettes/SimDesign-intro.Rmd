@@ -27,15 +27,16 @@ options(digits=4)
 par(mar=c(3,3,1,1)+.1)
 ```
 
-Designing Monte Carlo simulations can be a fun and rewarding experience. Whether you are interested in
-evaluating the performance of a new optimizer, re-evaluating previous research claims (like the 
-ANOVA is 'robust' to violations of normality), determine power rates for an upcoming research proposal, 
+Whether you are interested in evaluating the performance of a new optimizer or estimation criteria, 
+re-evaluating previous research claims (e.g., ANOVA is 'robust' to violations of normality), 
+determine power rates for an upcoming research proposal, 
 or simply to appease a strange thought in your head about a new statistical idea you heard about, 
 designing Monte Carlo simulations can be incredibly rewarding and are extremely important to those who are statistically oriented. 
-However, organizing simulations can be a challenge, and all too often coders resort to the dreaded 
-"for-loop" strategy, *for*-ever resulting in confusing, error prone, and simulation specific code. 
-The package `SimDesign` is one attempt to fix these and other issues that often arise when designing Monte Carlo simulation
-experiments.
+However, organizing simulations can be a challenge, particularly to those new to the topic, 
+where all too often coders resort to the inefficient and error prone strategies (e.g., the dreaded 
+"for-loop" strategy, *for*-ever resulting in confusing, error prone, and simulation specific code). 
+The package `SimDesign` is one attempt to fix these and other issues that often arise when designing Monte Carlo simulation experiments, while also providing a templated setup that is designed to support many
+useful features that can be useful when evaluating simulation research.
 
 Generally speaking, Monte Carlo simulations can be broken into three major components:
 
@@ -46,10 +47,10 @@ ANOVA, SEMs, IRT, etc), and collect the statistics/CIs/$p$-values/parameter esti
 - **summarise** the results after repeating the simulations $R$ number of times to obtain empirical estimates of the population's behavior.
 
 Each operation above represents the essential components of the `SimDesign` package. The **design** component
-is represented by a `data.frame` object containing the simulation conditions to be investigated, while **generate**,
+is represented by a `tibble`-like object containing the simulation conditions to be investigated, while **generate**,
 **analyse**, and **summarise** represent user-defined functions which comprise the three steps in the simulation.
 Each of these components are constructed and passed to the `runSimulation()` function where the simulation 
-steps are evaluated, ultimately returning a `data.frame` object containing the simulation results.
+steps are evaluated, ultimately returning a `tibble`-like object containing the simulation results.
 
 # A general overview
 
@@ -73,7 +74,7 @@ by providing a `filename` argument. The following creates a file (`mysim.R`) con
 design/execution and required user-defined functions.
 
 ```{r eval=FALSE}
-SimFunctions('mysim')
+SimDesign::SimFunctions('mysim')
 ```
 
 For larger simulations, you may want to use two files, and if you'd prefer to 
@@ -83,7 +84,9 @@ have helpful comments included then these can be achieved with the `singlefile` 
 SimFunctions('mysim', singlefile = FALSE, comments = TRUE)
 ```
 
-The choice of using a single file or not is entirely a matter of preference, and will not influence the overall simulation implementation.
+The choice of using a single file or not is entirely a matter of preference, and will not influence the overall simulation implementation. However, should you wish to include separate analysis or generate
+functions the arguments `nGenerate` and `nAnalyse` can be useful to compartmentalize generally distinct
+portions of the code (e.g., one analyse function for fitting and extracting components of a structural equation model, and one analyse function for fitting and extracting information form an item response theory model).
 
 # Simulation: Determine estimator efficiency
 
@@ -171,8 +174,7 @@ The bias and RMSE are obtained for each respective statistic, and the overall re
 
 Stopping for a moment and thinking carefully, we know that each `condition` will be paired with a unique vector returned from
 `Summarise()`. Therefore, you might be thinking that the result returned from the simulation will be in
-a rectangular form, such as in a `matrix` or `data.frame`. 
-Well, you'd be right --- good for you.
+a rectangular form, such as in a `matrix`, `data.frame`, or `tibble`. Well, you'd be right!
 
 ## Putting it all together
 
@@ -268,9 +270,9 @@ to obtain average estimates, their associated sampling error, their efficiency, 
 Summarise(condition, results) 
 ```
 
-This scheme is then repeated for each row in the `Design` object until the entire simulation study
+This process is then repeated for each row in the `Design` object until the entire simulation study
 is complete. 
 
-Of course, `runSimulation()` does much more than this conceptual outline, which is why it exists. Namely, errors and warnings are controlled and tracked, data is re-drawn when needed, parallel processing is supported, debugging is easier with the `debug` input (or by inserting `browser()` directly), temporary and full results can be saved to external files, the simulation state can be saved/restored, build-in safety features are included, and more. The point, however, is that you as the user *should not be bogged down with the nitty-gritty details of setting up the simulation work-flow/features*; instead, you need only focus your time on the important generate-analyse-summarise steps, organized in the body of these function, required to obtain your interesting simulation results.
+Of course, `runSimulation()` does much more than this conceptual outline, which is why it exists. Namely, errors and warnings are controlled and tracked, data is re-drawn when needed, parallel processing is supported, debugging is easier with the `debug` input (or by inserting `browser()` directly), temporary and full results can be saved to external files, the simulation state can be saved/restored, build-in safety features are included, and more. The point, however, is that you as the user *should not be bogged down with the nitty-gritty details of setting up the simulation work-flow/features*; instead, you should be focusing your time on the important generate-analyse-summarise steps, organized in the body of the above functions, that are required to obtain your interesting simulation results. After all, the point designing a computer simulation experiment is to understand the resulting output, not to become a master of all aspects of your select computing language pertaining to object storage, parallel processing, RAM storage, defensive coding, progress reporting, reproducibility, post-processing, ..., ad nauseam. 
 
 To access further examples and instructions feel free to visit the [package wiki on Github](https://github.com/philchalmers/SimDesign/wiki)

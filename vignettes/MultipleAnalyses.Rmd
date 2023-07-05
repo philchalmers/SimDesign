@@ -1,5 +1,5 @@
 ---
-title: "Multiple Analysis Functions"
+title: "Multiple analysis functions"
 author: "Phil Chalmers"
 date: "`r Sys.Date()`"
 output:
@@ -558,7 +558,7 @@ Design <- createDesign(sample_size = sample_sizes,
 Design
 ```
 
-Provided that the `Generate()` step utilized this `indicators` factor, this would imply that the `dat` object returned from `Generate()` could consist of discrete or continuous data. In the case of continuous indicator variables, `lavaan` could be used as it supports such indicator types; however, `mirt` cannot. So, to ensure that only the analysis function pertaining to `lavaan` is used one could include the following replacement definition that used `mirt`, but now includes an `AnalyseIf()` logical given the `indicators` variable's state.
+Provided that the `Generate()` step utilized this `indicators` character vector, this would imply that the `dat` object returned from `Generate()` could consist of discrete or continuous data. In the case of continuous indicator variables, `lavaan` could be used as it supports such indicator types; however, `mirt` cannot. So, to ensure that only the analysis function pertaining to `lavaan` is used one could include the following replacement definition that used `mirt`, but now includes an `AnalyseIf()` logical given the `indicators` variable's state.
 
 ```{r}
 Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
@@ -577,6 +577,27 @@ Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
 ```
 
 Using this definition the final object returned by `runSimulation()` will provide suitable `NA` placeholders (where appropriate). For continuous indicators the results will be presented as though `mirt` was never used for the continuous indicator conditions controlled by the `Design` object. 
+
+Note that a similar logic can be made for multiple `Generate()` functions, templated via `SimDesign::SimFunctions(nGenerate = 2)`, and requiring specific `GenerateIf()` tests to indicate which generation function should be used. For those interested in this type of structure, the following could be used to separate the discrete/continuous data generation per `Design` row:
+
+```{r eval=FALSE}
+Generate.G1 <- function(condition, fixed_objects = NULL) {
+    GenerateIf(condition$indicators == 'discrete')
+    ...
+    dat
+}
+
+Generate.G2 <- function(condition, fixed_objects = NULL) {
+    GenerateIf(condition$indicators == 'continuous')
+    ...
+    dat
+}
+
+res <- runSimulation(design=Design, replications=1000,
+                     generate=list(G1=Generate.G1, G2=Generate.G2), 
+                     analyse=list(DWLS=Analyse.DWLS, FIML=Analyse.FIML), 
+                     summarise=Summarise)
+```
 
 ## Applying one analyse function per-condition
 

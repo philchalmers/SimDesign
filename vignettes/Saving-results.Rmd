@@ -1,5 +1,5 @@
 ---
-title: "Saving additional simulation results and state"
+title: "Saving simulation results and state"
 author: "Phil Chalmers"
 date: "`r Sys.Date()`"
 output:
