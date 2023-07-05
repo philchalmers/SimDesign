@@ -17,7 +17,7 @@ runSimulation(
   filename = NULL,
   debug = "none",
   load_seed = NULL,
-  save = TRUE,
+  save = replications > 10,
   save_results = FALSE,
   store_results = FALSE,
   parallel = FALSE,
@@ -174,7 +174,8 @@ primarily useful for debugging purposes.
 
 \item{save}{logical; save the temporary simulation state to the hard-drive? This is useful
   for simulations which require an extended amount of time, though for shorter simulations
-  can be disabled to slightly improve computational efficiency. When \code{TRUE}, a temp file
+  can be disabled to slightly improve computational efficiency. When \code{TRUE},
+  which is the default when evaluating \code{replications > 10}, a temp file
   will be created in the working directory which allows the simulation state to be saved
   and recovered (in case of power outages, crashes, etc). As well, triggering this flag will
   save any fatal \code{.Random.seed} states when conditions unexpectedly crash (where each seed
@@ -183,10 +184,9 @@ primarily useful for debugging purposes.
   be removed.
 
   To recover your simulation at the last known location (having patched the issues in the
-   previous execution code)
-  simply re-run the code you used to
+  previous execution code) simply re-run the code you used to
   initially define the simulation and the external file will automatically be detected and read-in.
-  Default is \code{TRUE}}
+  Default is \code{TRUE} when \code{replications > 10} and \code{FALSE} otherwise}
 
 \item{save_results}{logical; save the results returned from \code{\link{Analyse}} to external
   \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
