@@ -462,112 +462,112 @@ variable.</p>
 mod &lt;- aov(detect ~ ., data=res)
 summary(mod)</code></pre>
 <pre><code>##                  Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-## sample_size       1      4       4    45.2 2.0e-11 ***
-## mean_diff         1     73      73   809.3 &lt; 2e-16 ***
-## variance.ratio    1     15      15   160.2 &lt; 2e-16 ***
-## equal_size        1      2       2    24.0 9.8e-07 ***
-## dists             1     33      33   364.2 &lt; 2e-16 ***
-## same_dists        1     15      15   168.7 &lt; 2e-16 ***
-## symmetric         1    366     366  4033.3 &lt; 2e-16 ***
-## Residuals      4312    391       0                    
+## sample_size       1      5       5    53.8 2.7e-13 ***
+## mean_diff         1     70      70   797.5 &lt; 2e-16 ***
+## variance.ratio    1     14      14   158.3 &lt; 2e-16 ***
+## equal_size        1      2       2    27.9 1.3e-07 ***
+## dists             1     39      39   437.6 &lt; 2e-16 ***
+## same_dists        1     11      11   126.1 &lt; 2e-16 ***
+## symmetric         1    382     382  4339.1 &lt; 2e-16 ***
+## Residuals      4312    380       0                    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code># all two-way effects
 mod2 &lt;- aov(detect ~ (.)^2, data=res)
 summary(mod2)</code></pre>
 <pre><code>##                              Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-## sample_size                   1      4       4   60.83 7.7e-15 ***
-## mean_diff                     1     73      73 1089.57 &lt; 2e-16 ***
-## variance.ratio                1     15      15  215.62 &lt; 2e-16 ***
-## equal_size                    1      2       2   32.36 1.4e-08 ***
-## dists                         1     33      33  490.33 &lt; 2e-16 ***
-## same_dists                    1     15      15  227.14 &lt; 2e-16 ***
-## symmetric                     1    366     366 5430.27 &lt; 2e-16 ***
-## sample_size:mean_diff         1      1       1    9.24 0.00238 ** 
-## sample_size:variance.ratio    1      0       0    3.00 0.08343 .  
-## sample_size:equal_size        1      0       0    0.77 0.37910    
-## sample_size:dists             1      0       0    0.11 0.74010    
-## sample_size:same_dists        1      1       1   11.97 0.00055 ***
-## sample_size:symmetric         1      2       2   36.40 1.7e-09 ***
-## mean_diff:variance.ratio      1      3       3   46.30 1.2e-11 ***
-## mean_diff:equal_size          1      0       0    1.64 0.20004    
-## mean_diff:dists               1      3       3   49.60 2.2e-12 ***
-## mean_diff:same_dists          1     12      12  172.75 &lt; 2e-16 ***
-## mean_diff:symmetric           1     35      35  516.12 &lt; 2e-16 ***
-## variance.ratio:equal_size     1      0       0    2.59 0.10772    
-## variance.ratio:dists          1      1       1   11.65 0.00065 ***
-## variance.ratio:same_dists     1      1       1   13.15 0.00029 ***
-## variance.ratio:symmetric      1     13      13  199.57 &lt; 2e-16 ***
-## equal_size:dists              1      0       0    2.75 0.09725 .  
-## equal_size:same_dists         1      0       0    2.51 0.11341    
-## equal_size:symmetric          1      2       2   29.80 5.1e-08 ***
-## dists:same_dists              1     27      27  402.81 &lt; 2e-16 ***
-## same_dists:symmetric          1      0       0    0.74 0.38880    
-## Residuals                  4292    289       0                    
+## sample_size                   1      5       5   74.06 &lt; 2e-16 ***
+## mean_diff                     1     70      70 1098.72 &lt; 2e-16 ***
+## variance.ratio                1     14      14  218.11 &lt; 2e-16 ***
+## equal_size                    1      2       2   38.42 6.2e-10 ***
+## dists                         1     39      39  602.91 &lt; 2e-16 ***
+## same_dists                    1     11      11  173.71 &lt; 2e-16 ***
+## symmetric                     1    382     382 5978.20 &lt; 2e-16 ***
+## sample_size:mean_diff         1      0       0    5.46  0.0195 *  
+## sample_size:variance.ratio    1      0       0    1.09  0.2973    
+## sample_size:equal_size        1      0       0    0.03  0.8567    
+## sample_size:dists             1      0       0    0.52  0.4695    
+## sample_size:same_dists        1      1       1   10.17  0.0014 ** 
+## sample_size:symmetric         1      4       4   55.42 1.2e-13 ***
+## mean_diff:variance.ratio      1      2       2   38.72 5.4e-10 ***
+## mean_diff:equal_size          1      0       0    7.07  0.0079 ** 
+## mean_diff:dists               1      3       3   51.52 8.3e-13 ***
+## mean_diff:same_dists          1     15      15  241.21 &lt; 2e-16 ***
+## mean_diff:symmetric           1     34      34  525.33 &lt; 2e-16 ***
+## variance.ratio:equal_size     1      0       0    4.20  0.0404 *  
+## variance.ratio:dists          1      1       1   15.08  0.0001 ***
+## variance.ratio:same_dists     1      1       1    9.78  0.0018 ** 
+## variance.ratio:symmetric      1     13      13  204.50 &lt; 2e-16 ***
+## equal_size:dists              1      0       0    4.35  0.0371 *  
+## equal_size:same_dists         1      0       0    0.61  0.4340    
+## equal_size:symmetric          1      3       3   39.25 4.1e-10 ***
+## dists:same_dists              1     28      28  433.03 &lt; 2e-16 ***
+## same_dists:symmetric          1      0       0    1.57  0.2103    
+## Residuals                  4292    274       0                    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code># all three-way effects
 mod3 &lt;- aov(detect ~ (.)^3, data=res)
 summary(mod3)</code></pre>
 <pre><code>##                                         Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-## sample_size                              1      4       4   72.77 &lt; 2e-16 ***
-## mean_diff                                1     73      73 1303.33 &lt; 2e-16 ***
-## variance.ratio                           1     15      15  257.93 &lt; 2e-16 ***
-## equal_size                               1      2       2   38.71 5.4e-10 ***
-## dists                                    1     33      33  586.53 &lt; 2e-16 ***
-## same_dists                               1     15      15  271.71 &lt; 2e-16 ***
-## symmetric                                1    366     366 6495.63 &lt; 2e-16 ***
-## sample_size:mean_diff                    1      1       1   11.06 0.00089 ***
-## sample_size:variance.ratio               1      0       0    3.59 0.05832 .  
-## sample_size:equal_size                   1      0       0    0.93 0.33607    
-## sample_size:dists                        1      0       0    0.13 0.71676    
-## sample_size:same_dists                   1      1       1   14.32 0.00016 ***
-## sample_size:symmetric                    1      2       2   43.54 4.7e-11 ***
-## mean_diff:variance.ratio                 1      3       3   55.38 1.2e-13 ***
-## mean_diff:equal_size                     1      0       0    1.96 0.16107    
-## mean_diff:dists                          1      3       3   59.33 1.6e-14 ***
-## mean_diff:same_dists                     1     12      12  206.64 &lt; 2e-16 ***
-## mean_diff:symmetric                      1     35      35  617.38 &lt; 2e-16 ***
-## variance.ratio:equal_size                1      0       0    3.10 0.07855 .  
-## variance.ratio:dists                     1      1       1   13.93 0.00019 ***
-## variance.ratio:same_dists                1      1       1   15.73 7.4e-05 ***
-## variance.ratio:symmetric                 1     13      13  238.72 &lt; 2e-16 ***
-## equal_size:dists                         1      0       0    3.29 0.06973 .  
-## equal_size:same_dists                    1      0       0    3.00 0.08339 .  
-## equal_size:symmetric                     1      2       2   35.64 2.6e-09 ***
-## dists:same_dists                         1     27      27  481.83 &lt; 2e-16 ***
-## same_dists:symmetric                     1      0       0    0.89 0.34592    
-## sample_size:mean_diff:variance.ratio     1      0       0    0.97 0.32402    
-## sample_size:mean_diff:equal_size         1      0       0    0.65 0.42073    
-## sample_size:mean_diff:dists              1      1       1   25.88 3.8e-07 ***
-## sample_size:mean_diff:same_dists         1      0       0    1.96 0.16107    
-## sample_size:mean_diff:symmetric          1      2       2   34.05 5.8e-09 ***
-## sample_size:variance.ratio:equal_size    1      0       0    7.69 0.00557 ** 
-## sample_size:variance.ratio:dists         1      0       0    1.91 0.16726    
-## sample_size:variance.ratio:same_dists    1      0       0    0.43 0.51178    
-## sample_size:variance.ratio:symmetric     1      0       0    0.87 0.35169    
-## sample_size:equal_size:dists             1      0       0    0.07 0.78555    
-## sample_size:equal_size:same_dists        1      0       0    0.20 0.65348    
-## sample_size:equal_size:symmetric         1      0       0    0.62 0.43219    
-## sample_size:dists:same_dists             1      1       1   13.83 0.00020 ***
-## sample_size:same_dists:symmetric         1      0       0    1.21 0.27151    
-## mean_diff:variance.ratio:equal_size      1      0       0    0.12 0.72494    
-## mean_diff:variance.ratio:dists           1      4       4   78.24 &lt; 2e-16 ***
-## mean_diff:variance.ratio:same_dists      1      0       0    7.64 0.00572 ** 
-## mean_diff:variance.ratio:symmetric       1      7       7  120.36 &lt; 2e-16 ***
-## mean_diff:equal_size:dists               1      0       0    5.91 0.01512 *  
-## mean_diff:equal_size:same_dists          1      0       0    0.10 0.75418    
-## mean_diff:equal_size:symmetric           1      0       0    7.45 0.00635 ** 
-## mean_diff:dists:same_dists               1     30      30  532.02 &lt; 2e-16 ***
-## mean_diff:same_dists:symmetric           1      0       0    1.95 0.16245    
-## variance.ratio:equal_size:dists          1      0       0    0.25 0.62022    
-## variance.ratio:equal_size:same_dists     1      0       0    0.10 0.75418    
-## variance.ratio:equal_size:symmetric      1      0       0    1.78 0.18253    
-## variance.ratio:dists:same_dists          1      1       1   23.22 1.5e-06 ***
-## variance.ratio:same_dists:symmetric      1      0       0    0.08 0.78414    
-## equal_size:dists:same_dists              1      0       0    1.85 0.17372    
-## equal_size:same_dists:symmetric          1      0       0    0.62 0.43219    
-## Residuals                             4262    240       0                    
+## sample_size                              1      5       5   87.32 &lt; 2e-16 ***
+## mean_diff                                1     70      70 1295.38 &lt; 2e-16 ***
+## variance.ratio                           1     14      14  257.15 &lt; 2e-16 ***
+## equal_size                               1      2       2   45.30 1.9e-11 ***
+## dists                                    1     39      39  710.82 &lt; 2e-16 ***
+## same_dists                               1     11      11  204.80 &lt; 2e-16 ***
+## symmetric                                1    382     382 7048.22 &lt; 2e-16 ***
+## sample_size:mean_diff                    1      0       0    6.44 0.01121 *  
+## sample_size:variance.ratio               1      0       0    1.28 0.25776    
+## sample_size:equal_size                   1      0       0    0.04 0.84459    
+## sample_size:dists                        1      0       0    0.62 0.43220    
+## sample_size:same_dists                   1      1       1   11.99 0.00054 ***
+## sample_size:symmetric                    1      4       4   65.34 8.1e-16 ***
+## mean_diff:variance.ratio                 1      2       2   45.65 1.6e-11 ***
+## mean_diff:equal_size                     1      0       0    8.33 0.00391 ** 
+## mean_diff:dists                          1      3       3   60.74 8.1e-15 ***
+## mean_diff:same_dists                     1     15      15  284.39 &lt; 2e-16 ***
+## mean_diff:symmetric                      1     34      34  619.36 &lt; 2e-16 ***
+## variance.ratio:equal_size                1      0       0    4.95 0.02609 *  
+## variance.ratio:dists                     1      1       1   17.78 2.5e-05 ***
+## variance.ratio:same_dists                1      1       1   11.53 0.00069 ***
+## variance.ratio:symmetric                 1     13      13  241.11 &lt; 2e-16 ***
+## equal_size:dists                         1      0       0    5.13 0.02362 *  
+## equal_size:same_dists                    1      0       0    0.72 0.39565    
+## equal_size:symmetric                     1      3       3   46.28 1.2e-11 ***
+## dists:same_dists                         1     28      28  510.53 &lt; 2e-16 ***
+## same_dists:symmetric                     1      0       0    1.85 0.17373    
+## sample_size:mean_diff:variance.ratio     1      0       0    2.06 0.15137    
+## sample_size:mean_diff:equal_size         1      0       0    0.03 0.85535    
+## sample_size:mean_diff:dists              1      1       1   24.37 8.3e-07 ***
+## sample_size:mean_diff:same_dists         1      0       0    2.04 0.15333    
+## sample_size:mean_diff:symmetric          1      1       1   24.22 8.9e-07 ***
+## sample_size:variance.ratio:equal_size    1      0       0    0.09 0.76705    
+## sample_size:variance.ratio:dists         1      0       0    4.64 0.03130 *  
+## sample_size:variance.ratio:same_dists    1      0       0    0.61 0.43401    
+## sample_size:variance.ratio:symmetric     1      0       0    4.70 0.03023 *  
+## sample_size:equal_size:dists             1      0       0    0.02 0.88976    
+## sample_size:equal_size:same_dists        1      0       0    1.54 0.21446    
+## sample_size:equal_size:symmetric         1      0       0    0.06 0.81027    
+## sample_size:dists:same_dists             1      1       1   11.38 0.00075 ***
+## sample_size:same_dists:symmetric         1      0       0    0.78 0.37872    
+## mean_diff:variance.ratio:equal_size      1      0       0    0.30 0.58468    
+## mean_diff:variance.ratio:dists           1      4       4   79.38 &lt; 2e-16 ***
+## mean_diff:variance.ratio:same_dists      1      0       0    9.04 0.00266 ** 
+## mean_diff:variance.ratio:symmetric       1      6       6  113.65 &lt; 2e-16 ***
+## mean_diff:equal_size:dists               1      1       1   13.22 0.00028 ***
+## mean_diff:equal_size:same_dists          1      0       0    0.51 0.47523    
+## mean_diff:equal_size:symmetric           1      1       1   19.86 8.5e-06 ***
+## mean_diff:dists:same_dists               1     25      25  454.50 &lt; 2e-16 ***
+## mean_diff:same_dists:symmetric           1      0       0    2.13 0.14418    
+## variance.ratio:equal_size:dists          1      0       0    0.03 0.86776    
+## variance.ratio:equal_size:same_dists     1      0       0    0.05 0.82565    
+## variance.ratio:equal_size:symmetric      1      0       0    2.96 0.08530 .  
+## variance.ratio:dists:same_dists          1      1       1   22.29 2.4e-06 ***
+## variance.ratio:same_dists:symmetric      1      0       0    0.00 0.96290    
+## equal_size:dists:same_dists              1      0       0    3.59 0.05823 .  
+## equal_size:same_dists:symmetric          1      0       0    0.16 0.68906    
+## Residuals                             4262    231       0                    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>and so on.</p>
@@ -589,12 +589,12 @@ consist of exactly two-levels.</p>
 fr &lt;- FrF2(nfactors=7, resolution=5)
 fr[1:6,]</code></pre>
 <pre><code>##    A  B  C  D  E  F  G
-## 1  1 -1 -1  1  1  1  1
-## 2 -1  1  1  1  1 -1  1
-## 3 -1 -1 -1  1 -1  1  1
-## 4  1 -1  1  1  1  1 -1
-## 5  1 -1  1 -1 -1 -1  1
-## 6  1  1  1  1 -1  1 -1</code></pre>
+## 1 -1 -1  1  1 -1 -1  1
+## 2 -1  1 -1 -1  1 -1  1
+## 3 -1  1 -1 -1  1  1 -1
+## 4  1  1  1  1 -1 -1  1
+## 5  1  1 -1 -1  1  1  1
+## 6  1 -1  1  1 -1  1  1</code></pre>
 <pre class="r"><code># Create working simulation design given -1/1 combinations
 fDesign &lt;- createDesign(sample_size=c(100,200),
                         mean_diff=c(.25, 1, 2),
@@ -610,16 +610,16 @@ fDesign</code></pre>
 <pre><code>## # A tibble: 48 × 7
 ##    sample_size mean_diff variance.ratio equal_size dists same_dists symmetric
 ##          &lt;dbl&gt;     &lt;dbl&gt;          &lt;dbl&gt; &lt;lgl&gt;      &lt;chr&gt; &lt;lgl&gt;      &lt;lgl&gt;    
-##  1         200      0.25              1 TRUE       skew  TRUE       TRUE     
-##  2         100      0.25              4 TRUE       norm  TRUE       FALSE    
-##  3         100      0.25              4 FALSE      skew  FALSE      TRUE     
-##  4         100      1                 4 TRUE       skew  TRUE       FALSE    
-##  5         100      1                 4 FALSE      skew  FALSE      FALSE    
-##  6         200      0.25              4 TRUE       skew  FALSE      TRUE     
-##  7         200      1                 1 FALSE      skew  FALSE      FALSE    
-##  8         100      1                 1 FALSE      norm  FALSE      FALSE    
-##  9         200      0.25              1 TRUE       skew  FALSE      FALSE    
-## 10         200      0.25              1 FALSE      skew  FALSE      TRUE     
+##  1         100      1                 4 FALSE      skew  TRUE       TRUE     
+##  2         100      1                 4 FALSE      skew  FALSE      FALSE    
+##  3         200      1                 4 FALSE      skew  FALSE      TRUE     
+##  4         200      0.25              1 TRUE       skew  FALSE      FALSE    
+##  5         100      0.25              4 FALSE      skew  TRUE       FALSE    
+##  6         200      0.25              1 FALSE      norm  FALSE      FALSE    
+##  7         200      1                 4 TRUE       norm  TRUE       FALSE    
+##  8         200      1                 1 TRUE       skew  FALSE      TRUE     
+##  9         100      1                 4 FALSE      norm  TRUE       FALSE    
+## 10         100      0.25              1 TRUE       skew  TRUE       FALSE    
 ## # ℹ 38 more rows</code></pre>
 <pre class="r"><code>dim(fDesign)</code></pre>
 <pre><code>## [1] 48  7</code></pre>
@@ -634,64 +634,64 @@ fres</code></pre>
 <pre><code>## # A tibble: 960 × 8
 ##    sample_size mean_diff variance.ratio equal_size dists same_dists symmetric
 ##          &lt;dbl&gt;     &lt;dbl&gt;          &lt;dbl&gt; &lt;lgl&gt;      &lt;chr&gt; &lt;lgl&gt;      &lt;lgl&gt;    
-##  1         200      0.25              1 TRUE       skew  TRUE       TRUE     
-##  2         200      0.25              1 TRUE       skew  TRUE       TRUE     
-##  3         200      0.25              1 TRUE       skew  TRUE       TRUE     
-##  4         200      0.25              1 TRUE       skew  TRUE       TRUE     
-##  5         200      0.25              1 TRUE       skew  TRUE       TRUE     
-##  6         200      0.25              1 TRUE       skew  TRUE       TRUE     
-##  7         200      0.25              1 TRUE       skew  TRUE       TRUE     
-##  8         200      0.25              1 TRUE       skew  TRUE       TRUE     
-##  9         200      0.25              1 TRUE       skew  TRUE       TRUE     
-## 10         200      0.25              1 TRUE       skew  TRUE       TRUE     
+##  1         100         1              4 FALSE      skew  TRUE       TRUE     
+##  2         100         1              4 FALSE      skew  TRUE       TRUE     
+##  3         100         1              4 FALSE      skew  TRUE       TRUE     
+##  4         100         1              4 FALSE      skew  TRUE       TRUE     
+##  5         100         1              4 FALSE      skew  TRUE       TRUE     
+##  6         100         1              4 FALSE      skew  TRUE       TRUE     
+##  7         100         1              4 FALSE      skew  TRUE       TRUE     
+##  8         100         1              4 FALSE      skew  TRUE       TRUE     
+##  9         100         1              4 FALSE      skew  TRUE       TRUE     
+## 10         100         1              4 FALSE      skew  TRUE       TRUE     
 ## # ℹ 950 more rows
 ## # ℹ 1 more variable: detect &lt;lgl&gt;</code></pre>
 <pre class="r"><code># main effects only
 mod &lt;- aov(detect ~ ., data=fres)
 summary(mod)</code></pre>
 <pre><code>##                 Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-## sample_size      1    0.6     0.6    5.95   0.015 *  
-## mean_diff        1    8.6     8.6   93.17 &lt; 2e-16 ***
-## variance.ratio   1    1.6     1.6   17.11 3.8e-05 ***
-## equal_size       1    0.5     0.5    4.96   0.026 *  
-## dists            1    6.5     6.5   70.57 &lt; 2e-16 ***
-## same_dists       1    5.6     5.6   59.96 2.5e-14 ***
-## symmetric        1  107.3   107.3 1158.51 &lt; 2e-16 ***
-## Residuals      952   88.1     0.1                    
+## sample_size      1    0.3     0.3    3.28  0.0705 .  
+## mean_diff        1    7.3     7.3   90.38 &lt; 2e-16 ***
+## variance.ratio   1    2.4     2.4   29.51 7.1e-08 ***
+## equal_size       1    0.7     0.7    8.66  0.0033 ** 
+## dists            1   10.8    10.8  132.81 &lt; 2e-16 ***
+## same_dists       1    5.4     5.4   66.40 1.1e-15 ***
+## symmetric        1  112.2   112.2 1380.04 &lt; 2e-16 ***
+## Residuals      952   77.4     0.1                    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code># all two-way effects
 mod2 &lt;- aov(detect ~ (.)^2, data=fres)
 summary(mod2)</code></pre>
 <pre><code>##                             Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-## sample_size                  1    0.6     0.6    8.08  0.0046 ** 
-## mean_diff                    1    8.6     8.6  126.55 &lt; 2e-16 ***
-## variance.ratio               1    1.6     1.6   23.24 1.7e-06 ***
-## equal_size                   1    0.5     0.5    6.74  0.0096 ** 
-## dists                        1    6.5     6.5   95.85 &lt; 2e-16 ***
-## same_dists                   1    5.6     5.6   81.44 &lt; 2e-16 ***
-## symmetric                    1  107.3   107.3 1573.49 &lt; 2e-16 ***
-## sample_size:mean_diff        1    0.2     0.2    3.44  0.0640 .  
-## sample_size:variance.ratio   1    0.0     0.0    0.14  0.7108    
-## sample_size:equal_size       1    0.0     0.0    0.14  0.7108    
-## sample_size:dists            1    0.1     0.1    0.76  0.3823    
-## sample_size:same_dists       1    0.1     0.1    0.75  0.3871    
-## sample_size:symmetric        1    0.2     0.2    3.30  0.0696 .  
-## mean_diff:variance.ratio     1    0.2     0.2    3.44  0.0640 .  
-## mean_diff:equal_size         1    0.2     0.2    2.58  0.1084    
-## mean_diff:dists              1    4.4     4.4   64.67 2.7e-15 ***
-## mean_diff:same_dists         1    4.1     4.1   60.65 1.8e-14 ***
-## mean_diff:symmetric          1    1.4     1.4   20.63 6.3e-06 ***
-## variance.ratio:equal_size    1    0.0     0.0    0.14  0.7108    
-## variance.ratio:dists         1    0.0     0.0    0.00  1.0000    
-## variance.ratio:same_dists    1    0.2     0.2    3.44  0.0640 .  
-## variance.ratio:symmetric     1    1.1     1.1   15.50 8.9e-05 ***
-## equal_size:dists             1    0.0     0.0    0.28  0.6001    
-## equal_size:same_dists        1    0.1     0.1    1.24  0.2662    
-## equal_size:symmetric         1    0.2     0.2    3.30  0.0696 .  
-## dists:same_dists             1   12.0    12.0  176.53 &lt; 2e-16 ***
-## same_dists:symmetric         1    0.0     0.0    0.09  0.7621    
-## Residuals                  932   63.5     0.1                    
+## sample_size                  1    0.3     0.3    4.03 0.04499 *  
+## mean_diff                    1    7.3     7.3  111.07 &lt; 2e-16 ***
+## variance.ratio               1    2.4     2.4   36.27 2.5e-09 ***
+## equal_size                   1    0.7     0.7   10.64 0.00115 ** 
+## dists                        1   10.8    10.8  163.20 &lt; 2e-16 ***
+## same_dists                   1    5.4     5.4   81.60 &lt; 2e-16 ***
+## symmetric                    1  112.2   112.2 1695.88 &lt; 2e-16 ***
+## sample_size:mean_diff        1    0.0     0.0    0.06 0.80193    
+## sample_size:variance.ratio   1    0.2     0.2    3.09 0.07933 .  
+## sample_size:equal_size       1    0.4     0.4    6.30 0.01227 *  
+## sample_size:dists            1    0.1     0.1    1.54 0.21454    
+## sample_size:same_dists       1    0.3     0.3    5.10 0.02415 *  
+## sample_size:symmetric        1    0.1     0.1    0.85 0.35679    
+## mean_diff:variance.ratio     1    0.0     0.0    0.06 0.80193    
+## mean_diff:equal_size         1    0.0     0.0    0.25 0.61589    
+## mean_diff:dists              1    2.7     2.7   40.80 2.7e-10 ***
+## mean_diff:same_dists         1    1.2     1.2   18.20 2.2e-05 ***
+## mean_diff:symmetric          1    1.6     1.6   24.18 1.0e-06 ***
+## variance.ratio:equal_size    1    0.1     0.1    1.01 0.31578    
+## variance.ratio:dists         1    0.5     0.5    7.08 0.00791 ** 
+## variance.ratio:same_dists    1    0.5     0.5    7.62 0.00589 ** 
+## variance.ratio:symmetric     1    0.8     0.8   11.43 0.00075 ***
+## equal_size:dists             1    0.1     0.1    0.79 0.37522    
+## equal_size:same_dists        1    0.0     0.0    0.25 0.61589    
+## equal_size:symmetric         1    0.3     0.3    4.63 0.03171 *  
+## dists:same_dists             1    6.8     6.8  102.29 &lt; 2e-16 ***
+## same_dists:symmetric         1    0.2     0.2    2.36 0.12473    
+## Residuals                  932   61.7     0.1                    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div id="references" class="section level3">
