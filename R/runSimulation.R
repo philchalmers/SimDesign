@@ -1548,7 +1548,7 @@ summary.SimDesign <- function(object, ...){
 #' @rdname runSimulation
 #' @export
 print.SimDesign <- function(x, list2char = TRUE, ...){
-    if(!is.null(x$SIM_TIME))
+    if(suppressWarnings(!is.null(x$SIM_TIME)))
         x$SIM_TIME <- sapply(x$SIM_TIME, function(x) noquote(timeFormater(x)))
     class(x) <- c('Design', class(x)[-1L])
     print(x=x, list2char=list2char, ...)
