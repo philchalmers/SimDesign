@@ -30,8 +30,8 @@ For example, consider the following fully-crossed experimental design that combi
 library(SimDesign)
 
 Design <- createDesign(sample_size=c(100,200),
-                       mean_diff=c(.25, 1, 2),
-                       variance.ratio=c(1,4, 8),
+                       mean_diff=c(.25, 2),
+                       variance.ratio=c(1,4),
                        equal_size=c(TRUE, FALSE),
                        dists=c('norm', 'skew'),
                        same_dists=c(TRUE, FALSE),
@@ -111,8 +111,8 @@ fr[1:6,]
 
 # Create working simulation design given -1/1 combinations
 fDesign <- createDesign(sample_size=c(100,200),
-                        mean_diff=c(.25, 1, 2),
-                        variance.ratio=c(1,4, 8),
+                        mean_diff=c(.25, 2),
+                        variance.ratio=c(1,4),
                         equal_size=c(TRUE, FALSE),
                         dists=c('norm', 'skew'),
                         same_dists=c(TRUE, FALSE),
@@ -124,7 +124,7 @@ fDesign
 dim(fDesign)
 ```
 
-Notice that the fractional factor design has many fewer condition than the fully crossed version above. However, despite this reduced number of conditions valid main and two-way interaction effects are still estimable.
+Notice that the fractional factor design has fewer condition than the fully-crossed version above. However, despite this reduced number of conditions valid main and two-way interaction effects are still estimable.
 
 ```{r}
 # note the omission of the summarise function
@@ -143,6 +143,42 @@ mod2 <- aov(detect ~ (.)^2, data=fres)
 summary(mod2)
 ```
 
+Going even further, if only two-way interaction with respect to the first factor 
+is of interest (`sample_size`) then a resolution 4 input can be used, further 
+reducing the total number of conditions to evaluate. 
+
+```{r}
+# 7 factors with resolution 4
+fr <- FrF2(nfactors=7, resolution=4)
+
+# Create working simulation design given -1/1 combinations
+fDesign <- createDesign(sample_size=c(100,200),
+                        mean_diff=c(.25, 2),
+                        variance.ratio=c(1,4),
+                        equal_size=c(TRUE, FALSE),
+                        dists=c('norm', 'skew'),
+                        same_dists=c(TRUE, FALSE),
+                        symmetric=c(TRUE, FALSE),
+                        # remove same-normal combo
+                        subset = !(symmetric & dists == 'norm'),
+					    fractional=fr)
+fDesign
+
+# note the omission of the summarise function
+fres <- runSimulation(design=fDesign, replications=20, 
+                     generate=Generate, analyse=Analyse, verbose=FALSE)
+fres
+```
+
+```{r}
+# main effects
+mod <- aov(detect ~ ., data=fres)
+summary(mod)
+
+# two-way interaction effects for sample_size only
+mod2 <- aov(detect ~ (.)^2, data=fres)
+summary(mod2)
+```
 
 
 ### References
