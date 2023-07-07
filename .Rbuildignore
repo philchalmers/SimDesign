@@ -1,6 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-README.md
 ^SimDesign-logo\.png$
 .Rprofile
 Makefile
