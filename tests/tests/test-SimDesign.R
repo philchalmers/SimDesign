@@ -126,15 +126,30 @@ test_that('SimDesign', {
     Final2 <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
                             replications = parallel::detectCores(), parallel=FALSE, save=FALSE, verbose = FALSE)
 
-    # aggregate test
+    # aggregate tests
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, filename='file',
-                           replications = 2, parallel=FALSE, save=TRUE, verbose = FALSE)
+                         replications = 2, parallel=FALSE, store_results = TRUE, verbose = FALSE)
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 2, parallel=FALSE, save=TRUE, filename = 'newfile', verbose = FALSE)
+                         replications = 2, parallel=FALSE, store_results = TRUE,
+                         filename = 'newfile', verbose = FALSE)
     Final <- aggregate_simulations(files = c('file.rds', 'newfile.rds'))
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
+    expect_equal(nrow(SimExtract(Final, 'results')), 4 * nrow(Design))
     SimClean(dir()[grepl('\\.rds', dir())])
+
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                         replications = 2, parallel=FALSE, save_results = TRUE, verbose = FALSE)
+    tmp2 <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                         replications = 2, parallel=FALSE, save_results = TRUE,
+                         verbose = FALSE)
+
+    dirs <- c(SimExtract(tmp, 'save_results_dirname'),
+              SimExtract(tmp2, 'save_results_dirname'))
+    aggregate_simulations(dirs = dirs)
+    row1 <- readRDS('SimDesign_aggregate_results/results-row-1.rds')
+    expect_equal(nrow(row1$results), 4L)
+    SimClean(dirs = c(dirs, "SimDesign_aggregate_results"))
 
     # seeds
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, verbose=FALSE,

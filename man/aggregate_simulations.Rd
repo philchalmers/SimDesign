@@ -39,12 +39,16 @@ nodes/computers that are not on the same network.
 setwd('my_working_directory')
 
 ## run simulations to save the .rds files (or move them to the working directory)
-# runSimulation(..., filename='file1')
-# runSimulation(..., filename='file2')
+# ret1 <- runSimulation(..., filename='file1')
+# ret2 <- runSimulation(..., filename='file2')
 
 # saves to the hard-drive and stores in workspace
 final <- aggregate_simulations(files = c('file1.rds', 'file2.rds'))
 final
+
+# If filename not included, can be extracted from results
+# files <- c(SimExtract(ret1, 'filename'), SimExtract(ret2, 'filename'))
+# final <- aggregate_simulations(files = files)
 
 # aggregate saved results for .rds files and results directories
 # runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir1'))
@@ -54,6 +58,10 @@ final
 aggregate_simulations(files = c('file1.rds', 'file2.rds'),
                       dirs = c('dir1', 'dir2'))
 
+# If dirnames not included, can be extracted from results
+# dirs <- c(SimExtract(ret1, 'save_results_dirname'),
+            SimExtract(ret2, 'save_results_dirname'))
+# aggregate_simulations(dirs = dirs)
 
 }
 }

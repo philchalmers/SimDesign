@@ -42,12 +42,16 @@
 #' setwd('my_working_directory')
 #'
 #' ## run simulations to save the .rds files (or move them to the working directory)
-#' # runSimulation(..., filename='file1')
-#' # runSimulation(..., filename='file2')
+#' # ret1 <- runSimulation(..., filename='file1')
+#' # ret2 <- runSimulation(..., filename='file2')
 #'
 #' # saves to the hard-drive and stores in workspace
 #' final <- aggregate_simulations(files = c('file1.rds', 'file2.rds'))
 #' final
+#'
+#' # If filename not included, can be extracted from results
+#' # files <- c(SimExtract(ret1, 'filename'), SimExtract(ret2, 'filename'))
+#' # final <- aggregate_simulations(files = files)
 #'
 #' # aggregate saved results for .rds files and results directories
 #' # runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir1'))
@@ -57,6 +61,10 @@
 #' aggregate_simulations(files = c('file1.rds', 'file2.rds'),
 #'                       dirs = c('dir1', 'dir2'))
 #'
+#' # If dirnames not included, can be extracted from results
+#' # dirs <- c(SimExtract(ret1, 'save_results_dirname'),
+#'             SimExtract(ret2, 'save_results_dirname'))
+#' # aggregate_simulations(dirs = dirs)
 #'
 #' }
 aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate.rds',
@@ -121,6 +129,7 @@ aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate
     weights <- weights / sum(weights)
     message(sprintf('Writing combinded file from %i simulations to \"%s\"',
                     length(filenames), file_name))
+    has_stored_results <- !is.null(SimExtract(ret, 'results'))
     for(i in seq_len(length(filenames))){
         tmp <- stats::na.omit(match(nms, names(errors[[i]])))
         if(length(tmp) > 0L){
@@ -130,9 +139,18 @@ aggregate_simulations <- function(files = NULL, file_name = 'SimDesign_aggregate
         ret$REPLICATIONS <- ret$REPLICATIONS + readin[[i]]$REPLICATIONS
         ret$SIM_TIME <- ret$SIM_TIME + readin[[i]]$SIM_TIME
         ret[ ,pick] <- ret[ ,pick] + weights[i] * readin[[i]][ ,pick]
+        if(has_stored_results & i > 1L)
+            attr(ret, 'extra_info')$stored_results <-
+            rbind(attr(ret, 'extra_info')$stored_results,
+                  attr(readin[[i]], 'extra_info')$stored_results)
     }
+    if(has_stored_results)
+        results <- attr(ret, 'extra_info')$stored_results
     out <- dplyr::as_tibble(data.frame(ret, try_errors, check.names = FALSE))
     out$SEED <- NULL
+    if(has_stored_results)
+        attr(out, 'extra_info') <- list(stored_results=results)
+    class(out) <- c('SimDesign', class(out))
     saveRDS(out, file_name)
     invisible(out)
 }
