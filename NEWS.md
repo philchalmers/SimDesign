@@ -1,5 +1,36 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.12
+
+- `createDesign()` gains a `fractional` argument to support design 
+  input structures from the `FrF2` package for fractional factorial designs. 
+  Useful when detecting main/low-dimensional interaction effects 
+  across a large number of factor variables (suggested by Achim Zeileis). 
+  Example added to the wiki to demonstrate its use
+  
+- When `summarise()` function not supplied the `Design` input 
+  is now appended to the `results` object when 
+  using `SimExtract(res, what = 'results'`). Only supported when the `results`
+  object is a `matrix`-like structure
+  
+- `RAM` element added to resulting objects to indicate the amount of RAM used
+  during each evaluation. This is particularly useful when using
+  `runSimulation(..., store_results = TRUE)` to inspect how much RAM is being 
+  being consumed (otherwise, `runSimulation(..., save_results = TRUE)` should be
+  used if RAM storage is suspected to be an issue)
+  
+- `resummarise()` and `aggregate_simulation()` now better support 
+  the internally stored results terms when using `store_results = TRUE`
+  
+- `runSimulation(..., save = TRUE)` changed to `save = replications > 10` 
+  to only write temporary files when the replications are larger (less 
+  hard-drive strain when initially testing simulation experiment with very 
+  small replications)
+
+- hexsticker added to make `SimDesign` part of the cool-kids club
+
+- `filename` and `save_results_dirname` extractors added to `SimExtract()`
+
 ## Changes in SimDesign 2.11
 
 - `PBA()` function added for probabilistic bisection algorithm, with associated
