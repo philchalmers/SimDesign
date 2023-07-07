@@ -12,7 +12,9 @@
 #'   counts of any warning messages, \code{'error_seeds'} and \code{'warning_seeds'}
 #'   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
 #'   \code{'results'} to extract the simulation results if the option \code{store_results} was passed to
-#'   \code{\link{runSimulation}}, and \code{'summarise'} if the \code{\link{Summarise}}
+#'   \code{\link{runSimulation}}, \code{'filename'} and \code{'save_results_dirname'} for extracting
+#'   the saved file/directory name information (if used),
+#'   and \code{'summarise'} if the \code{\link{Summarise}}
 #'   definition returned a named \code{list} rather than a named numeric vector.
 #'
 #'   Note that \code{'warning_seeds'} are not stored automatically in
@@ -97,6 +99,10 @@ SimExtract <- function(object, what, fuzzy = TRUE){
         cbind(Design, extract_warnings(object, fuzzy=fuzzy))
     } else if(what == 'warning_seeds'){
         extract_warning_seeds(object)
+    } else if(what == 'save_results_dirname'){
+        attr(object, 'extra_info')$save_info['save_results_dirname']
+    } else if(what == 'filename'){
+        attr(object, 'extra_info')$save_info['filename']
     } else stop('Input provided to \"what" is not supported')
     ret
 }
