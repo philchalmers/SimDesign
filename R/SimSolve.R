@@ -73,6 +73,10 @@
 #'      the interpolation step (default is 3000 after accounting for data exclusion
 #'      from \code{interpolate.burnin}). Setting this to 0 will disable any
 #'      interpolation computations}
+#'    \item{\code{include_reps}}{logical; include a column in the \code{condition}
+#'      elements to indicate how many replications are currently being evaluated? Mainly
+#'      useful when further precision tuning within each ProBABLI iteration is
+#'      desirable (e.g., for bootstrapping). Default is \code{FALSE}}
 #'    }
 #'
 #' @param interpolate.burnin integer indicating the number of initial iterations
@@ -274,9 +278,10 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     if(is.null(control$interpolate.R)) control$interpolate.R <- 3000L
     if(is.null(control$bolster)) control$bolster <- TRUE
     if(is.null(control$single_step.iter)) control$single_step.iter <- 40L
+    if(is.null(control$include_reps)) control$include_reps <- FALSE
 
     on.exit(.SIMDENV$stored_results <- .SIMDENV$stored_medhistory <-
-                .SIMDENV$stored_history <- NULL,
+                .SIMDENV$stored_history <- .SIMDENV$include_reps <- NULL,
             add = TRUE)
     on.exit(.SIMDENV$FromSimSolve <- NULL, add = TRUE)
 
@@ -296,6 +301,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
 
     root.fun <- function(x, b, design.row, replications, store = TRUE, ...){
         design.row[1L, which(is.na(design.row))] <- x
+        if(.SIMDENV$include_reps) design.row$REPLICATIONS <- replications
         attr(design.row, 'SimSolve') <- TRUE
         ret <- runSimulation(design=design.row, replications=replications,
                              generate=generate, analyse=analyse,
@@ -350,6 +356,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         .SIMDENV$stored_results <- vector('list', maxiter)
         .SIMDENV$stored_medhistory <- rep(NA, maxiter)
         .SIMDENV$stored_history <- vector('list', maxiter)
+        .SIMDENV$include_reps <- control$include_reps
         .SIMDENV$FromSimSolve <- list(interpolate=interpolate,
                                       interpolate.after=interpolate.after,
                                       family=family,

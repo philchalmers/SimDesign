@@ -116,6 +116,10 @@ remove the effect of early estimates that are far away from the solution}
      the interpolation step (default is 3000 after accounting for data exclusion
      from \code{interpolate.burnin}). Setting this to 0 will disable any
      interpolation computations}
+   \item{\code{include_reps}}{logical; include a column in the \code{condition}
+     elements to indicate how many replications are currently being evaluated? Mainly
+     useful when further precision tuning within each ProBABLI iteration is
+     desirable (e.g., for bootstrapping). Default is \code{FALSE}}
    }}
 
 \item{...}{additional arguments to be pasted to \code{\link{PBA}}}
