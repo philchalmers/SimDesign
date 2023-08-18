@@ -362,7 +362,6 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         if(!useFuture){
             parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
             parallel::clusterExport(cl=cl, "ANALYSE_FUNCTIONS", envir = environment())
-            parallel::clusterExport(cl=cl, "TRY_ALL_ANALYSE", envir = environment())
             if(verbose)
                 message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
         }
