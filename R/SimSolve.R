@@ -272,6 +272,12 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      verbose = TRUE, control = list(), ...){
 
     # robust <- FALSE
+    ANALYSE_FUNCTIONS <- NULL
+    .SIMDENV$ANALYSE_FUNCTIONS <- ANALYSE_FUNCTIONS <- analyse
+    if(is.character(parallel)){
+        useFuture <- tolower(parallel) == 'future'
+        parallel <- TRUE
+    } else useFuture <- FALSE
     if(is.null(control$tol)) control$tol <- if(integer) .1 else .001
     if(is.null(control$rel.tol)) control$rel.tol <- .0001
     if(is.null(control$k.sucess)) control$k.success <- 3L
@@ -345,6 +351,20 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         if(!useFuture && is.null(cl)){
             cl <- parallel::makeCluster(ncores, type=type)
             on.exit(parallel::stopCluster(cl), add = TRUE)
+        }
+    }
+    export_funs <- parent_env_fun()
+    if(parallel){
+        if(!useFuture && is.null(cl)){
+            cl <- parallel::makeCluster(ncores, type=type)
+            on.exit(parallel::stopCluster(cl), add = TRUE)
+        }
+        if(!useFuture){
+            parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
+            parallel::clusterExport(cl=cl, "ANALYSE_FUNCTIONS", envir = environment())
+            parallel::clusterExport(cl=cl, "TRY_ALL_ANALYSE", envir = environment())
+            if(verbose)
+                message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
         }
     }
     for(i in 1L:nrow(design)){
