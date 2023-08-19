@@ -1,5 +1,10 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.13
+
+- `runSimulation(..., extra_options)` changed to `control` instead to
+  control less commonly used flags
+
 ## Changes in SimDesign 2.12
 
 - `createDesign()` gains a `fractional` argument to support design 

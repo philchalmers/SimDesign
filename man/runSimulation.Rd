@@ -33,7 +33,7 @@ runSimulation(
   max_errors = 50L,
   save_seeds = FALSE,
   save_details = list(),
-  extra_options = list(),
+  control = list(),
   progress = TRUE,
   verbose = TRUE
 )
@@ -352,7 +352,8 @@ errors are thrown in any
 
   }}
 
-\item{extra_options}{a list for extra information flags no commonly used. These can be
+\item{control}{a list for extra information flags for controlling less
+  commonly used features. These include
 
   \describe{
 
@@ -385,7 +386,8 @@ errors are thrown in any
       that too many warnings messages raised during the simulation implementation could cause
       RAM related issues.}
 
-     \item{\code{include_replication_index}}{logical (default is \code{FALSE});
+     \item{\code{include_replication_index} or
+       \code{include_reps}}{logical (default is \code{FALSE});
        should a REPLICATION element be added to
        the \code{condition} object when performing the simulation to track which specific
        replication experiment is being evaluated? This is useful when, for instance, attempting

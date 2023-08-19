@@ -27,7 +27,7 @@ registerDoMPI(cl)
 
 runSimulation(design=Design, replications=12, filename='mysimulation',
               generate=Generate, analyse=Analyse, summarise=Summarise,
-              extra_options = list(MPI=TRUE))
+              control = list(MPI=TRUE))
 
 closeCluster(cl)
 mpi.quit()
