@@ -16,6 +16,7 @@
 #'
 #' @name SimDesign
 #' @docType package
+#' @aliases SimDesign-package
 #' @title Structure for Organizing Monte Carlo Simulation Designs
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #' @import foreach methods parallel stats

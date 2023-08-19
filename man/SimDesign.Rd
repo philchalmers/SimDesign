@@ -3,6 +3,7 @@
 \docType{package}
 \name{SimDesign}
 \alias{SimDesign}
+\alias{SimDesign-package}
 \title{Structure for Organizing Monte Carlo Simulation Designs}
 \description{
 Structure for Organizing Monte Carlo Simulation Designs
