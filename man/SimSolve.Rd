@@ -20,6 +20,7 @@ SimSolve(
   family = "binomial",
   parallel = FALSE,
   cl = NULL,
+  save = TRUE,
   ncores = parallel::detectCores() - 1L,
   type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
   maxiter = 150L,
@@ -85,6 +86,10 @@ then a \code{'gaussian'} family would be more appropriate)}
 (see \code{\link{runSimulation}} for details)}
 
 \item{cl}{see \code{\link{runSimulation}}}
+
+\item{save}{logical; store temporary file in case of crashes. If detected
+in the working directory will automatically be loaded to resume (see
+\code{\link{runSimulation}} for similar behavior)}
 
 \item{ncores}{see \code{\link{runSimulation}}}
 

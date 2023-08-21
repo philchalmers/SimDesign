@@ -53,6 +53,10 @@
 #'   made in the \code{pba} function based on the collected sampling history
 #'   throughout the search
 #'
+#' @param save logical; store temporary file in case of crashes. If detected
+#'   in the working directory will automatically be loaded to resume (see
+#'   \code{\link{runSimulation}} for similar behavior)
+#'
 #' @param verbose logical; print information to the console?
 #'
 #' @param control a \code{list} of the algorithm control parameters. If not specified,
@@ -265,7 +269,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      replications = c(rep(100L, interpolate.burnin),
                                       seq(200L, by=10L, length.out=maxiter-interpolate.burnin)),
                      integer = TRUE, formula = y ~ poly(x, 2), family = 'binomial',
-                     parallel = FALSE, cl = NULL,
+                     parallel = FALSE, cl = NULL, save = TRUE,
                      ncores = parallel::detectCores() - 1L,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
                      maxiter = 150L, interpolate.burnin = 15L,
@@ -366,7 +370,16 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                 message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
         }
     }
-    for(i in 1L:nrow(design)){
+    compname <- Sys.info()['nodename']
+    tmpfilename <- paste0('SIMSOLVE-TEMPFILE_', compname, '.rds')
+    start <- 1L
+    if(file.exists(tmpfilename)){
+        roots <- readRDS(tmpfilename)
+        start <- min(which(sapply(roots, is.null)))
+        if(verbose)
+            message(paste0('\nContinuing SimSolve() run at design row ', start))
+    }
+    for(i in start:nrow(design)){
         if(verbose){
             cat(sprintf('\n\n#############\nDesign row %s:\n\n', i))
             print(cbind(as.data.frame(design[i,]), b = b))
@@ -408,7 +421,9 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             cat(sprintf("\nSolution for %s: %.3f",
                 colnames(design)[which(is.na(tmp))], roots[[i]]$root))
         }
+        if(save && i < nrow(design)) saveRDS(roots, tmpfilename)
     }
+    if(file.exists(tmpfilename)) file.remove(tmpfilename)
     ret <- design
     vals <- sapply(roots, function(x) x$root)
     ret[, which(is.na(ret[i,])), drop=TRUE] <- vals
