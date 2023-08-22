@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.13
 
+- `ECR()` gain a `flag_outside` logical to indicate whether parameter was 
+  outside advertised interval (complement of coverage). Useful when CIs are
+  used as formal hypothesis tests (e.g., bootstrap CI tests for power)
+
 - `runSimulation(..., extra_options)` changed to `control` instead to
   control less commonly used flags
 
