@@ -394,11 +394,11 @@ combined_Generate <- function(condition, fixed_objects = NULL){
 
 toTabledResults <- function(results){
     tabled_results <- if(is.data.frame(results[[1]]) && nrow(results[[1L]]) == 1L){
-        dplyr::bind_rows(results)
+        as.matrix(dplyr::bind_rows(results))
     } else if((is.data.frame(results[[1]]) && nrow(results[[1]]) > 1L) || is.list(results[[1L]])){
         results
     } else {
-        dplyr::bind_rows(as.data.frame(do.call(rbind, results)))
+        as.matrix(dplyr::bind_rows(as.data.frame(do.call(rbind, results))))
     }
     tabled_results
 }
