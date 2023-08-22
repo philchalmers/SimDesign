@@ -923,6 +923,13 @@ EDR <- function(p, alpha = .05, unname = FALSE){
 #'   average width of the CIs instead? Useful when comparing the efficiency of different CI
 #'   estimators
 #'
+#' @param flag_outside logical; rather than computing the proportion of
+#'   population parameters within the CI, return the proportion outside the
+#'   desired CI (1 - ECR = alpha). In the case where only one value is provided,
+#'   which normally would return a 0 if outside the CI or 1 if inside the values
+#'   will be switched (useful when using, for example, bootstrap CI tests of
+#'   parameters)
+#'
 #' @param names an optional character vector used to name the returned object. Generally useful
 #'   when more than one CI estimate is investigated at once
 #'
@@ -956,11 +963,14 @@ EDR <- function(p, alpha = .05, unname = FALSE){
 #'
 #' ECR(CIs, 0)
 #' ECR(CIs, 0, tails = TRUE)
+#' ECR(CIs, 0, flag_outside = TRUE) # prop outside interval
 #'
 #' # single vector input
 #' CI <- c(-1, 1)
 #' ECR(CI, 0)
+#' ECR(CI, 0, flag_outside = TRUE)
 #' ECR(CI, 2)
+#' ECR(CI, 2, flag_outside = TRUE)
 #' ECR(CI, 2, tails = TRUE)
 #'
 #' # parameters of the same size as CI
@@ -989,7 +999,7 @@ EDR <- function(p, alpha = .05, unname = FALSE){
 #' ECR(CIs, parameter, tails=TRUE, names = c('this', 'that'))
 #'
 ECR <- function(CIs, parameter, tails = FALSE, CI_width = FALSE,
-                names = NULL, unname = FALSE){
+                flag_outside = FALSE, names = NULL, unname = FALSE){
     if(CI_width) tails <- FALSE
     if(is.data.frame(CIs)) CIs <- as.matrix(CIs)
     if(length(CIs) == 2L) CIs <- matrix(CIs, 1L, 2L)
@@ -1029,6 +1039,7 @@ ECR <- function(CIs, parameter, tails = FALSE, CI_width = FALSE,
         if(!is.null(names))
             names(ret) <- names
     }
+    if(flag_outside) ret <- abs(1 - ret)
     if(unname) ret <- unname(ret)
     ret
 }
