@@ -23,7 +23,7 @@ SimSolve(
   save = TRUE,
   ncores = parallel::detectCores() - 1L,
   type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
-  maxiter = 150L,
+  maxiter = 100L,
   interpolate.burnin = 15L,
   verbose = TRUE,
   control = list(),
@@ -95,7 +95,7 @@ in the working directory will automatically be loaded to resume (see
 
 \item{type}{type of cluster object to define}
 
-\item{maxiter}{the maximum number of iterations (default 150)}
+\item{maxiter}{the maximum number of iterations (default 100)}
 
 \item{interpolate.burnin}{integer indicating the number of initial iterations
 to discard from the interpolation computations. This is included to further

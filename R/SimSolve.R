@@ -87,7 +87,7 @@
 #'      to discard from the interpolation computations. This is included to further
 #'      remove the effect of early estimates that are far away from the solution
 #'
-#' @param maxiter the maximum number of iterations (default 150)
+#' @param maxiter the maximum number of iterations (default 100)
 #'
 #' @param parallel for parallel computing for slower simulation experiments
 #'   (see \code{\link{runSimulation}} for details)
@@ -272,7 +272,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      parallel = FALSE, cl = NULL, save = TRUE,
                      ncores = parallel::detectCores() - 1L,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
-                     maxiter = 150L, interpolate.burnin = 15L,
+                     maxiter = 100L, interpolate.burnin = 15L,
                      verbose = TRUE, control = list(), ...){
 
     # robust <- FALSE

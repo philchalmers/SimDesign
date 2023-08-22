@@ -261,7 +261,7 @@ PBA <- function(f, interval, ..., p = .6,
     root <- if(!interpolate) mean(medhistory[length(medhistory):
                                                  (length(medhistory)-mean_window+1L)])
         else glmpred[1L]
-    ret <- list(iter=iter, root=root, converged=converged, integer=integer,
+    ret <- list(iter=iter, root=root, terminated_early=converged, integer=integer,
                 e.froot=e.froot, x=x, fx=fx, medhistory=medhistory,
                 time=as.numeric(proc.time()[3L]-start_time))
     if(!is.null(FromSimSolve)) ret$total.replications <- sum(replications[1L:iter])
@@ -276,7 +276,7 @@ print.PBA <- function(x, ...)
 {
     out <- with(x,
          list(root = root,
-              converged=converged,
+              terminated_early=terminated_early,
               time=noquote(timeFormater(time)),
               iterations = iter))
     if(!is.null(x$total.replications))

@@ -80,6 +80,7 @@ SimClean <- function(..., dirs = NULL, temp = TRUE, results = FALSE,
     if(temp){
         fs <- dir()
         file.remove(fs[grepl('SIMDESIGN-TEMPFILE_', fs)])
+        file.remove(fs[grepl('SIMSOLVE-TEMPFILE_', fs)])
     }
     if(!is.null(out_rootdir)) setwd(gtw)
     invisible(NULL)
