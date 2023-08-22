@@ -1039,7 +1039,7 @@ ECR <- function(CIs, parameter, tails = FALSE, CI_width = FALSE,
         if(!is.null(names))
             names(ret) <- names
     }
-    if(flag_outside) ret <- abs(1 - ret)
+    if(complement) ret <- abs(1 - ret)
     if(unname) ret <- unname(ret)
     ret
 }
