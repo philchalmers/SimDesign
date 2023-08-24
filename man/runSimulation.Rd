@@ -342,6 +342,17 @@ errors are thrown in any
       \code{filename} is defined, otherwise the filename is used to replace 'SimDesign'
       in the string}
 
+    \item{\code{save_results_filename}}{a string indicating the name file to store, where the
+      \code{Design} row ID will be appended to ensure uniqueness across rows. Specifying
+      this input will disable any checking for the uniqueness of the file folder, thereby
+      allowing independent \code{runSimulation} calls to write to the same
+      \code{save_results_dirname}. Useful when the files should all be stored in the same
+      working directory, however the rows of \code{Design} are evaluated in isolation (e.g.,
+      for HPC structures that allow asynchronous file storage).
+      WARNING: the uniqueness of the file names are not checked using
+      this approach, therefore please ensure that each generated name will be unique a priori,
+      such as naming the file based on the supplied row condition information}
+
     \item{\code{save_seeds_dirname}}{a string indicating the name of the folder to save
       \code{.Random.seed} objects to when \code{save_seeds = TRUE}. If a directory/folder
       does not exist

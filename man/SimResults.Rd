@@ -4,7 +4,7 @@
 \alias{SimResults}
 \title{Function to read in saved simulation results}
 \usage{
-SimResults(results, which, wd = getwd())
+SimResults(results, which, prefix = "results-row", wd = getwd())
 }
 \arguments{
 \item{results}{object returned from \code{\link{runSimulation}} where \code{save_results = TRUE}
@@ -12,6 +12,8 @@ was used}
 
 \item{which}{a numeric vector indicating which rows should be read in. If missing, all rows will be
 read in}
+
+\item{prefix}{character indicating prefix used for stored files}
 
 \item{wd}{working directory; default is found with \code{\link{getwd}}.}
 }

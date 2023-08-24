@@ -14,6 +14,8 @@
 #' @param which a numeric vector indicating which rows should be read in. If missing, all rows will be
 #'   read in
 #'
+#' @param prefix character indicating prefix used for stored files
+#'
 #' @param wd working directory; default is found with \code{\link{getwd}}.
 #'
 #' @export
@@ -62,7 +64,7 @@
 #' rows_all <- SimResults(results)
 #'
 #' }
-SimResults <- function(results, which, wd = getwd()){
+SimResults <- function(results, which, prefix = "results-row", wd = getwd()){
     stopifnot(!missing(results))
     wdold <- getwd()
     on.exit(setwd(wdold))
@@ -73,7 +75,7 @@ SimResults <- function(results, which, wd = getwd()){
         stop('results object was not run with save_results = TRUE')
     setwd(paste0(wd, '/', path))
     files <- file_nums <- dir()
-    file_nums <- gsub('results-row-', '', file_nums)
+    file_nums <- gsub(paste0(prefix, '-'), '', file_nums)
     file_nums <- as.numeric(gsub('.rds', '', file_nums))
     files <- data.frame(file_nums, files, stringsAsFactors = FALSE)
     ret <- vector('list', length(which))

@@ -3,7 +3,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      boot_method, boot_draws, CI, save_seeds, save_seeds_dirname, load_seed,
                      export_funs, summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds,
-                     include_replication_index, packages, .options.mpi, useFuture)
+                     include_replication_index, packages, .options.mpi, useFuture,
+                     save_results_filename = NULL)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -112,7 +113,9 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     if(summarise_asis || store_results){
         tabled_results <- toTabledResults(results)
         if(save_results){
-            tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
+            tmp <- ifelse(is.null(save_results_filename), 'results-row', save_results_filename)
+            tmpfilename <- paste0(save_results_dirname,
+                                  sprintf('/%s-', tmp), condition$ID, '.rds')
             saveRDS(list(condition=condition, results=tabled_results),
                     file.path(save_results_out_rootdir, tmpfilename))
         }
@@ -139,7 +142,9 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
     results <- stackResults(results)
     if(save_results){
-        tmpfilename <- paste0(save_results_dirname, '/results-row-', condition$ID, '.rds')
+        tmp <- ifelse(is.null(save_results_filename), 'results-row', save_results_filename)
+        tmpfilename <- paste0(save_results_dirname,
+                              sprintf('/%s-', tmp), condition$ID, '.rds')
         tmpcondition <- condition
         tmpcondition$ID <- NULL
         saveRDS(list(condition=tmpcondition, results=results, errors=try_errors,

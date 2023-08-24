@@ -13,7 +13,8 @@ reSummarise(
   fixed_objects = NULL,
   boot_method = "none",
   boot_draws = 1000L,
-  CI = 0.95
+  CI = 0.95,
+  prefix = "results-row"
 )
 }
 \arguments{
@@ -52,6 +53,8 @@ See \code{\link{runSimulation}} for details}
 function after the generate-analyse replications are collected. Default is 1000}
 
 \item{CI}{bootstrap confidence interval level (default is 95\%)}
+
+\item{prefix}{character indicating prefix used for stored files}
 }
 \description{
 When \code{runSimulation()} uses the option \code{save_results = TRUE}

@@ -44,6 +44,8 @@
 #'
 #' @param CI bootstrap confidence interval level (default is 95\%)
 #'
+#' @param prefix character indicating prefix used for stored files
+#'
 #' @export
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
@@ -112,7 +114,8 @@
 #' res2
 #'
 reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Design = NULL,
-                        fixed_objects = NULL, boot_method = 'none', boot_draws = 1000L, CI = .95){
+                        fixed_objects = NULL, boot_method = 'none', boot_draws = 1000L, CI = .95,
+                        prefix = "results-row"){
     if(!is.null(results)){
         read_files <- FALSE
         if(is(results, 'SimDesign')){
@@ -137,7 +140,7 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
         on.exit(setwd(current_wd))
         if(!is.null(dir)) setwd(dir)
         if(is.null(files)) files <- dir()
-        expect_filenames <- 'results-row-'
+        expect_filenames <- paste0(prefix, '-')
         if(!all(grepl(expect_filenames, files)))
             stop('Filenames in select directory did not follow the \'results-row-#\' pattern. Please fix')
     }

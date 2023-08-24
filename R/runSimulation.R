@@ -414,6 +414,17 @@
 #'       \code{filename} is defined, otherwise the filename is used to replace 'SimDesign'
 #'       in the string}
 #'
+#'     \item{\code{save_results_filename}}{a string indicating the name file to store, where the
+#'       \code{Design} row ID will be appended to ensure uniqueness across rows. Specifying
+#'       this input will disable any checking for the uniqueness of the file folder, thereby
+#'       allowing independent \code{runSimulation} calls to write to the same
+#'       \code{save_results_dirname}. Useful when the files should all be stored in the same
+#'       working directory, however the rows of \code{Design} are evaluated in isolation (e.g.,
+#'       for HPC structures that allow asynchronous file storage).
+#'       WARNING: the uniqueness of the file names are not checked using
+#'       this approach, therefore please ensure that each generated name will be unique a priori,
+#'       such as naming the file based on the supplied row condition information}
+#'
 #'     \item{\code{save_seeds_dirname}}{a string indicating the name of the folder to save
 #'       \code{.Random.seed} objects to when \code{save_seeds = TRUE}. If a directory/folder
 #'       does not exist
@@ -1030,6 +1041,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     out_rootdir <- save_details$out_rootdir
     tmpfilename <- save_details$tmpfilename
     save_results_dirname <- save_details$save_results_dirname
+    save_results_filename <- save_details$save_results_filename
     save_seeds_dirname <- save_details$save_seeds_dirname
 
     if(!verbose) progress <- FALSE
@@ -1203,21 +1215,22 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(save_results){
         save <- TRUE
         if(!file.exists(file.path(out_rootdir, tmpfilename))) {
-            if(safe){
+            if(safe && is.null(save_results_filename)){
                 tmp <- save_results_dirname
                 count <- 1L
                 while(dir.exists(file.path(out_rootdir, save_results_dirname))) {
                     save_results_dirname <- paste0(tmp, '_', count)
                     count <- count + 1L
                 }
-                if(tmp != save_results_dirname && verbose)
+                if(tmp != save_results_dirname && is.null(save_results_filename) && verbose)
                     message(sprintf('%s already exists; using %s directory instead',
                                     file.path(out_rootdir, tmp),
                                     file.path(out_rootdir, save_results_dirname)))
             }
-            dir.create(file.path(out_rootdir, save_results_dirname))
+            dir.create(file.path(out_rootdir, save_results_dirname), showWarnings=FALSE)
         }
-        if(!(length(dir(file.path(out_rootdir, save_results_dirname))) %in% c(start - 1L, start)))
+        if(!!is.null(save_results_filename) &&
+           !(length(dir(file.path(out_rootdir, save_results_dirname))) %in% c(start - 1L, start)))
             stop('save_results_dirname not starting from correct location according to tempfile',
                  call.=FALSE)
     }
@@ -1295,6 +1308,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          store_warning_seeds=store_warning_seeds,
                                          save_results_out_rootdir=out_rootdir,
                                          save_results_dirname=save_results_dirname,
+                                         save_results_filename=save_results_filename,
                                          save_seeds=save_seeds, summarise_asis=summarise_asis,
                                          save_seeds_dirname=save_seeds_dirname,
                                          max_errors=max_errors, packages=packages,
@@ -1330,6 +1344,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             store_warning_seeds=store_warning_seeds,
                             save_results_out_rootdir = out_rootdir,
                             save_results_dirname=save_results_dirname,
+                            save_results_filename=save_results_filename,
                             save_seeds=save_seeds, summarise_asis=summarise_asis,
                             save_seeds_dirname=save_seeds_dirname,
                             max_errors=max_errors, packages=packages,
