@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.13
 
+- `save_results_filename` added to `runSimulation()` saving details to allow
+  asynchronous (though unchecked) file storage to the same results 
+  directory (suggested by Jan Göttmann)
+
 - `ECR()` gain a `complement` logical to indicate whether parameter was 
   outside advertised interval (complement of coverage). Useful when CIs are
   used as formal hypothesis tests (e.g., bootstrap CI tests for power)
