@@ -1088,6 +1088,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         verbose <- FALSE
         store_results <- TRUE
     }
+    if(save_results) store_results <- FALSE
     SimSolveRun <- !is.null(attr(design, 'SimSolve'))
     stopifnot(!missing(replications))
     replications <- as.integer(replications)

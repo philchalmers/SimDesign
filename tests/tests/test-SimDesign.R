@@ -741,14 +741,16 @@ test_that('SimDesign', {
     expect_equal(result$WARNINGS, c(6,5,4))
 
     # save to same dir
-    res <- runSimulation(Design[1,], replications=10, analyse=Analyse, summarise=Summarise,
+    res <- runSimulation(Design[1,], replications=10,
+                         generate = Generate, analyse=Analyse.a2, summarise=Summarise,
                   verbose=FALSE, save_results = TRUE,
                   save_details = list(save_results_dirname = 'mydirname',
                                       save_results_filename = 'myfilename'))
     expect_true(dir.exists("mydirname"))
     expect_true(length(dir('mydirname')) == 1L)
 
-    res2 <- runSimulation(Design[2,], replications=10, analyse=Analyse, summarise=Summarise,
+    res2 <- runSimulation(Design[2,], replications=10,
+                          generate = Generate, analyse=Analyse.a2, summarise=Summarise,
                          verbose=FALSE, save_results = TRUE,
                          save_details = list(save_results_dirname = 'mydirname',
                                              save_results_filename = 'myfilename2'))
