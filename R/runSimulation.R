@@ -1412,9 +1412,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(is(Result_list[[1L]], 'data.frame') || is(Result_list[[1L]], 'matrix')){
             nms <- c(colnames(design), colnames(Result_list[[1L]]))
             for(i in seq_len(length(Result_list)))
-                Result_list[[i]] <- cbind(design[i,], Result_list[[i]], row.names = NULL)
-            ret <- dplyr::bind_rows(Result_list)
+                Result_list[[i]] <- as.data.frame(cbind(design[i,], Result_list[[i]],
+                                                        row.names = NULL))
+            ret <- quiet(dplyr::bind_rows(Result_list))
             colnames(ret) <- nms
+            if(any(nms == "dummy_run"))
+                ret <- ret[ ,nms != "dummy_run", drop=FALSE]
             ret <- dplyr::as_tibble(ret)
             return(ret)
         } else {

@@ -488,7 +488,7 @@ test_that('SimDesign', {
     results <- runSimulation(replications = 10, generate = Generate,
                              analyse=Analyse, verbose=FALSE)
     expect_is(results, 'data.frame')
-    expect_equal(ncol(results), 3L)
+    expect_equal(ncol(results), 2L)
 
     results <- runSimulation(replications = 10, generate = Generate,
                              analyse=Analyse2, summarise = Summarise, verbose=FALSE)
