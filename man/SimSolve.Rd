@@ -13,8 +13,8 @@ SimSolve(
   generate,
   analyse,
   summarise,
-  replications = c(rep(100L, interpolate.burnin), seq(200L, by = 10L, length.out =
-    maxiter - interpolate.burnin)),
+  replications = pmin(500, c(rep(100L, interpolate.burnin), seq(200L, by = 10L,
+    length.out = maxiter - interpolate.burnin))),
   integer = TRUE,
   formula = y ~ poly(x, 2),
   family = "binomial",
@@ -65,7 +65,8 @@ use for each design condition per PBA iteration. Early on this should relatively
 low for initial searches to avoid unnecessary computations
 for locating the approximate root, though the number of replications should
 gradually increase to reduce the sampling variability as the PBA approaches
-the root}
+the root. The default sets the early stages to 100 replications, followed
+by increases of 10 replications until a maximum of 500 replications are used}
 
 \item{integer}{logical; should the values of the root be considered integer
 or numeric? If \code{TRUE} then bolstered directional decisions will be

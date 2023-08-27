@@ -30,7 +30,9 @@
 #'   low for initial searches to avoid unnecessary computations
 #'   for locating the approximate root, though the number of replications should
 #'   gradually increase to reduce the sampling variability as the PBA approaches
-#'   the root
+#'   the root. The default sets the early stages to 100 replications, followed
+#'   by increases of 10 replications until a maximum of 500 replications are used
+#'   in each iteration
 #'
 #' @param generate generate function. See \code{\link{runSimulation}}
 #'
@@ -266,8 +268,8 @@
 #'
 #' }
 SimSolve <- function(design, interval, b, generate, analyse, summarise,
-                     replications = c(rep(100L, interpolate.burnin),
-                                      seq(200L, by=10L, length.out=maxiter-interpolate.burnin)),
+                     replications = pmin(500, c(rep(100L, interpolate.burnin),
+                                      seq(200L, by=10L, length.out=maxiter-interpolate.burnin))),
                      integer = TRUE, formula = y ~ poly(x, 2), family = 'binomial',
                      parallel = FALSE, cl = NULL, save = TRUE,
                      ncores = parallel::detectCores() - 1L,
