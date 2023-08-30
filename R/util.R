@@ -9,10 +9,15 @@ parent_env_fun <- function(){
 }
 
 load_packages <- function(packages){
-    if(!is.null(packages))
-        for(pack in packages)
-            suppressWarnings(require(substitute(pack), character.only=TRUE,
+    if(!is.null(packages)){
+        for(pack in packages){
+            available <- suppressWarnings(require(substitute(pack), character.only=TRUE,
                     quietly=TRUE, warn.conflicts=FALSE))
+            if(!available)
+                stop(sprintf("Package \'%s\' is not available. Please install.", pack),
+                     call.=FALSE)
+        }
+    }
     invisible(NULL)
 }
 
