@@ -755,6 +755,13 @@ test_that('SimDesign', {
                          save_details = list(save_results_dirname = 'mydirname',
                                              save_results_filename = 'myfilename2'))
     expect_true(length(dir('mydirname')) == 2L)
+
+    res2 <- runSimulation(Design[1:2,], replications=10,
+                          generate = Generate, analyse=Analyse.a2, summarise=Summarise,
+                          verbose=FALSE, save_results = TRUE,
+                          save_details = list(save_results_dirname = 'mydirname',
+                                              save_results_filename = 'myfilename'))
+    expect_true(length(dir('mydirname')) == 4L)
     SimClean(dirs = 'mydirname')
 
 })
