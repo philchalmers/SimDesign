@@ -25,14 +25,23 @@
 #'
 #' @param b a single constant used to solve the root equation \code{f(x) - b = 0}
 #'
-#' @param replications a vector or scalar indicating the number of replication to
-#'   use for each design condition per PBA iteration. Early on this should relatively
-#'   low for initial searches to avoid unnecessary computations
+#' @param replications a named list or vector indicating the number of replication to
+#'   use for each design condition per PBA iteration. By default the input is a
+#'   \code{list} with the arguments \code{burnin = 15L}, specifying the number
+#'   of burn-in iterations to used, \code{burnin.reps = 100L} to indicate how many
+#'   replications to use in each burn-in iteration, \code{max.reps = 500L} to
+#'   prevent the replications from increasing higher than this number, and
+#'   \code{increase.by = 10L} to indicate how many replications to increase
+#'   after the burn-in stage. Unless otherwise specified these defaults will
+#'   be used, but can be overwritten by explicit definition (e.g.,
+#'   \code{replications = list(increase.by = 25L)})
+#'
+#'   Vector inputs can specify the exact replications
+#'   for each iterations. As a general rule, early iterations
+#'   should be relatively low for initial searches to avoid unnecessary computations
 #'   for locating the approximate root, though the number of replications should
 #'   gradually increase to reduce the sampling variability as the PBA approaches
-#'   the root. The default sets the early stages to 100 replications, followed
-#'   by increases of 10 replications until a maximum of 500 replications are used
-#'   in each iteration
+#'   the root.
 #'
 #' @param generate generate function. See \code{\link{runSimulation}}
 #'
@@ -77,7 +86,7 @@
 #'      around the probable root}
 #'    \item{\code{interpolate.R}}{number of replications to collect prior to performing
 #'      the interpolation step (default is 3000 after accounting for data exclusion
-#'      from \code{interpolate.burnin}). Setting this to 0 will disable any
+#'      from \code{burnin}). Setting this to 0 will disable any
 #'      interpolation computations}
 #'    \item{\code{include_reps}}{logical; include a column in the \code{condition}
 #'      elements to indicate how many replications are currently being evaluated? Mainly
@@ -85,10 +94,10 @@
 #'      desirable (e.g., for bootstrapping). Default is \code{FALSE}}
 #'    }
 #'
-#' @param interpolate.burnin integer indicating the number of initial iterations
-#'      to discard from the interpolation computations. This is included to further
-#'      remove the effect of early estimates that are far away from the solution
-#'
+# @param interpolate.burnin integer indicating the number of initial iterations
+#      to discard from the interpolation computations. This is included to further
+#      remove the effect of early estimates that are far away from the solution
+#
 #' @param maxiter the maximum number of iterations (default 100)
 #'
 #' @param parallel for parallel computing for slower simulation experiments
@@ -268,16 +277,27 @@
 #'
 #' }
 SimSolve <- function(design, interval, b, generate, analyse, summarise,
-                     replications = pmin(500, c(rep(100L, interpolate.burnin),
-                                      seq(200L, by=10L, length.out=maxiter-interpolate.burnin))),
+                     replications = list(burnin = 15L, burnin.reps = 100L,
+                                         max.reps = 500L, increase.by = 10L),
                      integer = TRUE, formula = y ~ poly(x, 2), family = 'binomial',
                      parallel = FALSE, cl = NULL, save = TRUE,
                      ncores = parallel::detectCores() - 1L,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
-                     maxiter = 100L, interpolate.burnin = 15L,
-                     verbose = TRUE, control = list(), ...){
+                     maxiter = 100L, verbose = TRUE, control = list(), ...){
 
     # robust <- FALSE
+    burnin <- 15L
+    if(is.list(replications)){
+        if(is.null(replications$burnin)) replications$burnin <- burnin else
+            burnin <- replications$burnin
+        if(is.null(replications$burnin.reps)) replications$burnin.reps <- 100L
+        if(is.null(replications$max.reps)) replications$max.reps <- 500L
+        if(is.null(replications$increase.by)) replications$increase.by <- 10L
+        replications <- with(replications,
+                             pmin(max.reps, c(rep(burnin.reps, burnin),
+                                              seq(burnin.reps, by=increase.by,
+                                                  length.out=maxiter-burnin))))
+    }
     ANALYSE_FUNCTIONS <- NULL
     .SIMDENV$ANALYSE_FUNCTIONS <- ANALYSE_FUNCTIONS <- analyse
     if(is.character(parallel)){
@@ -403,7 +423,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       k.success=control$k.success,
                                       single_step.iter=control$single_step.iter,
                                       # robust = robust,
-                                      interpolate.burnin=interpolate.burnin)
+                                      interpolate.burnin=burnin)
         roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                           design.row=as.data.frame(design[i,]),
                           integer=integer, verbose=verbose, maxiter=maxiter, ...))

@@ -13,8 +13,8 @@ SimSolve(
   generate,
   analyse,
   summarise,
-  replications = pmin(500, c(rep(100L, interpolate.burnin), seq(200L, by = 10L,
-    length.out = maxiter - interpolate.burnin))),
+  replications = list(burnin = 15L, burnin.reps = 100L, max.reps = 500L, increase.by =
+    10L),
   integer = TRUE,
   formula = y ~ poly(x, 2),
   family = "binomial",
@@ -24,7 +24,6 @@ SimSolve(
   ncores = parallel::detectCores() - 1L,
   type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
   maxiter = 100L,
-  interpolate.burnin = 15L,
   verbose = TRUE,
   control = list(),
   ...
@@ -60,13 +59,23 @@ Unlike in the standard \code{runSimulation()} definitions this input
 is required. For further information on this function specification,
 see \code{\link{runSimulation}}}
 
-\item{replications}{a vector or scalar indicating the number of replication to
-use for each design condition per PBA iteration. Early on this should relatively
-low for initial searches to avoid unnecessary computations
-for locating the approximate root, though the number of replications should
-gradually increase to reduce the sampling variability as the PBA approaches
-the root. The default sets the early stages to 100 replications, followed
-by increases of 10 replications until a maximum of 500 replications are used}
+\item{replications}{a named list or vector indicating the number of replication to
+  use for each design condition per PBA iteration. By default the input is a
+  \code{list} with the arguments \code{burnin = 15L}, specifying the number
+  of burn-in iterations to used, \code{burnin.reps = 100L} to indicate how many
+  replications to use in each burn-in iteration, \code{max.reps = 500L} to
+  prevent the replications from increasing higher than this number, and
+  \code{increase.by = 10L} to indicate how many replications to increase
+  after the burn-in stage. Unless otherwise specified these defaults will
+  be used, but can be overwritten by explicit definition (e.g.,
+  \code{replications = list(increase.by = 25L)})
+
+  Vector inputs can specify the exact replications
+  for each iterations. As a general rule, early iterations
+  should be relatively low for initial searches to avoid unnecessary computations
+  for locating the approximate root, though the number of replications should
+  gradually increase to reduce the sampling variability as the PBA approaches
+  the root.}
 
 \item{integer}{logical; should the values of the root be considered integer
 or numeric? If \code{TRUE} then bolstered directional decisions will be
@@ -98,10 +107,6 @@ in the working directory will automatically be loaded to resume (see
 
 \item{maxiter}{the maximum number of iterations (default 100)}
 
-\item{interpolate.burnin}{integer indicating the number of initial iterations
-to discard from the interpolation computations. This is included to further
-remove the effect of early estimates that are far away from the solution}
-
 \item{verbose}{logical; print information to the console?}
 
 \item{control}{a \code{list} of the algorithm control parameters. If not specified,
@@ -120,7 +125,7 @@ remove the effect of early estimates that are far away from the solution}
      around the probable root}
    \item{\code{interpolate.R}}{number of replications to collect prior to performing
      the interpolation step (default is 3000 after accounting for data exclusion
-     from \code{interpolate.burnin}). Setting this to 0 will disable any
+     from \code{burnin}). Setting this to 0 will disable any
      interpolation computations}
    \item{\code{include_reps}}{logical; include a column in the \code{condition}
      elements to indicate how many replications are currently being evaluated? Mainly
