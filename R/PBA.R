@@ -79,9 +79,14 @@
 #' # find x that solves f(x) - b = 0 for the following
 #' f.root <- function(x, b = .6) 1 / (1 + exp(-x)) - b
 #' f.root(.3)
+#'
+#' xs <- seq(-3,3, length.out=1000)
+#' plot(xs, f.root(xs), type = 'l', ylab = "f(x)", xlab='x')
+#' abline(h=0, col='red')
+#'
 #' retuni <- uniroot(f.root, c(0,1))
 #' retuni
-#' retuni$root
+#' abline(v=retuni$root, col='blue', lty=2)
 #'
 #' # PBA without noisy root
 #' retpba <- PBA(f.root, c(0,1))
@@ -90,7 +95,7 @@
 #' plot(retpba)
 #' plot(retpba, type = 'history')
 #'
-#' # Same problem, however root function is noisy. Hence, need to solve
+#' # Same problem, however root function is now noisy. Hence, need to solve
 #' #  fhat(x) - b + e = 0, where E(e) = 0
 #' f.root_noisy <- function(x) 1 / (1 + exp(-x)) - .6 + rnorm(1, sd=.02)
 #' sapply(rep(.3, 10), f.root_noisy)
