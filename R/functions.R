@@ -280,7 +280,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
                     save, allow_na, allow_nan, save_seeds, save_seeds_dirname, load_seed,
                     warnings_as_errors, store_warning_seeds, use_try, include_replication_index,
-                    p = NULL, future = FALSE){
+                    p = NULL, future = FALSE, allow_gen_errors = TRUE){
 
     if(!is.null(p)) p(sprintf("replication = %g", index))
     if(include_replication_index) condition$REPLICATION <- index
@@ -307,8 +307,10 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         }
         if(!is.null(load_seed))
             .GlobalEnv$.Random.seed <- load_seed
-        simlist <- try(withCallingHandlers(generate(condition=condition,
-                                                    fixed_objects=fixed_objects), warning=wHandler), TRUE)
+        simlist <- if(allow_gen_errors)
+            try(withCallingHandlers(generate(condition=condition,
+                                                        fixed_objects=fixed_objects), warning=wHandler), TRUE)
+        else generate(condition=condition, fixed_objects=fixed_objects)
         if(!use_try){
             if(is(simlist, 'try-error')){
                 .GlobalEnv$.Random.seed <- current_Random.seed

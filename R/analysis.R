@@ -4,7 +4,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      export_funs, summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds,
                      include_replication_index, packages, .options.mpi, useFuture, multirow,
-                     save_results_filename = NULL)
+                     allow_gen_errors, save_results_filename = NULL)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -25,7 +25,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                                    warnings_as_errors=warnings_as_errors,
                                                    include_replication_index=include_replication_index,
                                                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
-                                                   p=p, future.seed=TRUE), silent=TRUE)
+                                                   p=p, future.seed=TRUE, allow_gen_errors=allow_gen_errors),
+                       silent=TRUE)
     } else if(is.null(cl)){
         if(!is.null(seed)) set.seed(seed[condition$ID])
         results <- if(progress){
@@ -40,7 +41,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    save_seeds_dirname=save_seeds_dirname,
                    warnings_as_errors=warnings_as_errors,
                    include_replication_index=include_replication_index,
-                   allow_na=allow_na, allow_nan=allow_nan, use_try=use_try), TRUE)
+                   allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
+                   allow_gen_errors=allow_gen_errors), TRUE)
         } else {
             try(lapply(1L:replications, mainsim, condition=condition,
                    generate=Functions$generate,
@@ -53,7 +55,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    save_seeds_dirname=save_seeds_dirname,
                    warnings_as_errors=warnings_as_errors,
                    include_replication_index=include_replication_index,
-                   allow_na=allow_na, allow_nan=allow_nan, use_try=use_try), TRUE)
+                   allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
+                   allow_gen_errors=allow_gen_errors), TRUE)
         }
     } else {
         if(MPI){
@@ -68,7 +71,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      store_warning_seeds=store_warning_seeds,
                      include_replication_index=include_replication_index,
                      warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan,
-                     use_try=use_try), TRUE)
+                     use_try=use_try, allow_gen_errors=allow_gen_errors), TRUE)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
             results <- if(progress){
@@ -81,7 +84,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
                                     include_replication_index=include_replication_index,
-                                    allow_nan=allow_nan, use_try=use_try, cl=cl), TRUE)
+                                    allow_nan=allow_nan, allow_gen_errors=allow_gen_errors,
+                                    use_try=use_try, cl=cl), TRUE)
             } else {
                 try(parallel::parLapply(cl, 1L:replications, mainsim,
                                     condition=condition, generate=Functions$generate,
@@ -92,7 +96,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
                                     include_replication_index=include_replication_index,
-                                    allow_nan=allow_nan, use_try=use_try), TRUE)
+                                    allow_nan=allow_nan, allow_gen_errors=allow_gen_errors,
+                                    use_try=use_try), TRUE)
             }
         }
     }

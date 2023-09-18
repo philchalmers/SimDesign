@@ -1318,7 +1318,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
                                          progress=progress, store_results=FALSE, use_try=use_try,
-                                         stop_on_fatal=stop_on_fatal)
+                                         stop_on_fatal=stop_on_fatal,
+                                         allow_gen_errors=!SimSolveRun)
             time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
             if(notification == 'condition')
@@ -1355,7 +1356,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             load_seed=load_seed, export_funs=export_funs,
                             warnings_as_errors=warnings_as_errors,
                             progress=progress, store_results=store_results, use_try=use_try,
-                            stop_on_fatal=stop_on_fatal)
+                            stop_on_fatal=stop_on_fatal,
+                            allow_gen_errors=!SimSolveRun)
             if(SimSolveRun){
                 full_results <- attr(tmp, 'full_results')
                 condition <- if(was_tibble) dplyr::as_tibble(design[i,]) else design[i,]
