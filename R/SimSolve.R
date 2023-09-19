@@ -121,7 +121,12 @@
 #'   analysis setups where isolated results passed to \code{summarise} will
 #'   return 0/1s, however other families should be used had \code{summarise}
 #'   returned something else (e.g., if solving for a particular standard error
-#'   then a \code{'gaussian'} family would be more appropriate)
+#'   then a \code{'gaussian'} family would be more appropriate).
+#'
+#'   Note that if individual  results from the \code{analyse} steps should
+#'   not be used (i.e., only the aggregate from \code{summarise} is meaningful)
+#'   then set \code{control = list(summarise.reg_data = TRUE)} to override the default
+#'   behaviour, thereby using only the aggregate information and weights
 #'
 #' @param ... additional arguments to be pasted to \code{\link{PBA}}
 #'
@@ -291,7 +296,6 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
 
     # robust <- FALSE
     burnin <- 15L
-    if(!integer && family == 'binomial') family <- 'gaussian'
     if(is.list(replications)){
         if(is.null(replications$burnin)) replications$burnin <- burnin else
             burnin <- replications$burnin

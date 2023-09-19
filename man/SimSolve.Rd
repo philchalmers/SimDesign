@@ -86,11 +86,16 @@ throughout the search}
 fits an orthogonal polynomial of degree 2}
 
 \item{family}{\code{family} argument passed to \code{\link{glm}}. By default
-the \code{'binomial'} family is used, as this function defaults to power
-analysis setups where isolated results passed to \code{summarise} will
-return 0/1s, however other families should be used had \code{summarise}
-returned something else (e.g., if solving for a particular standard error
-then a \code{'gaussian'} family would be more appropriate)}
+  the \code{'binomial'} family is used, as this function defaults to power
+  analysis setups where isolated results passed to \code{summarise} will
+  return 0/1s, however other families should be used had \code{summarise}
+  returned something else (e.g., if solving for a particular standard error
+  then a \code{'gaussian'} family would be more appropriate).
+
+  Note that if individual  results from the \code{analyse} steps should
+  not be used (i.e., only the aggregate from \code{summarise} is meaningful)
+  then set \code{control = list(summarise.reg_data = TRUE)} to override the default
+  behaviour, thereby using only the aggregate information and weights}
 
 \item{parallel}{for parallel computing for slower simulation experiments
 (see \code{\link{runSimulation}} for details)}
