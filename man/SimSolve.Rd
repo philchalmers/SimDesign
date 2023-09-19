@@ -119,8 +119,8 @@ in the working directory will automatically be loaded to resume (see
 
 \describe{
    \item{\code{tol}}{tolerance criteria for early termination (.1 for
-     \code{integer = TRUE} searches; .001 for non-integer searches}
-   \item{\code{rel.tol}}{relative tolerance criteria for early termination (default .00001)}
+     \code{integer = TRUE} searches; .0005 for non-integer searches}
+   \item{\code{rel.tol}}{relative tolerance criteria for early termination (default .0001)}
    \item{\code{k.success}}{number of consecutive tolerance success given \code{rel.tol} and
      \code{tol} criteria (default is 3)}
    \item{\code{bolster}}{logical; should the PBA evaluations use bolstering based on previous

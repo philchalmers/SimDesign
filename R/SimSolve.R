@@ -75,8 +75,8 @@
 #'
 #' \describe{
 #'    \item{\code{tol}}{tolerance criteria for early termination (.1 for
-#'      \code{integer = TRUE} searches; .001 for non-integer searches}
-#'    \item{\code{rel.tol}}{relative tolerance criteria for early termination (default .00001)}
+#'      \code{integer = TRUE} searches; .0005 for non-integer searches}
+#'    \item{\code{rel.tol}}{relative tolerance criteria for early termination (default .0001)}
 #'    \item{\code{k.success}}{number of consecutive tolerance success given \code{rel.tol} and
 #'      \code{tol} criteria (default is 3)}
 #'    \item{\code{bolster}}{logical; should the PBA evaluations use bolstering based on previous
@@ -313,7 +313,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         useFuture <- tolower(parallel) == 'future'
         parallel <- TRUE
     } else useFuture <- FALSE
-    if(is.null(control$tol)) control$tol <- if(integer) .1 else .001
+    if(is.null(control$tol)) control$tol <- if(integer) .1 else .0005
     if(is.null(control$summarise.reg_data))
         control$summarise.reg_data <- FALSE
     if(is.null(control$rel.tol)) control$rel.tol <- .0001
