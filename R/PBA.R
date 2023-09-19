@@ -161,6 +161,7 @@ PBA <- function(f, interval, ..., p = .6,
         replications <- FromSimSolve$replications
         tol <- FromSimSolve$tol
         rel.tol <- FromSimSolve$rel.tol
+        control <- FromSimSolve$control
         # robust <- FromSimSolve$robust
         interpolate.burnin <- FromSimSolve$interpolate.burnin
         glmpred.last <- glmpred <- c(NA, NA)
@@ -214,13 +215,15 @@ PBA <- function(f, interval, ..., p = .6,
         e.froot <- sum(roothistory[iter:1L] * w[iter:1] / sum(w[iter:1]))
 
         if(interpolate && iter > interpolate.after){
-            SimSolveData <- SimSolveData(burnin=interpolate.burnin)
+            SimSolveData <- SimSolveData(burnin=interpolate.burnin,
+                                         full=!control$summarise.reg_data)
             # SimMod <- if(robust)
             #     suppressWarnings(robustbase::glmrob(formula = formula,
             #                          data=SimSolveData, family=family))
             #     else
             SimMod <- try(suppressWarnings(glm(formula = formula,
-                                          data=SimSolveData, family=family)), silent=TRUE)
+                                               data=SimSolveData, family=family,
+                                               weights=weights)), silent=TRUE)
             glmpred <- if(is(SimMod, 'try-error')){
                 c(NA, NA)
             } else {

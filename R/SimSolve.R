@@ -92,6 +92,10 @@
 #'      elements to indicate how many replications are currently being evaluated? Mainly
 #'      useful when further precision tuning within each ProBABLI iteration is
 #'      desirable (e.g., for bootstrapping). Default is \code{FALSE}}
+#'    \item{\code{summarise.reg_data}}{logical; should the aggregate results from \code{Summarise}
+#'      (along with its associated weights) be used for the interpolation steps, or the
+#'      raw data from the \code{Analyse} step? Set this to \code{TRUE} when the individual
+#'      results from \code{Analyse} give less meaningful information}
 #'    }
 #'
 # @param interpolate.burnin integer indicating the number of initial iterations
@@ -287,6 +291,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
 
     # robust <- FALSE
     burnin <- 15L
+    if(!integer && family == 'binomial') family <- 'gaussian'
     if(is.list(replications)){
         if(is.null(replications$burnin)) replications$burnin <- burnin else
             burnin <- replications$burnin
@@ -305,6 +310,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         parallel <- TRUE
     } else useFuture <- FALSE
     if(is.null(control$tol)) control$tol <- if(integer) .1 else .001
+    if(is.null(control$summarise.reg_data))
+        control$summarise.reg_data <- FALSE
     if(is.null(control$rel.tol)) control$rel.tol <- .0001
     if(is.null(control$k.sucess)) control$k.success <- 3L
     if(is.null(control$interpolate.R)) control$interpolate.R <- 3000L
@@ -422,6 +429,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       bolster=control$bolster,
                                       k.success=control$k.success,
                                       single_step.iter=control$single_step.iter,
+                                      control=control,
                                       # robust = robust,
                                       interpolate.burnin=burnin)
         roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,

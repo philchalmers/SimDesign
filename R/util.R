@@ -428,7 +428,7 @@ SimSolveData <- function(burnin, full = TRUE){
         DV <- do.call(c, .SIMDENV$stored_results[pick])
         IV <- rep(.SIMDENV$stored_medhistory[pick],
                   times=sapply(.SIMDENV$stored_results[pick], length))
-        ret <- data.frame(y=DV, x=IV)
+        ret <- data.frame(y=DV, x=IV, weights=1)
     } else {
         ret <- do.call(rbind, .SIMDENV$stored_history[pick])
         ret$weights <- 1/sqrt(ret$reps)

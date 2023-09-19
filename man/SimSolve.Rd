@@ -131,6 +131,10 @@ in the working directory will automatically be loaded to resume (see
      elements to indicate how many replications are currently being evaluated? Mainly
      useful when further precision tuning within each ProBABLI iteration is
      desirable (e.g., for bootstrapping). Default is \code{FALSE}}
+   \item{\code{summarise.reg_data}}{logical; should the aggregate results from \code{Summarise}
+     (along with its associated weights) be used for the interpolation steps, or the
+     raw data from the \code{Analyse} step? Set this to \code{TRUE} when the individual
+     results from \code{Analyse} give less meaningful information}
    }}
 
 \item{...}{additional arguments to be pasted to \code{\link{PBA}}}
