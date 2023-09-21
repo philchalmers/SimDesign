@@ -486,3 +486,8 @@ RAM_used <- function(){
     size <- structure(bytes, class="object_size")
     format(size, 'MB')
 }
+
+clip_names <- function(vec, maxchar = 150L){
+    names(vec) <- strtrim(names(vec), width=maxchar)
+    vec
+}

@@ -171,8 +171,9 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     }
     sim_results <- sim_results_check(sim_results)
     summarise_list <- attr(sim_results, 'summarise_list')
-    ret <- c(sim_results, 'REPLICATIONS'=replications, 'ERROR: '=try_errors,
-             'WARNING: '=warnings)
+    ret <- c(sim_results, 'REPLICATIONS'=replications,
+             'ERROR: '=clip_names(try_errors),
+             'WARNING: '=clip_names(warnings))
     if(boot_method != 'none'){
         # could parallelize, but likely not worth the overhead
         # TODO test whether this works with Summarise() list outputs

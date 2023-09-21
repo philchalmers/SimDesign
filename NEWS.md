@@ -2,6 +2,8 @@
 
 ## Changes in SimDesign 2.13
 
+- Fix Github issue #26 related to extremely long warning/error messages 
+
 - `save_results_filename` added to `runSimulation()` saving details to allow
   asynchronous (though unchecked) file storage to the same results 
   directory (suggested by Jan Göttmann)
