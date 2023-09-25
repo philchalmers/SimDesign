@@ -242,7 +242,9 @@ PBA <- function(f, interval, ..., p = .6,
                 if(abs_diff <= tol || rel_diff <= rel.tol){
                     k.successes <- k.successes + 1L
                     if(k.successes == k.success) break
-                } else k.successes <- 0L
+                } else {
+                    k.successes <- max(c(k.successes - 1L, 0L))
+                }
             } else k.successes <- 0L
             glmpred.last <- glmpred
         }

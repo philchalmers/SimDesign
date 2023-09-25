@@ -122,7 +122,7 @@ in the working directory will automatically be loaded to resume (see
      \code{integer = TRUE} searches; .0005 for non-integer searches}
    \item{\code{rel.tol}}{relative tolerance criteria for early termination (default .0001)}
    \item{\code{k.success}}{number of consecutive tolerance success given \code{rel.tol} and
-     \code{tol} criteria (default is 3)}
+     \code{tol} criteria. Consecutive failures add -1 to the counter (default is 3)}
    \item{\code{bolster}}{logical; should the PBA evaluations use bolstering based on previous
      evaluations? Default is \code{TRUE}, though only applicable when \code{integer = TRUE} }
    \item{\code{single_step.iter}}{when \code{integer = TRUE}, do not take steps larger than
