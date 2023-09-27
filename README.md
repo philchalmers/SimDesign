@@ -1,4 +1,4 @@
- [![](http://www.r-pkg.org/badges/version/SimDesign)](http://www.r-pkg.org/pkg/SimDesign) [![](http://cranlogs.r-pkg.org/badges/grand-total/SimDesign)](https://CRAN.R-project.org/package=SimDesign)
+ [![](http://www.r-pkg.org/badges/version/SimDesign)](https://www.r-pkg.org:443/pkg/SimDesign) [![](http://cranlogs.r-pkg.org/badges/grand-total/SimDesign)](https://CRAN.R-project.org/package=SimDesign)
 
 
 # SimDesign <img src="SimDesign-logo.png" align="right" height="200px" />
