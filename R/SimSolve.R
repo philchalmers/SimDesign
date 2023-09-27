@@ -307,7 +307,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                               seq(burnin.reps, by=increase.by,
                                                   length.out=maxiter-burnin))))
     }
-    ANALYSE_FUNCTIONS <- NULL
+    ANALYSE_FUNCTIONS <- GENERATE_FUNCTIONS <- NULL
     .SIMDENV$ANALYSE_FUNCTIONS <- ANALYSE_FUNCTIONS <- analyse
     if(is.character(parallel)){
         useFuture <- tolower(parallel) == 'future'
@@ -322,7 +322,6 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     if(is.null(control$bolster)) control$bolster <- TRUE
     if(is.null(control$single_step.iter)) control$single_step.iter <- 40L
     if(is.null(control$include_reps)) control$include_reps <- FALSE
-
     on.exit(.SIMDENV$stored_results <- .SIMDENV$stored_medhistory <-
                 .SIMDENV$stored_history <- .SIMDENV$include_reps <- NULL,
             add = TRUE)
@@ -330,6 +329,16 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
 
     if(missing(generate) && !missing(analyse))
         generate <- function(condition, dat, fixed_objects = NULL){}
+    GENERATE_FUNCTIONS <- generate
+    char_functions <- c(deparse(substitute(ANALYSE_FUNCTIONS)),
+                             deparse(substitute(GENERATE_FUNCTIONS)))
+    if(any(grepl('browser\\(', char_functions))){
+        if(verbose && parallel)
+            message(paste0('A browser() call was detected. Parallel processing ',
+                           'will be disabled while browser() is visible'))
+        parallel <- useFuture <- FALSE
+    }
+
     stopifnot(!missing(b))
     stopifnot(length(b) == 1L)
     stopifnot(!missing(interval))
