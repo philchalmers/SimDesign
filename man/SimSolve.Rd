@@ -108,7 +108,11 @@ in the working directory will automatically be loaded to resume (see
 
 \item{ncores}{see \code{\link{runSimulation}}}
 
-\item{type}{type of cluster object to define}
+\item{type}{type of cluster object to define. If \code{type} used in \code{plot}
+then can be \code{'density'} to plot the density of the iteration history
+after the burn-in stage, \code{'iterations'} for a bubble plot with inverse
+replication weights. If not specified then the default PBA
+plots are provided {see \code{\link{PBA}}}}
 
 \item{maxiter}{the maximum number of iterations (default 100)}
 
@@ -119,7 +123,7 @@ in the working directory will automatically be loaded to resume (see
 
 \describe{
    \item{\code{tol}}{tolerance criteria for early termination (.1 for
-     \code{integer = TRUE} searches; .0005 for non-integer searches}
+     \code{integer = TRUE} searches; .00025 for non-integer searches}
    \item{\code{rel.tol}}{relative tolerance criteria for early termination (default .0001)}
    \item{\code{k.success}}{number of consecutive tolerance success given \code{rel.tol} and
      \code{tol} criteria. Consecutive failures add -1 to the counter (default is 3)}
@@ -245,6 +249,7 @@ plot(solved, 3)
 # also can plot median history and estimate precision
 plot(solved, 1, type = 'history')
 plot(solved, 1, type = 'density')
+plot(solved, 1, type = 'iterations')
 
 # verify with true power from pwr package
 library(pwr)
@@ -300,6 +305,11 @@ summary(solved)
 plot(solved, 1)
 plot(solved, 2)
 plot(solved, 3)
+
+# plot median history and estimate precision
+plot(solved, 1, type = 'history')
+plot(solved, 1, type = 'density')
+plot(solved, 1, type = 'iterations')
 
 # verify with true power from pwr package
 library(pwr)

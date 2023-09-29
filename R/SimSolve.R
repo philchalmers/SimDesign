@@ -75,7 +75,7 @@
 #'
 #' \describe{
 #'    \item{\code{tol}}{tolerance criteria for early termination (.1 for
-#'      \code{integer = TRUE} searches; .0005 for non-integer searches}
+#'      \code{integer = TRUE} searches; .00025 for non-integer searches}
 #'    \item{\code{rel.tol}}{relative tolerance criteria for early termination (default .0001)}
 #'    \item{\code{k.success}}{number of consecutive tolerance success given \code{rel.tol} and
 #'      \code{tol} criteria. Consecutive failures add -1 to the counter (default is 3)}
@@ -112,7 +112,11 @@
 #'
 #' @param ncores see \code{\link{runSimulation}}
 #'
-#' @param type type of cluster object to define
+#' @param type type of cluster object to define. If \code{type} used in \code{plot}
+#'   then can be \code{'density'} to plot the density of the iteration history
+#'   after the burn-in stage, \code{'iterations'} for a bubble plot with inverse
+#'   replication weights. If not specified then the default PBA
+#'   plots are provided {see \code{\link{PBA}}}
 #'
 #' @param formula regression formula to use when \code{interpolate = TRUE}. Default
 #'   fits an orthogonal polynomial of degree 2
@@ -211,6 +215,7 @@
 #' # also can plot median history and estimate precision
 #' plot(solved, 1, type = 'history')
 #' plot(solved, 1, type = 'density')
+#' plot(solved, 1, type = 'iterations')
 #'
 #' # verify with true power from pwr package
 #' library(pwr)
@@ -267,6 +272,11 @@
 #' plot(solved, 2)
 #' plot(solved, 3)
 #'
+#' # plot median history and estimate precision
+#' plot(solved, 1, type = 'history')
+#' plot(solved, 1, type = 'density')
+#' plot(solved, 1, type = 'iterations')
+#'
 #' # verify with true power from pwr package
 #' library(pwr)
 #' pwr.t.test(n=100, power = .8, sig.level = .05)
@@ -314,7 +324,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         useFuture <- tolower(parallel) == 'future'
         parallel <- TRUE
     } else useFuture <- FALSE
-    if(is.null(control$tol)) control$tol <- if(integer) .1 else .0005
+    if(is.null(control$tol)) control$tol <- if(integer) .1 else .00025
     if(is.null(control$summarise.reg_data))
         control$summarise.reg_data <- FALSE
     if(is.null(control$rel.tol)) control$rel.tol <- .0001
@@ -509,11 +519,22 @@ plot.SimSolve <- function(x, y, ...)
     if(missing(y)) y <- 1L
     roots <- attr(x, 'roots')[[y]]
     dots <- list(...)
-    if(!is.null(dots$type) && dots$type == 'density'){
+    if(!is.null(dots$type) && dots$type %in% c('density', 'iterations')){
         so <- summary(x, ...)
         tab <- so[[y]]$tab
-        with(tab, plot(density(x, weights=reps/sum(reps)),
-                       main = 'Density Using Replication Weights', las=1))
+        if(is.null(tab)) {
+            tab <- attr(roots, 'stored_tab')
+            tab <- do.call(rbind, tab)
+            tab <- tab[-c(1:so[[y]]$burnin), ]
+        }
+        if(dots$type == 'density')
+            with(tab, plot(density(x, weights=reps/sum(reps)),
+                           main = 'Density Using Replication Weights', las=1))
+        else
+            with(tab, symbols(x, y, circles=sqrt(1 /reps/sum(reps)),
+                              inches=0.2, fg="white", bg="black", las=1,
+                              ylab = 'Summarise', xlab = 'Design (NA)',
+                              main = 'Inverse replication weights'))
     } else plot(roots, las=1, ...)
     return(invisible(NULL))
 }

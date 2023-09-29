@@ -167,7 +167,10 @@ PBA <- function(f, interval, ..., p = .6,
         glmpred.last <- glmpred <- c(NA, NA)
         k.success <- FromSimSolve$k.success
         k.successes <- 0L
-    } else interpolate <- FALSE
+    } else{
+        interpolate <- FALSE
+        interpolate.burnin <- NULL
+    }
     x <- if(integer) interval[1L]:interval[2L]
         else seq(interval[1L], interval[2L], length.out=resolution[1L])
     fx <- if(is.null(f.prior)) rep(1, length(x)) else f.prior(x, ...)
@@ -275,7 +278,8 @@ PBA <- function(f, interval, ..., p = .6,
         else glmpred[1L]
     ret <- list(iter=iter, root=root, terminated_early=converged, integer=integer,
                 e.froot=e.froot, x=x, fx=fx, medhistory=medhistory,
-                time=as.numeric(proc.time()[3L]-start_time))
+                time=as.numeric(proc.time()[3L]-start_time),
+                burnin=interpolate.burnin)
     if(!is.null(FromSimSolve)) ret$total.replications <- sum(replications[1L:iter])
     class(ret) <- 'PBA'
     ret
