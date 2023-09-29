@@ -126,8 +126,9 @@ in the working directory will automatically be loaded to resume (see
    \item{\code{bolster}}{logical; should the PBA evaluations use bolstering based on previous
      evaluations? Default is \code{TRUE}, though only applicable when \code{integer = TRUE} }
    \item{\code{single_step.iter}}{when \code{integer = TRUE}, do not take steps larger than
-     size 1 after this iteration number (default is 40). This prevents wide oscillations
-     around the probable root}
+     size 1% the current value after this iteration number
+     (default is 40). This prevents wide oscillations
+     around the probable root for uncertain solutions}
    \item{\code{interpolate.R}}{number of replications to collect prior to performing
      the interpolation step (default is 3000 after accounting for data exclusion
      from \code{burnin}). Setting this to 0 will disable any
