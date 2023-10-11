@@ -27,6 +27,8 @@ options(digits=4)
 par(mar=c(3,3,1,1)+.1)
 ```
 
+> Seek computer programs that allow you to do the thinking. -- George E. P. Box
+
 Whether you are interested in evaluating the performance of a new optimizer or estimation criteria, 
 re-evaluating previous research claims (e.g., ANOVA is 'robust' to violations of normality), 
 determine power rates for an upcoming research proposal, 
