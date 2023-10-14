@@ -337,6 +337,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                 .SIMDENV$stored_history <- .SIMDENV$include_reps <- NULL,
             add = TRUE)
     on.exit(.SIMDENV$FromSimSolve <- NULL, add = TRUE)
+    solve_name <- apply(design, 1L, function(x) colnames(design)[is.na(x)])
 
     if(missing(generate) && !missing(analyse))
         generate <- function(condition, dat, fixed_objects = NULL){}
@@ -483,6 +484,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     ret[, which(is.na(ret[i,])), drop=TRUE] <- vals
     attr(ret, 'roots') <- roots
     attr(ret, 'summarise_fun') <- summarise
+    attr(ret, 'solve_name') <- solve_name
     class(ret) <- c('SimSolve', class(ret))
     ret
 }
@@ -518,6 +520,7 @@ plot.SimSolve <- function(x, y, ...)
 {
     if(missing(y)) y <- 1L
     roots <- attr(x, 'roots')[[y]]
+    solve_name <- attr(x, 'solve_name')[y]
     dots <- list(...)
     if(!is.null(dots$type) && dots$type %in% c('density', 'iterations')){
         so <- summary(x, ...)
@@ -533,7 +536,7 @@ plot.SimSolve <- function(x, y, ...)
         else
             with(tab, symbols(x, y, circles=sqrt(1 /reps/sum(reps)),
                               inches=0.2, fg="white", bg="black", las=1,
-                              ylab = 'Summarise', xlab = 'Design (NA)',
+                              ylab = 'Summarise', xlab = solve_name,
                               main = 'Inverse replication weights'))
     } else plot(roots, las=1, ...)
     return(invisible(NULL))
