@@ -112,7 +112,7 @@ in the working directory will automatically be loaded to resume (see
 then can be \code{'density'} to plot the density of the iteration history
 after the burn-in stage, \code{'iterations'} for a bubble plot with inverse
 replication weights. If not specified then the default PBA
-plots are provided {see \code{\link{PBA}}}}
+plots are provided (see \code{\link{PBA}})}
 
 \item{maxiter}{the maximum number of iterations (default 100)}
 

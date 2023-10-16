@@ -116,7 +116,7 @@
 #'   then can be \code{'density'} to plot the density of the iteration history
 #'   after the burn-in stage, \code{'iterations'} for a bubble plot with inverse
 #'   replication weights. If not specified then the default PBA
-#'   plots are provided {see \code{\link{PBA}}}
+#'   plots are provided (see \code{\link{PBA}})
 #'
 #' @param formula regression formula to use when \code{interpolate = TRUE}. Default
 #'   fits an orthogonal polynomial of degree 2
