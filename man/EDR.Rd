@@ -2,7 +2,8 @@
 % Please edit documentation in R/summary_functions.R
 \name{EDR}
 \alias{EDR}
-\title{Compute the empirical detection rate for Type I errors and Power}
+\alias{ERR}
+\title{Compute the empirical detection/rejection rate for Type I errors and Power}
 \usage{
 EDR(p, alpha = 0.05, unname = FALSE)
 }
@@ -11,15 +12,15 @@ EDR(p, alpha = 0.05, unname = FALSE)
 desired statistical estimator. If a \code{matrix}, each statistic must be organized by
 column, where the number of rows is equal to the number of replications}
 
-\item{alpha}{the nominal detection rate to be studied (typical values are .10, .05, and .01).
+\item{alpha}{the detection threshold (typical values are .10, .05, and .01).
 Default is .05}
 
 \item{unname}{logical; apply \code{\link{unname}} to the results to remove any variable
 names?}
 }
 \description{
-Computes the detection rate for determining empirical Type I error and power rates
-using information from p-values.
+Computes the detection/rejection rate for determining empirical
+Type I error and power rates using information from p-values.
 }
 \examples{
 

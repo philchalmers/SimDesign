@@ -836,22 +836,22 @@ RD <- function(est, pop, as.vector = TRUE, unname = FALSE){
 }
 
 
-#' Compute the empirical detection rate for Type I errors and Power
+#' Compute the empirical detection/rejection rate for Type I errors and Power
 #'
-#' Computes the detection rate for determining empirical Type I error and power rates
-#' using information from p-values.
+#' Computes the detection/rejection rate for determining empirical
+#' Type I error and power rates using information from p-values.
 #'
 #' @param p a \code{numeric} vector or \code{matrix}/\code{data.frame} of p-values from the
 #'   desired statistical estimator. If a \code{matrix}, each statistic must be organized by
 #'   column, where the number of rows is equal to the number of replications
 #'
-#' @param alpha the nominal detection rate to be studied (typical values are .10, .05, and .01).
+#' @param alpha the detection threshold (typical values are .10, .05, and .01).
 #'   Default is .05
 #'
 #' @param unname logical; apply \code{\link{unname}} to the results to remove any variable
 #'   names?
 #'
-#' @aliases EDR
+#' @aliases EDR ERR
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
@@ -893,6 +893,9 @@ EDR <- function(p, alpha = .05, unname = FALSE){
     if(unname) ret <- unname(ret)
     ret
 }
+
+#' @export
+ERR <- EDR
 
 
 
