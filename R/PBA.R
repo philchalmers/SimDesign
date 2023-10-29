@@ -192,10 +192,12 @@ PBA <- function(f, interval, ..., p = .6,
         }
         if(check.interval.only) return(!no_root)
     }
+    glmpred.converged <- FALSE
 
     for(iter in 1L:maxiter){
         med <- getMedian(fx, x)
-        if(!is.null(FromSimSolve) && integer && iter >= FromSimSolve$single_step.iter){
+        if(!is.null(FromSimSolve) && integer && iter >= FromSimSolve$single_step.iter &&
+           glmpred.converged){
             med <- ifelse(abs(med - medhistory[iter-1L]) > med * .01,
                           medhistory[iter-1L] + sign(med - medhistory[iter-1L])*.01*med, med)
             if(integer) med <- round(med)
@@ -234,6 +236,10 @@ PBA <- function(f, interval, ..., p = .6,
                                                  max.interval=interval,
                                                  median=med))
             }
+            if(is.na(glmpred[1L])){
+                glmpred.converged <- FALSE
+                glmpred[1L] <- med
+            }
 
             # Should termination occur early when this changes very little?
             if(!any(is.na(c(glmpred[1L], glmpred.last[1L])))){
@@ -268,8 +274,7 @@ PBA <- function(f, interval, ..., p = .6,
     fx <- exp(fx) / sum(exp(fx)) # normalize final result
     medhistory <- medhistory[1L:(iter-1L)]
     # BI <- belief_interval(x, fx, CI=CI)
-    root <- if(!interpolate || is.na(glmpred[1L]))
-        medhistory[length(medhistory)] else glmpred[1L]
+    root <- if(!interpolate) medhistory[length(medhistory)] else glmpred[1L]
     ret <- list(iter=iter, root=root, terminated_early=converged, integer=integer,
                 e.froot=e.froot, x=x, fx=fx, medhistory=medhistory,
                 time=as.numeric(proc.time()[3L]-start_time),
