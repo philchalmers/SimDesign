@@ -14,7 +14,6 @@ PBA(
   integer = FALSE,
   tol = if (integer) 0.01 else 1e-04,
   maxiter = 300L,
-  mean_window = 100L,
   f.prior = NULL,
   resolution = 10000L,
   check.interval = TRUE,
@@ -44,10 +43,6 @@ latter currently creates a grid with \code{resolution} points}
 \code{f(x)} evaluations}
 
 \item{maxiter}{the maximum number of iterations}
-
-\item{mean_window}{last n iterations used to compute the final estimate of the root.
-This is used to avoid the influence of the early bisection steps in the
-final root estimate}
 
 \item{f.prior}{density function indicating the likely location of the prior
 (e.g., if root is within [0,1] then \code{\link{dunif}} works, otherwise custom

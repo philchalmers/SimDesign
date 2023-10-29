@@ -52,10 +52,6 @@
 #' @param resolution constant indicating the
 #'   number of equally spaced grid points to track when \code{integer = FALSE}.
 #'
-#' @param mean_window last n iterations used to compute the final estimate of the root.
-#'   This is used to avoid the influence of the early bisection steps in the
-#'   final root estimate
-#'
 # @param CI advertised confidence level for Bayes interval
 #'
 #' @param verbose logical; should the iterations and estimate be printed to the
@@ -114,8 +110,7 @@
 #'
 PBA <- function(f, interval, ..., p = .6,
                 integer = FALSE, tol = if(integer) .01 else .0001,
-                maxiter = 300L, mean_window = 100L,
-                f.prior = NULL, resolution = 10000L,
+                maxiter = 300L,  f.prior = NULL, resolution = 10000L,
                 check.interval = TRUE, check.interval.only = FALSE,
                 verbose = TRUE){
 
@@ -253,7 +248,7 @@ PBA <- function(f, interval, ..., p = .6,
             } else k.successes <- 0L
             glmpred.last <- glmpred
         }
-        if(!interpolate && abs(e.froot) < tol && iter > mean_window) break
+        if(!interpolate && abs(e.froot) < tol) break
 
         if(verbose){
             if(integer)
@@ -273,9 +268,8 @@ PBA <- function(f, interval, ..., p = .6,
     fx <- exp(fx) / sum(exp(fx)) # normalize final result
     medhistory <- medhistory[1L:(iter-1L)]
     # BI <- belief_interval(x, fx, CI=CI)
-    root <- if(!interpolate) mean(medhistory[length(medhistory):
-                                                 (length(medhistory)-mean_window+1L)])
-        else glmpred[1L]
+    root <- if(!interpolate || is.na(glmpred[1L]))
+        medhistory[length(medhistory)] else glmpred[1L]
     ret <- list(iter=iter, root=root, terminated_early=converged, integer=integer,
                 e.froot=e.froot, x=x, fx=fx, medhistory=medhistory,
                 time=as.numeric(proc.time()[3L]-start_time),
