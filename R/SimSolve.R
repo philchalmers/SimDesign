@@ -485,6 +485,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     attr(ret, 'roots') <- roots
     attr(ret, 'summarise_fun') <- summarise
     attr(ret, 'solve_name') <- solve_name
+    attr(ret, 'b') <- b
     class(ret) <- c('SimSolve', class(ret))
     ret
 }
@@ -519,6 +520,7 @@ summary.SimSolve <- function(object, tab.only = FALSE, reps.cutoff = 300, ...)
 plot.SimSolve <- function(x, y, ...)
 {
     if(missing(y)) y <- 1L
+    b <- attr(x, 'b')
     roots <- attr(x, 'roots')[[y]]
     solve_name <- attr(x, 'solve_name')[y]
     dots <- list(...)
@@ -533,11 +535,14 @@ plot.SimSolve <- function(x, y, ...)
         if(dots$type == 'density')
             with(tab, plot(density(x, weights=reps/sum(reps)),
                            main = 'Density Using Replication Weights', las=1))
-        else
+        else {
             with(tab, symbols(x, y, circles=sqrt(1 /reps/sum(reps)),
                               inches=0.2, fg="white", bg="black", las=1,
                               ylab = 'Summarise', xlab = solve_name,
                               main = 'Inverse replication weights'))
+            abline(h=b, lty=2, col='red')
+            abline(v=roots$root, lty=2, col='blue')
+        }
     } else plot(roots, las=1, ...)
     return(invisible(NULL))
 }
