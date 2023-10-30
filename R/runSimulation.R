@@ -921,6 +921,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
+    if(!verbose) control$print_RAM <- FALSE
     ANALYSE_FUNCTIONS <- TRY_ALL_ANALYSE <- NULL
     if(is.character(parallel)){
         useFuture <- tolower(parallel) == 'future'
