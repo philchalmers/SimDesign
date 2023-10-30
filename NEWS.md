@@ -1,5 +1,14 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.14
+
+- `control` gains a `print_RAM` logical argument to suppress printing the RAM
+  when `verbose = TRUE`. Disabling this can marginally improve execution speed
+  as the garbage collector (`gc()`) calls are avoided, which is used to extract
+  the current RAM state. Setting `verbose=TRUE` will also disable the RAM 
+  and `gc()` calls and their overhead
+
+
 ## Changes in SimDesign 2.13
 
 - Fix Github issue #26 related to extremely long warning/error messages 
