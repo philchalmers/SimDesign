@@ -306,6 +306,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      maxiter = 100L, verbose = TRUE, control = list(), ...){
 
     # robust <- FALSE
+    if(is.null(control$print_RAM)) control$print_RAM <- FALSE
     burnin <- 15L
     if(is.list(replications)){
         if(is.null(replications$burnin)) replications$burnin <- burnin else
@@ -370,7 +371,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         ret <- runSimulation(design=design.row, replications=replications,
                              generate=generate, analyse=analyse,
                              parallel=parallel, cl=cl,
-                             summarise=summarise, save=FALSE, verbose=FALSE, ...)
+                             summarise=summarise, save=FALSE, verbose=FALSE,
+                             control=.SIMDENV$FromSimSolve$control, ...)
         val <- ifelse(is.list(ret), ret[[1L]], ret[1L])
         if(store){
             pick <- min(which(sapply(.SIMDENV$stored_results, is.null)))

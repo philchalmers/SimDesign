@@ -431,6 +431,10 @@ errors are thrown in any
      \item{\code{MPI}}{logical (default is \code{FALSE}); use the \code{foreach} package in a
        form usable by MPI to run simulation in parallel on a cluster? }
 
+     \item{\code{print_RAM}}{logical (default is \code{TRUE}); print the amount of RAM
+       used throughout the simulation? Set to \code{FALSE} if unnecessary or if the call to
+       \code{\link{gc}} is unnecessarily time consuming}
+
      \item{\code{.options.mpi}}{list of arguments passed to \code{foreach()} to control the MPI execution
        properties. Only used when \code{MPI = TRUE}}
 
