@@ -4,7 +4,7 @@
 \alias{SimSolve}
 \alias{summary.SimSolve}
 \alias{plot.SimSolve}
-\title{Optimized target quantities in simulation experiments (ProBABLI)}
+\title{One Dimensional Root (Zero) Finding in Simulation Experiments}
 \usage{
 SimSolve(
   design,
@@ -165,7 +165,7 @@ the filled-in \code{design} object containing the associated lower and upper int
   estimates from the stochastic optimization
 }
 \description{
-This function provides a stochastic optimization approach to solving
+This function provides a stochastic root-finding approach to solving
 specific quantities in simulation experiments (e.g., solving for a specific
 sample size to meet a target power rate) using the
 Probablistic Bisection Algorithm with Bolstering and Interpolations
@@ -176,11 +176,13 @@ fixed, and the constant \code{b} is required in order to
 solve the root equation \code{f(x) - b = 0}.
 }
 \details{
-Optimization is performed using the probabilistic bisection algorithm
-(\code{\link{PBA}}) to find the associated root given the noisy simulation
-objective function evaluations. Information is also collected throughout
-the iterations in order to make more aggressive predictions about the
-associated root via interpolation and extrapolation.
+Root finding is performed using a progressively bolstered version of the
+probabilistic bisection algorithm (\code{\link{PBA}}) to find the
+associated root given the noisy simulation
+objective function evaluations. Information is collected throughout
+the search to make more accurate predictions about the
+associated root via interpolation. If interpolations fail, then the last
+iteration of the PBA search is returned as the best guess.
 }
 \examples{
 
