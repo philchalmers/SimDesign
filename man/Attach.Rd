@@ -34,6 +34,14 @@ is useful primarily as a convenience function when you prefer to call the variab
 in \code{condition} directly rather than indexing with \code{condition$sample_size} or
 \code{with(condition, sample_size)}, for example.
 }
+\details{
+Note that if you are using RStudio with the \emph{"Warn if variable used has no definition in scope"}
+diagnostic flag then using \code{Attach()} will raise suspensions. To suppress such issues,
+you can either disable such flags (the atomic solution) or evaluate the following output
+in the R console and place the output in your working simulation file.
+
+\code{cat(sprintf("# !diagnostics suppress=\%s", paste0(names(Design), collapse=',')))}
+}
 \examples{
 \dontrun{
 
@@ -66,6 +74,27 @@ Generate <- function(condition, fixed_objects = NULL) {
                       DV = c(group1, group2))
     dat
 }
+
+#####################
+# NOTE: if using RStudio with code diagnostics on then evaluate + add the
+# following output to your source file to manually support the flagged variables
+
+cat(sprintf("# !diagnostics suppress=\%s", paste0(names(Design), collapse=',')))
+
+# Below is the same example, however with false positive missing variables suppressed
+# when # !diagnostics ... is added added to the source file(s)
+
+# !diagnostics suppress=N1,N2,sd
+Generate <- function(condition, fixed_objects = NULL) {
+    Attach(condition) # N1, N2, and sd are now 'attached' and visible
+
+    group1 <- rnorm(N1)
+    group2 <- rnorm(N2, sd=sd)
+    dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)),
+                      DV = c(group1, group2))
+    dat
+}
+
 
 }
 }
