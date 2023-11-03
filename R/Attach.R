@@ -9,8 +9,9 @@
 #' in \code{condition} directly rather than indexing with \code{condition$sample_size} or
 #' \code{with(condition, sample_size)}, for example.
 #'
-#' @param ... a comma separated list of \code{data.frame} or \code{tibble} objects
-#'   containing elements that should be placed in the current working environment
+#' @param ... a comma separated list of \code{data.frame}, \code{tibble}, \code{list},
+#'   or \code{matrix} objects containing (column) elements that should be placed in the
+#'   current working environment
 #'
 #' @param omit an optional character vector containing the names of objects that should not
 #'   be attached to the current environment. For instance, if the objects named 'a' and 'b' should
@@ -82,6 +83,12 @@ Attach <- function(..., omit = NULL, check = TRUE, attach_listone = TRUE){
             if(omit %in% names(dots[[i]]))
                 dots[[i]][names(dots[[i]]) %in% omit] <- NULL
     for(i in 1L:length(dots)){
+        if(is.matrix(dots[[i]])){
+            if(is.null(colnames(dots[[i]])) && check)
+                warning(c('Consider fixing matrix objects with no column ',
+                          'names (defaulting to the variable names V1, V2, ...)'), call.=FALSE)
+            dots[[i]] <- as.data.frame(dots[[i]])
+        }
         if(check)
             if(any(ls(envir = envir) %in% names(dots[[i]])))
                 stop(sprintf('Using Attach() will mask the previously defined variable(s): %s',
@@ -92,6 +99,7 @@ Attach <- function(..., omit = NULL, check = TRUE, attach_listone = TRUE){
                 assign(n, dots[[i]][[n]][[1L]], envir = envir)
                 next
             }
+
             assign(n, dots[[i]][[n]], envir = envir)
         }
     }

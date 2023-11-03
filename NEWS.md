@@ -7,6 +7,8 @@
   as the garbage collector (`gc()`) calls are avoided, which is used to extract
   the current RAM state. Setting `verbose=TRUE` will also disable the RAM 
   and `gc()` calls and their overhead
+  
+- `Attach()` now accepts matrix input objects
 
 
 ## Changes in SimDesign 2.13
