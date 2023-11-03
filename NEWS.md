@@ -8,7 +8,9 @@
   the current RAM state. Setting `verbose=TRUE` will also disable the RAM 
   and `gc()` calls and their overhead
   
-- `Attach()` now accepts matrix input objects
+- `Attach()` now accepts `matrix` input objects, and gains a `RStudio_flags` 
+  argument to generate syntax that suppresses false positives about variables 
+  outside of the function's scope
 
 
 ## Changes in SimDesign 2.13

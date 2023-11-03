@@ -4,7 +4,13 @@
 \alias{Attach}
 \title{Attach objects for easier reference}
 \usage{
-Attach(..., omit = NULL, check = TRUE, attach_listone = TRUE)
+Attach(
+  ...,
+  omit = NULL,
+  check = TRUE,
+  attach_listone = TRUE,
+  RStudio_flags = FALSE
+)
 }
 \arguments{
 \item{...}{a comma separated list of \code{data.frame}, \code{tibble}, \code{list},
@@ -23,6 +29,10 @@ this error}
 \item{attach_listone}{logical; if the element to be assign is a list of length one
 then assign the first element of this list with the associated name. This generally avoids
 adding an often unnecessary list 1 index, such as \code{name <- list[[1L]]}}
+
+\item{RStudio_flags}{logical; print R script output comments that disable flagged
+missing variables in RStudio? Requires the form \code{Attach(Design, RStudio_flags=TRUE)} or
+in an interactive debugging session \code{Attach(condition, RStudio_flags=TRUE)}}
 }
 \description{
 The behaviour of this function is very similar to \code{\link{attach}},
@@ -40,10 +50,9 @@ diagnostic flag then using \code{Attach()} will raise suspensions. To suppress s
 you can either disable such flags (the atomic solution) or evaluate the following output
 in the R console and place the output in your working simulation file.
 
-\code{cat(sprintf("# !diagnostics suppress=\%s", paste0(names(Design), collapse=',')))}
+\code{Attach(Design, RStudio_flags = TRUE)}
 }
 \examples{
-\dontrun{
 
 Design <- createDesign(N1=c(10,20),
                        N2=c(10,20),
@@ -76,10 +85,10 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 #####################
-# NOTE: if using RStudio with code diagnostics on then evaluate + add the
+# NOTE: if you're using RStudio with code diagnostics on then evaluate + add the
 # following output to your source file to manually support the flagged variables
 
-cat(sprintf("# !diagnostics suppress=\%s", paste0(names(Design), collapse=',')))
+Attach(Design, RStudio_flags=TRUE)
 
 # Below is the same example, however with false positive missing variables suppressed
 # when # !diagnostics ... is added added to the source file(s)
@@ -96,7 +105,6 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 
-}
 }
 \references{
 Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
