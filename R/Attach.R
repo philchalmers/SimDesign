@@ -131,17 +131,12 @@ Attach <- function(..., omit = NULL, check = TRUE, attach_listone = TRUE,
                                    collapse=' ')), call. = FALSE)
         if(RStudio_flags){
             collect_names <- c(collect_names, names(dots[[i]]))
-            for(n in names(dots[[i]])){
-                if(attach_listone && is.list(dots[[i]][[n]]) && length(dots[[i]][[n]]) == 1L)
-                    collect_names <- c(collect_names, names(dots[[i]][[n]][[1L]]))
-            }
         } else {
             for(n in names(dots[[i]])){
                 if(attach_listone && is.list(dots[[i]][[n]]) && length(dots[[i]][[n]]) == 1L){
                     assign(n, dots[[i]][[n]][[1L]], envir = envir)
                     next
                 }
-
                 assign(n, dots[[i]][[n]], envir = envir)
             }
         }
