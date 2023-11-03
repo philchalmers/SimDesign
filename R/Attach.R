@@ -43,11 +43,17 @@
 #' @examples
 #' \dontrun{
 #'
+#' Design <- createDesign(N1=c(10,20),
+#'                        N2=c(10,20),
+#'                        sd=c(1,2))
+#' Design
+#'
 #' # does not use Attach()
 #' Generate <- function(condition, fixed_objects = NULL) {
-#'     N1 <- condition$sample_sizes_group1
-#'     N2 <- condition$sample_sizes_group2
-#'     sd <- condition$standard_deviations
+#'     # condition = single row of Design input (e.g., condition <- Design[1,])
+#'     N1 <- condition$N1
+#'     N2 <- condition$N2
+#'     sd <- condition$sd
 #'
 #'     group1 <- rnorm(N1)
 #'     group2 <- rnorm(N2, sd=sd)
@@ -58,10 +64,7 @@
 #'
 #' # similar to above, but using the Attach() function instead of indexing
 #' Generate <- function(condition, fixed_objects = NULL) {
-#'     Attach(condition)
-#'     N1 <- sample_sizes_group1
-#'     N2 <- sample_sizes_group2
-#'     sd <- standard_deviations
+#'     Attach(condition) # N1, N2, and sd are now 'attached' and visible
 #'
 #'     group1 <- rnorm(N1)
 #'     group2 <- rnorm(N2, sd=sd)
