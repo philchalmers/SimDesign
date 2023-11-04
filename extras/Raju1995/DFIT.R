@@ -1,10 +1,10 @@
 #' Raju's Differential Item/Test Framework
 #'
-#' Raju's detection framework for non-compensatory DIF and compensatory DTF/DBF. As a statistical detection 
-#' framework DFIT should should not be used because it is highly dependent upon the sampling charactersitics, 
-#' but the relative effect sizes could be useful within a given sample. Therefore, the interpretation 
-#' of the NCDIF values relative to other NCDIF values in a 
-#' given sample is fine, but generalizing NCDIF accross different sample and populations is highly 
+#' Raju's detection framework for non-compensatory DIF and compensatory DTF/DBF. As a statistical detection
+#' framework DFIT should should not be used because it is highly dependent upon the sampling charactersitics,
+#' but the relative effect sizes could be useful within a given sample. Therefore, the interpretation
+#' of the NCDIF values relative to other NCDIF values in a
+#' given sample is fine, but generalizing NCDIF accross different sample and populations is highly
 #' problematic and should be avoided.
 #'
 #' @param mod a multiple Group model with only two groups. The focal group is always
@@ -53,7 +53,7 @@
 #' tail(round(DFIT(mod, DIF=TRUE), 3))
 #' DFIT(mod, method = 'MAP')
 #' tail(round(DFIT(mod, method = 'MAP', DIF=TRUE), 3))
-#' 
+#'
 #' DRF(mod)
 #' tail(DRF(mod, DIF=TRUE))
 #'
@@ -66,11 +66,11 @@
 #'
 #' DFIT(mod2) # very different p-values
 #' tail(round(DFIT(mod2, DIF=TRUE), 3))
-#' 
+#'
 #' DRF(mod2) #same, just flipped
 #' tail(DRF(mod2, DIF=TRUE))
-#' 
-#' 
+#'
+#'
 #'
 #' ## -------------
 #' ## systematic differing slopes and intercepts (clear DTF)
@@ -84,43 +84,43 @@
 #' plot(mod3, type ='itemscore')
 #'
 #' # DIF(mod3, c('a1', 'd'), items2test=16:30)
-#' DFIT(mod3) 
+#' DFIT(mod3)
 #' tail(round(DFIT(mod3, DIF=TRUE), 3))
-#' 
+#'
 #' DRF(mod3)
 #' tail(DRF(mod3, DIF=TRUE))
-#' 
-#' 
+#'
+#'
 #' #############
 #' # complete cancellation
 #' N <- 10000
 #' a <- a2 <- matrix(rlnorm(n, .2, .2))
 #' d <- d2 <- matrix(rnorm(n))
 #' group <- c(rep('G1', N), rep('G2', N))
-#' 
+#'
 #' a2[1:2] <- 1
 #' a[1:2] <- 2
 #' d2[1:2] <- -1
 #' d[1:2] <- 1
-#' 
+#'
 #' a[3:4] <- 1
 #' a2[3:4] <- 2
 #' d[3:4] <- -1
 #' d2[3:4] <- 1
-#' 
+#'
 #' dat1 <- simdata(a, d, N, itemtype = 'dich')
 #' dat2 <- simdata(a2, d2, N, itemtype = 'dich')
 #' dat <- rbind(dat1, dat2)
 #' mod <- multipleGroup(dat, 1, group=group,
 #'   invariance=c('free_means', 'free_var', colnames(dat)[-c(1:4)]))
-#'   
+#'
 #' plot(mod, type = 'itemscore')
 #' plot(mod)
-#' 
+#'
 #' DRF(mod)
 #' DRF(mod, DIF=TRUE)
 #' DRF(mod, focal_items = c(1:4))
-#' 
+#'
 #' DFIT(mod)
 #' DFIT(mod, DIF=TRUE)
 #'
@@ -144,9 +144,9 @@ DFIT <- function(mod, focal_items, method = 'EAP', DIF = FALSE, ...){
     d <- T2 - T1
     D <- rowSums(d)
     NCDIF <- colMeans(d^2)
-    CDIF <- apply(d, 2, function(dj) 
+    CDIF <- apply(d, 2, function(dj)
         cov(dj, D) + mean(dj) * mean(D))
-    vars <- apply(d, 2L, var)
+    vars <- colVars(d)
     df <- nrow(d)
     if(DIF){
         X2 <- df * NCDIF / vars

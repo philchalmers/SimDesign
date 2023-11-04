@@ -71,8 +71,8 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 Summarise <- function(condition, results, fixed_objects = NULL) {
     # model parameters
     lambdas <- results[ , grepl('lambda', colnames(results))]
-    pool_mean_lambdas <- mean(apply(lambdas, 2, mean))     # Equation 10
-    pool_SD_lambdas <- sqrt(mean(apply(lambdas, 2, var)))  # Equation 11
+    pool_mean_lambdas <- mean(colMeans(lambdas))     # Equation 10
+    pool_SD_lambdas <- sqrt(mean(colVars(lambdas)))  # Equation 11
     RB_phi21 <- if(condition$factors == 2)
         bias(results$phi21, parameter=.3, type='relative', percent=TRUE) else NULL
     mean_se <- mean(results$mean_ses)

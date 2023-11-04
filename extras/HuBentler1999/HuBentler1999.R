@@ -71,7 +71,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 }
 
 Summarise <- function(condition, results, fixed_objects = NULL) {
-    ret <- c(mean=colMeans(results), sd=apply(results, 2, sd))
+    ret <- c(mean=colMeans(results), sd=colSDs(results))
     ret
 }
 

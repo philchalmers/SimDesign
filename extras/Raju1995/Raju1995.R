@@ -45,9 +45,9 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 Summarise <- function(condition, results, fixed_objects = NULL) {
     pick <- subset(results, select = c(DTF, CDIF1:CDIF40, NCDIF1:NCDIF40))
     means <- colMeans(pick)
-    SDs <- apply(pick, 2, sd)
+    SDs <- colSDs(pick)
     pick.p <- subset(results, select = c(DTF.p, NCDIF.p1:NCDIF.p40))
-    ps <- EDR(pick.p, .01)
+    ps <- EDR(pick.p, alpha=.01)
     pick.NCDIF <- subset(results, select = NCDIF1:NCDIF40)
     NCDIF.006 <- colMeans(pick.NCDIF > .006)
     ret <- c(mean=means, SD=SDs, ps, NCDIF.006=unname(NCDIF.006))
