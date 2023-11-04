@@ -492,3 +492,46 @@ clip_names <- function(vec, maxchar = 150L){
     names(vec) <- strtrim(names(vec), width=maxchar)
     vec
 }
+
+#' Form Column Standard Deviation and Variances
+#'
+#' Form column standard deviation and variances for numeric arrays (or data frames).
+#'
+#' @param x an array of two dimensions containing numeric, complex, integer or logical values,
+#'   or a numeric data frame
+#'
+#' @param na.rm logical; remove missing values in each respective column?
+#'
+#' @param unname logical; apply \code{\link{unname}} to the results to remove any variable
+#'   names?
+#'
+#' @seealso \code{\link{colMeans}}
+#'
+#' @export
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
+#' @examples
+#'
+#' results <- matrix(rnorm(100), ncol=4)
+#' colnames(results) <- paste0('stat', 1:4)
+#'
+#' colVars(results)
+#' colSDs(results)
+#'
+#' results[1,1] <- NA
+#' colSDs(results)
+#' colSDs(results, na.rm=TRUE)
+#' colSDs(results, na.rm=TRUE, unname=TRUE)
+#'
+colVars <- function(x, na.rm=FALSE, unname=FALSE){
+    ret <- apply(x, 2L, FUN = var, na.rm=na.rm)
+    if(unname) ret <- unname(ret)
+    ret
+}
+
+#' @export
+#' @rdname colVars
+colSDs <- function(x, na.rm=FALSE, unname=FALSE){
+    sqrt(colVars(x=x, na.rm=na.rm, unname=unname))
+}
