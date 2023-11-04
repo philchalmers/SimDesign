@@ -124,6 +124,7 @@ dgn <- function(x) dbeta(x, shape1 = 2, shape2 = 6, log = TRUE)
 rgn <- function(n) rbeta(n, shape1 = 2, shape2 = 6)
 M <- rejectionSampling(df=dfn, dg=dgn, rg=rgn, logfuns=TRUE) # better M
 M
+
 ## Alternative estimation of M
 ## M <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, logfuns=TRUE,
 ##                        method='ESRS')
@@ -171,6 +172,7 @@ dat <- rejectionSampling(5000, df=dfn, dg=dgn, rg=rgn, M=4.6, logfuns=TRUE)
 hist(dat[,1], 30)
 hist(dat[,2], 30)
 plot(dat)
+
 
 }
 

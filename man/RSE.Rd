@@ -36,7 +36,7 @@ R <- 10000
 par_ests <- cbind(rnorm(R), rnorm(R, sd=1/10),
                   rnorm(R, sd=1/15))
 colnames(par_ests) <- paste0("par", 1:3)
-(SDs <- apply(par_ests, 2, sd))
+(SDs <- colSDs(par_ests))
 
 SEs <- cbind(1 + rnorm(R, sd=.01),
              1/10 + + rnorm(R, sd=.01),
@@ -45,7 +45,7 @@ SEs <- cbind(1 + rnorm(R, sd=.01),
 RSE(SEs, par_ests)
 
 # equivalent to the form
-colMeans(SEs) / (SDs)
+colMeans(SEs) / SDs
 
 
 }

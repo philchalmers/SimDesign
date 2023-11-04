@@ -124,7 +124,7 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE,
     diff <- t(t(estimate) - parameter)
     ret <- if(type == 'relative') colMeans(diff / parameter)
         else if(type == 'abs_relative') colMeans(diff / abs(parameter))
-        else if(type == 'standardized') colMeans(diff) / apply(estimate, 2, sd)
+        else if(type == 'standardized') colMeans(diff) / colSDs(estimate)
         else colMeans(diff)
     if(abs) ret <- abs(ret)
     if(percent){
@@ -594,7 +594,7 @@ RE <- function(x, MSE = FALSE, percent = FALSE, unname = FALSE){
 #' par_ests <- cbind(rnorm(R), rnorm(R, sd=1/10),
 #'                   rnorm(R, sd=1/15))
 #' colnames(par_ests) <- paste0("par", 1:3)
-#' (SDs <- apply(par_ests, 2, sd))
+#' (SDs <- colSDs(par_ests))
 #'
 #' SEs <- cbind(1 + rnorm(R, sd=.01),
 #'              1/10 + + rnorm(R, sd=.01),
@@ -603,14 +603,14 @@ RE <- function(x, MSE = FALSE, percent = FALSE, unname = FALSE){
 #' RSE(SEs, par_ests)
 #'
 #' # equivalent to the form
-#' colMeans(SEs) / (SDs)
+#' colMeans(SEs) / SDs
 #'
 #'
 RSE <- function(SE, ests, unname = FALSE){
     if(!is.matrix(ests)) ests <- as.matrix(ests)
     if(!is.matrix(SE)) SE <- as.matrix(SE)
     SE <- colMeans(SE)
-    SD <- apply(ests, 2L, sd)
+    SD <- colSDs(ests)
     ret <- SE / SD
     if(unname) ret <- unname(ret)
     ret

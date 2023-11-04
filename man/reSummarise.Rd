@@ -80,7 +80,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 }
 
 Summarise <- function(condition, results, fixed_objects = NULL){
-    apply(results, 2, mean)
+    colMeans(results)
 }
 
 \dontrun{
@@ -95,8 +95,7 @@ res <- reSummarise(Summarise, dir = 'simresults/')
 res
 
 Summarise2 <- function(condition, results, fixed_objects = NULL){
-    ret <- c(mean_ests=apply(results, 2, mean),
-             SE=apply(results, 2, sd))
+    ret <- c(mean_ests=colMeans(results), SE=colSDs(results))
     ret
 }
 

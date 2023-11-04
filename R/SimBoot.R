@@ -15,7 +15,7 @@ SimBoot <- function(results, summarise, condition, fixed_objects, boot_method,
                 ret2[[i]] <- summarise(results=tmp2, condition=condition, fixed_objects=fixed_objects)
             }
             ret2 <- do.call(rbind, ret2)
-            SEb <- apply(ret2, 2, sd)
+            SEb <- colSDs(ret2)
             attr(ret, 'SEb') <- SEb
         }
         ret
@@ -35,21 +35,21 @@ SimBoot <- function(results, summarise, condition, fixed_objects, boot_method,
         lower <- apply(t, 2L, quantile, prob = (1 - CI)/2)
         upper <- apply(t, 2L, quantile, prob = 1 - (1 - CI)/2)
     } else if(boot_method == 'norm'){
-        SEs <- apply(t, 2L, sd)
+        SEs <- colSDs(t)
         lower <- t0 + qnorm((1 - CI)/2) * SEs
         upper <- t0 + qnorm(1 - (1 - CI)/2) * SEs
     } else if(boot_method == 'studentized'){
         tf <- lapply(1L:boot_draws, boot_fun, dat=results, N=replications, studentized=TRUE)
         SEb <- do.call(rbind, lapply(tf, function(x) attr(x, 'SEb')))
         t <- do.call(rbind, tf)
-        SEs <- apply(t, 2L, sd)
+        SEs <- colSDs(t)
         qs <- (t - t0) / SEb
         ql <- apply(qs, 2L, quantile, prob = (1-CI)/2)
         qu <- apply(qs, 2L, quantile, prob = 1 - (1-CI)/2)
         lower <- t0 + ql * SEs
         upper <- t0 + qu * SEs
     } else if(boot_method == 'CLT'){
-        SEs <- apply(results, 2, sd) / sqrt(replications)
+        SEs <- colSDs(results) / sqrt(replications)
         ql <- qnorm((1-CI)/2)
         qu <- qnorm(1 - (1-CI)/2)
         lower <- t0 + ql * SEs
