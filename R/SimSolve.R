@@ -29,7 +29,7 @@
 #'
 #' @param replications a named list or vector indicating the number of replication to
 #'   use for each design condition per PBA iteration. By default the input is a
-#'   \code{list} with the arguments \code{burnin = 15L}, specifying the number
+#'   \code{list} with the arguments \code{burnin.iter = 15L}, specifying the number
 #'   of burn-in iterations to used, \code{burnin.reps = 100L} to indicate how many
 #'   replications to use in each burn-in iteration, \code{max.reps = 500L} to
 #'   prevent the replications from increasing higher than this number, and
@@ -89,7 +89,7 @@
 #'      around the probable root for uncertain solutions}
 #'    \item{\code{interpolate.R}}{number of replications to collect prior to performing
 #'      the interpolation step (default is 3000 after accounting for data exclusion
-#'      from \code{burnin}). Setting this to 0 will disable any
+#'      from \code{burnin.iter}). Setting this to 0 will disable any
 #'      interpolation computations}
 #'    \item{\code{include_reps}}{logical; include a column in the \code{condition}
 #'      elements to indicate how many replications are currently being evaluated? Mainly
@@ -299,7 +299,7 @@
 #'
 #' }
 SimSolve <- function(design, interval, b, generate, analyse, summarise,
-                     replications = list(burnin = 15L, burnin.reps = 100L,
+                     replications = list(burnin.iter = 15L, burnin.reps = 100L,
                                          max.reps = 500L, increase.by = 10L),
                      integer = TRUE, formula = y ~ poly(x, 2), family = 'binomial',
                      parallel = FALSE, cl = NULL, save = TRUE,
@@ -309,17 +309,17 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
 
     # robust <- FALSE
     if(is.null(control$print_RAM)) control$print_RAM <- FALSE
-    burnin <- 15L
+    burnin.iter <- 15L
     if(is.list(replications)){
-        if(is.null(replications$burnin)) replications$burnin <- burnin else
-            burnin <- replications$burnin
+        if(is.null(replications$burnin.iter)) replications$burnin.iter <- burnin.iter else
+            burnin.iter <- replications$burnin.iter
         if(is.null(replications$burnin.reps)) replications$burnin.reps <- 100L
         if(is.null(replications$max.reps)) replications$max.reps <- 500L
         if(is.null(replications$increase.by)) replications$increase.by <- 10L
         replications <- with(replications,
-                             pmin(max.reps, c(rep(burnin.reps, burnin),
+                             pmin(max.reps, c(rep(burnin.reps, burnin.iter),
                                               seq(burnin.reps, by=increase.by,
-                                                  length.out=maxiter-burnin))))
+                                                  length.out=maxiter-burnin.iter))))
     }
     ANALYSE_FUNCTIONS <- GENERATE_FUNCTIONS <- NULL
     .SIMDENV$ANALYSE_FUNCTIONS <- ANALYSE_FUNCTIONS <- analyse
@@ -460,7 +460,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       single_step.iter=control$single_step.iter,
                                       control=control,
                                       # robust = robust,
-                                      interpolate.burnin=burnin)
+                                      interpolate.burnin=burnin.iter)
         roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                           design.row=as.data.frame(design[i,]),
                           integer=integer, verbose=verbose, maxiter=maxiter, ...))
@@ -534,7 +534,7 @@ plot.SimSolve <- function(x, y, ...)
         if(is.null(tab)) {
             tab <- attr(roots, 'stored_tab')
             tab <- do.call(rbind, tab)
-            tab <- tab[-c(1:so[[y]]$burnin), ]
+            tab <- tab[-c(1:so[[y]]$burnin.iter), ]
         }
         if(dots$type == 'density')
             with(tab, plot(density(x, weights=reps/sum(reps)),

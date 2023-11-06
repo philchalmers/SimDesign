@@ -425,6 +425,8 @@ stackResults <- function(results){
 SimSolveData <- function(burnin, full = TRUE){
     pick <- !sapply(.SIMDENV$stored_results, is.null)
     pick[1L:burnin] <- FALSE
+    if(!any(pick))
+        return(data.frame(y=numeric(0), IV=numeric(0), weights=numeric(0)))
     if(full){
         DV <- do.call(c, .SIMDENV$stored_results[pick])
         IV <- rep(.SIMDENV$stored_medhistory[pick],

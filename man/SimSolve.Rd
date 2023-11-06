@@ -13,8 +13,8 @@ SimSolve(
   generate,
   analyse,
   summarise,
-  replications = list(burnin = 15L, burnin.reps = 100L, max.reps = 500L, increase.by =
-    10L),
+  replications = list(burnin.iter = 15L, burnin.reps = 100L, max.reps = 500L, increase.by
+    = 10L),
   integer = TRUE,
   formula = y ~ poly(x, 2),
   family = "binomial",
@@ -61,7 +61,7 @@ see \code{\link{runSimulation}}}
 
 \item{replications}{a named list or vector indicating the number of replication to
   use for each design condition per PBA iteration. By default the input is a
-  \code{list} with the arguments \code{burnin = 15L}, specifying the number
+  \code{list} with the arguments \code{burnin.iter = 15L}, specifying the number
   of burn-in iterations to used, \code{burnin.reps = 100L} to indicate how many
   replications to use in each burn-in iteration, \code{max.reps = 500L} to
   prevent the replications from increasing higher than this number, and
@@ -135,7 +135,7 @@ plots are provided (see \code{\link{PBA}})}
      around the probable root for uncertain solutions}
    \item{\code{interpolate.R}}{number of replications to collect prior to performing
      the interpolation step (default is 3000 after accounting for data exclusion
-     from \code{burnin}). Setting this to 0 will disable any
+     from \code{burnin.iter}). Setting this to 0 will disable any
      interpolation computations}
    \item{\code{include_reps}}{logical; include a column in the \code{condition}
      elements to indicate how many replications are currently being evaluated? Mainly
