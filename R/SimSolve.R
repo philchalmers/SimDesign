@@ -540,7 +540,7 @@ plot.SimSolve <- function(x, y, ...)
         if(is.null(tab)) {
             tab <- attr(roots, 'stored_tab')
             tab <- do.call(rbind, tab)
-            tab <- tab[-c(1:so[[y]]$burnin.iter), ]
+            tab <- tab[-c(1:so[[y]]$burnin), ]
         }
         if(dots$type == 'density')
             with(tab, plot(density(x, weights=reps/sum(reps)),
