@@ -147,7 +147,6 @@ PBA <- function(f, interval, ..., p = .6,
     logq <- log(1-p)
 
     dots <- list(...)
-    bolster <- FALSE
     FromSimSolve <- .SIMDENV$FromSimSolve
     if(!is.null(FromSimSolve)){
         family <- FromSimSolve$family
@@ -155,6 +154,7 @@ PBA <- function(f, interval, ..., p = .6,
         interpolate.after <- FromSimSolve$interpolate.after
         formula <- FromSimSolve$formula
         replications <- FromSimSolve$replications
+        min.total.reps <- FromSimSolve$min.total.reps
         tol <- FromSimSolve$tol
         rel.tol <- FromSimSolve$rel.tol
         control <- FromSimSolve$control
@@ -253,6 +253,8 @@ PBA <- function(f, interval, ..., p = .6,
                     k.successes <- max(c(k.successes - 1L, 0L))
                 }
             } else k.successes <- 0L
+            if(sum(replications[1L:iter]) < min.total.reps)
+                k.successes <- 0L
             glmpred.last <- glmpred
         }
         if(!interpolate && abs(e.froot) < tol) break

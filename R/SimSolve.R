@@ -32,8 +32,10 @@
 #'   \code{list} with the arguments \code{burnin.iter = 15L}, specifying the number
 #'   of burn-in iterations to used, \code{burnin.reps = 100L} to indicate how many
 #'   replications to use in each burn-in iteration, \code{max.reps = 500L} to
-#'   prevent the replications from increasing higher than this number, and
-#'   \code{increase.by = 10L} to indicate how many replications to increase
+#'   prevent the replications from increasing higher than this number,
+#'   \code{min.total.reps = 7500L} to avoid termination when very few replications
+#'   have been explored (lower bound of the replication budget),
+#'   and \code{increase.by = 10L} to indicate how many replications to increase
 #'   after the burn-in stage. Unless otherwise specified these defaults will
 #'   be used, but can be overwritten by explicit definition (e.g.,
 #'   \code{replications = list(increase.by = 25L)})
@@ -300,7 +302,8 @@
 #' }
 SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      replications = list(burnin.iter = 15L, burnin.reps = 100L,
-                                         max.reps = 500L, increase.by = 10L),
+                                         max.reps = 500L, min.total.reps=7500L,
+                                         increase.by = 10L),
                      integer = TRUE, formula = y ~ poly(x, 2), family = 'binomial',
                      parallel = FALSE, cl = NULL, save = TRUE,
                      ncores = parallel::detectCores() - 1L,
@@ -316,6 +319,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         if(is.null(replications$burnin.reps)) replications$burnin.reps <- 100L
         if(is.null(replications$max.reps)) replications$max.reps <- 500L
         if(is.null(replications$increase.by)) replications$increase.by <- 10L
+        min.total.reps <- ifelse(is.null(replications$min.total.reps),
+                                 7500L, replications$min.total.reps)
         replications <- with(replications,
                              pmin(max.reps, c(rep(burnin.reps, burnin.iter),
                                               seq(burnin.reps, by=increase.by,
@@ -452,6 +457,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       family=family,
                                       formula=formula,
                                       replications=replications,
+                                      min.total.reps=min.total.reps,
                                       tol=control$tol,
                                       rel.tol=control$rel.tol,
                                       b=b,

@@ -13,8 +13,8 @@ SimSolve(
   generate,
   analyse,
   summarise,
-  replications = list(burnin.iter = 15L, burnin.reps = 100L, max.reps = 500L, increase.by
-    = 10L),
+  replications = list(burnin.iter = 15L, burnin.reps = 100L, max.reps = 500L,
+    min.total.reps = 7500L, increase.by = 10L),
   integer = TRUE,
   formula = y ~ poly(x, 2),
   family = "binomial",
@@ -64,8 +64,10 @@ see \code{\link{runSimulation}}}
   \code{list} with the arguments \code{burnin.iter = 15L}, specifying the number
   of burn-in iterations to used, \code{burnin.reps = 100L} to indicate how many
   replications to use in each burn-in iteration, \code{max.reps = 500L} to
-  prevent the replications from increasing higher than this number, and
-  \code{increase.by = 10L} to indicate how many replications to increase
+  prevent the replications from increasing higher than this number,
+  \code{min.total.reps = 7500L} to avoid termination when very few replications
+  have been explored (lower bound of the replication budget),
+  and \code{increase.by = 10L} to indicate how many replications to increase
   after the burn-in stage. Unless otherwise specified these defaults will
   be used, but can be overwritten by explicit definition (e.g.,
   \code{replications = list(increase.by = 25L)})
