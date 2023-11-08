@@ -78,7 +78,8 @@ However, this function differs from deterministic cousins such as
 \code{\link{uniroot}} in that \code{f} may contain stochastic error
 components, and instead provides a Bayesian interval where the root
 is likely to lie. Note that it is assumed that \code{E[f(x)]} is non-decreasing
-in \code{x} and that the root is between the search interval.
+in \code{x} and that the root is between the search interval (evaluated
+approximately when \code{check.interval=TRUE}).
 See Waeber, Frazier, and Henderson (2013) for details.
 }
 \examples{
@@ -124,7 +125,7 @@ plot(retpba.noise, type = 'history')
 Horstein, M. (1963). Sequential transmission using noiseless feedback.
 IEEE Trans. Inform. Theory, 9(3):136-143.
 
-Waeber, R.; Frazier, P. I. & Henderson, S. G. (2013). Bisection Search
+Waeber, R., Frazier, P. I. & Henderson, S. G. (2013). Bisection Search
 with Noisy Responses. SIAM Journal on Control and Optimization,
 Society for Industrial & Applied Mathematics (SIAM), 51, 2261-2279.
 }
