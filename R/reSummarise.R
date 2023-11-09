@@ -119,7 +119,8 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
         read_files <- FALSE
         if(is(results, 'SimDesign')){
             obj <- results
-            Design <- SimExtract(obj, 'Design')
+            if(is.null(Design))
+                Design <- SimExtract(obj, 'Design')
             results <- SimExtract(obj, 'results')
         }
         if(is(results, 'tbl')){
