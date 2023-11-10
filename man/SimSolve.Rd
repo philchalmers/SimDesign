@@ -190,9 +190,9 @@ iteration of the PBA search is returned as the best guess.
 
 \dontrun{
 
-##################################
-## A Priori Power Analysis example
-##################################
+##########################
+## A Priori Power Analysis
+##########################
 
 # GOAL: Find specific sample size in each group for independent t-test
 # corresponding to a power rate of .8
@@ -287,6 +287,8 @@ confirm <- runSimulation(design=csolved, replications=10000, parallel=TRUE,
 confirm
 
 
+#------------------------------------------------
+
 #######################
 ## Sensitivity Analysis
 #######################
@@ -334,6 +336,57 @@ pwr.t.test(n=25, power = .8, sig.level = .05)
 pwr.t.test(n=100, d = solved$d[1], sig.level = .05)
 pwr.t.test(n=50, d = solved$d[2], sig.level = .05)
 pwr.t.test(n=25, d = solved$d[3], sig.level = .05)
+
+# failing analytic formula, confirm results with more precise
+#  simulation via runSimulation()
+confirm <- runSimulation(design=solved, replications=10000, parallel=TRUE,
+                         generate=Generate, analyse=Analyse,
+                         summarise=Summarise)
+confirm
+
+
+#------------------------------------------------
+
+#####################
+## Criterion Analysis
+#####################
+
+# GOAL: solve Type I error rate (alpha) given sample size, effect size, and
+# power inputs (inputs for root no longer required to be an integer). Only useful
+# when Type I error is less important than achieving the desired 1-beta (power)
+
+Design <- createDesign(N = 50,
+                        d = c(.2, .5, .8),
+                        sig.level = NA)
+Design    # solve for NA's
+
+# all other function definitions same as above
+
+# search for alpha within [.0001, .8]
+solved <- SimSolve(design=Design, b = .8, interval=c(.0001, .8),
+                   generate=Generate, analyse=Analyse,
+                   summarise=Summarise, integer=FALSE)
+solved
+summary(solved)
+plot(solved, 1)
+plot(solved, 2)
+plot(solved, 3)
+
+# plot median history and estimate precision
+plot(solved, 1, type = 'history')
+plot(solved, 1, type = 'density')
+plot(solved, 1, type = 'iterations')
+
+# verify with true power from pwr package
+library(pwr)
+pwr.t.test(n=50, power = .8, d = .2, sig.level=NULL)
+pwr.t.test(n=50, power = .8, d = .5, sig.level=NULL)
+pwr.t.test(n=50, power = .8, d = .8, sig.level=NULL)
+
+# use estimated alpha results to see how close power was
+pwr.t.test(n=50, d = .2, sig.level=solved$sig.level[1])
+pwr.t.test(n=50, d = .5, sig.level=solved$sig.level[2])
+pwr.t.test(n=50, d = .8, sig.level=solved$sig.level[3])
 
 # failing analytic formula, confirm results with more precise
 #  simulation via runSimulation()
