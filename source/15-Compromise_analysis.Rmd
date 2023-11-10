@@ -115,7 +115,7 @@ library(SimDesign)
 Design <- createDesign(N = 100,
                        d = .3, 
                        alpha = .05)
-Design    # solve for NA's
+Design    
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 2 --- Define generate, analyse, and summarise functions
