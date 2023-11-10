@@ -1523,6 +1523,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen, bsen))]
     Final <- data.frame(Final[ ,c(dn, sn, bsen, en)], ERRORS, WARNINGS,
                                          check.names = FALSE)
+    if(all(memory_used == "")) Final$RAM_USED <- NULL
     if(all(ERRORS == 0)) Final$ERRORS <- NULL
     if(all(WARNINGS == 0)) Final$WARNINGS <- NULL
     Final <- dplyr::as_tibble(Final)
