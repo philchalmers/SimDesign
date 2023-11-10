@@ -605,7 +605,7 @@ plot.SimSolve <- function(x, y, ...)
             tab <- tab[-c(1:so[[y]]$burnin), ]
         }
         if(dots$type == 'density')
-            with(tab, plot(density(x, weights=reps/sum(reps)),
+            with(tab, plot(density(x, weights=reps/sum(reps)), xlab = solve_name,
                            main = 'Density Using Replication Weights', las=1))
         else {
             with(tab, symbols(x, y, circles=sqrt(1 /reps/sum(reps)),
