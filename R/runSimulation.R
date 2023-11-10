@@ -1024,8 +1024,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(verbose){
         if(replications >= 200)
             if(!save_results && !store_results)
-                message(c('NOTE: save_results = TRUE or store_results = TRUE ',
-                        'are recommended for higher replication simulations'))
+                message(c('NOTE: using save_results or store_results is ',
+                        'recommended for higher replication simulations'))
     }
     NA_summarise <- FALSE
     if(!missing(summarise)){
