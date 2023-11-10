@@ -156,7 +156,11 @@
 #'
 #' \dontrun{
 #'
-#' # TASK: Find specific sample size in each group for independent t-test
+#' ##################################
+#' ## A Priori Power Analysis example
+#' ##################################
+#'
+#' # GOAL: Find specific sample size in each group for independent t-test
 #' # corresponding to a power rate of .8
 #' #
 #' # For ease of the setup, assume the groups are the same size, and the mean
@@ -249,10 +253,15 @@
 #' confirm
 #'
 #'
-#' ############
-#' # Similar setup as above, however goal is now to solve d given sample
-#' # size and power inputs (inputs for root no longer required to be an integer)
+#' #######################
+#' ## Sensitivity Analysis
+#' #######################
 #'
+#' # GOAL: solve effect size d given sample size and power inputs (inputs
+#' # for root no longer required to be an integer)
+#'
+#' # Generate-Analyse-Summarise functions identical to above, however
+#' # Design input includes NA for d element
 #' Design <- createDesign(N = c(100, 50, 25),
 #'                        d = NA,
 #'                        sig.level = .05)
