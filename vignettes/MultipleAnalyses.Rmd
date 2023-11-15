@@ -11,7 +11,7 @@ output:
       collapsed: false
       smooth_scroll: false
 vignette: >
-  %\VignetteIndexEntry{Multiple Analysis Functions}
+  %\VignetteIndexEntry{Multiple analysis functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

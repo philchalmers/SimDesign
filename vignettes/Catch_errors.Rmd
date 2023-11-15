@@ -1,5 +1,5 @@
 ---
-title: "Catching errors"
+title: "Managing warning and error messages"
 author: "Phil Chalmers"
 date: "`r Sys.Date()`"
 output:
@@ -11,7 +11,7 @@ output:
       collapsed: false
       smooth_scroll: false
 vignette: >
-  %\VignetteIndexEntry{Catching errors}
+  %\VignetteIndexEntry{Managing warning and error messages}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -147,4 +147,57 @@ runSimulation(Design, replications = 100, load_seed=picked_seed, debug='analyse-
 ```
 
 The `.Random.seed` state will be loaded at this exact state, and will always be related at this state as well (in case `c` is typed in the debugger, or somehow the error is harder to find while walking through the debug mode). Hence, users must type `Q` to exit the debugger after they have better understood the nature of the error message first-hand. 
+
+# Converting warings to errors explicitly
+
+```{r include=FALSE}
+knitr::opts_chunk$set(
+  warning = TRUE
+)
+```
+
+
+On occasion functions will return `warning` message that either boarder on (or should be treated as) error messages if they influence the veracity of the simulation results. Such examples may include models that appear to 'converge' but do so with non-nonsensical parameter estimates (e.g., negative variances, non-positive definite correlation matrices, maximum iterations reached in an numerical searching algorithm, etc). However, because such issues are non-fatal the software may simply raise a `warning` message for further inspection, whereas in a Monte Carlo simulation experiment such issues should generally be treated as invalid (though their frequency of occurrence should still be tracked, as is the default in `SimDesign`).
+
+To resolve this issue, and to avoid using a more nuclear option such as setting `option(warn=2)` to treat *all* warnings as errors in the simulation, the function `convertWarnings()` can be used to explicit convert known warning message strings into error messages that disrupt the code execution while allowing other warning messages to be raised if they are suspected to be innocuous (or, more likely, have simply not been raised yet in any given generated dataset). 
+
+For example, if a function utilized in a simulation was
+
+```{r}
+myfun <- function() {
+    if(sample(c(TRUE, FALSE), 1, prob = c(.1, .9)))
+    	warning('This warning is serious')
+    if(sample(c(TRUE, FALSE), 1, prob = c(.5, .5)))
+    	warning('This warning is no big deal')
+    return(1)
+}
+
+set.seed(1)
+out <- myfun()
+
+set.seed(2)
+out <- myfun()
+
+set.seed(7)
+out <- myfun()
+```
+then whenever the serious warning message is raised it could be explicitly converted to an error using an internal `grepl()` test.
+
+```{r error=TRUE}
+set.seed(1)
+out1 <- convertWarnings(myfun(), 
+                        'This warning is serious')
+out1
+
+set.seed(2)
+out2 <- convertWarnings(myfun(), 
+                        'This warning is serious')
+out2
+
+set.seed(7)
+out3 <- convertWarnings(myfun(), 
+                        'This warning is serious')
+out3
+```
+which now converts the previous warning message into an error message, thereby correctly disrupting the flow of the Monte Carlo simulation experiment and prompting a new call to `Generate()`. Of course, all warning and error messages are tallied in the resulting `runSimulation()` object, though now the serious warnings will be tallied as disruptive errors instead of warnings that continued normally.
 

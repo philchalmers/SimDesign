@@ -11,7 +11,7 @@ output:
       collapsed: false
       smooth_scroll: false
 vignette: >
-  %\VignetteIndexEntry{Saving additional simulation results and state}
+  %\VignetteIndexEntry{Saving simulation results and state}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
