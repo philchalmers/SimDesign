@@ -2,6 +2,11 @@
 
 ## Changes in SimDesign 2.14
 
+- `convertWarnings()` wrapper function added to convert specific 
+  warning messages to errors during simulation. Useful when only a subset
+  of warnings are known to be problematic, while other warning messages
+  (whether detected or not) are treated as (provisionally) innocuous
+
 - `control` gains a `print_RAM` logical argument to suppress printing the RAM
   when `verbose = TRUE`. Disabling this can marginally improve execution speed
   as the garbage collector (`gc()`) calls are avoided, which is used to extract

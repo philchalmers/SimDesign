@@ -126,7 +126,7 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #'   \code{parameters}). If a \code{data.frame} is returned with more than 1 row then these
 #'   objects will be wrapped into suitable \code{list} objects
 #'
-#' @seealso \code{\link{stop}}, \code{\link{AnalyseIf}}
+#' @seealso \code{\link{stop}}, \code{\link{AnalyseIf}}, \code{\link{convertWarnings}}
 #'
 #' @references
 #'

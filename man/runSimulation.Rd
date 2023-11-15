@@ -380,7 +380,12 @@ errors are thrown in any
      treat warning messages as error messages during the simulation? Default is FALSE,
      therefore warnings are only collected and not used to restart the data generation step,
      and the seeds associated with
-     the warning message conditions are not stored within the final simulation object}
+     the warning message conditions are not stored within the final simulation object.
+
+     Note that this argument is generally intended for debugging/early planning
+     stages when designing a simulation experiment. If specific warnings are known to
+     be problematic and should be treated as errors then please use
+     \code{\link{convertWarnings}} instead}
 
      \item{\code{store_warning_seeds}}{logical (default is \code{FALSE});
       in addition to storing the \code{.Random.seed} states whenever error messages
@@ -964,7 +969,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
   \code{\link{SimExtract}},
   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
   \code{\link{aggregate_simulations}}, \code{\link{Attach}}, \code{\link{AnalyseIf}},
-  \code{\link{SimShiny}}
+  \code{\link{SimShiny}}, \code{\link{convertWarnings}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}
