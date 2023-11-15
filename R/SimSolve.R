@@ -253,6 +253,29 @@
 #' confirm
 #'
 #'
+#' # Same as above, though modifying the replication mapping and convergence criteria
+#' #   Here, the search
+#' #   a) Only terminates if 50,000+ replications are explored
+#' #   b) Uses a much more informative replication mapping
+#' #       (1000 draws in burn-in, increases by 1000 until R 10000 per iteration)
+#' #   c) Terminates only if solution barely moving (tolerance criteria = .01)
+#' #   d) Does not check initial interval in PBA() (assumed to be within boundary)
+#' #
+#' # Evaluation is likely to be more precise/robust to early termination
+#' #  than default arguments, but is considerably more expensive to evaluate
+#' #
+#' # solved <- SimSolve(design=Design[1, ], b=.8, interval=c(380, 400),
+#' #                     generate=Generate, analyse=Analyse,
+#' #                     summarise=Summarise,
+#' #                     replications = list(burnin.reps=1000, increase.by=1000,
+#' #                                         max.reps=10000, min.total.reps=50000),
+#' #                     control = list(tol=.01),
+#' #                     check.interval = FALSE)
+#' # solved
+#' # summary(solved)
+#'
+#'
+#'
 #' #------------------------------------------------
 #'
 #' #######################

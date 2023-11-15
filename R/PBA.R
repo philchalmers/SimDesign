@@ -217,7 +217,7 @@ PBA <- function(f, interval, ..., p = .6,
         w <- if(!is.null(FromSimSolve)) 1/sqrt(replications) else rep(1/iter, iter)
         e.froot <- sum(roothistory[iter:1L] * w[iter:1] / sum(w[iter:1]))
 
-        if(interpolate && iter > interpolate.after){
+        if(interpolate && iter > interpolate.after && iter > interpolate.burnin){
             SimSolveData <- SimSolveData(burnin=interpolate.burnin,
                                          full=!control$summarise.reg_data)
             # SimMod <- if(robust)
