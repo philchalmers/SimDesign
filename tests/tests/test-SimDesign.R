@@ -231,7 +231,7 @@ test_that('SimDesign', {
 
     tmp <- runSimulation(Design, generate=mysim, analyse=mycomputeGood, summarise=mycollect, verbose=FALSE,
                          replications = 10, boot_method = 'basic')
-    expect_true(all(dim(tmp) == c(8,14)))
+    expect_true(all(dim(tmp) == c(8,13)))
 
     tmp <- runSimulation(rbind(Design, Design), generate=mysim, analyse=mycomputeGood, summarise=mycollect, verbose=FALSE,
                          replications = 10, parallel=FALSE, save_results = TRUE)
@@ -493,7 +493,7 @@ test_that('SimDesign', {
     results <- runSimulation(replications = 10, generate = Generate,
                              analyse=Analyse2, summarise = Summarise, verbose=FALSE)
     expect_is(results, 'data.frame')
-    expect_equal(ncol(results), 6L)
+    expect_equal(ncol(results), 5L)
 
     # dummy run with no design and returning lists
     Generate <- function(condition, fixed_objects = NULL)
@@ -573,7 +573,7 @@ test_that('SimDesign', {
     }
     result <- runSimulation(replications = 100, seed=1234, verbose=FALSE,
                             generate=mygenerate, analyse=mycompute, summarise=mycollect)
-    expect_equal(ncol(result), 8L)
+    expect_equal(ncol(result), 7L)
 
     expect_true(all(names(SimExtract(result, what = 'errors')) %in% c(
         'ERROR:  generate error in analyse\n', 'ERROR:  generate error\n')))
@@ -583,7 +583,7 @@ test_that('SimDesign', {
     result <- runSimulation(design=createDesign(N=c(100, 200)), replications = 100,
                                                 seed=c(1234, 4321), verbose=FALSE,
                             generate=mygenerate, analyse=mycompute, summarise=mycollect)
-    expect_equal(ncol(result), 9L)
+    expect_equal(ncol(result), 8L)
     expect_true(all(names(SimExtract(result, what = 'errors')) %in% c("N",
         'ERROR:  generate error in analyse\n', 'ERROR:  generate error\n')))
     expect_true(all(names(SimExtract(result, what = 'warnings')) %in% c("N",
