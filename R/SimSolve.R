@@ -85,10 +85,6 @@
 #'      \code{tol} criteria. Consecutive failures add -1 to the counter (default is 3)}
 #'    \item{\code{bolster}}{logical; should the PBA evaluations use bolstering based on previous
 #'      evaluations? Default is \code{TRUE}, though only applicable when \code{integer = TRUE} }
-#'    \item{\code{single_step.iter}}{when \code{integer = TRUE}, do not take steps larger than
-#'      size 1% the current value after this iteration number
-#'      (default is 40). This prevents wide oscillations
-#'      around the probable root for uncertain solutions}
 #'    \item{\code{interpolate.R}}{number of replications to collect prior to performing
 #'      the interpolation step (default is 3000 after accounting for data exclusion
 #'      from \code{burnin.iter}). Setting this to 0 will disable any
@@ -424,7 +420,6 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     if(is.null(control$k.sucess)) control$k.success <- 3L
     if(is.null(control$interpolate.R)) control$interpolate.R <- 3000L
     if(is.null(control$bolster)) control$bolster <- TRUE
-    if(is.null(control$single_step.iter)) control$single_step.iter <- 40L
     if(is.null(control$include_reps)) control$include_reps <- FALSE
     on.exit(.SIMDENV$stored_results <- .SIMDENV$stored_medhistory <-
                 .SIMDENV$stored_history <- .SIMDENV$include_reps <- NULL,
@@ -548,7 +543,6 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       b=b,
                                       bolster=control$bolster,
                                       k.success=control$k.success,
-                                      single_step.iter=control$single_step.iter,
                                       control=control,
                                       # robust = robust,
                                       interpolate.burnin=burnin.iter)
