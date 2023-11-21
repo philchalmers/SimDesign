@@ -159,6 +159,7 @@ PBA <- function(f, interval, ..., p = .6,
         rel.tol <- FromSimSolve$rel.tol
         control <- FromSimSolve$control
         # robust <- FromSimSolve$robust
+        predCI <- FromSimSolve$predCI
         interpolate.burnin <- FromSimSolve$interpolate.burnin
         glmpred.last <- glmpred <- c(NA, NA)
         k.success <- FromSimSolve$k.success
@@ -277,6 +278,12 @@ PBA <- function(f, interval, ..., p = .6,
         }
     }
     converged <- iter < maxiter
+    predCIs <- c(NA, NA, NA)
+    if(!is.null(FromSimSolve))
+        predCIs <- SimSolveUniroot(SimMod=SimMod, b=dots$b,
+                               interval=quantile(medhistory[medhistory != 0],
+                                                 probs = c(.05, .95)),
+                               max.interval=interval,median=med, CI=predCI)
     if(verbose)
         cat("\n")
     fx <- exp(fx) / sum(exp(fx)) # normalize final result
@@ -286,7 +293,7 @@ PBA <- function(f, interval, ..., p = .6,
     ret <- list(iter=iter, root=root, terminated_early=converged, integer=integer,
                 e.froot=e.froot, x=x, fx=fx, medhistory=medhistory,
                 time=as.numeric(proc.time()[3L]-start_time),
-                burnin=interpolate.burnin)
+                burnin=interpolate.burnin, predCIs=predCIs[-1L])
     if(!is.null(FromSimSolve)) ret$total.replications <- sum(replications[1L:iter])
     class(ret) <- 'PBA'
     ret
@@ -302,6 +309,8 @@ print.PBA <- function(x, ...)
               terminated_early=terminated_early,
               time=noquote(timeFormater(time)),
               iterations = iter))
+    if(!all(is.na(x$predCIs)))
+        out <- append(out, list(prediction_CI = x$predCIs), 2L)
     if(!is.null(x$total.replications))
         out$total.replications <- x$total.replications
     if(x$integer && !is.null(x$tab))

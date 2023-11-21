@@ -26,6 +26,7 @@ SimSolve(
   maxiter = 100L,
   verbose = TRUE,
   control = list(),
+  predCI = 0.95,
   ...
 )
 
@@ -144,6 +145,8 @@ plots are provided (see \code{\link{PBA}})}
      raw data from the \code{Analyse} step? Set this to \code{TRUE} when the individual
      results from \code{Analyse} give less meaningful information}
    }}
+
+\item{predCI}{confidence interval probability for final prediction of target \code{b}}
 
 \item{...}{additional arguments to be pasted to \code{\link{PBA}}}
 

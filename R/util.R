@@ -439,7 +439,7 @@ SimSolveData <- function(burnin, full = TRUE){
     ret
 }
 
-SimSolveUniroot <- function(SimMod, b, interval, max.interval, median){
+SimSolveUniroot <- function(SimMod, b, interval, max.interval, median, CI=NULL){
     f.root <- function(x, b)
         predict(SimMod, newdata = data.frame(x=x), type = 'response') - b
     res <- try(uniroot(f.root, b=b, interval = interval), silent = TRUE)
@@ -454,11 +454,15 @@ SimSolveUniroot <- function(SimMod, b, interval, max.interval, median){
             }
         }
     }
-    if(is(res, 'try-error')) return(c(NA, NA))
+    if(is(res, 'try-error')) return(c(NA, NA, NA))
     root <- res$root
-    # se <- predict(SimMod, newdata = data.frame(x=root),
-    #               se = TRUE, type = 'response')$se.fit
-    root
+    ci <- c(NA, NA)
+    if(!is.null(CI)){
+        preds <- predict(SimMod, newdata = data.frame(x=root),
+                      se.fit=TRUE, type = 'link')
+        ci <- SimMod$family$linkinv(preds$fit + qnorm(c(.025, .975)) * preds$se.fit)
+    }
+    c(root, ci)
 }
 
 collect_unique <- function(x){

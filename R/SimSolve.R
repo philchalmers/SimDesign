@@ -74,6 +74,8 @@
 #'
 #' @param verbose logical; print information to the console?
 #'
+#' @param predCI confidence interval probability for final prediction of target \code{b}
+#'
 #' @param control a \code{list} of the algorithm control parameters. If not specified,
 #'   the defaults described below are used.
 #'
@@ -383,13 +385,13 @@
 #' }
 SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      replications = list(burnin.iter = 15L, burnin.reps = 100L,
-                                         max.reps = 500L, min.total.reps=9000L,
+                                         max.reps = 500L, min.total.reps = 9000L,
                                          increase.by = 10L),
                      integer = TRUE, formula = y ~ poly(x, 2), family = 'binomial',
                      parallel = FALSE, cl = NULL, save = TRUE,
                      ncores = parallel::detectCores() - 1L,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
-                     maxiter = 100L, verbose = TRUE, control = list(), ...){
+                     maxiter = 100L, verbose = TRUE, control = list(), predCI = .95, ...){
 
     # robust <- FALSE
     if(is.null(control$print_RAM)) control$print_RAM <- FALSE
@@ -545,6 +547,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       k.success=control$k.success,
                                       control=control,
                                       # robust = robust,
+                                      predCI = c((1-predCI)/2, predCI + (1-predCI)/2),
                                       interpolate.burnin=burnin.iter)
         roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                           design.row=as.data.frame(design[i,]),
