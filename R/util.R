@@ -460,7 +460,7 @@ SimSolveUniroot <- function(SimMod, b, interval, max.interval, median, CI=NULL){
     if(!is.null(CI)){
         preds <- predict(SimMod, newdata = data.frame(x=root),
                       se.fit=TRUE, type = 'link')
-        ci <- SimMod$family$linkinv(preds$fit + qnorm(c(.025, .975)) * preds$se.fit)
+        ci <- SimMod$family$linkinv(preds$fit + qnorm(CI) * preds$se.fit)
     }
     c(root, ci)
 }
