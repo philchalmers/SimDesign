@@ -107,7 +107,7 @@ fits an orthogonal polynomial of degree 2}
 
 \item{save}{logical; store temporary file in case of crashes. If detected
 in the working directory will automatically be loaded to resume (see
-\code{\link{runSimulation}} for similar behavior)}
+\code{\link{runSimulation}} for similar behaviour)}
 
 \item{ncores}{see \code{\link{runSimulation}}}
 
@@ -146,7 +146,9 @@ plots are provided (see \code{\link{PBA}})}
      results from \code{Analyse} give less meaningful information}
    }}
 
-\item{predCI}{confidence interval probability for final prediction of target \code{b}}
+\item{predCI}{advertised confidence interval probability for final
+model-based prediction of target \code{b} given the root input estimate.
+Returned as an element in the \code{summary()} list output}
 
 \item{...}{additional arguments to be pasted to \code{\link{PBA}}}
 

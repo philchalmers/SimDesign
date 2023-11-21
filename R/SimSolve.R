@@ -70,11 +70,13 @@
 #'
 #' @param save logical; store temporary file in case of crashes. If detected
 #'   in the working directory will automatically be loaded to resume (see
-#'   \code{\link{runSimulation}} for similar behavior)
+#'   \code{\link{runSimulation}} for similar behaviour)
 #'
 #' @param verbose logical; print information to the console?
 #'
-#' @param predCI confidence interval probability for final prediction of target \code{b}
+#' @param predCI advertised confidence interval probability for final
+#'   model-based prediction of target \code{b} given the root input estimate.
+#'   Returned as an element in the \code{summary()} list output
 #'
 #' @param control a \code{list} of the algorithm control parameters. If not specified,
 #'   the defaults described below are used.
