@@ -347,8 +347,9 @@ plot.PBA <- function(x, type = 'posterior',
 }
 
 getMedian <- function(fx, x){
-    expfx <- exp(fx)  # on original pdf
-    alpha <- sum(expfx)/2
+    expfx <- exp(fx - max(fx))  # on original pdf
+    expfx <- expfx / sum(expfx)
+    alpha <- .5
 
     # ad-hoc sum approach is clunky, but seems to work okay for now
     if(rint(1, min=0, max=1)){
