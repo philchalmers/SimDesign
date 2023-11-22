@@ -2,7 +2,7 @@
 
 ## Changes in SimDesign 2.14
 
-- `convertWarnings()` wrapper function added to convert specific 
+- `convertWarnings()` wrapper/post-hoc function added to convert specific 
   warning messages to errors during simulation. Useful when only a subset
   of warnings are known to be problematic, while other warning messages
   (whether detected or not) are treated as (provisionally) innocuous

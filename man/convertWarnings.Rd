@@ -7,7 +7,11 @@
 convertWarnings(expr, warning2error = NULL, muffle = FALSE)
 }
 \arguments{
-\item{expr}{expression to be evaluated (e.g., \code{ret <- myfun(args)})}
+\item{expr}{expression to be evaluated (e.g., \code{ret <- myfun(args)}).
+Omitting this argument will use the result from the latest
+\code{\link{warning}} call, which has a greater risk of throwing false
+positives (particularly if \code{warning2error} left unspecified)
+and has less specificity, but can be more convenient}
 
 \item{warning2error}{a character vector of warning messages
 that should be converted to errors. Each warning message is
@@ -24,13 +28,15 @@ you know \emph{all} of the warning messages returned by a function}
 returns the result of \code{eval(expr)}
 }
 \description{
-Function is intended to be a passive wrapper to functions
+Function is intended to be a passive wrapper/catch-all to functions
 that are known to throw warning messages that should generally
 be treated as errors instead (e.g., non-positive definite matrix
 warnings, negative variance estimate warnings, etc). Specific
 warning messages can be caught if specified, otherwise all
 detected warning messages will be converted to errors for the evaluated
-R expression.
+R expression. R expressions may be evaluated in isolation for greater
+specificity or evaluated after the function(s) terminate for more general
+warning detection behaviour.
 }
 \details{
 General goal of this function is to \emph{explicitly}
@@ -96,6 +102,23 @@ ret <- convertWarnings(fun(warn2=TRUE),   # error
 ret3 <- convertWarnings(fun(warn3=TRUE),
                        c("Show this warning", "Show a different warning"))
 ret3
+
+
+#####################
+# convertWarnings() can be evaluated after function calls
+#   (temporal result of warnings() caught and tested). Provides less
+#   specificity and higher likely of false positives and negatives, but
+#   can be more convenient
+
+fun(warn1=TRUE)     # warning raised
+convertWarnings()   # all warnings translated to error
+fun(warn2=TRUE)
+convertWarnings()   # initial warn1=TRUE does not carry over!
+
+# multiple warnings raised, though converted to errors given specificity
+fun(warn1=TRUE, warn2=TRUE)
+convertWarnings(warning2error=c('Only error with this warning')) # no errors
+convertWarnings(warning2error=c('Show a different warning')) # error
 
 }
 
