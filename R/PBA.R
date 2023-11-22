@@ -198,16 +198,18 @@ PBA <- function(f, interval, ..., p = .6,
 
     for(iter in 1L:maxiter){
         med <- getMedian(fx, x)
-        if(integer && iter > 6L){
-            tmp <- if(replications[iter] == max(replications))
-                medhistory[iter:(iter-3L)-1L] else medhistory[iter:(iter-5L)-1L]
-            if(length(unique(tmp)) == 2L && (max(tmp) - min(tmp)) == 2L)
-                med <- max(tmp) - 1L
-        }
-        if(replications[iter] == max(replications) && integer && iter > 4L){
-            tmp <- medhistory[iter:(iter-3L)-1L]
-            if(length(unique(tmp)) == 2L && (max(tmp) - min(tmp)) == 2L)
-                med <- max(tmp) - 1L
+        if(!is.null(FromSimSolve)){
+            if(integer && iter > 6L){
+                tmp <- if(replications[iter] == max(replications))
+                    medhistory[iter:(iter-3L)-1L] else medhistory[iter:(iter-5L)-1L]
+                if(length(unique(tmp)) == 2L && (max(tmp) - min(tmp)) == 2L)
+                    med <- max(tmp) - 1L
+            }
+            if(replications[iter] == max(replications) && integer && iter > 4L){
+                tmp <- medhistory[iter:(iter-3L)-1L]
+                if(length(unique(tmp)) == 2L && (max(tmp) - min(tmp)) == 2L)
+                    med <- max(tmp) - 1L
+            }
         }
         medhistory[iter] <- med
         feval <- if(!is.null(FromSimSolve))
