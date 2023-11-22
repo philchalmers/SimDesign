@@ -118,6 +118,7 @@ PBA <- function(f, interval, ..., p = .6,
                 check.interval = TRUE, check.interval.only = FALSE,
                 verbose = TRUE){
 
+    if(maxiter < miniter) maxiter <- miniter
     stopifnot(length(p) == 1L)
     if(p <= 0.5)
         stop('Probability must be > 0.5')
