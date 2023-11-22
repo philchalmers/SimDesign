@@ -553,7 +553,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       interpolate.burnin=burnin.iter)
         roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                           design.row=as.data.frame(design[i,]),
-                          integer=integer, verbose=verbose, maxiter=maxiter, ...))
+                          integer=integer, verbose=verbose, maxiter=maxiter,
+                          miniter=1L, ...))
         if(is(roots[[i]], 'try-error')){
             is_below <- grepl("*below*", as.character(roots[[i]]))
             if(is_below || grepl("*above*", as.character(roots[[i]])))

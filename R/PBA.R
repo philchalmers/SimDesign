@@ -35,7 +35,9 @@
 #'
 #' @param p assumed constant for probability of correct responses (must be > 0.5)
 #'
-#' @param maxiter the maximum number of iterations
+#' @param maxiter the maximum number of iterations (default 300)
+#'
+#' @param miniter minimum number of iterations (default 100)
 #'
 #' @param integer logical; should the values of the root be considered integer
 #'   or numeric? The former uses a discreet grid to track the updates, while the
@@ -111,7 +113,8 @@
 #'
 PBA <- function(f, interval, ..., p = .6,
                 integer = FALSE, tol = if(integer) .01 else .0001,
-                maxiter = 300L,  f.prior = NULL, resolution = 10000L,
+                maxiter = 300L, miniter = 100L,
+                f.prior = NULL, resolution = 10000L,
                 check.interval = TRUE, check.interval.only = FALSE,
                 verbose = TRUE){
 
@@ -265,7 +268,7 @@ PBA <- function(f, interval, ..., p = .6,
                 k.successes <- 0L
             glmpred.last <- glmpred
         }
-        if(!interpolate && abs(e.froot) < tol) break
+        if(!interpolate && abs(e.froot) < tol && iter > miniter) break
 
         if(verbose){
             if(integer)

@@ -14,6 +14,7 @@ PBA(
   integer = FALSE,
   tol = if (integer) 0.01 else 1e-04,
   maxiter = 300L,
+  miniter = 100L,
   f.prior = NULL,
   resolution = 10000L,
   check.interval = TRUE,
@@ -42,7 +43,9 @@ latter currently creates a grid with \code{resolution} points}
 \item{tol}{tolerance criteria for convergence based on average of the
 \code{f(x)} evaluations}
 
-\item{maxiter}{the maximum number of iterations}
+\item{maxiter}{the maximum number of iterations (default 300)}
+
+\item{miniter}{minimum number of iterations (default 100)}
 
 \item{f.prior}{density function indicating the likely location of the prior
 (e.g., if root is within [0,1] then \code{\link{dunif}} works, otherwise custom
