@@ -350,6 +350,36 @@ test_that('SimDesign', {
                   parallel=TRUE, ncores=2L, save=FALSE, verbose = FALSE)
     expect_true(any(grepl('WARNING', names(results))))
 
+    # permissible warnings
+    fn1 <- function(){
+        if(sample(c(TRUE, FALSE), 1, prob = c(.1, .9))) warning('Show this warning')
+        1
+    }
+    fn2 <- function(){
+        if(sample(c(TRUE, FALSE), 1, prob = c(.1, .9))) warning('Show a different warning')
+        1
+    }
+    mycompute <- function(condition, dat, fixed_objects = NULL){
+        out1 <- fn1()
+        out2 <- fn2()
+        c(ret = 1)
+    }
+    results <- runSimulation(Design, replications = 100, packages='extraDistr',
+                             seed=1:8,
+                             generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                             parallel=FALSE, save=FALSE, verbose = FALSE)
+    expect_equal(results$WARNINGS, c(21, 14, 22, 21, 15, 15, 17, 23))
+    mycompute2 <- function(condition, dat, fixed_objects = NULL){
+        out1 <- fn1()
+        out2 <- convertWarnings(fn2(), "Show a different warning")
+        c(ret = 1)
+    }
+    results <- runSimulation(Design, replications = 100, packages='extraDistr',
+                             seed=1:8,
+                             generate=mygenerate, analyse=mycompute2, summarise=mycollect,
+                             parallel=FALSE, save=FALSE, verbose = FALSE)
+    expect_equal(results$ERRORS, c(10, 8, 11, 12,  7,  8,  5,  7))
+
     #aggregate different files
     mycompute2 <- function(condition, dat, fixed_objects = NULL){
         if(sample(c(FALSE, TRUE), 1, prob = c(.9, .1))) stop('error')
