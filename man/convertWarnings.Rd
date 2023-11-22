@@ -7,11 +7,10 @@
 convertWarnings(expr, warning2error = NULL, muffle = FALSE)
 }
 \arguments{
-\item{expr}{expression to be evaluated (e.g., \code{ret <- myfun(args)}).
-Omitting this argument will use the result from the latest
-\code{\link{warning}} call, which has a greater risk of throwing false
-positives (particularly if \code{warning2error} left unspecified)
-and has less specificity, but can be more convenient}
+\item{expr}{expression to be evaluated (e.g., \code{ret <- myfun(args)}
+should be wrapped as either \code{convertWarnings(ret <- myfun(args))},
+\code{ret <- convertWarnings(myfun(args))}, or more readably
+\code{ret <- myfun(args) |> convertWarnings()} )}
 
 \item{warning2error}{a character vector of warning messages
 that should be converted to errors. Each warning message is
@@ -25,18 +24,16 @@ will be treated as errors}
 you know \emph{all} of the warning messages returned by a function}
 }
 \value{
-returns the result of \code{eval(expr)}
+returns the original result of \code{eval(expr)}
 }
 \description{
-Function is intended to be a passive wrapper/catch-all to functions
+Function is intended to be a message converter for functions
 that are known to throw warning messages that should generally
 be treated as errors instead (e.g., non-positive definite matrix
 warnings, negative variance estimate warnings, etc). Specific
 warning messages can be caught if specified, otherwise all
 detected warning messages will be converted to errors for the evaluated
-R expression. R expressions may be evaluated in isolation for greater
-specificity or evaluated after the function(s) terminate for more general
-warning detection behaviour.
+R expression.
 }
 \details{
 General goal of this function is to \emph{explicitly}
@@ -61,64 +58,51 @@ fun <- function(warn1=FALSE, warn2=FALSE, warn3=FALSE, error=FALSE){
 }
 
 # normal run (no warnings or errors)
-fun()
-convertWarnings(fun())
+out <- fun()
+out
+
+# these are all the same
+convertWarnings(out <- fun())
+out <- convertWarnings(fun())
+out <- fun() |> convertWarnings()
 
 # errors treated normally
 fun(error=TRUE)
-convertWarnings(fun(error=TRUE))
+fun(error=TRUE) |> convertWarnings()
 
 # all warnings converted to errors
 fun(warn1=TRUE)
-convertWarnings(fun(warn1=TRUE))
-convertWarnings(fun(warn2=TRUE))
+fun(warn1=TRUE) |> convertWarnings()
+fun(warn2=TRUE) |> convertWarnings()
 
 # muffle all non-caught warnings (not recommended unless you know
 #  the R expression/function very intimately!)
-retmuffle <- convertWarnings(fun(warn1=TRUE),
-                            'Warning not caught', muffle = TRUE)
+retmuffle <- fun(warn1=TRUE) |>
+                 convertWarnings('Warning not caught', muffle=TRUE)
 retmuffle
 
 # Specific warnings treated as errors (others stay as warnings)
 # Here, treat first warning message as error but not the second or third
 fun(warn1=TRUE) # warning
-ret <- convertWarnings(fun(warn1=TRUE),
-                 "Show this warning")  # now error
+ret <- fun(warn1=TRUE) |> convertWarnings("Show this warning")  # now error
 
 fun(warn2=TRUE, warn3=TRUE) # warnings
-ret23 <- convertWarnings(fun(warn2=TRUE, warn3=TRUE),
-                        "Show this warning") # continues, but prints warnings
+ret23 <- fun(warn2=TRUE, warn3=TRUE) |>   # continues, but prints warnings
+             convertWarnings("Show this warning")
 ret23
 
-# Finally, explicitly convert multiple warning messages
-#   (but allow others through). This is the best option
+# Explicitly convert multiple warning messages, allowing others through.
+#   This is generally the best use of the function's specificity
 fun(warn1=TRUE, warn2=TRUE)
-ret <- convertWarnings(fun(warn1=TRUE),   # error
-                      c("Show this warning", "Show a different warning"))
-ret <- convertWarnings(fun(warn2=TRUE),   # error
-                      c("Show this warning", "Show a different warning"))
+ret <- fun(warn1=TRUE) |>   # error given either message
+           convertWarnings(c("Show this warning", "Show a different warning"))
+ret <- fun(warn2=TRUE) |>
+           convertWarnings(c("Show this warning", "Show a different warning"))
 
-# last warning gets through, but warning still raised
-ret3 <- convertWarnings(fun(warn3=TRUE),
-                       c("Show this warning", "Show a different warning"))
+# last warning gets through (left as valid warning), but message still raised
+ret3 <- fun(warn3=TRUE) |>
+            convertWarnings(c("Show this warning", "Show a different warning"))
 ret3
-
-
-#####################
-# convertWarnings() can be evaluated after function calls
-#   (temporal result of warnings() caught and tested). Provides less
-#   specificity and higher likely of false positives and negatives, but
-#   can be more convenient
-
-fun(warn1=TRUE)     # warning raised
-convertWarnings()   # all warnings translated to error
-fun(warn2=TRUE)
-convertWarnings()   # initial warn1=TRUE does not carry over!
-
-# multiple warnings raised, though converted to errors given specificity
-fun(warn1=TRUE, warn2=TRUE)
-convertWarnings(warning2error=c('Only error with this warning')) # no errors
-convertWarnings(warning2error=c('Show a different warning')) # error
 
 }
 
