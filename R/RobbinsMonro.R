@@ -25,7 +25,7 @@
 #'   have the ability to stochastically explore around the root (not just
 #'   approach it from one side, which occurs when using small steps)
 #'
-#' @param maxiter the maximum number of iterations (default 300)
+#' @param maxiter the maximum number of iterations (default 500)
 #'
 #' @param miniter minimum number of iterations (default 100)
 #'
@@ -98,13 +98,12 @@
 #' retrm.PJ <- RobbinsMonro(f.root_noisy, .9, b = .01,
 #'                          Polyak_Juditsky = TRUE)
 #' retrm.PJ   # final Polyak_Juditsky estimate
-#'
 #' plot(retrm.PJ) # Robbins-Monro history
 #' plot(retrm.PJ, Polyak_Juditsky = TRUE) # Polyak_Juditsky history
 #'
 RobbinsMonro <- function(f, p, ...,
                          Polyak_Juditsky = FALSE,
-                         maxiter = 300L, miniter = 100L, k = 3L,
+                         maxiter = 500L, miniter = 100L, k = 3L,
                          tol = .00001, verbose = TRUE,
                          fn.a = function(iter, b = 1/2, ...) (1 / iter)^b)
 {
@@ -126,8 +125,8 @@ RobbinsMonro <- function(f, p, ...,
         }
         if(verbose){
             if(Polyak_Juditsky)
-                cat(sprintf("\rIter: %i; E(p) = %.3f; Max change in E(p) = %.3f",
-                             i, pbar, change))
+                cat(sprintf("\rIter: %i; Max change in E(p) = %.3f",
+                             i, change))
             else
                 cat(sprintf("\rIter: %i; Max change in p = %.3f",
                             i, change))

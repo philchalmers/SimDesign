@@ -11,7 +11,7 @@ RobbinsMonro(
   p,
   ...,
   Polyak_Juditsky = FALSE,
-  maxiter = 300L,
+  maxiter = 500L,
   miniter = 100L,
   k = 3L,
   tol = 1e-05,
@@ -38,7 +38,7 @@ used when the step-sizes are sufficiently large so that the Robbins-Monro
 have the ability to stochastically explore around the root (not just
 approach it from one side, which occurs when using small steps)}
 
-\item{maxiter}{the maximum number of iterations (default 300)}
+\item{maxiter}{the maximum number of iterations (default 500)}
 
 \item{miniter}{minimum number of iterations (default 100)}
 
@@ -116,7 +116,6 @@ plot(retrm.b2)
 retrm.PJ <- RobbinsMonro(f.root_noisy, .9, b = .01,
                          Polyak_Juditsky = TRUE)
 retrm.PJ   # final Polyak_Juditsky estimate
-
 plot(retrm.PJ) # Robbins-Monro history
 plot(retrm.PJ, Polyak_Juditsky = TRUE) # Polyak_Juditsky history
 
