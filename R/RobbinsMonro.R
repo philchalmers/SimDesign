@@ -17,6 +17,14 @@
 #
 #' @param ... additional named arguments to be passed to \code{f}
 #'
+#' @param Polyak_Juditsky logical; apply the Polyak and Juditsky (1992)
+#'   running-average method? Returns the final running average estimate
+#'   using the Robbins-Monro  updates (also applies to \code{plot}).
+#'   Note that this should only be
+#'   used when the step-sizes are sufficiently large so that the Robbins-Monro
+#'   have the ability to stochastically explore around the root (not just
+#'   approach it from one side, which occurs when using small steps)
+#'
 #' @param maxiter the maximum number of iterations (default 300)
 #'
 #' @param miniter minimum number of iterations (default 100)
@@ -34,6 +42,10 @@
 #'   console?
 #'
 #' @references
+#'
+#' Polyak, B. T. and Juditsky, A. B. (1992). Acceleration of Stochastic
+#'   Approximation by Averaging. SIAM Journal on Control and Optimization,
+#'   30(4):838
 #'
 #' Robbins, H. and Monro, S. (1951). A stochastic approximation method. Ann.Math.Statistics,
 #'   22:400-407.
@@ -78,11 +90,20 @@
 #' plot(retrm.noise)
 #'
 #' # different power (b) for fn.a()
-#' retrm.b2 <- RobbinsMonro(f.root_noisy, .9, b = .1)
+#' retrm.b2 <- RobbinsMonro(f.root_noisy, .9, b = .01)
 #' retrm.b2
 #' plot(retrm.b2)
 #'
+#' # use Polyak-Juditsky averaging (b should be closer to 0 to work well)
+#' retrm.PJ <- RobbinsMonro(f.root_noisy, .9, b = .01,
+#'                          Polyak_Juditsky = TRUE)
+#' retrm.PJ   # final Polyak_Juditsky estimate
+#'
+#' plot(retrm.PJ) # Robbins-Monro history
+#' plot(retrm.PJ, Polyak_Juditsky = TRUE) # Polyak_Juditsky history
+#'
 RobbinsMonro <- function(f, p, ...,
+                         Polyak_Juditsky = FALSE,
                          maxiter = 300L, miniter = 100L, k = 3L,
                          tol = .00001, verbose = TRUE,
                          fn.a = function(iter, b = 1/2, ...) (1 / iter)^b)
@@ -90,6 +111,7 @@ RobbinsMonro <- function(f, p, ...,
     if(maxiter < miniter) maxiter <- miniter
     history <- rbind(p, matrix(NA, nrow=maxiter, ncol=length(p)))
     k.succ <- 0
+    pbar_last <- pbar <- p
 
     for(i in 1L:maxiter){
         a <- fn.a(iter=i, ...)
@@ -97,9 +119,19 @@ RobbinsMonro <- function(f, p, ...,
         p <- p - a * fp
         history[i + 1L, ] <- p
         change <- max(abs(history[i,]-p))
-        if(verbose)
-            cat(sprintf("\rIter: %i; Max change in p = %.3f",
-                             i, change))
+        if(Polyak_Juditsky){
+            pbar_last <- pbar
+            pbar <- PK_average(history)
+            change <- max(abs(pbar_last - pbar))
+        }
+        if(verbose){
+            if(Polyak_Juditsky)
+                cat(sprintf("\rIter: %i; E(p) = %.3f; Max change in E(p) = %.3f",
+                             i, pbar, change))
+            else
+                cat(sprintf("\rIter: %i; Max change in p = %.3f",
+                            i, change))
+        }
         if(i > miniter && all(change < tol)){
             k.succ <- k.succ + 1L
             if(k.succ == k) break
@@ -108,10 +140,17 @@ RobbinsMonro <- function(f, p, ...,
 
     converged <- i < maxiter
     history <- history[0L:i + 1L, , drop=FALSE]
-    ret <- list(iter=i, root=p, terminated_early=converged,
-                history=history)
+    ret <- list(iter=i, root=if(Polyak_Juditsky) pbar else p,
+                terminated_early=converged,
+                history=history, Polyak_Juditsky=Polyak_Juditsky)
     class(ret) <- 'RM'
     ret
+}
+
+PK_average <- function(history){
+    t <- sum(rowSums(!is.na(history)) > 0L)
+    ret <- colSums(history[1:(t - 1L), , drop=FALSE], na.rm=TRUE) / t
+    matrix(ret, ncol=ncol(history))
 }
 
 #' @rdname RobbinsMonro
@@ -126,11 +165,23 @@ print.RM <- function(x, ...)
 #' @param main plot title
 #' @param par which parameter in the original vector \code{p} to include in the plot
 #' @export
-plot.RM <- function(x, par = 1,
-                    main = paste0('Robbins-Monro history (p = ', par, ')'), ...)
+plot.RM <- function(x, par = 1, main = NULL,
+                    Polyak_Juditsky = FALSE, ...)
 {
-    with(x, plot(1L:nrow(history), history[,par],
+    if(is.null(main)){
+        main <- if(Polyak_Juditsky)
+                 paste0('Polyak-Juditsky history (p = ', par, ')')
+            else paste0('Robbins-Monro history (p = ', par, ')')
+    }
+    history <- x$history
+    if(Polyak_Juditsky){
+        history <- do.call(rbind, lapply(2L:nrow(history), function(i){
+            PK_average(history[1L:i, , drop=FALSE])
+        }))
+        history <- history[-1L, , drop=FALSE]
+    }
+    plot(1L:nrow(history), history[,par],
                  main = main, type = 'b',
                  ylab = 'f(p)',
-                 xlab = 'Iteration', pch = 16, ...))
+                 xlab = 'Iteration', pch = 16, ...)
 }
