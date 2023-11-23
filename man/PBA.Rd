@@ -133,5 +133,5 @@ with Noisy Responses. SIAM Journal on Control and Optimization,
 Society for Industrial & Applied Mathematics (SIAM), 51, 2261-2279.
 }
 \seealso{
-\code{\link{uniroot}}
+\code{\link{uniroot}}, \code{\link{RobbinsMonro}}
 }

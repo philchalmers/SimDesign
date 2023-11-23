@@ -71,7 +71,7 @@
 #'
 #' @export
 #'
-#' @seealso \code{\link{uniroot}}
+#' @seealso \code{\link{uniroot}}, \code{\link{RobbinsMonro}}
 #'
 #' @examples
 #'
