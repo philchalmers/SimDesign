@@ -350,8 +350,6 @@ getMedian <- function(fx, x){
     expfx <- exp(fx - max(fx))  # on original pdf
     expfx <- expfx / sum(expfx)
     alpha <- .5
-
-    # ad-hoc sum approach is clunky, but seems to work okay for now
     if(rint(1, min=0, max=1)){
         ret <- x[cumsum(expfx) <= alpha]
         if(!length(ret)) ret <- x[1L]
