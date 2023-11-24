@@ -32,9 +32,11 @@
 #' @param k number of consecutive \code{tol} criteria required before terminating
 #'
 #' @param fn.a function to create the \code{a} coefficient in the Robbins-Monro
-#'   noise filter. Requires the first argument is the current iteration (\code{iter})
-#'   and must provide one or more arguments and (optionally) the \code{...}. Note that
-#'   if a different function is provided it must satisfy the property
+#'   noise filter. Requires the first argument is the current iteration (\code{iter}),
+#'   provide one or more arguments, and (optionally) the \code{...}. Sequence function
+#'   is of the form recommended by Spall (2000).
+#'
+#'   Note that if a different function is provided it must satisfy the property
 #'   that \eqn{\sum^\infty_{i=1} a_i = \infty} and
 #'   \eqn{\sum^\infty_{i=1} a_i^2 < \infty}
 #'
@@ -45,10 +47,13 @@
 #'
 #' Polyak, B. T. and Juditsky, A. B. (1992). Acceleration of Stochastic
 #'   Approximation by Averaging. SIAM Journal on Control and Optimization,
-#'   30(4):838
+#'   30(4):838.
 #'
-#' Robbins, H. and Monro, S. (1951). A stochastic approximation method. Ann.Math.Statistics,
-#'   22:400-407.
+#' Robbins, H. and Monro, S. (1951). A stochastic approximation method.
+#'   Ann.Math.Statistics, 22:400-407.
+#'
+#' Spall, J.C. (2000). Adaptive stochastic approximation by the simultaneous
+#'   perturbation method. IEEE Trans. Autom. Control 45, 1839-1853.
 #'
 #' @export
 #'
@@ -105,7 +110,8 @@ RobbinsMonro <- function(f, p, ...,
                          Polyak_Juditsky = FALSE,
                          maxiter = 500L, miniter = 100L, k = 3L,
                          tol = .00001, verbose = TRUE,
-                         fn.a = function(iter, b = 1/2, ...) (1 / iter)^b)
+                         fn.a = function(iter, a = 1, b = 1/2, c = 0, ...)
+                             a / (iter + c)^b)
 {
     if(maxiter < miniter) maxiter <- miniter
     history <- rbind(p, matrix(NA, nrow=maxiter, ncol=length(p)))

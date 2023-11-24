@@ -16,7 +16,7 @@ RobbinsMonro(
   k = 3L,
   tol = 1e-05,
   verbose = TRUE,
-  fn.a = function(iter, b = 1/2, ...) (1/iter)^b
+  fn.a = function(iter, a = 1, b = 1/2, c = 0, ...) a/(iter + c)^b
 )
 
 \method{print}{RM}(x, ...)
@@ -52,11 +52,13 @@ successive occasions}
 console?}
 
 \item{fn.a}{function to create the \code{a} coefficient in the Robbins-Monro
-noise filter. Requires the first argument is the current iteration (\code{iter})
-and must provide one or more arguments and (optionally) the \code{...}. Note that
-if a different function is provided it must satisfy the property
-that \eqn{\sum^\infty_{i=1} a_i = \infty} and
-\eqn{\sum^\infty_{i=1} a_i^2 < \infty}}
+  noise filter. Requires the first argument is the current iteration (\code{iter}),
+  provide one or more arguments, and (optionally) the \code{...}. Sequence function
+  is of the form recommended by Spall (2000).
+
+  Note that if a different function is provided it must satisfy the property
+  that \eqn{\sum^\infty_{i=1} a_i = \infty} and
+  \eqn{\sum^\infty_{i=1} a_i^2 < \infty}}
 
 \item{x}{an object of class \code{RM}}
 
@@ -123,10 +125,13 @@ plot(retrm.PJ, Polyak_Juditsky = TRUE) # Polyak_Juditsky history
 \references{
 Polyak, B. T. and Juditsky, A. B. (1992). Acceleration of Stochastic
   Approximation by Averaging. SIAM Journal on Control and Optimization,
-  30(4):838
+  30(4):838.
 
-Robbins, H. and Monro, S. (1951). A stochastic approximation method. Ann.Math.Statistics,
-  22:400-407.
+Robbins, H. and Monro, S. (1951). A stochastic approximation method.
+  Ann.Math.Statistics, 22:400-407.
+
+Spall, J.C. (2000). Adaptive stochastic approximation by the simultaneous
+  perturbation method. IEEE Trans. Autom. Control 45, 1839-1853.
 }
 \seealso{
 \code{\link{uniroot}}, \code{\link{PBA}}
