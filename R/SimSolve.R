@@ -524,7 +524,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         roots <- readRDS(tmpfilename)
         start <- min(which(sapply(roots, is.null)))
         if(verbose)
-            message(paste0('\nContinuing SimSolve() run at design row ', start))
+            message(paste0('\nContinuing at design row ', start,
+                           '. If not intended, terminate and use SimClean()'))
     }
     for(i in start:nrow(design)){
         if(verbose){

@@ -443,7 +443,8 @@ SimSolveUniroot <- function(SimMod, b, interval, max.interval, median, CI=NULL){
     f.root <- function(x, b)
         predict(SimMod, newdata = data.frame(x=x), type = 'response') - b
     res <- try(uniroot(f.root, b=b, interval = interval), silent = TRUE)
-    if(is(res, 'try-error')){ # in case original interval is poor for interpolation
+    if(is(res, 'try-error')){
+        # in case original interval is poor for interpolation
         interval <- max.interval
         for(i in seq_len(20L)){
             if(grepl('end points not of opposite sign', res)){
@@ -456,6 +457,8 @@ SimSolveUniroot <- function(SimMod, b, interval, max.interval, median, CI=NULL){
     }
     if(is(res, 'try-error')) return(c(NA, NA, NA))
     root <- res$root
+    abias <- bias(root, median, type = 'abs_relative')
+    if(abias > .5) root <- median
     ci <- c(NA, NA)
     if(!is.null(CI)){
         preds <- predict(SimMod, newdata = data.frame(x=root),
