@@ -275,12 +275,14 @@ PBA <- function(f, interval, ..., p = .6,
             if(integer)
                 cat(sprintf("\rIter: %i; Median: %i; E(f(x)) = %.2f",
                             iter, med, e.froot))
-            else cat(sprintf("\rIter: %i; Median: %.2f; E(f(x)) = %.2f",
+            else cat(sprintf("\rIter: %i; Median: %.3f; E(f(x)) = %.2f",
                              iter, med, e.froot))
             if(!is.null(FromSimSolve))
                 cat('; Reps =', replications[iter])
             if(interpolate && iter > interpolate.after && !is.na(glmpred[1L]))
-                cat(sprintf('; k.tol = %i; Pred = %.2f', k.successes, glmpred[1L]))
+                cat(sprintf(paste0('; k.tol = %i; Pred = %',
+                                   if(integer) ".1f" else ".3f"),
+                            k.successes, glmpred[1L]))
         }
     }
     converged <- iter < maxiter

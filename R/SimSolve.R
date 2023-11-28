@@ -569,7 +569,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         if(verbose){
             cat("\r")
             tmp <- as.data.frame(design[i,])
-            cat(sprintf("\nSolution for %s: %.2f",
+            cat(sprintf(paste0("\nSolution for %s: %", if(integer) ".1f" else ".3f"),
                 colnames(design)[which(is.na(tmp))], roots[[i]]$root))
         }
         if(save && i < nrow(design)) saveRDS(roots, tmpfilename)
