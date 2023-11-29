@@ -274,9 +274,9 @@ PBA <- function(f, interval, ..., p = .6,
         if(verbose){
             if(integer)
                 cat(sprintf("\rIter: %i; Median: %i; E(f(x)) = %.2f",
-                            iter, med, e.froot))
+                            iter, med, abs(e.froot)))
             else cat(sprintf("\rIter: %i; Median: %.3f; E(f(x)) = %.2f",
-                             iter, med, e.froot))
+                             iter, med, abs(e.froot)))
             if(!is.null(FromSimSolve))
                 cat('; Reps =', replications[iter])
             if(interpolate && iter > interpolate.after && !is.na(glmpred[1L]))
