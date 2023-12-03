@@ -21,6 +21,7 @@ SimSolve(
   parallel = FALSE,
   cl = NULL,
   save = TRUE,
+  method = "ProBABLI",
   ncores = parallel::detectCores() - 1L,
   type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
   maxiter = 100L,
@@ -108,6 +109,12 @@ fits an orthogonal polynomial of degree 2}
 \item{save}{logical; store temporary file in case of crashes. If detected
 in the working directory will automatically be loaded to resume (see
 \code{\link{runSimulation}} for similar behaviour)}
+
+\item{method}{optimizer method to use. Default is 'ProBABLI'
+but can also be the deterministic 'Brent', which uses the
+function \code{\link{uniroot}}. If 'Brent' then
+\code{replications} must equal a single constant to reflect
+the number of replication to use per deterministic iteration}
 
 \item{ncores}{see \code{\link{runSimulation}}}
 
