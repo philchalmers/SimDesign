@@ -578,7 +578,6 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         } else {
             roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                               design.row=as.data.frame(design[i,]),
-                              replications=replications[i],
                               integer=integer, verbose=verbose, maxiter=maxiter,
                               miniter=1L, ...))
             if(is(roots[[i]], 'try-error')){
