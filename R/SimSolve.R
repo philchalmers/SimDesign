@@ -50,8 +50,10 @@
 #' @param method optimizer method to use. Default is 'ProBABLI'
 #'   but can also be the deterministic 'Brent', which uses the
 #'   function \code{\link{uniroot}}. If 'Brent' then
-#'   \code{replications} must equal a single constant to reflect
-#'   the number of replication to use per deterministic iteration
+#'   \code{replications} must either equal a single constant to reflect
+#'   the number of replication to use per deterministic iteration or be a
+#'   vector of length \code{maxiter} to indicate the replications to use per
+#'   iteration
 #'
 #' @param generate generate function. See \code{\link{runSimulation}}
 #'
@@ -421,8 +423,10 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     if(method == 'Brent'){
         stopifnot('replications must be a constant for root solver' =
                       is.numeric(replications))
-        min.total.reps <- replications
-        replications <- rep(replications, maxiter)
+        min.total.reps <- min(replications)
+        if(length(replications) == 1L)
+            replications <- rep(replications, maxiter)
+        stopifnot(length(replications) == maxiter)
     }
     ANALYSE_FUNCTIONS <- GENERATE_FUNCTIONS <- NULL
     .SIMDENV$ANALYSE_FUNCTIONS <- ANALYSE_FUNCTIONS <- analyse
@@ -571,9 +575,10 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       interpolate.burnin=burnin.iter)
         if(method == 'Brent'){
             roots[[i]] <- stats::uniroot(root.fun, interval=interval[i, , drop=TRUE], b=b,
-                                             design.row=as.data.frame(design[i,]),
-                                             integer=integer, replications=replications[i],
-                                             tol=control$tol, maxiter=maxiter, ...)
+                                         design.row=as.data.frame(design[i,]),
+                                         integer=integer, replications=replications[i],
+                                         tol=control$tol, maxiter=maxiter, ...)
+            roots[[i]]$init.it <- roots[[i]]$estim.prec <- NULL
             roots[[i]]$integer <- integer
         } else {
             roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,

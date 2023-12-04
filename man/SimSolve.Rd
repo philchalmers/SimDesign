@@ -113,8 +113,10 @@ in the working directory will automatically be loaded to resume (see
 \item{method}{optimizer method to use. Default is 'ProBABLI'
 but can also be the deterministic 'Brent', which uses the
 function \code{\link{uniroot}}. If 'Brent' then
-\code{replications} must equal a single constant to reflect
-the number of replication to use per deterministic iteration}
+\code{replications} must either equal a single constant to reflect
+the number of replication to use per deterministic iteration or be a
+vector of length \code{maxiter} to indicate the replications to use per
+iteration}
 
 \item{ncores}{see \code{\link{runSimulation}}}
 
