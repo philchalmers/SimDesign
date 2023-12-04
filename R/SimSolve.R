@@ -669,6 +669,10 @@ plot.SimSolve <- function(x, y, ...)
             abline(h=b, lty=2, col='red')
             abline(v=roots$root, lty=2, col='blue')
         }
-    } else plot(roots, las=1, ...)
+    } else {
+        if(!is(roots, 'PBA'))
+            stop('No plot method supported for determinstic root-finder', call.=FALSE)
+        plot(roots, las=1, ...)
+    }
     return(invisible(NULL))
 }
