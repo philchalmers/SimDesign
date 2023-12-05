@@ -484,6 +484,32 @@ collect_unique <- function(x){
     x
 }
 
+bisection <- function (f, interval, tol = 0.001, max.iter = 100,
+                       f.a = NULL, f.b = NULL)
+{
+    a <- interval[1L]
+    b <- interval[2L]
+    iter <- 0L
+    if(is.null(f.a)) f.a <- f(a)
+    if(is.null(f.b)) f.b <- f(b)
+    for(i in 1L:max.iter) {
+        iter <- iter + 1L
+        if (iter > max.iter) break
+        xmid <- (a + b)/2
+        ymid <- f(xmid)
+        if (f.a * ymid > 0) {
+            a <- xmid
+            f.a <- ymid
+        } else {
+            b <- xmid
+            f.b <- ymid
+        }
+        if(abs(b - a) < tol) break
+    }
+    root <- (a + b)/2
+    list(root=root, f.root=f(root), terminated_early=i < max.iter)
+}
+
 RAM_used <- function(){
     # borrowed and modified from pryr::node_size(), 13-06-2023
     bit <- 8L * .Machine$sizeof.pointer
