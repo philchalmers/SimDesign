@@ -152,9 +152,9 @@ SFA <- function(results, formula, target = NULL, root.var = NULL,
         predict(mod, newdata=newdata, type='response') - target
     }
 
-    mod <- glm(formula, data=results, family=family, ...)
+    mod <- glm(formula=formula, data=results, family=family, ...)
     if(is.null(target)) return(mod)
-
+    stopifnot("Must specify root.var" = !is.null(root.var))
     root <- uniroot(fn, interval = c(min(results[root.var]),
                                      max(results[root.var])),
                     mod=mod, target=target, root.var=root.var)
