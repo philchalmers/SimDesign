@@ -484,30 +484,31 @@ collect_unique <- function(x){
     x
 }
 
-bisection <- function (f, interval, tol = 0.001, max.iter = 100,
-                       f.a = NULL, f.b = NULL)
+bisection <- function (f, interval, ..., tol = 0.001, maxiter = 100,
+                       f.lower = NULL, f.upper = NULL)
 {
-    a <- interval[1L]
-    b <- interval[2L]
+    lower <- interval[1L]
+    upper <- interval[2L]
     iter <- 0L
-    if(is.null(f.a)) f.a <- f(a)
-    if(is.null(f.b)) f.b <- f(b)
-    for(i in 1L:max.iter) {
+    if(is.null(f.lower)) f.lower <- f(lower, ...)
+    if(is.null(f.upper)) f.upper <- f(upper, ...)
+    stopifnot("No root in specified interval" = f.lower * f.upper < 0)
+    for(i in 1L:maxiter){
         iter <- iter + 1L
-        if (iter > max.iter) break
-        xmid <- (a + b)/2
-        ymid <- f(xmid)
-        if (f.a * ymid > 0) {
-            a <- xmid
-            f.a <- ymid
+        mid <- (lower + upper)/2
+        f.mid <- f(mid, ...)
+        if (f.lower * f.mid > 0) {
+            lower <- mid
+            f.lower <- f.mid
         } else {
-            b <- xmid
-            f.b <- ymid
+            upper <- mid
+            f.upper <- f.mid
         }
-        if(abs(b - a) < tol) break
+        if(abs(lower - upper) < tol) break
     }
-    root <- (a + b)/2
-    list(root=root, f.root=f(root), terminated_early=i < max.iter)
+    root <- (lower + upper)/2
+    list(root=root, f.root=f(root, ...), iter=i,
+         terminated_early=i < maxiter)
 }
 
 RAM_used <- function(){

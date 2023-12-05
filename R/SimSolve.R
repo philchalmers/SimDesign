@@ -47,9 +47,10 @@
 #'   gradually increase to reduce the sampling variability as the PBA approaches
 #'   the root.
 #'
-#' @param method optimizer method to use. Default is 'ProBABLI'
-#'   but can also be the deterministic 'Brent', which uses the
-#'   function \code{\link{uniroot}}. If 'Brent' then
+#' @param method optimizer method to use. Default is the stochastic root-finder
+#'   \code{'ProBABLI'}, but can also be the deterministic options \code{'Brent'}
+#'   (which uses the function \code{\link{uniroot}}) or \code{'bisection'}
+#'   (for the classical bisection method). If using deterministic root-finders then
 #'   \code{replications} must either equal a single constant to reflect
 #'   the number of replication to use per deterministic iteration or be a
 #'   vector of length \code{maxiter} to indicate the replications to use per
@@ -420,7 +421,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                               seq(burnin.reps, by=increase.by,
                                                   length.out=maxiter-burnin.iter))))
     }
-    if(method == 'Brent'){
+    if(method %in% c('Brent', 'bisection')){
         stopifnot('replications must be a constant for root solver' =
                       is.numeric(replications))
         min.total.reps <- min(replications)
@@ -460,6 +461,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         parallel <- useFuture <- FALSE
     }
 
+    stopifnot(method %in% c('ProBABLI', 'Brent', 'bisection'))
     stopifnot(!missing(b))
     stopifnot(length(b) == 1L)
     stopifnot(!missing(interval))
@@ -573,18 +575,11 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       # robust = robust,
                                       predCI = c((1-predCI)/2, predCI + (1-predCI)/2),
                                       interpolate.burnin=burnin.iter)
-        if(method == 'Brent'){
-            roots[[i]] <- stats::uniroot(root.fun, interval=interval[i, , drop=TRUE], b=b,
-                                         design.row=as.data.frame(design[i,]),
-                                         integer=integer, replications=replications[i],
-                                         tol=control$tol, maxiter=maxiter, ...)
-            roots[[i]]$init.it <- roots[[i]]$estim.prec <- NULL
-            roots[[i]]$integer <- integer
-        } else {
+        if(method == 'ProBABLI'){
             roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
-                              design.row=as.data.frame(design[i,]),
-                              integer=integer, verbose=verbose, maxiter=maxiter,
-                              miniter=1L, ...))
+                                  design.row=as.data.frame(design[i,]),
+                                  integer=integer, verbose=verbose, maxiter=maxiter,
+                                  miniter=1L, ...), TRUE)
             if(is(roots[[i]], 'try-error')){
                 is_below <- grepl("*below*", as.character(roots[[i]]))
                 if(is_below || grepl("*above*", as.character(roots[[i]])))
@@ -592,6 +587,23 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                 else roots[[i]] <- list(root=NA)
                 next
             }
+        } else if(method == 'Brent'){
+            time <- system.time(roots[[i]] <- stats::uniroot(root.fun,
+                                         interval=interval[i, , drop=TRUE], b=b,
+                                         design.row=as.data.frame(design[i,]),
+                                         integer=integer, replications=replications[i],
+                                         tol=control$tol, maxiter=maxiter, ...))
+            roots[[i]]$init.it <- roots[[i]]$estim.prec <- NULL
+            roots[[i]]$integer <- integer
+            roots[[i]]$time <- timeFormater(time[1L])
+        } else if(method == 'bisection'){
+            time <- system.time(roots[[i]] <- bisection(root.fun,
+                                    interval=interval[i, , drop=TRUE], b=b,
+                                    design.row=as.data.frame(design[i,]),
+                                    integer=integer, replications=replications[i],
+                                    tol=control$tol, maxiter=maxiter, ...))
+            roots[[i]]$integer <- integer
+            roots[[i]]$time <- timeFormater(time[1L])
         }
         tab <- .SIMDENV$stored_history[!sapply(.SIMDENV$stored_history, is.null)]
         if(ReturnSimSolveInternals) return(tab)

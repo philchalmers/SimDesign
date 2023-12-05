@@ -110,9 +110,10 @@ fits an orthogonal polynomial of degree 2}
 in the working directory will automatically be loaded to resume (see
 \code{\link{runSimulation}} for similar behaviour)}
 
-\item{method}{optimizer method to use. Default is 'ProBABLI'
-but can also be the deterministic 'Brent', which uses the
-function \code{\link{uniroot}}. If 'Brent' then
+\item{method}{optimizer method to use. Default is the stochastic root-finder
+\code{'ProBABLI'}, but can also be the deterministic options \code{'Brent'}
+(which uses the function \code{\link{uniroot}}) or \code{'bisection'}
+(for the classical bisection method). If using deterministic root-finders then
 \code{replications} must either equal a single constant to reflect
 the number of replication to use per deterministic iteration or be a
 vector of length \code{maxiter} to indicate the replications to use per
