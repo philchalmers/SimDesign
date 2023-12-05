@@ -151,6 +151,8 @@
 #' @return the filled-in \code{design} object containing the associated lower and upper interval
 #'   estimates from the stochastic optimization
 #'
+#' @seealso \code{\link{SFA}}
+#'
 #' @export
 #'
 #' @references

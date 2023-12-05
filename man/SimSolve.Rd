@@ -436,6 +436,9 @@ Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte C
 with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 \doi{10.20982/tqmp.16.4.p248}
 }
+\seealso{
+\code{\link{SFA}}
+}
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}
 }
