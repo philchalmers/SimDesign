@@ -46,7 +46,7 @@
 #' \dontrun{
 #'
 #' # create long Design object to fit surrogate over
-#' Design <- createDesign(N = 100:500,
+#' Design <- createDesign(N = 50:500,
 #'                        d = .2)
 #' Design
 #'
@@ -84,7 +84,7 @@
 #'                      control=list(print_RAM=FALSE))
 #' sim
 #'
-#' # total of 4010 replication
+#' # total of 4510 replication
 #' sum(sim$REPLICATIONS)
 #'
 #' # use the unsummarised results for the SFA, and include p.values < alpha
@@ -121,7 +121,7 @@
 #'                      summarise=Summarise, store_results=TRUE,
 #'                      control=list(print_RAM=FALSE))
 #' sim
-#' sum(sim$REPLICATIONS)
+#' sum(sim$REPLICATIONS) # more replications in total
 #'
 #' # use the unsummarised results for the SFA, and include p.values < alpha
 #' sim_results <- SimExtract(sim, what = 'results')
