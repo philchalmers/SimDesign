@@ -8,10 +8,11 @@
 SFA(
   results,
   formula,
-  target = NULL,
-  root.var = NULL,
   family = "binomial",
+  b = NULL,
+  design = NULL,
   CI = 0.95,
+  interval = NULL,
   ...
 )
 
@@ -24,15 +25,21 @@ the original results object or the extracted results stored when using
 
 \item{formula}{formula to specify for the regression model}
 
-\item{target}{optional. Target quantity to use for root solving given the fitted
-surrogate function (e.g., find sample size associated with SFA implied power of .80)}
-
-\item{root.var}{character vector indicating the name of the root to solve for}
-
 \item{family}{character vector indicating the family of GLMs to use
 (see \code{\link{family}})}
 
+\item{b}{(optional) Target quantity to use for root solving given the fitted
+surrogate function (e.g., find sample size associated with SFA implied power of .80)}
+
+\item{design}{(optional) \code{data.frame} object containing all the information
+relevant for the surrogate model (passed to \code{newdata} in
+\code{\link{predict}}) with an \code{NA} value in the variable to be solved}
+
 \item{CI}{advertised confidence interval of SFA prediction around solved target}
+
+\item{interval}{interval to be passed to \code{\link{uniroot}} if not specified then
+the lowest and highest values from \code{results} for the respective variable
+will be used}
 
 \item{...}{additional arguments to pass to \code{\link{glm}}}
 
@@ -81,6 +88,8 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 # Use small number of replications given range of sample sizes
 ## note that due to the lower replications disabling the
 ## RAM printing will help reduce overhead
+
+set.seed(1234)
 sim <- runSimulation(design=Design, replications=10,
                      generate=Generate, analyse=Analyse,
                      summarise=Summarise, store_results=TRUE,
@@ -105,8 +114,11 @@ plot(p ~ N, sim, las=1, pch=16, main='Rejection rates with R=10')
 pred <- predict(sfa, type = 'response')
 lines(sim_results$N, pred, col='red', lty=2)
 
-# fitted model + root-solved solution given target power of .8
-sfa.root <- SFA(sim_results, formula = sig ~ N, target = .8, root.var = "N")
+# fitted model + root-solved solution given f(.) = b,
+#   where b = target power of .8
+design <- data.frame(N=NA, d=.2)
+sfa.root <- SFA(sim_results, formula = sig ~ N,
+                b=.8, design=design)
 sfa.root
 
 # true root
@@ -119,15 +131,16 @@ Design <- createDesign(N = 375:425,
                        d = .2)
 Design
 
-sim <- runSimulation(design=Design, replications=100,
+set.seed(1234)
+sim2 <- runSimulation(design=Design, replications=100,
                      generate=Generate, analyse=Analyse,
                      summarise=Summarise, store_results=TRUE,
                      control=list(print_RAM=FALSE))
-sim
-sum(sim$REPLICATIONS) # more replications in total
+sim2
+sum(sim2$REPLICATIONS) # more replications in total
 
 # use the unsummarised results for the SFA, and include p.values < alpha
-sim_results <- SimExtract(sim, what = 'results')
+sim_results <- SimExtract(sim2, what = 'results')
 sim_results <- within(sim_results, sig <- p < .05)
 sim_results
 
@@ -137,13 +150,19 @@ sfa
 summary(sfa)
 
 # plot the observed and SFA expected values
-plot(p ~ N, sim, las=1, pch=16, main='Rejection rates with R=10')
+plot(p ~ N, sim2, las=1, pch=16, main='Rejection rates with R=100')
 pred <- predict(sfa, type = 'response')
 lines(sim_results$N, pred, col='red', lty=2)
 
-# fitted model + root-solved solution given target power of .8
-sfa.root <- SFA(sim_results, formula = sig ~ N, target = .8, root.var = "N")
+# fitted model + root-solved solution given f(.) = b,
+#   where b = target power of .8
+design <- data.frame(N=NA, d=.2)
+sfa.root <- SFA(sim_results, formula = sig ~ N,
+                b=.8, design=design, interval=c(100, 500))
 sfa.root
+
+# true root
+pwr::pwr.t.test(power=.8, d=.2)
 
 }
 
