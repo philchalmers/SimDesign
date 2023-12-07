@@ -597,6 +597,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                          tol=control$tol, maxiter=maxiter, ...))
             roots[[i]]$init.it <- roots[[i]]$estim.prec <- NULL
             roots[[i]]$integer <- integer
+            roots[[i]]$total.replications <- roots[[i]]$iter * replications[1L]
             roots[[i]]$time <- timeFormater(time[1L])
         } else if(method == 'bisection'){
             time <- system.time(roots[[i]] <- bisection(root.fun,
@@ -605,6 +606,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                     integer=integer, replications=replications[i],
                                     tol=control$tol, maxiter=maxiter, ...))
             roots[[i]]$integer <- integer
+            roots[[i]]$total.replications <- roots[[i]]$iter * replications[1L]
             roots[[i]]$time <- timeFormater(time[1L])
         }
         tab <- .SIMDENV$stored_history[!sapply(.SIMDENV$stored_history, is.null)]
