@@ -493,10 +493,24 @@ bisection <- function (f, interval, ..., tol = 0.001, maxiter = 100,
     if(is.null(f.lower)) f.lower <- f(lower, ...)
     if(is.null(f.upper)) f.upper <- f(upper, ...)
     stopifnot("No root in specified interval" = f.lower * f.upper < 0)
+    if(f.lower > f.upper){
+        tmp <- lower
+        lower <- upper
+        upper <- tmp
+        tmp <- f.lower
+        f.lower <- f.upper
+        f.upper <- tmp
+    }
+    false_converge <- FALSE
     for(i in 1L:maxiter){
         iter <- iter + 1L
         mid <- (lower + upper)/2
         f.mid <- f(mid, ...)
+        if(f.mid < f.lower || f.mid > f.upper){
+            warning('f(midpoint) was more extreme than f(lower) or f(upper)')
+            false_converge <- TRUE
+            break
+        }
         if (f.lower * f.mid > 0) {
             lower <- mid
             f.lower <- f.mid
@@ -508,7 +522,8 @@ bisection <- function (f, interval, ..., tol = 0.001, maxiter = 100,
     }
     root <- (lower + upper)/2
     list(root=root, f.root=f(root, ...), iter=i,
-         terminated_early=i < maxiter)
+         terminated_early=i < maxiter,
+         false_converge=false_converge)
 }
 
 RAM_used <- function(){
