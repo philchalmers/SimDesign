@@ -56,7 +56,7 @@ step to solve a target quantity. See Schoemann et al. (2014) for details.
 \dontrun{
 
 # create long Design object to fit surrogate over
-Design <- createDesign(N = 50:500,
+Design <- createDesign(N = 100:500,
                        d = .2)
 Design
 
@@ -89,14 +89,13 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 ## note that due to the lower replications disabling the
 ## RAM printing will help reduce overhead
 
-set.seed(1234)
 sim <- runSimulation(design=Design, replications=10,
                      generate=Generate, analyse=Analyse,
                      summarise=Summarise, store_results=TRUE,
-                     control=list(print_RAM=FALSE))
+                     progress=FALSE, control=list(print_RAM=FALSE))
 sim
 
-# total of 4510 replication
+# total of 4010 replication
 sum(sim$REPLICATIONS)
 
 # use the unsummarised results for the SFA, and include p.values < alpha
@@ -131,11 +130,10 @@ Design <- createDesign(N = 375:425,
                        d = .2)
 Design
 
-set.seed(1234)
 sim2 <- runSimulation(design=Design, replications=100,
                      generate=Generate, analyse=Analyse,
                      summarise=Summarise, store_results=TRUE,
-                     control=list(print_RAM=FALSE))
+                     progress=FALSE, control=list(print_RAM=FALSE))
 sim2
 sum(sim2$REPLICATIONS) # more replications in total
 
