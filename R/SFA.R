@@ -158,6 +158,57 @@
 #' # true root
 #' pwr::pwr.t.test(power=.8, d=.2)
 #'
+#' ###################
+#' # vary multiple parameters
+#'
+#' # example with smaller range but higher precision
+#' Design <- createDesign(N = 100:500,
+#'                        d = c(.4,.3,.2))
+#' Design
+#'
+#' sim3 <- runSimulation(design=Design, replications=10,
+#'                      generate=Generate, analyse=Analyse,
+#'                      summarise=Summarise, store_results=TRUE,
+#'                      progress=FALSE, control=list(print_RAM=FALSE))
+#' sim3
+#' sum(sim3$REPLICATIONS)
+#'
+#' # use the unsummarised results for the SFA, and include p.values < alpha
+#' sim_results <- SimExtract(sim3, what = 'results')
+#' sim_results <- within(sim_results, sig <- p < .05)
+#' sim_results
+#'
+#' # fitted model
+#' sfa <- SFA(sim_results, formula = sig ~ N + d)
+#' sfa
+#' summary(sfa)
+#'
+#' # plot the observed and SFA expected values
+#' library(ggplot2)
+#' sim3$pred <- predict(sfa, type = 'response', newdata=sim3)
+#' ggplot(sim3, aes(N, p, color = factor(d))) +
+#'   geom_point() + geom_line(aes(y=pred)) +
+#'   facet_wrap(~factor(d))
+#'
+#' # fitted model + root-solved solution given f(.) = b,
+#' #   where b = target power of .8
+#' design <- data.frame(N=NA, d=.2)
+#' sfa.root <- SFA(sim_results, formula = sig ~ N + d,
+#'                 b=.8, design=design, interval=c(100, 500))
+#' sfa.root
+#'
+#' # true root
+#' pwr::pwr.t.test(power=.8, d=.2)
+#'
+#' # d not used in original model
+#' design <- data.frame(N=NA, d=.25)
+#' sfa.root <- SFA(sim_results, formula = sig ~ N + d,
+#'                 b=.8, design=design, interval=c(100, 500))
+#' sfa.root
+#'
+#' # true root
+#' pwr::pwr.t.test(power=.8, d=.25)
+#'
 #' }
 #'
 SFA <- function(results, formula, family = 'binomial',
@@ -176,9 +227,8 @@ SFA <- function(results, formula, family = 'binomial',
                                        max(results[root.var]))
     root <- uniroot(fn, interval=interval,
                     mod=mod, b=b, root.var=root.var, newdata=design)
-    newdata <- data.frame(root$root)
-    colnames(newdata) <- root.var
-    pred <- predict(mod, newdata=newdata, type='link', se.fit=TRUE)
+    design[root.var] <- root$root
+    pred <- predict(mod, newdata=design, type='link', se.fit=TRUE)
     CI <- c((1-CI)/2, CI + (1-CI)/2)
     CIs <- mod$family$linkinv(pred$fit + qnorm(CI) * pred$se.fit)
     ret <- list(root=root$root, CI=CIs, mod=mod, uniroot=root, b=b)
