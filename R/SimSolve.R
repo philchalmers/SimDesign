@@ -498,8 +498,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         attr(design.row, 'SimSolve') <- TRUE
         ret <- runSimulation(design=design.row, replications=replications,
                              generate=generate, analyse=analyse,
-                             parallel=parallel, cl=cl,
-                             summarise=summarise, save=FALSE, verbose=FALSE,
+                             summarise=summarise, parallel=parallel, cl=cl,
+                             save=FALSE, resume=FALSE, verbose=FALSE,
                              control=.SIMDENV$FromSimSolve$control, ...)
         val <- ifelse(is.list(ret), ret[[1L]], ret[1L])
         if(store){
