@@ -90,6 +90,16 @@
 #' @param control a \code{list} of the algorithm control parameters. If not specified,
 #'   the defaults described below are used.
 #'
+#' @param wait.time (optional) argument passed to \code{\link{PBA}} to indicate
+#'   the time to wait (specified in minutes) per row in the \code{Design} object
+#'   rather than using pre-determined termination criteria based on the estimates.
+#'   For example, if three three conditions were defined in
+#'   \code{Design}, and \code{wait.time=5},
+#'   then the total search time till terminate after 15 minutes regardless of
+#'   independently specified termination criteria in \code{control}. Note that
+#'   \code{maxiter} is still used alongside \code{wait.time}, therefore this should
+#'   be increased as well (e.g., to \code{maxiter = 1000})
+#'
 #' \describe{
 #'    \item{\code{tol}}{tolerance criteria for early termination (.1 for
 #'      \code{integer = TRUE} searches; .00025 for non-integer searches}
@@ -256,6 +266,7 @@
 #'
 #' # failing analytic formula, confirm results with more precise
 #' #  simulation via runSimulation()
+#' #  (not required, if accuracy is important then ProBABLI should be run longer)
 #' csolved <- solved
 #' csolved$N <- ceiling(solved$N)
 #' confirm <- runSimulation(design=csolved, replications=10000, parallel=TRUE,
@@ -263,29 +274,24 @@
 #'                          summarise=Summarise)
 #' confirm
 #'
+#' # Alternatively, and more realistically, the wait.time argument can be used
+#' # to specify how longer the user is willing to wait for a final estimate.
+#' # Solutions involving more iterations will be more accurate,
+#' # and therefore it is recommended to run the ProBABLI root-solver as long
+#' # if the most accurate estimates are desirable. Below executes
+#' # the simulation for 2 minutes for each condition up to a maximum of 1000 iterations
 #'
-#' # Same as above, though modifying the replication mapping and convergence criteria
-#' #   Here, the search
-#' #   a) Only terminates if 50,000+ replications are explored
-#' #   b) Uses a much more informative replication mapping
-#' #       (1000 draws in burn-in, increases by 1000 until R 10000 per iteration)
-#' #   c) Terminates only if solution barely moving (tolerance criteria = .01)
-#' #   d) Does not check initial interval in PBA() (assumed to be within boundary)
-#' #
-#' # Evaluation is likely to be more precise/robust to early termination
-#' #  than default arguments, but is considerably more expensive to evaluate
-#' #
-#' # solved <- SimSolve(design=Design[1, ], b=.8, interval=c(380, 400),
-#' #                     generate=Generate, analyse=Analyse,
-#' #                     summarise=Summarise,
-#' #                     replications = list(burnin.reps=1000, increase.by=1000,
-#' #                                         max.reps=10000, min.total.reps=50000),
-#' #                     control = list(tol=.01),
-#' #                     check.interval = FALSE)
-#' # solved
-#' # summary(solved)
+#' solved_2min <- SimSolve(design=Design, b=.8, interval=c(10, 500),
+#'                 generate=Generate, analyse=Analyse, summarise=Summarise,
+#'                 wait.time=2, maxiter=1000)
+#' solved_2min
+#' summary(solved_2min)
 #'
-#'
+#' # use estimated N results to see how close power was
+#' N <- solved_2min$N
+#' pwr.t.test(d=.2, n=N[1], sig.level = .05)
+#' pwr.t.test(d=.5, n=N[2], sig.level = .05)
+#' pwr.t.test(d=.8, n=N[3], sig.level = .05)
 #'
 #' #------------------------------------------------
 #'
@@ -402,7 +408,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                          increase.by = 10L),
                      integer = TRUE, formula = y ~ poly(x, 2), family = 'binomial',
                      parallel = FALSE, cl = NULL, save = TRUE,
-                     method = 'ProBABLI',
+                     method = 'ProBABLI', wait.time = NULL,
                      ncores = parallel::detectCores() - 1L,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
                      maxiter = 100L, verbose = TRUE, control = list(), predCI = .95, ...){
@@ -581,7 +587,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                                   design.row=as.data.frame(design[i,]),
                                   integer=integer, verbose=verbose, maxiter=maxiter,
-                                  miniter=1L, ...), TRUE)
+                                  miniter=1L, wait.time=wait.time, ...), TRUE)
             if(is(roots[[i]], 'try-error')){
                 is_below <- grepl("*below*", as.character(roots[[i]]))
                 if(is_below || grepl("*above*", as.character(roots[[i]])))

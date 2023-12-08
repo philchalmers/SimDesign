@@ -586,3 +586,9 @@ colVars <- function(x, na.rm=FALSE, unname=FALSE){
 colSDs <- function(x, na.rm=FALSE, unname=FALSE){
     sqrt(colVars(x=x, na.rm=na.rm, unname=unname))
 }
+
+pickReps <- function(replications, iter){
+    ret <- if(iter > length(replications))
+        max(replications) else replications[iter]
+    ret
+}

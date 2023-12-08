@@ -22,6 +22,7 @@ SimSolve(
   cl = NULL,
   save = TRUE,
   method = "ProBABLI",
+  wait.time = NULL,
   ncores = parallel::detectCores() - 1L,
   type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
   maxiter = 100L,
@@ -119,20 +120,15 @@ the number of replication to use per deterministic iteration or be a
 vector of length \code{maxiter} to indicate the replications to use per
 iteration}
 
-\item{ncores}{see \code{\link{runSimulation}}}
-
-\item{type}{type of cluster object to define. If \code{type} used in \code{plot}
-then can be \code{'density'} to plot the density of the iteration history
-after the burn-in stage, \code{'iterations'} for a bubble plot with inverse
-replication weights. If not specified then the default PBA
-plots are provided (see \code{\link{PBA}})}
-
-\item{maxiter}{the maximum number of iterations (default 100)}
-
-\item{verbose}{logical; print information to the console?}
-
-\item{control}{a \code{list} of the algorithm control parameters. If not specified,
-  the defaults described below are used.
+\item{wait.time}{(optional) argument passed to \code{\link{PBA}} to indicate
+  the time to wait (specified in minutes) per row in the \code{Design} object
+  rather than using pre-determined termination criteria based on the estimates.
+  For example, if three three conditions were defined in
+  \code{Design}, and \code{wait.time=5},
+  then the total search time till terminate after 15 minutes regardless of
+  independently specified termination criteria in \code{control}. Note that
+  \code{maxiter} is still used alongside \code{wait.time}, therefore this should
+  be increased as well (e.g., to \code{maxiter = 1000})
 
 \describe{
    \item{\code{tol}}{tolerance criteria for early termination (.1 for
@@ -155,6 +151,21 @@ plots are provided (see \code{\link{PBA}})}
      raw data from the \code{Analyse} step? Set this to \code{TRUE} when the individual
      results from \code{Analyse} give less meaningful information}
    }}
+
+\item{ncores}{see \code{\link{runSimulation}}}
+
+\item{type}{type of cluster object to define. If \code{type} used in \code{plot}
+then can be \code{'density'} to plot the density of the iteration history
+after the burn-in stage, \code{'iterations'} for a bubble plot with inverse
+replication weights. If not specified then the default PBA
+plots are provided (see \code{\link{PBA}})}
+
+\item{maxiter}{the maximum number of iterations (default 100)}
+
+\item{verbose}{logical; print information to the console?}
+
+\item{control}{a \code{list} of the algorithm control parameters. If not specified,
+the defaults described below are used.}
 
 \item{predCI}{advertised confidence interval probability for final
 model-based prediction of target \code{b} given the root input estimate.
@@ -290,6 +301,7 @@ pwr.t.test(d=.8, n=N[3], sig.level = .05)
 
 # failing analytic formula, confirm results with more precise
 #  simulation via runSimulation()
+#  (not required, if accuracy is important then ProBABLI should be run longer)
 csolved <- solved
 csolved$N <- ceiling(solved$N)
 confirm <- runSimulation(design=csolved, replications=10000, parallel=TRUE,
@@ -297,29 +309,24 @@ confirm <- runSimulation(design=csolved, replications=10000, parallel=TRUE,
                          summarise=Summarise)
 confirm
 
+# Alternatively, and more realistically, the wait.time argument can be used
+# to specify how longer the user is willing to wait for a final estimate.
+# Solutions involving more iterations will be more accurate,
+# and therefore it is recommended to run the ProBABLI root-solver as long
+# if the most accurate estimates are desirable. Below executes
+# the simulation for 2 minutes for each condition up to a maximum of 1000 iterations
 
-# Same as above, though modifying the replication mapping and convergence criteria
-#   Here, the search
-#   a) Only terminates if 50,000+ replications are explored
-#   b) Uses a much more informative replication mapping
-#       (1000 draws in burn-in, increases by 1000 until R 10000 per iteration)
-#   c) Terminates only if solution barely moving (tolerance criteria = .01)
-#   d) Does not check initial interval in PBA() (assumed to be within boundary)
-#
-# Evaluation is likely to be more precise/robust to early termination
-#  than default arguments, but is considerably more expensive to evaluate
-#
-# solved <- SimSolve(design=Design[1, ], b=.8, interval=c(380, 400),
-#                     generate=Generate, analyse=Analyse,
-#                     summarise=Summarise,
-#                     replications = list(burnin.reps=1000, increase.by=1000,
-#                                         max.reps=10000, min.total.reps=50000),
-#                     control = list(tol=.01),
-#                     check.interval = FALSE)
-# solved
-# summary(solved)
+solved_2min <- SimSolve(design=Design, b=.8, interval=c(10, 500),
+                generate=Generate, analyse=Analyse, summarise=Summarise,
+                wait.time=2, maxiter=1000)
+solved_2min
+summary(solved_2min)
 
-
+# use estimated N results to see how close power was
+N <- solved_2min$N
+pwr.t.test(d=.2, n=N[1], sig.level = .05)
+pwr.t.test(d=.5, n=N[2], sig.level = .05)
+pwr.t.test(d=.8, n=N[3], sig.level = .05)
 
 #------------------------------------------------
 

@@ -15,6 +15,7 @@ PBA(
   tol = if (integer) 0.01 else 1e-04,
   maxiter = 300L,
   miniter = 100L,
+  wait.time = NULL,
   f.prior = NULL,
   resolution = 10000L,
   check.interval = TRUE,
@@ -46,6 +47,13 @@ latter currently creates a grid with \code{resolution} points}
 \item{maxiter}{the maximum number of iterations (default 300)}
 
 \item{miniter}{minimum number of iterations (default 100)}
+
+\item{wait.time}{(optional) instead of terminating after specific estimate criteria
+are satisfied (e.g., \code{tol}), terminate after a specific
+wait time. Input must be a numeric vector indicating the number of minutes to
+wait. Not that users should increase the number of \code{maxiter} as well
+so that termination can occur if either the maximum iterations are satisfied
+or the specified wait time has elapsed (whichever occurs first)}
 
 \item{f.prior}{density function indicating the likely location of the prior
 (e.g., if root is within [0,1] then \code{\link{dunif}} works, otherwise custom
@@ -92,7 +100,7 @@ f.root <- function(x, b = .6) 1 / (1 + exp(-x)) - b
 f.root(.3)
 
 xs <- seq(-3,3, length.out=1000)
-plot(xs, f.root(xs), type = 'l', ylab = "f(x)", xlab='x')
+plot(xs, f.root(xs), type = 'l', ylab = "f(x)", xlab='x', las=1)
 abline(h=0, col='red')
 
 retuni <- uniroot(f.root, c(0,1))
@@ -122,6 +130,14 @@ retpba.noise <- PBA(f.root_noisy, c(0,1))
 retpba.noise
 plot(retpba.noise)
 plot(retpba.noise, type = 'history')
+
+\dontrun{
+# ignore iteration and termination criteria, and instead
+#  run for 1/2 minutes or 5000 iterations
+retpba.noise_30sec <- PBA(f.root_noisy, c(0,1), wait.time = 1/2, maxiter=5000)
+retpba.noise_30sec
+
+}
 
 }
 \references{

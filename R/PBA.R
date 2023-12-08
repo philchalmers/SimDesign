@@ -30,6 +30,13 @@
 #   (default is 3). The idea is that if the same median estimates are appearing
 #   in several of the most recent estimates then the algorithm has likely reached
 #   the stationary location
+#'
+#' @param wait.time (optional) instead of terminating after specific estimate criteria
+#'   are satisfied (e.g., \code{tol}), terminate after a specific
+#'   wait time. Input must be a numeric vector indicating the number of minutes to
+#'   wait. Not that users should increase the number of \code{maxiter} as well
+#'   so that termination can occur if either the maximum iterations are satisfied
+#'   or the specified wait time has elapsed (whichever occurs first)
 #
 #' @param ... additional named arguments to be passed to \code{f}
 #'
@@ -80,7 +87,7 @@
 #' f.root(.3)
 #'
 #' xs <- seq(-3,3, length.out=1000)
-#' plot(xs, f.root(xs), type = 'l', ylab = "f(x)", xlab='x')
+#' plot(xs, f.root(xs), type = 'l', ylab = "f(x)", xlab='x', las=1)
 #' abline(h=0, col='red')
 #'
 #' retuni <- uniroot(f.root, c(0,1))
@@ -111,9 +118,17 @@
 #' plot(retpba.noise)
 #' plot(retpba.noise, type = 'history')
 #'
+#' \dontrun{
+#' # ignore iteration and termination criteria, and instead
+#' #  run for 1/2 minutes or 5000 iterations
+#' retpba.noise_30sec <- PBA(f.root_noisy, c(0,1), wait.time = 1/2, maxiter=5000)
+#' retpba.noise_30sec
+#'
+#' }
+#'
 PBA <- function(f, interval, ..., p = .6,
                 integer = FALSE, tol = if(integer) .01 else .0001,
-                maxiter = 300L, miniter = 100L,
+                maxiter = 300L, miniter = 100L, wait.time = NULL,
                 f.prior = NULL, resolution = 10000L,
                 check.interval = TRUE, check.interval.only = FALSE,
                 verbose = TRUE){
@@ -199,8 +214,11 @@ PBA <- function(f, interval, ..., p = .6,
         if(check.interval.only) return(!no_root)
     }
     glmpred.converged <- FALSE
+    iter <- 0L
 
-    for(iter in 1L:maxiter){
+
+    while(TRUE){
+        iter <- iter + 1L
         med <- getMedian(fx, x)
         if(!is.null(FromSimSolve)){
             if(integer && iter > 6L){
@@ -260,7 +278,7 @@ PBA <- function(f, interval, ..., p = .6,
                 rel_diff <- abs_diff / abs(glmpred.last[1L])
                 if(abs_diff <= tol || rel_diff <= rel.tol){
                     k.successes <- k.successes + 1L
-                    if(k.successes == k.success) break
+                    if(k.successes == k.success && is.null(wait.time)) break
                 } else {
                     k.successes <- max(c(k.successes - 1L, 0L))
                 }
@@ -269,7 +287,8 @@ PBA <- function(f, interval, ..., p = .6,
                 k.successes <- 0L
             glmpred.last <- glmpred
         }
-        if(!interpolate && abs(e.froot) < tol && iter > miniter) break
+        if(is.null(wait.time))
+            if(!interpolate && abs(e.froot) < tol && iter > miniter) break
 
         if(verbose){
             if(integer)
@@ -284,6 +303,11 @@ PBA <- function(f, interval, ..., p = .6,
                                    if(integer) ".1f" else ".3f"),
                             k.successes, glmpred[1L]))
         }
+
+        if(!is.null(wait.time))
+            if(proc.time()[3L] - start_time > wait.time*60) break
+
+        if(iter == maxiter) break
     }
     converged <- iter < maxiter
     predCIs <- c(NA, NA, NA)
@@ -338,12 +362,12 @@ plot.PBA <- function(x, type = 'posterior',
     if(type == 'posterior'){
         with(x, plot(fx ~ x,
                      main = main, type = 'l',
-                     ylab = 'density', ...))
+                     ylab = 'density', las=1, ...))
     } else if(type == 'history'){
         with(x, plot(medhistory,
                      main = 'Median history', type = 'b',
                      ylab = 'Median Estimate',
-                     xlab = 'Iteration', pch = 16, ...))
+                     xlab = 'Iteration', pch = 16, las=1, ...))
     }
 
 }
