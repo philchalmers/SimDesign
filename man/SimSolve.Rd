@@ -310,11 +310,12 @@ confirm <- runSimulation(design=csolved, replications=10000, parallel=TRUE,
 confirm
 
 # Alternatively, and more realistically, the wait.time argument can be used
-# to specify how longer the user is willing to wait for a final estimate.
+# to specify how long the user is willing to wait for a final estimate.
 # Solutions involving more iterations will be more accurate,
 # and therefore it is recommended to run the ProBABLI root-solver as long
-# if the most accurate estimates are desirable. Below executes
-# the simulation for 2 minutes for each condition up to a maximum of 1000 iterations
+# the analyst can tolerate if the most accurate estimates are desired.
+# Below executes the simulation for 2 minutes for each condition up
+# to a maximum of 1000 iterations, terminating based on whichever occurs first
 
 solved_2min <- SimSolve(design=Design, b=.8, interval=c(10, 500),
                 generate=Generate, analyse=Analyse, summarise=Summarise,

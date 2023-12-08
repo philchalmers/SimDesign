@@ -119,9 +119,8 @@
 #' plot(retpba.noise, type = 'history')
 #'
 #' \dontrun{
-#' # ignore iteration and termination criteria, and instead
-#' #  run for 1/2 minutes or 5000 iterations
-#' retpba.noise_30sec <- PBA(f.root_noisy, c(0,1), wait.time = 1/2, maxiter=5000)
+#' # ignore termination criteria and instead run for 1/2 minutes or 30000 iterations
+#' retpba.noise_30sec <- PBA(f.root_noisy, c(0,1), wait.time = 1/2, maxiter=30000)
 #' retpba.noise_30sec
 #'
 #' }
