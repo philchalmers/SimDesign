@@ -508,7 +508,6 @@ bisection <- function (f, interval, ..., tol = 0.001, maxiter = 100,
         mid <- (lower + upper)/2
         f.mid <- f(mid, ...)
         if(f.mid < f.lower || f.mid > f.upper){
-            warning('f(midpoint) was more extreme than f(lower) or f(upper)')
             false_converge <- TRUE
             break
         }
