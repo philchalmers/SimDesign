@@ -485,14 +485,15 @@ collect_unique <- function(x){
 }
 
 bisection <- function (f, interval, ..., tol = 0.001, maxiter = 100,
-                       f.lower = NULL, f.upper = NULL)
+                       f.lower = NULL, f.upper = NULL, check = FALSE)
 {
     lower <- interval[1L]
     upper <- interval[2L]
     iter <- 0L
     if(is.null(f.lower)) f.lower <- f(lower, ...)
     if(is.null(f.upper)) f.upper <- f(upper, ...)
-    stopifnot("No root in specified interval" = f.lower * f.upper < 0)
+    if(check)
+        stopifnot("No root in specified interval" = f.lower * f.upper < 0)
     if(f.lower > f.upper){
         tmp <- lower
         lower <- upper
