@@ -81,6 +81,12 @@
 #'   in the working directory will automatically be loaded to resume (see
 #'   \code{\link{runSimulation}} for similar behaviour)
 #'
+#' @param resume logical; if a temporary \code{SimDesign} file is detected should
+#'   the simulation resume from this location? Keeping this \code{TRUE} is generally
+#'   recommended, however this should be disabled
+#'   if using \code{SimSolve} within \code{\link{runSimulation}} to avoid
+#'   reading improper save states
+#'
 #' @param verbose logical; print information to the console?
 #'
 #' @param predCI advertised confidence interval probability for final
@@ -408,7 +414,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                          max.reps = 500L, min.total.reps = 9000L,
                                          increase.by = 10L),
                      integer = TRUE, formula = y ~ poly(x, 2), family = 'binomial',
-                     parallel = FALSE, cl = NULL, save = TRUE,
+                     parallel = FALSE, cl = NULL, save = TRUE, resume = TRUE,
                      method = 'ProBABLI', wait.time = NULL,
                      ncores = parallel::detectCores() - 1L,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
@@ -551,7 +557,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     compname <- Sys.info()['nodename']
     tmpfilename <- paste0('SIMSOLVE-TEMPFILE_', compname, '.rds')
     start <- 1L
-    if(file.exists(tmpfilename)){
+    if(resume && file.exists(tmpfilename)){
         roots <- readRDS(tmpfilename)
         start <- min(which(sapply(roots, is.null)))
         if(verbose)

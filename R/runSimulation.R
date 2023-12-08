@@ -470,6 +470,11 @@
 #'   initially define the simulation and the external file will automatically be detected and read-in.
 #'   Default is \code{TRUE} when \code{replications > 10} and \code{FALSE} otherwise
 #'
+#' @param resume logical; if a temporary \code{SimDesign} file is detected should
+#'   the simulation resume from this location? Keeping this \code{TRUE} is generally recommended,
+#'   however this should be disabled if using \code{runSimulation} within \code{runSimulation} to avoid
+#'   reading improper save states
+#'
 #' @param debug a string indicating where to initiate a \code{browser()} call for editing
 #'   and debugging, and pairs particularly well with the \code{load_seed} argument for precise debugging.
 #'   General options are \code{'none'} (default; no debugging), \code{'error'}, which
@@ -921,7 +926,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           cl = NULL, notification = 'none', beep = FALSE, sound = 1,
                           CI = .95, seed = NULL,
                           boot_method='none', boot_draws = 1000L, max_errors = 50L,
-                          save_seeds = FALSE,
+                          save_seeds = FALSE, resume = TRUE,
                           save_details = list(), control = list(),
                           progress = TRUE, verbose = TRUE)
 {
@@ -1199,7 +1204,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     names(Result_list) <- names(stored_Results_list) <- rownames(design)
     time0 <- time1 <- proc.time()[3L]
     files <- dir(out_rootdir)
-    if(!MPI && any(files == tmpfilename) && is.null(load_seed) && debug == 'none'){
+    if(resume && !MPI && any(files == tmpfilename) && is.null(load_seed) && debug == 'none'){
         if(verbose)
             message(sprintf(c('Resuming simulation from %s file with %i replications. ',
                               '\nIf not intended, use SimClean() prior to calling runSimulation()'),

@@ -21,6 +21,7 @@ SimSolve(
   parallel = FALSE,
   cl = NULL,
   save = TRUE,
+  resume = TRUE,
   method = "ProBABLI",
   wait.time = NULL,
   ncores = parallel::detectCores() - 1L,
@@ -110,6 +111,12 @@ fits an orthogonal polynomial of degree 2}
 \item{save}{logical; store temporary file in case of crashes. If detected
 in the working directory will automatically be loaded to resume (see
 \code{\link{runSimulation}} for similar behaviour)}
+
+\item{resume}{logical; if a temporary \code{SimDesign} file is detected should
+the simulation resume from this location? Keeping this \code{TRUE} is generally
+recommended, however this should be disabled
+if using \code{SimSolve} within \code{\link{runSimulation}} to avoid
+reading improper save states}
 
 \item{method}{optimizer method to use. Default is the stochastic root-finder
 \code{'ProBABLI'}, but can also be the deterministic options \code{'Brent'}

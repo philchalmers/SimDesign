@@ -32,6 +32,7 @@ runSimulation(
   boot_draws = 1000L,
   max_errors = 50L,
   save_seeds = FALSE,
+  resume = TRUE,
   save_details = list(),
   control = list(),
   progress = TRUE,
@@ -316,6 +317,11 @@ errors are thrown in any
   Hence, this option is only of
   interest when \emph{all} of the replications must be reproducible (which occurs very rarely),
   otherwise the defaults to \code{runSimulation} should be sufficient}
+
+\item{resume}{logical; if a temporary \code{SimDesign} file is detected should
+the simulation resume from this location? Keeping this \code{TRUE} is generally recommended,
+however this should be disabled if using \code{runSimulation} within \code{runSimulation} to avoid
+reading improper save states}
 
 \item{save_details}{a list pertaining to information regarding how and where files should be saved
   when the \code{save} or \code{save_results} flags are triggered.
