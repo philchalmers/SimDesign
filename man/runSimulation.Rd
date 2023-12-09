@@ -321,7 +321,11 @@ errors are thrown in any
 \item{resume}{logical; if a temporary \code{SimDesign} file is detected should
 the simulation resume from this location? Keeping this \code{TRUE} is generally recommended,
 however this should be disabled if using \code{runSimulation} within \code{runSimulation} to avoid
-reading improper save states}
+reading improper save states. Alternatively, if an integer is supplied then the simulation
+will continue at the associated row location in \code{design} (e.g., \code{resume=10}).
+This is useful to overwrite a previously evaluate element in the temporary files that was detected
+to contain fatal errors that require re-evaluation without discarding the originally valid rows
+in the simulation}
 
 \item{save_details}{a list pertaining to information regarding how and where files should be saved
   when the \code{save} or \code{save_results} flags are triggered.

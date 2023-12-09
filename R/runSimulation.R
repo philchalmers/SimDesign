@@ -473,7 +473,11 @@
 #' @param resume logical; if a temporary \code{SimDesign} file is detected should
 #'   the simulation resume from this location? Keeping this \code{TRUE} is generally recommended,
 #'   however this should be disabled if using \code{runSimulation} within \code{runSimulation} to avoid
-#'   reading improper save states
+#'   reading improper save states. Alternatively, if an integer is supplied then the simulation
+#'   will continue at the associated row location in \code{design} (e.g., \code{resume=10}).
+#'   This is useful to overwrite a previously evaluate element in the temporary files that was detected
+#'   to contain fatal errors that require re-evaluation without discarding the originally valid rows
+#'   in the simulation
 #'
 #' @param debug a string indicating where to initiate a \code{browser()} call for editing
 #'   and debugging, and pairs particularly well with the \code{load_seed} argument for precise debugging.
@@ -931,6 +935,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
+    resume.row <- NA
+    if(is.numeric(resume)){
+        resume.row <- resume
+        resume <- TRUE
+    }
     if(!verbose) control$print_RAM <- FALSE
     ANALYSE_FUNCTIONS <- TRY_ALL_ANALYSE <- NULL
     if(is.character(parallel)){
@@ -1222,7 +1231,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 Result_list <- tmp_new
             }
         }
-        start <- min(c(which(sapply(Result_list, is.null)), nrow(design)))
+        start <- ifelse(is.na(resume.row),
+                        min(c(which(sapply(Result_list, is.null)), nrow(design))),
+                        resume.row)
         time0 <- time1 - Result_list[[start-1L]]$SIM_TIME
     }
     if(file.exists(tmpfilename)){
