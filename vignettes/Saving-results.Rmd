@@ -126,9 +126,23 @@ SimClean('my-simple-sim.rds')
 
 Notice that when complete, the temporary file is removed from the hard-drive.
 
-# Option: `save_results = TRUE` (`FALSE` by default; recommended during official simulation run)
+# `store_results` (`TRUE` by default, though not recommended if RAM is suspected to be an issue)
 
-Continuing on, the `save_results` argument will output the elements which are passed to `Summarise()` to separate `.rds` files containing all the analysis results. Note that when using `save_results` the `save` flag is automatically set to `TRUE` to ensure that the simulation state is correctly tracked.
+Passing `store_results = TRUE` stores the `results` object information that are passed to `Summarise()` in the returned object. This allows for further inspection of the simulation results, and potential to use functions such as `reSummarise()` to provide meta-summaries of the simulation at a later time.  After the simulation is complete, these results can be extracted using `SimExtract(results, what = 'results')`. For example,
+
+```{r}
+# store_results=TRUE by default
+res <- runSimulation(Design, replications = 3, 
+              generate=Generate, analyse=Analyse, summarise=Summarise)
+results <- SimExtract(res, what = 'results')
+results
+```
+
+Note that this should be used if the number of replications/`design` conditions is small enough to warrant such storage; otherwise, the R session may run out of memory (RAM) as the simulation progresses. Otherwise, `save_results = TRUE` described below is the recommended approach to resolve potential memory issues. 
+
+# Option: `save_results = TRUE` (`FALSE` by default; recommended during official simulation run if RAM is an issue)
+
+Finally, the `save_results` argument will output the `results` elements that were passed to `Summarise()` to separate `.rds` files containing all the analysis results and `condition` information. This option is supported primarily for simulations that are anticipated to have memory storage issues, where the results are written to the hard-drive and released from memory. Note that when using `save_results` the `save` flag is automatically set to `TRUE` to ensure that the simulation state is correctly tracked.
 
 ```{r}
 res <- runSimulation(Design, replications = 1000, save_results=TRUE,
@@ -138,7 +152,7 @@ directory <- dir[grepl('SimDesign-results', dir)]
 dir(directory)
 ```
 
-Here we can see that three `.rds` files have been saved to the folder with the computer node name and a prefixed `'SimDesign-results'` character string. Each `.rds` file contains the respective simulation results (including errors and warnings), which can be read in directly with `readRDS()`
+Here we can see that three `.rds` files have been saved to the folder with the computer node name and a prefixed `'SimDesign-results'` character string. Each `.rds` file contains the respective simulation results (including errors and warnings), which can be read in directly with `readRDS()`:
 
 ```{r}
 row1 <- readRDS(paste0(directory, '/results-row-1.rds'))
@@ -172,22 +186,7 @@ Should the need arise to remove the results directory then the `SimClean()` func
 SimClean(results = TRUE)
 ```
 
-# Option: `store_results = TRUE` (`FALSE` by default, and not recommended if RAM is an issue)
+# Recommendations
 
-Similar to `save_results = TRUE`, though less recommended for RAM related reasons, users can pass `store_results = TRUE` to store the complete simulation results in the returned object.  This should only be used if the number of replications/`design` conditions is small enough, otherwise the R session may run out of memory as the simulation progresses. After the simulation is complete, these results can be extracted using `SimExtract(results, what = 'results')`. For example,
-
-```{r}
-res <- runSimulation(Design, replications = 3, store_results=TRUE,
-              generate=Generate, analyse=Analyse, summarise=Summarise)
-results <- SimExtract(res, what = 'results')
-results
-```
-
-# My recommendations
-
-My general recommendation when running simulations is to supply a `filename = 'some_simulation_name'` when your simulation is finally ready for run time (particularly for simulations which take a long time to finish), and to leave the default `save = TRUE` to track any temporary files in the event of unexpected crashes. As the aggregation of the simulation results is often what you are interested in then this approach will ensure that the results are stored in a succinct manner for later analyses. 
-
-As well, passing either `store_results = TRUE` or `save_results = TRUE`, depending on RAM considerations, will save all the `results` objects passed to `Summarise()`. Hence, you'll be able to inspect all the elements manually if the need were to arise (e.g., to inspect `ECR(results, alpha = .01)` instead of `ECR(results, alpha = .05)` which may have only been used in the initial `Summarise()` function; see `reSummarise()` as well). However, do this **only** if your hard-drive/RAM can store all of the analysis results.
-
-Finally, if you are worried about reproducibility, particularly during the debugging states, then the `seed` and `save_seeds` are the arguments you should utilize. `seed` sets the global seed for each design row, while `save_seed` writes the `.Random.seed` state to the hard-disk for complete reproducibility within each design condition (note that all seeds can be saved in parallel or when running simulations on single cores). If `save_seed` were used then the exact simulation state can be reloaded to the generated data by passing the specific saved seed file to `load_seed`. That said, problematic error states are automatically stored within the returned simulation object (which can be extracted via `SimExtract()`), and therefore if the purpose of saving the seeds is to help with debugging the package already automatically collects such information to replicate potentially hard-to-find errors/bugs within each design condition. 
+My general recommendation when running simulations is to supply a `filename = 'some_simulation_name'` when your simulation is finally ready for run time (particularly for simulations which take a long time to finish), and to leave the default `save = TRUE` and `store_results = TRUE` to track any temporary files in the event of unexpected crashes and to store the `results` objects for future inspection (should the need arise). As the aggregation of the simulation results is often what you are interested in then this approach will ensure that the results are stored in a succinct manner for later analyses. However, if RAM is suspected to be an issue as the simulation progresses then using `save_results = TRUE` is strongly recommended to avoid memory-based storage issues.
 
