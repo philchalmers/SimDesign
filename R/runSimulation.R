@@ -537,11 +537,11 @@
 #' @param CI bootstrap confidence interval level (default is 95\%)
 #'
 #' @param store_results logical; store the complete tables of simulation results
-#'   in the returned object? This is \code{FALSE} by default to help avoid RAM
-#'   issues (see \code{save_results} as a more suitable alternative). However, if the \code{Design}
+#'   in the returned object? This is \code{TRUE} default, though if RAM anticipated to
+#'   be an issue see \code{save_results} instead. Note that if the \code{Design}
 #'   object is omitted from the call to \code{runSimulation()}, or the number of rows in \code{Design}
-#'   is exactly 1, then this argument is automatically set to \code{TRUE} as RAM storage will no
-#'   longer be an issue.
+#'   is exactly 1, then this argument is automatically set to \code{TRUE} as RAM storage is no
+#'   longer an issue.
 #'
 #'   To extract these results
 #'   pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
@@ -660,7 +660,7 @@
 #'
 #' # To store the results from the analyse function either
 #' #   a) omit a definition of summarise() to return all results,
-#' #   b) use store_results = TRUE to store results internally and later
+#' #   b) use store_results = TRUE (default) to store results internally and later
 #' #      extract with SimExtract(..., what = 'results'), or
 #' #   c) pass save_results = TRUE to runSimulation() and read the results in with SimResults()
 #' #
@@ -672,8 +672,8 @@
 #'                      generate=Generate, analyse=Analyse)
 #' res
 #'
-#' # b) approach
-#' res <- runSimulation(design=Design, replications=5, store_results=TRUE,
+#' # b) approach (store_results = TRUE by default)
+#' res <- runSimulation(design=Design, replications=5,
 #'                      generate=Generate, analyse=Analyse, summarise=Summarise)
 #' res
 #' SimExtract(res, 'results')
@@ -925,7 +925,7 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL,
                           debug = 'none', load_seed = NULL, save = replications > 10,
-                          save_results = FALSE, store_results = FALSE,
+                          store_results = TRUE, save_results = FALSE,
                           parallel = FALSE, ncores = parallel::detectCores() - 1L,
                           cl = NULL, notification = 'none', beep = FALSE, sound = 1,
                           CI = .95, seed = NULL,

@@ -2,6 +2,21 @@
 
 ## Changes in SimDesign 2.14
 
+- `SimSolve()` function added to perform (stochastic) root-solving to estimate 
+  specific criteria from simulation studies. Currently supports uni-root type 
+  problems for continuous or discrete variables via the the probabilistic 
+  bisection algorithm with bolstering and interpolations (ProBABLI), 
+  Brent's method, and the classical bisection approach
+  
+- `SFA()` function added for fitting surrogate functional forms to 
+  simulation results and subsequently solving specific roots. Supports single
+  root or multi-root applications, where by default the modelling is performed 
+  via generalized linear models
+
+- `runSimulation(..., store_results = TRUE)` is now the default to automatically
+  store the results from `Analyse()` in the returned simulation. If RAM issues
+  are suspected then `save_results = TRUE` is still the recommended approach
+
 - `convertWarnings()` wrapper/post-hoc function added to convert specific 
   warning messages to errors during simulation. Useful when only a subset
   of warnings are known to be problematic, while other warning messages

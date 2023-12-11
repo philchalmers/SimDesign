@@ -47,7 +47,7 @@ will be used}
 }
 \description{
 Given a simulation that was executed with \code{\link{runSimulation}},
-potentially with the argument \code{store_results} to store the
+potentially with the argument \code{store_results = TRUE} to store the
 unsummarised analysis results, fit a surrogate function approximation (SFA)
 model to the results and (optionally) perform a root-solving
 step to solve a target quantity. See Schoemann et al. (2014) for details.
