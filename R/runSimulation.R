@@ -1214,7 +1214,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     time0 <- time1 <- proc.time()[3L]
     files <- dir(out_rootdir)
     if(resume && !MPI && any(files == tmpfilename) && is.null(load_seed) && debug == 'none'){
-        if(verbose)
+        if(verbose && is.na(resume.row))
             message(sprintf(c('Resuming simulation from %s file with %i replications. ',
                               '\nIf not intended, use SimClean() prior to calling runSimulation()'),
                             file.path(out_rootdir, tmpfilename), replications))
