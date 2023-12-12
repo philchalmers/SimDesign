@@ -27,6 +27,7 @@ SimSolve(
   ncores = parallel::detectCores() - 1L,
   type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
   maxiter = 100L,
+  check.interval = TRUE,
   verbose = TRUE,
   control = list(),
   predCI = 0.95,
@@ -168,6 +169,11 @@ replication weights. If not specified then the default PBA
 plots are provided (see \code{\link{PBA}})}
 
 \item{maxiter}{the maximum number of iterations (default 100)}
+
+\item{check.interval}{logical; should an initial check be made to determine
+whether \code{f(interval[1L])} and \code{f(interval[2L])} have opposite
+signs? If \code{FALSE}, the specified \code{interval} is assumed to contain a root,
+where \code{f(interval[1]) < 0} and \code{f(interval[2] > 0}. Default is \code{TRUE}}
 
 \item{verbose}{logical; print information to the console?}
 

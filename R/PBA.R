@@ -215,7 +215,6 @@ PBA <- function(f, interval, ..., p = .6,
     glmpred.converged <- FALSE
     iter <- 0L
 
-
     while(TRUE){
         iter <- iter + 1L
         med <- getMedian(fx, x)

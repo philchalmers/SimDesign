@@ -89,6 +89,11 @@
 #'
 #' @param verbose logical; print information to the console?
 #'
+#' @param check.interval logical; should an initial check be made to determine
+#'    whether \code{f(interval[1L])} and \code{f(interval[2L])} have opposite
+#'    signs? If \code{FALSE}, the specified \code{interval} is assumed to contain a root,
+#'    where \code{f(interval[1]) < 0} and \code{f(interval[2] > 0}. Default is \code{TRUE}
+#'
 #' @param predCI advertised confidence interval probability for final
 #'   model-based prediction of target \code{b} given the root input estimate.
 #'   Returned as an element in the \code{summary()} list output
@@ -418,7 +423,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      method = 'ProBABLI', wait.time = NULL,
                      ncores = parallel::detectCores() - 1L,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
-                     maxiter = 100L, verbose = TRUE, control = list(), predCI = .95, ...){
+                     maxiter = 100L, check.interval = TRUE,
+                     verbose = TRUE, control = list(), predCI = .95, ...){
 
     # robust <- FALSE
     if(is.null(control$print_RAM)) control$print_RAM <- FALSE
@@ -594,7 +600,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                                   design.row=as.data.frame(design[i,]),
                                   integer=integer, verbose=verbose, maxiter=maxiter,
-                                  miniter=1L, wait.time=wait.time, ...), TRUE)
+                                  miniter=1L, wait.time=wait.time, check.interval=check.interval,
+                                  ...), TRUE)
             if(is(roots[[i]], 'try-error')){
                 is_below <- grepl("*below*", as.character(roots[[i]]))
                 if(is_below || grepl("*above*", as.character(roots[[i]])))
@@ -617,7 +624,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                     interval=interval[i, , drop=TRUE], b=b,
                                     design.row=as.data.frame(design[i,]),
                                     integer=integer, replications=replications[i],
-                                    tol=control$tol, maxiter=maxiter, ...))
+                                    tol=control$tol, maxiter=maxiter,
+                                    check=check.interval, ...))
             roots[[i]]$integer <- integer
             roots[[i]]$total.replications <- roots[[i]]$iter * replications[1L]
             roots[[i]]$time <- unname(time[1L])

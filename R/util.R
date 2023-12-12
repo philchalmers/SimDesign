@@ -490,10 +490,14 @@ bisection <- function (f, interval, ..., tol = 0.001, maxiter = 100,
     lower <- interval[1L]
     upper <- interval[2L]
     iter <- 0L
-    if(is.null(f.lower)) f.lower <- f(lower, ...)
-    if(is.null(f.upper)) f.upper <- f(upper, ...)
-    if(check)
+    if(check){
+        if(is.null(f.lower)) f.lower <- f(lower, ...)
+        if(is.null(f.upper)) f.upper <- f(upper, ...)
         stopifnot("No root in specified interval" = f.lower * f.upper < 0)
+    } else {
+        if(is.null(f.lower)) f.lower <- -Inf
+        if(is.null(f.upper)) f.upper <- Inf
+    }
     if(f.lower > f.upper){
         tmp <- lower
         lower <- upper
