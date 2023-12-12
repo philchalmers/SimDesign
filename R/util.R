@@ -515,7 +515,7 @@ bisection <- function (f, interval, ..., tol = 0.001, maxiter = 100,
             false_converge <- TRUE
             break
         }
-        if (f.lower * f.mid > 0) {
+        if (isTRUE(f.lower * f.mid > 0)){
             lower <- mid
             f.lower <- f.mid
         } else {
