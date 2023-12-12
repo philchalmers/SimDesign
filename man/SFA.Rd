@@ -163,17 +163,17 @@ sfa.root
 pwr::pwr.t.test(power=.8, d=.2)
 
 ###################
-# vary multiple parameters
+# vary multiple parameters (e.g., sample size + effect size) to fit
+# multi-parameter surrogate
 
-# example with smaller range but higher precision
-Design <- createDesign(N = 100:500,
-                       d = c(.4,.3,.2))
+Design <- createDesign(N = seq(from=10, to=500, by=10),
+                       d = seq(from=.1, to=.5, by=.1))
 Design
 
-sim3 <- runSimulation(design=Design, replications=10,
-                     generate=Generate, analyse=Analyse,
-                     summarise=Summarise, store_results=TRUE,
-                     progress=FALSE, control=list(print_RAM=FALSE))
+sim3 <- runSimulation(design=Design, replications=50,
+                      generate=Generate, analyse=Analyse,
+                      summarise=Summarise, store_results=TRUE,
+                      progress=FALSE, control=list(print_RAM=FALSE))
 sim3
 sum(sim3$REPLICATIONS)
 
@@ -182,9 +182,16 @@ sim_results <- SimExtract(sim3, what = 'results')
 sim_results <- within(sim_results, sig <- p < .05)
 sim_results
 
-# fitted model
-sfa <- SFA(sim_results, formula = sig ~ N + d)
+# additive effects (logit(sig) ~ N + d)
+sfa0 <- SFA(sim_results, formula = sig ~ N+d)
+sfa0
+
+# multiplicative effects (logit(sig) ~ N + d + N:d)
+sfa <- SFA(sim_results, formula = sig ~ N*d)
 sfa
+
+# multiplicative better fit (sample size interacts with effect size)
+anova(sfa0, sfa, test = "LRT")
 summary(sfa)
 
 # plot the observed and SFA expected values
@@ -197,16 +204,16 @@ ggplot(sim3, aes(N, p, color = factor(d))) +
 # fitted model + root-solved solution given f(.) = b,
 #   where b = target power of .8
 design <- data.frame(N=NA, d=.2)
-sfa.root <- SFA(sim_results, formula = sig ~ N + d,
+sfa.root <- SFA(sim_results, formula = sig ~ N * d,
                 b=.8, design=design, interval=c(100, 500))
 sfa.root
 
 # true root
 pwr::pwr.t.test(power=.8, d=.2)
 
-# d not used in original model
+# root prediction where d *not* used in original data
 design <- data.frame(N=NA, d=.25)
-sfa.root <- SFA(sim_results, formula = sig ~ N + d,
+sfa.root <- SFA(sim_results, formula = sig ~ N * d,
                 b=.8, design=design, interval=c(100, 500))
 sfa.root
 
