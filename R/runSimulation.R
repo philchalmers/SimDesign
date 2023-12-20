@@ -1432,12 +1432,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(store_results){
         if(is(stored_Results_list[[1L]], 'data.frame') ||
            is(stored_Results_list[[1L]], 'matrix')){
-            nms <- c(colnames(design), colnames(stored_Results_list[[1L]]))
             for(i in seq_len(length(stored_Results_list)))
                 stored_Results_list[[i]] <- cbind(design[i,],
                                                  stored_Results_list[[i]], row.names=NULL)
             stored_Results_list <- dplyr::bind_rows(stored_Results_list)
-            colnames(stored_Results_list) <- nms
             stored_Results_list$ID <- NULL
             stored_Results_list <- dplyr::as_tibble(stored_Results_list)
         }
