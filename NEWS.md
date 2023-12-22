@@ -6,7 +6,8 @@
   specific criteria from simulation studies. Currently supports uni-root type 
   problems for continuous or discrete variables via the the probabilistic 
   bisection algorithm with bolstering and interpolations (ProBABLI), 
-  Brent's method, and the classical bisection approach
+  Brent's method, and the classical bisection approach, the latter two of which
+  can be problematic if the number of replications per iteration are too low
   
 - `SFA()` function added for fitting surrogate functional forms to 
   simulation results and subsequently solving specific roots. Supports single
@@ -25,8 +26,8 @@
 - `control` gains a `print_RAM` logical argument to suppress printing the RAM
   when `verbose = TRUE`. Disabling this can marginally improve execution speed
   as the garbage collector (`gc()`) calls are avoided, which is used to extract
-  the current RAM state. Setting `verbose=TRUE` will also disable the RAM 
-  and `gc()` calls and their overhead
+  the current RAM state. Setting `verbose = FALSE` will automatically 
+  disable the RAM and `gc()` calls and their overhead as well
   
 - `Attach()` now accepts `matrix` input objects, and gains a `RStudio_flags` 
   argument to generate syntax that suppresses false positives about variables 
