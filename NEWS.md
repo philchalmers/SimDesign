@@ -19,9 +19,9 @@
   are suspected then `save_results = TRUE` is still the recommended approach
 
 - `convertWarnings()` wrapper/post-hoc function added to convert specific 
-  warning messages to errors during simulation. Useful when only a subset
+  warning messages to errors during simulations. Useful when only a subset
   of warnings are known to be problematic, while other warning messages
-  (whether detected or not) are treated as (provisionally) innocuous
+  (whether known or not) are treated as provisionally innocuous
 
 - `control` gains a `print_RAM` logical argument to suppress printing the RAM
   when `verbose = TRUE`. Disabling this can marginally improve execution speed
