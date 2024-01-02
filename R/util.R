@@ -50,7 +50,8 @@ timeFormater <- function(time, decimals = TRUE){
     resTime
 }
 
-print_progress <- function(row, trow, stored_time, RAM, progress, condition){
+print_progress <- function(row, trow, stored_time, RAM, progress,
+                           condition, replications){
     if(progress) cat('\n')
     tmp <- as.list(subset(condition, select=colnames(condition) != "ID"))
     nms <- names(tmp)
@@ -66,8 +67,8 @@ print_progress <- function(row, trow, stored_time, RAM, progress, condition){
         }
     }
     if(RAM != "") RAM <- sprintf(';   RAM used: %s', RAM)
-    cat(sprintf('\rDesign row: %i/%i%s;   Total elapsed time: %s ',
-                row, trow, RAM, timeFormater(sum(stored_time))))
+    cat(sprintf('\rDesign: %i/%i%s;   Replications: %i;   Total Time: %s ',
+                row, trow, RAM, replications, timeFormater(sum(stored_time))))
     cat(sprintf('\n Conditions: %s\n', condstring))
     if(progress) cat('\r')
     invisible(NULL)

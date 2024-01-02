@@ -1323,7 +1323,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(summarise_asis){
             if(verbose)
                 print_progress(i, nrow(design), stored_time=stored_time,
-                               RAM=memory_used[i], progress=progress,
+                               RAM=memory_used[i], progress=progress, replications=replications,
                                condition=if(was_tibble) dplyr::as_tibble(design[i,])
                                else design[i,])
             Result_list[[i]] <- Analysis(Functions=Functions,
@@ -1359,7 +1359,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
                 print_progress(i, nrow(design), stored_time=stored_time,
-                               RAM=memory_used[i], progress=progress,
+                               RAM=memory_used[i], progress=progress, replications=replications,
                                condition=if(was_tibble) dplyr::as_tibble(design[i,])
                                else design[i,])
             if(save_seeds)
