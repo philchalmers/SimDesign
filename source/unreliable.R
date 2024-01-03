@@ -1,5 +1,5 @@
 #' ---
-#' title: "Unreliability example for paired and Welch corrected $t$-tests"
+#' title: "Unreliability example for paired-samples $t$-tests"
 #' author: Phil Chalmers
 #' output:
 #'   html_document:
