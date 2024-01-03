@@ -673,6 +673,7 @@ summary.SimSolve <- function(object, tab.only = FALSE, reps.cutoff = 300, ...)
         ret[[i]]$tab <- stored_tab[[i]]
     }
     names(ret) <- paste0('condition_', 1L:length(ret))
+    if(length(ret) == 1L) ret <- ret[[1L]]
     ret
 }
 
