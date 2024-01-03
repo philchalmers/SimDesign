@@ -672,7 +672,7 @@ summary.SimSolve <- function(object, tab.only = FALSE, reps.cutoff = 300, ...)
         attr(ret[[i]], "stored_tab") <- NULL
         ret[[i]]$tab <- stored_tab[[i]]
     }
-    names(ret) <- paste0('DesignRow_', 1L:length(ret))
+    names(ret) <- paste0('condition_', 1L:length(ret))
     ret
 }
 
@@ -697,7 +697,7 @@ plot.SimSolve <- function(x, y, ...)
         }
         if(dots$type == 'density')
             with(tab, plot(density(x, weights=reps/sum(reps)), xlab = solve_name,
-                           main = 'Density Using Replication Weights', las=1))
+                           main = 'Density using replication weights', las=1))
         else {
             with(tab, symbols(x, y, circles=sqrt(1 /reps/sum(reps)),
                               inches=0.2, fg="white", bg="black", las=1,
@@ -708,7 +708,7 @@ plot.SimSolve <- function(x, y, ...)
         }
     } else {
         if(!is(roots, 'PBA'))
-            stop('No plot method supported for determinstic root-finder', call.=FALSE)
+            stop('No plot method supported for deterministic root-finder', call.=FALSE)
         plot(roots, las=1, ...)
     }
     return(invisible(NULL))
