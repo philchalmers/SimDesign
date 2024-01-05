@@ -290,12 +290,12 @@ PBA <- function(f, interval, ..., p = .6,
 
         if(verbose){
             if(integer)
-                cat(sprintf("\rIter: %i; Median: %i; E(f(x)) = %.2f",
-                            iter, med, abs(e.froot)))
-            else cat(sprintf("\rIter: %i; Median: %.3f; E(f(x)) = %.2f",
-                             iter, med, abs(e.froot)))
+                cat(sprintf("\rIter: %i; Median: %i", iter, med))
+            else cat(sprintf("\rIter: %i; Median: %.3f", iter, med))
+            if(is.null(FromSimSolve))
+                cat(sprintf("; E(f(x)) = %.2f", abs(e.froot)))
             if(!is.null(FromSimSolve))
-                cat('; Reps =', replications[iter])
+                cat('; Total.reps =', sum(replications[1L:iter]))
             if(interpolate && iter > interpolate.after && !is.na(glmpred[1L]))
                 cat(sprintf(paste0('; k.tol = %i; Pred = %',
                                    if(integer) ".1f" else ".3f"),
