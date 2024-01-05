@@ -1,5 +1,5 @@
 #' ---
-#' title: "Unreliability example for paired-samples $t$-tests"
+#' title: "Unreliability example for paired-samples $t$-test"
 #' author: Phil Chalmers
 #' output:
 #'   html_document:
@@ -9,11 +9,12 @@
 #'
 #' # Introduction
 #'
-#' This basic example demonstrates how unreliability can be included in power
-#' calculations for paired-sample $t$-test applications.
-#' Four reliability ratios (`rxx`) are investigated for
+#' This basic example demonstrates the influence of unreliable measurements
+#' has on the empirical power to reject a null hypothesis of no effect
+#' for paired-sample $t$-test applications.
+#' Four reliability ratios (`rxx`) are investigated alongside
 #' four sample sizes (50, 100, 200, 400). Three non-zero effect sizes
-#' are included using Cohen's d to evaluate the power.
+#' are included using Cohen's d to evaluate the empirical power.
 #'
 #' # Simulation code
 
@@ -23,7 +24,7 @@ library(SimDesign)
 
 Design <- createDesign(rxx=c(1, .8, .6, .4),
                        N = c(50, 100, 200, 400),
-                       dT = c(0, .2, .5, .8)) # different in true-scores
+                       dT = c(0, .2, .5, .8)) # difference in true-scores
 
 #-------------------------------------------------------------------
 
@@ -52,11 +53,12 @@ Generate <- function(condition, fixed_objects = NULL) {
 
 Analyse <- function(condition, dat, fixed_objects = NULL) {
     out <- t.test(X ~ group, data=dat, paired=TRUE)
+    # return p-value, mean difference, and SE
     nc(p=out$p.value, mean_diff=out$estimate, SE=out$stderr)
 }
 
 Summarise <- function(condition, results, fixed_objects = NULL) {
-    power <- EDR(results$p)
+    power <- EDR(results[,"p"])
     means <- colMeans(subset(results, select=mean_diff:SE))
     c(power=power, means)
 }
@@ -71,9 +73,8 @@ res
 
 #' # Results
 #'
-#' Below is a plot of the outcome results, demonstrating the negative effect
-#' of unreliability for the measurements.
-#'
+#' Below is summary information in the form of tables and plots to demonstrate
+#' the negative effect of unreliability.
 #'
 
 library(dplyr)
@@ -84,9 +85,11 @@ res |> select(rxx:SE, -power) |>
 
 
 #' Estimates of the mean differences reflect the true difference between the pre-post observations
-#' (unbiased), however the associated SE is larger for more unreliable instruments.
-#' This has direct implications on power to reject the null hypothesis of no difference
-#' between the pre-post test.
+#' regardless of the reliability (unbiased), however the associated SE is
+#' larger for more unreliable instruments. This is because the within-subject variability
+#' is larger as now it is a function of individual differences variance plus the variance
+#' of the measurement error. This has direct implications on power to reject
+#' the null hypothesis of no difference between the pre-post tests, as demonstrated below.
 
 #' For the paired samples $t$-test:
 library(ggplot2)
@@ -96,3 +99,34 @@ ggplot(res, aes(dT, power, colour=factor(rxx))) +
     xlab('Effect size (d)') + ylab('Detection Rate') + ggtitle('Empirical Power Curves') +
 	scale_color_discrete('Reliability') + facet_wrap(~N) +
 	ggtitle('Paired-samples t-test')
+
+#' # Solving sample size given reliability
+#'
+#' Alternatively, one can try to estimate the required sample size to achieve
+#' a specific power of interest (e.g., $1-\beta=.80$) for more direct comparisons.
+#' This can be achieved using the `SimSolve()` function, which is identical to
+#' the `runSimulation()` structure except that the `Design` object contains `NA`
+#' values for variables to be solved, while `SimSolve(b = ?)` reflects the target
+#' quantity to solve for (in this case, power), and a suitable search interval for
+#' the associated `N` values.
+
+DesignNA <- createDesign(rxx=c(1, .8, .6, .4),
+						 N = NA,
+						 dT = c(.2, .5, .8)) # difference in true-scores
+DesignNA
+
+
+solved <- SimSolve(design=DesignNA, b=.80, interval=c(3, 1000),
+				   generate=Generate, analyse=Analyse, summarise=Summarise,
+				   verbose=FALSE)
+solved
+
+#' The take-home from this output is straightforward: within each effect size combinations,
+#' in order to achieve an 80% power rate given the reliably of the test one must use
+#' noticeably more observations as the test becomes more unreliable.
+#'
+#' This type of information is important when performing a priori power planning as the
+#' require samples to achieve a given power rate can and will change as the instruments
+#' used become less reliable. As Levin and Subkoviak (1977) put it, to determine sample
+#' sizes "without simultaneously considering errors of measurement is to live
+#' in a 'fool's paradise'" (p. 337).
