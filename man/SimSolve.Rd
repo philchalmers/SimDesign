@@ -270,16 +270,21 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
     # Must return a single number corresponding to f(x) in the
     # root equation f(x) = b
 
-    ret <- EDR(results, alpha = condition$sig.level)
+    ret <- c(power = EDR(results, alpha = condition$sig.level))
     ret
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 3 --- Optimize N over the rows in design
-# Initial search between N = [10,500] for each row using the default
-# integer solver (integer = TRUE)
 
-# In this example, b = target power
+# (For debugging) may want to see if simulation code works as intended first
+# for some given set of inputs
+runSimulation(design=createDesign(N=100, d=.8, sig.level=.05),
+              replications=10, generate=Generate, analyse=Analyse,
+              summarise=Summarise)
+
+# Initial search between N = [10,500] for each row using the default
+   # integer solver (integer = TRUE). In this example, b = target power
 solved <- SimSolve(design=Design, b=.8, interval=c(10, 500),
                 generate=Generate, analyse=Analyse,
                 summarise=Summarise)
@@ -296,21 +301,21 @@ plot(solved, 1, type = 'iterations')
 
 # verify with true power from pwr package
 library(pwr)
-pwr.t.test(d=.2, power = .8, sig.level = .05)
-pwr.t.test(d=.5, power = .8, sig.level = .05)
-pwr.t.test(d=.8, power = .8, sig.level = .05)
+pwr.t.test(d=.2, power = .8) # sig.level/alpha = .05 by default
+pwr.t.test(d=.5, power = .8)
+pwr.t.test(d=.8, power = .8)
 
 # use estimated N results to see how close power was
 N <- solved$N
-pwr.t.test(d=.2, n=N[1], sig.level = .05)
-pwr.t.test(d=.5, n=N[2], sig.level = .05)
-pwr.t.test(d=.8, n=N[3], sig.level = .05)
+pwr.t.test(d=.2, n=N[1])
+pwr.t.test(d=.5, n=N[2])
+pwr.t.test(d=.8, n=N[3])
 
 # with rounding
 N <- ceiling(solved$N)
-pwr.t.test(d=.2, n=N[1], sig.level = .05)
-pwr.t.test(d=.5, n=N[2], sig.level = .05)
-pwr.t.test(d=.8, n=N[3], sig.level = .05)
+pwr.t.test(d=.2, n=N[1])
+pwr.t.test(d=.5, n=N[2])
+pwr.t.test(d=.8, n=N[3])
 
 # failing analytic formula, confirm results with more precise
 #  simulation via runSimulation()
@@ -338,9 +343,9 @@ summary(solved_2min)
 
 # use estimated N results to see how close power was
 N <- solved_2min$N
-pwr.t.test(d=.2, n=N[1], sig.level = .05)
-pwr.t.test(d=.5, n=N[2], sig.level = .05)
-pwr.t.test(d=.8, n=N[3], sig.level = .05)
+pwr.t.test(d=.2, n=N[1])
+pwr.t.test(d=.5, n=N[2])
+pwr.t.test(d=.8, n=N[3])
 
 #------------------------------------------------
 
@@ -368,8 +373,8 @@ Design    # solve for NA's
 # In this example, b = target power
 # note that integer = FALSE to allow smooth updates of d
 solved <- SimSolve(design=Design, b = .8, interval=c(.1, 2),
-                generate=Generate, analyse=Analyse,
-                summarise=Summarise, integer=FALSE)
+                   generate=Generate, analyse=Analyse,
+                   summarise=Summarise, integer=FALSE)
 solved
 summary(solved)
 plot(solved, 1)
@@ -383,14 +388,14 @@ plot(solved, 1, type = 'iterations')
 
 # verify with true power from pwr package
 library(pwr)
-pwr.t.test(n=100, power = .8, sig.level = .05)
-pwr.t.test(n=50, power = .8, sig.level = .05)
-pwr.t.test(n=25, power = .8, sig.level = .05)
+pwr.t.test(n=100, power = .8)
+pwr.t.test(n=50, power = .8)
+pwr.t.test(n=25, power = .8)
 
 # use estimated d results to see how close power was
-pwr.t.test(n=100, d = solved$d[1], sig.level = .05)
-pwr.t.test(n=50, d = solved$d[2], sig.level = .05)
-pwr.t.test(n=25, d = solved$d[3], sig.level = .05)
+pwr.t.test(n=100, d = solved$d[1])
+pwr.t.test(n=50, d = solved$d[2])
+pwr.t.test(n=25, d = solved$d[3])
 
 # failing analytic formula, confirm results with more precise
 #  simulation via runSimulation()

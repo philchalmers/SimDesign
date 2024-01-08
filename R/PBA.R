@@ -290,8 +290,8 @@ PBA <- function(f, interval, ..., p = .6,
 
         if(verbose){
             if(integer)
-                cat(sprintf("\rIter: %i; Median: %i", iter, med))
-            else cat(sprintf("\rIter: %i; Median: %.3f", iter, med))
+                cat(sprintf("\rIter: %i; Median = %i", iter, med))
+            else cat(sprintf("\rIter: %i; Median = %.3f", iter, med))
             cat(sprintf("; E(f(x)) = %.2f", abs(e.froot)))
             if(!is.null(FromSimSolve))
                 cat('; Total.reps =', sum(replications[1L:iter]))
