@@ -12,7 +12,7 @@
 <meta name="author" content="Phil Chalmers" />
 
 
-<title>Compromise analysis</title>
+<title>Compromised power analysis</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,7 +349,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Compromise analysis</h1>
+<h1 class="title toc-ignore">Compromised power analysis</h1>
 <h4 class="author">Phil Chalmers</h4>
 
 </div>
@@ -360,11 +360,13 @@ display: none;
 <p>In compromised power analyses, <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(1-\beta\)</span> are computed as functions of the
 effect size, sample size, model, and most importantly the error
 probability ratio <span class="math inline">\(q=\frac{\beta}{\alpha}\)</span> to indicate a type
-of trade-off between Type I and II errors. Setting <span class="math inline">\(\alpha=\beta=1\)</span> indicates an equal
-trade-off between Type I and Type II errors, while a <span class="math inline">\(q=4\)</span> indicates that Type II errors are
-four-times as costly to make than a Type I error. This is particularly
-useful when the sample size required from prior power analysis suggest a
-much larger size than a researcher can afford.</p>
+of trade-off between Type I and II errors. Setting <span class="math inline">\(\alpha=\beta\)</span> results in a <span class="math inline">\(q=1\)</span>, indicating an equal trade-off
+between Type I and Type II errors, while a <span class="math inline">\(q=4\)</span> indicates that Type II errors are
+four-times as costly to make than a Type I error (hence, rejecting the
+null when it is in fact true is worse than retaining the null hypothesis
+when it is in fact false). This is particularly useful when the sample
+size required from prior power analysis suggest a much larger size than
+a researcher can afford.</p>
 <p>For instance, suppose that only <span class="math inline">\(N=100\)</span> per group are possible for an
 independent samples <span class="math inline">\(t\)</span>-test analysis
 with a Welch correction, and the true effect size is thought to be <span class="math inline">\(d=.3\)</span>. In such a simulation, and assuming
@@ -383,7 +385,8 @@ Design    </code></pre>
 ##       N     d alpha
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 ## 1   100   0.3  0.05</code></pre>
-<pre class="r"><code># print RStudio special disabling flags (fixes missing variables when Attach used)
+<pre class="r"><code># (optional) print RStudio special disabling flags and add to script
+##   (fixes missing variables when Attach used)
 Attach(Design, RStudio_flags = TRUE)</code></pre>
 <pre><code>## # !diagnostics suppress=N,d,alpha</code></pre>
 <pre class="r"><code># !diagnostics suppress=N,d,alpha
@@ -412,27 +415,28 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
-#### Step 3 --- Optimize N over the rows in design
+#### Step 3 --- Compute q ratio
 
 sim &lt;- runSimulation(design=Design, replications=100000, 
                      generate=Generate, analyse=Analyse,
-                     summarise=Summarise, store_results=TRUE)</code></pre>
+                     summarise=Summarise)</code></pre>
 <pre><code>## 
 ## 
-Design row: 1/1;   RAM used: 279.5 Mb;   Total elapsed time: 0.00s 
+Design: 1/1;   RAM Used: 52.2 Mb;   Replications: 100000;   Total Time: 0.00s 
 ##  Conditions: N=100, d=0.3, alpha=0.05
 ## </code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 02m 12.63s</code></pre>
+## Simulation complete. Total execution time: 02m 49.14s</code></pre>
 <pre class="r"><code>sim</code></pre>
 <pre><code>## # A tibble: 1 × 9
-##       N     d alpha      q REPLICATIONS SIM_TIME   RAM_USED       SEED COMPLETED
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;    
-## 1   100   0.3  0.05 8.8326       100000 02m 12.63s 280.4 Mb 1185262641 Fri Dec …</code></pre>
-<p>However, because <code>store_results=TRUE</code> is used the results
-can be <code>reSummarise()</code>ed using a different <span class="math inline">\(\alpha\)</span> cut-off, where it is possible to
-obtain some target <span class="math inline">\(q\)</span> given the
-stored stimulation results. For example,</p>
+##       N     d alpha      q REPLICATIONS SIM_TIME   RAM_USED     SEED COMPLETED  
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;      
+## 1   100   0.3  0.05 8.8304       100000 02m 49.14s 54.2 Mb  59226505 Fri Jan 12…</code></pre>
+<p>However, because <code>store_results=TRUE</code> is used (the
+default) the results can be <code>reSummarise()</code>ed using a
+different <span class="math inline">\(\alpha\)</span> cut-off, where it
+is instead possible to obtain some target <span class="math inline">\(q\)</span> given the stored stimulation results.
+For example,</p>
 <pre class="r"><code># compute beta/alpha ratio given different alpha
 compromise &lt;- function(alpha, sim, Design){
     Design$alpha &lt;- alpha
@@ -440,14 +444,16 @@ compromise &lt;- function(alpha, sim, Design){
     out$q
 }
 
-compromise(.3, sim=sim, Design=Design)</code></pre>
-<pre><code>## [1] 0.465</code></pre>
-<pre class="r"><code>compromise(.01, sim=sim, Design=Design)</code></pre>
+# more liberal Type I error (but lower Type II error)
+compromise(.3, sim=sim, Design=Design)  </code></pre>
+<pre><code>## [1] 0.462</code></pre>
+<pre class="r"><code># more conservative Type I error (but higher Type II error)
+compromise(.01, sim=sim, Design=Design) </code></pre>
 <pre><code>## [1] 68.3</code></pre>
 <p>which indicates different <span class="math inline">\(q\)</span>
-ratios. If a specific ratio is desired, then this amounts to performing
-some root-solving until the target <span class="math inline">\(f(\alpha)
-= q\)</span> is obtained.</p>
+ratios. If a specific ratio is desired, then root-solving methods can be
+used to obtain the desired <span class="math inline">\(f(\alpha) =
+q\)</span>.</p>
 <pre class="r"><code># define root function f(alpha) - q = 0
 compromise_root &lt;- function(alpha, target.q, ...)
     compromise(alpha, ...) - target.q
@@ -457,28 +463,28 @@ root1 &lt;- uniroot(compromise_root, c(.01, .3), target.q=1,
         sim=sim, Design=Design)
 root1</code></pre>
 <pre><code>## $root
-## [1] 0.201
+## [1] 0.2
 ## 
 ## $f.root
-## [1] 1.83e-05
+## [1] 3.99e-05
 ## 
 ## $iter
-## [1] 7
+## [1] 8
 ## 
 ## $init.it
 ## [1] NA
 ## 
 ## $estim.prec
-## [1] 8.27e-05</code></pre>
+## [1] 6.1e-05</code></pre>
 <pre class="r"><code># solve alpha beta/alpha trade-off 4 times worse (beta = 4 * alpha)
 root4 &lt;- uniroot(compromise_root, c(.01, .3), target.q=4, 
         sim=sim, Design=Design)
 root4</code></pre>
 <pre><code>## $root
-## [1] 0.0867
+## [1] 0.0865
 ## 
 ## $f.root
-## [1] 7.16e-05
+## [1] -0.000856
 ## 
 ## $iter
 ## [1] 7
@@ -490,23 +496,25 @@ root4</code></pre>
 ## [1] 6.1e-05</code></pre>
 <p>Hence, when equal <span class="math inline">\(\beta\)</span> and
 <span class="math inline">\(\alpha\)</span> errors are desirable then
-the <span class="math inline">\(\alpha\)</span> to utilize is 0.201,
-while if the Type I errors are 4 times more costly than the Type II
-errors then <span class="math inline">\(\alpha\)</span> should be
-selected to be approximately 0.087.</p>
+the <span class="math inline">\(\alpha\)</span> to utilize is 0.2, while
+if the Type I errors are 4 times more costly than the Type II errors
+then <span class="math inline">\(\alpha\)</span> should be selected to
+be approximately 0.087.</p>
 </div>
 <div id="compromise-analysis-with-empirical-alpha-estimate" class="section level1">
 <h1>Compromise analysis with empirical <span class="math inline">\(\alpha\)</span> estimate</h1>
 <p>In situations where the Type I error rate controlled by a select
-<span class="math inline">\(\alpha\)</span> is known or suspected to be
-sub-optimal (e.g., small samples that utilize maximum-likelihood
-estimators), it is possible to define the compromise ratio <span class="math inline">\(q = \frac{\beta}{\alpha}\)</span> in terms of the
-empirical Type I error rate rather than the assumed nominal <span class="math inline">\(\alpha\)</span>. To do so requires more
-computation as the null model must also be generated and analysed as
-well, however the resulting compromise ratio and root-solved cut-offs
-should perform more honestly in practice. Below is an example of
-utilizing the empirical Type I error estimate rather than the assume
-Type I error = <span class="math inline">\(\alpha\)</span>.</p>
+<span class="math inline">\(\alpha\)</span>, but the true/empirical Type
+I error rate associated with this <span class="math inline">\(\alpha\)</span> is in fact sub-optimal (e.g.,
+small samples that utilize maximum-likelihood estimators), then it is
+possible to define the compromise ratio <span class="math inline">\(q =
+\frac{\beta}{\alpha}\)</span> in terms of the empirical Type I error
+rate rather than the assumed nominal <span class="math inline">\(\alpha\)</span>. To do so requires more
+computation as the null model must also be generated and analysed,
+however the resulting compromise ratio and root-solved cut-offs should
+perform more honestly in practice. Below is an example which utilizes
+the empirical Type I error estimate rather than the assume Type I error
+= <span class="math inline">\(\alpha\)</span>.</p>
 <pre class="r"><code>#####################
 # Same as above, however if Type I error not nominal then may wish to use 
 # empirical Type I error estimate instead
@@ -535,8 +543,8 @@ Generate &lt;- function(condition, fixed_objects = NULL) {
 }
 
 Analyse &lt;- function(condition, dat, fixed_objects = NULL) {
-    p.power &lt;- t.test(DV ~ group, data=dat)$p.value    # (1-beta)
-    p.null &lt;- t.test(DV.null ~ group, data=dat)$p.value   # alpha
+    p.power &lt;- t.test(DV ~ group, data=dat)$p.value       # Power: (1-beta)
+    p.null &lt;- t.test(DV.null ~ group, data=dat)$p.value   # Type I error: alpha
     nc(p.null, p.power)
 }
 
@@ -554,16 +562,16 @@ sim &lt;- runSimulation(design=Design, replications=100000,
                      summarise=Summarise, store_results=TRUE)</code></pre>
 <pre><code>## 
 ## 
-Design row: 1/1;   RAM used: 282.9 Mb;   Total elapsed time: 0.00s 
+Design: 1/1;   RAM Used: 57.7 Mb;   Replications: 100000;   Total Time: 0.00s 
 ##  Conditions: N=100, d=0.3, alpha=0.05
 ## </code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 03m 45.02s</code></pre>
+## Simulation complete. Total execution time: 04m 38.08s</code></pre>
 <pre class="r"><code>sim</code></pre>
 <pre><code>## # A tibble: 1 × 9
-##       N     d alpha      q REPLICATIONS SIM_TIME   RAM_USED       SEED COMPLETED
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;    
-## 1   100   0.3  0.05 8.7932       100000 03m 45.02s 284.4 Mb 1739255291 Fri Dec …</code></pre>
+##       N     d alpha      q REPLICATIONS SIM_TIME   RAM_USED     SEED COMPLETED  
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;      
+## 1   100   0.3  0.05 8.8660       100000 04m 38.08s 59.2 Mb  33758481 Fri Jan 12…</code></pre>
 <pre class="r"><code># compute beta/alpha ratio given different alpha
 compromise &lt;- function(alpha, sim, Design){
     Design$alpha &lt;- alpha
@@ -572,9 +580,9 @@ compromise &lt;- function(alpha, sim, Design){
 }
 
 compromise(.3, sim=sim, Design=Design)</code></pre>
-<pre><code>## [1] 0.457</code></pre>
+<pre><code>## [1] 0.46</code></pre>
 <pre class="r"><code>compromise(.01, sim=sim, Design=Design)</code></pre>
-<pre><code>## [1] 68.8</code></pre>
+<pre><code>## [1] 71.2</code></pre>
 <pre class="r"><code>compromise_root &lt;- function(alpha, target.q, ...)
     compromise(alpha, ...) - target.q
 
@@ -584,28 +592,28 @@ root1 &lt;- uniroot(compromise_root, c(.01, .3), target.q=1,
         sim=sim, Design=Design)
 root1</code></pre>
 <pre><code>## $root
-## [1] 0.2
+## [1] 0.201
 ## 
 ## $f.root
-## [1] -0.000149
+## [1] -0.00025
 ## 
 ## $iter
-## [1] 7
+## [1] 8
 ## 
 ## $init.it
 ## [1] NA
 ## 
 ## $estim.prec
 ## [1] 6.1e-05</code></pre>
-<pre class="r"><code># beta/alpha trade-off 4 times worse (beta = 4 * alpha)
+<pre class="r"><code># beta/alpha trade-off 4 times worse for alpha (beta = 4 * alpha)
 root4 &lt;- uniroot(compromise_root, c(.01, .3), target.q=4, 
         sim=sim, Design=Design)
 root4</code></pre>
 <pre><code>## $root
-## [1] 0.0863
+## [1] 0.0865
 ## 
 ## $f.root
-## [1] -0.00104
+## [1] -0.00152
 ## 
 ## $iter
 ## [1] 7
@@ -615,11 +623,14 @@ root4</code></pre>
 ## 
 ## $estim.prec
 ## [1] 6.1e-05</code></pre>
-<p>Hence, based on the empirical <span class="math inline">\(\hat{\alpha}\)</span> and <span class="math inline">\(\hat{\beta}\)</span> estimates, when equal <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\alpha\)</span> errors are desirable then the
-<span class="math inline">\(\alpha\)</span> to utilize is 0.2, while if
-the Type I errors are 4 times more costly than the Type II errors then
-<span class="math inline">\(\alpha\)</span> should be selected to be
-approximately 0.086.</p>
+<p>Based on the empirical <span class="math inline">\(\hat{\alpha}\)</span> and <span class="math inline">\(\hat{\beta}\)</span> estimates, when equal <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\alpha\)</span> errors are desirable then the
+<span class="math inline">\(\alpha\)</span> to utilize is 0.201, while
+if the Type I errors are 4 times more costly than the Type II errors
+then <span class="math inline">\(\alpha\)</span> should be selected to
+be approximately 0.087. These agree with the results above for this
+particular analysis because the empirical <span class="math inline">\(\alpha\)</span> closely matches the theoretical
+<span class="math inline">\(\alpha\)</span>, however in situations where
+these quantities do not match the solutions can and will differ.</p>
 </div>
 
 

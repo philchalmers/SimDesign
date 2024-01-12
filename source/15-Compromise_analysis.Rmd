@@ -1,7 +1,7 @@
 %\VignetteIndexEntry{SimDesign}
 %\VignetteEngine{knitr::knitr}
 ---
-title: "Compromise analysis"
+title: "Compromised power analysis"
 author: "Phil Chalmers"
 output:
   html_document:
@@ -16,7 +16,7 @@ options(digits = 3)
 
 # Compromised power analysis
 
-In compromised power analyses, $\alpha$ and $1-\beta$ are computed as functions of the effect size, sample size, model, and most importantly the error probability ratio $q=\frac{\beta}{\alpha}$ to indicate a type of trade-off between Type I and II errors. Setting $\alpha=\beta=1$ indicates an equal trade-off between Type I and Type II errors, while a $q=4$ indicates that Type II errors are four-times as costly to make than a Type I error. This is particularly useful when the sample size required from prior power analysis suggest a much larger size than a researcher can afford.
+In compromised power analyses, $\alpha$ and $1-\beta$ are computed as functions of the effect size, sample size, model, and most importantly the error probability ratio $q=\frac{\beta}{\alpha}$ to indicate a type of trade-off between Type I and II errors. Setting $\alpha=\beta$ results in a $q=1$, indicating an equal trade-off between Type I and Type II errors, while a $q=4$ indicates that Type II errors are four-times as costly to make than a Type I error (hence, rejecting the null when it is in fact true is worse than retaining the null hypothesis when it is in fact false). This is particularly useful when the sample size required from prior power analysis suggest a much larger size than a researcher can afford.
 
 For instance, suppose that only $N=100$ per group are possible for an independent samples $t$-test analysis with a Welch correction, and the true effect size is thought to be $d=.3$. In such a simulation, and assuming for the moment that $\alpha=.05$ (will be changed momentarily thanks to the `store_results = TRUE` flag), then the following indicates the $q=\frac{\beta}{\alpha}$ error ratio estimate for this fixed $\alpha$ level. 
 
@@ -30,7 +30,8 @@ Design <- createDesign(N = 100,
                        alpha = .05)
 Design    
 
-# print RStudio special disabling flags (fixes missing variables when Attach used)
+# (optional) print RStudio special disabling flags and add to script
+##   (fixes missing variables when Attach used)
 Attach(Design, RStudio_flags = TRUE)
 
 # !diagnostics suppress=N,d,alpha
@@ -59,16 +60,16 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
-#### Step 3 --- Optimize N over the rows in design
+#### Step 3 --- Compute q ratio
 
 sim <- runSimulation(design=Design, replications=100000, 
                      generate=Generate, analyse=Analyse,
-                     summarise=Summarise, store_results=TRUE)
+                     summarise=Summarise)
 sim
 ```
 
 
-However, because `store_results=TRUE` is used the results can be `reSummarise()`ed using a different $\alpha$ cut-off, where it is possible to obtain some target $q$ given the stored stimulation results. For example,
+However, because `store_results=TRUE` is used (the default) the results can be `reSummarise()`ed using a different $\alpha$ cut-off, where it is instead possible to obtain some target $q$ given the stored stimulation results. For example,
 
 ```{r}
 # compute beta/alpha ratio given different alpha
@@ -78,10 +79,13 @@ compromise <- function(alpha, sim, Design){
     out$q
 }
 
-compromise(.3, sim=sim, Design=Design)
-compromise(.01, sim=sim, Design=Design)
+# more liberal Type I error (but lower Type II error)
+compromise(.3, sim=sim, Design=Design)  
+
+# more conservative Type I error (but higher Type II error)
+compromise(.01, sim=sim, Design=Design) 
 ```
-which indicates different $q$ ratios. If a specific ratio is desired, then this amounts to performing some root-solving until the target $f(\alpha) = q$ is obtained.
+which indicates different $q$ ratios. If a specific ratio is desired, then root-solving methods can be used to obtain the desired $f(\alpha) = q$.
 
 ```{r}
 # define root function f(alpha) - q = 0
@@ -103,7 +107,7 @@ Hence, when equal $\beta$ and $\alpha$ errors are desirable then the $\alpha$ to
 
 # Compromise analysis with empirical $\alpha$ estimate
 
-In situations where the Type I error rate controlled by a select $\alpha$ is known or suspected to be sub-optimal (e.g., small samples that utilize maximum-likelihood estimators), it is possible to define the compromise ratio $q = \frac{\beta}{\alpha}$ in terms of the empirical Type I error rate rather than the assumed nominal $\alpha$. To do so requires more computation as the null model must also be generated and analysed as well, however the resulting compromise ratio and root-solved cut-offs should perform more honestly in practice. Below is an example of utilizing the empirical Type I error estimate rather than the assume Type I error = $\alpha$.
+In situations where the Type I error rate controlled by a select $\alpha$, but the true/empirical Type I error rate associated with this $\alpha$ is in fact sub-optimal (e.g., small samples that utilize maximum-likelihood estimators), then it is possible to define the compromise ratio $q = \frac{\beta}{\alpha}$ in terms of the empirical Type I error rate rather than the assumed nominal $\alpha$. To do so requires more computation as the null model must also be generated and analysed, however the resulting compromise ratio and root-solved cut-offs should perform more honestly in practice. Below is an example which utilizes the empirical Type I error estimate rather than the assume Type I error = $\alpha$.
 
 ```{r}
 
@@ -132,8 +136,8 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL) {
-    p.power <- t.test(DV ~ group, data=dat)$p.value    # (1-beta)
-    p.null <- t.test(DV.null ~ group, data=dat)$p.value   # alpha
+    p.power <- t.test(DV ~ group, data=dat)$p.value       # Power: (1-beta)
+    p.null <- t.test(DV.null ~ group, data=dat)$p.value   # Type I error: alpha
     nc(p.null, p.power)
 }
 
@@ -170,10 +174,10 @@ root1 <- uniroot(compromise_root, c(.01, .3), target.q=1,
         sim=sim, Design=Design)
 root1
 
-# beta/alpha trade-off 4 times worse (beta = 4 * alpha)
+# beta/alpha trade-off 4 times worse for alpha (beta = 4 * alpha)
 root4 <- uniroot(compromise_root, c(.01, .3), target.q=4, 
         sim=sim, Design=Design)
 root4
 ```
 
-Hence, based on the empirical $\hat{\alpha}$ and $\hat{\beta}$ estimates, when equal $\beta$ and $\alpha$ errors are desirable then the $\alpha$ to utilize is `r round(root1$root, 3)`, while if the Type I errors are 4 times more costly than the Type II errors then $\alpha$ should be selected to be approximately `r round(root4$root, 3)`.
+Based on the empirical $\hat{\alpha}$ and $\hat{\beta}$ estimates, when equal $\beta$ and $\alpha$ errors are desirable then the $\alpha$ to utilize is `r round(root1$root, 3)`, while if the Type I errors are 4 times more costly than the Type II errors then $\alpha$ should be selected to be approximately `r round(root4$root, 3)`. These agree with the results above for this particular analysis because the empirical $\alpha$ closely matches the theoretical $\alpha$, however in situations where these quantities do not match the solutions can and will differ.
