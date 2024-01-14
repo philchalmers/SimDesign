@@ -75,7 +75,8 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 }
 
 res <- runSimulation(Design, replications = 1000, save=TRUE, filename='my-simple-sim',
-                     generate=Generate, analyse=Analyse, summarise=Summarise)
+                     generate=Generate, analyse=Analyse, summarise=Summarise,
+                     control = list(stop_on_fatal = TRUE))
 ```
 
 ```{r echo=FALSE}
@@ -87,19 +88,22 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
 
 # Default to runSimulation() has save = TRUE
 res <- try(runSimulation(Design, replications = 1000, filename='my-simple-sim',
-                         generate=Generate, analyse=Analyse, summarise=Summarise), silent = TRUE)
+                         generate=Generate, analyse=Analyse, summarise=Summarise,
+                         control = list(stop_on_fatal = TRUE)), silent = TRUE)
 message('Row 3 in design was terminated because it had 50 consecutive errors. \n
 Last error message was: \n\nManual Error : Danger Will Robinson!')
 ```
 
-Check that temporary file exists. 
+Check that temporary file still exists. 
 
 ```{r}
 files <- dir()
 files[grepl('SIMDESIGN', files)]
 ```
 
-Notice here that the simulation stopped at 67% because the third design condition threw too many consecutive errors (this is a built-in fail-safe in `SimDesign`). However, after we fix this portion of the code the simulation can be restarted at the previous state and continue on as normal. Therefore, no time is lost.
+Notice here that the simulation stopped at 67% because the third design condition threw too many consecutive errors (this is a built-in fail-safe in `SimDesign`). To imitate a type of crash/power outage, `control = list(stop_on_fatal = TRUE)` input; otherwise, the simulation would continue normally over these terminal conditions though place  `NA` placeholders for the terminal condition. 
+
+After we fix this portion of the code the simulation can be restarted at the previous state and continue on as normal. Therefore, in the event of unforeseen program execution crashes no time is lost.
 
 ```{r}
 Analyse <- function(condition, dat, fixed_objects = NULL) {
