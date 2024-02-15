@@ -208,7 +208,10 @@ PBA <- function(f, interval, ..., p = .6,
         if(no_root){
             msg <- sprintf('interval range supplied appears to be %s the probable root.',
                            ifelse(upper[1L] == 0, '*above*', '*below*'))
-            stop(msg, call.=FALSE)
+            old.opts <- options()
+            options(warn=1)
+            warning(msg, call.=FALSE)
+            options(old.opts)
         }
         if(check.interval.only) return(!no_root)
     }
