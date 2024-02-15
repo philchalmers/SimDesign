@@ -606,7 +606,6 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       # robust = robust,
                                       predCI = c((1-predCI)/2, predCI + (1-predCI)/2),
                                       interpolate.burnin=burnin.iter)
-        browser()
         if(method == 'ProBABLI'){
             roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                                   design.row=as.data.frame(design[i,]),
