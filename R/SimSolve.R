@@ -575,6 +575,11 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             message(paste0('\nContinuing at design row ', start,
                            '. If not intended, terminate and use SimClean()'))
     }
+    if(integer){
+        if(!all(as.integer(interval) != interval))
+            stop(c('Search interval contains decimals while algorithm is currently',
+                   ' using integer=TRUE search'), call.=FALSE)
+    }
     for(i in start:nrow(design)){
         if(verbose){
             cat(sprintf('\n\n#############\nDesign row %s:\n\n', i))
@@ -601,6 +606,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       # robust = robust,
                                       predCI = c((1-predCI)/2, predCI + (1-predCI)/2),
                                       interpolate.burnin=burnin.iter)
+        browser()
         if(method == 'ProBABLI'){
             roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                                   design.row=as.data.frame(design[i,]),
