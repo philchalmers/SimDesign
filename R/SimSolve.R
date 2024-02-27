@@ -576,7 +576,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                            '. If not intended, terminate and use SimClean()'))
     }
     if(integer){
-        if(!all(as.integer(interval) != interval))
+        if(!all(apply(interval, 1L, function(int)
+            !all(as.integer(int) != int))))
             stop(c('Search interval contains decimals while algorithm is currently',
                    ' using integer=TRUE search'), call.=FALSE)
     }
