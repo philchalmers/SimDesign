@@ -1451,7 +1451,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             colnames(ret) <- nms
             if(any(nms == "dummy_run"))
                 ret <- ret[ ,nms != "dummy_run", drop=FALSE]
-            ret <- dplyr::as_tibble(ret)
+            ret <- dplyr::as_tibble(ret, .name_repair = 'minimal')
             return(ret)
         } else {
             nms <- colnames(design)
