@@ -1323,7 +1323,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(summarise_asis){
             if(verbose)
                 print_progress(i, nrow(design), stored_time=stored_time,
-                               RAM=memory_used[i], progress=progress, replications=replications,
+                               RAM=memory_used[i], progress=progress,
                                condition=if(was_tibble) dplyr::as_tibble(design[i,])
                                else design[i,])
             Result_list[[i]] <- Analysis(Functions=Functions,
@@ -1359,7 +1359,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
                 print_progress(i, nrow(design), stored_time=stored_time,
-                               RAM=memory_used[i], progress=progress, replications=replications,
+                               RAM=memory_used[i], progress=progress,
                                condition=if(was_tibble) dplyr::as_tibble(design[i,])
                                else design[i,])
             if(save_seeds)
@@ -1388,9 +1388,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             progress=progress, store_results=store_results, use_try=use_try,
                             stop_on_fatal=stop_on_fatal,
                             allow_gen_errors=!SimSolveRun)
-            if(any(colnames(design) %in% names(tmp)))
-                stop(c('Summarise() must return elements with names that',
-                       ' differ from the columns in the design object'), call.=FALSE)
             if(SimSolveRun){
                 full_results <- attr(tmp, 'full_results')
                 condition <- if(was_tibble) dplyr::as_tibble(design[i,]) else design[i,]
@@ -1454,7 +1451,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             colnames(ret) <- nms
             if(any(nms == "dummy_run"))
                 ret <- ret[ ,nms != "dummy_run", drop=FALSE]
-            ret <- dplyr::as_tibble(ret, .name_repair = 'minimal')
+            ret <- dplyr::as_tibble(ret)
             return(ret)
         } else {
             nms <- colnames(design)
