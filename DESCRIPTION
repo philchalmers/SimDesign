@@ -51,4 +51,4 @@ ByteCompile: yes
 LazyData: true
 URL: https://github.com/philchalmers/SimDesign,
     https://github.com/philchalmers/SimDesign/wiki
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1

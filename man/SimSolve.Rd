@@ -277,11 +277,11 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 3 --- Optimize N over the rows in design
 
-# (For debugging) may want to see if simulation code works as intended first
-# for some given set of inputs
-runSimulation(design=createDesign(N=100, d=.8, sig.level=.05),
-              replications=10, generate=Generate, analyse=Analyse,
-              summarise=Summarise)
+### (For debugging) may want to see if simulation code works as intended first
+### for some given set of inputs
+# runSimulation(design=createDesign(N=100, d=.8, sig.level=.05),
+#              replications=10, generate=Generate, analyse=Analyse,
+#              summarise=Summarise)
 
 # Initial search between N = [10,500] for each row using the default
    # integer solver (integer = TRUE). In this example, b = target power
@@ -317,15 +317,15 @@ pwr.t.test(d=.2, n=N[1])
 pwr.t.test(d=.5, n=N[2])
 pwr.t.test(d=.8, n=N[3])
 
-# failing analytic formula, confirm results with more precise
-#  simulation via runSimulation()
-#  (not required, if accuracy is important then ProBABLI should be run longer)
-csolved <- solved
-csolved$N <- ceiling(solved$N)
-confirm <- runSimulation(design=csolved, replications=10000, parallel=TRUE,
-                         generate=Generate, analyse=Analyse,
-                         summarise=Summarise)
-confirm
+### failing analytic formula, confirm results with more precise
+###  simulation via runSimulation()
+###  (not required, if accuracy is important then ProBABLI should be run longer)
+# csolved <- solved
+# csolved$N <- ceiling(solved$N)
+# confirm <- runSimulation(design=csolved, replications=10000, parallel=TRUE,
+#                         generate=Generate, analyse=Analyse,
+#                         summarise=Summarise)
+# confirm
 
 # Alternatively, and more realistically, the wait.time argument can be used
 # to specify how long the user is willing to wait for a final estimate.
@@ -397,12 +397,13 @@ pwr.t.test(n=100, d = solved$d[1])
 pwr.t.test(n=50, d = solved$d[2])
 pwr.t.test(n=25, d = solved$d[3])
 
-# failing analytic formula, confirm results with more precise
-#  simulation via runSimulation()
-confirm <- runSimulation(design=solved, replications=10000, parallel=TRUE,
-                         generate=Generate, analyse=Analyse,
-                         summarise=Summarise)
-confirm
+### failing analytic formula, confirm results with more precise
+###  simulation via runSimulation() (not required; if accuracy is important
+###  PROBABLI should just be run longer)
+# confirm <- runSimulation(design=solved, replications=10000, parallel=TRUE,
+#                         generate=Generate, analyse=Analyse,
+#                         summarise=Summarise)
+# confirm
 
 
 #------------------------------------------------
@@ -448,12 +449,13 @@ pwr.t.test(n=50, d = .2, sig.level=solved$sig.level[1])
 pwr.t.test(n=50, d = .5, sig.level=solved$sig.level[2])
 pwr.t.test(n=50, d = .8, sig.level=solved$sig.level[3])
 
-# failing analytic formula, confirm results with more precise
-#  simulation via runSimulation()
-confirm <- runSimulation(design=solved, replications=10000, parallel=TRUE,
-                         generate=Generate, analyse=Analyse,
-                         summarise=Summarise)
-confirm
+### failing analytic formula, confirm results with more precise
+###  simulation via runSimulation() (not required; if accuracy is important
+###  PROBABLI should just be run longer)
+# confirm <- runSimulation(design=solved, replications=10000, parallel=TRUE,
+#                         generate=Generate, analyse=Analyse,
+#                         summarise=Summarise)
+# confirm
 
 }
 }
