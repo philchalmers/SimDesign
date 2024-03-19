@@ -108,7 +108,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         } else {
             out <- gsub('\\n', '', as.character(results))
             splt <- strsplit(out, "Last error message was:   ")[[1L]]
-            if(splt == "Error : Invalid object returned from Analyse()")
+            if(splt[1L] == "Error : Invalid object returned from Analyse()")
                 stop("Invalid object returned from Analyse()", call.=FALSE)
             ret <- c(FATAL_TERMINATION=splt[2L])
             if(progress)
