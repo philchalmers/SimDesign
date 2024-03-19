@@ -597,3 +597,6 @@ pickReps <- function(replications, iter){
         max(replications) else replications[iter]
     ret
 }
+
+valid_results <- function(x)
+    is(x, 'numeric') || is(x, 'data.frame') || is(x, 'list') || is(x, 'try-error')

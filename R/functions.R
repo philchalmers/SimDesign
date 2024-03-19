@@ -337,6 +337,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         }
         res <- try(withCallingHandlers(analyse(dat=simlist, condition=condition,
                            fixed_objects=fixed_objects), warning=wHandler), silent=TRUE)
+        if(!valid_results(res))
+            stop("Invalid object returned from Analyse()", call.=FALSE)
         if(!use_try){
             if(is(res, 'try-error')){
                 debug(analyse)
