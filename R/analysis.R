@@ -109,7 +109,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
             out <- gsub('\\n', '', as.character(results))
             splt <- strsplit(out, "Last error message was:   ")[[1L]]
             if(splt[1L] == "Error : Invalid object returned from Analyse()")
-                stop("Invalid object returned from Analyse()", call.=FALSE)
+                stop("Analyse() must return a numeric vector, list, or data.frame", call.=FALSE)
             ret <- c(FATAL_TERMINATION=splt[2L])
             if(progress)
                 message(c('\nWARNING: Condition terminated because of consecutive errors;',
