@@ -219,7 +219,9 @@ primarily useful for debugging purposes.
   simulation results}
 
 \item{parallel}{logical; use parallel processing from the \code{parallel}
-  package over each unique condition?
+  package over each unique condition? This distributes the independent \code{replications}
+  across the defined nodes, and is repeated for each row condition in the \code{design}
+  input.
 
   Alternatively, if the \code{\link[future]{future}} package approach is desired then passing
   \code{parallel = 'future'} to \code{runSimulation()} will use the defined
