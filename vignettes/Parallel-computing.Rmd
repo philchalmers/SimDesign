@@ -130,21 +130,27 @@ For instance, if you have two computers available on different networks and want
 could pass `replications = 300` to one computer and`replications = 200` to the other along
 with a `filename` argument (or simply saving the final objects as `.rds` files manually after
 `runSimulation()` has finished). This will create two distinct `.rds` files which can be
-combined later with the `aggregate_simulations()` function. The benefit of this approach over
-MPI or setting up a Beowulf cluster is that computers need not be linked on the same network,
-and, should the need arise, the temporary
-simulation results can be migrated to another computer in case of a complete hardware failure by moving the
-saved temp files to another node, modifying
-the suitable `compname` input to `save_details` (or, if the `filename` and `tmpfilename`
-were modified, matching those files accordingly), and resuming the simulation as normal.
+combined later with the `aggregate_simulations()` function. Note that if there are worries 
+about replicability or correlated results across the independent instances then 
+the `seed` argument in `runSimulation()` can be set explicitly across job submissions using `gen_seed()`. For instance,
 
-Note that this is also a useful tactic if the MPI or Network computing options require you to
-submit smaller jobs due to time and resource constraint-related reasons,
-where fewer replications/nodes should be requested. After all the jobs are completed and saved to their
-respective files, `aggregate_simulations()`
-can then collapse the files as if the simulations were run all at once. Hence, `SimDesign` makes submitting
-smaller jobs to super-computing resources considerably less error prone than managing a number of smaller
-jobs manually.
+```{r}
+design <- SimDesign::createDesign(N=c(10,20,30), var=c(1,2))
+seeds <- SimDesign::gen_seeds(design, nsets = 2L)
+seeds
+```
+where the first computer seeds are set using 
+```{r eval=FALSE}
+runSimulation(design, ..., seed=seeds[,1])
+```
+and the second
+```{r eval=FALSE}
+runSimulation(design, ..., seed=seeds[,2])
+```
+
+The benefit of this approach over MPI or setting up a Beowulf cluster is that computers need not be linked on the same network, and, should the need arise, the temporary simulation results can be migrated to another computer in case of a complete hardware failure by moving the saved temp files to another node, modifying the suitable `compname` input to `save_details` (or, if the `filename` and `tmpfilename` were modified, matching those files accordingly), and resuming the simulation as normal.
+
+Note that this is also a useful tactic if the MPI or Network computing options require you to submit smaller jobs due to time and resource constraint-related reasons, where fewer replications/nodes should be requested. After all the jobs are completed and saved to their respective files, `aggregate_simulations()` can then collapse the files as if the simulations were run all at once. Hence, `SimDesign` makes submitting smaller jobs to super-computing resources considerably less error prone than managing a number of smaller jobs manually.
 
 # Using the `future` framework
 
