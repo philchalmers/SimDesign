@@ -277,7 +277,8 @@ The length of the vector must be equal the number of rows in \code{design}.
 This argument calls \code{\link{set.seed}} or
 \code{\link{clusterSetRNGStream}} for each condition, respectively,
 but will not be run when \code{MPI = TRUE}.
-Default randomly generates seeds within the range 1 to 2147483647 for each condition.}
+Default randomly generates seeds within the range 1 to 2147483647 for each condition
+via \code{link{gen_seeds}}}
 
 \item{boot_method}{method for performing non-parametric bootstrap confidence intervals
 for the respective meta-statistics computed by the \code{Summarise} function.

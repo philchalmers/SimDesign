@@ -600,3 +600,40 @@ pickReps <- function(replications, iter){
 
 valid_results <- function(x)
     is(x, 'numeric') || is(x, 'data.frame') || is(x, 'list') || is(x, 'try-error')
+
+#' Generate random seeds
+#'
+#' Generate seeds to be passed to \code{runSimulation}'s \code{seed} input. Values
+#' are sampled from 1 to 2147483647.
+#'
+#' @param design design matrix that requires a unique seed per condition
+#'
+#' @param nsets if separating the simulation across independent nodes manually
+#'   then the number of independent sets can be specified to generate a matrix
+#'   of seeds. This will return a matrix object with \code{nsets} columns to
+#'   be indexed column-wise for each manual seed specification
+#'
+#' @export
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
+#' @examples
+#'
+#' design <- createDesign(factorA=c(1,2,3),
+#'                        factorB=letters[1:3])
+#' seeds <- gen_seeds(design)
+#' seeds
+#'
+#' # two distinct sets of seeds
+#' multi_seeds <- gen_seeds(design, nsets=2)
+#' multi_seeds  # index column-wise for runSimulation(..., seed)
+#'
+gen_seeds <- function(design, nsets = 1L){
+    on.exit(set.seed(NULL))
+    seed <- if(missing(design))
+        rint(1L * nsets, min=1L, max = 2147483647L)
+    else rint(nrow(design) * nsets, min=1L, max = 2147483647L)
+    if(nsets > 1L)
+        seed <- matrix(seed, ncol=nsets)
+    seed
+}

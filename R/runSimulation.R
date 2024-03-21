@@ -517,7 +517,8 @@
 #'   This argument calls \code{\link{set.seed}} or
 #'   \code{\link{clusterSetRNGStream}} for each condition, respectively,
 #'   but will not be run when \code{MPI = TRUE}.
-#'   Default randomly generates seeds within the range 1 to 2147483647 for each condition.
+#'   Default randomly generates seeds within the range 1 to 2147483647 for each condition
+#'   via \code{link{gen_seeds}}
 #'
 #' @param progress logical; display a progress bar (using the \code{pbapply} package)
 #'   for each simulation condition?
@@ -948,11 +949,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         useFuture <- tolower(parallel) == 'future'
         parallel <- TRUE
     } else useFuture <- FALSE
-    if(is.null(seed)){
-        seed <- if(missing(design))
-            rint(1L, min=1L, max = 2147483647L)
-        else rint(nrow(design), min=1L, max = 2147483647L)
-    }
+    if(is.null(seed))
+        seed <- gen_seeds(design)
     if(debug != 'none'){
         if(grepl('-', debug)){
             tmp <- strsplit(debug, '-')[[1]]
