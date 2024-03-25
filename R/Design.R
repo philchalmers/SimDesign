@@ -1,4 +1,4 @@
-#' Create the simulation Design object
+#' Create the simulation design object
 #'
 #' Create a partially or fully-crossed data object reflecting the unique
 #' simulation design conditions. Each row of the returned object represents
@@ -22,7 +22,7 @@
 #'   information. For example, if 1000 replications in total are the target but
 #'   the condition is repeated over 4 rows then only 250 replications per row
 #'   would be required across the repeated conditions. See
-#'   \code{\link{aggregrate_simulation}} for combining the simulation objects
+#'   \code{\link{aggregrate_simulations}} for combining the simulation objects
 #'   once complete
 #'
 #' @param fractional a fractional design matrix returned from the
