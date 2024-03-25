@@ -1,5 +1,19 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.15
+
+- `createDesign()` includes a new `repeat_conditions` argument to repeat the 
+  row conditions a number of times instead of just once. This is useful when
+  exporting each condition independently to computing clusters, where each cluster
+  contains only a fraction of the target `replications` (see issue #33)
+
+- `aggregate_simulations()` now requires explicit `filename` 
+  argument to save the collapsed simulation information
+  
+- `aggregate_simulations()` generalized to detect whether the `Design` conditions
+  have repeated row definitions and therefore should be conditionally averaged
+  over (see new `repeat_conditions` argument in `createDesign()`)
+
 ## Changes in SimDesign 2.14
 
 - `SimSolve()` function added to perform (stochastic) root-solving to estimate 
