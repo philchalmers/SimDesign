@@ -17,7 +17,7 @@ runSimulation(
   filename = NULL,
   debug = "none",
   load_seed = NULL,
-  save = replications > 10,
+  save = any(replications > 10),
   store_results = TRUE,
   save_results = FALSE,
   parallel = FALSE,
@@ -50,8 +50,9 @@ to be varied. See \code{\link{createDesign}} for the standard approach
 to create this simulation design object}
 
 \item{replications}{number of independent replications to perform per
-condition (i.e., each row in \code{design}).
-Must be greater than 0}
+condition (i.e., each row in \code{design}). Can be a single number, which
+will be used for each design condition, or an integer vector with length
+equal to \code{nrow(design)}. All inputs must be greater than 0}
 
 \item{generate}{user-defined data and parameter generating function (or named list of functions).
 See \code{\link{Generate}} for details. Note that this argument may be omitted by the

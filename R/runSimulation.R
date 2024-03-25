@@ -176,8 +176,9 @@
 #'   definition.
 #'
 #' @param replications number of independent replications to perform per
-#'   condition (i.e., each row in \code{design}).
-#'   Must be greater than 0
+#'   condition (i.e., each row in \code{design}). Can be a single number, which
+#'   will be used for each design condition, or an integer vector with length
+#'   equal to \code{nrow(design)}. All inputs must be greater than 0
 #'
 #' @param fixed_objects (optional) an object (usually a named \code{list})
 #'   containing additional user-defined objects
@@ -927,7 +928,7 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL,
-                          debug = 'none', load_seed = NULL, save = replications > 10,
+                          debug = 'none', load_seed = NULL, save = any(replications > 10),
                           store_results = TRUE, save_results = FALSE,
                           parallel = FALSE, ncores = parallel::detectCores() - 1L,
                           cl = NULL, notification = 'none', beep = FALSE, sound = 1,
@@ -1041,7 +1042,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     include_replication_index <- ifelse(is.null(control$include_replication_index),
                                         FALSE, control$include_replication_index)
     if(verbose){
-        if(replications >= 200)
+        if(any(replications >= 200))
             if(!save_results && !store_results)
                 message(c('NOTE: using save_results or store_results is ',
                         'recommended for higher replication simulations'))
@@ -1118,6 +1119,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     SimSolveRun <- !is.null(attr(design, 'SimSolve'))
     stopifnot(!missing(replications))
     replications <- as.integer(replications)
+    if(length(replications) == 1L)
+        replications <- rep(replications, nrow(design))
+    stopifnot("length of replications not equal to nrow(design)"=
+                  nrow(design) == length(replications))
     if(!is.null(seed))
         stopifnot(nrow(design) == length(seed))
     debug <- tolower(debug)
@@ -1133,7 +1138,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     start <- 1L; end <- nrow(design)
     if(!is.null(load_seed)){
         save <- save_seeds <- parallel <- MPI <- useFuture <- FALSE
-        replications <- 1L
+        replications <- rep(1L, nrow(design))
         if(is.character(load_seed)){
             load_seed2 <- gsub('design-row-', '', load_seed)
             start <- end <- as.numeric(gsub('/.*', '', load_seed2))
@@ -1165,7 +1170,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     if(!is(design, 'data.frame'))
         stop('design must be a data.frame or tibble object', call. = FALSE)
-    if(replications < 1L)
+    if(any(replications < 1L))
         stop('number of replications must be greater than or equal to 1', call. = FALSE)
     if(!(debug %in% c('none', 'analyse', 'generate', 'summarise', 'all', 'error')))
         stop('debug input is not valid', call. = FALSE)
@@ -1217,10 +1222,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(verbose && is.na(resume.row))
             message(sprintf(c('Resuming simulation from %s file with %i replications. ',
                               '\nIf not intended, use SimClean() prior to calling runSimulation()'),
-                            file.path(out_rootdir, tmpfilename), replications))
+                            file.path(out_rootdir, tmpfilename), replications[resume.row]))
         Result_list <- readRDS(file.path(out_rootdir, tmpfilename))
-        if(!is.null(Result_list[[1L]]$REPLICATIONS))
-            replications <- Result_list[[1L]]$REPLICATIONS
         if(nrow(design) != length(Result_list)){
             if(nrow(design) < length(Result_list))
                 Result_list <- Result_list[1:nrow(design)]
@@ -1323,14 +1326,14 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(summarise_asis){
             if(verbose)
                 print_progress(i, nrow(design), stored_time=stored_time,
-                               replications=replications,
+                               replications=replications[i],
                                RAM=memory_used[i], progress=progress,
                                condition=if(was_tibble) dplyr::as_tibble(design[i,])
                                else design[i,])
             Result_list[[i]] <- Analysis(Functions=Functions,
                                          condition=if(was_tibble) dplyr::as_tibble(design[i,])
                                            else design[i,],
-                                         replications=replications,
+                                         replications=replications[i],
                                          fixed_objects=fixed_objects,
                                          cl=cl, MPI=MPI, .options.mpi=.options.mpi, seed=seed,
                                          boot_draws=boot_draws, boot_method=boot_method, CI=CI,
@@ -1360,7 +1363,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
                 print_progress(i, nrow(design), stored_time=stored_time,
-                               replications=replications,
+                               replications=replications[i],
                                RAM=memory_used[i], progress=progress,
                                condition=if(was_tibble) dplyr::as_tibble(design[i,])
                                else design[i,])
@@ -1370,7 +1373,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                            showWarnings = FALSE)
             tmp <- Analysis(Functions=Functions,
                             condition=if(was_tibble) dplyr::as_tibble(design[i,]) else design[i,],
-                            replications=replications,
+                            replications=replications[i],
                             fixed_objects=fixed_objects,
                             cl=cl, MPI=MPI, .options.mpi=.options.mpi, seed=seed,
                             boot_method=boot_method, boot_draws=boot_draws, CI=CI,
@@ -1393,7 +1396,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if(SimSolveRun){
                 full_results <- attr(tmp, 'full_results')
                 condition <- if(was_tibble) dplyr::as_tibble(design[i,]) else design[i,]
-                summary_results <- sapply(1L:replications, function(i){
+                summary_results <- sapply(1L:replications[i], function(i){
                     summarise(condition=condition,
                               results=if(!is.data.frame(full_results) &&
                                          is.list(full_results)) full_results[i]
