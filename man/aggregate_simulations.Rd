@@ -93,6 +93,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 #-------------------------------------------------------------------
 
 # Generate fixed seeds to be distributed (two sets of seeds)
+set.seed(4321)
 seeds <- gen_seeds(Design, nsets=2)
 seeds
 
@@ -122,9 +123,6 @@ Design <- createDesign(N  = c(30, 60),
                        mu = c(0,5),
                        repeat_conditions = 4L)
 
-# want 1000 replications in total
-replications <- 1000 / 4
-
 #-------------------------------------------------------------------
 
 # Generate-Analyse-Summarise same as previous example
@@ -132,6 +130,7 @@ replications <- 1000 / 4
 #-------------------------------------------------------------------
 
 # Generate fixed seeds to be distributed
+set.seed(1234)
 seeds <- gen_seeds(Design)
 seeds
 
