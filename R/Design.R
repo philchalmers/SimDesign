@@ -12,6 +12,19 @@
 #' @param subset (optional) a logical vector indicating elements or rows to keep
 #'   to create a partially crossed simulation design
 #'
+#' @param repeat_conditions optional integer vector used to repeat each design row
+#'   the specified number of times. Can either be a single integer, which repeats
+#'   each row this many times, or an integer vector equal to the number of total
+#'   rows in the created object.
+#'
+#'   This argument is useful when distributing independent row conditions to
+#'   cluster computing environments, particularly with different \code{replication}
+#'   information. For example, if 1000 replications in total are the target but
+#'   the condition is repeated over 4 rows then only 250 replications per row
+#'   would be required across the repeated conditions. See
+#'   \code{\link{aggregrate_simulation}} for combining the simulation objects
+#'   once complete
+#'
 #' @param fractional a fractional design matrix returned from the
 #'   \code{FrF2} package.
 #'   Note that the order of the factor names/labels are associated with the
@@ -70,6 +83,21 @@
 #' Design
 #' print(Design, list2char = FALSE)   # standard tibble output
 #'
+#' # repeat each row 4 times (for cluster computing)
+#' Design4 <- createDesign(N = c(10, 20),
+#'                        SD.equal = c(TRUE, FALSE),
+#'                        repeat_conditions = 4)
+#' Design4
+#'
+#' # repeat first two rows 2x and the rest 4 times (for cluster computing
+#' #   where first two conditions are faster to execute)
+#' Design24 <- createDesign(SD.equal = c(TRUE, FALSE),
+#'                          N = c(10, 100, 1000),
+#'                          repeat_conditions = c(2,2,rep(4, 4)))
+#' Design24
+#'
+#' ##########
+#'
 #' ## fractional factorial example
 #'
 #' library(FrF2)
@@ -94,7 +122,7 @@
 #' fDesign
 #'
 #' }
-createDesign <- function(..., subset, fractional = NULL,
+createDesign <- function(..., subset, repeat_conditions = 1L, fractional = NULL,
                          tibble = TRUE, stringsAsFactors = FALSE){
     dots <- list(...)
     if(any(sapply(dots, is, class2='data.frame') | sapply(dots, is, class2='tibble')))
@@ -125,6 +153,14 @@ createDesign <- function(..., subset, fractional = NULL,
     pick <- apply(ret, 2, function(x) all(is.na(x)))
     if(any(pick))
         ret[,pick] <- as.numeric(ret[,pick])
+    if(any(repeat_conditions > 1L)){
+        if(length(repeat_conditions) == 1L)
+            repeat_conditions <- rep(repeat_conditions, nrow(ret))
+        stopifnot("length of repeat_rows must equal number of rows in final object"=
+                      length(repeat_conditions) == nrow(ret))
+        ret <- ret[sort(rep(1L:nrow(ret), times=repeat_conditions)), ]
+        rownames(ret) <- NULL
+    }
     if(tibble) ret <- dplyr::as_tibble(ret)
     class(ret) <- c('Design', class(ret))
     ret
