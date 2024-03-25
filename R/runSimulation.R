@@ -1220,17 +1220,18 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     files <- dir(out_rootdir)
     if(resume && !MPI && any(files == tmpfilename) && is.null(load_seed) && debug == 'none'){
         if(verbose && is.na(resume.row))
-            message(sprintf(c('Resuming simulation from %s file with %i replications. ',
+            message(sprintf(c('Resuming simulation from %s file. ',
                               '\nIf not intended, use SimClean() prior to calling runSimulation()'),
-                            file.path(out_rootdir, tmpfilename), replications[resume.row]))
+                            file.path(out_rootdir, tmpfilename)))
+
         Result_list <- readRDS(file.path(out_rootdir, tmpfilename))
         if(nrow(design) != length(Result_list)){
             if(nrow(design) < length(Result_list))
-                Result_list <- Result_list[1:nrow(design)]
+                Result_list <- Result_list[1L:nrow(design)]
             else if(nrow(design) > length(Result_list)){
                 tmp_new <- vector('list', nrow(design))
                 names(tmp_new) <- 1L:nrow(design)
-                tmp_new[1:length(Result_list)] <- Result_list
+                tmp_new[1L:length(Result_list)] <- Result_list
                 Result_list <- tmp_new
             }
         }
