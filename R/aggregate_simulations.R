@@ -273,5 +273,7 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
                         length(filenames), filename))
         saveRDS(out, filename)
     }
+    if(length(unique(out$REPLICATIONS)) != 1L)
+        warning("Simulation results do not contain the same number of REPLICATIONS")
     invisible(out)
 }
