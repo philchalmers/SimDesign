@@ -22,7 +22,7 @@
 #'   information. For example, if 1000 replications in total are the target but
 #'   the condition is repeated over 4 rows then only 250 replications per row
 #'   would be required across the repeated conditions. See
-#'   \code{\link{aggregrate_simulations}} for combining the simulation objects
+#'   \code{\link{aggregate_simulations}} for combining the simulation objects
 #'   once complete
 #'
 #' @param fractional a fractional design matrix returned from the
