@@ -387,6 +387,15 @@
 #'        For Windows OS this defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected
 #'        (suitable for Linux and Mac OSX). This is ignored if the user specifies their own \code{cl} object}
 #'
+#'      \item{\code{max_time}}{maximum time (in hours) allow a single simulation condition to execute
+#'        (default does not set any time limits).
+#'
+#'        This is only applicable when using single core processing methods, and is primarily
+#'        useful when each row in \code{design} is distributed independently to different clusters
+#'        but the computing cluster will time out after some known elapsed time.
+#'        In general, this input should be set to somewhere around 80-90% of the true termination
+#'        time so that any evaluations completed before the cluster is terminated can be saved}
+#'
 #'      \item{\code{MPI}}{logical (default is \code{FALSE}); use the \code{foreach} package in a
 #'        form usable by MPI to run simulation in parallel on a cluster? }
 #'
@@ -1019,16 +1028,15 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                   FALSE, control$store_warning_seeds)
     warnings_as_errors <- ifelse(is.null(control$warnings_as_errors),
                                  FALSE, control$warnings_as_errors)
-    allow_na <- ifelse(is.null(control$allow_na),
-                       FALSE, control$allow_na)
-    allow_nan <- ifelse(is.null(control$allow_nan),
-                        FALSE, control$allow_nan)
-    print_RAM <- ifelse(is.null(control$print_RAM),
-                                 TRUE, control$print_RAM)
+    allow_na <- ifelse(is.null(control$allow_na), FALSE, control$allow_na)
+    allow_nan <- ifelse(is.null(control$allow_nan), FALSE, control$allow_nan)
+    print_RAM <- ifelse(is.null(control$print_RAM), TRUE, control$print_RAM)
     stop_on_fatal <- ifelse(is.null(control$stop_on_fatal),
                             FALSE, control$stop_on_fatal)
-    MPI <- ifelse(is.null(control$MPI),
-                  FALSE, control$MPI)
+    max_time <- ifelse(is.null(control$max_time), Inf, control$max_time)
+    if(is.finite(max_time)) progress <- FALSE
+    MPI <- ifelse(is.null(control$MPI), FALSE, control$MPI)
+
     .options.mpi <- ifelse(is.null(control$.options.mpi),
                            list(), control$.options.mpi)
     type <- if(is.null(control$type))
@@ -1352,7 +1360,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
                                          progress=progress, store_results=FALSE, use_try=use_try,
-                                         stop_on_fatal=stop_on_fatal,
+                                         stop_on_fatal=stop_on_fatal, max_time=max_time,
                                          allow_gen_errors=!SimSolveRun)
             time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
@@ -1392,7 +1400,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             load_seed=load_seed, export_funs=export_funs,
                             warnings_as_errors=warnings_as_errors,
                             progress=progress, store_results=store_results, use_try=use_try,
-                            stop_on_fatal=stop_on_fatal,
+                            stop_on_fatal=stop_on_fatal, max_time=max_time,
                             allow_gen_errors=!SimSolveRun)
             if(SimSolveRun){
                 full_results <- attr(tmp, 'full_results')

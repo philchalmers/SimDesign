@@ -4,7 +4,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      export_funs, summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds,
                      include_replication_index, packages, .options.mpi, useFuture, multirow,
-                     allow_gen_errors, save_results_filename = NULL)
+                     allow_gen_errors, max_time, save_results_filename = NULL)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -44,19 +44,36 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
                    allow_gen_errors=allow_gen_errors), TRUE)
         } else {
-            try(lapply(1L:replications, mainsim, condition=condition,
-                   generate=Functions$generate,
-                   analyse=Functions$analyse,
-                   fixed_objects=fixed_objects,
-                   max_errors=max_errors, save=save,
-                   save_results_out_rootdir=save_results_out_rootdir,
-                   save_seeds=save_seeds, load_seed=load_seed,
-                   store_warning_seeds=store_warning_seeds,
-                   save_seeds_dirname=save_seeds_dirname,
-                   warnings_as_errors=warnings_as_errors,
-                   include_replication_index=include_replication_index,
-                   allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
-                   allow_gen_errors=allow_gen_errors), TRUE)
+            if(is.finite(max_time)){
+                stop('not supported yet')
+                try(lapply(1L:replications, mainsim, condition=condition,
+                           generate=Functions$generate,
+                           analyse=Functions$analyse,
+                           fixed_objects=fixed_objects,
+                           max_errors=max_errors, save=save,
+                           save_results_out_rootdir=save_results_out_rootdir,
+                           save_seeds=save_seeds, load_seed=load_seed,
+                           store_warning_seeds=store_warning_seeds,
+                           save_seeds_dirname=save_seeds_dirname,
+                           warnings_as_errors=warnings_as_errors,
+                           include_replication_index=include_replication_index,
+                           allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
+                           allow_gen_errors=allow_gen_errors), TRUE)
+            } else {
+                try(lapply(1L:replications, mainsim, condition=condition,
+                           generate=Functions$generate,
+                           analyse=Functions$analyse,
+                           fixed_objects=fixed_objects,
+                           max_errors=max_errors, save=save,
+                           save_results_out_rootdir=save_results_out_rootdir,
+                           save_seeds=save_seeds, load_seed=load_seed,
+                           store_warning_seeds=store_warning_seeds,
+                           save_seeds_dirname=save_seeds_dirname,
+                           warnings_as_errors=warnings_as_errors,
+                           include_replication_index=include_replication_index,
+                           allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
+                           allow_gen_errors=allow_gen_errors), TRUE)
+            }
         }
     } else {
         if(MPI){
@@ -149,6 +166,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         attr(results[[i]], 'try_error_seeds') <- attr(results[[i]], 'warning_message_seeds') <- NULL
 
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
+    obs_reps <- length(results)
     results <- stackResults(results)
     if(save_results){
         tmp <- ifelse(is.null(save_results_filename), 'results-row', save_results_filename)
@@ -174,7 +192,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     }
     sim_results <- sim_results_check(sim_results)
     summarise_list <- attr(sim_results, 'summarise_list')
-    ret <- c(sim_results, 'REPLICATIONS'=replications,
+    ret <- c(sim_results, 'REPLICATIONS'=obs_reps,
              'ERROR: '=clip_names(try_errors),
              'WARNING: '=clip_names(warnings))
     if(boot_method != 'none'){
