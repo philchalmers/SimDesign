@@ -2,8 +2,8 @@
 
 ## Changes in SimDesign 2.15
 
-- `createDesign()` includes a new `repeat_conditions` argument to repeat the 
-  row conditions a number of times instead of just once. This is useful when
+- `expandDesign()` added to repeat the row conditions a number of 
+  times instead of just once. This is useful when
   exporting each condition independently to computing clusters, where each cluster
   contains only a fraction of the target `replications` (see issue #33)
 

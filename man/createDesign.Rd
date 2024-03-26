@@ -8,7 +8,6 @@
 createDesign(
   ...,
   subset,
-  repeat_conditions = 1L,
   fractional = NULL,
   tibble = TRUE,
   stringsAsFactors = FALSE
@@ -23,19 +22,6 @@ factors to completely cross. Note that these arguments are passed to
 
 \item{subset}{(optional) a logical vector indicating elements or rows to keep
 to create a partially crossed simulation design}
-
-\item{repeat_conditions}{optional integer vector used to repeat each design row
-  the specified number of times. Can either be a single integer, which repeats
-  each row this many times, or an integer vector equal to the number of total
-  rows in the created object.
-
-  This argument is useful when distributing independent row conditions to
-  cluster computing environments, particularly with different \code{replication}
-  information. For example, if 1000 replications in total are the target but
-  the condition is repeated over 4 rows then only 250 replications per row
-  would be required across the repeated conditions. See
-  \code{\link{aggregate_simulations}} for combining the simulation objects
-  once complete}
 
 \item{fractional}{a fractional design matrix returned from the
 \code{FrF2} package.
@@ -96,19 +82,6 @@ Design <- createDesign(N = c(10, 20),
 Design
 print(Design, list2char = FALSE)   # standard tibble output
 
-# repeat each row 4 times (for cluster computing)
-Design4 <- createDesign(N = c(10, 20),
-                       SD.equal = c(TRUE, FALSE),
-                       repeat_conditions = 4)
-Design4
-
-# repeat first two rows 2x and the rest 4 times (for cluster computing
-#   where first two conditions are faster to execute)
-Design24 <- createDesign(SD.equal = c(TRUE, FALSE),
-                         N = c(10, 100, 1000),
-                         repeat_conditions = c(2,2,rep(4, 4)))
-Design24
-
 ##########
 
 ## fractional factorial example
@@ -144,6 +117,9 @@ with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4
 Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
+}
+\seealso{
+\code{\link{expandDesign}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}
