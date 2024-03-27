@@ -44,9 +44,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
                    allow_gen_errors=allow_gen_errors), TRUE)
         } else {
-            if(is.finite(max_time)){
-                stop('not supported yet')
-                try(lapply(1L:replications, mainsim, condition=condition,
+            try(lapply_timer(1L:replications, mainsim, max_time=max_time,
+                           condition=condition,
                            generate=Functions$generate,
                            analyse=Functions$analyse,
                            fixed_objects=fixed_objects,
@@ -59,21 +58,6 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                            include_replication_index=include_replication_index,
                            allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
                            allow_gen_errors=allow_gen_errors), TRUE)
-            } else {
-                try(lapply(1L:replications, mainsim, condition=condition,
-                           generate=Functions$generate,
-                           analyse=Functions$analyse,
-                           fixed_objects=fixed_objects,
-                           max_errors=max_errors, save=save,
-                           save_results_out_rootdir=save_results_out_rootdir,
-                           save_seeds=save_seeds, load_seed=load_seed,
-                           store_warning_seeds=store_warning_seeds,
-                           save_seeds_dirname=save_seeds_dirname,
-                           warnings_as_errors=warnings_as_errors,
-                           include_replication_index=include_replication_index,
-                           allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
-                           allow_gen_errors=allow_gen_errors), TRUE)
-            }
         }
     } else {
         if(MPI){

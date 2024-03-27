@@ -30,6 +30,7 @@ Imports:
     future,
     future.apply,
     progressr,
+    R.utils,
     stats
 Suggests:
     knitr,

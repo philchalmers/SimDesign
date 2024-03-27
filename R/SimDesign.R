@@ -22,6 +22,7 @@
 #' @importFrom sessioninfo session_info
 #' @importFrom RPushbullet pbPost
 #' @importFrom graphics abline
+#' @importFrom R.utils withTimeout
 #' @importFrom pbapply pblapply pboptions
 #' @importFrom dplyr as_tibble bind_rows
 #' @importFrom future.apply future_lapply

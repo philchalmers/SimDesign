@@ -340,6 +340,33 @@ unwind_apply_wind.list <- function(lst, mat, fun, ...){
     ret
 }
 
+lapply_timer <- function(X, FUN, max_time, ...){
+    if(is.finite(max_time)){
+        ret <- vector('list', length(X))
+        total <- max_time*3600L
+        elapsed <- 0
+        time_left <- total
+        for(i in 1L:length(ret)){
+            st <- proc.time()['elapsed']
+            val <- R.utils::withTimeout(FUN(...),
+                                        timeout = time_left,
+                                        onTimeout = 'warning')
+            elapsed <- elapsed + proc.time()['elapsed'] - st
+            time_left <- total - elapsed
+            ret[[i]] <- val
+            if(time_left <= 0){
+                message(sprintf(c("Simulation terminated due to max_time constraint",
+                                " (%i/%i replications evaluated)."), i, length(ret)))
+                ret <- ret[1L:i]
+                break
+            }
+        }
+    } else {
+        ret <- lapply(X=X, FUN=FUN, ...)
+    }
+    ret
+}
+
 combined_Analyses <- function(condition, dat, fixed_objects = NULL){
     if(!is.null(.SIMDENV$ANALYSE_FUNCTIONS)){
         ANALYSE_FUNCTIONS <- .SIMDENV$ANALYSE_FUNCTIONS
