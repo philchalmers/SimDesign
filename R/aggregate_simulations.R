@@ -204,10 +204,9 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
     readin <- vector('list', length(filenames))
     for(i in 1:length(filenames))
         readin[[i]] <- readRDS(filenames[i])
-    errors <- lapply(readin, function(x) x[ ,grepl('ERROR', colnames(x)), drop=FALSE])
+    errors <- lapply(readin, function(x)
+        as.data.frame(x[ ,grepl('ERROR', colnames(x)), drop=FALSE]))
     nms <- unique(do.call(c, lapply(errors, function(x) colnames(x))))
-    try_errors <- as.data.frame(matrix(0, nrow(readin[[1L]]), length(nms)))
-    names(try_errors) <- nms
     readin <- lapply(readin, function(x) x[ ,!grepl('ERROR', colnames(x)), drop=FALSE])
     if(length(unique(sapply(readin, ncol))) > 1L)
         stop('Number of columns in the replications not equal')
@@ -230,8 +229,12 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
     unique.set.index <- unique(set.index)
     full_out <- vector('list', length(unique.set.index))
     readin.old <- readin
+    errors.old <- errors
     for(j in unique.set.index){
         readin <- readin.old[which(j == set.index)]
+        errors <- errors.old[which(j == set.index)]
+        try_errors <- as.data.frame(matrix(0, nrow(readin[[1L]]), length(nms)))
+        names(try_errors) <- nms
         ret <- readin[[1L]]
         pick <- sapply(readin[[1L]], is.numeric)
         ret[, pick] <- 0
@@ -256,6 +259,7 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
         }
         if(has_stored_results)
             results <- attr(ret, 'extra_info')$stored_results
+        try_errors[try_errors == 0L] <- NA
         out <- dplyr::as_tibble(data.frame(ret, try_errors, check.names = FALSE))
         out$SEED <- NULL
         if(has_stored_results)
