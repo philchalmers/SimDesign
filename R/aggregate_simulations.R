@@ -233,7 +233,7 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
     for(j in unique.set.index){
         readin <- readin.old[which(j == set.index)]
         errors <- errors.old[which(j == set.index)]
-        try_errors <- as.data.frame(matrix(0, nrow(readin[[1L]]), length(nms)))
+        try_errors <- as.data.frame(matrix(0L, nrow(readin[[1L]]), length(nms)))
         names(try_errors) <- nms
         ret <- readin[[1L]]
         pick <- sapply(readin[[1L]], is.numeric)

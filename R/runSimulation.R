@@ -1515,7 +1515,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     SIM_TIME <- Final$SIM_TIME
     COMPLETED <- Final$COMPLETED
-    replications <- Final$REPLICATIONS
+    if(!is.null(Final$REPLICATIONS)) replications <- Final$REPLICATIONS
     Final$SIM_TIME <- Final$ID <- Final$COMPLETED <-
         Final$REPLICATIONS <- Final$REPLICATION <- Final$FATAL_TERMINATION <- NULL
     Final <- data.frame(Final, FATAL_TERMINATION,
