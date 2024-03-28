@@ -1,4 +1,4 @@
-context('SimDesign')
+context('aggregate')
 
 test_that('aggregate', {
 

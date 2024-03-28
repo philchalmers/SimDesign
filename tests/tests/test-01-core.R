@@ -1,4 +1,4 @@
-context('SimDesign')
+context('core')
 
 test_that('SimDesign', {
 
