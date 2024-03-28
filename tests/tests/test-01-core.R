@@ -298,11 +298,15 @@ test_that('SimDesign', {
         if(sample(c(FALSE, TRUE), 1, prob = c(.5, .5))) stop('This is a different error')
         list(ret = 1)
     }
+    mycollect <- function(condition, results, fixed_objects = NULL){
+        c(ret = 1)
+    }
     results <- runSimulation(Design, replications = 2, packages = 'extraDistr', seed=1:8,
                              generate=mygenerate, analyse=mycompute, summarise=mycollect, verbose=FALSE)
     seeds <- SimExtract(results, what = 'error_seeds')
     expect_is(seeds, 'data.frame')
     expect_true(nrow(seeds) == 626)
+
     if(FALSE){
         # run interactively
         results <- runSimulation(Design, replications = 2, packages = 'extraDistr',
