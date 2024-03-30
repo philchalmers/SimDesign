@@ -7,10 +7,11 @@
 #' a SLURM array with 10 independent jobs might have the following shell
 #' instructions.
 #'
-#' \code{
-#' #!/bin/bash -l
-#' #SBATCH --time=00:01:00
-#' #SBATCH --array=1-10}
+#' \describe{
+#' \item{\code{#!/bin/bash -l}}{}
+#' \item{\code{#SBATCH --time=00:01:00}}{}
+#' \item{\code{#SBATCH --array=1-10}}{}
+#' }
 #'
 #' which names the associated jobs with the numbers 1 through 10.
 #' \code{getArrayID()} then extracts this information per array, which
