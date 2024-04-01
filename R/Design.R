@@ -158,7 +158,8 @@ createDesign <- function(..., subset, fractional = NULL,
 #' @return a \code{tibble} or \code{data.frame} containing the simulation experiment
 #'   conditions to be evaluated in \code{\link{runSimulation}}
 #'
-#' @seealso \code{\link{createDesign}}, \code{\link{aggregate_simulations}}
+#' @seealso \code{\link{createDesign}}, \code{\link{aggregate_simulations}},
+#'    \code{\link{runArraySimulation}}
 #'
 #' @references
 #'

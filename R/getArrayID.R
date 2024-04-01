@@ -1,9 +1,9 @@
 #' Get job array ID (e.g., from SLURM or other HPC array distributions)
 #'
-#' Get the array ID from an HPC array distribution job.
-#'
+#' Get the array ID from an HPC array distribution job (e.g., from SLURM or
+#' from optional command line arguments).
 #' The array ID is used to index the rows in the design
-#' object in \code{\link{runSimulation}}. For instance,
+#' object in \code{\link{runArraySimulation}}. For instance,
 #' a SLURM array with 10 independent jobs might have the following shell
 #' instructions.
 #'
@@ -15,7 +15,7 @@
 #'
 #' which names the associated jobs with the numbers 1 through 10.
 #' \code{getArrayID()} then extracts this information per array, which
-#' is used as the \code{runSimulation(design, ..., subset = getArrayID())} to
+#' is used as the \code{runArraySimulation(design, ..., arrayID = getArrayID())} to
 #' pass specific rows for the \code{design} object.
 #'
 #' @param type an integer indicating the element from the result of
@@ -27,7 +27,7 @@
 #'
 #' @export
 #'
-#' @seealso \code{\link{runSimulation}} with the \code{subset} argument
+#' @seealso \code{\link{runArraySimulation}}
 #'
 #' @examples
 #'
@@ -39,8 +39,8 @@
 #' # get ID based on first optional argument in shell specification
 #' arrayID <- getArrayID(type = 1)
 #'
-#' # pass as
-#' # runSimulation(design, ...., subset = arrayID)
+#' # pass to
+#' # runArraySimulation(design, ...., arrayID = arrayID)
 #'
 #' }
 #'

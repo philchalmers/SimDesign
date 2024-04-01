@@ -4,7 +4,7 @@
 \alias{runSimulation}
 \alias{summary.SimDesign}
 \alias{print.SimDesign}
-\title{Run a Monte Carlo simulation given a data.frame of conditions and simulation functions}
+\title{Run a Monte Carlo simulation given conditions and simulation functions}
 \usage{
 runSimulation(
   design,
@@ -515,7 +515,8 @@ This function runs a Monte Carlo simulation study given a set of predefined simu
 design conditions, and number of replications. Results can be saved as temporary files in case of
 interruptions and may be restored by re-running \code{runSimulation}, provided that the respective temp
 file can be found in the working directory. \code{runSimulation} supports parallel
-and cluster computing (with the \code{parallel} and \code{future} packages),
+and cluster computing (with the \code{parallel} and \code{future} packages; see also
+\code{\link{runArraySimulation}} for submitting array jobs to HPC clusters),
 global and local debugging, error handling (including fail-safe
 stopping when functions fail too often, even across nodes), provides bootstrap estimates of the
 sampling variability (optional), and automatic tracking of error and warning messages
@@ -992,7 +993,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
   \code{\link{SimExtract}},
   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
   \code{\link{aggregate_simulations}}, \code{\link{Attach}}, \code{\link{AnalyseIf}},
-  \code{\link{SimShiny}}, \code{\link{convertWarnings}}
+  \code{\link{SimShiny}}, \code{\link{convertWarnings}}, \code{\link{runArraySimulation}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}
