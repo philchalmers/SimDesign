@@ -87,17 +87,34 @@
 #' Design5
 #'
 #' # arrayID <- getArrayID(type = 'slurm')
-#' arrayID <- 2
-#'
-#' # optionally, store all files in 'sim' sub-directory
-#' dir.create('sim/')
+#' arrayID <- 1L
 #'
 #' # run the simulation (replications reduced per row, but same in total)
 #' res <- runArraySimulation(design=Design5, replications=10,
 #'                    generate=Generate, analyse=Analyse,
-#'                    summarise=Summarise, arrayID=arrayID,
-#'                    filename='sim/mysim') # saved in 'sim/mysim-2.rds'
+#'                    summarise=Summarise, arrayID=arrayID)
 #' res
+#'
+#' # emulate the arrayID distribution, storing all results in a 'sim/' folder
+#' dir.create('sim/')
+#'
+#' # emulate distribution to nrow(Design5) = 15 independent job arrays
+#' sapply(1:nrow(Design5), \(arrayID)
+#'    runArraySimulation(design=Design5, replications=10,
+#'           generate=Generate, analyse=Analyse,
+#'           summarise=Summarise, arrayID=arrayID,
+#'           filename='sim/condition')) # saved as 'sim/condition-#.rds'
+#'
+#' # list saved files
+#' dir('sim/')
+#'
+#' # aggregate simulation results into single file
+#' setwd('sim')
+#' result <- aggregate_simulations(files=dir())
+#' result
+#'
+#' # setwd("../")
+#' # SimClean(dirs='sim/')
 #'
 #' }
 #'
@@ -115,7 +132,7 @@ runArraySimulation <- function(design, ..., replications, arrayID,
     stopifnot(arrayID %in% 1L:nrow(design))
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)
-    save_details$arrayID <- arrayID  ## TODO for saving files with correct ID
+    save_details$arrayID <- arrayID
 
     ret <- runSimulation(design=design[arrayID, , drop=FALSE],
                          replications=replications[arrayID],
