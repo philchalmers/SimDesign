@@ -19,6 +19,8 @@ runArraySimulation(
 This function is design to submit each row as in independent job on a HPC cluster.
 See \code{\link{runSimulation}} for further details}
 
+\item{...}{additional arguments to be passed to \code{\link{runSimulation}}}
+
 \item{replications}{number of independent replications to perform per
 condition (i.e., each row in \code{design}). See \code{\link{runSimulation}}
 for further details}
@@ -30,7 +32,7 @@ for further details}
 specify extension). See \code{\link{runSimulation}} for further details}
 
 \item{filename_suffix}{suffix to add to the filename; default add '-' with the
-\cpde{arrayID}}
+\code{arrayID}}
 
 \item{save_details}{optional list of extra file saving details.
 See \code{\link{runSimulation}}}
@@ -43,6 +45,16 @@ per independent row condition. This is mainly useful when distributing the
 jobs to HPC clusters where a job array number is available (e.g., via SLURM).
 Use of \code{\link{expandDesign}} is useful for distributing replications
 to different jobs.
+}
+\details{
+For timed simulations on HPC clusters it is also recommended to pass a
+\code{control = list(max_time = number_of_hours)} to avoid discarding
+conditions that require more than the specified time in the shell script.
+The \code{max_time} value should be less than the maximum time allocated
+on the HPC cluster (e.g., approximately 90% of this time or less, though
+depends on how long each replication takes). Simulations with missing
+replication information should submit a new set of jobs at a later time
+to collect the missing replication information.
 }
 \examples{
 
@@ -97,12 +109,17 @@ res
 # emulate the arrayID distribution, storing all results in a 'sim/' folder
 dir.create('sim/')
 
-# emulate distribution to nrow(Design5) = 15 independent job arrays
+# Emulate distribution to nrow(Design5) = 15 independent job arrays.
 sapply(1:nrow(Design5), \(arrayID)
    runArraySimulation(design=Design5, replications=10,
           generate=Generate, analyse=Analyse,
           summarise=Summarise, arrayID=arrayID,
-          filename='sim/condition')) # saved as 'sim/condition-#.rds'
+          filename='sim/condition',   # saved as 'sim/condition-#.rds'
+          control = list(max_time = 4)))
+
+#  If necessary, conditions above would manually terminate before
+#  4 hours, returning any successfully completed results before the HPC
+#  session times out (provided shell specified more than 4 hours)
 
 # list saved files
 dir('sim/')
