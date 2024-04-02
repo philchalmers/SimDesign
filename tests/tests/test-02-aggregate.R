@@ -100,6 +100,9 @@ test_that('aggregate', {
     Final <- aggregate_simulations(files = c('file.rds', 'newfile.rds'),
                                    select=c("welch", 'independent'))
     expect_true(ncol(SimExtract(Final, 'results')) == 2L)
+    Final <- aggregate_simulations(files = c('file.rds', 'newfile.rds'),
+                                   select='NONE')
+    expect_true(is.null(SimExtract(Final, 'results')))
     SimClean(dir()[grepl('\\.rds', dir())])
 
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,

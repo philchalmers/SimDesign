@@ -17,9 +17,11 @@
 #' @param results_dirname the new directory to place the aggregated results files
 #'
 #' @param select a character vector indicating columns to variables to select from the
-#'   \code{SimExtract(what='results')} information. This is mainly useful when RAM is an issue
+#'   \code{SimExtract(what='results')} and summary information.
+#'   This is mainly useful when RAM is an issue
 #'   given simulations with many stored estimates. Default includes the results objects
-#'   in their entirety
+#'   in their entirety, though to omit all internally stored simulation results pass the
+#'   character \code{'NONE'}
 #'
 #' @return if \code{files} is used the function returns a \code{data.frame/tibble} with the (weighted) average
 #'   of the simulation results. Otherwise, if \code{dirs} is used, the function returns NULL
@@ -297,7 +299,11 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
 subset_results <- function(obj, select){
     if(is.null(select)) return(obj)
     res <- attr(obj, 'extra_info')$stored_results
-    res <- dplyr::select(res, select)
+    if(length(select) == 1L && select == 'NONE'){
+        res <- NULL
+    } else {
+        res <- dplyr::select(res, select)
+    }
     attr(obj, 'extra_info')$stored_results <- res
     obj
 }
