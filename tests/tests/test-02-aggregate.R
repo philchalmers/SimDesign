@@ -94,6 +94,12 @@ test_that('aggregate', {
     expect_is(Final4, 'data.frame')
     expect_true(all(Final4$REPLICATIONS == 8L))
     expect_equal(nrow(SimExtract(Final4, 'results')), 8 * nrow(Design))
+
+    # select
+    expect_true(ncol(SimExtract(tmp, 'results')) == 5L)
+    Final <- aggregate_simulations(files = c('file.rds', 'newfile.rds'),
+                                   select=c("welch", 'independent'))
+    expect_true(ncol(SimExtract(Final, 'results')) == 2L)
     SimClean(dir()[grepl('\\.rds', dir())])
 
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,

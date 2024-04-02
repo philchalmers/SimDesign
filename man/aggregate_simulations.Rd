@@ -8,7 +8,8 @@ aggregate_simulations(
   files = NULL,
   filename = NULL,
   dirs = NULL,
-  results_dirname = "SimDesign_aggregate_results"
+  results_dirname = "SimDesign_aggregate_results",
+  select = NULL
 )
 }
 \arguments{
@@ -21,6 +22,11 @@ then the results will only be returned in the R console}
 aggregated. A new folder will be created and placed in the \code{results_dirname} output folder}
 
 \item{results_dirname}{the new directory to place the aggregated results files}
+
+\item{select}{a character vector indicating columns to variables to select from the
+\code{SimExtract(what='results')} information. This is mainly useful when RAM is an issue
+given simulations with many stored estimates. Default includes the results objects
+in their entirety}
 }
 \value{
 if \code{files} is used the function returns a \code{data.frame/tibble} with the (weighted) average

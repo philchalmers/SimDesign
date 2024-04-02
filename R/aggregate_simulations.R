@@ -16,6 +16,11 @@
 #'
 #' @param results_dirname the new directory to place the aggregated results files
 #'
+#' @param select a character vector indicating columns to variables to select from the
+#'   \code{SimExtract(what='results')} information. This is mainly useful when RAM is an issue
+#'   given simulations with many stored estimates. Default includes the results objects
+#'   in their entirety
+#'
 #' @return if \code{files} is used the function returns a \code{data.frame/tibble} with the (weighted) average
 #'   of the simulation results. Otherwise, if \code{dirs} is used, the function returns NULL
 #'
@@ -158,7 +163,8 @@
 #'
 #' }
 aggregate_simulations <- function(files = NULL, filename = NULL,
-                                  dirs = NULL, results_dirname = 'SimDesign_aggregate_results'){
+                                  dirs = NULL, results_dirname = 'SimDesign_aggregate_results',
+                                  select = NULL){
     oldfiles <- files
     if(!is.null(dirs)){
         if(!all(sapply(dirs, dir.exists))) stop('One or more directories not found')
@@ -173,7 +179,11 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
         dir.create(results_dirname)
         message(sprintf('Writing aggregate results folders to \"%s\"', results_dirname))
         for(f in files){
-            readin <- lapply(1:ndirs, function(x) readRDS(paste0(dirs[x], '/', f)))
+            readin <- lapply(1:ndirs, function(x){
+                inp <- readRDS(paste0(dirs[x], '/', f))
+                inp <- subset_results(inp, select=select)
+                inp
+            })
             ret <- readin[[1L]]
             collapse <- !is.list(ret$results) || is.data.frame(ret$results)
             results <- lapply(readin, function(x) x$results)
@@ -202,8 +212,10 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
             stop(sprintf('File \'%s\' already exists in working directory', filename),
                  call.=FALSE)
     readin <- vector('list', length(filenames))
-    for(i in 1:length(filenames))
+    for(i in 1:length(filenames)){
         readin[[i]] <- readRDS(filenames[i])
+        readin[[i]] <- subset_results(readin[[i]], select=select)
+    }
     errors <- lapply(readin, function(x)
         as.data.frame(x[ ,grepl('ERROR', colnames(x)), drop=FALSE]))
     nms <- unique(do.call(c, lapply(errors, function(x) colnames(x))))
@@ -280,4 +292,12 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
     if(length(unique(out$REPLICATIONS)) != 1L)
         warning("Simulation results do not contain the same number of REPLICATIONS")
     invisible(out)
+}
+
+subset_results <- function(obj, select){
+    if(is.null(select)) return(obj)
+    res <- attr(obj, 'extra_info')$stored_results
+    res <- dplyr::select(res, select)
+    attr(obj, 'extra_info')$stored_results <- res
+    obj
 }
