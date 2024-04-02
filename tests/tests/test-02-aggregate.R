@@ -72,10 +72,28 @@ test_that('aggregate', {
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                          replications = 2, parallel=FALSE, store_results = TRUE,
                          filename = 'newfile', verbose = FALSE)
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                         replications = 2, parallel=FALSE, store_results = TRUE,
+                         filename = 'newfile2', verbose = FALSE)
+    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                         replications = 2, parallel=FALSE, store_results = TRUE,
+                         filename = 'newfile3', verbose = FALSE)
     Final <- aggregate_simulations(files = c('file.rds', 'newfile.rds'))
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
     expect_equal(nrow(SimExtract(Final, 'results')), 4 * nrow(Design))
+    saveRDS(Final, 'collect1.rds')
+    Final2 <- aggregate_simulations(files = c('newfile2.rds', 'newfile3.rds'))
+    expect_is(Final2, 'data.frame')
+    expect_true(all(Final2$REPLICATIONS == 4L))
+    expect_equal(nrow(SimExtract(Final2, 'results')), 4 * nrow(Design))
+    saveRDS(Final2, 'collect2.rds')
+
+    # aggregate the aggregates
+    Final4 <- aggregate_simulations(files = c('collect1.rds', 'collect2.rds'))
+    expect_is(Final4, 'data.frame')
+    expect_true(all(Final4$REPLICATIONS == 8L))
+    expect_equal(nrow(SimExtract(Final4, 'results')), 8 * nrow(Design))
     SimClean(dir()[grepl('\\.rds', dir())])
 
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
