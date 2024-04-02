@@ -9,7 +9,8 @@ runArraySimulation(
   ...,
   replications,
   arrayID,
-  filename = NULL,
+  seeds,
+  filename,
   filename_suffix = paste0("-", arrayID),
   save_details = list()
 )
@@ -28,11 +29,17 @@ for further details}
 \item{arrayID}{array identifier from the scheduler. Must be a number between
 1 and \code{nrow(design)}}
 
-\item{filename}{optional filename to save simulation to (does not need to
-specify extension). See \code{\link{runSimulation}} for further details}
+\item{seeds}{vector of seeds to use, typically constructed from
+\code{\link{gen_seeds}}. Must equal the number of rows in \code{design}}
 
-\item{filename_suffix}{suffix to add to the filename; default add '-' with the
-\code{arrayID}}
+\item{filename}{file name to save simulation files to (does not need to
+specify extension). However, the array ID will be appended to each
+\code{filename} (see \code{filename_suffix}). For example, if
+\code{filename = 'mysim'} then files stored will be \code{'mysim-1.rds'},
+\code{'mysim-2.rds'}, and so on for each row in \code{design}}
+
+\item{filename_suffix}{suffix to add to the \code{filename};
+default add '-' with the \code{arrayID}}
 
 \item{save_details}{optional list of extra file saving details.
 See \code{\link{runSimulation}}}
@@ -42,8 +49,9 @@ This function has the same purpose as \code{\link{runSimulation}}, however
 rather than evaluating each row in a \code{design} object (potentially with
 parallel computing architecture) this function evaluates the simulation
 per independent row condition. This is mainly useful when distributing the
-jobs to HPC clusters where a job array number is available (e.g., via SLURM).
-Use of \code{\link{expandDesign}} is useful for distributing replications
+jobs to HPC clusters where a job array number is available (e.g., via SLURM),
+where the simulation results must be saved to independent files as they
+complete. Use of \code{\link{expandDesign}} is useful for distributing replications
 to different jobs.
 }
 \details{
@@ -76,6 +84,10 @@ Summarise <- function(condition, results, fixed_objects = NULL){
 
 \dontrun{
 
+# generate unique seed for each condition to be distributed
+set.seed(54321)
+seeds <- gen_seeds(Design)
+
 ### On cluster submission, the active array ID is obtained via getArrayID(),
 ###   and therefore should be used in real SLURM submissions
 arrayID <- getArrayID(type = 'slurm')
@@ -83,13 +95,15 @@ arrayID <- getArrayID(type = 'slurm')
 # However, for the following example array ID is set to first row only
 arrayID <- 1L
 
-# run the simulation
+# run the simulation (results not caught on job submission, only files saved)
 res <- runArraySimulation(design=Design, replications=50,
-                   generate=Generate, analyse=Analyse,
-                   summarise=Summarise, arrayID=arrayID,
-                   filename='mysim') # saved as 'mysim-1.rds'
+                      generate=Generate, analyse=Analyse,
+                      summarise=Summarise, arrayID=arrayID,
+                      seeds=seeds, filename='mysim') # saved as 'mysim-1.rds'
 res
 
+dir()
+SimClean('mysim-1.rds')
 
 ########################
 # Same submission job as above, however split the replications over multiple
@@ -97,25 +111,35 @@ res
 Design5 <- expandDesign(Design, 5)
 Design5
 
+# generate unique seed for each condition to be distributed
+set.seed(54321)
+seeds <- gen_seeds(Design5)
+
 # arrayID <- getArrayID(type = 'slurm')
 arrayID <- 1L
 
 # run the simulation (replications reduced per row, but same in total)
-res <- runArraySimulation(design=Design5, replications=10,
+runArraySimulation(design=Design5, replications=10,
                    generate=Generate, analyse=Analyse,
-                   summarise=Summarise, arrayID=arrayID)
+                   summarise=Summarise, seeds=seeds,
+                   filename='mylongsim', arrayID=arrayID)
+res <- readRDS('mylongsim-1.rds')
 res
 
+SimClean('mylongsim-1.rds')
+
+
+###
 # emulate the arrayID distribution, storing all results in a 'sim/' folder
 dir.create('sim/')
 
 # Emulate distribution to nrow(Design5) = 15 independent job arrays.
 sapply(1:nrow(Design5), \(arrayID)
-   runArraySimulation(design=Design5, replications=10,
-          generate=Generate, analyse=Analyse,
-          summarise=Summarise, arrayID=arrayID,
-          filename='sim/condition',   # saved as 'sim/condition-#.rds'
-          control = list(max_time = 4)))
+       runArraySimulation(design=Design5, replications=10,
+             generate=Generate, analyse=Analyse,
+             summarise=Summarise, seeds=seeds, arrayID=arrayID,
+             filename='sim/condition',   # saved to 'sim/condition-#.rds'
+             control = list(max_time = 4))) |> invisible()
 
 #  If necessary, conditions above would manually terminate before
 #  4 hours, returning any successfully completed results before the HPC
@@ -129,8 +153,8 @@ setwd('sim')
 result <- aggregate_simulations(files=dir())
 result
 
-# setwd("../")
-# SimClean(dirs='sim/')
+setwd('..')
+SimClean(dirs='sim/')
 
 }
 
