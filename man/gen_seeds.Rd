@@ -4,7 +4,7 @@
 \alias{gen_seeds}
 \title{Generate random seeds}
 \usage{
-gen_seeds(design, nsets = 1L)
+gen_seeds(design, nsets = 1L, old.seeds = NULL)
 }
 \arguments{
 \item{design}{design matrix that requires a unique seed per condition, or
@@ -14,6 +14,9 @@ a number indicating the number of seeds to generate}
 then the number of independent sets can be specified to generate a matrix
 of seeds. This will return a matrix object with \code{nsets} columns to
 be indexed column-wise for each manual seed specification}
+
+\item{old.seeds}{(optional) a vector or matrix of previously used seeds
+that should not be included in the new set}
 }
 \description{
 Generate seeds to be passed to \code{runSimulation}'s \code{seed} input. Values
@@ -32,6 +35,10 @@ design <- createDesign(factorA=c(1,2,3),
                        factorB=letters[1:3])
 seeds <- gen_seeds(design)
 seeds
+
+# generate new seeds that are distinct from previous seeds
+new.seeds <- gen_seeds(design, old.seeds=seeds)
+cbind(new.seeds, seeds)
 
 # two distinct sets of seeds
 multi_seeds <- gen_seeds(design, nsets=2)

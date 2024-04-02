@@ -641,6 +641,9 @@ valid_results <- function(x)
 #'   of seeds. This will return a matrix object with \code{nsets} columns to
 #'   be indexed column-wise for each manual seed specification
 #'
+#' @param old.seeds (optional) a vector or matrix of previously used seeds
+#'   that should not be included in the new set
+#'
 #' @export
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
@@ -659,16 +662,28 @@ valid_results <- function(x)
 #' seeds <- gen_seeds(design)
 #' seeds
 #'
+#' # generate new seeds that are distinct from previous seeds
+#' new.seeds <- gen_seeds(design, old.seeds=seeds)
+#' cbind(new.seeds, seeds)
+#'
 #' # two distinct sets of seeds
 #' multi_seeds <- gen_seeds(design, nsets=2)
 #' multi_seeds  # index column-wise for runSimulation(..., seed)
 #'
-gen_seeds <- function(design, nsets = 1L){
+gen_seeds <- function(design, nsets = 1L, old.seeds = NULL){
     on.exit(set.seed(NULL))
     stopifnot(!missing(design))
     if(is.numeric(design))
         design <- matrix(NA, nrow=design)
     seed <- rint(nrow(design) * nsets, min=1L, max = 2147483647L)
+    if(!is.null(old.seeds)){
+        old.seeds <- as.vector(old.seeds)
+        while(TRUE){
+            pick <- seed %in% old.seeds
+            if(!any(pick)) break
+            seed[pick] <- rint(sum(pick), min=1L, max = 2147483647L)
+        }
+    }
     if(nsets > 1L)
         seed <- matrix(seed, ncol=nsets)
     seed
