@@ -7,7 +7,8 @@
 gen_seeds(design, nsets = 1L)
 }
 \arguments{
-\item{design}{design matrix that requires a unique seed per condition}
+\item{design}{design matrix that requires a unique seed per condition, or
+a number indicating the number of seeds to generate}
 
 \item{nsets}{if separating the simulation across independent nodes manually
 then the number of independent sets can be specified to generate a matrix
@@ -20,6 +21,13 @@ are sampled from 1 to 2147483647.
 }
 \examples{
 
+# generate 1 seed
+gen_seeds(1)
+
+# generate 5 unique seeds
+gen_seeds(5)
+
+# generate from nrow(design)
 design <- createDesign(factorA=c(1,2,3),
                        factorB=letters[1:3])
 seeds <- gen_seeds(design)

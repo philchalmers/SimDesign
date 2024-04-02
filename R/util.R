@@ -633,7 +633,8 @@ valid_results <- function(x)
 #' Generate seeds to be passed to \code{runSimulation}'s \code{seed} input. Values
 #' are sampled from 1 to 2147483647.
 #'
-#' @param design design matrix that requires a unique seed per condition
+#' @param design design matrix that requires a unique seed per condition, or
+#'   a number indicating the number of seeds to generate
 #'
 #' @param nsets if separating the simulation across independent nodes manually
 #'   then the number of independent sets can be specified to generate a matrix
@@ -646,6 +647,13 @@ valid_results <- function(x)
 #'
 #' @examples
 #'
+#' # generate 1 seed
+#' gen_seeds(1)
+#'
+#' # generate 5 unique seeds
+#' gen_seeds(5)
+#'
+#' # generate from nrow(design)
 #' design <- createDesign(factorA=c(1,2,3),
 #'                        factorB=letters[1:3])
 #' seeds <- gen_seeds(design)
@@ -657,9 +665,10 @@ valid_results <- function(x)
 #'
 gen_seeds <- function(design, nsets = 1L){
     on.exit(set.seed(NULL))
-    seed <- if(missing(design))
-        rint(1L * nsets, min=1L, max = 2147483647L)
-    else rint(nrow(design) * nsets, min=1L, max = 2147483647L)
+    stopifnot(!missing(design))
+    if(is.numeric(design))
+        design <- matrix(NA, nrow=design)
+    seed <- rint(nrow(design) * nsets, min=1L, max = 2147483647L)
     if(nsets > 1L)
         seed <- matrix(seed, ncol=nsets)
     seed

@@ -33,6 +33,9 @@
   can be constructed to fill-in this missing replication information, where 
   `aggregate_simulations()` can be used to combine all saved `.rds` files into a
   final simulation object
+  
+- Expose seed generation control per simulation condition via the 
+  function `gen_seeds()`
 
 ## Changes in SimDesign 2.14
 
