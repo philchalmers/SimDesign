@@ -17,8 +17,7 @@
 #' @param results_dirname the new directory to place the aggregated results files
 #'
 #' @param select a character vector indicating columns to variables to select from the
-#'   \code{SimExtract(what='results')} and summary information.
-#'   This is mainly useful when RAM is an issue
+#'   \code{SimExtract(what='results')} information. This is mainly useful when RAM is an issue
 #'   given simulations with many stored estimates. Default includes the results objects
 #'   in their entirety, though to omit all internally stored simulation results pass the
 #'   character \code{'NONE'}
