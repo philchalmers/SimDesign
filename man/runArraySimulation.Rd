@@ -29,8 +29,10 @@ for further details}
 \item{arrayID}{array identifier from the scheduler. Must be a number between
 1 and \code{nrow(design)}}
 
-\item{seeds}{vector of seeds to use, typically constructed from
-\code{\link{gen_seeds}}. Must equal the number of rows in \code{design}}
+\item{seeds}{list of seeds to use from the L'Ecuyer-CMRG method. This
+is constructed from \code{\link{gen_seeds}} with
+\code{type = "L'Ecuyer-CMRG"}. The length of this input must equal the
+number of rows in \code{design}}
 
 \item{filename}{file name to save simulation files to (does not need to
 specify extension). However, the array ID will be appended to each
@@ -55,7 +57,16 @@ complete. Use of \code{\link{expandDesign}} is useful for distributing replicati
 to different jobs.
 }
 \details{
-For timed simulations on HPC clusters it is also recommended to pass a
+Due to the nature of how the replication are split it is important that
+the L'Ecuyer-CMRG (2002) method of random seeds is used across all
+array ID submissions (cf. \code{\link{runSimulation}}'s \code{parallel}
+approach, which uses this method to distribute random seeds within
+each isolated condition rather than between all conditions). As such, this
+function requires a \code{list} of seeds to be generated using
+\code{\link{gen_seeds}} with the \code{type = "L'Ecuyer-CMRG"} method to ensure
+that each job is analyzing a high-quality set of random numbers.
+
+Additionally, for timed simulations on HPC clusters it is also recommended to pass a
 \code{control = list(max_time = number_of_hours)} to avoid discarding
 conditions that require more than the specified time in the shell script.
 The \code{max_time} value should be less than the maximum time allocated
@@ -85,8 +96,9 @@ Summarise <- function(condition, results, fixed_objects = NULL){
 \dontrun{
 
 # generate unique seed for each condition to be distributed
-set.seed(54321)
-seeds <- gen_seeds(Design)
+(CMRG.seed <- gen_seeds(1L))
+seeds <- gen_seeds(Design, CMRG.seed=CMRG.seed)
+str(seeds)
 
 ### On cluster submission, the active array ID is obtained via getArrayID(),
 ###   and therefore should be used in real SLURM submissions
@@ -112,8 +124,8 @@ Design5 <- expandDesign(Design, 5)
 Design5
 
 # generate unique seed for each condition to be distributed
-set.seed(54321)
-seeds <- gen_seeds(Design5)
+(CMRG.seed <- gen_seeds(1L))
+seeds <- gen_seeds(Design5, CMRG.seed=CMRG.seed)
 
 # arrayID <- getArrayID(type = 'slurm')
 arrayID <- 1L
@@ -123,6 +135,7 @@ runArraySimulation(design=Design5, replications=10,
                    generate=Generate, analyse=Analyse,
                    summarise=Summarise, seeds=seeds,
                    filename='mylongsim', arrayID=arrayID)
+
 res <- readRDS('mylongsim-1.rds')
 res
 
@@ -133,7 +146,7 @@ SimClean('mylongsim-1.rds')
 # emulate the arrayID distribution, storing all results in a 'sim/' folder
 dir.create('sim/')
 
-# Emulate distribution to nrow(Design5) = 15 independent job arrays.
+# Emulate distribution to nrow(Design5) = 15 independent job arrays
 sapply(1:nrow(Design5), \(arrayID)
        runArraySimulation(design=Design5, replications=10,
              generate=Generate, analyse=Analyse,
@@ -170,7 +183,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 }
 \seealso{
 \code{\link{runSimulation}}, \code{\link{expandDesign}},
-  \code{\link{aggregate_simulations}}, \code{\link{getArrayID}}
+  \code{\link{gen_seeds}}, \code{\link{aggregate_simulations}}, \code{\link{getArrayID}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}

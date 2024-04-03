@@ -4,7 +4,7 @@
 \alias{gen_seeds}
 \title{Generate random seeds}
 \usage{
-gen_seeds(design, nsets = 1L, old.seeds = NULL)
+gen_seeds(design, nsets = 1L, CMRG.seed = NULL)
 }
 \arguments{
 \item{design}{design matrix that requires a unique seed per condition, or
@@ -15,8 +15,11 @@ then the number of independent sets can be specified to generate a matrix
 of seeds. This will return a matrix object with \code{nsets} columns to
 be indexed column-wise for each manual seed specification}
 
-\item{old.seeds}{(optional) a vector or matrix of previously used seeds
-that should not be included in the new set}
+\item{CMRG.seed}{the initial \code{set.seed} number used to generate a sequence
+of independent seeds according to the L'Ecuyer-CMRG (2002) method. This
+is recommended whenever quality random number generation is required
+across similar (if not identical) simulation jobs
+(e.g., see \code{\link{runArraySimulation}})}
 }
 \description{
 Generate seeds to be passed to \code{runSimulation}'s \code{seed} input. Values
@@ -36,13 +39,14 @@ design <- createDesign(factorA=c(1,2,3),
 seeds <- gen_seeds(design)
 seeds
 
-# generate new seeds that are distinct from previous seeds
-new.seeds <- gen_seeds(design, old.seeds=seeds)
-cbind(new.seeds, seeds)
-
 # two distinct sets of seeds
 multi_seeds <- gen_seeds(design, nsets=2)
 multi_seeds  # index column-wise for runSimulation(..., seed)
+
+# generate seeds for runArraySimulation()
+(generating_seed <- gen_seeds(1L))
+seed_list <- gen_seeds(design, CMRG=generating_seed)
+seed_list
 
 }
 \author{

@@ -625,6 +625,12 @@ pickReps <- function(replications, iter){
     ret
 }
 
+set_seed <- function(seed){
+    if(is.list(seed)) .Random.seed <- seed[[1L]]
+    else set.seed(seed)
+    invisible(NULL)
+}
+
 valid_results <- function(x)
     is(x, 'numeric') || is(x, 'data.frame') || is(x, 'list') || is(x, 'try-error')
 
@@ -641,8 +647,11 @@ valid_results <- function(x)
 #'   of seeds. This will return a matrix object with \code{nsets} columns to
 #'   be indexed column-wise for each manual seed specification
 #'
-#' @param old.seeds (optional) a vector or matrix of previously used seeds
-#'   that should not be included in the new set
+#' @param CMRG.seed the initial \code{set.seed} number used to generate a sequence
+#'   of independent seeds according to the L'Ecuyer-CMRG (2002) method. This
+#'   is recommended whenever quality random number generation is required
+#'   across similar (if not identical) simulation jobs
+#'   (e.g., see \code{\link{runArraySimulation}})
 #'
 #' @export
 #'
@@ -662,29 +671,32 @@ valid_results <- function(x)
 #' seeds <- gen_seeds(design)
 #' seeds
 #'
-#' # generate new seeds that are distinct from previous seeds
-#' new.seeds <- gen_seeds(design, old.seeds=seeds)
-#' cbind(new.seeds, seeds)
-#'
 #' # two distinct sets of seeds
 #' multi_seeds <- gen_seeds(design, nsets=2)
 #' multi_seeds  # index column-wise for runSimulation(..., seed)
 #'
-gen_seeds <- function(design, nsets = 1L, old.seeds = NULL){
-    on.exit(set.seed(NULL))
+#' # generate seeds for runArraySimulation()
+#' (generating_seed <- gen_seeds(1L))
+#' seed_list <- gen_seeds(design, CMRG=generating_seed)
+#' seed_list
+#'
+gen_seeds <- function(design, nsets = 1L, CMRG.seed = NULL){
     stopifnot(!missing(design))
     if(is.numeric(design))
         design <- matrix(NA, nrow=design)
-    seed <- rint(nrow(design) * nsets, min=1L, max = 2147483647L)
-    if(!is.null(old.seeds)){
-        old.seeds <- as.vector(old.seeds)
-        while(TRUE){
-            pick <- seed %in% old.seeds
-            if(!any(pick)) break
-            seed[pick] <- rint(sum(pick), min=1L, max = 2147483647L)
-        }
+    if(is.null(CMRG.seed)){
+        seed <- rint(nrow(design) * nsets, min=1L, max = 2147483647L)
+        if(nsets > 1L)
+            seed <- matrix(seed, ncol=nsets)
+    } else {
+        rngkind <- RNGkind()
+        RNGkind("L'Ecuyer-CMRG")
+        on.exit({RNGkind(rngkind[1L]); set.seed(NULL)})
+        seed <- vector('list', nrow(design))
+        set.seed(CMRG.seed)
+        seed[[1L]] <- .Random.seed
+        for (i in 2:length(seed))
+            seed[[i]] <- nextRNGStream(seed[[i - 1]])
     }
-    if(nsets > 1L)
-        seed <- matrix(seed, ncol=nsets)
     seed
 }

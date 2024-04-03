@@ -523,13 +523,17 @@
 #'    argument other than
 #'   \code{'none'} is supplied
 #'
-#' @param seed a vector of integers to be used for reproducibility.
+#' @param seed a vector or list of integers to be used for reproducibility.
 #'   The length of the vector must be equal the number of rows in \code{design}.
-#'   This argument calls \code{\link{set.seed}} or
-#'   \code{\link{clusterSetRNGStream}} for each condition, respectively,
-#'   but will not be run when \code{MPI = TRUE}.
-#'   Default randomly generates seeds within the range 1 to 2147483647 for each condition
-#'   via \code{link{gen_seeds}}
+#'   If the input is a vector then \code{\link{set.seed}} or
+#'   \code{\link{clusterSetRNGStream}} for each condition will be called, respectively,
+#'   but will not be run when \code{MPI = TRUE}. If a list is provided then these
+#'   numbers must have been generated from \code{\link{gen_seeds}} with the argument
+#'   \code{CMRG.seed} used to specify the initial. The list approach ensures random number
+#'   generation independence across conditions and replications, while the vector input
+#'   ensures independence within the replications per conditions but not necessarily
+#'   across conditions. Default randomly generates seeds within the
+#'   range 1 to 2147483647 for each condition via \code{link{gen_seeds}}
 #'
 #' @param progress logical; display a progress bar (using the \code{pbapply} package)
 #'   for each simulation condition?
@@ -1560,6 +1564,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     sn <- colnames(Final)[!(colnames(Final) %in% c(dn, en, ten, wen, bsen))]
     Final <- data.frame(Final[ ,c(dn, sn, bsen, en)], ERRORS, WARNINGS,
                                          check.names = FALSE)
+    if(is.list(seed)){
+        Final$SEED <- NULL
+        en <- en[-4L]
+    }
     if(all(memory_used == "")) Final$RAM_USED <- NULL
     if(all(ERRORS == 0)) Final$ERRORS <- NULL
     if(all(WARNINGS == 0)) Final$WARNINGS <- NULL
@@ -1581,6 +1589,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       save_info = c(filename=filename,
                                                     save_results_dirname=save_results_dirname,
                                                     save_seeds_dirname=save_seeds_dirname)[pick],
+                                      seeds=seed,
                                       ncores = if(parallel) length(cl) else if(MPI) NA else 1L,
                                       number_of_conditions = nrow(design),
                                       date_completed = noquote(date()), total_elapsed_time = sum(SIM_TIME),

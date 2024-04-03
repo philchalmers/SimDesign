@@ -9,7 +9,16 @@
 #' complete. Use of \code{\link{expandDesign}} is useful for distributing replications
 #' to different jobs.
 #'
-#' For timed simulations on HPC clusters it is also recommended to pass a
+#' Due to the nature of how the replication are split it is important that
+#' the L'Ecuyer-CMRG (2002) method of random seeds is used across all
+#' array ID submissions (cf. \code{\link{runSimulation}}'s \code{parallel}
+#' approach, which uses this method to distribute random seeds within
+#' each isolated condition rather than between all conditions). As such, this
+#' function requires a \code{list} of seeds to be generated using
+#' \code{\link{gen_seeds}} with the \code{type = "L'Ecuyer-CMRG"} method to ensure
+#' that each job is analyzing a high-quality set of random numbers.
+#'
+#' Additionally, for timed simulations on HPC clusters it is also recommended to pass a
 #' \code{control = list(max_time = number_of_hours)} to avoid discarding
 #' conditions that require more than the specified time in the shell script.
 #' The \code{max_time} value should be less than the maximum time allocated
@@ -41,8 +50,10 @@
 #' @param filename_suffix suffix to add to the \code{filename};
 #'   default add '-' with the \code{arrayID}
 #'
-#' @param seeds vector of seeds to use, typically constructed from
-#'   \code{\link{gen_seeds}}. Must equal the number of rows in \code{design}
+#' @param seeds list of seeds to use from the L'Ecuyer-CMRG method. This
+#'   is constructed from \code{\link{gen_seeds}} with
+#'   \code{type = "L'Ecuyer-CMRG"}. The length of this input must equal the
+#'   number of rows in \code{design}
 #'
 #' @param ... additional arguments to be passed to \code{\link{runSimulation}}
 #'
@@ -61,7 +72,7 @@
 #' \doi{10.1080/10691898.2016.1246953}
 #'
 #' @seealso \code{\link{runSimulation}}, \code{\link{expandDesign}},
-#'   \code{\link{aggregate_simulations}}, \code{\link{getArrayID}}
+#'   \code{\link{gen_seeds}}, \code{\link{aggregate_simulations}}, \code{\link{getArrayID}}
 #'
 #' @examples
 #'
@@ -84,8 +95,9 @@
 #' \dontrun{
 #'
 #' # generate unique seed for each condition to be distributed
-#' set.seed(54321)
-#' seeds <- gen_seeds(Design)
+#' (CMRG.seed <- gen_seeds(1L))
+#' seeds <- gen_seeds(Design, CMRG.seed=CMRG.seed)
+#' str(seeds)
 #'
 #' ### On cluster submission, the active array ID is obtained via getArrayID(),
 #' ###   and therefore should be used in real SLURM submissions
@@ -111,8 +123,8 @@
 #' Design5
 #'
 #' # generate unique seed for each condition to be distributed
-#' set.seed(54321)
-#' seeds <- gen_seeds(Design5)
+#' (CMRG.seed <- gen_seeds(1L))
+#' seeds <- gen_seeds(Design5, CMRG.seed=CMRG.seed)
 #'
 #' # arrayID <- getArrayID(type = 'slurm')
 #' arrayID <- 1L
@@ -122,6 +134,7 @@
 #'                    generate=Generate, analyse=Analyse,
 #'                    summarise=Summarise, seeds=seeds,
 #'                    filename='mylongsim', arrayID=arrayID)
+#'
 #' res <- readRDS('mylongsim-1.rds')
 #' res
 #'
@@ -132,7 +145,7 @@
 #' # emulate the arrayID distribution, storing all results in a 'sim/' folder
 #' dir.create('sim/')
 #'
-#' # Emulate distribution to nrow(Design5) = 15 independent job arrays.
+#' # Emulate distribution to nrow(Design5) = 15 independent job arrays
 #' sapply(1:nrow(Design5), \(arrayID)
 #'        runArraySimulation(design=Design5, replications=10,
 #'              generate=Generate, analyse=Analyse,
@@ -161,8 +174,12 @@ runArraySimulation <- function(design, ..., replications, arrayID,
                                seeds, filename,
                                filename_suffix = paste0("-", arrayID),
                                save_details = list()){
+    rngkind <- RNGkind()
+    RNGkind("L'Ecuyer-CMRG")
+    on.exit(RNGkind(rngkind[1L]))
     stopifnot(!missing(design))
     stopifnot(!missing(seeds))
+    stopifnot(is.list(seeds))
     stopifnot(!missing(filename))
     stopifnot(nrow(design) > 1L)
     stopifnot(!missing(replications))

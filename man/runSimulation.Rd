@@ -273,13 +273,17 @@ primarily useful for debugging purposes.
 
 \item{CI}{bootstrap confidence interval level (default is 95\%)}
 
-\item{seed}{a vector of integers to be used for reproducibility.
+\item{seed}{a vector or list of integers to be used for reproducibility.
 The length of the vector must be equal the number of rows in \code{design}.
-This argument calls \code{\link{set.seed}} or
-\code{\link{clusterSetRNGStream}} for each condition, respectively,
-but will not be run when \code{MPI = TRUE}.
-Default randomly generates seeds within the range 1 to 2147483647 for each condition
-via \code{link{gen_seeds}}}
+If the input is a vector then \code{\link{set.seed}} or
+\code{\link{clusterSetRNGStream}} for each condition will be called, respectively,
+but will not be run when \code{MPI = TRUE}. If a list is provided then these
+numbers must have been generated from \code{\link{gen_seeds}} with the argument
+\code{CMRG.seed} used to specify the initial. The list approach ensures random number
+generation independence across conditions and replications, while the vector input
+ensures independence within the replications per conditions but not necessarily
+across conditions. Default randomly generates seeds within the
+range 1 to 2147483647 for each condition via \code{link{gen_seeds}}}
 
 \item{boot_method}{method for performing non-parametric bootstrap confidence intervals
 for the respective meta-statistics computed by the \code{Summarise} function.

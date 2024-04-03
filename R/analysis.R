@@ -9,7 +9,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
     if(useFuture){
-        if(!is.null(seed)) set.seed(seed[condition$ID])
+        if(!is.null(seed)) set_seed(seed[condition$ID])
         iters <- 1L:replications
         p <- progressr::progressor(along = iters)
         results <- try(future.apply::future_lapply(iters,
@@ -28,7 +28,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                                    p=p, future.seed=TRUE, allow_gen_errors=allow_gen_errors),
                        silent=TRUE)
     } else if(is.null(cl)){
-        if(!is.null(seed)) set.seed(seed[condition$ID])
+        if(!is.null(seed)) set_seed(seed[condition$ID])
         results <- if(progress){
             try(pbapply::pblapply(1L:replications, mainsim, condition=condition,
                    generate=Functions$generate,
@@ -123,7 +123,6 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     if(summarise_asis || store_results){
         tabled_results <- toTabledResults(results)
         if(save_results){
-            browser()
             tmp <- ifelse(is.null(save_results_filename), 'results-row', save_results_filename)
             tmpfilename <- paste0(save_results_dirname,
                                   sprintf('/%s', tmp), ID, '.rds')
@@ -154,7 +153,6 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     obs_reps <- length(results)
     results <- stackResults(results)
     if(save_results){
-        browser()
         tmp <- ifelse(is.null(save_results_filename), 'results-row', save_results_filename)
         tmpfilename <- paste0(save_results_dirname,
                               sprintf('/%s', tmp), ID, '.rds')
