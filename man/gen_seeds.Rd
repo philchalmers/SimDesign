@@ -4,18 +4,14 @@
 \alias{gen_seeds}
 \title{Generate random seeds}
 \usage{
-gen_seeds(design, nsets = 1L, CMRG.seed = NULL)
+gen_seeds(design = 1L, iseed = NULL)
 }
 \arguments{
 \item{design}{design matrix that requires a unique seed per condition, or
-a number indicating the number of seeds to generate}
+a number indicating the number of seeds to generate. Default generates one
+number}
 
-\item{nsets}{if separating the simulation across independent nodes manually
-then the number of independent sets can be specified to generate a matrix
-of seeds. This will return a matrix object with \code{nsets} columns to
-be indexed column-wise for each manual seed specification}
-
-\item{CMRG.seed}{the initial \code{set.seed} number used to generate a sequence
+\item{iseed}{the initial \code{set.seed} number used to generate a sequence
 of independent seeds according to the L'Ecuyer-CMRG (2002) method. This
 is recommended whenever quality random number generation is required
 across similar (if not identical) simulation jobs
@@ -23,12 +19,13 @@ across similar (if not identical) simulation jobs
 }
 \description{
 Generate seeds to be passed to \code{runSimulation}'s \code{seed} input. Values
-are sampled from 1 to 2147483647.
+are sampled from 1 to 2147483647, or are generated using L'Ecuyer-CMRG's (2002)
+method (returning a list).
 }
 \examples{
 
-# generate 1 seed
-gen_seeds(1)
+# generate 1 seed (default)
+gen_seeds()
 
 # generate 5 unique seeds
 gen_seeds(5)
@@ -39,14 +36,20 @@ design <- createDesign(factorA=c(1,2,3),
 seeds <- gen_seeds(design)
 seeds
 
-# two distinct sets of seeds
-multi_seeds <- gen_seeds(design, nsets=2)
-multi_seeds  # index column-wise for runSimulation(..., seed)
-
 # generate seeds for runArraySimulation()
-(generating_seed <- gen_seeds(1L))
-seed_list <- gen_seeds(design, CMRG=generating_seed)
+(iseed <- gen_seeds())  # initial seed
+seed_list <- gen_seeds(design, iseed=iseed)
 seed_list
+
+# expand number of unique seeds given iseed (e.g., in case more replications
+# are required at a later date)
+seed_list_tmp <- gen_seeds(nrow(design)*2, iseed=iseed)
+str(seed_list_tmp) # first 9 seeds identical to seed_list
+
+# omit first 9 seed to obtain continuation of sequence proper
+seed_list2 <- seed_list_tmp[-(1:9)]
+str(seed_list)
+str(seed_list2)
 
 }
 \author{

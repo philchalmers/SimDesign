@@ -31,7 +31,7 @@ for further details}
 
 \item{seeds}{list of seeds to use from the L'Ecuyer-CMRG method. This
 is constructed from \code{\link{gen_seeds}} with
-\code{type = "L'Ecuyer-CMRG"}. The length of this input must equal the
+\code{iseed} argument. The length of this input list must equal the
 number of rows in \code{design}}
 
 \item{filename}{file name to save simulation files to (does not need to
@@ -63,8 +63,9 @@ array ID submissions (cf. \code{\link{runSimulation}}'s \code{parallel}
 approach, which uses this method to distribute random seeds within
 each isolated condition rather than between all conditions). As such, this
 function requires a \code{list} of seeds to be generated using
-\code{\link{gen_seeds}} with the \code{type = "L'Ecuyer-CMRG"} method to ensure
-that each job is analyzing a high-quality set of random numbers.
+\code{\link{gen_seeds}} with the \code{iseed} input to ensure
+that each job is analyzing a high-quality set of random numbers via
+L'Ecuyer-CMRG's (2002) method.
 
 Additionally, for timed simulations on HPC clusters it is also recommended to pass a
 \code{control = list(max_time = number_of_hours)} to avoid discarding
@@ -96,8 +97,8 @@ Summarise <- function(condition, results, fixed_objects = NULL){
 \dontrun{
 
 # generate unique seed for each condition to be distributed
-(CMRG.seed <- gen_seeds(1L))
-seeds <- gen_seeds(Design, CMRG.seed=CMRG.seed)
+(iseed <- gen_seeds())
+seeds <- gen_seeds(Design, iseed=iseed)
 str(seeds)
 
 ### On cluster submission, the active array ID is obtained via getArrayID(),
@@ -124,8 +125,8 @@ Design5 <- expandDesign(Design, 5)
 Design5
 
 # generate unique seed for each condition to be distributed
-(CMRG.seed <- gen_seeds(1L))
-seeds <- gen_seeds(Design5, CMRG.seed=CMRG.seed)
+(iseed <- gen_seeds())
+seeds <- gen_seeds(Design5, iseed=iseed)
 
 # arrayID <- getArrayID(type = 'slurm')
 arrayID <- 1L
@@ -154,7 +155,7 @@ sapply(1:nrow(Design5), \(arrayID)
              filename='sim/condition',   # saved to 'sim/condition-#.rds'
              control = list(max_time = 4))) |> invisible()
 
-#  If necessary, conditions above would manually terminate before
+#  If necessary, conditions above will manually terminate before
 #  4 hours, returning any successfully completed results before the HPC
 #  session times out (provided shell specified more than 4 hours)
 

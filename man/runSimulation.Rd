@@ -504,7 +504,8 @@ all the Monte Carlo replications for each respective design condition,
 \code{RAM_USED} amount of RAM that was in use at the time of completing
   each simulation condition,
 \code{COMPLETED} to indicate the date in which the given simulation condition completed,
-\code{SEED} for the integer values in the \code{seed} argument, and, if applicable,
+\code{SEED} for the integer values in the \code{seed} argument (if applicable; not
+relevant when L'Ecuyer-CMRG method used), and, if applicable,
 \code{ERRORS} and \code{WARNINGS} which contain counts for the number of error or warning
 messages that were caught (if no errors/warnings were observed these columns will be omitted).
 Note that to extract the specific error and warnings messages see
