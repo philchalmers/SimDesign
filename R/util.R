@@ -684,6 +684,7 @@ valid_results <- function(x)
 #' str(seed_list2)
 #'
 gen_seeds <- function(design = 1L, iseed = NULL){
+    if(missing(design)) design <- 1L
     if(is.numeric(design))
         design <- matrix(NA, nrow=design)
     if(is.null(iseed)){
