@@ -5,7 +5,8 @@
 - `runArraySimulation()` added to better support distributing array's of jobs
   on HPC clusters. Works best when combined with `expandDesign()` and the 
   improved `aggregate_simulations()` behaviour for more evenly distribution
-  replication budgets across independent jobs
+  replication budgets across independent jobs. An associated vignette file
+  has been added to the package to provide context and tutorial information
   
 - `getArrayID()` added to detect the array job ID (used 
   with `runArraySimulation(..., arrayID)`)
@@ -35,7 +36,8 @@
   final simulation object
   
 - Expose seed generation control per simulation condition via the 
-  function `gen_seeds()`
+  function `gen_seeds()`, which allows a list of seeds to be distributed to 
+  `runArraySimulation()` as well
 
 ## Changes in SimDesign 2.14
 

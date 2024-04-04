@@ -54,7 +54,9 @@ per independent row condition. This is mainly useful when distributing the
 jobs to HPC clusters where a job array number is available (e.g., via SLURM),
 where the simulation results must be saved to independent files as they
 complete. Use of \code{\link{expandDesign}} is useful for distributing replications
-to different jobs.
+to different jobs, while \code{\link{gen_seeds}} is required to ensure high-quality
+random number generation across the array submissions. See the associated
+vignette for a brief tutorial of this setup.
 }
 \details{
 Due to the nature of how the replication are split it is important that
