@@ -1,0 +1,149 @@
+---
+title: "Distributing jobs for high-performance computing (HPC) clusters"
+author: "Phil Chalmers"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_caption: false
+    number_sections: true 
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+vignette: >
+  %\VignetteIndexEntry{Parallel computing information}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r nomessages, echo = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  fig.height = 5,
+  fig.width = 5
+)
+options(digits=4)
+par(mar=c(3,3,1,1)+.1)
+```
+
+```{r include=FALSE}
+library(SimDesign)
+```
+
+
+# Introduction
+
+The purpose of this vignette is to demonstrate how to utilize `SimDesign` in the context of distributing many jobs across independent computing environment, such as high-performance computing (HPC) clusters, in a way that allows for reproducibility of a simulation, resubmission of jobs in case of incomplete collection of results within a specified HPC execution time budget, and to ensure that random number generation across the entire simulation (and subsequent resubmissions, if required) are properly manged throughout given the batch nature of the job submissions. As such, the following text and examples are primarily for managing larger simulations with thousands of replications over many `design` conditions, many of which will require non-trivial amount of computing resources to execute (hence, the need for super-computing resources and job schedulers like SLURM, TORQUE, MAUI, among others). 
+
+# Standard setup via `runSimulation()` for designing and debugging
+
+In general, the definition of the simulation follows the same structure as the usual workflow described in `runSimulation()`, with a few organizational exception. For example, suppose the following simulation was to be evaluated, though for time constraint reasons would not be possible to execute on a single computer (or a smaller network of computers), and therefore should be submitted to an HPC cluster. The following structure will still work on a HPC cluster, however the parallel distribution occurs across the replications on a per-condition basis.
+
+```{r}
+library(SimDesign)
+
+Design <- createDesign(N = c(10, 20, 30))
+
+Generate <- function(condition, fixed_objects = NULL) {
+    dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL) {
+    ret <- c(mean=mean(dat), median=median(dat)) # mean/median of sample data
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL){
+    colMeans(results)
+}
+
+```
+
+```{r eval=FALSE}
+
+# standard setup (not ideal for HPC clusters, though still would work)
+res <- runSimulation(design=Design, replications=10000, generate=Generate,
+                     analyse=Analyse, summarise=Summarise, parallel=TRUE, 
+                     filename='mysim')
+```
+
+In the standard `runSimulation(..., parallel=TRUE)` setup the 10,000 
+replications would be distributed to the available computing cores and evaluated
+independently across the three row conditions in the `design` object. However, for
+HPC computing it is better to distribute both replications *and* conditions simultaneously to
+unique computing nodes (termed a job **array**) rather than distributing just the
+replications on a condition by condition basis. As such, the above `design` object
+and `runSimulation()` structure does not readily lend itself to an optimal
+structure for the scheduler to distribute. Nevertheless, the 
+core components are still useful for initial code design, testing, and debugging, and therefore serve as a useful first step when writing suitable code prior to submitting to an HPC cluster. **Only after the vast majority of the bugs and coding logic have been work out should you consider moving on to the next step**.
+
+# Modifying the `runSimulation()` workflow for `runArraySimulation()`
+
+After defining and testing your simulation to ensure that it works as expected,
+it now comes the time to setup the components required for organizing the HPC
+cluster submission using the `runArraySimulation()` function. The job of this function
+is to extract any relevant information from a define `.sh` script that informs the 
+scheduler about how the `design` rows should be distributed (specifically, via an `arrayID`), while also controlling important information pertaining to `.Random.seeds` and other relevant information. The following presents the essential modifications required to move from a single `runSimulation()` distribution workflow to a batch created array submission approach via `runArraySimulation()`.
+
+## Expand the standard simulation `design` object for each array ID 
+
+Suppose instead that 5000 computing cores were independently available, though 
+the availability of these cores trickled in as a function of the schedulers 
+decided availability. In this case, a better strategy than that used by `runSimulation()` 
+would be to split up the `3 * 10000 = 30000` condition by replications jobs 
+evenly across the gradually available resources, where jobs are evaluated in parallel and at different times.
+
+Given the above specifications, you may decide that each of the 5000 computing nodes requested to the scheduler should evaluate exactly 100 replications each, equally balanced across the three original conditions (see `help(expandDesign)` for example where unequal balance is suspected in the computing times). 
+
+```{r}
+Design100 <- expandDesign(Design, repeat_conditions = 100L)
+Design100
+```
+As will be seen later, each row in this expanded object will be assigned to a unique computing array node, identified according to the array ID (see below). 
+
+In principle, this expanded `design100` object could also be passed as `runSimulation(design100, replications=100, ...)` to evaluate each of the repeated conditions, where each row is now replicated only 100 times; however, there is now an issue with respect to the random seed management in that use of functions such as `set.seed()` are no longer ideal. 
+
+## Construct proper random seeds to ensure quality random number generation
+
+Although `set.seed()` is often used for replication in simulation experiments, repeated use of `set.seed()` does not itself guarantee high-quality random numbers between different uses. For example,
+
+```{r}
+set.seed(0)
+x <- runif(100)
+set.seed(1)
+y <- runif(100)
+
+plot(x, y)           ## seemingly independent
+plot(x[-1], y[-100]) ## subsets perfectly correlated
+```
+
+This issue is less of a problem in the standard `runSimulation()`approach as within each design condition the quality of the random numbers is high, and any potentially repeated number sequences across the simulation simulation conditions are unlikely to affect the quality of the simulation results (the conditions themselves typically generate numbers in different ways due to varying several factors, such as sample sizes, variance conditions, fitted models, number of variables, etc). However, in the `expandDesign()` setup the likelihood of witnessing correlated random samples increases very quickly. As such, special care must be taken to ensure that proper seeds are distributed to each job array.
+
+Fortunately, seeds are easy to manage with the `gen_seeds()` function. Below is an example where a single initial seed is selected to begin the L'Ecuyer's (1999) approach. L'Ecuyer's approach constructs `.Random.seed` states that ensure independence across all replications and conditions defined, which are created by passing the initially defined seed `iseed`.
+
+```{r}
+# generate unique seed for each condition to be distributed
+(iseed <- gen_seeds())
+seeds <- gen_seeds(Design, iseed=iseed)
+str(seeds)
+```
+
+This seeds object will then be passed to `runArraySimulation(..., seeds)` for proper distribution across the `design` rows. 
+
+As will be seen in the FAQ section at the bottom, this setup also allows for generation of new `.Random.seed` elements if the need arises to submit a second (or third) set up simulation jobs to the HPC at a later time while ensuring that these newly submitted jobs also contain unique random sampling information that is independent of the initial submission(s).
+
+## Ensuring a proper .sh script with array ID information, and catch this ID with `getArrayID()`
+
+
+## Organize information for `runArraySimulation()`
+
+
+## Combine files and results via `aggregate_simulations()`
+
+
+
+# Extra information (FAQs)
+
+### My HPC cluster timeframe is limited
