@@ -95,8 +95,11 @@
 #'
 #' \dontrun{
 #'
+#' # define initial seed (do this only once to keep it constant!)
+#' # iseed <- gen_seeds()
+#' iseed <- 554184288
+#'
 #' # generate unique seed for each condition to be distributed
-#' (iseed <- gen_seeds())
 #' seeds <- gen_seeds(Design, iseed=iseed)
 #' str(seeds)
 #'
@@ -123,9 +126,11 @@
 #' Design5 <- expandDesign(Design, 5)
 #' Design5
 #'
+#' # iseed <- gen_seeds()
+#' iseed <- 554184288
+#'
 #' # generate unique seed for each condition to be distributed
-#' (iseed <- gen_seeds())
-#' seeds <- gen_seeds(Design5, iseed=iseed)
+#' seeds <- gen_seeds(Design, iseed=iseed)
 #'
 #' # arrayID <- getArrayID(type = 'slurm')
 #' arrayID <- 1L
@@ -187,7 +192,8 @@ runArraySimulation <- function(design, ..., replications, arrayID,
     if(length(replications) == 1L)
         replications <- rep(replications, nrow(design))
     stopifnot(length(replications) == nrow(design))
-    stopifnot(length(arrayID) == 1L && is.numeric(arrayID))
+    stopifnot("arrayID is not a single integer identifier"=
+                  length(arrayID) == 1L && is.numeric(arrayID) && !is.na(arrayID))
     stopifnot(arrayID %in% 1L:nrow(design))
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)

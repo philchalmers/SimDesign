@@ -20,7 +20,7 @@
 #'
 #' @param type an integer indicating the element from the result of
 #'   \code{\link{commandArgs}} to extract, or a \code{character} specifying the
-#'   the type of
+#'   the type of. Default is \code{'slurm'}
 #'
 #' @param trailingOnly logical value passed to \code{\link{commandArgs}}.
 #'   Only used when \code{type} is an integer
@@ -34,7 +34,7 @@
 #' \dontrun{
 #'
 #' # get slurm array ID
-#' arrayID <- getArrayID(type = 'slurm')
+#' arrayID <- getArrayID()
 #'
 #' # get ID based on first optional argument in shell specification
 #' arrayID <- getArrayID(type = 1)
@@ -44,7 +44,7 @@
 #'
 #' }
 #'
-getArrayID <- function(type, trailingOnly = TRUE){
+getArrayID <- function(type = 'slurm', trailingOnly = TRUE){
     stopifnot(length(type) == 1L)
     ret <- if(is.numeric(type)){
         args <- commandArgs(trailingOnly = trailingOnly)
