@@ -14,7 +14,10 @@ by utilizing a general generate-analyse-summarise strategy. The functions provid
 simulation issues such as re-simulating non-convergent results, support parallel
 back-end and MPI distributed computations, save and restore temporary files,
 aggregate results across independent nodes, and provide native support for debugging.
-The primary function for organizing the simulations is \code{\link{runSimulation}}.
+The primary function for organizing the simulations is \code{\link{runSimulation}}, while
+for array jobs submitting to HPC clusters (e.g., SLURM) see \code{\link{runArraySimulation}}
+and the associated package vignettes.
+
 For an in-depth tutorial of the package please refer to
 Chalmers and Adkins (2020; \doi{10.20982/tqmp.16.4.p248}).
 For an earlier didactic presentation of the package users can refer to Sigal and Chalmers

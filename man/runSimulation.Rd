@@ -529,15 +529,16 @@ with their associated \code{.Random.seed} states.
 For convenience, all functions available in the R work-space are exported across all nodes
 so that they are more easily accessible (however, other R objects are not, and therefore
 must be passed to the \code{fixed_objects} input to become available across nodes).
+}
+\details{
 For an in-depth tutorial of the package please refer to Chalmers and Adkins (2020;
 \doi{10.20982/tqmp.16.4.p248}).
 For an earlier didactic presentation of the package refer to Sigal and Chalmers
 (2016; \doi{10.1080/10691898.2016.1246953}). Finally, see the associated
 wiki on Github (\url{https://github.com/philchalmers/SimDesign/wiki})
 for tutorial material, examples, and applications of \code{SimDesign} to real-world
-simulation experiments.
-}
-\details{
+simulation experiments, as well as the various vignette files associated with the package.
+
 The strategy for organizing the Monte Carlo simulation work-flow is to
 
 \describe{
