@@ -138,7 +138,8 @@ createDesign <- function(..., subset, fractional = NULL,
 #' Repeat each design row the specified number of times. This is primarily used
 #' for cluster computing where jobs are distributed with batches of replications
 #' and later aggregated into a complete simulation object
-#' (see also \code{\link{aggregate_simulations}}).
+#' (see also \code{\link{aggregate_simulations}}). The keyword 'CONDITION' is
+#' included for tracking which row is associated with
 #'
 #' @param Design object created by \code{\link{createDesign}}
 #'
@@ -195,11 +196,15 @@ createDesign <- function(..., subset, fractional = NULL,
 expandDesign <- function(Design, repeat_conditions){
     stopifnot(!missing(Design))
     stopifnot(!missing(repeat_conditions))
+    if(any(colnames(Design) == 'CONDITION'))
+        stop('Design column names cannot include CONDITION. Please remove')
     if(length(repeat_conditions) == 1L)
         repeat_conditions <- rep(repeat_conditions, nrow(Design))
     stopifnot("length of repeat_rows must equal number of rows in final object"=
                   length(repeat_conditions) == nrow(Design))
-    ret <- Design[sort(rep(1L:nrow(Design), times=repeat_conditions)), ]
+    rep_vec <- rep(1L:nrow(Design), times=repeat_conditions)
+    ret <- Design[sort(rep_vec), ]
+    ret <- dplyr::mutate(ret, CONDITION=rep_vec, .before = 1L)
     rownames(ret) <- NULL
     ret
 }

@@ -27,7 +27,7 @@
 #' @importFrom graphics abline
 #' @importFrom R.utils withTimeout
 #' @importFrom pbapply pblapply pboptions
-#' @importFrom dplyr as_tibble bind_rows select
+#' @importFrom dplyr as_tibble bind_rows select mutate
 #' @importFrom future.apply future_lapply
 #' @importFrom progressr progressor
 #' @importFrom beepr beep

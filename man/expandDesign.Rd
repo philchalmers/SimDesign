@@ -30,7 +30,8 @@ a \code{tibble} or \code{data.frame} containing the simulation experiment
 Repeat each design row the specified number of times. This is primarily used
 for cluster computing where jobs are distributed with batches of replications
 and later aggregated into a complete simulation object
-(see also \code{\link{aggregate_simulations}}).
+(see also \code{\link{aggregate_simulations}}). The keyword 'CONDITION' is
+included for tracking which row is associated with
 }
 \examples{
 \dontrun{
