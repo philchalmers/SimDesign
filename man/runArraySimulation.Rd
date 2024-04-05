@@ -8,9 +8,9 @@ runArraySimulation(
   design,
   ...,
   replications,
-  arrayID,
   iseed,
   filename,
+  arrayID = getArrayID(),
   filename_suffix = paste0("-", arrayID),
   save_details = list()
 )
@@ -26,9 +26,6 @@ See \code{\link{runSimulation}} for further details}
 condition (i.e., each row in \code{design}). See \code{\link{runSimulation}}
 for further details}
 
-\item{arrayID}{array identifier from the scheduler. Must be a number between
-1 and \code{nrow(design)}}
-
 \item{iseed}{initial seed to be passed to \code{\link{gen_seeds}}'s argument
 of the same name, along with the supplied \code{arrayID}}
 
@@ -37,6 +34,11 @@ specify extension). However, the array ID will be appended to each
 \code{filename} (see \code{filename_suffix}). For example, if
 \code{filename = 'mysim'} then files stored will be \code{'mysim-1.rds'},
 \code{'mysim-2.rds'}, and so on for each row in \code{design}}
+
+\item{arrayID}{array identifier from the scheduler. Must be a number between
+1 and \code{nrow(design)}. If not specified then \code{\link{getArrayID}} will
+be called automatically, which assumes the environmental variables are available
+according the SLURM scheduler}
 
 \item{filename_suffix}{suffix to add to the \code{filename};
 default add '-' with the \code{arrayID}}

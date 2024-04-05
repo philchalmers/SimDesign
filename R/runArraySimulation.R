@@ -39,7 +39,9 @@
 #'   for further details
 #'
 #' @param arrayID array identifier from the scheduler. Must be a number between
-#'   1 and \code{nrow(design)}
+#'   1 and \code{nrow(design)}. If not specified then \code{\link{getArrayID}} will
+#'   be called automatically, which assumes the environmental variables are available
+#'   according the SLURM scheduler
 #'
 #' @param save_details optional list of extra file saving details.
 #'   See \code{\link{runSimulation}}
@@ -169,8 +171,8 @@
 #'
 #' }
 #'
-runArraySimulation <- function(design, ..., replications, arrayID,
-                               iseed, filename,
+runArraySimulation <- function(design, ..., replications,
+                               iseed, filename, arrayID = getArrayID(),
                                filename_suffix = paste0("-", arrayID),
                                save_details = list()){
     rngkind <- RNGkind()
