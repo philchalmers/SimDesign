@@ -139,7 +139,8 @@ createDesign <- function(..., subset, fractional = NULL,
 #' for cluster computing where jobs are distributed with batches of replications
 #' and later aggregated into a complete simulation object
 #' (see also \code{\link{aggregate_simulations}}). The keyword 'CONDITION' is
-#' included for tracking which row is associated with
+#' included for tracking which row is associated with which original simulation
+#' design condition.
 #'
 #' @param Design object created by \code{\link{createDesign}}
 #'
