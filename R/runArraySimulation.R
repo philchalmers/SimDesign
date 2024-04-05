@@ -16,10 +16,10 @@
 #' array ID submissions (cf. \code{\link{runSimulation}}'s \code{parallel}
 #' approach, which uses this method to distribute random seeds within
 #' each isolated condition rather than between all conditions). As such, this
-#' function requires a \code{list} of seeds to be generated using
-#' \code{\link{gen_seeds}} with the \code{iseed} input to ensure
-#' that each job is analyzing a high-quality set of random numbers via
-#' L'Ecuyer-CMRG's (2002) method.
+#' function requires the seeds to be generated using
+#' \code{\link{gen_seeds}} with the \code{iseed} and \code{arrayID}
+#' inputs to ensure that each job is analyzing a high-quality
+#' set of random numbers via L'Ecuyer-CMRG's (2002) method.
 #'
 #' Additionally, for timed simulations on HPC clusters it is also recommended to pass a
 #' \code{control = list(max_time = number_of_hours)} to avoid discarding
@@ -53,10 +53,8 @@
 #' @param filename_suffix suffix to add to the \code{filename};
 #'   default add '-' with the \code{arrayID}
 #'
-#' @param seeds list of seeds to use from the L'Ecuyer-CMRG method. This
-#'   is constructed from \code{\link{gen_seeds}} with
-#'   \code{iseed} argument. The length of this input list must equal the
-#'   number of rows in \code{design}
+#' @param iseed initial seed to be passed to \code{\link{gen_seeds}}'s argument
+#'   of the same name, along with the supplied \code{arrayID}
 #'
 #' @param ... additional arguments to be passed to \code{\link{runSimulation}}
 #'
@@ -101,10 +99,6 @@
 #' # iseed <- gen_seeds()
 #' iseed <- 554184288
 #'
-#' # generate unique seed for each condition to be distributed
-#' seeds <- gen_seeds(Design, iseed=iseed)
-#' str(seeds)
-#'
 #' ### On cluster submission, the active array ID is obtained via getArrayID(),
 #' ###   and therefore should be used in real SLURM submissions
 #' arrayID <- getArrayID(type = 'slurm')
@@ -116,7 +110,7 @@
 #' res <- runArraySimulation(design=Design, replications=50,
 #'                       generate=Generate, analyse=Analyse,
 #'                       summarise=Summarise, arrayID=arrayID,
-#'                       seeds=seeds, filename='mysim') # saved as 'mysim-1.rds'
+#'                       iseed=iseed, filename='mysim') # saved as 'mysim-1.rds'
 #' res
 #'
 #' dir()
@@ -131,16 +125,13 @@
 #' # iseed <- gen_seeds()
 #' iseed <- 554184288
 #'
-#' # generate unique seed for each condition to be distributed
-#' seeds <- gen_seeds(Design, iseed=iseed)
-#'
 #' # arrayID <- getArrayID(type = 'slurm')
 #' arrayID <- 1L
 #'
 #' # run the simulation (replications reduced per row, but same in total)
 #' runArraySimulation(design=Design5, replications=10,
 #'                    generate=Generate, analyse=Analyse,
-#'                    summarise=Summarise, seeds=seeds,
+#'                    summarise=Summarise, iseed=iseed,
 #'                    filename='mylongsim', arrayID=arrayID)
 #'
 #' res <- readRDS('mylongsim-1.rds')
@@ -157,7 +148,7 @@
 #' sapply(1:nrow(Design5), \(arrayID)
 #'        runArraySimulation(design=Design5, replications=10,
 #'              generate=Generate, analyse=Analyse,
-#'              summarise=Summarise, seeds=seeds, arrayID=arrayID,
+#'              summarise=Summarise, iseed=iseed, arrayID=arrayID,
 #'              filename='sim/condition',   # saved to 'sim/condition-#.rds'
 #'              control = list(max_time = 4))) |> invisible()
 #'
@@ -179,15 +170,14 @@
 #' }
 #'
 runArraySimulation <- function(design, ..., replications, arrayID,
-                               seeds, filename,
+                               iseed, filename,
                                filename_suffix = paste0("-", arrayID),
                                save_details = list()){
     rngkind <- RNGkind()
     RNGkind("L'Ecuyer-CMRG")
     on.exit(RNGkind(rngkind[1L]))
     stopifnot(!missing(design))
-    stopifnot(!missing(seeds))
-    stopifnot(is.list(seeds))
+    stopifnot(!missing(iseed))
     stopifnot(!missing(filename))
     stopifnot(nrow(design) > 1L)
     stopifnot(!missing(replications))
@@ -200,10 +190,11 @@ runArraySimulation <- function(design, ..., replications, arrayID,
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)
     save_details$arrayID <- arrayID
+    seed <- gen_seeds(design, iseed=iseed, arrayID=arrayID)
 
     ret <- runSimulation(design=design[arrayID, , drop=FALSE],
                          replications=replications[arrayID],
-                         filename=filename, seed=seeds[arrayID],
+                         filename=filename, seed=seed,
                          verbose=FALSE, save_details=save_details, ...)
     invisible(ret)
 }

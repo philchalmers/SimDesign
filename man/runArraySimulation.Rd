@@ -9,7 +9,7 @@ runArraySimulation(
   ...,
   replications,
   arrayID,
-  seeds,
+  iseed,
   filename,
   filename_suffix = paste0("-", arrayID),
   save_details = list()
@@ -29,10 +29,8 @@ for further details}
 \item{arrayID}{array identifier from the scheduler. Must be a number between
 1 and \code{nrow(design)}}
 
-\item{seeds}{list of seeds to use from the L'Ecuyer-CMRG method. This
-is constructed from \code{\link{gen_seeds}} with
-\code{iseed} argument. The length of this input list must equal the
-number of rows in \code{design}}
+\item{iseed}{initial seed to be passed to \code{\link{gen_seeds}}'s argument
+of the same name, along with the supplied \code{arrayID}}
 
 \item{filename}{file name to save simulation files to (does not need to
 specify extension). However, the array ID will be appended to each
@@ -64,10 +62,10 @@ the L'Ecuyer-CMRG (2002) method of random seeds is used across all
 array ID submissions (cf. \code{\link{runSimulation}}'s \code{parallel}
 approach, which uses this method to distribute random seeds within
 each isolated condition rather than between all conditions). As such, this
-function requires a \code{list} of seeds to be generated using
-\code{\link{gen_seeds}} with the \code{iseed} input to ensure
-that each job is analyzing a high-quality set of random numbers via
-L'Ecuyer-CMRG's (2002) method.
+function requires the seeds to be generated using
+\code{\link{gen_seeds}} with the \code{iseed} and \code{arrayID}
+inputs to ensure that each job is analyzing a high-quality
+set of random numbers via L'Ecuyer-CMRG's (2002) method.
 
 Additionally, for timed simulations on HPC clusters it is also recommended to pass a
 \code{control = list(max_time = number_of_hours)} to avoid discarding
@@ -102,10 +100,6 @@ Summarise <- function(condition, results, fixed_objects = NULL){
 # iseed <- gen_seeds()
 iseed <- 554184288
 
-# generate unique seed for each condition to be distributed
-seeds <- gen_seeds(Design, iseed=iseed)
-str(seeds)
-
 ### On cluster submission, the active array ID is obtained via getArrayID(),
 ###   and therefore should be used in real SLURM submissions
 arrayID <- getArrayID(type = 'slurm')
@@ -117,7 +111,7 @@ arrayID <- 1L
 res <- runArraySimulation(design=Design, replications=50,
                       generate=Generate, analyse=Analyse,
                       summarise=Summarise, arrayID=arrayID,
-                      seeds=seeds, filename='mysim') # saved as 'mysim-1.rds'
+                      iseed=iseed, filename='mysim') # saved as 'mysim-1.rds'
 res
 
 dir()
@@ -132,16 +126,13 @@ Design5
 # iseed <- gen_seeds()
 iseed <- 554184288
 
-# generate unique seed for each condition to be distributed
-seeds <- gen_seeds(Design, iseed=iseed)
-
 # arrayID <- getArrayID(type = 'slurm')
 arrayID <- 1L
 
 # run the simulation (replications reduced per row, but same in total)
 runArraySimulation(design=Design5, replications=10,
                    generate=Generate, analyse=Analyse,
-                   summarise=Summarise, seeds=seeds,
+                   summarise=Summarise, iseed=iseed,
                    filename='mylongsim', arrayID=arrayID)
 
 res <- readRDS('mylongsim-1.rds')
@@ -158,7 +149,7 @@ dir.create('sim/')
 sapply(1:nrow(Design5), \(arrayID)
        runArraySimulation(design=Design5, replications=10,
              generate=Generate, analyse=Analyse,
-             summarise=Summarise, seeds=seeds, arrayID=arrayID,
+             summarise=Summarise, iseed=iseed, arrayID=arrayID,
              filename='sim/condition',   # saved to 'sim/condition-#.rds'
              control = list(max_time = 4))) |> invisible()
 

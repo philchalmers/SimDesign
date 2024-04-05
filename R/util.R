@@ -362,7 +362,11 @@ lapply_timer <- function(X, FUN, max_time, ...){
             }
         }
     } else {
-        ret <- lapply(X=X, FUN=FUN, ...)
+        ret <- vector('list', length(X))
+        for(i in 1L:length(ret)){
+            val <- FUN(...)
+            ret[[i]] <- val
+        }
     }
     ret
 }
@@ -638,7 +642,8 @@ valid_results <- function(x)
 #'
 #' Generate seeds to be passed to \code{runSimulation}'s \code{seed} input. Values
 #' are sampled from 1 to 2147483647, or are generated using L'Ecuyer-CMRG's (2002)
-#' method (returning a list).
+#' method (returning either a list if \code{arrayID} is omitted, or the specific
+#' row value from this list if \code{arrayID} is included).
 #'
 #' @param design design matrix that requires a unique seed per condition, or
 #'   a number indicating the number of seeds to generate. Default generates one
@@ -648,7 +653,15 @@ valid_results <- function(x)
 #'   of independent seeds according to the L'Ecuyer-CMRG (2002) method. This
 #'   is recommended whenever quality random number generation is required
 #'   across similar (if not identical) simulation jobs
-#'   (e.g., see \code{\link{runArraySimulation}})
+#'   (e.g., see \code{\link{runArraySimulation}}). If \code{arrayID} is not
+#'   specified then this will return a list of the associated seed for the
+#'   full \code{design}
+#'
+#' @param arrayID (optional) single integer input corresponding to the specific
+#'   row in the \code{design} object when using the \code{iseed} input.
+#'   This is used in functions such as \code{\link{runArraySimulation}}
+#'   to pull out the specific seed rather than manage a complete list, and
+#'   is therefore more memory efficient
 #'
 #' @export
 #'
@@ -678,12 +691,11 @@ valid_results <- function(x)
 #' seed_list_tmp <- gen_seeds(nrow(design)*2, iseed=iseed)
 #' str(seed_list_tmp) # first 9 seeds identical to seed_list
 #'
-#' # omit first 9 seed to obtain continuation of sequence proper
-#' seed_list2 <- seed_list_tmp[-(1:9)]
-#' str(seed_list)
-#' str(seed_list2)
+#' # more usefully for HPC, extract only the seed associated with an arrayID
+#' arraySeed.15 <- gen_seeds(nrow(design)*2, iseed=iseed, arrayID=15)
+#' arraySeed.15
 #'
-gen_seeds <- function(design = 1L, iseed = NULL){
+gen_seeds <- function(design = 1L, iseed = NULL, arrayID = NULL){
     if(missing(design)) design <- 1L
     if(is.numeric(design))
         design <- matrix(NA, nrow=design)
@@ -693,11 +705,27 @@ gen_seeds <- function(design = 1L, iseed = NULL){
         rngkind <- RNGkind()
         RNGkind("L'Ecuyer-CMRG")
         on.exit({RNGkind(rngkind[1L]); set.seed(NULL)})
-        seed <- vector('list', nrow(design))
+        seed <- if(!is.null(arrayID)) vector('list', 1L)
+            else vector('list', nrow(design))
         set.seed(iseed)
         seed[[1L]] <- .Random.seed
-        for (i in 2L:length(seed))
-            seed[[i]] <- nextRNGStream(seed[[i - 1L]])
+        if(!is.null(arrayID)){
+            stopifnot(is.numeric(arrayID) && length(arrayID) == 1L)
+            if(arrayID < 1L || arrayID > nrow(design))
+                stop('arrayID not associated with valid row in design')
+            seed.i <- seed[[1L]]
+            if(arrayID > 1L){
+                for (i in 2L:arrayID)
+                    seed.i <- nextRNGStream(seed.i)
+            }
+            seed[[1L]] <- seed.i
+            attr(seed, 'arrayID') <- arrayID
+        } else {
+            if(length(seed) > 1L){
+                for (i in 2L:length(seed))
+                    seed[[i]] <- nextRNGStream(seed[[i - 1L]])
+            }
+        }
         attr(seed, 'iseed') <- iseed
     }
     seed
