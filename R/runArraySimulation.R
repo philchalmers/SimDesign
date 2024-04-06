@@ -175,12 +175,17 @@ runArraySimulation <- function(design, ..., replications,
                                iseed, filename, arrayID = getArrayID(),
                                filename_suffix = paste0("-", arrayID),
                                save_details = list()){
+    dots <- list(...)
+    if(!is.null(dots$save_results) && isTRUE(dots$save_results))
+        stop('save_results not supported for array jobs. Please use store_results only')
+    if(!is.null(dots$save_seeds) && isTRUE(dots$save_seeds))
+        stop('save_seeds not supported for array jobs')
     rngkind <- RNGkind()
     RNGkind("L'Ecuyer-CMRG")
     on.exit(RNGkind(rngkind[1L]))
     stopifnot(!missing(design))
     if(is.null(attr(design, 'condition')))
-        is.null(attr(design, 'condition')) <- 1L:nrow(design)
+        attr(design, 'condition') <- 1L:nrow(design)
     stopifnot(!missing(iseed))
     stopifnot(!missing(filename))
     stopifnot(nrow(design) > 1L)
@@ -200,5 +205,12 @@ runArraySimulation <- function(design, ..., replications,
                          replications=replications[arrayID],
                          filename=filename, seed=seed,
                          verbose=FALSE, save_details=save_details, ...)
+    if(is.null(dots$store_results) ||
+       (!is.null(dots$store_results) && isTRUE(dots$store_results))){
+        results <- SimExtract(ret, 'results')
+        results <- cbind(arrayID=arrayID,
+                         replication=1L:nrow(results), results)
+        attr(ret, "extra_info")$stored_results <- results
+    }
     invisible(ret)
 }
