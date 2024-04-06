@@ -44,9 +44,8 @@ according the SLURM scheduler}
 \item{filename_suffix}{suffix to add to the \code{filename};
 default add '-' with the \code{arrayID}}
 
-\item{addArrayInfo}{logical; should the array ID, original design row number,
-and associated replication number be added the
-\code{SimExtract(..., what='results')} output?}
+\item{addArrayInfo}{logical; should the array ID and original design row number
+be added to the \code{SimExtract(..., what='results')} output?}
 
 \item{save_details}{optional list of extra file saving details.
 See \code{\link{runSimulation}}}
@@ -169,12 +168,12 @@ sapply(1:nrow(Design5), \(arrayID)
 # list saved files
 dir('sim/')
 
-condition14 <- readRDS('sim/condition-14.rds')
+setwd('sim')
+condition14 <- readRDS('condition-14.rds')
 condition14
 SimExtract(condition14, 'results')
 
 # aggregate simulation results into single file
-setwd('sim')
 final <- aggregate_simulations(files=dir())
 final
 

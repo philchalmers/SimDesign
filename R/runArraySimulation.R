@@ -58,9 +58,8 @@
 #' @param iseed initial seed to be passed to \code{\link{gen_seeds}}'s argument
 #'   of the same name, along with the supplied \code{arrayID}
 #'
-#' @param addArrayInfo logical; should the array ID, original design row number,
-#'  and associated replication number be added the
-#'  \code{SimExtract(..., what='results')} output?
+#' @param addArrayInfo logical; should the array ID and original design row number
+#'   be added to the \code{SimExtract(..., what='results')} output?
 #'
 #' @param ... additional arguments to be passed to \code{\link{runSimulation}}
 #'
@@ -167,12 +166,12 @@
 #' # list saved files
 #' dir('sim/')
 #'
-#' condition14 <- readRDS('sim/condition-14.rds')
+#' setwd('sim')
+#' condition14 <- readRDS('condition-14.rds')
 #' condition14
 #' SimExtract(condition14, 'results')
 #'
 #' # aggregate simulation results into single file
-#' setwd('sim')
 #' final <- aggregate_simulations(files=dir())
 #' final
 #'
@@ -222,10 +221,8 @@ runArraySimulation <- function(design, ..., replications,
        (!is.null(dots$store_results) && isTRUE(dots$store_results)))){
         results <- SimExtract(ret, 'results')
         condition <- attr(design, 'condition')
-        results <- dplyr::mutate(results,
-                                 arrayID=arrayID,
-                                 condition=condition[arrayID],
-                                 replication=1L:nrow(results), .before=1L)
+        results <- dplyr::mutate(results, arrayID=arrayID, .before=1L)
+        results <- dplyr::mutate(results, condition=condition[arrayID], .before=1L)
         attr(ret, "extra_info")$stored_results <- results
         saveRDS(ret, paste0(filename, '.rds'))
     }

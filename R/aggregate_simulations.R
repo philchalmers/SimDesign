@@ -251,10 +251,11 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
             }
             ret$SIM_TIME <- ret$SIM_TIME + readin[[i]]$SIM_TIME
             ret[ ,pick] <- ret[ ,pick] + weights[i] * readin[[i]][ ,pick]
-            if(has_stored_results & i > 1L)
+            if(has_stored_results & i > 1L){
                 attr(ret, 'extra_info')$stored_results <-
                 rbind(attr(ret, 'extra_info')$stored_results,
                       attr(readin[[i]], 'extra_info')$stored_results)
+            }
         }
         if(has_stored_results)
             results <- attr(ret, 'extra_info')$stored_results
@@ -265,10 +266,13 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
             attr(out, 'extra_info') <- list(stored_results=results)
         full_out[[j]] <- out
     }
-    out <- if(length(unique.set.index) == 1L){
-        full_out[[1L]]
+    if(length(unique.set.index) == 1L){
+        out <- full_out[[1L]]
     } else {
-        do.call(rbind, full_out)
+        out <- do.call(rbind, full_out)
+        if(has_stored_results)
+            attr(out, 'extra_info')$stored_results <- do.call(rbind,
+                            lapply(full_out, \(x) attr(x, 'extra_info')$stored_results))
     }
     if(check.only){
         if(is.null(target.reps)) target.reps <- max(out$REPLICATIONS)
