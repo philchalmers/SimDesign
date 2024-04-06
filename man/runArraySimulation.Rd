@@ -12,6 +12,7 @@ runArraySimulation(
   filename,
   arrayID = getArrayID(),
   filename_suffix = paste0("-", arrayID),
+  addArrayInfo = TRUE,
   save_details = list()
 )
 }
@@ -42,6 +43,10 @@ according the SLURM scheduler}
 
 \item{filename_suffix}{suffix to add to the \code{filename};
 default add '-' with the \code{arrayID}}
+
+\item{addArrayInfo}{logical; should the array ID, original design row number,
+and associated replication number be added the
+\code{SimExtract(..., what='results')} output?}
 
 \item{save_details}{optional list of extra file saving details.
 See \code{\link{runSimulation}}}
@@ -115,6 +120,7 @@ res <- runArraySimulation(design=Design, replications=50,
                       summarise=Summarise, arrayID=arrayID,
                       iseed=iseed, filename='mysim') # saved as 'mysim-1.rds'
 res
+SimExtract(res, what='results') # condition and replication count stored
 
 dir()
 SimClean('mysim-1.rds')
@@ -129,7 +135,7 @@ Design5
 iseed <- 554184288
 
 # arrayID <- getArrayID(type = 'slurm')
-arrayID <- 1L
+arrayID <- 14L
 
 # run the simulation (replications reduced per row, but same in total)
 runArraySimulation(design=Design5, replications=10,
@@ -137,10 +143,11 @@ runArraySimulation(design=Design5, replications=10,
                    summarise=Summarise, iseed=iseed,
                    filename='mylongsim', arrayID=arrayID)
 
-res <- readRDS('mylongsim-1.rds')
+res <- readRDS('mylongsim-14.rds')
 res
+SimExtract(res, what='results') # condition and replication count stored
 
-SimClean('mylongsim-1.rds')
+SimClean('mylongsim-14.rds')
 
 
 ###
@@ -162,10 +169,16 @@ sapply(1:nrow(Design5), \(arrayID)
 # list saved files
 dir('sim/')
 
+condition14 <- readRDS('sim/condition-14.rds')
+condition14
+SimExtract(condition14, 'results')
+
 # aggregate simulation results into single file
 setwd('sim')
-result <- aggregate_simulations(files=dir())
-result
+final <- aggregate_simulations(files=dir())
+final
+
+SimExtract(final, 'results') |> View()
 
 setwd('..')
 SimClean(dirs='sim/')

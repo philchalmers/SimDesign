@@ -58,6 +58,10 @@
 #' @param iseed initial seed to be passed to \code{\link{gen_seeds}}'s argument
 #'   of the same name, along with the supplied \code{arrayID}
 #'
+#' @param addArrayInfo logical; should the array ID, original design row number,
+#'  and associated replication number be added the
+#'  \code{SimExtract(..., what='results')} output?
+#'
 #' @param ... additional arguments to be passed to \code{\link{runSimulation}}
 #'
 #' @export
@@ -114,6 +118,7 @@
 #'                       summarise=Summarise, arrayID=arrayID,
 #'                       iseed=iseed, filename='mysim') # saved as 'mysim-1.rds'
 #' res
+#' SimExtract(res, what='results') # condition and replication count stored
 #'
 #' dir()
 #' SimClean('mysim-1.rds')
@@ -128,7 +133,7 @@
 #' iseed <- 554184288
 #'
 #' # arrayID <- getArrayID(type = 'slurm')
-#' arrayID <- 1L
+#' arrayID <- 14L
 #'
 #' # run the simulation (replications reduced per row, but same in total)
 #' runArraySimulation(design=Design5, replications=10,
@@ -136,10 +141,11 @@
 #'                    summarise=Summarise, iseed=iseed,
 #'                    filename='mylongsim', arrayID=arrayID)
 #'
-#' res <- readRDS('mylongsim-1.rds')
+#' res <- readRDS('mylongsim-14.rds')
 #' res
+#' SimExtract(res, what='results') # condition and replication count stored
 #'
-#' SimClean('mylongsim-1.rds')
+#' SimClean('mylongsim-14.rds')
 #'
 #'
 #' ###
@@ -161,10 +167,16 @@
 #' # list saved files
 #' dir('sim/')
 #'
+#' condition14 <- readRDS('sim/condition-14.rds')
+#' condition14
+#' SimExtract(condition14, 'results')
+#'
 #' # aggregate simulation results into single file
 #' setwd('sim')
-#' result <- aggregate_simulations(files=dir())
-#' result
+#' final <- aggregate_simulations(files=dir())
+#' final
+#'
+#' SimExtract(final, 'results') |> View()
 #'
 #' setwd('..')
 #' SimClean(dirs='sim/')
@@ -174,6 +186,7 @@
 runArraySimulation <- function(design, ..., replications,
                                iseed, filename, arrayID = getArrayID(),
                                filename_suffix = paste0("-", arrayID),
+                               addArrayInfo = TRUE,
                                save_details = list()){
     dots <- list(...)
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))
@@ -205,12 +218,16 @@ runArraySimulation <- function(design, ..., replications,
                          replications=replications[arrayID],
                          filename=filename, seed=seed,
                          verbose=FALSE, save_details=save_details, ...)
-    if(is.null(dots$store_results) ||
-       (!is.null(dots$store_results) && isTRUE(dots$store_results))){
+    if(addArrayInfo && (is.null(dots$store_results) ||
+       (!is.null(dots$store_results) && isTRUE(dots$store_results)))){
         results <- SimExtract(ret, 'results')
-        results <- cbind(arrayID=arrayID,
-                         replication=1L:nrow(results), results)
+        condition <- attr(design, 'condition')
+        results <- dplyr::mutate(results,
+                                 arrayID=arrayID,
+                                 condition=condition[arrayID],
+                                 replication=1L:nrow(results), .before=1L)
         attr(ret, "extra_info")$stored_results <- results
+        saveRDS(ret, paste0(filename, '.rds'))
     }
     invisible(ret)
 }
