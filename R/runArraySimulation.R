@@ -179,6 +179,8 @@ runArraySimulation <- function(design, ..., replications,
     RNGkind("L'Ecuyer-CMRG")
     on.exit(RNGkind(rngkind[1L]))
     stopifnot(!missing(design))
+    if(is.null(attr(design, 'condition')))
+        is.null(attr(design, 'condition')) <- 1L:nrow(design)
     stopifnot(!missing(iseed))
     stopifnot(!missing(filename))
     stopifnot(nrow(design) > 1L)
