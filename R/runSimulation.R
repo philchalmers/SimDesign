@@ -1154,6 +1154,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     }
     start <- 1L; end <- nrow(design)
     if(!is.null(load_seed)){
+        if(length(load_seed) == 7L){
+            rngkind <- RNGkind()
+            RNGkind("L'Ecuyer-CMRG")
+            on.exit(RNGkind(rngkind[1L]), add = TRUE)
+        }
         save <- save_seeds <- parallel <- MPI <- useFuture <- FALSE
         replications <- rep(1L, nrow(design))
         if(is.character(load_seed)){
