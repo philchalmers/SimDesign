@@ -194,10 +194,20 @@ set.seed(1234)
 ```{r}
 res <- runSimulation(Design, replications = 1000, generate=Generate, 
                          analyse=Analyse, summarise=Summarise)
+
+# Final simulation object
 res
 ```
 
-As can be seen from the printed results, each result from the `Summarise()` function has been paired with their
+If `runSimulation(..., store_results = TRUE)` were used, which is the current default in the package if RAM is not an issue, then the complete stored results can be viewed using
+```{r}
+# Extract complete set of stored results
+results <- SimResults(res)
+results
+```
+
+
+As can be seen from the printed results from the `res` object, each result from the `Summarise()` function has been paired with their
 respective condition, meta-statistics have been properly named, and three additional columns have been appended
 to the results: `REPLICATIONS`, which indicates how many time the conditions were performed, `SIM_TIME`, indicating
 the time (in seconds) it took to completely finish the respective conditions, and `SEED`, which indicates the random seeds used by `SimDesign` for each condition (for reproducibility). A call to `View()` in the 

@@ -88,8 +88,11 @@
 #' # Each condition repeated four times (hence, replications
 #' # should be set to desired.reps/4)
 #' Design <- createDesign(N  = c(30, 60),
-#'                        mu = c(0,5),
-#'                        repeat_conditions = 4L)
+#'                        mu = c(0,5))
+#' Design
+#'
+#' Design4 <- expandDesign(Design, 4)
+#' Design4
 #'
 #' #-------------------------------------------------------------------
 #'
@@ -122,7 +125,8 @@
 #' # create directory to store all final simulation files
 #' dir.create('sim_files/')
 #'
-#' # distribute jobs independently (explicitly parallelize here on cluster)
+#' # distribute jobs independently (explicitly parallelize here on cluster,
+#' # which is more elagantly managed via runArraySimulation)
 #' sapply(1:nrow(Design), \(i) {
 #'   runSimulation(design=Design[i, ], replications=replications[i],
 #'                 generate=Generate, analyse=Analyse, summarise=Summarise,
@@ -278,6 +282,10 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
         if(is.null(target.reps)) target.reps <- max(out$REPLICATIONS)
         reps_bad <- out$REPLICATIONS != target.reps
         if(any(reps_bad)){
+            diff <- target.reps - out$REPLICATIONS
+            out$MISSED_REPLICATIONS <- as.integer(diff)
+            out$TARGET_REPLICATIONS <- as.integer(target.reps)
+            out$REPLICATIONS <- NULL
             message("The follow design conditions did not satisfy the target.reps")
             return(out[reps_bad,])
         } else {

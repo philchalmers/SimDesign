@@ -318,13 +318,12 @@ Of course, if the session does time out early then this implies that the target 
 
 Related to early termination issue above is what to do about the missing replication information in the event that the complete set of replication information has not been collected. To collect the missing information clearly requires a second (or third) submission of the simulation, though only for the conditions where the collected replication results were problematic. 
 
-To start, locate the simulation conditions in the aggregated result that do not meet the target replication criteria.
+To start, locate the simulation conditions in the aggregated result that do not meet the target replication criteria. This could be done via inspection of the aggregated results
 
 ```{r eval=FALSE}
 Final <- SimDesign::aggregate_simulations(files=dir())
 Final
 ```
-
 
 ```
 # A tibble: 3 × 8
@@ -335,15 +334,30 @@ Final
 3    30 10.003  10.007          8000   24.39s    Thu Apr  4 11:51:00 2024
 ```
 
+or via the more informative `aggregate_simulations(..., check.only=TRUE)` flag.
+
+```{r eval=FALSE}
+Missed <- SimDesign::aggregate_simulations(files=dir(), check.only=TRUE)
+Missed
+```
+
+```
+# A tibble: 4 × 3
+      N MISSED_REPLICATIONS TARGET_REPLICATIONS
+  <dbl>               <int>               <int>
+1    10                1000               10000
+2    30                2000               10000
+```
+
+
 ```{r include=FALSE}
 subDesign <- createDesign(N=c(10,30))
 replications_missed <- c(1000, 2000)
 ```
 
 ```{r eval=FALSE}
-pick <- subset(Final, REPLICATIONS < 10000)
-subDesign <- subset(pick, select=N)
-replications_missed <- 10000 - pick$REPLICATIONS
+subDesign <- subset(Missed, select=N)
+replications_missed <- subset(Missed, select=MISSED_REPLICATIONS)
 ```
 
 ```{r}
@@ -390,6 +404,10 @@ Submit this job to compute all the missing replication information, which stores
 
 Once complete, run 
 ```{r eval=FALSE}
+# See if any missing still
+SimDesign::aggregate_simulations(files=dir(), check.only=TRUE)
+
+# Obtain complete simulation results
 Final <- SimDesign::aggregate_simulations(files=dir())
 ```
 one last time, which now reads in the complete set of 400 stored files instead of the previous 300, thereby obtaining the complete set of high-quality simulation results. Rinse and repeat if the same issue appears yet again on the second submission.

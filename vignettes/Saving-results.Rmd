@@ -132,13 +132,13 @@ Notice that when complete, the temporary file is removed from the hard-drive.
 
 # `store_results` (`TRUE` by default, though not recommended if RAM is suspected to be an issue)
 
-Passing `store_results = TRUE` stores the `results` object information that are passed to `Summarise()` in the returned object. This allows for further inspection of the simulation results, and potential to use functions such as `reSummarise()` to provide meta-summaries of the simulation at a later time.  After the simulation is complete, these results can be extracted using `SimExtract(results, what = 'results')`. For example,
+Passing `store_results = TRUE` stores the `results` object information that are passed to `Summarise()` in the returned object. This allows for further inspection of the simulation results, and potential to use functions such as `reSummarise()` to provide meta-summaries of the simulation at a later time.  After the simulation is complete, these results can be extracted using `SimResults(res)` (or more generally with `SimExtract(res, what = 'results')`). For example,
 
 ```{r}
 # store_results=TRUE by default
 res <- runSimulation(Design, replications = 3, 
               generate=Generate, analyse=Analyse, summarise=Summarise)
-results <- SimExtract(res, what = 'results')
+results <- SimResults(res)
 results
 ```
 
