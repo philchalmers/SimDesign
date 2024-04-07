@@ -265,28 +265,6 @@
 #'   See also \code{\link{reSummarise}} for applying summarise functions from saved
 #'   simulation results
 #'
-#' @param save_seeds logical; save the \code{.Random.seed} states prior to performing
-#'   each replication into
-#'   plain text files located in the defined \code{save_seeds_dirname} directory/folder?
-#'   Use this if you would like to keep track of every simulation state within each
-#'   replication and design
-#'   condition. This can be used to completely replicate any cell in the simulation if need be.
-#'   As well, see the \code{load_seed} input
-#'   to load a given \code{.Random.seed} to exactly replicate the generated data and
-#'   analysis state (mostly useful
-#'   for debugging). When \code{TRUE}, temporary files will also be saved
-#'   to the working directory (in the same way as when \code{save = TRUE}).
-#'   Default is \code{FALSE}
-#'
-#'   Note, however, that this option is not typically necessary or recommended since
-#'   the \code{.Random.seed} states for simulation
-#'   replications that throw errors during the execution are automatically stored
-#'   within the final simulation
-#'   object, and can be extracted and investigated using \code{\link{SimExtract}}.
-#'   Hence, this option is only of
-#'   interest when \emph{all} of the replications must be reproducible (which occurs very rarely),
-#'   otherwise the defaults to \code{runSimulation} should be sufficient
-#'
 #' @param load_seed used to replicate an exact simulation state, which is
 #' primarily useful for debugging purposes.
 #'   Input can be a character object indicating which file to load from when the
@@ -343,10 +321,34 @@
 #'      be problematic and should be treated as errors then please use
 #'      \code{\link{convertWarnings}} instead}
 #'
+#'      \item{\code{save_seeds}}{
+#'      logical; save the \code{.Random.seed} states prior to performing
+#'      each replication into
+#'      plain text files located in the defined \code{save_seeds_dirname} directory/folder?
+#'      Use this if you would like to keep track of every simulation state within each
+#'      replication and design
+#'      condition. This can be used to completely replicate any cell in the simulation if need be.
+#'      As well, see the \code{load_seed} input
+#'      to load a given \code{.Random.seed} to exactly replicate the generated data and
+#'      analysis state (mostly useful
+#'      for debugging). When \code{TRUE}, temporary files will also be saved
+#'      to the working directory (in the same way as when \code{save = TRUE}).
+#'      Default is \code{FALSE}
+#'
+#'      Note, however, that this option is not typically necessary or recommended since
+#'      the \code{.Random.seed} states for simulation
+#'      replications that throw errors during the execution are automatically stored
+#'      within the final simulation
+#'      object, and can be extracted and investigated using \code{\link{SimExtract}}.
+#'      Hence, this option is only of
+#'      interest when \emph{all} of the replications must be reproducible (which occurs very rarely),
+#'      otherwise the defaults to \code{runSimulation} should be sufficient}
+#'
 #'      \item{\code{store_Random.seeds}}{logical; store the
 #'       complete \code{.Random.seed} states
 #'       for each simulation replicate? Default is \code{FALSE} as this can
-#'       take up a great deal of unnecessary RAM, however this may be useful
+#'       take up a great deal of unnecessary RAM (see related \code{save_seeds}),
+#'       however this may be useful
 #'       when used with \code{\link{runArraySimulation}}. To extract use
 #'       \code{SimExtract(..., what = 'stored_Random.seeds')}}
 #'
@@ -954,12 +956,12 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL,
                           debug = 'none', load_seed = NULL, save = any(replications > 10),
-                          store_results = TRUE, store_Random.seeds=FALSE, save_results = FALSE,
+                          store_results = TRUE, save_results = FALSE,
                           parallel = FALSE, ncores = parallel::detectCores() - 1L,
                           cl = NULL, notification = 'none', beep = FALSE, sound = 1,
                           CI = .95, seed = NULL,
                           boot_method='none', boot_draws = 1000L, max_errors = 50L,
-                          save_seeds = FALSE, resume = TRUE,
+                          resume = TRUE,
                           save_details = list(), control = list(),
                           progress = TRUE, verbose = TRUE)
 {
@@ -1040,6 +1042,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(!("RPushbullet" %in% (.packages())))
             stop('Please use library(RPushbullet) to load the default ~/.rpushbullet.json file',
                  call. = FALSE)
+    save_seeds <- ifelse(is.null(control$save_seeds),
+                      FALSE, control$save_seeds)
     store_Random.seeds <- ifelse(is.null(control$store_Random.seeds),
                                   FALSE, control$store_Random.seeds)
     store_warning_seeds <- ifelse(is.null(control$store_warning_seeds),
