@@ -279,7 +279,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) NULL
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
                     save, allow_na, allow_nan, save_seeds, save_seeds_dirname, load_seed,
-                    warnings_as_errors, store_warning_seeds, use_try, include_replication_index,
+                    warnings_as_errors, store_Random.seeds, store_warning_seeds, use_try, include_replication_index,
                     p = NULL, future = FALSE, allow_gen_errors = TRUE){
 
     if(!is.null(p)) p(sprintf("replication = %g", index))
@@ -410,6 +410,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             rownames(try_error_seeds) <- try_error
         if(store_warning_seeds)
             rownames(warning_message_seeds) <- Warnings
+        if(store_Random.seeds)
+            attr(res, 'current_Random.seed') <- current_Random.seed
         attr(res, 'try_errors') <- try_error
         attr(res, 'try_error_seeds') <- try_error_seeds
         attr(res, 'warnings') <- Warnings

@@ -2,6 +2,11 @@
 
 ## Changes in SimDesign 2.15
 
+- `runSimulation(..., control = list(store_Random.seeds))` logical added to 
+  store all `.Random.seed` replication states. Generally not recommended due 
+  to the size of these stored elements in larger simulations, however can be
+  useful for debugging purposes where errors or warnings are not thrown
+
 - `runArraySimulation()` added to better support distributing array's of jobs
   on HPC clusters. Works best when combined with `expandDesign()` and the 
   improved `aggregate_simulations()` behaviour for more evenly distribution

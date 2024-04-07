@@ -19,6 +19,7 @@ runSimulation(
   load_seed = NULL,
   save = any(replications > 10),
   store_results = TRUE,
+  store_Random.seeds = FALSE,
   save_results = FALSE,
   parallel = FALSE,
   ncores = parallel::detectCores() - 1L,
@@ -405,6 +406,13 @@ in the simulation}
      stages when designing a simulation experiment. If specific warnings are known to
      be problematic and should be treated as errors then please use
      \code{\link{convertWarnings}} instead}
+
+     \item{\code{store_Random.seeds}}{logical; store the
+      complete \code{.Random.seed} states
+      for each simulation replicate? Default is \code{FALSE} as this can
+      take up a great deal of unnecessary RAM, however this may be useful
+      when used with \code{\link{runArraySimulation}}. To extract use
+      \code{SimExtract(..., what = 'stored_Random.seeds')}}
 
      \item{\code{store_warning_seeds}}{logical (default is \code{FALSE});
       in addition to storing the \code{.Random.seed} states whenever error messages

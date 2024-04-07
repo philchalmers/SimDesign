@@ -12,8 +12,11 @@ SimExtract(object, what, fuzzy = TRUE)
 \item{what}{character indicating what information to extract. Possible inputs
   include \code{'errors'} to return a \code{tibble} object containing counts of any
   error messages, \code{'warnings'} to return a \code{data.frame} object containing
-  counts of any warning messages, \code{'seeds'}  for the sepecified random number
-  generation seeds, \code{'error_seeds'} and \code{'warning_seeds'}
+  counts of any warning messages, \code{'seeds'}  for the specified random number
+  generation seeds,  \code{'Random.seeds'} for the complete list of
+  \code{.Random.seed} states across replications (only stored when
+  \code{runSimulation(..., control = list(store_Random.seeds=TRUE))}),
+  \code{'error_seeds'} and \code{'warning_seeds'}
   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
   \code{'results'} to extract the simulation results if the option \code{store_results} was passed to
   \code{\link{runSimulation}}, \code{'filename'} and \code{'save_results_dirname'} for extracting

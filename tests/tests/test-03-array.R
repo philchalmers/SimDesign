@@ -35,10 +35,13 @@ test_that('array', {
     res <- runArraySimulation(design=Design, replications=50,
                               generate=Generate, analyse=Analyse,
                               summarise=Summarise, arrayID=arrayID,
-                              iseed=iseed, filename='mysim') # saved as 'mysim-1.rds'
+                              iseed=iseed, filename='mysim',
+                              control=list(store_Random.seeds=TRUE))
     results <- SimExtract(res, what='results') # condition and replication count stored
     expect_equal(results$condition[1], 1)
     expect_equal(results$arrayID[1], 1)
+    randseeds <- SimExtract(res, what='Random.seeds')
+    expect_true(all(dim(randseeds[[1L]]) == c(50,7)))
 
     SimClean('mysim-1.rds')
 
@@ -63,6 +66,8 @@ test_that('array', {
     results <- SimResults(res) # condition and replication count stored
     expect_equal(results$condition[1], 3)
     expect_equal(results$arrayID[1], 14)
+    randseeds <- SimExtract(res, what='Random.seeds')
+    expect_true(is.null(randseeds))
 
     SimClean('mylongsim-14.rds')
 

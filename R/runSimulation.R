@@ -343,6 +343,13 @@
 #'      be problematic and should be treated as errors then please use
 #'      \code{\link{convertWarnings}} instead}
 #'
+#'      \item{\code{store_Random.seeds}}{logical; store the
+#'       complete \code{.Random.seed} states
+#'       for each simulation replicate? Default is \code{FALSE} as this can
+#'       take up a great deal of unnecessary RAM, however this may be useful
+#'       when used with \code{\link{runArraySimulation}}. To extract use
+#'       \code{SimExtract(..., what = 'stored_Random.seeds')}}
+#'
 #'      \item{\code{store_warning_seeds}}{logical (default is \code{FALSE});
 #'       in addition to storing the \code{.Random.seed} states whenever error messages
 #'       are raised, also store the \code{.Random.seed} states when warnings are raised? This is
@@ -947,7 +954,7 @@
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL,
                           debug = 'none', load_seed = NULL, save = any(replications > 10),
-                          store_results = TRUE, save_results = FALSE,
+                          store_results = TRUE, store_Random.seeds=FALSE, save_results = FALSE,
                           parallel = FALSE, ncores = parallel::detectCores() - 1L,
                           cl = NULL, notification = 'none', beep = FALSE, sound = 1,
                           CI = .95, seed = NULL,
@@ -1033,6 +1040,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(!("RPushbullet" %in% (.packages())))
             stop('Please use library(RPushbullet) to load the default ~/.rpushbullet.json file',
                  call. = FALSE)
+    store_Random.seeds <- ifelse(is.null(control$store_Random.seeds),
+                                  FALSE, control$store_Random.seeds)
     store_warning_seeds <- ifelse(is.null(control$store_warning_seeds),
                                   FALSE, control$store_warning_seeds)
     warnings_as_errors <- ifelse(is.null(control$warnings_as_errors),
@@ -1362,6 +1371,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          boot_draws=boot_draws, boot_method=boot_method, CI=CI,
                                          save=save, allow_na=allow_na, allow_nan=allow_nan,
                                          save_results=save_results, useFuture=useFuture,
+                                         store_Random.seeds=store_Random.seeds,
                                          store_warning_seeds=store_warning_seeds,
                                          save_results_out_rootdir=out_rootdir,
                                          save_results_dirname=save_results_dirname,
@@ -1400,6 +1410,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             replications=replications[i],
                             fixed_objects=fixed_objects,
                             cl=cl, MPI=MPI, .options.mpi=.options.mpi, seed=seed,
+                            store_Random.seeds=store_Random.seeds,
                             boot_method=boot_method, boot_draws=boot_draws, CI=CI,
                             save=save, allow_na=allow_na, allow_nan=allow_nan,
                             save_results=save_results, useFuture=useFuture,
@@ -1436,6 +1447,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             }
             Result_list[[i]] <- data.frame(design[i, ], as.list(tmp),
                                            check.names=FALSE)
+            attr(Result_list[[i]], 'Random.seeds') <- attr(tmp, 'stored_Random.seeds')
             attr(Result_list[[i]], 'error_seeds') <- attr(tmp, 'error_seeds')
             attr(Result_list[[i]], 'warning_seeds') <- attr(tmp, 'warning_seeds')
             attr(Result_list[[i]], 'summarise_list') <- attr(tmp, 'summarise_list')
@@ -1492,6 +1504,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             names(Result_list) <- nms2
             if(is.list(Result_list[[1L]][[1L]]))
                 for(i in seq_len(length(Result_list)))
+                    attr(Result_list[[i]][[1L]], 'stored_Random.seeds') <-
                     attr(Result_list[[i]][[1L]], 'try_errors') <-
                     attr(Result_list[[i]][[1L]], 'try_error_seeds') <-
                     attr(Result_list[[i]][[1L]], 'warning_seeds') <-
@@ -1505,6 +1518,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         message('\nSimulation complete. Total execution time: ',
                 timeFormater(sum(stored_time)), "\n")
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
+    if(store_Random.seeds){
+        stored_Random.seeds_list <- lapply(1L:length(Result_list),
+                        function(x)
+            attr(Result_list[[x]], "Random.seeds"))
+
+    } else stored_Random.seeds_list <- NULL
     error_seeds <- data.frame(do.call(cbind, lapply(1L:length(Result_list), function(x){
         ret <- attr(Result_list[[x]], "error_seeds")
         if(length(ret) == 0L || nrow(ret) == 0L) return(NULL)
@@ -1598,7 +1617,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       save_info = c(filename=filename,
                                                     save_results_dirname=save_results_dirname,
                                                     save_seeds_dirname=save_seeds_dirname)[pick],
-                                      seeds=seed,
+                                      seeds=seed, stored_Random.seeds_list=stored_Random.seeds_list,
                                       ncores = if(parallel) length(cl) else if(MPI) NA else 1L,
                                       number_of_conditions = nrow(design),
                                       date_completed = noquote(date()), total_elapsed_time = sum(SIM_TIME),
