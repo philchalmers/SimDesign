@@ -82,7 +82,7 @@ test_that('SimDesign', {
     expect_is(Final, 'data.frame')
 
     # test that future package works
-    suppressPackageStartupMessages(library(future))
+    suppressPackageStartupMessages(suppressWarnings(library(future)))
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 10, parallel='future', save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
