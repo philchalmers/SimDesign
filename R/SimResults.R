@@ -8,8 +8,9 @@
 #' from the simulation. Can be used to read in 1 or more \code{.rds} files at once (if more than 1 file
 #' is read in then the result will be stored in a list).
 #'
-#' @param results object returned from \code{\link{runSimulation}} where \code{save_results = TRUE}
-#'   was used
+#' @param obj object returned from \code{\link{runSimulation}} where \code{save_results = TRUE}
+#'   or \code{store_results} was used. If the former then the remaining function arguments can
+#'   be useful for reading in specific files
 #'
 #' @param which a numeric vector indicating which rows should be read in. If missing, all rows will be
 #'   read in
@@ -52,23 +53,30 @@
 #'
 #' \dontrun{
 #'
-#' results <- runSimulation(..., save_results = TRUE)
+#' # store results (default behaviour)
+#' sim <- runSimulation(..., store_results = TRUE)
+#' SimResults(sim)
+#'
+#' # store results to drive if RAM issues are present
+#' obj <- runSimulation(..., save_results = TRUE)
 #'
 #' # row 1 results
-#' row1 <- SimResults(results, 1)
+#' row1 <- SimResults(obj, 1)
 #'
 #' # rows 1:5, stored in a named list
-#' rows_1to5 <- SimResults(results, 1:5)
+#' rows_1to5 <- SimResults(obj, 1:5)
 #'
 #' # all results
-#' rows_all <- SimResults(results)
+#' rows_all <- SimResults(obj)
 #'
 #' }
-SimResults <- function(results, which, prefix = "results-row", wd = getwd()){
-    stopifnot(!missing(results))
+SimResults <- function(obj, which, prefix = "results-row", wd = getwd()){
+    stopifnot(!missing(obj))
+    results <- SimExtract(obj, what='results')
+    if(!is.null(results)) return(results)
     wdold <- getwd()
     on.exit(setwd(wdold))
-    so <- summary(results)
+    so <- summary(obj)
     if(missing(which)) which <- 1L:so$number_of_conditions
     path <- so$save_info["save_results_dirname"]
     if(is.na(path))

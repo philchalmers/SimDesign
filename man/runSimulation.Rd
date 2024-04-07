@@ -198,7 +198,8 @@ primarily useful for debugging purposes.
   longer an issue.
 
   To extract these results
-  pass the returned object to \code{SimExtract(..., what = 'results')}, which will return a named list
+  pass the returned object to either \code{\link{SimResults}} or \code{\link{SimExtract}} with
+  \code{what = 'results'}, which will return a named list
   of all the simulation results for each condition if \code{nrow(Design) > 1}; otherwise, if
   \code{nrow(Design) == 1} or \code{Design} was missing the \code{results} object will be stored as-is}
 
@@ -702,6 +703,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 Final <- runSimulation(design=Design, replications=10,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 Final
+SimResults(Final)
 
 \dontrun{
 # reproduce exact simulation
@@ -722,7 +724,7 @@ Final
 # To store the results from the analyse function either
 #   a) omit a definition of summarise() to return all results,
 #   b) use store_results = TRUE (default) to store results internally and later
-#      extract with SimExtract(..., what = 'results'), or
+#      extract with SimResults(), or
 #   c) pass save_results = TRUE to runSimulation() and read the results in with SimResults()
 #
 #   Note that method c) should be adopted for larger simulations, particularly
@@ -737,7 +739,7 @@ res
 res <- runSimulation(design=Design, replications=5,
                      generate=Generate, analyse=Analyse, summarise=Summarise)
 res
-SimExtract(res, 'results')
+SimResults(res)
 
 # c) approach
 Final <- runSimulation(design=Design, replications=5, save_results=TRUE,

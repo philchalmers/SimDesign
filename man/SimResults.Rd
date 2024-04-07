@@ -4,11 +4,12 @@
 \alias{SimResults}
 \title{Function to read in saved simulation results}
 \usage{
-SimResults(results, which, prefix = "results-row", wd = getwd())
+SimResults(obj, which, prefix = "results-row", wd = getwd())
 }
 \arguments{
-\item{results}{object returned from \code{\link{runSimulation}} where \code{save_results = TRUE}
-was used}
+\item{obj}{object returned from \code{\link{runSimulation}} where \code{save_results = TRUE}
+or \code{store_results} was used. If the former then the remaining function arguments can
+be useful for reading in specific files}
 
 \item{which}{a numeric vector indicating which rows should be read in. If missing, all rows will be
 read in}
@@ -47,16 +48,21 @@ is read in then the result will be stored in a list).
 
 \dontrun{
 
-results <- runSimulation(..., save_results = TRUE)
+# store results (default behaviour)
+sim <- runSimulation(..., store_results = TRUE)
+SimResults(sim)
+
+# store results to drive if RAM issues are present
+obj <- runSimulation(..., save_results = TRUE)
 
 # row 1 results
-row1 <- SimResults(results, 1)
+row1 <- SimResults(obj, 1)
 
 # rows 1:5, stored in a named list
-rows_1to5 <- SimResults(results, 1:5)
+rows_1to5 <- SimResults(obj, 1:5)
 
 # all results
-rows_all <- SimResults(results)
+rows_all <- SimResults(obj)
 
 }
 }

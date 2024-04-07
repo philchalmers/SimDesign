@@ -95,7 +95,7 @@
 #' sum(sim$REPLICATIONS)
 #'
 #' # use the unsummarised results for the SFA, and include p.values < alpha
-#' sim_results <- SimExtract(sim, what = 'results')
+#' sim_results <- SimResults(sim)
 #' sim_results <- within(sim_results, sig <- p < .05)
 #' sim_results
 #'
@@ -134,7 +134,7 @@
 #' sum(sim2$REPLICATIONS) # more replications in total
 #'
 #' # use the unsummarised results for the SFA, and include p.values < alpha
-#' sim_results <- SimExtract(sim2, what = 'results')
+#' sim_results <- SimResults(sim2)
 #' sim_results <- within(sim_results, sig <- p < .05)
 #' sim_results
 #'
@@ -174,7 +174,7 @@
 #' sum(sim3$REPLICATIONS)
 #'
 #' # use the unsummarised results for the SFA, and include p.values < alpha
-#' sim_results <- SimExtract(sim3, what = 'results')
+#' sim_results <- SimResults(sim3)
 #' sim_results <- within(sim_results, sig <- p < .05)
 #' sim_results
 #'
