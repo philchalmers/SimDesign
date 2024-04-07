@@ -88,8 +88,11 @@ aggregate_simulations(files = c('file1.rds', 'file2.rds'),
 # Each condition repeated four times (hence, replications
 # should be set to desired.reps/4)
 Design <- createDesign(N  = c(30, 60),
-                       mu = c(0,5),
-                       repeat_conditions = 4L)
+                       mu = c(0,5))
+Design
+
+Design4 <- expandDesign(Design, 4)
+Design4
 
 #-------------------------------------------------------------------
 
@@ -122,7 +125,8 @@ replications <- rep(250, nrow(Design))
 # create directory to store all final simulation files
 dir.create('sim_files/')
 
-# distribute jobs independently (explicitly parallelize here on cluster)
+# distribute jobs independently (explicitly parallelize here on cluster,
+# which is more elagantly managed via runArraySimulation)
 sapply(1:nrow(Design), \(i) {
   runSimulation(design=Design[i, ], replications=replications[i],
                 generate=Generate, analyse=Analyse, summarise=Summarise,
