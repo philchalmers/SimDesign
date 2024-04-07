@@ -117,7 +117,7 @@
 #'                       summarise=Summarise, arrayID=arrayID,
 #'                       iseed=iseed, filename='mysim') # saved as 'mysim-1.rds'
 #' res
-#' SimExtract(res, what='results') # condition and replication count stored
+#' SimResults(res) # condition and replication count stored
 #'
 #' dir()
 #' SimClean('mysim-1.rds')
@@ -142,7 +142,7 @@
 #'
 #' res <- readRDS('mylongsim-14.rds')
 #' res
-#' SimExtract(res, what='results') # condition and replication count stored
+#' SimResults(res) # condition and replication count stored
 #'
 #' SimClean('mylongsim-14.rds')
 #'
@@ -169,13 +169,13 @@
 #' setwd('sim')
 #' condition14 <- readRDS('condition-14.rds')
 #' condition14
-#' SimExtract(condition14, 'results')
+#' SimResults(condition14)
 #'
 #' # aggregate simulation results into single file
 #' final <- aggregate_simulations(files=dir())
 #' final
 #'
-#' SimExtract(final, 'results') |> View()
+#' SimResults(final) |> View()
 #'
 #' setwd('..')
 #' SimClean(dirs='sim/')
