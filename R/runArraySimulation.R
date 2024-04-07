@@ -191,7 +191,8 @@ runArraySimulation <- function(design, ..., replications,
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))
         stop('save_results not supported for array jobs. Please use store_results only')
     if(!is.null(dots$save_seeds) && isTRUE(dots$save_seeds))
-        stop('save_seeds not supported for array jobs')
+        stop(c('save_seeds not supported for array jobs. If this is truely',
+               ' necessary pass control = list(store_Random.seeds=TRUE) instead'))
     rngkind <- RNGkind()
     RNGkind("L'Ecuyer-CMRG")
     on.exit(RNGkind(rngkind[1L]))
