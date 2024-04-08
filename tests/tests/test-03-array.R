@@ -82,7 +82,7 @@ test_that('array', {
                               generate=Generate, analyse=Analyse,
                               summarise=Summarise, iseed=iseed, arrayID=arrayID,
                               filename='sim/condition',   # saved to 'sim/condition-#.rds'
-                              control = list(max_time = 4))) |> invisible()
+                              control = list(max_time = 4, max_RAM = 4000))) |> invisible()
 
     #  If necessary, conditions above will manually terminate before
     #  4 hours, returning any successfully completed results before the HPC

@@ -409,6 +409,16 @@
 #'        In general, this input should be set to somewhere around 80-90% of the true termination
 #'        time so that any evaluations completed before the cluster is terminated can be saved}
 #'
+#'      \item{\code{max_RAM}}{specified in megabytes (MB),
+#'        the (approximate) maximum size that the simulation can grow to before.
+#'        RAM becomes an issue (e.g., setting \code{max_RAM=4000} indicates that if the simulation
+#'        object storage is detected to occupy more than this amount then the workflow will terminate,
+#'        returning intermediate results). Default applies no memory limit
+#'
+#'        This is mainly useful for larger distributed jobs that are not monitored, such as those
+#'        submitted via \code{\link{runArraySimulation}} to HPC clusters with RAM constraints.
+#'      }
+#'
 #'      \item{\code{MPI}}{logical (default is \code{FALSE}); use the \code{foreach} package in a
 #'        form usable by MPI to run simulation in parallel on a cluster? }
 #'
@@ -1058,6 +1068,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     stop_on_fatal <- ifelse(is.null(control$stop_on_fatal),
                             FALSE, control$stop_on_fatal)
     max_time <- ifelse(is.null(control$max_time), Inf, control$max_time)
+    max_RAM <- ifelse(is.null(control$max_RAM), Inf, control$max_RAM * 1000000)
     if(is.finite(max_time)) progress <- FALSE
     MPI <- ifelse(is.null(control$MPI), FALSE, control$MPI)
 
@@ -1359,6 +1370,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     memory_used <- character(nrow(design)+1L)
     if(print_RAM)
         memory_used[1L] <- RAM_used()
+    pre_RAM_used <- if(is.finite(max_RAM)) RAM_used(format=FALSE) else 0L
     for(i in start:end){
         time0 <- proc.time()[3L]
         if(summarise_asis){
@@ -1391,7 +1403,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          load_seed=load_seed, export_funs=export_funs,
                                          warnings_as_errors=warnings_as_errors,
                                          progress=progress, store_results=FALSE, use_try=use_try,
-                                         stop_on_fatal=stop_on_fatal, max_time=max_time,
+                                         stop_on_fatal=stop_on_fatal, max_time=max_time, max_RAM=max_RAM,
+                                         pre_RAM_used=pre_RAM_used,
                                          allow_gen_errors=!SimSolveRun)
             time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
@@ -1399,6 +1412,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 notification_condition(design[i,], Result_list[[i]], nrow(design))
             if(print_RAM)
                 memory_used[i+1L] <- RAM_used()
+            if(is.finite(max_RAM)){
+                if((object.size(Result_list) + pre_RAM_used) >= max_RAM){
+                    warning('max_RAM exceeded. Terminating iterations over design conditions early',
+                            call. = FALSE)
+                    break
+                }
+            }
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
@@ -1433,7 +1453,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             load_seed=load_seed, export_funs=export_funs,
                             warnings_as_errors=warnings_as_errors,
                             progress=progress, store_results=store_results, use_try=use_try,
-                            stop_on_fatal=stop_on_fatal, max_time=max_time,
+                            stop_on_fatal=stop_on_fatal, max_time=max_time, max_RAM=max_RAM,
+                            pre_RAM_used=pre_RAM_used,
                             allow_gen_errors=!SimSolveRun)
             if(SimSolveRun){
                 full_results <- attr(tmp, 'full_results')
@@ -1467,6 +1488,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 notification_condition(design[i,], Result_list[[i]], nrow(design))
             if(print_RAM)
                 memory_used[i+1L] <- RAM_used()
+            if(is.finite(max_RAM)){
+                if((object.size(Result_list) + pre_RAM_used) >= max_RAM){
+                    warning('max_RAM exceeded. Terminating iterations over design conditions early',
+                            call. = FALSE)
+                    break
+                }
+            }
         }
     }
     memory_used <- memory_used[-1L]

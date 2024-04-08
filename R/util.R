@@ -562,7 +562,7 @@ bisection <- function (f, interval, ..., tol = 0.001, maxiter = 100,
          false_converge=false_converge)
 }
 
-RAM_used <- function(){
+RAM_used <- function(format=TRUE){
     # borrowed and modified from pryr::node_size(), 13-06-2023
     bit <- 8L * .Machine$sizeof.pointer
     if (!(bit == 32L || bit == 64L)) {
@@ -572,6 +572,7 @@ RAM_used <- function(){
     # end borrowed portion
     bytes <- sum(gc()[, 1] * c(val, 8))
     size <- structure(bytes, class="object_size")
+    if(!format) return(size)
     format(size, 'MB')
 }
 
