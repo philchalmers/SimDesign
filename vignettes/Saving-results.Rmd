@@ -131,7 +131,7 @@ SimClean('my-simple-sim.rds')
 Notice that when complete, the temporary file is removed from the hard-drive.
 
 Relatedly, the `.Random.seed` states for each successful replication can be saved by passing
-`control = list(store_seeds = TRUE))` to \code{runSimulation}, though these are generally only useful
+`control = list(store_Random.seeds = TRUE))` to \code{runSimulation}, though these are generally only useful
 under exceptional circumstances (e.g., when the generate-analyse results are unusual but did not throw a warning or error message, yet should be inspected interactively).
 
 # `store_results` (`TRUE` by default, though not recommended if RAM is suspected to be an issue)

@@ -1,6 +1,6 @@
 Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI, seed, save,
                      save_results, save_results_out_rootdir, save_results_dirname, max_errors,
-                     boot_method, boot_draws, CI, store_seeds,
+                     boot_method, boot_draws, CI,
                      save_seeds, save_seeds_dirname, load_seed,
                      export_funs, summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds,
