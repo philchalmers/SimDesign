@@ -5,7 +5,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      export_funs, summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds,
                      include_replication_index, packages, .options.mpi, useFuture, multirow,
-                     allow_gen_errors, max_time, max_RAM, store_Random.seeds, pre_RAM_used,
+                     allow_gen_errors, max_time, max_RAM, store_Random.seeds,
                      save_results_filename = NULL, arrayID = NULL)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
@@ -49,7 +49,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
                    allow_gen_errors=allow_gen_errors), TRUE)
         } else {
-            try(lapply_timer(1L:replications, mainsim, max_time=max_time,
+            try(lapply_timer(1L:replications, mainsim,
+                           max_time=max_time, max_RAM=max_RAM,
                            condition=condition,
                            generate=Functions$generate,
                            analyse=Functions$analyse,

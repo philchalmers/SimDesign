@@ -61,6 +61,29 @@
 #' @param addArrayInfo logical; should the array ID and original design row number
 #'   be added to the \code{SimExtract(..., what='results')} output?
 #'
+#' @param control control list passed to \code{\link{runSimulation}}.
+#'   In addition to the original \code{control} elements two
+#'   additional arguments have been added:
+#'   \code{max_time} (specified in hours) and \code{max_RAM} (specified in
+#'   megabytes, MB).
+#'
+#'   \code{max_time} specifies the maximum time (in hours) allowed for a
+#'   single simulation condition to execute (default does not set
+#'   any time limits). This is primarily useful when the HPC cluster
+#'   will time out after some known elapsed time.
+#'   In general, this input should be set to somewhere around 80-90% of the true termination
+#'   time so that any evaluations completed before the cluster is terminated can be saved
+#'
+#'   Similarly, \code{max_RAM} (specified in megabytes, MB) controls the
+#'   (approximate) maximum size that the simulation storage objects can grow
+#'   before RAM becomes an issue (e.g., setting \code{max_RAM=4000} indicates that if the simulation
+#'   storage objects are larger than 4GB then the workflow will terminate early,
+#'   returning only the intermediate results).
+#'   Useful for larger HPC cluster jobs with RAM constraints that could terminate abruptly.
+#'   As a rule of thumb this should be set to around 90% of the maximum possible storage
+#'   available. Default applies no memory limit
+#'
+#'
 #' @param ... additional arguments to be passed to \code{\link{runSimulation}}
 #'
 #' @export
@@ -186,11 +209,12 @@ runArraySimulation <- function(design, ..., replications,
                                iseed, filename, arrayID = getArrayID(),
                                filename_suffix = paste0("-", arrayID),
                                addArrayInfo = TRUE,
-                               save_details = list()){
+                               save_details = list(),
+                               control = list()){
     dots <- list(...)
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))
         stop('save_results not supported for array jobs. Please use store_results only')
-    if(!is.null(dots$control$save_seeds) && isTRUE(dots$control$save_seeds))
+    if(!is.null(control$save_seeds) && isTRUE(control$save_seeds))
         stop(c('save_seeds not supported for array jobs. If this is truely',
                ' necessary use store_Random.seeds instead'))
     rngkind <- RNGkind()
@@ -217,7 +241,8 @@ runArraySimulation <- function(design, ..., replications,
     ret <- runSimulation(design=design[arrayID, , drop=FALSE],
                          replications=replications[arrayID],
                          filename=filename, seed=seed,
-                         verbose=FALSE, save_details=save_details, ...)
+                         verbose=FALSE, save_details=save_details,
+                         control=control, ...)
     if(addArrayInfo && (is.null(dots$store_results) ||
        (!is.null(dots$store_results) && isTRUE(dots$store_results)))){
         results <- SimExtract(ret, 'results')

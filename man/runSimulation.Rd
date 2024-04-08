@@ -461,15 +461,6 @@ in the simulation}
        For Windows OS this defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected
        (suitable for Linux and Mac OSX). This is ignored if the user specifies their own \code{cl} object}
 
-     \item{\code{max_time}}{maximum time (in hours) allow a single simulation condition to execute
-       (default does not set any time limits).
-
-       This is only applicable when using single core processing methods, and is primarily
-       useful when each row in \code{design} is distributed independently to different clusters
-       but the computing cluster will time out after some known elapsed time.
-       In general, this input should be set to somewhere around 80-90% of the true termination
-       time so that any evaluations completed before the cluster is terminated can be saved}
-
      \item{\code{MPI}}{logical (default is \code{FALSE}); use the \code{foreach} package in a
        form usable by MPI to run simulation in parallel on a cluster? }
 

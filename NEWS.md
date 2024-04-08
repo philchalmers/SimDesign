@@ -28,17 +28,13 @@
   have repeated row definitions and therefore should be conditionally averaged
   over (see new `expandDesign()` function)
   
-- `runSimulation()`'s `control` list gains a `max_time` argument to evaluate
-  simulation replications up until this time element is reached. In the event
-  that the target replications are not reached the simulations up to this point
-  will be returned with a warning. This is mainly useful for single core processing
-  jobs that have been distributed via the new `runArraySimulation()` to HPC clusters
-  that require time-limit constraints (e.g., 4 hours per job), where some
-  jobs may be more time consuming than others (requested by Mikko Rönkkö). In the
-  event that some jobs are not finished during this time a new job submission
-  can be constructed to fill-in this missing replication information, where 
-  `aggregate_simulations()` can be used to combine all saved `.rds` files into a
-  final simulation object
+- `runArraySimulation()`'s `control` list contain new `max_time` and 
+   `max_RAM` arguments to evaluate
+  simulation replications up until this time or RAM storage constraint is reached. In the event
+  that the target replications are not reached the simulations up to this point, or the max RAM storage has been reached,
+  then on the partial results will be returned (with a warning). This is mainly useful for single core processing
+  jobs on HPC clusters that require time and RAM constraints (e.g., 4 hours per job; 4000MB of RAM), where some
+  jobs may be more time/RAM consuming than others (requested by Mikko Rönkkö)
   
 - Expose seed generation control per simulation condition via the 
   function `gen_seeds()`, which allows a list of seeds to be distributed to 

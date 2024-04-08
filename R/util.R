@@ -340,7 +340,7 @@ unwind_apply_wind.list <- function(lst, mat, fun, ...){
     ret
 }
 
-lapply_timer <- function(X, FUN, max_time, ...){
+lapply_timer <- function(X, FUN, max_time, max_RAM, ...){
     if(is.finite(max_time)){
         ret <- vector('list', length(X))
         total <- max_time*3600L
@@ -360,12 +360,24 @@ lapply_timer <- function(X, FUN, max_time, ...){
                 ret <- ret[1L:i]
                 break
             }
+            if(is.finite(max_RAM) && object.size(ret) > max_RAM){
+                message(sprintf(c("Simulation terminated due to max_RAM constraint",
+                                  " (%i/%i replications evaluated)."), i, length(ret)))
+                ret <- ret[1L:i]
+                break
+            }
         }
     } else {
         ret <- vector('list', length(X))
         for(i in 1L:length(ret)){
             val <- FUN(...)
             ret[[i]] <- val
+            if(is.finite(max_RAM) && object.size(ret) > max_RAM){
+                message(sprintf(c("Simulation terminated due to max_RAM constraint",
+                                  " (%i/%i replications evaluated)."), i, length(ret)))
+                ret <- ret[1L:i]
+                break
+            }
         }
     }
     ret

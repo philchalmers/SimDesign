@@ -71,6 +71,22 @@ test_that('array', {
 
     SimClean('mylongsim-14.rds')
 
+    Analyse_big <- function(condition, dat, fixed_objects = NULL) {
+        ret <- runif(1e4)
+        names(ret) <- paste0('x', 1:length(ret))
+        # object.size(ret) |> format('MB')
+        ret
+    }
+
+    tmp <- gc()
+    runArraySimulation(design=Design5, replications=50,
+                       generate=Generate, analyse=Analyse_big,
+                       summarise=Summarise, iseed=iseed,
+                       filename='mylongsim', arrayID=arrayID,
+                       control = list(max_RAM=5)) # 5 MB
+    res <- readRDS("mylongsim-14.rds")
+    expect_true(res$REPLICATIONS < 50L)
+    SimClean('mylongsim-14.rds')
 
     ###
     # emulate the arrayID distribution, storing all results in a 'sim/' folder
