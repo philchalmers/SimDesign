@@ -160,7 +160,8 @@ primarily useful for debugging purposes.
   \code{.Random.seed}s have
   be saved (after a call with \code{save_seeds = TRUE}), or an integer vector
   indicating the actual
-  \code{.Random.seed} values. E.g., \code{load_seed = 'design-row-2/seed-1'}
+  \code{.Random.seed} values (e.g., extracted after using \code{store_seeds}).
+  E.g., \code{load_seed = 'design-row-2/seed-1'}
   will load the first seed in the second row of the \code{design} input, or
   explicitly passing the
   elements from \code{.Random.seed} (see \code{\link{SimExtract}} to extract
@@ -614,11 +615,12 @@ are discarded; however, these can be saved to the hard-disk by passing the appro
 For longer simulations it is recommended to use the \code{save_results} flag to write the
 analysis results to the hard-drive.
 
-The use of the \code{save_seeds} option can be evoked to save R's \code{.Random.seed}
+The use of the \code{store_seeds} or the \code{save_seeds} options
+can be evoked to save R's \code{.Random.seed}
 state to allow for complete reproducibility of each replication within each condition. These
 individual \code{.Random.seed} terms can then be read in with the
 \code{load_seed} input to reproduce the exact simulation state at any given replication.
-Most often though, \code{save_seeds} is less useful since problematic seeds are
+Most often though, saving the complete list of seeds is unnecessary as problematic seeds are
 automatically stored in the final simulation object to allow for easier replicability
 of potentially problematic errors (which incidentally can be extracted
 using \code{SimExtract(res, 'error_seeds')} and passed to the \code{load_seed} argument). Finally,
