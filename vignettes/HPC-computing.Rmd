@@ -297,19 +297,21 @@ scancel -u <username>   # cancel all queued and running jobs for a specific user
 sacct -j <jobid> --format JobID,ReqMem,MaxRSS,Timelimit,Elapsed   # checked completed job resource usage
 ```
 
-## My HPC cluster timeframe is limited
+## My HPC cluster excution time/RAM is limited and terminates before the simulation is complete
 
-This issue is important to consider whenever the HPC cluster has mandatory time limits for the job submissions, where the array job may not complete within the designated time --- hence, if not properly managed, will discard any valid replication information prior to this timeout. Unfortunately, this is a very likely occurrence, and is largely a function of being unsure exactly how long each simulation condition/replication will take to complete when distributed across the arrays (some conditions/replications will take longer than others, and it is difficult to be perfectly knowledgeable about this information beforehand).
+This issue is important to consider whenever the HPC cluster has mandatory time/RAM limits for the job submissions, where the array job may not complete within the assigned resources --- hence, if not properly managed, will discard any valid replication information when abruptly terminated. Unfortunately, this is a very likely occurrence, and is largely a function of being unsure exactly how long each simulation condition/replication will take to complete when distributed across the arrays (some conditions/replications will take longer than others, and it is difficult to be perfectly knowledgeable about this information beforehand) or how large the final objects will grow.
 
-To avoid this time waste it is **strongly recommended** to add a `max_time` argument to the `control` list, specified in hours, which is less than the SLURM timeout specification. This control flag will halt `runArraySimulation()` execution early and return only the complete simulation results up to this point. However, this will only work if the `max_time` supplied is meaningfully less than the total SLURM time; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting this to around 90% of the `#SBATCH --time=` should, however, be sufficient in most cases.
+To avoid this time waste it is **strongly recommended** to add a `max_time` and/or `max_RAM` argument to the `control` list, specified in hours and megabyes, respectively, which are less than the SLURM specifications. These control flags will halt `runArraySimulation()` execution early and return only the complete simulation results up to this point. However, this will only work if these arguments are meaningfully less than the allocated SLURM resources; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting these to around 90% of the respective `#SBATCH --time=` and `#SBATCH --mem=` inputs should, however, be sufficient in most cases.
 
 ```{r eval=FALSE}
-# run the simulation on subset based on arrayID subset information
+# Return successful results up to the 3.5 hour mark, and terminate early 
+#   if more than 3.5 GB of RAM are required to store the results
 runArraySimulation(design=Design300, replications=replications,
                    generate=Generate, analyse=Analyse,
                    summarise=Summarise, iseed=iseed,
                    arrayID=arrayID, filename='mysimfiles/mysim',
-                   control=list(max_time=3.5))   # return successful results up to the 3.5 hour mark
+                   control=list(max_time=3.5, max_RAM=3500))   
+
 ```
 
 Of course, if the session does time out early then this implies that the target `replications` will be missed on the first job submission batch. Therefore, and as is covered in the next section, a new job must be submitted to the scheduler that is mindful of the initial simulation history (particularly, the `.Random.seed` states). 
