@@ -180,11 +180,12 @@
 #'              generate=Generate, analyse=Analyse,
 #'              summarise=Summarise, iseed=iseed, arrayID=arrayID,
 #'              filename='sim/condition',   # saved to 'sim/condition-#.rds'
-#'              control = list(max_time = 4))) |> invisible()
+#'              control = list(max_time = 4, max_RAM = 4000))) |> invisible()
 #'
 #' #  If necessary, conditions above will manually terminate before
-#' #  4 hours, returning any successfully completed results before the HPC
-#' #  session times out (provided shell specified more than 4 hours)
+#' #  4 hours and 4000MB (4BG) of RAM are used, returning any
+#' #  successfully completed results before the HPC session times
+#' #  out (provided shell specified more than 4 hours)
 #'
 #' # list saved files
 #' dir('sim/')
