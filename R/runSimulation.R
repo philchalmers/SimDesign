@@ -1351,6 +1351,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     memory_used <- character(nrow(design)+1L)
     if(print_RAM)
         memory_used[1L] <- RAM_used()
+    if(is.finite(max_RAM)){
+        tmp <- RAM_used(format = FALSE)
+        max_RAM <- max_RAM - tmp
+        if(max_RAM < 0)
+            stop(sprintf('max_RAM must be higher than %s. Please increase', RAM_used()), call.=FALSE)
+    }
     for(i in start:end){
         time0 <- proc.time()[3L]
         if(summarise_asis){

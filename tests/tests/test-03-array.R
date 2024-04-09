@@ -79,13 +79,13 @@ test_that('array', {
     }
 
     tmp <- gc()
-    runArraySimulation(design=Design5, replications=50,
+    runArraySimulation(design=Design5, replications=1000,
                        generate=Generate, analyse=Analyse_big,
                        summarise=Summarise, iseed=iseed,
                        filename='mylongsim', arrayID=arrayID,
-                       control = list(max_RAM=5)) # 5 MB
+                       control = list(max_RAM=150)) # 150 MB
     res <- readRDS("mylongsim-14.rds")
-    expect_true(res$REPLICATIONS < 50L)
+    expect_true(res$REPLICATIONS < 1000L)
     SimClean('mylongsim-14.rds')
 
     ###
