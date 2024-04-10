@@ -1049,8 +1049,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     stop_on_fatal <- ifelse(is.null(control$stop_on_fatal),
                             FALSE, control$stop_on_fatal)
     max_time <- ifelse(is.null(control$max_time), Inf, control$max_time)
-    max_RAM <- ifelse(is.null(control$max_RAM), Inf, control$max_RAM * 1000000)
-    if(is.finite(max_time)) progress <- FALSE
+    max_RAM <- ifelse(is.null(control$max_RAM), Inf, control$max_RAM)
+    max_time <- sbatch_time2sec(max_time)
+    max_RAM <- sbatch_RAM2bytes(max_RAM)
     MPI <- ifelse(is.null(control$MPI), FALSE, control$MPI)
 
     .options.mpi <- ifelse(is.null(control$.options.mpi),

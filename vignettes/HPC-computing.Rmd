@@ -155,8 +155,10 @@ When submitting to the HPC cluster you'll need to include information about how 
 
 ```
 #!/bin/bash
-#SBATCH --time=04:00:00
 #SBATCH --job-name="My simulation"
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=somewhere@out.there
+#SBATCH --time=12:00:00   ## HH:MM:SS
 #SBATCH --mem=4GB
 #SBATCH --cpus-per-task=1
 #SBATCH --array=1-300
@@ -167,7 +169,7 @@ Rscript --vanilla mySimDesignScript.R
 
 For reference later, label this file `mysimulation.slurm` as this is the file that must be submitted to the scheduler when it's time.
 
-The top part of this file provides the BASH instructions for the Slurm scheduler via the `#SBATCH` statements. In this case, how many array jobs to queue (1 through 300), how much memory to use per job (4GB), time limits (4 hours), and more; [see here for SBATCH details](https://slurm.schedmd.com/sbatch.html).
+The top part of this file provides the BASH instructions for the Slurm scheduler via the `#SBATCH` statements. In this case, how many array jobs to queue (1 through 300), how much memory to use per job (4GB), time limits (12 hours), and more; [see here for SBATCH details](https://slurm.schedmd.com/sbatch.html).
 
 The most important input to focus on in this context is **#SBATCH --array=1-300** as this is what is used to within the Slurm scheduler to assign a unique ID to each array job. What the scheduler does is take the defined `mySimDesignScript.R` script and send this to 300 independent resources (each with 1 CPU, in this case), where the independent jobs are assigned a single unique array number within the `--array=1-300` range (e.g., distribution to the first computing resource would be assigned `arrayID=1`, the second resource `arrayID=2`, and so on). In the `runArraySimulation()` function this is used to subset the `Design300` object by row; hence, *the array range must correspond to the row identifiers in the `design` object for proper subsetting!* 
 
@@ -302,16 +304,16 @@ sacct -j <jobid> --format JobID,ReqMem,MaxRSS,Timelimit,Elapsed   # checked comp
 
 This issue is important to consider whenever the HPC cluster has mandatory time/RAM limits for the job submissions, where the array job may not complete within the assigned resources --- hence, if not properly managed, will discard any valid replication information when abruptly terminated. Unfortunately, this is a very likely occurrence, and is largely a function of being unsure about how long each simulation condition/replication will take to complete when distributed across the arrays (some conditions/replications will take longer than others, and it is difficult to be perfectly knowledgeable about this information beforehand) or how large the final objects will grow as the simulation progresses.
 
-To avoid this time/resource waste it is **strongly recommended** to add a `max_time` and/or `max_RAM` argument to the `control` list, specified in hours and megabyes, respectively, which are less than the Slurm specifications. These control flags will halt `runArraySimulation()` execution early and return only the complete simulation results up to this point. However, this will only work if these arguments are meaningfully less than the allocated Slurm resources; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting these to around 90% of the respective `#SBATCH --time=` and `#SBATCH --mem=` inputs should, however, be sufficient in most cases.
+To avoid this time/resource waste it is **strongly recommended** to add a `max_time` and/or `max_RAM` argument to the `control` list (see `help(runArraySimulation)` for supported specifications), which are less than the Slurm specifications. These control flags will halt `runArraySimulation()` execution early and return only the complete simulation results up to this point. However, this will only work if these arguments are meaningfully less than the allocated Slurm resources; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting these to around 90% of the respective `#SBATCH --time=` and `#SBATCH --mem=` inputs should, however, be sufficient in most cases.
 
 ```{r eval=FALSE}
-# Return successful results up to the 3.5 hour mark, and terminate early 
-#   if more than 3.5 GB of RAM are required to store the results
+# Return successful results up to the 11 hour mark, and terminate early 
+#   if more than 3.5 GB of RAM are required to store the internal results
 runArraySimulation(design=Design300, replications=replications,
                    generate=Generate, analyse=Analyse,
                    summarise=Summarise, iseed=iseed,
                    arrayID=arrayID, filename='mysimfiles/mysim',
-                   control=list(max_time=3.5, max_RAM=3500))   
+                   control=list(max_time="11:00:00", max_RAM="3.5GB"))   
 
 ```
 

@@ -83,7 +83,7 @@ test_that('array', {
                        generate=Generate, analyse=Analyse_big,
                        summarise=Summarise, iseed=iseed,
                        filename='mylongsim', arrayID=arrayID,
-                       control = list(max_RAM=150)) # 150 MB
+                       control = list(max_RAM="150MB"))
     res <- readRDS("mylongsim-14.rds")
     expect_true(res$REPLICATIONS < 1000L)
     SimClean('mylongsim-14.rds')
@@ -98,7 +98,7 @@ test_that('array', {
                               generate=Generate, analyse=Analyse,
                               summarise=Summarise, iseed=iseed, arrayID=arrayID,
                               filename='sim/condition',   # saved to 'sim/condition-#.rds'
-                              control = list(max_time = 4, max_RAM = 4000))) |> invisible()
+                              control = list(max_time = "04:00:00", max_RAM = "4GB"))) |> invisible()
 
     #  If necessary, conditions above will manually terminate before
     #  4 hours, returning any successfully completed results before the HPC

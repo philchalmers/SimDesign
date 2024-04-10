@@ -343,7 +343,7 @@ unwind_apply_wind.list <- function(lst, mat, fun, ...){
 lapply_timer <- function(X, FUN, max_time, max_RAM, ...){
     if(is.finite(max_time)){
         ret <- vector('list', length(X))
-        total <- max_time*3600L
+        total <- max_time
         elapsed <- 0
         time_left <- total
         for(i in 1L:length(ret)){
@@ -742,4 +742,62 @@ gen_seeds <- function(design = 1L, iseed = NULL, arrayID = NULL){
         attr(seed, 'iseed') <- iseed
     }
     seed
+}
+
+# Test cases:
+#
+# sbatch_time2sec("4-12")        # day-hours
+# sbatch_time2sec("4-12:15")     # day-hours:minutes
+# sbatch_time2sec("4-12:15:30")  # day-hours:minutes:seconds
+#
+# sbatch_time2sec("30")          # minutes
+# sbatch_time2sec("30:30")       # minutes:seconds
+# sbatch_time2sec("4:30:30")     # hours:minutes:seconds
+sbatch_time2sec <- function(time){
+    ret <- if(is.character(time)){
+        time <- gsub(pattern = " ", "", time)
+        time_vec <- c(days=0, hours=0, mins=0, secs=0)
+        if(grepl("-", time)){ # day format
+            splt <- strsplit(time, "-")[[1L]]
+            time_vec['days'] <- as.numeric(splt[1L])
+            time <- splt[2L]
+            splt <- as.numeric(strsplit(time, ":")[[1L]])
+            time <- if(length(splt) == 1L){
+                sprintf("%f:00:00", splt[1L])
+            } else if(length(splt) == 2L){
+                sprintf("%f:%f:00", splt[1L], splt[2L])
+            } else if(length(splt) == 3L)
+                sprintf("%f:%f:%f", splt[1L], splt[2L], splt[3])
+        }
+        splt <- as.numeric(strsplit(time, ":")[[1L]])
+        time <- if(length(splt) == 1L){
+            sprintf("00:%f:00", splt[1L])
+        } else if(length(splt) == 2L){
+            sprintf("00:%f:%f", splt[1L], splt[2L])
+        } else if(length(splt) == 3L){
+            time
+        } else stop('max_time not correctly specified. Please fix!',
+                    call.=FALSE)
+        splt <- as.numeric(strsplit(time, ":")[[1L]])
+        time_vec[2L:4L] <- splt
+        sum(c(86400, 3600, 60, 1) * time_vec)   # c(24*60*60, 60*60, 60, 1)
+    } else time
+    ret
+}
+
+sbatch_RAM2bytes <- function(RAM){
+    ret <- if(is.character(RAM)){
+        RAM <- gsub(pattern = " ", "", RAM)
+        type <- logical(3L)
+        type[1L] <- grepl('MB', RAM)
+        type[2L] <- grepl('GB', RAM)
+        type[3L] <- grepl('TB', RAM)
+        if(!any(type)) stop('RAM metric must be MB, GB, or TB', call.=FALSE)
+        RAM <- as.numeric(gsub('MB|GB|TB', "", RAM))
+        C <- 1000000 # MB2bytes
+        if(type[2L]) C <- C * 1000
+        if(type[3L]) C <- C * 1000000
+        RAM * C
+    } else RAM
+    ret
 }

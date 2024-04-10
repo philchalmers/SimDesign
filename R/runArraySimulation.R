@@ -22,7 +22,7 @@
 #' set of random numbers via L'Ecuyer-CMRG's (2002) method.
 #'
 #' Additionally, for timed simulations on HPC clusters it is also recommended to pass a
-#' \code{control = list(max_time = number_of_hours)} to avoid discarding
+#' \code{control = list(max_time)} value to avoid discarding
 #' conditions that require more than the specified time in the shell script.
 #' The \code{max_time} value should be less than the maximum time allocated
 #' on the HPC cluster (e.g., approximately 90% of this time or less, though
@@ -64,25 +64,34 @@
 #' @param control control list passed to \code{\link{runSimulation}}.
 #'   In addition to the original \code{control} elements two
 #'   additional arguments have been added:
-#'   \code{max_time} (specified in hours) and \code{max_RAM} (specified in
-#'   megabytes, MB).
+#'   \code{max_time} and \code{max_RAM}, both of which as specified as
+#'   character vectors with one element.
 #'
-#'   \code{max_time} specifies the maximum time (in hours) allowed for a
+#'   \code{max_time} specifies the maximum time allowed for a
 #'   single simulation condition to execute (default does not set
 #'   any time limits). This is primarily useful when the HPC cluster
 #'   will time out after some known elapsed time.
-#'   In general, this input should be set to somewhere around 80-90% of the true termination
-#'   time so that any evaluations completed before the cluster is terminated can be saved
+#'   Following the \code{SBATCH} specifications, acceptable time formats include
+#'   \code{"minutes"}, \code{"minutes:seconds"}, \code{"hours:minutes:seconds"},
+#'   \code{"days-hours"}, \code{"days-hours:minutes"} and
+#'   \code{"days-hours:minutes:seconds"}.
+#'   For example, \code{max_time = "60"} indicates a maximum time of 60 minutes,
+#'   \code{max_time = "03:00:00"} a maximum time of 3 hours,
+#'   \code{max_time = "4-12"} a maximum of 4 days and 12 hours, and
+#'   \code{max_time = "2-02:30:00"} a maximum of 2 days, 2 hours and 30 minutes.
+#'   In general, this input should be set to somewhere around
+#'   80-90% of the true termination time so that any evaluations completed
+#'   before the cluster is terminated can be saved. Default applies no time limit
 #'
-#'   Similarly, \code{max_RAM} (specified in megabytes, MB) controls the
+#'   Similarly, \code{max_RAM} controls the
 #'   (approximate) maximum size that the simulation storage objects can grow
-#'   before RAM becomes an issue (e.g., setting \code{max_RAM=4000} indicates that if the simulation
-#'   storage objects are larger than 4GB then the workflow will terminate early,
-#'   returning only the intermediate results).
+#'   before RAM becomes an issue. This can be specified either in terms of megabytes
+#'   (MB), gigabytes (GB), or terabytes (TB). For example, \code{max_RAM = "4GB"} indicates that
+#'   if the simulation storage objects are larger than 4GB then the workflow
+#'   will terminate early, returning only the successful results up to this point).
 #'   Useful for larger HPC cluster jobs with RAM constraints that could terminate abruptly.
 #'   As a rule of thumb this should be set to around 90% of the maximum possible storage
 #'   available. Default applies no memory limit
-#'
 #'
 #' @param ... additional arguments to be passed to \code{\link{runSimulation}}
 #'
@@ -171,21 +180,22 @@
 #'
 #'
 #' ###
-#' # emulate the arrayID distribution, storing all results in a 'sim/' folder
+#' # Emulate the arrayID distribution, storing all results in a 'sim/' folder
 #' dir.create('sim/')
 #'
 #' # Emulate distribution to nrow(Design5) = 15 independent job arrays
+#' ##  (just used for presentation purposes on local computer)
 #' sapply(1:nrow(Design5), \(arrayID)
-#'        runArraySimulation(design=Design5, replications=10,
-#'              generate=Generate, analyse=Analyse,
-#'              summarise=Summarise, iseed=iseed, arrayID=arrayID,
-#'              filename='sim/condition',   # saved to 'sim/condition-#.rds'
-#'              control = list(max_time = 4, max_RAM = 4000))) |> invisible()
+#'      runArraySimulation(design=Design5, replications=10,
+#'           generate=Generate, analyse=Analyse,
+#'           summarise=Summarise, iseed=iseed, arrayID=arrayID,
+#'           filename='sim/condition',   # saved to 'sim/condition-#.rds'
+#'           control = list(max_time="04:00:00", max_RAM="4GB"))) |> invisible()
 #'
 #' #  If necessary, conditions above will manually terminate before
-#' #  4 hours and 4000MB (4BG) of RAM are used, returning any
+#' #  4 hours and 4GB of RAM are used, returning any
 #' #  successfully completed results before the HPC session times
-#' #  out (provided shell specified more than 4 hours)
+#' #  out (provided .slurm script specified more than 4 hours)
 #'
 #' # list saved files
 #' dir('sim/')
