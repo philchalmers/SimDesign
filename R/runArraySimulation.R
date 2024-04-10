@@ -114,6 +114,8 @@
 #'
 #' @examples
 #'
+#' library(SimDesign)
+#'
 #' Design <- createDesign(N = c(10, 20, 30))
 #'
 #' Generate <- function(condition, fixed_objects = NULL) {

@@ -117,6 +117,8 @@ to collect the missing replication information.
 }
 \examples{
 
+library(SimDesign)
+
 Design <- createDesign(N = c(10, 20, 30))
 
 Generate <- function(condition, fixed_objects = NULL) {
@@ -196,9 +198,9 @@ sapply(1:nrow(Design5), \(arrayID)
           control = list(max_time="04:00:00", max_RAM="4GB"))) |> invisible()
 
 #  If necessary, conditions above will manually terminate before
-#  4 days and 4GB of RAM are used, returning any
+#  4 hours and 4GB of RAM are used, returning any
 #  successfully completed results before the HPC session times
-#  out (provided .slurm script specified more than 4 days)
+#  out (provided .slurm script specified more than 4 hours)
 
 # list saved files
 dir('sim/')
