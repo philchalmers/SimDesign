@@ -12,7 +12,7 @@ output:
       collapsed: false
       smooth_scroll: false
 vignette: >
-  %\VignetteIndexEntry{HPC clusters array jobs(e.g., via Slurm)}
+  %\VignetteIndexEntry{HPC cluster array jobs (e.g., via Slurm)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -99,7 +99,7 @@ module load R/4.3.1
 Rscript --vanilla SimDesign_simulation.R
 ```
 
-This job request a computer be built with 128 GB of RAM with 250 CPUs, which the `SimDesign_simulation.R` is evaluated in, and is submitted to the sheduler via `sbatch slurmInstructions.slurm`.
+This job request a computer be built with 128 GB of RAM with 250 CPUs, which the `SimDesign_simulation.R` is evaluated in, and is submitted to the scheduler via `sbatch slurmInstructions.slurm`.
 
 ### Limitations
 
@@ -108,21 +108,27 @@ While generally effective at distributing the computational load, there are a fe
 - For simulations with varying execution times this will create a great deal of resource waste, and therefore longer execution times (e.g., cores will ultimately sit idle while waiting for the remaining CPUs with longer experiments to finish their jobs).
     - Simulation with many conditions to evaluate (rows in `design`) will suffer most from this limitation due to the rolling overhead, resulting in jobs that take longer to evaluate
 - Must guessing or estimate the number of cores/RAM required a priori
-- The scheduler must wait until all resources become available, which can take time to allocate
-    - If you request 10000 CPUs with 10000 GB of RAM then this will often take longer than requesting 10000 computers with 1CPU and 1GB of RAM, which will roll in as they become available
+- Parallel distribution of resources incurs some overhead due to the communication between the resources (hence, using 100 CPUs vs 1CPU does not result in a 100x increase)
+- The scheduler must wait until all resources become available to allocate the requested specifications, which can take a good amount of time to allocate 
+    - For instance, if you request 1000 CPUs with 1000 GB of RAM then this will often take considerably longer than requesting 1000 independent computing arrays with 1CPU and 1GB of RAM, which will roll in as they become available (the latter approach is described in the next section)
+    - Even more problematic in some cases is that schedulers like Slurm cap the maximum number of resources that can be requested per node (e.g., 128GB of RAM). Hence, to avoid wasting time by swapping/paging, the scheduler will never allocate jobs whose memory requirements exceed the amount of available memory 
     
-To address these computational inefficiencies and added wait times, one can instead switch from a cluster-based approach to an array submission approach, discussed in the next section. 
+To address these and other computational inefficiencies/wasted resources, one can instead switch from the cluster-based approach above to an *array* distribution approach, discussed in the next section. 
 
-# Converting `runSimulation()` workflow to one for `runArraySimulation()`
+***
 
-For HPC computing it is often easier to distribute both replications *and* conditions simultaneously to
+# Array jobs 
+
+For HPC computing it is often more optimal to distribute both replications *and* conditions simultaneously to
 unique computing nodes (termed **arrays**) to effectively break the problem in several mini-batches. 
-As such, the above `design` object and `runSimulation()` structure does not readily lend itself to optimal distribution for the array scheduler to distribute. Nevertheless, the 
+As such, the above `design` object and `runSimulation()` structure above does not readily lend itself to optimal distribution for the array scheduler to manage. Nevertheless, the 
 core components are still useful for initial code design, testing, and debugging, and therefore serve as a necessary first step when writing simulation experiment code prior to submitting to an HPC cluster.
 
 After defining and testing your simulation to ensure that it works as expected,
 it now comes the time to setup the components required for organizing the HPC
 cluster submission using the `runArraySimulation()` function. 
+
+## Converting `runSimulation()` workflow to one for `runArraySimulation()`
 
 The job of this function is to match the relevant information defined in the `.sh` or `.slurm` script in the associated `.R` script. This is done by extracting information provided by the scheduler (specifically, via an `arrayID`), which in turn is used to select specific subsets of the `design` rows. However, unlike `runSimulation()` the function `runArraySimulation()` has been designed to control important information pertaining to `.Random.seeds` and other relevant distribution information that allow for the rows in the `design` object itself to contain **repeated experimental condition information**. This allows both the `design` rows *and* `replication` information to be optimally distributed to the HPC cluster.
 
@@ -193,7 +199,7 @@ When submitting to the HPC cluster you'll need to include information about how 
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
 #SBATCH --time=12:00:00       ## HH:MM:SS
-#SBATCH --mem=4G
+#SBATCH --mem=2G
 #SBATCH --cpus-per-task=1
 #SBATCH --array=1-300
 
@@ -201,9 +207,9 @@ module load R/4.3.1
 Rscript --vanilla mySimDesignScript.R
 ```
 
-For reference later, label this file `mysimulation.slurm` as this is the file that must be submitted to the scheduler when it's time.
+For reference later, label this file `simulation.slurm` as this is the file that must be submitted to the scheduler when it's time.
 
-The top part of this file provides the BASH instructions for the Slurm scheduler via the `#SBATCH` statements. In this case, how many array jobs to queue (1 through 300), how much memory to use per job (4GB), time limits (12 hours), and more; [see here for SBATCH details](https://slurm.schedmd.com/sbatch.html).
+The top part of this file provides the BASH instructions for the Slurm scheduler via the `#SBATCH` statements. In this case, how many array jobs to queue (1 through 300), how much memory to use per job (2GB), time limits (12 hours), and more; [see here for SBATCH details](https://slurm.schedmd.com/sbatch.html).
 
 The most important input to focus on in this context is **#SBATCH --array=1-300** as this is what is used to within the Slurm scheduler to assign a unique ID to each array job. What the scheduler does is take the defined `mySimDesignScript.R` script and send this to 300 independent resources (each with 1 CPU, in this case), where the independent jobs are assigned a single unique array number within the `--array=1-300` range (e.g., distribution to the first computing resource would be assigned `arrayID=1`, the second resource `arrayID=2`, and so on). In the `runArraySimulation()` function this is used to subset the `Design300` object by row; hence, *the array range must correspond to the row identifiers in the `design` object for proper subsetting!* 
 
@@ -242,7 +248,7 @@ Regardless, the hard part is done here, though other information could be includ
 Below is the complete submission script collecting everything that was presented above. This assumes that 
 
 - The `.R` file with the simulation code is stored in the file `mySimDesignScript.R`,
-- A suitable Slurm instruction file has been created in the file `mysimulation.slurm`, which points to `mySimDesignScript.R` and includes the relevant `R` modules, and
+- A suitable Slurm instruction file has been created in the file `simulation.slurm`, which points to `mySimDesignScript.R` and includes the relevant `R` modules, and
 - A directory called `mysimfiles/` has been created for storing the files on the computer used to submit the array job
 
 
@@ -284,7 +290,7 @@ runArraySimulation(design=Design300, replications=replications,
 
 This file is then submitted to the job scheduler via `sbatch`, pointing to the `.slurm` instructions.
 ```
-sbatch mysimulation.slurm
+sbatch simulation.slurm
 ```
 Once complete you can now go get a beer, coffee, or whatever else tickles your fancy to celebrate as the hard part is now done.
 
@@ -318,6 +324,7 @@ saveRDS(Final, "../final_sim.rds")
 ```
 You should now consider moving this `"final_sim.rds"` off the Slurm landing node and onto your home computer via `scp` or your other favourite method (e.g., using `WinSCP` on Windows). 
 
+***
 
 # Extra information (FAQs)
 
@@ -413,7 +420,6 @@ Design_left <- expandDesign(subDesign, 50) # smaller number of reps per array
 Design_left
 
 replications_left <- rep(replications_missed/50, each=50)
-head(replications_left)
 table(replications_left)
 
 # new total design and replication objects
