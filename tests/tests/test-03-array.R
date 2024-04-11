@@ -97,7 +97,7 @@ test_that('array', {
            runArraySimulation(design=Design5, replications=10,
                               generate=Generate, analyse=Analyse,
                               summarise=Summarise, iseed=iseed, arrayID=arrayID,
-                              filename='sim/condition',   # saved to 'sim/condition-#.rds'
+                              dirname='sim', filename='condition',   # saved to 'sim/condition-#.rds'
                               control = list(max_time = "04:00:00", max_RAM = "4GB"))) |> invisible()
 
     #  If necessary, conditions above will manually terminate before

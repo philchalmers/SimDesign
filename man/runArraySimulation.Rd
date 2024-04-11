@@ -10,6 +10,7 @@ runArraySimulation(
   replications,
   iseed,
   filename,
+  dirname = NULL,
   arrayID = getArrayID(),
   filename_suffix = paste0("-", arrayID),
   addArrayInfo = TRUE,
@@ -36,6 +37,10 @@ specify extension). However, the array ID will be appended to each
 \code{filename} (see \code{filename_suffix}). For example, if
 \code{filename = 'mysim'} then files stored will be \code{'mysim-1.rds'},
 \code{'mysim-2.rds'}, and so on for each row in \code{design}}
+
+\item{dirname}{directory to save the files associated with \code{filename}
+to. If omitted the files will be stored in the same working directory
+where the script was submitted}
 
 \item{arrayID}{array identifier from the scheduler. Must be a number between
 1 and \code{nrow(design)}. If not specified then \code{\link{getArrayID}} will
@@ -194,7 +199,7 @@ sapply(1:nrow(Design5), \(arrayID)
      runArraySimulation(design=Design5, replications=10,
           generate=Generate, analyse=Analyse,
           summarise=Summarise, iseed=iseed, arrayID=arrayID,
-          filename='sim/condition',   # saved to 'sim/condition-#.rds'
+          filename='condition', dirname='sim', # files: "sim/condition-#.rds"
           control = list(max_time="04:00:00", max_RAM="4GB"))) |> invisible()
 
 #  If necessary, conditions above will manually terminate before

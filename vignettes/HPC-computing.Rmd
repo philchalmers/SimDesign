@@ -158,12 +158,13 @@ When submitting to the HPC cluster you'll need to include information about how 
 #SBATCH --job-name="My simulation"
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=somewhere@out.there
-#SBATCH --time=12:00:00   ## HH:MM:SS
-#SBATCH --mem=4GB
+#SBATCH --output=/dev/null    ## (optional) delete .out files
+#SBATCH --time=12:00:00       ## HH:MM:SS
+#SBATCH --mem=4G
 #SBATCH --cpus-per-task=1
 #SBATCH --array=1-300
 
-module load R
+module load R/4.3.1
 Rscript --vanilla mySimDesignScript.R
 ```
 
@@ -192,14 +193,14 @@ runArraySimulation(design=Design300, replications=replications,
                    arrayID=arrayID, filename='mysim')
 ```
 
-And that's it! The above will store all the `mysim-#.rds` files in the directory where the job was submitted, which is somewhat on the messy side, so you may also want to specify a directory name to store the simulation files to. Hence,  on the main (i.e., landing) location associated with your `ssh` account create a directory,  using something like `mkdir mysimfiles` in the location where your `.R` and `.slurm` files are stored. Then the following can be used to store all 300 collected `.rds` files. 
+And that's it! The above will store all the `mysim-#.rds` files in the directory where the job was submitted, which is somewhat on the messy side, so you may also want to specify a directory name to store the simulation files to. Hence,  on the main (i.e., landing) location associated with your `ssh` account create a directory,  using something like `mkdir mysimfiles` (or in R, `dir.create('mysimfiles')`) in the location where your `.R` and `.slurm` files are stored. Then the following can be used to store all 300 collected `.rds` files. 
 
 ```{r eval=FALSE}
 # run the simulation on subset based on arrayID subset information
 runArraySimulation(design=Design300, replications=replications,
                    generate=Generate, analyse=Analyse,
-                   summarise=Summarise, iseed=iseed,
-                   arrayID=arrayID, filename='mysimfiles/mysim')
+                   summarise=Summarise, iseed=iseed, arrayID=arrayID, 
+                   dirname='mysimfiles', filename='mysim')
 ```
 Regardless, the hard part is done here, though other information could be included by way of the `control` list input if necessary, such as including explicit time limits in the R executions within array jobs themselves (see the FAQ section for further information).
 
@@ -244,8 +245,8 @@ arrayID <- getArrayID()
 # run the simulation on subset based on arrayID subset information
 runArraySimulation(design=Design300, replications=replications,
                    generate=Generate, analyse=Analyse,
-                   summarise=Summarise, iseed=iseed,
-                   arrayID=arrayID, filename='mysimfiles/mysim')
+                   summarise=Summarise, iseed=iseed, arrayID=arrayID, 
+                   dirname='mysimfiles', filename='mysim')
 ```
 
 This file is then submitted to the job scheduler via `sbatch`, pointing to the `.slurm` instructions.
@@ -258,10 +259,11 @@ Once complete you can now go get a beer, coffee, or whatever else tickles your f
 
 Alright, the job submission part is now complete, some time has elapsed, and you finally have access to the complete set of simulation files that have the file names `mysim-#.rds`. The final step now to collect all these independent results into a simulation object that resembles what would have been returned from the canonical `runSimulation()` function. Fortunately, this is very easy to do with `aggregate_simulations()`.
 
-All you must do at this point is change to the working directory containing the simulation files (`cd mysimfiles`), load up R (`R`), and call 
+All you must do at this point is change to the working directory containing the simulation files and use `aggregate_simulations()`:
 
 
 ```{r eval=FALSE}
+setwd('mysimfiles')
 Final <- SimDesign::aggregate_simulations(files=dir())
 Final
 ```
@@ -278,11 +280,10 @@ Final
 This function detects which `Design300` rows belong to the original `Design` object and collapse the meta-statistics and stored `results` information accordingly. No fuss, no mess. Of course, you'll want to store this object for later use as this is the complete collection of the results from the 300 array jobs, organized into one neat little (object) package.
 
 ```{r eval=FALSE}
-# save the aggregated simulation object in its entirety for subsequent analyses
-setwd("..")
-saveRDS(Final, "final_sim.rds")
+# save the aggregated simulation object for subsequent analyses
+saveRDS(Final, "../final_sim.rds")
 ```
-You should now consider moving this `"final_sim.rds"` off the Slurm landing node and onto your home computer via `scp` or your other favorite method (e.g., using `WinSCP` on Windows). 
+You should now consider moving this `"final_sim.rds"` off the Slurm landing node and onto your home computer via `scp` or your other favourite method (e.g., using `WinSCP` on Windows). 
 
 
 # Extra information (FAQs)
@@ -311,8 +312,8 @@ To avoid this time/resource waste it is **strongly recommended** to add a `max_t
 #   if more than 3.5 GB of RAM are required to store the internal results
 runArraySimulation(design=Design300, replications=replications,
                    generate=Generate, analyse=Analyse,
-                   summarise=Summarise, iseed=iseed,
-                   arrayID=arrayID, filename='mysimfiles/mysim',
+                   summarise=Summarise, iseed=iseed, arrayID=arrayID, 
+                   dirname='mysimfiles', filename='mysim',
                    control=list(max_time="11:00:00", max_RAM="3.5GB"))   
 
 ```

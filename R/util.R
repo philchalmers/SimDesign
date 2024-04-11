@@ -785,15 +785,22 @@ sbatch_time2sec <- function(time){
     ret
 }
 
+# Test cases:
+#
+# sbatch_RAM2bytes("1024MB")
+# sbatch_RAM2bytes("4G")
+# sbatch_RAM2bytes("1.5TB")
+
 sbatch_RAM2bytes <- function(RAM){
     ret <- if(is.character(RAM)){
         RAM <- gsub(pattern = " ", "", RAM)
         type <- logical(3L)
-        type[1L] <- grepl('MB', RAM)
-        type[2L] <- grepl('GB', RAM)
-        type[3L] <- grepl('TB', RAM)
+        type[1L] <- grepl('M', RAM)
+        type[2L] <- grepl('G', RAM)
+        type[3L] <- grepl('T', RAM)
         if(!any(type)) stop('RAM metric must be MB, GB, or TB', call.=FALSE)
-        RAM <- as.numeric(gsub('MB|GB|TB', "", RAM))
+        RAM <- gsub('B', "", RAM)
+        RAM <- as.numeric(gsub('M|G|T', "", RAM))
         C <- 1000000 # MB2bytes
         if(type[2L]) C <- C * 1000
         if(type[3L]) C <- C * 1000000

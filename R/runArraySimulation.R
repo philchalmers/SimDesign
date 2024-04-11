@@ -52,6 +52,10 @@
 #'   \code{filename = 'mysim'} then files stored will be \code{'mysim-1.rds'},
 #'   \code{'mysim-2.rds'}, and so on for each row in \code{design}
 #'
+#' @param dirname directory to save the files associated with \code{filename}
+#'   to. If omitted the files will be stored in the same working directory
+#'   where the script was submitted
+#'
 #' @param filename_suffix suffix to add to the \code{filename};
 #'   default add '-' with the \code{arrayID}
 #'
@@ -191,7 +195,7 @@
 #'      runArraySimulation(design=Design5, replications=10,
 #'           generate=Generate, analyse=Analyse,
 #'           summarise=Summarise, iseed=iseed, arrayID=arrayID,
-#'           filename='sim/condition',   # saved to 'sim/condition-#.rds'
+#'           filename='condition', dirname='sim', # files: "sim/condition-#.rds"
 #'           control = list(max_time="04:00:00", max_RAM="4GB"))) |> invisible()
 #'
 #' #  If necessary, conditions above will manually terminate before
@@ -219,7 +223,8 @@
 #' }
 #'
 runArraySimulation <- function(design, ..., replications,
-                               iseed, filename, arrayID = getArrayID(),
+                               iseed, filename, dirname = NULL,
+                               arrayID = getArrayID(),
                                filename_suffix = paste0("-", arrayID),
                                addArrayInfo = TRUE,
                                save_details = list(),
@@ -248,6 +253,10 @@ runArraySimulation <- function(design, ..., replications,
     stopifnot(arrayID %in% 1L:nrow(design))
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)
+    if(!is.null(dirname)){
+        filename <- file.path(dirname, filename)
+        filename <- gsub("//", "/", filename)
+    }
     save_details$arrayID <- arrayID
     seed <- gen_seeds(design, iseed=iseed, arrayID=arrayID)
 
