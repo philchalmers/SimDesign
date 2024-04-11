@@ -8,18 +8,19 @@
   useful for debugging purposes where errors or warnings are not thrown
 
 - `runArraySimulation()` added to better support distributing array's of jobs
-  on HPC clusters. Works best when combined with `expandDesign()` and the 
-  improved `aggregate_simulations()` behaviour for more evenly distribution
-  replication budgets across independent jobs. An associated vignette file
-  has been added to the package to provide context and tutorial information
+  on HPC clusters. Works best when combined with new `expandDesign()` 
+  function (see next point) and the improved `aggregate_simulations()` behaviour 
+  for more evenly distribution replication budgets across independent jobs. 
+  An associated vignette file has been added to the package to provide 
+  context and tutorial information for Slurm clusters
   
-- `getArrayID()` added to detect the array job ID (used 
-  with `runArraySimulation(..., arrayID)`)
-
 - `expandDesign()` added to repeat the row conditions a number of 
   times instead of just once. This is useful when
   exporting each condition independently to computing clusters, where each cluster
   contains only a fraction of the target `replications` (see issue #33)
+  
+- `getArrayID()` added to detect the array job ID (used 
+  with `runArraySimulation(..., arrayID)`)
 
 - `aggregate_simulations()` now requires explicit `filename` 
   argument to save the collapsed simulation information
@@ -29,16 +30,18 @@
   over (see new `expandDesign()` function)
   
 - `runArraySimulation()`'s `control` list contain new `max_time` and 
-   `max_RAM` arguments to evaluate
-  simulation replications up until this time or RAM storage constraint is reached. In the event
-  that the target replications are not reached the simulations up to this point, or the max RAM storage has been reached,
-  then on the partial results will be returned (with a warning). This is mainly useful for single core processing
-  jobs on HPC clusters that require time and RAM constraints (e.g., 4 days per job; 4GB of RAM), where some
-  jobs may be more time/RAM consuming than others (requested by Mikko Rönkkö)
+  `max_RAM` arguments to evaluate simulation replications up until this time 
+  or RAM storage constraint is reached. In the event that the target 
+  replications are not reached the simulations up to this point, or the max 
+  RAM storage has been reached, then on the partial results will be returned 
+  (with a warning). This is mainly useful for single core processing
+  jobs on HPC clusters that require time and RAM constraints (e.g., 4 days 
+  per job; 4GB of RAM), where some jobs may be more time/RAM consuming than 
+  others (requested by Mikko Rönkkö)
   
 - Expose seed generation control per simulation condition via the 
-  function `gen_seeds()`, which allows a list of seeds to be distributed to 
-  `runArraySimulation()` as well
+  function `gen_seeds()`, which also automatically constructs proper 
+  L'Ecuyer-CMRG seeds to be distributed across the `runArraySimulation()` jobs 
 
 ## Changes in SimDesign 2.14
 
