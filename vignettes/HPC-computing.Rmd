@@ -39,12 +39,15 @@ The purpose of this vignette is to demonstrate how to utilize `SimDesign` in the
 
 For information about Slurm's Job Array support in particular, which this vignette uses as an example, see https://slurm.schedmd.com/job_array.html 
 
-# Standard setup via `runSimulation()`
+# Standard setup via `runSimulation()`, but on HPC cluster
 
 To start, the structure of the simulation code used later on to distribute the jobs to the HPC scheduler is effectively the same as the usual generate-analyse-summarise workflow described in `runSimulation()`, with a few organizational exceptions. As such, this is always a good place to start when designing, testing, and debugging a simulation experiment before submitting to HPC clusters.
 
-Suppose the following simulation was to be evaluated, though for time constraint reasons would not be possible to execute on a single computer (or a smaller network of computers) and therefore should be submitted to an HPC cluster. The following structure will of course still work on a HPC cluster, however the parallel distribution occurs across the replications on a per-condition basis. This makes it less ideal for schedulers to distribute all at once.
+**IMPORTANT: Only after the vast majority of the bugs and coding logic have been work out should you consider moving on to the next step involving HPC clusters**. If your code is not well vetted in this step then any later jobs evaluated on the HPC cluster will be a waste of time and resources (garbage-in, garbage-out).
 
+### Example
+
+Suppose the following simulation was to be evaluated, though for time constraint reasons would not be possible to execute on a single computer (or a smaller network of computers) and therefore should be submitted to an HPC cluster. The following script `SimDesign_simulation.R` contains a simulation experiment whose instructions are to be submitted to the Slurm scheduler. To do so, the `sbatch` utility is used along with the set of instructions specifying the type of hardware required in the file `slurmInstructions.slurm`. In the R side of the simulation, the defined code must grab all available cores (minus 1) that are detectable via `parallel::detectCores()`, which occurs automatically when using `runSimulation(..., parallel=TRUE)`. 
 ```{r}
 # SimDesign::SimFunctions()
 library(SimDesign)
@@ -76,16 +79,46 @@ res <- runSimulation(design=Design, replications=10000, generate=Generate,
 
 In the standard `runSimulation(..., parallel=TRUE)` setup the 10,000 
 replications would be distributed to the available computing cores and evaluated
-independently across the three row conditions in the `design` object. However, for
-HPC computing it is often better to distribute both replications *and* conditions simultaneously to
-unique computing nodes (termed **arrays**) to effectively break the problem in several mini-batches. As such, the above `design` object
-and `runSimulation()` structure does not readily lend itself to optimal distribution 
-for the scheduler to distribute. Nevertheless, the 
+independently across the three row conditions in the `design` object. However, this process is only
+executed in sequence: `design[1,]` is evaluated first and, only after the 10,000 replications 
+are collected, `design[2,]` is evaluated until complete, and so on. 
+
+As well, in order for this approach to be at all optimal the HPC cluster must assign a job containing a very large number of resources in the form of RAM and CPUs. To demonstrate, in the following `slurmInstructions.slurm` file a larger number of CPUs are requested when building the structure associated with this job, as well as larger amounts of RAM. 
+
+```
+#!/bin/bash
+#SBATCH --job-name="My simulation"
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=somewhere@out.there
+#SBATCH --output=/dev/null    ## (optional) delete .out files
+#SBATCH --time=12:00:00       ## HH:MM:SS
+#SBATCH --mem=128G            ## Build a computer with 128GB of RAM 
+#SBATCH --cpus-per-task=250   ## Build a computer with 250 cores
+
+module load R/4.3.1
+Rscript --vanilla SimDesign_simulation.R
+```
+
+This job request a computer be built with 128 GB of RAM with 250 CPUs, which the `SimDesign_simulation.R` is evaluated in, and is submitted to the sheduler via `sbatch slurmInstructions.slurm`.
+
+### Limitations
+
+While generally effective at distributing the computational load, there are a few limitations of the above approach:
+
+- For simulations with varying execution times this will create a great deal of resource waste, and therefore longer execution times (e.g., cores will ultimately sit idle while waiting for the remaining CPUs with longer experiments to finish their jobs).
+    - Simulation with many conditions to evaluate (rows in `design`) will suffer most from this limitation due to the rolling overhead, resulting in jobs that take longer to evaluate
+- Must guessing or estimate the number of cores/RAM required a priori
+- The scheduler must wait until all resources become available, which can take time to allocate
+    - If you request 10000 CPUs with 10000 GB of RAM then this will often take longer than requesting 10000 computers with 1CPU and 1GB of RAM, which will roll in as they become available
+    
+To address these computational inefficiencies and added wait times, one can instead switch from a cluster-based approach to an array submission approach, discussed in the next section. 
+
+# Converting `runSimulation()` workflow to one for `runArraySimulation()`
+
+For HPC computing it is often easier to distribute both replications *and* conditions simultaneously to
+unique computing nodes (termed **arrays**) to effectively break the problem in several mini-batches. 
+As such, the above `design` object and `runSimulation()` structure does not readily lend itself to optimal distribution for the array scheduler to distribute. Nevertheless, the 
 core components are still useful for initial code design, testing, and debugging, and therefore serve as a necessary first step when writing simulation experiment code prior to submitting to an HPC cluster.
-
-**IMPORTANT: Only after the vast majority of the bugs and coding logic have been work out should you consider moving on to the next step involving HPC clusters**. If your code is not well vetted in this step then any later jobs evaluated on the HPC cluster will be a waste of time and resources (garbage-in, garbage-out).
-
-# Modifying the `runSimulation()` workflow for `runArraySimulation()`
 
 After defining and testing your simulation to ensure that it works as expected,
 it now comes the time to setup the components required for organizing the HPC
@@ -149,7 +182,7 @@ iseed <- 1276149341
 
 As discussed in the FAQ section at the bottom, this associated value will also allow for generation of new `.Random.seed` elements if (or when) a second or third set of simulation jobs should be submitted to the HPC cluster at a later time but must also generate simulated data that is independent from the initial submission(s).  
 
-## Including and extract array ID information in the `.slurm` script
+## Extract array ID information from the `.slurm` script
 
 When submitting to the HPC cluster you'll need to include information about how the scheduler should distribute the simulation experiment code to the workers. In Slurm systems, you may have a script such as the following, stored into a suitable `.slurm` file:
 
