@@ -205,7 +205,7 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
     }
     extra_info1 <- attr(readin[[1L]], 'extra_info')
     ncores <- sum(sapply(readin, function(x) attr(x, 'extra_info')$ncores))
-    extra_info1[c("seeds", "date_completed", "summarise_list",
+    extra_info1[c("seeds", "date_completed", "summarise_list", "stored_results",
                   "total_elapsed_time", "stored_Random.seeds_list")] <- NULL
     errors <- lapply(readin, function(x)
         as.data.frame(x[ ,grepl('ERROR', colnames(x)), drop=FALSE]))
@@ -276,10 +276,11 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
     }
     if(length(unique.set.index) == 1L){
         out <- full_out[[1L]]
+        extra_info1$stored_results <- attr(out, 'extra_info')$stored_results
     } else {
         out <- do.call(rbind, full_out)
         if(has_stored_results)
-            attr(out, 'extra_info')$stored_results <- do.call(rbind,
+            extra_info1$stored_results <- do.call(rbind,
                             lapply(full_out, \(x) attr(x, 'extra_info')$stored_results))
     }
     if(check.only){
