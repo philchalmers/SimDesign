@@ -204,7 +204,8 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
         readin[[i]] <- subset_results(readin[[i]], select=select)
     }
     extra_info1 <- attr(readin[[1L]], 'extra_info')
-    extra_info1[c("seeds", "ncores", "date_completed", "summarise_list",
+    ncores <- sum(sapply(readin, function(x) attr(x, 'extra_info')$ncores))
+    extra_info1[c("seeds", "date_completed", "summarise_list",
                   "total_elapsed_time", "stored_Random.seeds_list")] <- NULL
     errors <- lapply(readin, function(x)
         as.data.frame(x[ ,grepl('ERROR', colnames(x)), drop=FALSE]))
@@ -306,6 +307,7 @@ aggregate_simulations <- function(files = NULL, filename = NULL,
         warning("Simulation results do not contain the same number of REPLICATIONS")
     extra_info1$total_elapsed_time <- sum(out$SIM_TIME)
     extra_info1$number_of_conditions <- nrow(out)
+    extra_info1$ncores <- ncores
     attr(out, 'extra_info') <- extra_info1
     invisible(out)
 }

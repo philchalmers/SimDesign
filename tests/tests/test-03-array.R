@@ -116,6 +116,8 @@ test_that('array', {
 
     # aggregate simulation results into single file
     final <- aggregate_simulations(files=dir())
+    so <- summary(final)
+    expect_equal(so$ncores, 15L)
     results <- SimResults(final)
 
     expect_equal(final$REPLICATIONS, c(50, 50, 50))
