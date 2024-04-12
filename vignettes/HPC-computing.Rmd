@@ -93,26 +93,28 @@ As well, in order for this approach to be at all optimal the HPC cluster must as
 #SBATCH --output=/dev/null    ## (optional) delete .out files
 #SBATCH --time=12:00:00       ## HH:MM:SS
 #SBATCH --mem=128G            ## Build a computer with 128GB of RAM 
-#SBATCH --cpus-per-task=250   ## Build a computer with 250 cores
+#SBATCH --cpus-per-task=96    ## Build a computer with 96 cores
 
 module load R/4.3.1
 Rscript --vanilla SimDesign_simulation.R
 ```
 
-This job request a computer be built with 128 GB of RAM with 250 CPUs, which the `SimDesign_simulation.R` is evaluated in, and is submitted to the scheduler via `sbatch slurmInstructions.slurm`.
+This job request a computer be built with 128 GB of RAM with 96 CPUs, which the `SimDesign_simulation.R` is evaluated in, and is submitted to the scheduler via `sbatch slurmInstructions.slurm`.
 
 ### Limitations
 
 While generally effective at distributing the computational load, there are a few limitations of the above approach:
 
-1) For simulations with varying execution times this will create a great deal of resource waste, and therefore longer execution times (e.g., cores will ultimately sit idle while waiting for the remaining CPUs with longer experiments to finish their jobs).
-    - Simulation with many conditions to evaluate (rows in `design`) will suffer most due to the rolling overhead, resulting in jobs that take longer to finish
-2) Parallel distribution across the allocated resources (e.g., across two nodes, both with 48 cores) incurs some overhead that grows as a function of the size of the defined cluster (hence, using a 96 CPU cluster will not result in a 96x speedup of a 1 CPU job) 
-3) Must estimate the number of *total* number of CPUs/RAM required a priori
+1) For simulations with varying execution times this will create a great deal of resource waste
+    - Computer cores will at some point sit idle while waiting for the remaining experiments to complete their job. This occurs for each row in the `design` input (i.e., per simulation condition)
+    - As such, simulation with many conditions to evaluate will suffer most due to the rolling overhead, resulting in wasted resource management (not kind to other users of the HPC cluster) and ultimately results in jobs that take longer to finish
+2) Parallel distribution across the allocated resources (e.g., across two nodes, both with 48 cores) incurs some overhead that grows as a function of the size of the defined cluster 
+    - Using a 96 CPU cluster will not result in a 96x speedup of a 1 CPU job. In fact, the larger the allocated cluster, the worse the performance efficiency
+3) Designers must first estimate the number of *total* number of CPUs/RAM required, while being as conservative as possible
     - Problematic because fewer resources will be given higher priority in the scheduler, and because you may be taking resources away from other researchers if the cores sit idle
-4) The scheduler must wait until all resources (e.g., RAM and CPUs) simultaneously become available to allocate the requested specifications, which can take a good amount of time to allocate if the resources requested are excessively high (hence, become low *priority* on the scheduler)
+4) The scheduler must wait until all resources (e.g., RAM and CPUs) *simultaneously* become available to allocate the requested specifications, which can take a good amount of time to allocate if the resources requested are excessively high (hence, become low *priority* on the scheduler)
     - If you request 96 CPUs with 192 GB of RAM then this will take considerably longer to allocate compared to requesting 96 independent computing arrays with 1 CPU and 2 GB of RAM (the latter approach is described in the next section)
-5) Finally, and perhaps most problematic in simulation experiment applications, schedulers cap the maximum number of resources that can be requested (e.g., 256 GB of RAM), which limits the application of large RAM and CPU jobs 
+5) Finally, and perhaps most problematic in simulation experiment applications, schedulers frequently cap the maximum number of resources that can be requested (e.g., 256 GB of RAM), which limits the application of large RAM and CPU jobs
     - Note that to avoid wasting time by swapping/paging, the scheduler will never allocate jobs whose memory requirements exceed the amount of available memory 
     
 To address these and other computational inefficiencies/wasted resources, one can instead switch from the cluster-based approach above to an *array* distribution approach, discussed in the next section. 
@@ -122,7 +124,7 @@ To address these and other computational inefficiencies/wasted resources, one ca
 # Array jobs 
 
 For HPC computing it is often more optimal to distribute both replications *and* conditions simultaneously to
-unique computing nodes (termed **arrays**) to effectively break the problem in several mini-batches. 
+unique computing nodes (termed **arrays**) to effectively break the problem in several mini-batches (e.g., split the simulation into 1000+ independent pieces, and collect the results later). 
 As such, the above `design` object and `runSimulation()` structure above does not readily lend itself to optimal distribution for the array scheduler to manage. Nevertheless, the 
 core components are still useful for initial code design, testing, and debugging, and therefore serve as a necessary first step when writing simulation experiment code prior to submitting to an HPC cluster.
 
@@ -203,7 +205,7 @@ When submitting to the HPC cluster you'll need to include information about how 
 #SBATCH --time=12:00:00       ## HH:MM:SS
 #SBATCH --mem=2G
 #SBATCH --cpus-per-task=1
-#SBATCH --array=1-300
+#SBATCH --array=1-300         ## Slurm schedulers often allow up to 10,000 arrays
 
 module load R/4.3.1
 Rscript --vanilla mySimDesignScript.R
@@ -305,7 +307,8 @@ All you must do at this point is change to the working directory containing the 
 
 ```{r eval=FALSE}
 setwd('mysimfiles')
-Final <- SimDesign::aggregate_simulations(files=dir())
+library(SimDesign)
+Final <- aggregate_simulations(files=dir())
 Final
 ```
 
@@ -368,7 +371,7 @@ Related to early termination issue above is what to do about the missing replica
 To start, locate the simulation conditions in the aggregated result that do not meet the target replication criteria. This could be done via inspection of the aggregated results
 
 ```{r eval=FALSE}
-Final <- SimDesign::aggregate_simulations(files=dir())
+Final <- aggregate_simulations(files=dir())
 Final
 ```
 
@@ -384,7 +387,7 @@ Final
 or via the more informative `aggregate_simulations(..., check.only=TRUE)` flag.
 
 ```{r eval=FALSE}
-Missed <- SimDesign::aggregate_simulations(files=dir(), check.only=TRUE)
+Missed <- aggregate_simulations(files=dir(), check.only=TRUE)
 Missed
 ```
 
@@ -451,9 +454,9 @@ Submit this job to compute all the missing replication information, which stores
 Once complete, run 
 ```{r eval=FALSE}
 # See if any missing still
-SimDesign::aggregate_simulations(files=dir(), check.only=TRUE)
+aggregate_simulations(files=dir(), check.only=TRUE)
 
 # Obtain complete simulation results
-Final <- SimDesign::aggregate_simulations(files=dir())
+Final <- aggregate_simulations(files=dir())
 ```
 one last time, which now reads in the complete set of 400 stored files instead of the previous 300, thereby obtaining the complete set of high-quality simulation results. Rinse and repeat if the same issue appears yet again on the second submission.
