@@ -105,13 +105,15 @@ This job request a computer be built with 128 GB of RAM with 250 CPUs, which the
 
 While generally effective at distributing the computational load, there are a few limitations of the above approach:
 
-- For simulations with varying execution times this will create a great deal of resource waste, and therefore longer execution times (e.g., cores will ultimately sit idle while waiting for the remaining CPUs with longer experiments to finish their jobs).
-    - Simulation with many conditions to evaluate (rows in `design`) will suffer most from this limitation due to the rolling overhead, resulting in jobs that take longer to evaluate
-- Must guessing or estimate the number of cores/RAM required a priori
-- Parallel distribution of resources incurs some overhead due to the communication between the resources (hence, using 100 CPUs vs 1CPU does not result in a 100x increase)
-- The scheduler must wait until all resources become available to allocate the requested specifications, which can take a good amount of time to allocate 
-    - For instance, if you request 1000 CPUs with 1000 GB of RAM then this will often take considerably longer than requesting 1000 independent computing arrays with 1CPU and 1GB of RAM, which will roll in as they become available (the latter approach is described in the next section)
-    - Even more problematic in some cases is that schedulers like Slurm cap the maximum number of resources that can be requested per node (e.g., 128GB of RAM). Hence, to avoid wasting time by swapping/paging, the scheduler will never allocate jobs whose memory requirements exceed the amount of available memory 
+1) For simulations with varying execution times this will create a great deal of resource waste, and therefore longer execution times (e.g., cores will ultimately sit idle while waiting for the remaining CPUs with longer experiments to finish their jobs).
+    - Simulation with many conditions to evaluate (rows in `design`) will suffer most due to the rolling overhead, resulting in jobs that take longer to finish
+2) Parallel distribution across the allocated resources (e.g., across two nodes, both with 48 cores) incurs some overhead that grows as a function of the size of the defined cluster (hence, using a 96 CPU cluster will not result in a 96x speedup of a 1 CPU job) 
+3) Must estimate the number of *total* number of CPUs/RAM required a priori
+    - Problematic because fewer resources will be given higher priority in the scheduler, and because you may be taking resources away from other researchers if the cores sit idle
+4) The scheduler must wait until all resources (e.g., RAM and CPUs) simultaneously become available to allocate the requested specifications, which can take a good amount of time to allocate if the resources requested are excessively high (hence, become low *priority* on the scheduler)
+    - If you request 96 CPUs with 192 GB of RAM then this will take considerably longer to allocate compared to requesting 96 independent computing arrays with 1 CPU and 2 GB of RAM (the latter approach is described in the next section)
+5) Finally, and perhaps most problematic in simulation experiment applications, schedulers cap the maximum number of resources that can be requested (e.g., 256 GB of RAM), which limits the application of large RAM and CPU jobs 
+    - Note that to avoid wasting time by swapping/paging, the scheduler will never allocate jobs whose memory requirements exceed the amount of available memory 
     
 To address these and other computational inefficiencies/wasted resources, one can instead switch from the cluster-based approach above to an *array* distribution approach, discussed in the next section. 
 
@@ -333,12 +335,11 @@ You should now consider moving this `"final_sim.rds"` off the Slurm landing node
 In addition to using `sbatch` to submit jobs, the following contains other useful Slurm commands.
 
 ```
-sbatch <jobfile.sl>     # submit job file to Slurm scheduler
+sbatch <jobfile.slurm>  # submit job file to Slurm scheduler
 squeue -u <username>    # what jobs are currently queued/running for a specific user
 sshare -U <username>    # check the share usage for a specific user
 scancel <jobid>         # cancel a specific job
 scancel -u <username>   # cancel all queued and running jobs for a specific user
-sacct -j <jobid> --format JobID,ReqMem,MaxRSS,Timelimit,Elapsed   # checked completed job resource usage
 ```
 
 ## My HPC cluster excution time/RAM is limited and terminates before the simulation is complete
