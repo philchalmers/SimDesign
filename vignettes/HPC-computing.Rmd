@@ -39,7 +39,7 @@ The purpose of this vignette is to demonstrate how to utilize `SimDesign` in the
 
 For information about Slurm's Job Array support in particular, which this vignette uses as an example, see https://slurm.schedmd.com/job_array.html 
 
-# Standard setup via `runSimulation()`, but on HPC cluster
+# Standard setup on HPC cluster
 
 To start, the structure of the simulation code used later on to distribute the jobs to the HPC scheduler is effectively the same as the usual generate-analyse-summarise workflow described in `runSimulation()`, with a few organizational exceptions. As such, this is always a good place to start when designing, testing, and debugging a simulation experiment before submitting to HPC clusters.
 
@@ -87,7 +87,7 @@ As well, in order for this approach to be at all optimal the HPC cluster must as
 
 ```
 #!/bin/bash
-#SBATCH --job-name="My simulation"
+#SBATCH --job-name="My simulation (multiple CPUs)"
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
@@ -110,7 +110,7 @@ While generally effective at distributing the computational load, there are a fe
     - As such, simulation with many conditions to evaluate will suffer most due to the rolling overhead, resulting in wasted resource management (not kind to other users of the HPC cluster) and ultimately results in jobs that take longer to finish
 2) Parallel distribution across the allocated resources (e.g., across two nodes, both with 48 cores) incurs some overhead that grows as a function of the size of the defined cluster 
     - Using a 96 CPU cluster will not result in a 96x speedup of a 1 CPU job. In fact, the larger the allocated cluster, the worse the performance efficiency
-3) Designers must first estimate the number of *total* number of CPUs/RAM required, while being as conservative as possible
+3) Designers must first estimate the number of *total* amount of CPUs/RAM/time required, while being as conservative as possible
     - Problematic because fewer resources will be given higher priority in the scheduler, and because you may be taking resources away from other researchers if the cores sit idle
 4) The scheduler must wait until all resources (e.g., RAM and CPUs) *simultaneously* become available to allocate the requested specifications, which can take a good amount of time to allocate if the resources requested are excessively high (hence, become low *priority* on the scheduler)
     - If you request 96 CPUs with 192 GB of RAM then this will take considerably longer to allocate compared to requesting 96 independent computing arrays with 1 CPU and 2 GB of RAM (the latter approach is described in the next section)
@@ -134,7 +134,7 @@ cluster submission using the `runArraySimulation()` function.
 
 ## Converting `runSimulation()` workflow to one for `runArraySimulation()`
 
-The job of this function is to match the relevant information defined in the `.sh` or `.slurm` script in the associated `.R` script. This is done by extracting information provided by the scheduler (specifically, via an `arrayID`), which in turn is used to select specific subsets of the `design` rows. However, unlike `runSimulation()` the function `runArraySimulation()` has been designed to control important information pertaining to `.Random.seeds` and other relevant distribution information that allow for the rows in the `design` object itself to contain **repeated experimental condition information**. This allows both the `design` rows *and* `replication` information to be optimally distributed to the HPC cluster.
+The job of `runArraySimulation()` is to utilize the relevant information defined in the `.sh` or `.slurm` script. This is done by extracting information provided by the scheduler (specifically, via an `arrayID`), which in turn is used to select specific subsets of the `design` rows. However, unlike `runSimulation()` the function `runArraySimulation()` has been designed to control important information pertaining to `.Random.seeds` and other relevant distribution information that allow for the rows in the `design` object itself to contain **repeated experimental condition information**. This allows both the `design` rows *and* `replication` information to be optimally distributed to the HPC cluster.
 
 The following example presents the essential modifications required to move from a single `runSimulation()` workflow to a batch workflow suitable for `runArraySimulation()` and Slurm scheduler.
 
@@ -198,7 +198,7 @@ When submitting to the HPC cluster you'll need to include information about how 
 
 ```
 #!/bin/bash
-#SBATCH --job-name="My simulation"
+#SBATCH --job-name="My simulation (array jobs, distributing conditions + replications)"
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
@@ -298,7 +298,7 @@ sbatch simulation.slurm
 ```
 Once complete you can now go get a beer, coffee, or whatever else tickles your fancy to celebrate as the hard part is now done.
 
-# Post-collection work: Combine the files 
+# Post-evaluation: Combine the files 
 
 Alright, the job submission part is now complete, some time has elapsed, and you finally have access to the complete set of simulation files that have the file names `mysim-#.rds`. The final step now to collect all these independent results into a simulation object that resembles what would have been returned from the canonical `runSimulation()` function. Fortunately, this is very easy to do with `aggregate_simulations()`.
 
@@ -330,6 +330,84 @@ saveRDS(Final, "../final_sim.rds")
 You should now consider moving this `"final_sim.rds"` off the Slurm landing node and onto your home computer via `scp` or your other favourite method (e.g., using `WinSCP` on Windows). 
 
 ***
+
+# Array jobs and multicore computing simultaneously
+
+Of course, nothing really stops you from mixing and matching the above ideas related to multicore computing and array jobs on Slurm and other HPC clusters. For example, if you wanted to take the `design` object and submit batches of these instead (e.g., submit one or more rows of the original `design` object as an array job), where within each batch multicore processing is requested, then something like the following would work just fine: 
+
+```
+#!/bin/bash
+#SBATCH --job-name="My simulation (arrays + multiple CPUs)"
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=somewhere@out.there
+#SBATCH --output=/dev/null    ## (optional) delete .out files
+#SBATCH --time=01:00:00       ## HH:MM:SS
+#SBATCH --mem=32G             ## 32 GB RAM per array
+#SBATCH --cpus-per-task=16    ## 16 CPUs per array
+#SBATCH --array=1-9           ## 9 array jobs 
+
+module load R/4.3.1
+Rscript --vanilla mySimDesignScript.R
+```
+
+with the associated `.R` file containing, in this case, nine simulation conditions across the rows in `Design`.
+
+```{r}
+library(SimDesign)
+
+Design <- createDesign(N = c(10, 20, 30),
+                       SD = c(1,2,3))
+
+Generate <- function(condition, fixed_objects = NULL) {
+    dat <- with(condition, rnorm(N, 10, sd=SD)) # distributed N(10, 5)
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_objects = NULL) {
+    ret <- c(mean=mean(dat), median=median(dat)) # mean/median of sample data
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects = NULL){
+    colMeans(results)
+}
+
+Design
+```
+
+Depending on the intensity of the conditions, you may choose to distribute more than one row of  the `Design` object to each array (`multirow=TRUE` in the following), otherwise the more natural choice is to distribute each row in the `Design` object to each assigned array.
+
+```{r eval=FALSE}
+
+# get array ID
+arrayID <- getArrayID()
+
+multirow <- FALSE  # submit multiple rows of Design object to array?
+if(multirow){
+    # If selecting multiple design rows per array, such as the first 3 rows, 
+    #  then next 3 rows, and so on, something like the following would work
+    s <- c(seq(from=1, to=nrow(Design), by=3), nrow(Design)+1L)
+    
+    ## For arrayID=1, rows2pick is c(1,2,3); for arrayID2, rows2pick is c(4,5,6)
+    rows2pick <- s[arrayID]:(s[arrayID + 1L] - 1)
+    filename <- paste0('mysim-', paste0(rows2pick, collapse=''))
+} else {
+    # otherwise, submit each row independently across array
+    rows2pick <- arrayID
+    filename <- paste0('mysim-', rows2pick)
+}
+
+# Make sure parallel=TRUE flag is on! Also, don't save tmp files as the array
+# jobs will just overwrite them at different times, making them less useful for tracking
+runSimulation(design=Design[rows2pick, ], 
+             replications=10000, generate=Generate,
+             analyse=Analyse, summarise=Summarise, parallel=TRUE, 
+             filename=filename, save=FALSE)  
+```
+
+When complete, the function `aggregate_simulations()` can again be used to put the simulation results together given the nine  saved files (or three, if `multirow` is `TRUE` and `#SBATCH --array=1-3` is used instead). 
+
+This type of hybrid approach is a middle ground between submitting the complete job (top of this vignette) and the `condition` + `replication` distributed load in the previous section, though has similar overhead + inefficiency issues as before (but less so, as the `array` jobs are evaluated independently). For very intense simulations, particularly those prone to time outs or other exhausted resources, the `runArraySimulation()` approach is the recommended approach as the `max_RAM` and `max_time` fail-safes are more naturally accommodated, while for moderate intensity simulations the above approach is likely sufficient as each (batch) of simulation conditions can be evaluated independently across each `array` on the HPC cluster.
 
 # Extra information (FAQs)
 
