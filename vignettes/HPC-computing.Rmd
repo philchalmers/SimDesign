@@ -147,11 +147,14 @@ decided availability. In this case, the strategy would be to split up the `3 * 1
 Given the above specifications, you may decide that each of the 300 computing nodes requested to the scheduler should evaluate exactly 100 replications each (`nrow(design) * 10000 / 300 = 100`). In this case, `expandDesign()` is used to repeat each row condition 100 times, creating a new *expanded* `design` object with 300 rows instead of 3. To accommodate for the new rows, the associated `replications` should now be defined according to how many replications should be used within each of these to-be-distributed conditions, which need not be equal (see below).
 
 ```{r}
-Design300 <- expandDesign(Design, repeat_conditions = 100L)
+Design300 <- expandDesign(Design, repeat_conditions = 100)
 Design300
 
+# target replication budget
+rep_target <- 10000
+
 # replications per row in Design300
-replications <- rep(100L, nrow(Design300))
+replications <- rep(rep_target  / 100, nrow(Design300))
 ```
 The above approach assumes that each `design` condition is equally balanced in terms of computing time and resources, though if this is not the case (e.g., the last condition contains notably higher computing times than the first two conditions) then `repeat_conditions` can be specified as a vector instead, such as `repeat_conditions = c(100, 100, 1000)`, which for the latter portion would be associated with a 10 replications per distributed node instead of 100. 
 
@@ -160,7 +163,8 @@ rc <- c(100, 100, 1000)
 DesignUnbalanced <- expandDesign(Design, repeat_conditions = rc)
 DesignUnbalanced
 
-replicationsUnbalanced <- rep(c(100, 100, 10), times = rc)
+rep_target <- 10000
+replicationsUnbalanced <- rep(rep_target / rc, times = rc)
 head(replicationsUnbalanced)
 table(replicationsUnbalanced)
 ```
@@ -276,8 +280,9 @@ Summarise <- function(condition, results, fixed_objects = NULL){
 }
 
 # expand the design to create 300 rows with associated replications
-Design300 <- expandDesign(Design, repeat_conditions = 100L)
-replications <- rep(100L, nrow(Design300))
+Design300 <- expandDesign(Design, repeat_conditions = 100)
+rep_target <- 10000
+replications <- rep(rep_target / 100, nrow(Design300))
 
 # gen_seeds() # do this once on the main node/home computer and store the number!
 iseed <- 1276149341
@@ -389,7 +394,7 @@ if(multirow){
     s <- c(seq(from=1, to=nrow(Design), by=3), nrow(Design)+1L)
     
     ## For arrayID=1, rows2pick is c(1,2,3); for arrayID2, rows2pick is c(4,5,6)
-    rows2pick <- s[arrayID]:(s[arrayID + 1L] - 1)
+    rows2pick <- s[arrayID]:(s[arrayID + 1] - 1)
     filename <- paste0('mysim-', paste0(rows2pick, collapse=''))
 } else {
     # otherwise, submit each row independently across array
