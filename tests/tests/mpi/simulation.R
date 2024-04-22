@@ -21,13 +21,16 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 }
 
 
-library(doMPI)
-cl <- startMPIcluster()
-registerDoMPI(cl)
+if(FALSE){
+    # approach is now deprecated in favour of using parallel="future"
+    library(doMPI)
+    cl <- startMPIcluster()
+    registerDoMPI(cl)
 
-runSimulation(design=Design, replications=12, filename='mysimulation',
-              generate=Generate, analyse=Analyse, summarise=Summarise,
-              control = list(MPI=TRUE))
+    runSimulation(design=Design, replications=12, filename='mysimulation',
+                  generate=Generate, analyse=Analyse, summarise=Summarise,
+                  control = list(MPI=TRUE))
 
-closeCluster(cl)
-mpi.quit()
+    closeCluster(cl)
+    mpi.quit()
+}

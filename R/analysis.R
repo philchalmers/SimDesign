@@ -68,19 +68,21 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
         }
     } else {
         if(MPI){
-            i <- 1L
-            results <- try(foreach(i=1L:replications, .export=export_funs, .packages=packages,
-                                   .options.mpi=.options.mpi) %dopar%
-                mainsim(i, condition=condition, generate=Functions$generate,
-                     analyse=Functions$analyse, fixed_objects=fixed_objects, load_seed=load_seed,
-                     max_errors=max_errors, save=save,
-                     store_Random.seeds=store_Random.seeds,
-                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
-                     save_results_out_rootdir=save_results_out_rootdir,
-                     store_warning_seeds=store_warning_seeds,
-                     include_replication_index=include_replication_index,
-                     warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan,
-                     use_try=use_try, allow_gen_errors=allow_gen_errors), TRUE)
+            stop('MPI structure no longer supported. Please use the parallel = \"future" approach',
+                 call. = FALSE)
+            # i <- 1L
+            # results <- try(foreach(i=1L:replications, .export=export_funs, .packages=packages,
+            #                        .options.mpi=.options.mpi) %dopar%
+            #     mainsim(i, condition=condition, generate=Functions$generate,
+            #          analyse=Functions$analyse, fixed_objects=fixed_objects, load_seed=load_seed,
+            #          max_errors=max_errors, save=save,
+            #          store_Random.seeds=store_Random.seeds,
+            #          save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
+            #          save_results_out_rootdir=save_results_out_rootdir,
+            #          store_warning_seeds=store_warning_seeds,
+            #          include_replication_index=include_replication_index,
+            #          warnings_as_errors=warnings_as_errors, allow_na=allow_na, allow_nan=allow_nan,
+            #          use_try=use_try, allow_gen_errors=allow_gen_errors), TRUE)
         } else {
             if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
             results <- if(progress){

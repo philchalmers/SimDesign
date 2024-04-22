@@ -230,7 +230,7 @@ primarily useful for debugging purposes.
   \code{\link[future]{plan}} for execution. This allows for greater flexibility when
   specifying the general computing plan (e.g., \code{plan(multisession)}) for parallel computing
   on the same machine, \code{plan(future.batchtools::batchtools_torque)} or
-  \code{plan(future.batchtools::batchtools_slurm)} for common MPI schedulers, etc).
+  \code{plan(future.batchtools::batchtools_slurm)} for common MPI/Slurm schedulers, etc).
   However, it is the responsibility of the user to use \code{plan(sequential)} to reset the
   computing plan when the jobs are completed}
 
@@ -243,10 +243,9 @@ primarily useful for debugging purposes.
   selects the maximum number cores available
   and will be stopped when the simulation is complete. Note that supplying a \code{cl}
   object will automatically set the \code{parallel} argument to \code{TRUE}. Define and supply this
-  cluster object yourself whenever you have multiple nodes to chain together (note in this case
-  that you must  use either the "MPI" or "PSOCK" clusters).
+  cluster object yourself whenever you have multiple nodes and can link them together manually
 
-  Note that if the \code{future} package has
+  If the \code{future} package has
   been attached prior to executing \code{runSimulation()} then the associated
   \code{plan()} will be followed instead}
 
@@ -277,8 +276,8 @@ primarily useful for debugging purposes.
 \item{seed}{a vector or list of integers to be used for reproducibility.
 The length of the vector must be equal the number of rows in \code{design}.
 If the input is a vector then \code{\link{set.seed}} or
-\code{\link{clusterSetRNGStream}} for each condition will be called, respectively,
-but will not be run when \code{MPI = TRUE}. If a list is provided then these
+\code{\link{clusterSetRNGStream}} for each condition will be called, respectively.
+If a list is provided then these
 numbers must have been generated from \code{\link{gen_seeds}} with the argument
 \code{CMRG.seed} used to specify the initial. The list approach ensures random number
 generation independence across conditions and replications, while the vector input
@@ -461,15 +460,11 @@ in the simulation}
        For Windows OS this defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected
        (suitable for Linux and Mac OSX). This is ignored if the user specifies their own \code{cl} object}
 
-     \item{\code{MPI}}{logical (default is \code{FALSE}); use the \code{foreach} package in a
-       form usable by MPI to run simulation in parallel on a cluster? }
 
      \item{\code{print_RAM}}{logical (default is \code{TRUE}); print the amount of RAM
        used throughout the simulation? Set to \code{FALSE} if unnecessary or if the call to
        \code{\link{gc}} is unnecessarily time consuming}
 
-     \item{\code{.options.mpi}}{list of arguments passed to \code{foreach()} to control the MPI execution
-       properties. Only used when \code{MPI = TRUE}}
 
 
 
@@ -643,7 +638,7 @@ in the R console to remove any previously saved temporary objects.
 \section{A note on parallel computing}{
 
 
-When running simulations in parallel (either with \code{parallel = TRUE} or \code{MPI = TRUE},
+When running simulations in parallel (either with \code{parallel = TRUE}
 or when using the \code{\link{future}} approach with a \code{plan()} other than sequential)
 R objects defined in the global environment will generally \emph{not} be visible across nodes.
 Hence, you may see errors such as \code{Error: object 'something' not found} if you try to use
@@ -887,21 +882,11 @@ runSimulation(design=Design, replications=1000,
 
 
 ####################################
-## EXTRA: To run the simulation on a MPI cluster, use the following setup (not run)
-library(doMPI)
-cl <- startMPIcluster()
-registerDoMPI(cl)
-Final <- runSimulation(design=Design, replications=1000, MPI=TRUE,
-                       generate=Generate, analyse=Analyse, summarise=Summarise)
-saveRDS(Final, 'mysim.rds')
-closeCluster(cl)
-mpi.quit()
-
-
-## Similarly, run simulation on a network linked via ssh
-##  (two way ssh key-paired connection must be possible between master and slave nodes)
+## EXTRA: To run the simulation on a user-define cluster, use the following setup (not run)
+## Network linked via ssh (two way ssh key-paired connection must be
+## possible between master and slave nodes)
 ##
-## define IP addresses, including primary IP
+## Define IP addresses, including primary IP
 primary <- '192.168.2.20'
 IPs <- list(
     list(host=primary, user='phil', ncore=8),
