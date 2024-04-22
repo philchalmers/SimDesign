@@ -43,8 +43,7 @@ This setup is the most painless way to construct and distribute the independent 
 
 If you access have to a set of computers which can be linked via secure-shell (`ssh`) on the same LAN network then
 Network computing (a.k.a., a Beowulf cluster) may be a viable and useful option.
-This approach is similar to MPI computing approach described below,
-except that it offers more localized control. The setup generally requires that the master node
+The setup generally requires that the master node
 has `SimDesign` installed, and the slave/master nodes have all the required R packages pre-installed
 (Unix utilities such as `dsh` are very useful for this purpose). Finally,
 the master node must have `ssh` access to the slave nodes, each slave node must have `ssh` access
@@ -96,40 +95,9 @@ stopCluster(cl)
 ```
 As was the case with the local cluster definition in the first section, random numbers are automatically organized via Pierre L'Ecuyer's (1999) method to ensure quality number generation. A similar setup can also be used via the recently supported `future` interface (see below).
 
-## MPI distribution
-
-`SimDesign` code may be released to a computing system which supports parallel cluster computations using
-the industry standard Message Passing Interface (MPI) form. This simply
-requires that the computers be setup using the usual MPI requirements (typically, running some flavor
-of Linux, have password-less open-SSH access, IP addresses have been added to the `/etc/hosts` file
-or `~/.ssh/config`, etc). More generally though, these resources are widely available through professional
-organizations dedicated to super-computing. Note that if MPI is being considered, `design` has many rows to evaluate, and the super-computer with which the simulation being evaluated contains a distribution scheduler (e.g., Slurm), then you may find the approach provided by `runArraySimualtion()` to be a better use of scheduling resources (see *"Distributing jobs for high-performance computing (HPC)"* for further details).
-
-To setup the R code for an MPI cluster the argument `MPI = TRUE` needs to be added to the 
-`extra_options` list input, which wraps the appropriate MPI directives around `runSimulation()`.
-At this point the source files can be submitted using suitable BASH commands to execute the `mpirun` tool. For example,
-```{r eval=FALSE}
-library(doMPI)
-cl <- startMPIcluster()
-registerDoMPI(cl)
-runSimulation(design=Design, replications=1000, filename='mysimulation',
-    generate=Generate, analyse=Analyse, summarise=Summarise, extra_options = list(MPI=TRUE))
-closeCluster(cl)
-mpi.quit()
-```
-The necessary `SimDesign` files must be uploaded to the dedicated master node
-so that a BASH call to `mpirun` can be used to distribute the work across slaves.
-For instance, if the following BASH command is run on the master node then 16 processes
-will be summoned (1 master, 15 slaves) across the computers named `localhost`, `slave1`,
-and `slave2` in the ssh `config` file.
-
-`mpirun -np 16 -H localhost,slave1,slave2 R --slave -f simulation.R`
-
-A similar setup can also be used via the recently supported `future` interface (see below).
-
 ## Using the `future` framework
 
-Similarly, the `future` framework (see `help(future, package = 'future')`) can also be used for distributing the
+The `future` framework (see `help(future, package = 'future')`) can also be used for distributing the
 asynchronous function evaluations for each simulation replication by changing the logical input in `runSimulation(..., parallel = TRUE/FALSE)` to the character vector `runSimulation(..., parallel = 'future')`. For this to work, the computation plan must be pre-specified via `future::plan()`. For example, to initialize a local two-worker parallel processing computational plan one can use the follow:
 
 ```{r eval=FALSE}
@@ -167,5 +135,7 @@ Finally, when the parallel computations are complete be sure to manually reset t
 ```{r eval=FALSE}
 plan(sequential) # release workers
 ```
+
+The benefit of the future framework is that it provides a unified distribution framework for parallel (multisession, multicore, cluster) and non-parallel (sequential) processing, manages random number generation correctly for Monte Carlo simulations, and as demonstrated above has a wide variety of tools that can be applied to a interactive sessions. 
 
 
