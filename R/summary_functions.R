@@ -99,7 +99,7 @@
 #' # percentage error (PE) statistic given alpha (Type I error) and EDR() result
 #' # edr <- EDR(results, alpha = .05)
 #' edr <- c(.04, .05, .06, .08)
-#' bias(matrix(edr, 1L), .05, type = 'abs_relative', percent = TRUE)
+#' bias(matrix(edr, 1L), .05, type = 'relative', percent = TRUE)
 #'
 #'
 bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE,
