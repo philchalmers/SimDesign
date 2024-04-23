@@ -21,7 +21,8 @@
 #' @param type type of bias statistic to return. Default (\code{'bias'}) computes the standard bias
 #'   (average difference between sample and population), \code{'relative'} computes
 #'   the relative bias statistic (i.e., divide the bias by the value
-#'   in \code{parameter}; note that multiplying this by 100 gives the "percent bias" measure),
+#'   in \code{parameter}; note that multiplying this by 100 gives the "percent bias" measure, or
+#'   if Type I error rates (\eqn{\alpha}) are supplied will result in the "percentage error"),
 #'   \code{'abs_relative'} computes the relative bias but the absolute values of the parameters
 #'   are used in the denominator rather than the (potentially) signed input values,
 #'   and \code{'standardized'} computes the standardized bias estimate
@@ -94,6 +95,11 @@
 #'
 #' # relative bias as a percentage
 #' bias(estimates, parameters, type = 'abs_relative', percent = TRUE)
+#'
+#' # percentage error (PE) statistic given alpha (Type I error) and EDR() result
+#' # edr <- EDR(results, alpha = .05)
+#' edr <- c(.04, .05, .06, .08)
+#' bias(matrix(edr, 1L), .05, type = 'abs_relative', percent = TRUE)
 #'
 #'
 bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE,
