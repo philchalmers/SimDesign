@@ -16,9 +16,34 @@ test_that('array', {
         ret
     }
 
+    Analyse.slow <- function(condition, dat, fixed_objects = NULL) {
+        Sys.sleep(1)
+        ret <- c(mean=mean(dat), median=median(dat)) # mean/median of sample data
+        ret
+    }
+
     Summarise <- function(condition, results, fixed_objects = NULL){
         colMeans(results)
     }
+
+    # time test across conditions
+    expect_warning(runSimulation(design=Design, replications=3, generate=Generate,
+                  analyse=Analyse.slow, summarise=Summarise,
+                  control = list(max_time = "00:00:05", max_RAM = "4GB"),
+                  verbose=FALSE))
+    files <- dir()
+    file <- files[grepl('SIMDESIGN-TEMPFILE', files)]
+    res <- readRDS(file)
+    expect_true(is.null(res[[3]]))
+
+    # resume from time crash
+    res2 <- runSimulation(design=Design, replications=3, generate=Generate,
+                          analyse=Analyse.slow, summarise=Summarise,
+                          control = list(max_time = "00:00:10", max_RAM = "4GB"),
+                          verbose=FALSE)
+    expect_true(is(res2, 'SimDesign'))
+    results <- SimResults(res2)
+    expect_true(nrow(results) == 9)
 
     # define initial seed (do this only once to keep it constant!)
     # iseed <- gen_seeds()

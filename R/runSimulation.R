@@ -406,6 +406,26 @@
 #'        used throughout the simulation? Set to \code{FALSE} if unnecessary or if the call to
 #'        \code{\link{gc}} is unnecessarily time consuming}
 #'
+#'      \item{\code{max_time}}{
+#'        Similar to \code{\link{runArraySimulation}}, specifies the (approximate) maximum
+#'        time that the simulation is allowed to be executed. However, unlike the implementation
+#'        in \code{runArraySimulation} is evaluated on a per condition basis,
+#'        where \code{max_time} is only evaluated after every row in the
+#'        \code{design} object has been completed (hence, is notably more approximate as it
+#'        has the potential to overshoot by a very margin). Default sets no time limit.
+#'        See \code{\link{runArraySimulation}} for the input specifications.
+#'      }
+#'
+#'      \item{\code{max_RAM}}{
+#'        Similar to \code{\link{runArraySimulation}}, specifies the (approximate) maximum
+#'        RAM that the simulation is allowed to occupy. However, unlike the implementation
+#'        in \code{runArraySimulation} is evaluated on a per condition basis,
+#'        where \code{max_RAM} is only evaluated after every row in the
+#'        \code{design} object has been completed (hence, is notably more approximate as it
+#'        has the potential to overshoot by a very margin). Default sets no RAM limit.
+#'        See \code{\link{runArraySimulation}} for the input specifications.
+#'      }
+#'
 #      \item{\code{.options.mpi}}{list of arguments passed to \code{foreach()} to control the MPI execution
 #        properties. Only used when \code{MPI = TRUE}}
 #'
@@ -472,7 +492,7 @@
 #' @param save logical; save the temporary simulation state to the hard-drive? This is useful
 #'   for simulations which require an extended amount of time, though for shorter simulations
 #'   can be disabled to slightly improve computational efficiency. When \code{TRUE},
-#'   which is the default when evaluating \code{replications > 10}, a temp file
+#'   which is the default when evaluating \code{replications > 2}, a temp file
 #'   will be created in the working directory which allows the simulation state to be saved
 #'   and recovered (in case of power outages, crashes, etc). As well, triggering this flag will
 #'   save any fatal \code{.Random.seed} states when conditions unexpectedly crash (where each seed
@@ -947,15 +967,13 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL,
-                          debug = 'none', load_seed = NULL, save = any(replications > 10),
+                          debug = 'none', load_seed = NULL, save = any(replications > 2),
                           store_results = TRUE, save_results = FALSE,
                           parallel = FALSE, ncores = parallel::detectCores() - 1L,
                           cl = NULL, notification = 'none', beep = FALSE, sound = 1,
-                          CI = .95, seed = NULL,
-                          boot_method='none', boot_draws = 1000L, max_errors = 50L,
-                          resume = TRUE,
-                          save_details = list(), control = list(),
-                          progress = TRUE, verbose = TRUE)
+                          CI = .95, seed = NULL, boot_method='none', boot_draws = 1000L,
+                          max_errors = 50L, resume = TRUE, save_details = list(),
+                          control = list(), progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
     resume.row <- NA
@@ -1269,6 +1287,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                         resume.row)
         time0 <- time1 - Result_list[[start-1L]]$SIM_TIME
     }
+    TIME0 <- proc.time()[3L]
     if(file.exists(tmpfilename)){
         tmp <- attr(Result_list, 'SimDesign_names')
         save_results_dirname <- tmp['save_results_dirname']
@@ -1393,10 +1412,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          allow_gen_errors=!SimSolveRun)
             time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
-            if(notification == 'condition')
-                notification_condition(design[i,], Result_list[[i]], nrow(design))
-            if(print_RAM)
-                memory_used[i+1L] <- RAM_used()
         } else {
             stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
             if(verbose)
@@ -1445,28 +1460,36 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 })
                 return(list(value=tmp[1L], summary_results=summary_results))
             }
-            if(store_results){
-                stored_Results_list[[i]] <- attr(tmp, 'full_results')
-                attr(tmp, 'full_results') <- NULL
-            }
+            if(store_results)
+                stored_Results <- attr(tmp, 'full_results')
             Result_list[[i]] <- data.frame(design[i, ], as.list(tmp),
                                            check.names=FALSE)
+            attr(Result_list[[i]], 'full_results') <- stored_Results
             attr(Result_list[[i]], 'Random.seeds') <- attr(tmp, 'stored_Random.seeds')
             attr(Result_list[[i]], 'error_seeds') <- attr(tmp, 'error_seeds')
             attr(Result_list[[i]], 'warning_seeds') <- attr(tmp, 'warning_seeds')
             attr(Result_list[[i]], 'summarise_list') <- attr(tmp, 'summarise_list')
-            Result_list[[i]]$SIM_TIME <- proc.time()[3L] - time0
             Result_list[[i]]$COMPLETED <- date()
-            if(save || save_results)
-                saveRDS(Result_list, file.path(out_rootdir, tmpfilename))
             time1 <- proc.time()[3L]
             Result_list[[i]]$SIM_TIME <- time1 - time0
-            if(notification == 'condition')
-                notification_condition(design[i,], Result_list[[i]], nrow(design))
-            if(print_RAM)
-                memory_used[i+1L] <- RAM_used()
+            if(save || save_results)
+                saveRDS(Result_list, file.path(out_rootdir, tmpfilename))
+        }
+        if(notification == 'condition')
+            notification_condition(design[i,], Result_list[[i]], nrow(design))
+        if(print_RAM)
+            memory_used[i+1L] <- RAM_used()
+        if((time1 - TIME0) > max_time && nrow(design) > 1L && i < nrow(design)){
+            stop('max_time exceeded. See the stored temporary files for last evaluated results',
+                 call.=FALSE)
+        }
+        if(is.finite(max_RAM)){
+            if(RAM_used(format = FALSE) > max_RAM)
+                stop('max_RAM exceeded. See the stored temporary files for last evaluated results',
+                     call.=FALSE)
         }
     }
+
     memory_used <- memory_used[-1L]
     attr(Result_list, 'SimDesign_names') <- NULL
     if(NA_summarise){
@@ -1475,7 +1498,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             x
         })
     }
-    if(store_results){
+    if(store_results && !summarise_asis){
+        stored_Results_list <- lapply(Result_list, \(x) attr(x, 'full_results'))
         if(is(stored_Results_list[[1L]], 'data.frame') ||
            is(stored_Results_list[[1L]], 'matrix')){
             for(i in seq_len(length(stored_Results_list)))

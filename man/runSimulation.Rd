@@ -17,7 +17,7 @@ runSimulation(
   filename = NULL,
   debug = "none",
   load_seed = NULL,
-  save = any(replications > 10),
+  save = any(replications > 2),
   store_results = TRUE,
   save_results = FALSE,
   parallel = FALSE,
@@ -177,7 +177,7 @@ primarily useful for debugging purposes.
 \item{save}{logical; save the temporary simulation state to the hard-drive? This is useful
   for simulations which require an extended amount of time, though for shorter simulations
   can be disabled to slightly improve computational efficiency. When \code{TRUE},
-  which is the default when evaluating \code{replications > 10}, a temp file
+  which is the default when evaluating \code{replications > 2}, a temp file
   will be created in the working directory which allows the simulation state to be saved
   and recovered (in case of power outages, crashes, etc). As well, triggering this flag will
   save any fatal \code{.Random.seed} states when conditions unexpectedly crash (where each seed
@@ -464,6 +464,26 @@ in the simulation}
      \item{\code{print_RAM}}{logical (default is \code{TRUE}); print the amount of RAM
        used throughout the simulation? Set to \code{FALSE} if unnecessary or if the call to
        \code{\link{gc}} is unnecessarily time consuming}
+
+     \item{\code{max_time}}{
+       Similar to \code{\link{runArraySimulation}}, specifies the (approximate) maximum
+       time that the simulation is allowed to be executed. However, unlike the implementation
+       in \code{runArraySimulation} is evaluated on a per condition basis,
+       where \code{max_time} is only evaluated after every row in the
+       \code{design} object has been completed (hence, is notably more approximate as it
+       has the potential to overshoot by a very margin). Default sets no time limit.
+       See \code{\link{runArraySimulation}} for the input specifications.
+     }
+
+     \item{\code{max_RAM}}{
+       Similar to \code{\link{runArraySimulation}}, specifies the (approximate) maximum
+       RAM that the simulation is allowed to occupy. However, unlike the implementation
+       in \code{runArraySimulation} is evaluated on a per condition basis,
+       where \code{max_RAM} is only evaluated after every row in the
+       \code{design} object has been completed (hence, is notably more approximate as it
+       has the potential to overshoot by a very margin). Default sets no RAM limit.
+       See \code{\link{runArraySimulation}} for the input specifications.
+     }
 
 
 

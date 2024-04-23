@@ -1,6 +1,6 @@
 # NEWS file for SimDesign
 
-## Changes in SimDesign 2.15
+## Changes in SimDesign 2.15.1
 
 - `runSimulation(..., control = list(store_Random.seeds))` logical added to 
   store all `.Random.seed` replication states. Generally not recommended due 
@@ -29,14 +29,15 @@
   have repeated row definitions and therefore should be conditionally averaged
   over (see new `expandDesign()` function)
   
-- `runArraySimulation()`'s `control` list contain new `max_time` and 
-  `max_RAM` arguments to evaluate simulation replications up until this time 
+- `runArraySimulation()` and `runSimulation()`'s `control` list gain 
+  new `max_time` and `max_RAM` arguments to evaluate simulation 
+  replications up until this time 
   or RAM storage constraint is reached. In the event that the target 
   replications are not reached the simulations up to this point, or the max 
   RAM storage has been reached, then on the partial results will be returned 
-  (with a warning). This is mainly useful for single core processing
-  jobs on HPC clusters that require time and RAM constraints (e.g., 4 days 
-  per job; 4GB of RAM), where some jobs may be more time/RAM consuming than 
+  (with a warning). This is mainly useful for HPC cluster jobs that require time 
+  and RAM constraints (e.g., 4 days per job; 4GB of RAM), 
+  where some jobs or simulation conditions may be more time/RAM consuming than 
   others (requested by Mikko Rönkkö)
   
 - Expose seed generation control per simulation condition via the 
