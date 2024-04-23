@@ -92,14 +92,14 @@ As well, in order for this approach to be at all optimal the HPC cluster must as
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
 #SBATCH --time=12:00:00       ## HH:MM:SS
-#SBATCH --mem=128G            ## Build a computer with 128GB of RAM 
+#SBATCH --mem=192G            ## Build a computer with 192GB of RAM 
 #SBATCH --cpus-per-task=96    ## Build a computer with 96 cores
 
 module load R/4.3.1
 Rscript --vanilla SimDesign_simulation.R
 ```
 
-This job request a computer be built with 128 GB of RAM with 96 CPUs, which the `SimDesign_simulation.R` is evaluated in, and is submitted to the scheduler via `sbatch slurmInstructions.slurm`.
+This job request a computing cluster be built with 192 GB of RAM with 96 CPUs, which the `SimDesign_simulation.R` is evaluated in, and is submitted to the scheduler via `sbatch slurmInstructions.slurm`.
 
 ### Limitations
 
@@ -111,7 +111,7 @@ While generally effective at distributing the computational load, there are a fe
 2) Parallel distribution across the allocated resources (e.g., across two nodes, both with 48 cores) incurs some overhead that grows as a function of the size of the defined cluster 
     - Using a 96 CPU cluster will not result in a 96x speedup of a 1 CPU job. In fact, the larger the allocated cluster, the worse the performance efficiency
 3) Designers must first estimate the number of *total* amount of CPUs/RAM/time required, while being as conservative as possible
-    - Problematic because fewer resources will be given higher priority in the scheduler, and because you may be taking resources away from other researchers if the cores sit idle
+    - Problematic because fewer resource jobs are given higher priority in the scheduler, and because you may be taking resources away from other researchers if the cores sit idle
 4) The scheduler must wait until all resources (e.g., RAM and CPUs) *simultaneously* become available to allocate the requested specifications, which can take a good amount of time to allocate if the resources requested are excessively high (hence, become low *priority* on the scheduler)
     - If you request 96 CPUs with 192 GB of RAM then this will take considerably longer to allocate compared to requesting 96 independent computing arrays with 1 CPU and 2 GB of RAM (the latter approach is described in the next section)
 5) Finally, and perhaps most problematic in simulation experiment applications, schedulers frequently cap the maximum number of resources that can be requested (e.g., 256 GB of RAM), which limits the application of large RAM and CPU jobs
@@ -150,7 +150,7 @@ Given the above specifications, you may decide that each of the 300 computing no
 Design300 <- expandDesign(Design, repeat_conditions = 100)
 Design300
 
-# target replication budget
+# target replication number for each condition
 rep_target <- 10000
 
 # replications per row in Design300
@@ -173,7 +173,7 @@ Regardless of whether the expanded design is balanced or unbalanced each row in 
 
 ## Construct and record proper random seeds
 
-In principle, the expanded `Design300` object above could be passed as `runSimulation(Design300, replications=100, ...)` to evaluate each of the repeated conditions, where each row is now replicated only 100 times. However, there is now an issue with respect to the random seed management in that use of functions such as `set.seed()` are no longer viable. This is because repeated use of `set.seed()` does not itself guarantee independent high-quality random numbers between different uses. For example,
+In principle, the expanded `Design300` object above could be passed as `runSimulation(Design300, replications=100, ...)` to evaluate each of the repeated conditions, where each row is now replicated only 100 times under the balanced approach above. However, there is now an issue with respect to the random seed management in that use of functions such as `set.seed()` are no longer viable. This is because repeated use of `set.seed()` does not itself guarantee independent high-quality random numbers between different instances. For example,
 
 ```{r}
 set.seed(0)
@@ -185,9 +185,9 @@ plot(x, y)           ## seemingly independent
 plot(x[-1], y[-100]) ## subsets perfectly correlated
 ```
 
-The above issue is generally not problem in the standard `runSimulation()` approach as within each design condition high quality random numbers are used by default, and any potentially repeated number sequences *across* the conditions are highly unlikely to affect the quality of the overall simulation experiment (the conditions themselves typically generate and manage random numbers in different ways due to the varying simulation factors, such as sample sizes, variance conditions, fitted models, number of variables, type of probability distributions use, and so on). However, in the `expandDesign()` setup the likelihood of witnessing correlated/redundant random samples increases very quickly, which is particularly problematic within each distributed replication set; hence, special care must be taken to ensure that proper seeds are distributed to each job array.
+This issue is generally not problem in the standard `runSimulation()` approach as within each design condition high quality random numbers are used by default, and any potentially repeated number sequences *across* the conditions are highly unlikely to affect the quality of the overall simulation experiment (the conditions themselves typically generate and manage random numbers in different ways due to the varying simulation factors, such as sample sizes, variance conditions, fitted models, number of variables, type of probability distributions use, and so on). However, in the `expandDesign()` setup the likelihood of witnessing correlated/redundant random samples increases very quickly, which is particularly problematic within each distributed replication set; hence, special care must be taken to ensure that proper seeds are distributed to each job array.
 
-Fortunately, seeds are easy to manage with the `gen_seeds()` function using a two-step approach, which is internally managed by `runArraySimulation()` by supplying an initial seed (`iseed`) and the associated array ID (`arrayID`). Doing so will utilize L'Ecuyer's (1999) method, which constructs sequentially computed `.Random.seed` states to ensure independence across all replications and conditions. Note that `iseed` must constant across all job arrays, so make sure to define `iseed` **once and only once**!
+Fortunately, seeds are easy to manage with the `gen_seeds()` function using a two-step approach, which is internally managed by `runArraySimulation()` by supplying an initial seed (`iseed`) value and the associated array ID (`arrayID`). Doing so will utilize L'Ecuyer's (1999) method, which constructs sequentially computed `.Random.seed` states to ensure independence across all replications and conditions. Note that `iseed` must constant across all job arrays, so make sure to **define `iseed` once and only once**!
 
 ```{r}
 # gen_seeds()   # do this once on the main node/home computer and store the number!
@@ -198,7 +198,7 @@ As discussed in the FAQ section at the bottom, this associated value will also a
 
 ## Extract array ID information from the `.slurm` script
 
-When submitting to the HPC cluster you'll need to include information about how the scheduler should distribute the simulation experiment code to the workers. In Slurm systems, you may have a script such as the following, stored into a suitable `.slurm` file:
+When submitting to the HPC cluster you'll need to include information about how the scheduler should distribute the simulation experiment to the workers. In Slurm systems, you may have a script such as the following, stored into a suitable `.slurm` file:
 
 ```
 #!/bin/bash
@@ -217,7 +217,7 @@ Rscript --vanilla mySimDesignScript.R
 
 For reference later, label this file `simulation.slurm` as this is the file that must be submitted to the scheduler when it's time.
 
-The top part of this file provides the BASH instructions for the Slurm scheduler via the `#SBATCH` statements. In this case, how many array jobs to queue (1 through 300), how much memory to use per job (2GB), time limits (12 hours), and more; [see here for SBATCH details](https://slurm.schedmd.com/sbatch.html).
+The top part of this `.slurm` file provides the BASH instructions for the Slurm scheduler via the `#SBATCH` statements. In this case, how many array jobs to queue (1 through 300), how much memory to use per job (2GB), time limits (12 hours), and more; [see here for SBATCH details](https://slurm.schedmd.com/sbatch.html).
 
 The most important input to focus on in this context is **#SBATCH --array=1-300** as this is what is used to within the Slurm scheduler to assign a unique ID to each array job. What the scheduler does is take the defined `mySimDesignScript.R` script and send this to 300 independent resources (each with 1 CPU, in this case), where the independent jobs are assigned a single unique array number within the `--array=1-300` range (e.g., distribution to the first computing resource would be assigned `arrayID=1`, the second resource `arrayID=2`, and so on). In the `runArraySimulation()` function this is used to subset the `Design300` object by row; hence, *the array range must correspond to the row identifiers in the `design` object for proper subsetting!* 
 
@@ -230,7 +230,7 @@ to obtain the associated array ID, which is this example will be a single `integ
 
 ## Organize information for `runArraySimulation()`
 
-With all the prerequisite steps above we're finally ready to pass all information to `runArraySimulation()`, which is effectively a wrapper to `runSimulation()` that suppresses verbose outputs, takes subsets of the `Design300` object given the supplied `arrayID` (and other objects, such as `replications`, `seeds`, etc), forces evaluation on a single CPU (hence, `#SBATCH --cpus-per-task=1` should be used by default, unless there is further parallelization to occur, such as via `OpenMP`), and saves the `SimDesign` results to file names based on the `filename` argument with suffixes associated with the `arrayID` (e.g., `filename='mysim'` will save the files `mysim-1.rds` for array 1, `mysim-2.rds` for array 2, ..., `mysim-300.rds` for array 300). 
+With all the prerequisite steps above we're finally ready to pass all information to `runArraySimulation()`, which is effectively a wrapper to `runSimulation()` that suppresses verbose outputs, takes subsets of the `Design300` object given the supplied `arrayID` (and other objects, such as `replications`, `seeds`, etc), forces evaluation on a single CPU (hence, `#SBATCH --cpus-per-task=1` should be used by default, unless there is further parallelization to occur within the replications, such as via `OpenMP`), and saves the `SimDesign` results to file names based on the `filename` argument with suffixes associated with the `arrayID` (e.g., `filename='mysim'` will save the files `mysim-1.rds` for array 1, `mysim-2.rds` for array 2, ..., `mysim-300.rds` for array 300). 
 
 ```{r eval=FALSE}
 # run the simulation on subset based on arrayID subset information
@@ -240,7 +240,7 @@ runArraySimulation(design=Design300, replications=replications,
                    arrayID=arrayID, filename='mysim')
 ```
 
-And that's it! The above will store all the `mysim-#.rds` files in the directory where the job was submitted, which is somewhat on the messy side, so you may also want to specify a directory name to store the simulation files to. Hence,  on the main (i.e., landing) location associated with your `ssh` account create a directory,  using something like `mkdir mysimfiles` (or in R, `dir.create('mysimfiles')`) in the location where your `.R` and `.slurm` files are stored. Then the following can be used to store all 300 collected `.rds` files. 
+And that's it! The above will store all the `mysim-#.rds` files in the directory where the job was submitted, which is somewhat on the messy side, so you may also want to specify a directory name to store the simulation files to. Hence,  on the main (i.e., landing) location associated with your `ssh` account create a directory, using something like `mkdir mysimfiles` (or in R, `dir.create('mysimfiles')`) in the location where your `.R` and `.slurm` files are stored. Then the following can be used to store all 300 collected `.rds` files, making use of the `dirname` argument. 
 
 ```{r eval=FALSE}
 # run the simulation on subset based on arrayID subset information
@@ -301,13 +301,11 @@ This file is then submitted to the job scheduler via `sbatch`, pointing to the `
 ```
 sbatch simulation.slurm
 ```
-Once complete you can now go get a beer, coffee, or whatever else tickles your fancy to celebrate as the hard part is now done.
+Once complete you can now go get a beer, coffee, or whatever else tickles your fancy to celebrate as the hard part is over.
 
 # Post-evaluation: Combine the files 
 
-Alright, the job submission part is now complete, some time has elapsed, and you finally have access to the complete set of simulation files that have the file names `mysim-#.rds`. The final step now to collect all these independent results into a simulation object that resembles what would have been returned from the canonical `runSimulation()` function. Fortunately, this is very easy to do with `aggregate_simulations()`.
-
-All you must do at this point is change to the working directory containing the simulation files and use `aggregate_simulations()`:
+So, some time has elapsed, the job submission part is now complete, and you finally have access to the complete set of simulation files that have the file names `mysim-#.rds`. The final step is then to collect all independent results into a simulation object that resembles what would have been returned from the canonical `runSimulation()` function. Fortunately, this is very easy to do with `aggregate_simulations()`. All you must do at this point is change to the working directory containing the simulation files and use `aggregate_simulations()` with the files names to be aggregated:
 
 
 ```{r eval=FALSE}
@@ -346,7 +344,7 @@ Of course, nothing really stops you from mixing and matching the above ideas rel
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
-#SBATCH --time=01:00:00       ## HH:MM:SS
+#SBATCH --time=04:00:00       ## HH:MM:SS
 #SBATCH --mem=32G             ## 32 GB RAM per array
 #SBATCH --cpus-per-task=16    ## 16 CPUs per array
 #SBATCH --array=1-9           ## 9 array jobs 
@@ -402,17 +400,17 @@ if(multirow){
     filename <- paste0('mysim-', rows2pick)
 }
 
-# Make sure parallel=TRUE flag is on! Also, don't save tmp files as the array
-# jobs will just overwrite them at different times, making them less useful for tracking
-runSimulation(design=Design[rows2pick, ], 
-             replications=10000, generate=Generate,
-             analyse=Analyse, summarise=Summarise, parallel=TRUE, 
-             filename=filename, save=FALSE)  
+# Make sure parallel=TRUE flag is on! Also, it's important to change the computer
+# name to something unique to the array job to avoid overwriting files (even temporary ones)
+runSimulation(design=Design[rows2pick, ], replications=10000, 
+              generate=Generate, analyse=Analyse, summarise=Summarise, 
+              parallel=TRUE, filename=filename, 
+              save_details=list(compname=paste0('array-', arrayID)))  
 ```
 
-When complete, the function `aggregate_simulations()` can again be used to put the simulation results together given the nine  saved files (or three, if `multirow` is `TRUE` and `#SBATCH --array=1-3` is used instead). 
+When complete, the function `aggregate_simulations()` can again be used to put the simulation results together given the nine  saved files (or three, if `multirow` is `TRUE` and `#SBATCH --array=1-3` were used instead). 
 
-This type of hybrid approach is a middle ground between submitting the complete job (top of this vignette) and the `condition` + `replication` distributed load in the previous section, though has similar overhead + inefficiency issues as before (but less so, as the `array` jobs are evaluated independently). For very intense simulations, particularly those prone to time outs or other exhausted resources, the `runArraySimulation()` approach is the recommended approach as the `max_RAM` and `max_time` fail-safes are more naturally accommodated, while for moderate intensity simulations the above approach is likely sufficient as each (batch) of simulation conditions can be evaluated independently across each `array` on the HPC cluster.
+This type of hybrid approach is a middle ground between submitting the complete job (top of this vignette) and the `condition` + `replication` distributed load in the previous section, though has similar overhead + inefficiency issues as before (though less so, as the `array` jobs are evaluated independently). For very intense simulations, particularly those prone to time outs or other exhausted resources, the `runArraySimulation()` approach is  recommended as the `max_RAM` and `max_time` fail-safes are more naturally accommodated within the replications, while for moderate intensity simulations the above approach is likely sufficient as each (batch) of simulation conditions can be evaluated independently across each `array` on the HPC cluster.
 
 # Extra information (FAQs)
 
@@ -432,7 +430,7 @@ scancel -u <username>   # cancel all queued and running jobs for a specific user
 
 This issue is important to consider whenever the HPC cluster has mandatory time/RAM limits for the job submissions, where the array job may not complete within the assigned resources --- hence, if not properly managed, will discard any valid replication information when abruptly terminated. Unfortunately, this is a very likely occurrence, and is largely a function of being unsure about how long each simulation condition/replication will take to complete when distributed across the arrays (some conditions/replications will take longer than others, and it is difficult to be perfectly knowledgeable about this information beforehand) or how large the final objects will grow as the simulation progresses.
 
-To avoid this time/resource waste it is **strongly recommended** to add a `max_time` and/or `max_RAM` argument to the `control` list (see `help(runArraySimulation)` for supported specifications), which are less than the Slurm specifications. These control flags will halt `runArraySimulation()` execution early and return only the complete simulation results up to this point. However, this will only work if these arguments are meaningfully less than the allocated Slurm resources; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting these to around 90% of the respective `#SBATCH --time=` and `#SBATCH --mem=` inputs should, however, be sufficient in most cases.
+To avoid this time/resource waste it is **strongly recommended** to add a `max_time` and/or `max_RAM` argument to the `control` list (see `help(runArraySimulation)` for supported specifications), which are less than the Slurm specifications. These control flags will halt `runArraySimulation()`/`runSimulation()` execution early and return only the complete simulation results up to this point. However, this will only work if these arguments are meaningfully less than the allocated Slurm resources; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting these to around 90% of the respective `#SBATCH --time=` and `#SBATCH --mem=` inputs should, however, be sufficient in most cases.
 
 ```{r eval=FALSE}
 # Return successful results up to the 11 hour mark, and terminate early 
@@ -449,7 +447,7 @@ Of course, if the session does time out early then this implies that the target 
 
 ## Uploading array jobs related to previous array submissions
 
-Related to early termination issue above is what to do about the missing replication information in the event that the complete set of replication information has not been collected. To collect the missing information clearly requires a second (or third) submission of the simulation, though only for the conditions where the collected replication results were problematic. 
+Related to early termination issue above is what to do about the missing replication information in the event that the complete set of replication information has not been collected. To collect the missing information clearly requires a second (or third) submission of the simulation, though obviously only for the conditions where the collected replication results were problematic. 
 
 To start, locate the simulation conditions in the aggregated result that do not meet the target replication criteria. This could be done via inspection of the aggregated results
 
@@ -467,7 +465,7 @@ Final
 3    30 10.003  10.007          8000   24.39s    Thu Apr  4 11:51:00 2024
 ```
 
-or via the more informative `aggregate_simulations(..., check.only=TRUE)` flag.
+or via the more informative (and less memory intensitve) `aggregate_simulations(..., check.only=TRUE)` flag.
 
 ```{r eval=FALSE}
 Missed <- aggregate_simulations(files=dir(), check.only=TRUE)
@@ -482,6 +480,7 @@ Missed
 2    30                2000               10000
 ```
 
+Next, build a new simulation structure containing only the missing information components.
 
 ```{r include=FALSE}
 subDesign <- createDesign(N=c(10,30))
@@ -498,9 +497,9 @@ subDesign
 replications_missed
 ```
 
-At this point, you can return to the above logic of organizing the simulation script job, distributing the information across as many array jobs as necessary to fill in the missing information. However, as before you must be very careful about the random number generators per row in `subDesign` **and** the original submission job. The fix in this case is straightforward as well: simply create a continuation from the previous logic, where the new elements are treated as additional rows in the resulting object as though they were part of the initial job submission. 
+At this point, you can return to the above logic of organizing the simulation script job, distributing the information across as many array jobs as necessary to fill in the missing information. However, as before you must be *very careful* about the random number generators per row in `subDesign` **and** the original submission job. The fix in this case is straightforward as well: simply create a continuation from the previous logic, where the new elements are treated as additional rows in the resulting object as though they were part of the initial job submission. 
 
-Extending the simulation then, we now just glue on the new `subDesign` information to the original expanded version, though telling the scheduler to only evaluate these new rows in the `#SBATCH --array` specification (this is technically unnecessary, but is conceptually clear and keeps all simulation files and array IDs consistent). Hence, the above simulation code need only modify the following:
+Extending the simulation then, we now just glue on the new `subDesign` information to the original expanded version, though telling the scheduler to only evaluate these new rows in the `#SBATCH --array` specification (this is technically unnecessary, but is conceptually clear and keeps all simulation files and array IDs consistent). 
 
 ```{r}
 Design_left <- expandDesign(subDesign, 50) # smaller number of reps per array
@@ -520,10 +519,10 @@ iseed <- 1276149341
 ```
 Again, this approach simply expands the original simulation with 300 array jobs to
 one with 400 array jobs as though added structure was an intended part of the 
-initial design (which is obviously wasn't). 
+initial design (which is obviously wasn't, but is organized as such). 
 
 Finally, in the `.slurm` submission file you no longer want to evaluate the first 1-300 cases,
-as these `.rds` files have already been stored, and instead want to change the `--array` line from
+as these `.rds` files have already been evaluated, and instead want to change the `--array` line from
 
 ```
 #SBATCH --array=1-300
@@ -532,9 +531,7 @@ to
 ```
 #SBATCH --array=301-400
 ```
-Submit this job to compute all the missing replication information, which stores these files into the same working directory but with the new information stored as `mysim-301.rds` through `mysim-400.rds`.
-
-Once complete, run 
+Submit this job to compute all the missing replication information, which stores these files into the same working directory but with the new information stored as `mysim-301.rds` through `mysim-400.rds`. In this example, there will now be a total of 400 files that have been saved. Once complete, run 
 ```{r eval=FALSE}
 # See if any missing still
 aggregate_simulations(files=dir(), check.only=TRUE)
