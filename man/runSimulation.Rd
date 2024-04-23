@@ -471,7 +471,7 @@ in the simulation}
        in \code{runArraySimulation} is evaluated on a per condition basis,
        where \code{max_time} is only evaluated after every row in the
        \code{design} object has been completed (hence, is notably more approximate as it
-       has the potential to overshoot by a very margin). Default sets no time limit.
+       has the potential to overshoot by a wider margin). Default sets no time limit.
        See \code{\link{runArraySimulation}} for the input specifications.
      }
 
@@ -481,7 +481,7 @@ in the simulation}
        in \code{runArraySimulation} is evaluated on a per condition basis,
        where \code{max_RAM} is only evaluated after every row in the
        \code{design} object has been completed (hence, is notably more approximate as it
-       has the potential to overshoot by a very margin). Default sets no RAM limit.
+       has the potential to overshoot by a wider margin). Default sets no RAM limit.
        See \code{\link{runArraySimulation}} for the input specifications.
      }
 

@@ -27,7 +27,7 @@ test_that('array', {
     }
 
     # time test across conditions
-    expect_warning(runSimulation(design=Design, replications=3, generate=Generate,
+    expect_error(runSimulation(design=Design, replications=3, generate=Generate,
                   analyse=Analyse.slow, summarise=Summarise,
                   control = list(max_time = "00:00:05", max_RAM = "4GB"),
                   verbose=FALSE))
