@@ -1480,14 +1480,16 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             notification_condition(design[i,], Result_list[[i]], nrow(design))
         if(print_RAM)
             memory_used[i+1L] <- RAM_used()
-        if((time1 - TIME0) > max_time && nrow(design) > 1L && i < nrow(design)){
-            stop('max_time exceeded. See the stored temporary files for last evaluated results',
-                 call.=FALSE)
-        }
-        if(is.finite(max_RAM)){
-            if(RAM_used(format = FALSE) > max_RAM)
-                stop('max_RAM exceeded. See the stored temporary files for last evaluated results',
+        if(nrow(design) > 1L && i < nrow(design)){
+            if((time1 - TIME0) > max_time){
+                stop('max_time exceeded. See the stored temporary files for last evaluated results',
                      call.=FALSE)
+            }
+            if(is.finite(max_RAM)){
+                if(RAM_used(format = FALSE) > max_RAM)
+                    stop('max_RAM exceeded. See the stored temporary files for last evaluated results',
+                         call.=FALSE)
+            }
         }
     }
 
