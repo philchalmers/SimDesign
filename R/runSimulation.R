@@ -1261,8 +1261,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
         }
     }
-    Result_list <- stored_Results_list <- vector('list', nrow(design))
-    names(Result_list) <- names(stored_Results_list) <- rownames(design)
+    Result_list <- vector('list', nrow(design))
+    names(Result_list) <- rownames(design)
     time0 <- time1 <- proc.time()[3L]
     files <- dir(out_rootdir)
     if(resume && !MPI && any(files == tmpfilename) && is.null(load_seed) && debug == 'none'){
@@ -1464,7 +1464,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 stored_Results <- attr(tmp, 'full_results')
             Result_list[[i]] <- data.frame(design[i, ], as.list(tmp),
                                            check.names=FALSE)
-            attr(Result_list[[i]], 'full_results') <- stored_Results
+            if(store_results)
+                attr(Result_list[[i]], 'full_results') <- stored_Results
             attr(Result_list[[i]], 'Random.seeds') <- attr(tmp, 'stored_Random.seeds')
             attr(Result_list[[i]], 'error_seeds') <- attr(tmp, 'error_seeds')
             attr(Result_list[[i]], 'warning_seeds') <- attr(tmp, 'warning_seeds')
