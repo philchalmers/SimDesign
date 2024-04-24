@@ -460,7 +460,6 @@ in the simulation}
        For Windows OS this defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected
        (suitable for Linux and Mac OSX). This is ignored if the user specifies their own \code{cl} object}
 
-
      \item{\code{print_RAM}}{logical (default is \code{TRUE}); print the amount of RAM
        used throughout the simulation? Set to \code{FALSE} if unnecessary or if the call to
        \code{\link{gc}} is unnecessarily time consuming}
@@ -484,9 +483,6 @@ in the simulation}
        has the potential to overshoot by a wider margin). Default sets no RAM limit.
        See \code{\link{runArraySimulation}} for the input specifications.
      }
-
-
-
 
    }}
 

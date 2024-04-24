@@ -399,9 +399,6 @@
 #'        For Windows OS this defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected
 #'        (suitable for Linux and Mac OSX). This is ignored if the user specifies their own \code{cl} object}
 #'
-#      \item{\code{MPI}}{logical (default is \code{FALSE}); use the \code{foreach} package in a
-#        form usable by MPI to run simulation in parallel on a cluster? }
-#'
 #'      \item{\code{print_RAM}}{logical (default is \code{TRUE}); print the amount of RAM
 #'        used throughout the simulation? Set to \code{FALSE} if unnecessary or if the call to
 #'        \code{\link{gc}} is unnecessarily time consuming}
@@ -425,11 +422,6 @@
 #'        has the potential to overshoot by a wider margin). Default sets no RAM limit.
 #'        See \code{\link{runArraySimulation}} for the input specifications.
 #'      }
-#'
-#      \item{\code{.options.mpi}}{list of arguments passed to \code{foreach()} to control the MPI execution
-#        properties. Only used when \code{MPI = TRUE}}
-#'
-#'
 #'
 #'    }
 #'
@@ -1342,7 +1334,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 parallel::parSapply(cl, 1L:(length(cl)*2),
                                     function(ind, packages) load_packages(packages),
                                     packages=packages)
-            } # foreach() doesn't like load_packages()
+            }
         } else {
             future.apply::future_lapply(1L:(future::nbrOfWorkers()*2),
                                         function(ind, packages) load_packages(packages),
@@ -1355,7 +1347,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 } else if(parallel){
                 try(table(parallel::parSapply(cl, rep(tmp[i], each=length(cl)*2),
                                               get_packages)))
-            } else "" # for foreach()
+            }
             if(tmp[i] == 'stats') next
             if(length(packs) > 1L)
                 message(sprintf('Warning message:\nVersions of %s differ across clusters: %s',
