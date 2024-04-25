@@ -107,12 +107,14 @@
 #'
 #' @param predCI.tol (optional) rather than relying on the changes between successive
 #'   estimates (default), if the predicting CI is consistently within this
-#'   supplied input then terminate. This provides termination behaviour based on the predicted
+#'   supplied tolerance input range then terminate.
+#'   This provides termination behaviour based on the predicted
 #'   precision of the root solutions rather than their stability history, and therefore
 #'   can be used to obtain estimates with a particular level of advertised accuracy.
 #'   For example, when solving for a sample size value (\code{N}) if the solution
 #'   associated with  \code{b = .80} requires that the advertised 95% prediction CI
-#'   is consistently between [.795, .805] then \code{predCI.tol = c(.795, .805)}
+#'   is consistently between [.795, .805] then \code{predCI.tol = .01} to indicate this
+#'   tolerance range
 #'
 #' @param control a \code{list} of the algorithm control parameters. If not specified,
 #'   the defaults described below are used.
@@ -310,7 +312,7 @@
 #' #   to be between [.795, .805]. Note that maxiter increased as well
 #' solved_predCI <- SimSolve(design=Design, b=.8, interval=c(10, 500),
 #'                      generate=Generate, analyse=Analyse, summarise=Summarise,
-#'                      maxiter=200, predCI.tol=c(.795, .805))
+#'                      maxiter=200, predCI.tol=.01)
 #' solved_predCI
 #' summary(solved_predCI) # note that pred_CI.b are all within [.795, .805]
 #'

@@ -263,7 +263,7 @@ PBA <- function(f, interval, ..., p = .6,
             SimMod <- try(suppressWarnings(glm(formula = formula,
                                                data=SimSolveData, family=family,
                                                weights=weights)), silent=TRUE)
-            glmpred <- if(is(SimMod, 'try-error')){
+            glmpred <- glmpred0 <- if(is(SimMod, 'try-error')){
                 c(NA, NA)
             } else {
                 suppressWarnings(SimSolveUniroot(SimMod=SimMod,
@@ -273,17 +273,21 @@ PBA <- function(f, interval, ..., p = .6,
                                                  max.interval=interval,
                                                  median=med, CI=if(!is.null(predCI.tol)) predCI else NULL))
             }
+            if(!is.null(predCI.tol)){
+                glmpred[1L] <- glmpred[2L]
+                glmpred.last[1L] <- glmpred[3L]
+            }
             if(is.na(glmpred[1L])){
                 glmpred.converged <- FALSE
-                glmpred[1L] <- med
+                glmpred0[1L] <- med
             }
 
             # Should termination occur early when this changes very little?
             if(!any(is.na(c(glmpred[1L], glmpred.last[1L])))){
                 abs_diff <- abs(glmpred.last[1L] - glmpred[1L])
                 if(!is.null(predCI.tol)){
-                    if(glmpred[2L] < predCI.tol[1L]) abs_diff <- tol*2
-                    if(glmpred[3L] > predCI.tol[2L]) abs_diff <- tol*2
+                    if(glmpred0[2L] < (dots$b - predCI.tol/2)) abs_diff <- tol*2
+                    if(glmpred0[3L] > (dots$b + predCI.tol/2)) abs_diff <- tol*2
                 }
                 rel_diff <- abs_diff / abs(glmpred.last[1L])
                 if(abs_diff <= tol || rel_diff <= rel.tol){
@@ -310,7 +314,7 @@ PBA <- function(f, interval, ..., p = .6,
             if(interpolate && iter > interpolate.after && !is.na(glmpred[1L]))
                 cat(sprintf(paste0('; k.tol = %i; Pred = %',
                                    if(integer) ".1f" else ".3f"),
-                            k.successes, glmpred[1L]))
+                            k.successes, glmpred0[1L]))
         }
 
         if(!is.null(wait.time))
