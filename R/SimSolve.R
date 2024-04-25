@@ -8,7 +8,14 @@
 #' steps outlined in \code{\link{runSimulation}}, however portions of
 #' the \code{design} input are taken as variables to be estimated rather than
 #' fixed, and the constant \code{b} is required in order to
-#' solve the root equation \code{f(x) - b = 0}.
+#' solve the root equation \code{f(x) - b = 0}. Stochastic root search is terminated
+#' based on the successive behaviour of the \code{x} estimates.
+#' For even greater advertised accuracy with ProBABLI, termination criteria
+#' can be based on the width of the advertised predicting interval
+#' (via \code{predCI.tol}) or by specifying how long the investigator
+#' is willing to wait for the final estimates (via \code{wait.time},
+#' where longer wait times lead to progressively better accuracy in
+#' the final estimates).
 #'
 #' Root finding is performed using a progressively bolstered version of the
 #' probabilistic bisection algorithm (\code{\link{PBA}}) to find the
@@ -97,6 +104,15 @@
 #' @param predCI advertised confidence interval probability for final
 #'   model-based prediction of target \code{b} given the root input estimate.
 #'   Returned as an element in the \code{summary()} list output
+#'
+#' @param predCI.tol (optional) rather than relying on the changes between successive
+#'   estimates (default), if the predicting CI range is consistently less than this
+#'   supplied input then terminate. This provides termination behaviour based on the predicted
+#'   precision of the root solutions rather than their stability history, and therefore
+#'   can be used to obtain estimates with a particular level of advertised accuracy.
+#'   For example, when solving for a sample size value (\code{N}) termination
+#'   could occur if the 95% prediction interval is consistently between [.795, .805],
+#'   which would require \code{b = .80} and \code{predCI.tol = .01} as the inputs
 #'
 #' @param control a \code{list} of the algorithm control parameters. If not specified,
 #'   the defaults described below are used.
@@ -290,7 +306,21 @@
 #' #                         summarise=Summarise)
 #' # confirm
 #'
-#' # Alternatively, and more realistically, the wait.time argument can be used
+#' # Similarly, terminate if the prediction interval is consistently
+#' # predicted to be between [.795, .805] (hence, has a range of .01).
+#' # maxiter increased until target precision is reached
+#' solved_predCI <- SimSolve(design=Design, b=.8, interval=c(10, 500),
+#'                      generate=Generate, analyse=Analyse, summarise=Summarise,
+#'                      maxiter=1000, predCI.tol=.01)
+#' solved_predCI
+#' summary(solved_predCI) # note that pred_CI.b are all within [.795, .805]
+#'
+#' N <- solved_predCI$N
+#' pwr.t.test(d=.2, n=N[1])
+#' pwr.t.test(d=.5, n=N[2])
+#' pwr.t.test(d=.8, n=N[3])
+#'
+#' # Alternatively, and often more realistically, wait.time can be used
 #' # to specify how long the user is willing to wait for a final estimate.
 #' # Solutions involving more iterations will be more accurate,
 #' # and therefore it is recommended to run the ProBABLI root-solver as long
@@ -309,6 +339,7 @@
 #' pwr.t.test(d=.2, n=N[1])
 #' pwr.t.test(d=.5, n=N[2])
 #' pwr.t.test(d=.8, n=N[3])
+#'
 #'
 #' #------------------------------------------------
 #'
@@ -431,7 +462,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      ncores = parallel::detectCores() - 1L,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
                      maxiter = 100L, check.interval = TRUE,
-                     verbose = TRUE, control = list(), predCI = .95, ...){
+                     verbose = TRUE, control = list(),
+                     predCI = .95, predCI.tol = NULL, ...){
 
     # robust <- FALSE
     if(is.null(control$print_RAM)) control$print_RAM <- FALSE
@@ -608,6 +640,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       control=control,
                                       # robust = robust,
                                       predCI = c((1-predCI)/2, predCI + (1-predCI)/2),
+                                      predCI.tol=predCI.tol,
                                       interpolate.burnin=burnin.iter)
         if(method == 'ProBABLI'){
             roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
