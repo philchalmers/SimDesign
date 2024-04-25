@@ -186,13 +186,13 @@ model-based prediction of target \code{b} given the root input estimate.
 Returned as an element in the \code{summary()} list output}
 
 \item{predCI.tol}{(optional) rather than relying on the changes between successive
-estimates (default), if the predicting CI range is consistently less than this
+estimates (default), if the predicting CI is consistently within this
 supplied input then terminate. This provides termination behaviour based on the predicted
 precision of the root solutions rather than their stability history, and therefore
 can be used to obtain estimates with a particular level of advertised accuracy.
-For example, when solving for a sample size value (\code{N}) termination
-could occur if the 95% prediction interval is consistently between [.795, .805],
-which would require \code{b = .80} and \code{predCI.tol = .01} as the inputs}
+For example, when solving for a sample size value (\code{N}) if the solution
+associated with  \code{b = .80} requires that the advertised 95% prediction CI
+is consistently between [.795, .805] then \code{predCI.tol = c(.795, .805)}}
 
 \item{...}{additional arguments to be pasted to \code{\link{PBA}}}
 
@@ -344,12 +344,11 @@ pwr.t.test(d=.8, n=N[3])
 #                         summarise=Summarise)
 # confirm
 
-# Similarly, terminate if the prediction interval is consistently
-# predicted to be between [.795, .805] (hence, has a range of .01).
-# maxiter increased until target precision is reached
+# Similarly, terminate if the prediction interval is consistently predicted
+#   to be between [.795, .805]. Note that maxiter increased as well
 solved_predCI <- SimSolve(design=Design, b=.8, interval=c(10, 500),
                      generate=Generate, analyse=Analyse, summarise=Summarise,
-                     maxiter=1000, predCI.tol=.01)
+                     maxiter=200, predCI.tol=c(.795, .805))
 solved_predCI
 summary(solved_predCI) # note that pred_CI.b are all within [.795, .805]
 
@@ -363,17 +362,17 @@ pwr.t.test(d=.8, n=N[3])
 # Solutions involving more iterations will be more accurate,
 # and therefore it is recommended to run the ProBABLI root-solver as long
 # the analyst can tolerate if the most accurate estimates are desired.
-# Below executes the simulation for 2 minutes for each condition up
+# Below executes the simulation for 5 minutes for each condition up
 # to a maximum of 1000 iterations, terminating based on whichever occurs first
 
-solved_2min <- SimSolve(design=Design, b=.8, interval=c(10, 500),
+solved_5min <- SimSolve(design=Design, b=.8, interval=c(10, 500),
                 generate=Generate, analyse=Analyse, summarise=Summarise,
-                wait.time=2, maxiter=1000)
-solved_2min
+                wait.time=5, maxiter=1000)
+solved_5min
 summary(solved_2min)
 
 # use estimated N results to see how close power was
-N <- solved_2min$N
+N <- solved_5min$N
 pwr.t.test(d=.2, n=N[1])
 pwr.t.test(d=.5, n=N[2])
 pwr.t.test(d=.8, n=N[3])

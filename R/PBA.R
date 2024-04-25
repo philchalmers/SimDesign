@@ -263,7 +263,7 @@ PBA <- function(f, interval, ..., p = .6,
             SimMod <- try(suppressWarnings(glm(formula = formula,
                                                data=SimSolveData, family=family,
                                                weights=weights)), silent=TRUE)
-            glmpred <- glmpred0 <- if(is(SimMod, 'try-error')){
+            glmpred <- if(is(SimMod, 'try-error')){
                 c(NA, NA)
             } else {
                 suppressWarnings(SimSolveUniroot(SimMod=SimMod,
@@ -275,17 +275,16 @@ PBA <- function(f, interval, ..., p = .6,
             }
             if(is.na(glmpred[1L])){
                 glmpred.converged <- FALSE
-                glmpred[1L] <- glmpred0[1L] <- med
+                glmpred[1L] <- med
             }
-            if(!is.null(predCI.tol)){
-                glmpred[1L] <- glmpred[3L]
-                glmpred.last[1L] <- glmpred[2L]
-            }
-
 
             # Should termination occur early when this changes very little?
             if(!any(is.na(c(glmpred[1L], glmpred.last[1L])))){
                 abs_diff <- abs(glmpred.last[1L] - glmpred[1L])
+                if(!is.null(predCI.tol)){
+                    if(glmpred[2L] < predCI.tol[1L]) abs_diff <- tol*2
+                    if(glmpred[3L] > predCI.tol[2L]) abs_diff <- tol*2
+                }
                 rel_diff <- abs_diff / abs(glmpred.last[1L])
                 if(abs_diff <= tol || rel_diff <= rel.tol){
                     k.successes <- k.successes + 1L
@@ -311,7 +310,7 @@ PBA <- function(f, interval, ..., p = .6,
             if(interpolate && iter > interpolate.after && !is.na(glmpred[1L]))
                 cat(sprintf(paste0('; k.tol = %i; Pred = %',
                                    if(integer) ".1f" else ".3f"),
-                            k.successes, glmpred0[1L]))
+                            k.successes, glmpred[1L]))
         }
 
         if(!is.null(wait.time))
