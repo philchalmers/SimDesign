@@ -187,10 +187,10 @@ plot(x[-1], y[-100]) ## subsets perfectly correlated
 
 This issue is generally not problem in the standard `runSimulation()` approach as within each design condition high quality random numbers are used by default, and any potentially repeated number sequences *across* the conditions are highly unlikely to affect the quality of the overall simulation experiment (the conditions themselves typically generate and manage random numbers in different ways due to the varying simulation factors, such as sample sizes, variance conditions, fitted models, number of variables, type of probability distributions use, and so on). However, in the `expandDesign()` setup the likelihood of witnessing correlated/redundant random samples increases very quickly, which is particularly problematic within each distributed replication set; hence, special care must be taken to ensure that proper seeds are distributed to each job array.
 
-Fortunately, seeds are easy to manage with the `gen_seeds()` function using a two-step approach, which is internally managed by `runArraySimulation()` by supplying an initial seed (`iseed`) value and the associated array ID (`arrayID`). Doing so will utilize L'Ecuyer's (1999) method, which constructs sequentially computed `.Random.seed` states to ensure independence across all replications and conditions. Note that `iseed` must constant across all job arrays, so make sure to **define `iseed` once and only once**!
+Fortunately, seeds are easy to manage with the `genSeeds()` function using a two-step approach, which is internally managed by `runArraySimulation()` by supplying an initial seed (`iseed`) value and the associated array ID (`arrayID`). Doing so will utilize L'Ecuyer's (1999) method, which constructs sequentially computed `.Random.seed` states to ensure independence across all replications and conditions. Note that `iseed` must constant across all job arrays, so make sure to **define `iseed` once and only once**!
 
 ```{r}
-# gen_seeds()   # do this once on the main node/home computer and store the number!
+# genSeeds()   # do this once on the main node/home computer and store the number!
 iseed <- 1276149341
 ```
 
@@ -284,7 +284,7 @@ Design300 <- expandDesign(Design, repeat_conditions = 100)
 rep_target <- 10000
 replications <- rep(rep_target / 100, nrow(Design300))
 
-# gen_seeds() # do this once on the main node/home computer and store the number!
+# genSeeds() # do this once on the main node/home computer and store the number!
 iseed <- 1276149341
 
 # get assigned array ID (default uses type = 'slurm')
@@ -305,13 +305,13 @@ Once complete you can now go get a beer, coffee, or whatever else tickles your f
 
 # Post-evaluation: Combine the files 
 
-So, some time has elapsed, the job submission part is now complete, and you finally have access to the complete set of simulation files that have the file names `mysim-#.rds`. The final step is then to collect all independent results into a simulation object that resembles what would have been returned from the canonical `runSimulation()` function. Fortunately, this is very easy to do with `aggregate_simulations()`. All you must do at this point is change to the working directory containing the simulation files and use `aggregate_simulations()` with the files names to be aggregated:
+So, some time has elapsed, the job submission part is now complete, and you finally have access to the complete set of simulation files that have the file names `mysim-#.rds`. The final step is then to collect all independent results into a simulation object that resembles what would have been returned from the canonical `runSimulation()` function. Fortunately, this is very easy to do with `SimCollect()`. All you must do at this point is change to the working directory containing the simulation files and use `SimCollect()` with the files names to be aggregated:
 
 
 ```{r eval=FALSE}
 setwd('mysimfiles')
 library(SimDesign)
-Final <- aggregate_simulations(files=dir())
+Final <- SimCollect(files=dir())
 Final
 ```
 
@@ -408,7 +408,7 @@ runSimulation(design=Design[rows2pick, ], replications=10000,
               save_details=list(compname=paste0('array-', arrayID)))  
 ```
 
-When complete, the function `aggregate_simulations()` can again be used to put the simulation results together given the nine  saved files (or three, if `multirow` is `TRUE` and `#SBATCH --array=1-3` were used instead). 
+When complete, the function `SimCollect()` can again be used to put the simulation results together given the nine  saved files (or three, if `multirow` is `TRUE` and `#SBATCH --array=1-3` were used instead). 
 
 This type of hybrid approach is a middle ground between submitting the complete job (top of this vignette) and the `condition` + `replication` distributed load in the previous section, though has similar overhead + inefficiency issues as before (though less so, as the `array` jobs are evaluated independently). For very intense simulations, particularly those prone to time outs or other exhausted resources, the `runArraySimulation()` approach is  recommended as the `max_RAM` and `max_time` fail-safes are more naturally accommodated within the replications, while for moderate intensity simulations the above approach is likely sufficient as each (batch) of simulation conditions can be evaluated independently across each `array` on the HPC cluster.
 
@@ -452,7 +452,7 @@ Related to early termination issue above is what to do about the missing replica
 To start, locate the simulation conditions in the aggregated result that do not meet the target replication criteria. This could be done via inspection of the aggregated results
 
 ```{r eval=FALSE}
-Final <- aggregate_simulations(files=dir())
+Final <- SimCollect(files=dir())
 Final
 ```
 
@@ -465,7 +465,7 @@ Final
 3    30 10.003  10.007          8000   24.39s    Thu Apr  4 11:51:00 2024
 ```
 
-or via the more informative (and less memory intensitve) `aggregate_simulations(..., check.only=TRUE)` flag.
+or via the more informative (and less memory intensive) `SimCollect(..., check.only=TRUE)` flag.
 
 ```{r eval=FALSE}
 Missed <- aggregate_simulations(files=dir(), check.only=TRUE)
@@ -534,9 +534,9 @@ to
 Submit this job to compute all the missing replication information, which stores these files into the same working directory but with the new information stored as `mysim-301.rds` through `mysim-400.rds`. In this example, there will now be a total of 400 files that have been saved. Once complete, run 
 ```{r eval=FALSE}
 # See if any missing still
-aggregate_simulations(files=dir(), check.only=TRUE)
+SimCollect(files=dir(), check.only=TRUE)
 
 # Obtain complete simulation results
-Final <- aggregate_simulations(files=dir())
+Final <- SimCollect(files=dir())
 ```
 one last time, which now reads in the complete set of 400 stored files instead of the previous 300, thereby obtaining the complete set of high-quality simulation results. Rinse and repeat if the same issue appears yet again on the second submission.
