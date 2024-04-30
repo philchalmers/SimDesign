@@ -20,7 +20,7 @@ its rows repeated for optimal HPC schedulers}
   information. For example, if 1000 replications in total are the target but
   the condition is repeated over 4 rows then only 250 replications per row
   would be required across the repeated conditions. See
-  \code{\link{aggregate_simulations}} for combining the simulation objects
+  \code{\link{SimCollect}} for combining the simulation objects
   once complete}
 }
 \value{
@@ -31,7 +31,7 @@ a \code{tibble} or \code{data.frame} containing the simulation experiment
 Repeat each design row the specified number of times. This is primarily used
 for cluster computing where jobs are distributed with batches of replications
 and later aggregated into a complete simulation object
-(see \code{\link{runArraySimulation}} and \code{\link{aggregate_simulations}}).
+(see \code{\link{runArraySimulation}} and \code{\link{SimCollect}}).
 }
 \examples{
 \dontrun{
@@ -61,7 +61,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
 }
 \seealso{
-\code{\link{createDesign}}, \code{\link{aggregate_simulations}},
+\code{\link{createDesign}}, \code{\link{SimCollect}},
    \code{\link{runArraySimulation}}
 }
 \author{

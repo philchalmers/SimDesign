@@ -92,6 +92,6 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
 }
 \seealso{
-\code{\link{add_missing}}, \code{\link{Attach}},
+\code{\link{addMissing}}, \code{\link{Attach}},
   \code{\link{rmgh}}, \code{\link{rValeMaurelli}}, \code{\link{rHeadrick}}
 }

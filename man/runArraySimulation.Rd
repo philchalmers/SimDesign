@@ -143,7 +143,7 @@ Summarise <- function(condition, results, fixed_objects = NULL){
 \dontrun{
 
 # define initial seed (do this only once to keep it constant!)
-# iseed <- gen_seeds()
+# iseed <- genSeeds()
 iseed <- 554184288
 
 ### On cluster submission, the active array ID is obtained via getArrayID(),
@@ -170,7 +170,7 @@ SimClean('mysim-1.rds')
 Design5 <- expandDesign(Design, 5)
 Design5
 
-# iseed <- gen_seeds()
+# iseed <- genSeeds()
 iseed <- 554184288
 
 # arrayID <- getArrayID(type = 'slurm')
@@ -216,7 +216,7 @@ condition14
 SimResults(condition14)
 
 # aggregate simulation results into single file
-final <- aggregate_simulations(files=dir())
+final <- SimCollect(files=dir())
 final
 
 SimResults(final) |> View()
@@ -238,7 +238,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 }
 \seealso{
 \code{\link{runSimulation}}, \code{\link{expandDesign}},
-  \code{\link{gen_seeds}}, \code{\link{aggregate_simulations}}, \code{\link{getArrayID}}
+  \code{\link{gen_seeds}}, \code{\link{SimCollect}}, \code{\link{getArrayID}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}

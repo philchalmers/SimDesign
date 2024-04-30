@@ -76,7 +76,7 @@
 #'
 #' \dontrun{
 #' # boot_predict supports only one condition at a time
-#' out <- boot_predict(condition=Design[1L, , drop=FALSE],
+#' out <- bootPredict(condition=Design[1L, , drop=FALSE],
 #'     generate=Generate, analyse=Analyse, summarise=Summarise)
 #' out # list of fitted linear model(s)
 #'
@@ -103,7 +103,7 @@
 #' (beta / .001)^2
 #' }
 #'
-boot_predict <- function(condition, generate, analyse, summarise, fixed_objects = NULL, ...,
+bootPredict <- function(condition, generate, analyse, summarise, fixed_objects = NULL, ...,
                         Rstar = seq(100, 500, by=100), boot_draws = 1000){
     replications <- max(Rstar)
     results <- runSimulation(design=condition, generate=generate, analyse=analyse,
@@ -132,4 +132,11 @@ boot_predict <- function(condition, generate, analyse, summarise, fixed_objects 
     }, R = Rstar)
     names(mods) <-  nms
     mods
+}
+
+#' @rdname bootPredict
+#' @export
+boot_predict <- function(...){
+    .Deprecated('bootPredict')
+    bootPredict(...)
 }

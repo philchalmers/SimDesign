@@ -611,7 +611,7 @@
 #'   \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
 #'   \code{\link{SimExtract}},
 #'   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
-#'   \code{\link{aggregate_simulations}}, \code{\link{Attach}}, \code{\link{AnalyseIf}},
+#'   \code{\link{SimCollect}}, \code{\link{Attach}}, \code{\link{AnalyseIf}},
 #'   \code{\link{SimShiny}}, \code{\link{convertWarnings}}, \code{\link{runArraySimulation}}
 #'
 #' @export runSimulation
@@ -980,7 +980,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         parallel <- TRUE
     } else useFuture <- FALSE
     if(is.null(seed))
-        seed <- gen_seeds(design)
+        seed <- genSeeds(design)
     if(debug != 'none'){
         if(grepl('-', debug)){
             tmp <- strsplit(debug, '-')[[1]]

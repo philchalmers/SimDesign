@@ -1,5 +1,14 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.16
+
+- Switch to camel casing format in all functions (e.g., 
+  `add_missing() -> addMissing()`, `gen_seeds() -> genSeeds()`, etc). Exception
+  is that `aggregate_simulations()` has changed to `SimCollect()`
+  
+- `SimSolve()` gains a `predCI.tol` argument to allow algorithm termination based
+  advertised precision of the estimates
+
 ## Changes in SimDesign 2.15.1
 
 - `runSimulation(..., control = list(store_Random.seeds))` logical added to 

@@ -138,7 +138,7 @@ createDesign <- function(..., subset, fractional = NULL,
 #' Repeat each design row the specified number of times. This is primarily used
 #' for cluster computing where jobs are distributed with batches of replications
 #' and later aggregated into a complete simulation object
-#' (see \code{\link{runArraySimulation}} and \code{\link{aggregate_simulations}}).
+#' (see \code{\link{runArraySimulation}} and \code{\link{SimCollect}}).
 #'
 #' @param Design object created by \code{\link{createDesign}} which should have
 #'   its rows repeated for optimal HPC schedulers
@@ -153,13 +153,13 @@ createDesign <- function(..., subset, fractional = NULL,
 #'   information. For example, if 1000 replications in total are the target but
 #'   the condition is repeated over 4 rows then only 250 replications per row
 #'   would be required across the repeated conditions. See
-#'   \code{\link{aggregate_simulations}} for combining the simulation objects
+#'   \code{\link{SimCollect}} for combining the simulation objects
 #'   once complete
 #'
 #' @return a \code{tibble} or \code{data.frame} containing the simulation experiment
 #'   conditions to be evaluated in \code{\link{runSimulation}}
 #'
-#' @seealso \code{\link{createDesign}}, \code{\link{aggregate_simulations}},
+#' @seealso \code{\link{createDesign}}, \code{\link{SimCollect}},
 #'    \code{\link{runArraySimulation}}
 #'
 #' @references

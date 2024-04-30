@@ -59,10 +59,10 @@
 #' y <- rnorm(1000)
 #'
 #' ## 10% missing rate with default FUN
-#' head(ymiss <- add_missing(y), 10)
+#' head(ymiss <- addMissing(y), 10)
 #'
 #' ## 50% missing with default FUN
-#' head(ymiss <- add_missing(y, rate = .5), 10)
+#' head(ymiss <- addMissing(y, rate = .5), 10)
 #'
 #' ## missing values only when female and low
 #' X <- data.frame(group = sample(c('male', 'female'), 1000, replace=TRUE),
@@ -75,7 +75,7 @@
 #'     p
 #' }
 #'
-#' ymiss <- add_missing(y, X, fun=fun)
+#' ymiss <- addMissing(y, X, fun=fun)
 #' tail(cbind(ymiss, X), 10)
 #'
 #' ## missingness as a function of elements in X (i.e., a type of MAR)
@@ -88,17 +88,17 @@
 #'    plogis(z)
 #' }
 #'
-#' ymiss <- add_missing(y, X, fun=fun)
+#' ymiss <- addMissing(y, X, fun=fun)
 #' tail(cbind(ymiss, X), 10)
 #'
 #' ## missing values when y elements are large (i.e., a type of MNAR)
 #' fun <- function(y) ifelse(abs(y) > 1, .4, 0)
-#' ymiss <- add_missing(y, fun=fun)
+#' ymiss <- addMissing(y, fun=fun)
 #' tail(cbind(y, ymiss), 10)
 #'
 #' }
 #'
-add_missing <- function(y, fun = function(y, rate = .1, ...) rep(rate, length(y)), ...){
+addMissing <- function(y, fun = function(y, rate = .1, ...) rep(rate, length(y)), ...){
     if(!('y' %in% names(formals(fun))))
         stop('fun must include a y argument')
     probs <- fun(y=y, ...)
@@ -107,4 +107,10 @@ add_missing <- function(y, fun = function(y, rate = .1, ...) rep(rate, length(y)
     is_na <- sapply(probs, function(p) sample(c(FALSE, TRUE), 1L, prob = c(1-p, p)))
     y[is_na] <- NA
     y
+}
+
+#' @export
+add_missing <- function(...){
+    .Deprecated('addMissing')
+    addMissing(...)
 }

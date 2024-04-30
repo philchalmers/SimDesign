@@ -2,7 +2,7 @@
 #'
 #' This function aggregates the results from SimDesign's \code{\link{runSimulation}} into a single
 #' objects suitable for post-analyses, or combines all the saved results directories and combines
-#' them into one. This is useful when results are run piecewise on one node (e.g., 500 replications
+#' them into one. This is useful when results are run piece-wise on one node (e.g., 500 replications
 #' in one batch, 500 again at a later date) or run independently across different
 #' nodes/computers that are not on the same network.
 #'
@@ -33,7 +33,6 @@
 #' @return if \code{files} is used the function returns a \code{data.frame/tibble} with the (weighted) average
 #'   of the simulation results. Otherwise, if \code{dirs} is used, the function returns NULL
 #'
-#' @aliases aggregate_simulations
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
@@ -46,7 +45,7 @@
 #'
 #' @seealso \code{\link{runSimulation}}
 #'
-#' @export aggregate_simulations
+#' @export
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
@@ -60,26 +59,26 @@
 #' # ret2 <- runSimulation(..., filename='file2')
 #'
 #' # saves to the hard-drive and stores in workspace
-#' final <- aggregate_simulations(files = c('file1.rds', 'file2.rds'))
+#' final <- SimCollect(files = c('file1.rds', 'file2.rds'))
 #' final
 #'
 #' # If filename not included, can be extracted from results
 #' # files <- c(SimExtract(ret1, 'filename'), SimExtract(ret2, 'filename'))
-#' # final <- aggregate_simulations(files = files)
+#' # final <- SimCollect(files = files)
 #'
 #' # aggregate saved results for .rds files and results directories
 #' # runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir1'))
 #' # runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir2'))
 #'
 #' # place new saved results in 'SimDesign_results/' by default
-#' aggregate_simulations(files = c('file1.rds', 'file2.rds'),
-#'                       filename='aggreged_sim.rds',
-#'                       dirs = c('dir1', 'dir2'))
+#' SimCollect(files = c('file1.rds', 'file2.rds'),
+#'            filename='aggreged_sim.rds',
+#'            dirs = c('dir1', 'dir2'))
 #'
 #' # If dirnames not included, can be extracted from results
 #' # dirs <- c(SimExtract(ret1, 'save_results_dirname'),
 #'             SimExtract(ret2, 'save_results_dirname'))
-#' # aggregate_simulations(dirs = dirs)
+#' # SimCollect(dirs = dirs)
 #'
 #' #################################################
 #' # Example where each row condition is repeated, evaluated independently,
@@ -115,7 +114,7 @@
 #'
 #' # Generate fixed seeds to be distributed
 #' set.seed(1234)
-#' seeds <- gen_seeds(Design)
+#' seeds <- genSeeds(Design)
 #' seeds
 #'
 #' # replications vector (constant is fine if the same across conditions;
@@ -135,20 +134,19 @@
 #'
 #' # check that all replications satisfy target
 #' files <- paste0('sim_files/job-', 1:nrow(Design), ".rds")
-#' aggregate_simulations(files = files, check.only = TRUE)
+#' SimCollect(files = files, check.only = TRUE)
 #'
 #' # this would have been returned were the target.rep supposed to be 1000
-#' aggregate_simulations(files = files, check.only = TRUE, target.reps=1000)
+#' SimCollect(files = files, check.only = TRUE, target.reps=1000)
 #'
 #' # aggregate into single object
-#' sim <- aggregate_simulations(files = paste0('sim_files/job-',
-#'                                      1:nrow(Design), ".rds"))
+#' sim <- SimCollect(files = paste0('sim_files/job-', 1:nrow(Design), ".rds"))
 #' sim
 #'
 #' }
-aggregate_simulations <- function(files = NULL, filename = NULL,
-                                  dirs = NULL, results_dirname = 'SimDesign_aggregate_results',
-                                  select = NULL, check.only = FALSE, target.reps = NULL){
+SimCollect <- function(files = NULL, filename = NULL,
+                       dirs = NULL, results_dirname = 'SimDesign_aggregate_results',
+                       select = NULL, check.only = FALSE, target.reps = NULL){
     if(check.only) select <- 'REPLICATIONS'
     oldfiles <- files
     if(!is.null(dirs)){
@@ -323,4 +321,12 @@ subset_results <- function(obj, select){
     }
     attr(obj, 'extra_info')$stored_results <- res
     obj
+}
+
+#' @rdname SimCollect
+#' @param ... not used
+#' @export
+aggregate_simulations <- function(...){
+    .Deprecated('SimCollect')
+    SimCollect(...)
 }

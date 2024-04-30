@@ -27,7 +27,7 @@
 #'
 #' @aliases Generate
 #'
-#' @seealso \code{\link{add_missing}}, \code{\link{Attach}},
+#' @seealso \code{\link{addMissing}}, \code{\link{Attach}},
 #'   \code{\link{rmgh}}, \code{\link{rValeMaurelli}}, \code{\link{rHeadrick}}
 #' @references
 #'

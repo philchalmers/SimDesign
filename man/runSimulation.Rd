@@ -1002,7 +1002,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
   \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
   \code{\link{SimExtract}},
   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
-  \code{\link{aggregate_simulations}}, \code{\link{Attach}}, \code{\link{AnalyseIf}},
+  \code{\link{SimCollect}}, \code{\link{Attach}}, \code{\link{AnalyseIf}},
   \code{\link{SimShiny}}, \code{\link{convertWarnings}}, \code{\link{runArraySimulation}}
 }
 \author{

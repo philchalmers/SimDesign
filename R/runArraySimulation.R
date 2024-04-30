@@ -114,7 +114,7 @@
 #' \doi{10.1080/10691898.2016.1246953}
 #'
 #' @seealso \code{\link{runSimulation}}, \code{\link{expandDesign}},
-#'   \code{\link{gen_seeds}}, \code{\link{aggregate_simulations}}, \code{\link{getArrayID}}
+#'   \code{\link{gen_seeds}}, \code{\link{SimCollect}}, \code{\link{getArrayID}}
 #'
 #' @examples
 #'
@@ -139,7 +139,7 @@
 #' \dontrun{
 #'
 #' # define initial seed (do this only once to keep it constant!)
-#' # iseed <- gen_seeds()
+#' # iseed <- genSeeds()
 #' iseed <- 554184288
 #'
 #' ### On cluster submission, the active array ID is obtained via getArrayID(),
@@ -166,7 +166,7 @@
 #' Design5 <- expandDesign(Design, 5)
 #' Design5
 #'
-#' # iseed <- gen_seeds()
+#' # iseed <- genSeeds()
 #' iseed <- 554184288
 #'
 #' # arrayID <- getArrayID(type = 'slurm')
@@ -212,7 +212,7 @@
 #' SimResults(condition14)
 #'
 #' # aggregate simulation results into single file
-#' final <- aggregate_simulations(files=dir())
+#' final <- SimCollect(files=dir())
 #' final
 #'
 #' SimResults(final) |> View()
@@ -258,7 +258,7 @@ runArraySimulation <- function(design, ..., replications,
         filename <- gsub("//", "/", filename)
     }
     save_details$arrayID <- arrayID
-    seed <- gen_seeds(design, iseed=iseed, arrayID=arrayID)
+    seed <- genSeeds(design, iseed=iseed, arrayID=arrayID)
 
     ret <- runSimulation(design=design[arrayID, , drop=FALSE],
                          replications=replications[arrayID],

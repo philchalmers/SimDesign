@@ -683,32 +683,32 @@ valid_results <- function(x)
 #' @examples
 #'
 #' # generate 1 seed (default)
-#' gen_seeds()
+#' genSeeds()
 #'
 #' # generate 5 unique seeds
-#' gen_seeds(5)
+#' genSeeds(5)
 #'
 #' # generate from nrow(design)
 #' design <- createDesign(factorA=c(1,2,3),
 #'                        factorB=letters[1:3])
-#' seeds <- gen_seeds(design)
+#' seeds <- genSeeds(design)
 #' seeds
 #'
 #' # generate seeds for runArraySimulation()
-#' (iseed <- gen_seeds())  # initial seed
-#' seed_list <- gen_seeds(design, iseed=iseed)
+#' (iseed <- genSeeds())  # initial seed
+#' seed_list <- genSeeds(design, iseed=iseed)
 #' seed_list
 #'
 #' # expand number of unique seeds given iseed (e.g., in case more replications
 #' # are required at a later date)
-#' seed_list_tmp <- gen_seeds(nrow(design)*2, iseed=iseed)
+#' seed_list_tmp <- genSeeds(nrow(design)*2, iseed=iseed)
 #' str(seed_list_tmp) # first 9 seeds identical to seed_list
 #'
 #' # more usefully for HPC, extract only the seed associated with an arrayID
-#' arraySeed.15 <- gen_seeds(nrow(design)*2, iseed=iseed, arrayID=15)
+#' arraySeed.15 <- genSeeds(nrow(design)*2, iseed=iseed, arrayID=15)
 #' arraySeed.15
 #'
-gen_seeds <- function(design = 1L, iseed = NULL, arrayID = NULL){
+genSeeds <- function(design = 1L, iseed = NULL, arrayID = NULL){
     if(missing(design)) design <- 1L
     if(is.numeric(design))
         design <- matrix(NA, nrow=design)
@@ -807,4 +807,12 @@ sbatch_RAM2bytes <- function(RAM){
         RAM * C
     } else RAM
     ret
+}
+
+#' @rdname genSeeds
+#' @param ... does nothing
+gen_seeds <- function(...){
+    .Deprecated('genSeeds')
+    genSeeds(...)
+
 }
