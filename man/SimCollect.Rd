@@ -49,11 +49,12 @@ if \code{files} is used the function returns a \code{data.frame/tibble} with the
   of the simulation results. Otherwise, if \code{dirs} is used, the function returns NULL
 }
 \description{
-This function aggregates the results from SimDesign's \code{\link{runSimulation}} into a single
+This function collects and aggregates the results from
+SimDesign's \code{\link{runSimulation}} into a single
 objects suitable for post-analyses, or combines all the saved results directories and combines
 them into one. This is useful when results are run piece-wise on one node (e.g., 500 replications
 in one batch, 500 again at a later date) or run independently across different
-nodes/computers that are not on the same network.
+nodes/computers that are not on the same network (e.g., see \code{\link{runArraySimulation}}.
 }
 \examples{
 \dontrun{
@@ -131,7 +132,7 @@ replications <- rep(250, nrow(Design))
 dir.create('sim_files/')
 
 # distribute jobs independently (explicitly parallelize here on cluster,
-# which is more elagantly managed via runArraySimulation)
+# which is more elegantly managed via runArraySimulation)
 sapply(1:nrow(Design), \(i) {
   runSimulation(design=Design[i, ], replications=replications[i],
                 generate=Generate, analyse=Analyse, summarise=Summarise,
