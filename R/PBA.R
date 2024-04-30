@@ -33,8 +33,9 @@
 #'
 #' @param wait.time (optional) instead of terminating after specific estimate criteria
 #'   are satisfied (e.g., \code{tol}), terminate after a specific
-#'   wait time. Input must be a numeric vector indicating the number of minutes to
-#'   wait. Not that users should increase the number of \code{maxiter} as well
+#'   wait time. Input is specified either as a numeric vector in seconds or as a character
+#'   vector to be formatted by \code{\link{timeFormater}}.
+#'   Note that users should increase the number of \code{maxiter} as well
 #'   so that termination can occur if either the maximum iterations are satisfied
 #'   or the specified wait time has elapsed (whichever occurs first)
 #
@@ -119,8 +120,8 @@
 #' plot(retpba.noise, type = 'history')
 #'
 #' \dontrun{
-#' # ignore termination criteria and instead run for 1/2 minutes or 30000 iterations
-#' retpba.noise_30sec <- PBA(f.root_noisy, c(0,1), wait.time = 1/2, maxiter=30000)
+#' # ignore termination criteria and instead run for 30 seconds or 30000 iterations
+#' retpba.noise_30sec <- PBA(f.root_noisy, c(0,1), wait.time = "0:30", maxiter=30000)
 #' retpba.noise_30sec
 #'
 #' }
@@ -133,6 +134,8 @@ PBA <- function(f, interval, ..., p = .6,
                 verbose = TRUE){
 
     if(maxiter < miniter) maxiter <- miniter
+    if(!is.null(wait.time) && is.character(wait.time))
+        wait.time <- timeFormater(wait.time)
     stopifnot(length(p) == 1L)
     if(p <= 0.5)
         stop('Probability must be > 0.5')
@@ -318,7 +321,7 @@ PBA <- function(f, interval, ..., p = .6,
         }
 
         if(!is.null(wait.time))
-            if(proc.time()[3L] - start_time > wait.time*60) break
+            if(proc.time()[3L] - start_time > wait.time) break
 
         if(iter == maxiter) break
     }
@@ -363,7 +366,7 @@ print.PBA <- function(x, ...)
     out <- with(x,
          list(root = root,
               terminated_early=terminated_early,
-              time=noquote(timeFormater(time)),
+              time=noquote(timeFormater_internal(time)),
               iterations = iter))
     if(!all(is.na(x$predCIs)))
         out <- append(out, list(pred_CI.root = x$predCIs_root,

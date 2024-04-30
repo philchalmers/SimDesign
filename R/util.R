@@ -26,7 +26,7 @@ get_packages <- function(packages){
 }
 
 # base-code borrowed and modified from pbapply
-timeFormater <- function(time, decimals = TRUE){
+timeFormater_internal <- function(time, decimals = TRUE){
     dec <- time - floor(time)
     time <- floor(time - dec)
     dec <- round(dec, 2)
@@ -68,7 +68,7 @@ print_progress <- function(row, trow, stored_time, RAM, progress,
     }
     if(RAM != "") RAM <- sprintf(';   RAM Used: %s', RAM)
     cat(sprintf('\rDesign: %i/%i%s;   Replications: %i;   Total Time: %s ',
-                row, trow, RAM, replications, timeFormater(sum(stored_time))))
+                row, trow, RAM, replications, timeFormater_internal(sum(stored_time))))
     cat(sprintf('\n Conditions: %s\n', condstring))
     if(progress) cat('\r')
     invisible(NULL)
@@ -80,7 +80,7 @@ notification_condition <- function(condition, results, total){
     RPushbullet::pbPost(type = 'note',
                         title = sprintf("Condition %i/%i completed", condition$ID, total),
                         body = sprintf("Execution time: %s \nErrors: %i \nWarnings: %i",
-                                       timeFormater(results$SIM_TIME),
+                                       timeFormater_internal(results$SIM_TIME),
                                        ifelse(is.null(results$ERRORS), 0, results$ERRORS),
                                        ifelse(is.null(results$WARNINGS), 0, results$WARNINGS)))
 
@@ -91,7 +91,7 @@ notification_final <- function(Final){
     RPushbullet::pbPost(type = 'note',
                         title = "Simulation completed",
                         body = sprintf("Total execution time: %s \nTotal Errors: %i \nTotal Warnings: %i",
-                                       timeFormater(sum(Final$SIM_TIME)),
+                                       timeFormater_internal(sum(Final$SIM_TIME)),
                                        ifelse(is.null(Final$ERRORS), 0, sum(Final$ERRORS)),
                                        ifelse(is.null(Final$WARNINGS), 0, sum(Final$WARNINGS))))
     invisible(NULL)
@@ -744,15 +744,59 @@ genSeeds <- function(design = 1L, iseed = NULL, arrayID = NULL){
     seed
 }
 
-# Test cases:
-#
-# sbatch_time2sec("4-12")        # day-hours
-# sbatch_time2sec("4-12:15")     # day-hours:minutes
-# sbatch_time2sec("4-12:15:30")  # day-hours:minutes:seconds
-#
-# sbatch_time2sec("30")          # minutes
-# sbatch_time2sec("30:30")       # minutes:seconds
-# sbatch_time2sec("4:30:30")     # hours:minutes:seconds
+#' Format time string to suitable numeric output
+#'
+#' Format time input string into suitable numeric output metric (e.g., seconds).
+#' Input follows the \code{SBATCH} utility specifications.
+#' Accepted time formats include \code{"minutes"},
+#' \code{"minutes:seconds"}, \code{"hours:minutes:seconds"},
+#' \code{"days-hours"}, \code{"days-hours:minutes"} and
+#' \code{"days-hours:minutes:seconds"}.
+#'
+#' For example, \code{max_time = "60"} indicates a maximum time of 60 minutes,
+#' \code{max_time = "03:00:00"} a maximum time of 3 hours,
+#' \code{max_time = "4-12"} a maximum of 4 days and 12 hours, and
+#' \code{max_time = "2-02:30:00"} a maximum of 2 days, 2 hours and 30 minutes.
+#'
+#' @param time a character string to be formatted. If a numeric vector is supplied
+#' then this will be interpreted as seconds.
+#'
+#' @param output type of numeric output to convert time into.
+#' Currently supported are \code{'sec'} for seconds (default),
+#' \code{'min'} for minutes, \code{'hour'}, and \code{'day'}
+#'
+#' @export
+#'
+#' @examples
+#'
+#' # Test cases (outputs in seconds)
+#' timeFormater("4-12")        # day-hours
+#' timeFormater("4-12:15")     # day-hours:minutes
+#' timeFormater("4-12:15:30")  # day-hours:minutes:seconds
+#'
+#' timeFormater("30")          # minutes
+#' timeFormater("30:30")       # minutes:seconds
+#' timeFormater("4:30:30")     # hours:minutes:seconds
+#'
+#' # output in hours
+#' timeFormater("4-12", output = 'hour')
+#' timeFormater("4-12:15", output = 'hour')
+#' timeFormater("4-12:15:30", output = 'hour')
+#'
+#' timeFormater("30", output = 'hour')
+#' timeFormater("30:30", output = 'hour')
+#' timeFormater("4:30:30", output = 'hour')
+#'
+timeFormater <- function(time, output='sec'){
+    stopifnot(length(time) == 1L && length(output) == 1L)
+    stopifnot(output %in% c('sec', 'min', 'hour', 'day'))
+    time <- sbatch_time2sec(time)
+    if(output == 'min') time <- time / 60
+    if(output == 'hour') time <- time / 60 / 60
+    if(output == 'min') time <- time / 60 / 60 / 24
+    time
+}
+
 sbatch_time2sec <- function(time){
     ret <- if(is.character(time)){
         time <- gsub(pattern = " ", "", time)

@@ -123,7 +123,7 @@
 #'   the time to wait (specified in minutes) per row in the \code{Design} object
 #'   rather than using pre-determined termination criteria based on the estimates.
 #'   For example, if three three conditions were defined in
-#'   \code{Design}, and \code{wait.time=5},
+#'   \code{Design}, and \code{wait.time="5"},
 #'   then the total search time till terminate after 15 minutes regardless of
 #'   independently specified termination criteria in \code{control}. Note that
 #'   \code{maxiter} is still used alongside \code{wait.time}, therefore this should
@@ -331,7 +331,7 @@
 #'
 #' solved_5min <- SimSolve(design=Design, b=.8, interval=c(10, 500),
 #'                 generate=Generate, analyse=Analyse, summarise=Summarise,
-#'                 wait.time=5, maxiter=1000)
+#'                 wait.time="5", maxiter=1000)
 #' solved_5min
 #' summary(solved_2min)
 #'

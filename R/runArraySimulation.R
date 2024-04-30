@@ -73,16 +73,9 @@
 #'
 #'   \code{max_time} specifies the maximum time allowed for a
 #'   single simulation condition to execute (default does not set
-#'   any time limits). This is primarily useful when the HPC cluster
+#'   any time limits), and is formatted according to the specification in
+#'   \code{\link{timeFormater}}. This is primarily useful when the HPC cluster
 #'   will time out after some known elapsed time.
-#'   Following the \code{SBATCH} specifications, acceptable time formats include
-#'   \code{"minutes"}, \code{"minutes:seconds"}, \code{"hours:minutes:seconds"},
-#'   \code{"days-hours"}, \code{"days-hours:minutes"} and
-#'   \code{"days-hours:minutes:seconds"}.
-#'   For example, \code{max_time = "60"} indicates a maximum time of 60 minutes,
-#'   \code{max_time = "03:00:00"} a maximum time of 3 hours,
-#'   \code{max_time = "4-12"} a maximum of 4 days and 12 hours, and
-#'   \code{max_time = "2-02:30:00"} a maximum of 2 days, 2 hours and 30 minutes.
 #'   In general, this input should be set to somewhere around
 #'   80-90% of the true termination time so that any evaluations completed
 #'   before the cluster is terminated can be saved. Default applies no time limit

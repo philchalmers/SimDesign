@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.16
 
+- `timeFormater()` function added to isolate logic of SBATCH time specification
+  utility. Now used in several places of the package (e.g., 
+  `runArraySimulation()`, `PBA()`, `SimSolve()`)
+
 - Switch to camel casing format in all functions (e.g., 
   `add_missing() -> addMissing()`, `gen_seeds() -> genSeeds()`, etc). Exception
   is that `aggregate_simulations()` has changed to `SimCollect()`

@@ -410,7 +410,7 @@
 #'        where \code{max_time} is only evaluated after every row in the
 #'        \code{design} object has been completed (hence, is notably more approximate as it
 #'        has the potential to overshoot by a wider margin). Default sets no time limit.
-#'        See \code{\link{runArraySimulation}} for the input specifications.
+#'        See \code{\link{timeFormater}} for the input specifications.
 #'      }
 #'
 #'      \item{\code{max_RAM}}{
@@ -1539,7 +1539,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     if(verbose)
         message('\nSimulation complete. Total execution time: ',
-                timeFormater(sum(stored_time)), "\n")
+                timeFormater_internal(sum(stored_time)), "\n")
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
     if(store_Random.seeds){
         stored_Random.seeds_list <- lapply(1L:length(Result_list),
@@ -1670,7 +1670,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
 #' @export
 summary.SimDesign <- function(object, ...){
     ret <- attr(object, 'extra_info')
-    ret$total_elapsed_time <- noquote(timeFormater(ret$total_elapsed_time, TRUE))
+    ret$total_elapsed_time <- noquote(
+        timeFormater_internal(ret$total_elapsed_time, TRUE))
     ret$stored_results <- NULL
     ret$error_seeds <- NULL
     ret$warning_seeds <- NULL
@@ -1687,7 +1688,8 @@ summary.SimDesign <- function(object, ...){
 #' @export
 print.SimDesign <- function(x, list2char = TRUE, ...){
     if(suppressWarnings(!is.null(x$SIM_TIME)))
-        x$SIM_TIME <- sapply(x$SIM_TIME, function(x) noquote(timeFormater(x)))
+        x$SIM_TIME <- sapply(x$SIM_TIME, function(x)
+            noquote(timeFormater_internal(x)))
     class(x) <- c('Design', class(x)[-1L])
     print(x=x, list2char=list2char, ...)
 }
