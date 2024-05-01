@@ -78,29 +78,29 @@ test_that('aggregate', {
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                          replications = 2, parallel=FALSE, store_results = TRUE,
                          filename = 'newfile3', verbose = FALSE)
-    Final <- aggregate_simulations(files = c('file.rds', 'newfile.rds'))
+    Final <- SimCollect(files = c('file.rds', 'newfile.rds'))
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
     expect_equal(nrow(SimExtract(Final, 'results')), 4 * nrow(Design))
     saveRDS(Final, 'collect1.rds')
-    Final2 <- aggregate_simulations(files = c('newfile2.rds', 'newfile3.rds'))
+    Final2 <- SimCollect(files = c('newfile2.rds', 'newfile3.rds'))
     expect_is(Final2, 'data.frame')
     expect_true(all(Final2$REPLICATIONS == 4L))
     expect_equal(nrow(SimExtract(Final2, 'results')), 4 * nrow(Design))
     saveRDS(Final2, 'collect2.rds')
 
     # aggregate the aggregates
-    Final4 <- aggregate_simulations(files = c('collect1.rds', 'collect2.rds'))
+    Final4 <- SimCollect(files = c('collect1.rds', 'collect2.rds'))
     expect_is(Final4, 'data.frame')
     expect_true(all(Final4$REPLICATIONS == 8L))
     expect_equal(nrow(SimExtract(Final4, 'results')), 8 * nrow(Design))
 
     # select
     expect_true(ncol(SimExtract(tmp, 'results')) == 5L)
-    Final <- aggregate_simulations(files = c('file.rds', 'newfile.rds'),
+    Final <- SimCollect(files = c('file.rds', 'newfile.rds'),
                                    select=c("welch", 'independent'))
     expect_true(ncol(SimExtract(Final, 'results')) == 2L)
-    Final <- aggregate_simulations(files = c('file.rds', 'newfile.rds'),
+    Final <- SimCollect(files = c('file.rds', 'newfile.rds'),
                                    select='NONE')
     expect_true(is.null(SimExtract(Final, 'results')))
     SimClean(dir()[grepl('\\.rds', dir())])
@@ -113,7 +113,7 @@ test_that('aggregate', {
 
     dirs <- c(SimExtract(tmp, 'save_results_dirname'),
               SimExtract(tmp2, 'save_results_dirname'))
-    aggregate_simulations(dirs = dirs)
+    SimCollect(dirs = dirs)
     row1 <- readRDS('SimDesign_aggregate_results/results-row-1.rds')
     expect_equal(nrow(row1$results), 4L)
     SimClean(dirs = c(dirs, "SimDesign_aggregate_results"))
@@ -159,7 +159,7 @@ test_that('aggregate', {
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, max_errors=Inf,
                          replications = 2, parallel=FALSE, filename = 'newfile', save=TRUE,
                          verbose = FALSE)
-    Final <- aggregate_simulations(c('this.rds', 'newfile.rds'))
+    Final <- SimCollect(c('this.rds', 'newfile.rds'))
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
     SimClean(dir()[grepl('\\.rds', dir())])
@@ -240,7 +240,7 @@ test_that('aggregate', {
                              generate=mygenerate, analyse=mycompute3, summarise=mycollect,
                              parallel=FALSE, save_results = TRUE, verbose = FALSE,
                              save_details = list(save_results_dirname = 'dir3'))
-    aggregate_simulations(dirs = c('dir1', 'dir2', 'dir3'))
+    SimCollect(dirs = c('dir1', 'dir2', 'dir3'))
     expect_true(dir.exists('SimDesign_aggregate_results'))
     expect_equal(6, nrow(readRDS('SimDesign_aggregate_results/results-row-1.rds')$results))
     SimClean(dirs = c('SimDesign_aggregate_results','dir1', 'dir2', 'dir3'))
@@ -260,7 +260,7 @@ test_that('aggregate', {
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save_results = TRUE, verbose = FALSE,
                              save_details = list(save_results_dirname = 'dir2'))
-    aggregate_simulations(dirs = c('dir1', 'dir2'))
+    SimCollect(dirs = c('dir1', 'dir2'))
     expect_true(dir.exists('SimDesign_aggregate_results'))
     expect_equal(4, length(readRDS('SimDesign_aggregate_results/results-row-1.rds')$results))
     SimClean(dirs = c('SimDesign_aggregate_results','dir1', 'dir2'))

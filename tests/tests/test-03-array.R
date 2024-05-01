@@ -140,7 +140,7 @@ test_that('array', {
     expect_equal(results$arrayID[1], 14)
 
     # aggregate simulation results into single file
-    final <- aggregate_simulations(files=dir())
+    final <- SimCollect(files=dir())
     so <- summary(final)
     expect_equal(so$ncores, 15L)
     results <- SimResults(final)
