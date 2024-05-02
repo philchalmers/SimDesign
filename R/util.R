@@ -105,13 +105,17 @@ notification_final <- function(Final){
 #' is not interactive, and therefore this type of output should be suppressed.
 #' For similar behaviour for suppressing warning messages see
 #' \code{\link{suppressWarnings}}, though use this function carefully as some
-#' warnings can be meaningful and unexpected.
+#' warnings can be meaningful and unexpected (see \code{link{convertWarnigs}}
+#' for a more lawful alternative).
 #'
 #' @param ... the functional expression to be evaluated
 #'
-#' @param messages logical; suppress all messages?
+#' @param messages logical; print all messages?
 #'
-#' @param cat logical; suppress all concatenate and print calls from \code{\link{cat}}?
+#' @param cat logical; print all concatenate and calls from \code{\link{cat}}?
+#'
+#' @param warnings logical; print all warning messages (generally recommended to leave
+#'   as \code{TRUE}; see \code{link{convertWarnigs}} for better alternative)
 #'
 #' @export
 #'
@@ -131,6 +135,7 @@ notification_final <- function(Final){
 #'    cat("It even prints in different output forms!\n")
 #'    message('And even at different....')
 #'    cat("...times!\n")
+#'    warning('It may even throw warnings, though careful suppressing these!')
 #'    x
 #' }
 #'
@@ -141,13 +146,23 @@ notification_final <- function(Final){
 #' out <- quiet(myfun(1))
 #' out
 #'
-quiet <- function(..., messages=FALSE, cat=FALSE){
+#' # suppress messages, cats, and warnings (not recommended)
+#' out2 <- quiet(myfun(2), warnings = FALSE)
+#' out2
+#'
+quiet <- function(..., messages=FALSE, cat=FALSE, warnings=TRUE){
     if(!cat){
         tmpf <- tempfile()
         sink(tmpf)
         on.exit({sink(); file.remove(tmpf)})
     }
-    out <- if(messages) eval(...) else suppressMessages(eval(...))
+    supwarn <- function(x) suppressWarnings(eval(x))
+    if(warnings) supwarn <- function(x) eval(x)
+    out <- if(messages){
+        supwarn(...)
+    } else {
+        suppressMessages(supwarn(...))
+    }
     out
 }
 

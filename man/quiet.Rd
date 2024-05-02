@@ -4,14 +4,17 @@
 \alias{quiet}
 \title{Suppress function messages and Concatenate and Print (cat)}
 \usage{
-quiet(..., messages = FALSE, cat = FALSE)
+quiet(..., messages = FALSE, cat = FALSE, warnings = TRUE)
 }
 \arguments{
 \item{...}{the functional expression to be evaluated}
 
-\item{messages}{logical; suppress all messages?}
+\item{messages}{logical; print all messages?}
 
-\item{cat}{logical; suppress all concatenate and print calls from \code{\link{cat}}?}
+\item{cat}{logical; print all concatenate and calls from \code{\link{cat}}?}
+
+\item{warnings}{logical; print all warning messages (generally recommended to leave
+as \code{TRUE}; see \code{link{convertWarnigs}} for better alternative)}
 }
 \description{
 This function is used to suppress information printed from external functions
@@ -20,7 +23,8 @@ provide information in interactive R sessions. For simulations, the session
 is not interactive, and therefore this type of output should be suppressed.
 For similar behaviour for suppressing warning messages see
 \code{\link{suppressWarnings}}, though use this function carefully as some
-warnings can be meaningful and unexpected.
+warnings can be meaningful and unexpected (see \code{link{convertWarnigs}}
+for a more lawful alternative).
 }
 \examples{
 myfun <- function(x){
@@ -28,6 +32,7 @@ myfun <- function(x){
    cat("It even prints in different output forms!\n")
    message('And even at different....')
    cat("...times!\n")
+   warning('It may even throw warnings, though careful suppressing these!')
    x
 }
 
@@ -37,6 +42,10 @@ out
 # tell the function to shhhh
 out <- quiet(myfun(1))
 out
+
+# suppress messages, cats, and warnings (not recommended)
+out2 <- quiet(myfun(2), warnings = FALSE)
+out2
 
 }
 \references{
