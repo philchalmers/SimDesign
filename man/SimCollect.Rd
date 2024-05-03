@@ -50,11 +50,12 @@ if \code{files} is used the function returns a \code{data.frame/tibble} with the
 }
 \description{
 This function collects and aggregates the results from
-SimDesign's \code{\link{runSimulation}} into a single
+\code{SimDesign}'s \code{\link{runSimulation}} into a single
 objects suitable for post-analyses, or combines all the saved results directories and combines
 them into one. This is useful when results are run piece-wise on one node (e.g., 500 replications
-in one batch, 500 again at a later date) or run independently across different
-nodes/computers that are not on the same network (e.g., see \code{\link{runArraySimulation}}.
+in one batch, 500 again at a later date, though be careful about the \code{\link{set.seed}}
+use as the random numbers will tend to correlate the more it is used) or run independently across different
+nodes/computing cores (e.g., see \code{\link{runArraySimulation}}.
 }
 \examples{
 \dontrun{
@@ -62,8 +63,10 @@ nodes/computers that are not on the same network (e.g., see \code{\link{runArray
 setwd('my_working_directory')
 
 ## run simulations to save the .rds files (or move them to the working directory)
-# ret1 <- runSimulation(..., filename='file1')
-# ret2 <- runSimulation(..., filename='file2')
+# seeds1 <- genSeeds(design)
+# seeds2 <- genSeeds(design, old.seeds=seeds1)
+# ret1 <- runSimulation(design, ..., seed=seeds1, filename='file1')
+# ret2 <- runSimulation(design, ..., seed=seeds2, filename='file2')
 
 # saves to the hard-drive and stores in workspace
 final <- SimCollect(files = c('file1.rds', 'file2.rds'))
@@ -74,8 +77,10 @@ final
 # final <- SimCollect(files = files)
 
 # aggregate saved results for .rds files and results directories
-# runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir1'))
-# runSimulation(..., save_results = TRUE, save_details = list(save_results_dirname = 'dir2'))
+# runSimulation(..., seed=seeds1, save_results = TRUE,
+#      save_details = list(save_results_dirname = 'dir1'))
+# runSimulation(..., seed=seeds2, save_results = TRUE,
+#      save_details = list(save_results_dirname = 'dir2'))
 
 # place new saved results in 'SimDesign_results/' by default
 SimCollect(files = c('file1.rds', 'file2.rds'),

@@ -5,7 +5,7 @@
 \alias{gen_seeds}
 \title{Generate random seeds}
 \usage{
-genSeeds(design = 1L, iseed = NULL, arrayID = NULL)
+genSeeds(design = 1L, iseed = NULL, arrayID = NULL, old.seeds = NULL)
 
 gen_seeds(...)
 }
@@ -27,6 +27,16 @@ row in the \code{design} object when using the \code{iseed} input.
 This is used in functions such as \code{\link{runArraySimulation}}
 to pull out the specific seed rather than manage a complete list, and
 is therefore more memory efficient}
+
+\item{old.seeds}{(optional) vector or matrix of last seeds used in
+previous simulations to avoid repeating the same seed on a subsequent run.
+Note that this approach should be used sparingly as seeds set more frequently
+are more likely to correlate, and therefore provide less optimal random
+number behaviour (e.g., if performing a simulation on two runs to achieve
+5000 * 2 = 10,000 replications this is likely reasonable,
+but for simulations with 100 * 2 = 200 replications this is more
+likely to be sub-optimal).
+Length must be equal to the number of rows in \code{design}}
 
 \item{...}{does nothing}
 }
@@ -50,6 +60,15 @@ design <- createDesign(factorA=c(1,2,3),
 seeds <- genSeeds(design)
 seeds
 
+# construct new seeds that are independent from original (use this sparingly)
+newseeds <- genSeeds(design, old.seeds=seeds)
+newseeds
+
+# can be done in batches too
+newseeds2 <- genSeeds(design, old.seeds=cbind(seeds, newseeds))
+cbind(seeds, newseeds, newseeds2) # all unique
+
+############
 # generate seeds for runArraySimulation()
 (iseed <- genSeeds())  # initial seed
 seed_list <- genSeeds(design, iseed=iseed)

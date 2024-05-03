@@ -691,6 +691,16 @@ valid_results <- function(x)
 #'   to pull out the specific seed rather than manage a complete list, and
 #'   is therefore more memory efficient
 #'
+#' @param old.seeds (optional) vector or matrix of last seeds used in
+#'   previous simulations to avoid repeating the same seed on a subsequent run.
+#'   Note that this approach should be used sparingly as seeds set more frequently
+#'   are more likely to correlate, and therefore provide less optimal random
+#'   number behaviour (e.g., if performing a simulation on two runs to achieve
+#'   5000 * 2 = 10,000 replications this is likely reasonable,
+#'   but for simulations with 100 * 2 = 200 replications this is more
+#'   likely to be sub-optimal).
+#'   Length must be equal to the number of rows in \code{design}
+#'
 #' @export
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
@@ -709,6 +719,15 @@ valid_results <- function(x)
 #' seeds <- genSeeds(design)
 #' seeds
 #'
+#' # construct new seeds that are independent from original (use this sparingly)
+#' newseeds <- genSeeds(design, old.seeds=seeds)
+#' newseeds
+#'
+#' # can be done in batches too
+#' newseeds2 <- genSeeds(design, old.seeds=cbind(seeds, newseeds))
+#' cbind(seeds, newseeds, newseeds2) # all unique
+#'
+#' ############
 #' # generate seeds for runArraySimulation()
 #' (iseed <- genSeeds())  # initial seed
 #' seed_list <- genSeeds(design, iseed=iseed)
@@ -723,12 +742,23 @@ valid_results <- function(x)
 #' arraySeed.15 <- genSeeds(nrow(design)*2, iseed=iseed, arrayID=15)
 #' arraySeed.15
 #'
-genSeeds <- function(design = 1L, iseed = NULL, arrayID = NULL){
+genSeeds <- function(design = 1L, iseed = NULL, arrayID = NULL, old.seeds = NULL){
     if(missing(design)) design <- 1L
     if(is.numeric(design))
         design <- matrix(NA, nrow=design)
     if(is.null(iseed)){
         seed <- rint(nrow(design), min=1L, max = 2147483647L)
+        if(!is.null(old.seeds)){
+            old.seeds <- as.vector(old.seeds)
+            while(TRUE){
+                whc <- which(seed %in% old.seeds)
+                if(length(whc)){
+                    seed[whc] <- rint(nrow(design), min=1L, max = 2147483647L)
+                    next
+                }
+                break
+            }
+        }
     } else {
         rngkind <- RNGkind()
         RNGkind("L'Ecuyer-CMRG")
