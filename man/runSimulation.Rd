@@ -51,7 +51,9 @@ to create this simulation design object}
 \item{replications}{number of independent replications to perform per
 condition (i.e., each row in \code{design}). Can be a single number, which
 will be used for each design condition, or an integer vector with length
-equal to \code{nrow(design)}. All inputs must be greater than 0}
+equal to \code{nrow(design)}. All inputs must be greater than 0, though setting
+to less than 3 (for initial testing purpose) will disable the \code{save}
+and \code{control$stop_on_fatal} flags}
 
 \item{generate}{user-defined data and parameter generating function (or named list of functions).
 See \code{\link{Generate}} for details. Note that this argument may be omitted by the
@@ -370,7 +372,8 @@ in the simulation}
       the simulation will continue as though errors did not occur, however a column
       \code{FATAL_TERMINATION} will be included in the resulting object indicating the final
       error message observed, and \code{NA} placeholders will be placed in all other row-elements.
-      Default is \code{FALSE}}
+      Default is \code{FALSE}, though is automatically set to \code{TRUE} when \code{replications < 3}
+      for the purpose of debugging}
 
      \item{\code{warnings_as_errors}}{logical (default is \code{FALSE});
      treat warning messages as error messages during the simulation? Default is FALSE,
