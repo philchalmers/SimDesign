@@ -185,14 +185,19 @@ test_that('SimDesign', {
         stop('this error')
     }
     expect_warning(out <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                               replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
+                               replications = 3, parallel=FALSE, save=FALSE, verbose = FALSE))
+    expect_error(out <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                                      replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE))
 
     expect_warning(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 1, parallel=TRUE, ncores=2L,
+                           replications = 3, parallel=TRUE, ncores=2L,
                            save=FALSE, verbose = FALSE))
+    expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
+                                 replications = 2, parallel=TRUE, ncores=2L,
+                                 save=FALSE, verbose = FALSE))
 
     expect_error(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                               replications = 1, parallel=TRUE, ncores=2L,
+                               replications = 3, parallel=TRUE, ncores=2L,
                                save=TRUE, verbose = FALSE, control = list(stop_on_fatal = TRUE)))
 
     mycompute <- function(condition, dat, fixed_objects = NULL){
@@ -200,16 +205,16 @@ test_that('SimDesign', {
         ret
     }
     expect_warning(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                               replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
+                               replications = 3, parallel=FALSE, save=FALSE, verbose = FALSE))
     expect_warning(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                               replications = 1, parallel=TRUE, ncores=2L,
+                               replications = 3, parallel=TRUE, ncores=2L,
                                save=FALSE, verbose = FALSE))
 
     mysim <- function(condition, fixed_objects = NULL){
         stop('something silly', call.=FALSE)
     }
     expect_warning(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                               replications = 1, parallel=FALSE, save=FALSE, verbose = FALSE))
+                               replications = 3, parallel=FALSE, save=FALSE, verbose = FALSE))
 
 
     mycompute <- function(condition, dat, fixed_objects = NULL) {
@@ -221,16 +226,16 @@ test_that('SimDesign', {
     mycollect <- function(condition, results, fixed_objects = NULL) {
         mean(results$ret)
     }
-    expect_warning(runSimulation(Design, replications = 1,
+    expect_warning(runSimulation(Design, replications = 3,
                                generate=mygenerate, analyse=mycompute, summarise=mycollect,
                                parallel=FALSE, save=FALSE, verbose = FALSE))
-    expect_warning(runSimulation(Design, replications = 1, ncores=2,
+    expect_warning(runSimulation(Design, replications = 3, ncores=2,
                                generate=mygenerate, analyse=mycompute, summarise=mycollect,
                                parallel=TRUE, save=FALSE, verbose = FALSE))
-    out <- runSimulation(Design, replications = 2, packages = 'extraDistr',
+    out <- runSimulation(Design, replications = 3, packages = 'extraDistr',
                          generate=mygenerate, analyse=mycompute, summarise=mycollect,
                          parallel=FALSE, save=FALSE, verbose = FALSE)
-    out2 <- runSimulation(Design, replications = 2, packages = 'extraDistr',
+    out2 <- runSimulation(Design, replications = 3, packages = 'extraDistr',
                          generate=mygenerate, analyse=mycompute, summarise=mycollect,
                          parallel=TRUE, save=FALSE, verbose = FALSE)
     expect_is(out, 'SimDesign')
@@ -243,21 +248,21 @@ test_that('SimDesign', {
         if(sample(c(FALSE, TRUE), 1)) warning('Manual warning')
         c(ret = 1)
     }
-    results <- runSimulation(Design, replications = 1, packages = 'extraDistr',
+    results <- runSimulation(Design, replications = 3, packages = 'extraDistr',
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
                   parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_true(any(grepl('WARNING', names(results))))
-    results <- runSimulation(Design, replications = 1, packages = 'extraDistr',
+    results <- runSimulation(Design, replications = 3, packages = 'extraDistr',
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save=FALSE, verbose = FALSE,
                              control = list(store_warning_seeds = TRUE))
     expect_true(length(SimExtract(results, what = 'warning_seeds')) > 0)
-    results <- runSimulation(Design, replications = 1, packages = 'extraDistr', max_errors = Inf,
+    results <- runSimulation(Design, replications = 3, packages = 'extraDistr', max_errors = Inf,
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save=FALSE, verbose = FALSE,
                              control = list(warnings_as_errors=TRUE))
     expect_true(any(grepl('ERROR', names(results))))
-    results <- runSimulation(Design, replications = 1, packages = 'extraDistr',
+    results <- runSimulation(Design, replications = 3, packages = 'extraDistr',
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
                   parallel=TRUE, ncores=2L, save=FALSE, verbose = FALSE)
     expect_true(any(grepl('WARNING', names(results))))
@@ -301,7 +306,7 @@ test_that('SimDesign', {
     mycollect <- function(condition, results, fixed_objects = NULL){
         c(ret = 1)
     }
-    results <- runSimulation(Design, replications = 2, packages = 'extraDistr', seed=1:8,
+    results <- runSimulation(Design, replications = 3, packages = 'extraDistr', seed=1:8,
                              generate=mygenerate, analyse=mycompute, summarise=mycollect, verbose=FALSE)
     seeds <- SimExtract(results, what = 'error_seeds')
     expect_is(seeds, 'data.frame')
@@ -309,10 +314,10 @@ test_that('SimDesign', {
 
     if(FALSE){
         # run interactively
-        results <- runSimulation(Design, replications = 2, packages = 'extraDistr',
+        results <- runSimulation(Design, replications = 3, packages = 'extraDistr',
                                  generate=mygenerate, analyse=mycompute, summarise=mycollect, debug='error')
 
-        results <- runSimulation(Design, replications = 2, packages = 'extraDistr', seed=1:8,
+        results <- runSimulation(Design, replications = 3, packages = 'extraDistr', seed=1:8,
                                  generate=mygenerate, analyse=mycompute, summarise=mycollect,
                                  load_seed=seeds$Design_row_1.1..This.is.an.error., debug='analyse')
     }
@@ -352,7 +357,7 @@ test_that('SimDesign', {
     }
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
+                           replications = 3, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
     # Maintain attributes after subsetting results
