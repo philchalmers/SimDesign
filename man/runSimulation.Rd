@@ -714,22 +714,24 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 3 --- Collect results by looping over the rows in design
 
-# run the simulation
-Final <- runSimulation(design=Design, replications=10,
+# run the simulation in testing mode (replications = 2)
+Final <- runSimulation(design=Design, replications=2,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 Final
 SimResults(Final)
 
-\dontrun{
 # reproduce exact simulation
-Final_rep <- runSimulation(design=Design, replications=10, seed=Final$SEED,
+Final_rep <- runSimulation(design=Design, replications=2, seed=Final$SEED,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 Final_rep
+SimResults(Final_rep)
 
-# run with more standard number of replications (note the storage message)
+\dontrun{
+# run with more standard number of replications
 Final <- runSimulation(design=Design, replications=1000,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 Final
+SimResults(Final)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Extras
@@ -746,18 +748,18 @@ Final
 #   if RAM storage could be an issue and error/warning message information is important.
 
 # a) approach
-res <- runSimulation(design=Design, replications=5,
+res <- runSimulation(design=Design, replications=100,
                      generate=Generate, analyse=Analyse)
 res
 
 # b) approach (store_results = TRUE by default)
-res <- runSimulation(design=Design, replications=5,
+res <- runSimulation(design=Design, replications=100,
                      generate=Generate, analyse=Analyse, summarise=Summarise)
 res
 SimResults(res)
 
 # c) approach
-Final <- runSimulation(design=Design, replications=5, save_results=TRUE,
+Final <- runSimulation(design=Design, replications=100, save_results=TRUE,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 
 # read-in all conditions (can be memory heavy)
@@ -849,7 +851,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 #### Step 3 --- Collect results by looping over the rows in design
 
 # first, test to see if it works
-res <- runSimulation(design=Design, replications=5,
+res <- runSimulation(design=Design, replications=2,
                      generate=Generate, analyse=Analyse, summarise=Summarise)
 res
 
