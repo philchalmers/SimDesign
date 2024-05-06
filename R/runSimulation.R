@@ -1276,6 +1276,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             file.path(out_rootdir, tmpfilename)))
 
         Result_list <- readRDS(file.path(out_rootdir, tmpfilename))
+        if(unname(attr(Result_list, 'SimDesign_names')['design_names']) !=
+           paste0(colnames(design), collapse=';'))
+            stop('design names are not the same upon resuming simulation.', call.=FALSE)
         if(nrow(design) != length(Result_list)){
             if(nrow(design) < length(Result_list))
                 Result_list <- Result_list[1L:nrow(design)]
@@ -1296,6 +1299,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         tmp <- attr(Result_list, 'SimDesign_names')
         save_results_dirname <- tmp['save_results_dirname']
         save_seeds_dirname <- tmp['save_seeds_dirname']
+        design_names <- tmp['design_names']
     }
     if(save_results){
         save <- TRUE
@@ -1369,7 +1373,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(is.null(attr(Result_list, 'SimDesign_names')))
         attr(Result_list, 'SimDesign_names') <-
         c(save_results_dirname=file.path(out_rootdir, save_results_dirname),
-          save_seeds_dirname=file.path(out_rootdir, save_seeds_dirname))
+          save_seeds_dirname=file.path(out_rootdir, save_seeds_dirname),
+          design_names=paste0(colnames(design), collapse=';'))
     if(progress) verbose <- TRUE
     memory_used <- character(nrow(design)+1L)
     if(print_RAM)
