@@ -44,10 +44,6 @@ res <- SimSolve(design=Design, b=.95, interval=c(10, 50),
                 analyse=Analyse, summarise=Summarise, packages='simr')
 res
 summary(res)
-so <- summary(res)
 plot(res)
 plot(res, type = 'history')
 
-library(ggplot2)
-ggplot(so$DesignRow_1$tab, aes(x=x, y=y, size = 1/sqrt(reps))) +
-    geom_point(alpha=0.7)
