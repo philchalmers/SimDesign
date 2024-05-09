@@ -1,9 +1,10 @@
-all: vignettes move clean
+all: vignettes vignettes_solve move clean clean_solve commit push
 
 vignettes:
 	Rscript -e "setwd('source');library('rmarkdown');files=dir();for(file in files) render(file)"
-	Rscript -e "setwd('source_solve');library('rmarkdown');files=dir();for(file in files) render(file)"
 
+vignettes_solve:
+	Rscript -e "setwd('source_solve');library('rmarkdown');files=dir();for(file in files) render(file)"
 
 
 extra:
@@ -21,14 +22,19 @@ clean:
 	$(RM) -r html/reg.html;
 	$(RM) source/*.md;
 	$(RM) source/*.txt;
-	$(RM) -r source/*.html;
+	$(RM) source/*.html;
 
 clean_solve:
 	$(RM) -r source_solve/*_cache/;
 	$(RM) -r source_solve/*_files/;
 	$(RM) -r source_solve/figure/;
 	$(RM) -r source_solve/SimDesign*/;
-	$(RM) -r html/reg.html;
 	$(RM) source_solve/*.md;
 	$(RM) source_solve/*.txt;
-	$(RM) -r source_solve/*.html;
+	$(RM) source_solve/*.html;
+
+commit:
+	git commit -am "update"
+
+push:
+	git push
