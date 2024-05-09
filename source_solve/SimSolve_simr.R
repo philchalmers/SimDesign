@@ -4,6 +4,7 @@
 #'   html_document:
 #'     theme: readable
 #'     code_download: true
+#' author: Phil Chalmers
 #' ---
 
 library(SimDesign)

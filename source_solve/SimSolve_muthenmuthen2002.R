@@ -4,6 +4,7 @@
 #'   html_document:
 #'     theme: readable
 #'     code_download: true
+#' author: Phil Chalmers
 #' ---
 
 
@@ -64,7 +65,7 @@ Design <- createDesign(N=NA, fcor=.25, loadings=.8, residuals=.36)
 
 solved <- SimSolve(design=Design, b=.8, interval=c(100,300), generate=Generate,
                    analyse=Analyse, summarise=Summarise, packages='lavaan',
-                   parallel=TRUE)
+                   parallel=TRUE, predCI.tol=.01)
 solved
 summary(solved)
 plot(solved)

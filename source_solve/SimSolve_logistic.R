@@ -4,13 +4,14 @@
 #'   html_document:
 #'     theme: readable
 #'     code_download: true
+#' author: Phil Chalmers (source adopted from Greg Snow)
 #' ---
 
 
 #' Adopted from Greg Snow's answer on CV:
 #'  https://stats.stackexchange.com/questions/35940/simulation-of-logistic-regression-power-analysis-designed-experiments
 
-#' Step 1 --- Define design conditions with NA to solve (in this case, sample size)
+#' # Step 1 --- Define design conditions with NA to solve (in this case, sample size)
 
 library(SimDesign)
 
@@ -63,5 +64,7 @@ solved
 summary(solved)
 plot(solved)
 plot(solved, type = 'history')
+
+# solution take a long time (terminates around 75000)
 
 

@@ -4,13 +4,14 @@
 #'   html_document:
 #'     theme: readable
 #'     code_download: true
+#' author: Phil Chalmers (source adopted from Greg Snow)
 #' ---
 
 
 # adopted from Greg Snow's answer on CV:
 #  https://stats.stackexchange.com/questions/22406/power-analysis-for-ordinal-logistic-regression/22410#22410
 
-#' Step 1: Define design and NA condition to solve
+#' # Step 1: Define design and NA condition to solve
 
 library(SimDesign)
 

@@ -4,6 +4,7 @@
 #'   html_document:
 #'     theme: readable
 #'     code_download: true
+#' author: Phil Chalmers
 #' ---
 
 #' # Step 1: create design and solve for missing values (NA)
@@ -46,10 +47,11 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 # Initial search between N = [10,500] for each row using the default
 # integer solver (integer = TRUE)
 
-# In this example, b = target power
+# In this example, b = target power.
+# Terminate if prediction CI is consistently within [.795, .805]
 solved <- SimSolve(design=Design, b=.8, interval=c(10, 500),
 				   generate=Generate, analyse=Analyse,
-				   summarise=Summarise)
+				   summarise=Summarise, predCI.tol = .01)
 solved
 summary(solved)
 plot(solved, 1)
