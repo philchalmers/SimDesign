@@ -2,12 +2,16 @@ all: vignettes move clean
 
 vignettes:
 	Rscript -e "setwd('source');library('rmarkdown');files=dir();for(file in files) render(file)"
+	Rscript -e "setwd('source_solve');library('rmarkdown');files=dir();for(file in files) render(file)"
+
+
 
 extra:
 	Rscript -e "setwd('extras');dirs=dir();for(d in dirs){setwd(d);files <- dir();source(files[which.min(nchar(files))]); setwd('..')}"
 
 move:
 	mv -f source/*.html html/
+	mv -f source_solve/*.html html/
 
 clean:
 	$(RM) -r source/*_cache/;
