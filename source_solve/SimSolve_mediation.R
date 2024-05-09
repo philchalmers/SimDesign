@@ -58,7 +58,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 interval <- c(20, 1000) # needless wide for most, but shows the point
 solved <- SimSolve(design=Design, b=.8, interval=interval,
                    generate=Generate, analyse=Analyse, summarise=Summarise,
-                   packages='lavaan', parallel=FALSE,
+                   packages='lavaan', parallel=TRUE,
                    verbose=FALSE, check.interval=FALSE)
 solved
 summary(solved)
