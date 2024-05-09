@@ -369,9 +369,9 @@ print.PBA <- function(x, ...)
               time=noquote(timeFormater_internal(time)),
               iterations = iter))
     if(!all(is.na(x$predCIs)))
-        out <- append(out, list(pred_CI.root = x$predCIs_root,
+        out <- append(out, list(predCI.root = x$predCIs_root,
                                 b = x$b,
-                                pred_CI.b = x$predCIs), 1L)
+                                predCI.b = x$predCIs), 1L)
     if(!is.null(x$total.replications))
         out$total.replications <- x$total.replications
     if(x$integer && !is.null(x$tab))

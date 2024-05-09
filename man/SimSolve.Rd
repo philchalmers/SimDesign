@@ -352,7 +352,7 @@ solved_predCI <- SimSolve(design=Design, b=.8, interval=c(10, 500),
                      generate=Generate, analyse=Analyse, summarise=Summarise,
                      maxiter=200, predCI.tol=.01)
 solved_predCI
-summary(solved_predCI) # note that pred_CI.b are all within [.795, .805]
+summary(solved_predCI) # note that predCI.b are all within [.795, .805]
 
 N <- solved_predCI$N
 pwr.t.test(d=.2, n=N[1])
