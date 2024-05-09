@@ -9,7 +9,7 @@
 library(SimDesign)
 
 Design <- createDesign(N = NA,
-                       a = sqrt(c(.02, .07, .15, .35)),
+                       a = sqrt(.35),
                        b = sqrt(c(.02, .07, .15, .35)))
 Design    # solve for NA's
 
