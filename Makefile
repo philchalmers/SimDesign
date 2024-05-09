@@ -21,4 +21,14 @@ clean:
 	$(RM) -r html/reg.html;
 	$(RM) source/*.md;
 	$(RM) source/*.txt;
+	$(RM) -r source/*.html;
 
+clean_solve:
+	$(RM) -r source_solve/*_cache/;
+	$(RM) -r source_solve/*_files/;
+	$(RM) -r source_solve/figure/;
+	$(RM) -r source_solve/SimDesign*/;
+	$(RM) -r html/reg.html;
+	$(RM) source_solve/*.md;
+	$(RM) source_solve/*.txt;
+	$(RM) -r source_solve/*.html;
