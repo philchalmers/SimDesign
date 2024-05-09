@@ -22,3 +22,11 @@ clean:
 	$(RM) source/*.md;
 	$(RM) source/*.txt;
 
+clean_solve:
+	$(RM) -r source_solve/*_cache/;
+	$(RM) -r source_solve/*_files/;
+	$(RM) -r source_solve/figure/;
+	$(RM) -r source_solve/SimDesign*/;
+	$(RM) -r html/reg.html;
+	$(RM) source_solve/*.md;
+	$(RM) source_solve/*.txt;
