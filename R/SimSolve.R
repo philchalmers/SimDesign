@@ -333,7 +333,7 @@
 #'                 generate=Generate, analyse=Analyse, summarise=Summarise,
 #'                 wait.time="5", maxiter=1000)
 #' solved_5min
-#' summary(solved_2min)
+#' summary(solved_5min)
 #'
 #' # use estimated N results to see how close power was
 #' N <- solved_5min$N
