@@ -55,6 +55,7 @@ fo <- list(mydat=mydat, beta=b0)
 #' # Step 3 --- find n over the rows in design
 
 # find n associated with f(n) = 1 - B = .80 power
+#+ eval=FALSE
 solved <- SimSolve(design=Design, b=.8, interval=c(1000,100000),
                    analyse=Analyse, summarise=Summarise,
                    fixed_objects=fo, maxiter=200, parallel=TRUE)
