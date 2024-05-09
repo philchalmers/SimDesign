@@ -664,7 +664,7 @@ set_seed <- function(seed){
 }
 
 valid_results <- function(x)
-    is(x, 'numeric') || is(x, 'data.frame') || is(x, 'list') || is(x, 'try-error')
+    is(x, 'numeric') || is(x, 'data.frame') || is(x, 'list') || is(x, 'logical') || is(x, 'try-error')
 
 #' Generate random seeds
 #'
