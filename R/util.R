@@ -117,6 +117,8 @@ notification_final <- function(Final){
 #' @param warnings logical; print all warning messages (generally recommended to leave
 #'   as \code{TRUE}; see \code{link{convertWarnigs}} for better alternative)
 #'
+#' @seealso \code{\link{convertWarnings}}
+#'
 #' @export
 #'
 #' @references

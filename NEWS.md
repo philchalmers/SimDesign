@@ -2,6 +2,9 @@
 
 ## Changes in SimDesign 2.16
 
+- `converWarnigs()` gains an `ignorable` argument to specify warnings that should
+  be ignored (i.e., are known to be innocuous)
+
 - `timeFormater()` function added to isolate logic of SBATCH time specification
   utility. Now used in several places of the package (e.g., 
   `runArraySimulation()`, `PBA()`, `SimSolve()`)

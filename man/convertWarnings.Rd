@@ -4,7 +4,7 @@
 \alias{convertWarnings}
 \title{Wrapper to convert all/specific warning messages to errors}
 \usage{
-convertWarnings(expr, warning2error = NULL, muffle = FALSE)
+convertWarnings(expr, warning2error = NULL, ignorable = NULL, muffle = FALSE)
 }
 \arguments{
 \item{expr}{expression to be evaluated (e.g., \code{ret <- myfun(args)}
@@ -18,6 +18,10 @@ matched using a \code{\link{grepl}} expression, so partial matching
 is supported (though more specific messages are less likely to throw
 false positives). If \code{NULL} then all observed warning messages
 will be treated as errors}
+
+\item{ignorable}{a character vector indicating warning message that
+are anticipated but generally ignorable if they are determined to be
+innocuous a priori}
 
 \item{muffle}{logical; muffle any warning message not caught by
 \code{warning2error} specification? Generally not recommended unless
@@ -103,6 +107,32 @@ ret <- fun(warn2=TRUE) |>
 ret3 <- fun(warn3=TRUE) |>
             convertWarnings(c("Show this warning", "Show a different warning"))
 ret3
+
+###########
+# combine with quiet
+fun <- function(warn1=FALSE, warn2=FALSE, warn3=FALSE, error=FALSE){
+   message('This function is rather chatty')
+   cat("It even prints in different output forms!\n")
+   if(warn1) warning('Show this warning')
+   if(warn2) warning('Show a different warning')
+   if(warn3) warning('Last warning message')
+   if(error) stop('terminate function call')
+   return('Returned from fun()')
+}
+
+# normal run (no warnings or errors, but messages)
+out <- fun()
+out <- quiet(fun()) # using "indoor voice"
+
+# convert warning to errors, but keep suppressing messages via quiet()
+fun(warn1=TRUE) |> quiet() |> convertWarnings()
+
+# tolerable warning message (warn1 ignored)
+fun(warn1=TRUE) |> quiet() |>
+  convertWarnings(ignorable = 'Show this warning')
+
+fun(warn1=TRUE, warn2=TRUE) |> quiet() |>
+  convertWarnings(ignorable = 'Show this warning')
 
 }
 

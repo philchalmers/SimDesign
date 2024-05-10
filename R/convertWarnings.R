@@ -30,6 +30,10 @@
 #'   false positives). If \code{NULL} then all observed warning messages
 #'   will be treated as errors
 #'
+#' @param ignorable a character vector indicating warning message that
+#'   are anticipated but generally ignorable if they are determined to be
+#'   innocuous a priori
+#'
 #' @param muffle logical; muffle any warning message not caught by
 #'   \code{warning2error} specification? Generally not recommended unless
 #'   you know \emph{all} of the warning messages returned by a function
@@ -104,15 +108,43 @@
 #'             convertWarnings(c("Show this warning", "Show a different warning"))
 #' ret3
 #'
+#' ###########
+#' # combine with quiet
+#' fun <- function(warn1=FALSE, warn2=FALSE, warn3=FALSE, error=FALSE){
+#'    message('This function is rather chatty')
+#'    cat("It even prints in different output forms!\n")
+#'    if(warn1) warning('Show this warning')
+#'    if(warn2) warning('Show a different warning')
+#'    if(warn3) warning('Last warning message')
+#'    if(error) stop('terminate function call')
+#'    return('Returned from fun()')
 #' }
 #'
-convertWarnings <- function(expr, warning2error=NULL, muffle=FALSE){
-    stopit <- function(message, warning2error){
+#' # normal run (no warnings or errors, but messages)
+#' out <- fun()
+#' out <- quiet(fun()) # using "indoor voice"
+#'
+#' # convert warning to errors, but keep suppressing messages via quiet()
+#' fun(warn1=TRUE) |> quiet() |> convertWarnings()
+#'
+#' # tolerable warning message (warn1 ignored)
+#' fun(warn1=TRUE) |> quiet() |>
+#'   convertWarnings(ignorable = 'Show this warning')
+#'
+#' fun(warn1=TRUE, warn2=TRUE) |> quiet() |>
+#'   convertWarnings(ignorable = 'Show this warning')
+#'
+#' }
+#'
+convertWarnings <- function(expr, warning2error=NULL, ignorable = NULL, muffle=FALSE){
+    stopit <- function(message, warning2error, ignorable){
+        if(message %in% ignorable) return(TRUE)
         if(is.null(warning2error)) stop(message, call.=FALSE)
         sapply(warning2error, function(warn){
             match <- grepl(warn, message)
             if(match) stop(message, call.=FALSE)
         })
+        return(FALSE)
     }
 
     stopifnot(!missing(expr))
@@ -120,8 +152,8 @@ convertWarnings <- function(expr, warning2error=NULL, muffle=FALSE){
         eval(expr)
     }, warning=function(w) {
         message <- conditionMessage(w)
-        stopit(message, warning2error = warning2error)
-        if(muffle) invokeRestart("muffleWarning")
+        muffleL <- stopit(message, warning2error=warning2error, ignorable=ignorable)
+        if(muffle || muffleL) invokeRestart("muffleWarning")
     })
     invisible(ret)
 }
