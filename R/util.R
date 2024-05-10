@@ -97,7 +97,7 @@ notification_final <- function(Final){
     invisible(NULL)
 }
 
-#' Suppress function messages and Concatenate and Print (cat)
+#' Suppress function messages and (concatenate and print)
 #'
 #' This function is used to suppress information printed from external functions
 #' that make internal use of \code{link{message}} and \code{\link{cat}}, which
@@ -132,12 +132,13 @@ notification_final <- function(Final){
 #' \doi{10.1080/10691898.2016.1246953}
 #'
 #' @examples
-#' myfun <- function(x){
+#' myfun <- function(x, warn=FALSE){
 #'    message('This function is rather chatty')
 #'    cat("It even prints in different output forms!\n")
 #'    message('And even at different....')
 #'    cat("...times!\n")
-#'    warning('It may even throw warnings, though careful suppressing these!')
+#'    if(warn)
+#'      warning('It may even throw warnings, though careful suppressing these!')
 #'    x
 #' }
 #'
@@ -149,8 +150,9 @@ notification_final <- function(Final){
 #' out
 #'
 #' # suppress messages, cats, and warnings (not recommended)
-#' out2 <- quiet(myfun(2), warnings = FALSE)
-#' out2
+#' #   see convertWarnings(ignorable=...) for better alternative
+#' out2 <- quiet(myfun(2, warn=TRUE)) # warning gets through
+#' out2 <- quiet(myfun(2, warn=TRUE), warnings = FALSE) # but not here
 #'
 quiet <- function(..., messages=FALSE, cat=FALSE, warnings=TRUE){
     if(!cat){

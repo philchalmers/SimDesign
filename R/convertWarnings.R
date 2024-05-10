@@ -113,8 +113,8 @@
 #' fun <- function(warn1=FALSE, warn2=FALSE, warn3=FALSE, error=FALSE){
 #'    message('This function is rather chatty')
 #'    cat("It even prints in different output forms!\n")
-#'    if(warn1) warning('Show this warning')
-#'    if(warn2) warning('Show a different warning')
+#'    if(warn1) warning('This warning is fine')
+#'    if(warn2) warning('Show this warning')
 #'    if(warn3) warning('Last warning message')
 #'    if(error) stop('terminate function call')
 #'    return('Returned from fun()')
@@ -124,15 +124,18 @@
 #' out <- fun()
 #' out <- quiet(fun()) # using "indoor voice"
 #'
+#' # suppress all print messages and warnings (latter not recommended)
+#' fun(warn2=TRUE) |> quiet() |> suppressWarnings()
+#'
 #' # convert warning to errors, but keep suppressing messages via quiet()
-#' fun(warn1=TRUE) |> quiet() |> convertWarnings()
+#' fun(warn2=TRUE) |> quiet() |> convertWarnings()
 #'
 #' # tolerable warning message (warn1 ignored)
 #' fun(warn1=TRUE) |> quiet() |>
-#'   convertWarnings(ignorable = 'Show this warning')
+#'   convertWarnings(ignorable = 'This warning is fine')
 #'
 #' fun(warn1=TRUE, warn2=TRUE) |> quiet() |>
-#'   convertWarnings(ignorable = 'Show this warning')
+#'   convertWarnings(ignorable = 'This warning is fine')
 #'
 #' }
 #'
