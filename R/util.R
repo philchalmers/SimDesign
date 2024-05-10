@@ -115,7 +115,7 @@ notification_final <- function(Final){
 #' @param cat logical; print all concatenate and calls from \code{\link{cat}}?
 #'
 #' @param warnings logical; print all warning messages (generally recommended to leave
-#'   as \code{TRUE}; see \code{link{convertWarnigs}} for better alternative)
+#'   as \code{TRUE}; see \code{link{convertWarnings}} for better alternative)
 #'
 #' @seealso \code{\link{convertWarnings}}
 #'

@@ -14,7 +14,7 @@ quiet(..., messages = FALSE, cat = FALSE, warnings = TRUE)
 \item{cat}{logical; print all concatenate and calls from \code{\link{cat}}?}
 
 \item{warnings}{logical; print all warning messages (generally recommended to leave
-as \code{TRUE}; see \code{link{convertWarnigs}} for better alternative)}
+as \code{TRUE}; see \code{link{convertWarnings}} for better alternative)}
 }
 \description{
 This function is used to suppress information printed from external functions
