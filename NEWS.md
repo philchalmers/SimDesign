@@ -2,8 +2,10 @@
 
 ## Changes in SimDesign 2.16
 
-- `converWarnigs()` gains an `ignorable` argument to specify warnings that should
+- `manageWarnings()` gains an `ignorable` argument to specify warnings that should
   be ignored (i.e., are known to be innocuous)
+  
+- `convertWarnings()` name changed to `manageWarning()` given its increased functionality
 
 - `timeFormater()` function added to isolate logic of SBATCH time specification
   utility. Now used in several places of the package (e.g., 
