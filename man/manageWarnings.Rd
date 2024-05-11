@@ -17,11 +17,16 @@ that should be converted to errors. Each warning message is
 matched using a \code{\link{grepl}} expression, so partial matching
 is supported (though more specific messages are less likely to throw
 false positives). If \code{NULL}, all observed warning messages
-will be treated as errors}
+will be treated as errors (same behaviour as \code{options(warn=2)},
+though defined locally)}
 
-\item{ignorable}{a character vector indicating warning message that
+\item{ignorable}{a character vector indicating warning messages that
 are anticipated but generally ignorable if they are determined to be
-innocuous a priori}
+innocuous a priori. Each warning message is
+matched using a \code{\link{grepl}} expression, so partial matching
+is supported (though more specific messages are less likely to throw
+false positives). If \code{NULL}, no warning message will be treated
+as ignorable}
 }
 \value{
 returns the original result of \code{eval(expr)}, with warning
