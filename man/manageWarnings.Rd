@@ -42,33 +42,24 @@ this functions provides a less nuclear approach than, for example,
 rather than those which are known
 to be innocuous to the current application, or when setting \code{options(warn=2)},
 which has the opposite effect of treating all warnings messages as errors globally.
-Both of these approaches are generally bad practice when writing good code
-as they may inadvertent suppress or increase the intensity of a yet to be seen
-warning.
+Both of these approaches are generally bad practice when writing self-contained code
+as they may inadvertently suppress or increase the intensity of a yet-to-be-seen
+warning raised.
 }
 \details{
 The main goal of this function is to \emph{explicitly} indicate whether known warning
 messages are innocuous or problematic in the current application.
 For instance, in many function implementations only a subset
-of identified warnings should be treated
-as errors, rather than the more nuclear default of treating all warnings
-as errors (e.g., see \code{warnings_as_errors} in
+of identified warnings should be treated as errors (c.f. \code{warnings_as_errors} in
 \code{\link{runSimulation}}, as well as \code{option(warn=2)} to
 convert all warnings to errors globally).
-On the other hand, some warnings could be treated as "noise", and therefore
-not problematic problematic in the current application. Base functions
+On the other hand, some warnings could be considered "noise" or generally innocuous,
+and therefore not problematic in the current application. Base functions
 such as \code{\link{suppressWarnings}} can accomplish this, however will
 suppress all of the warnings messages rather than specific ones,
 potentially obfuscating important
 warnings messages that the front-end user has simply not encounter yet and
-should therefore still be raised.
-
-To avoid the above nuclear approaches the argument \code{warning2error} can be
-used to specify which known
-warning should be converted to errors, leaving other warnings not encounter
-yet as warnings, while the argument \code{ignorable} can be used to specify
-warnings messages that can generally be ignored and therefore not raised
-in the R session. Note that for suppressing message
+should therefore still be raised. Note that for suppressing message
 and printing calls from generally noisy functions see \code{\link{quiet}}.
 }
 \examples{
