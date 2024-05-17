@@ -655,9 +655,11 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                   ...), TRUE)
             if(is(roots[[i]], 'try-error')){
                 is_below <- grepl("*below*", as.character(roots[[i]]))
-                if(is_below || grepl("*above*", as.character(roots[[i]])))
+                if(is_below || grepl("*above*", as.character(roots[[i]]))){
                     roots[[i]] <- list(root=ifelse(is_below, Inf, -Inf))
-                else roots[[i]] <- list(root=NA)
+                } else {
+                    stop(as.character(roots[[i]]), call. = FALSE)
+                }
                 next
             }
         } else if(method == 'Brent'){
