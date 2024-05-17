@@ -4,7 +4,7 @@
 #' specific quantities in simulation experiments (e.g., solving for a specific
 #' sample size to meet a target power rate) using the
 #' Probablistic Bisection Algorithm with Bolstering and Interpolations
-#' (ProBABLI; Chalmers, in review). The structure follows the
+#' (ProBABLI; Chalmers, accepted). The structure follows the
 #' steps outlined in \code{\link{runSimulation}}, however portions of
 #' the \code{design} input are taken as variables to be estimated rather than
 #' fixed, and the constant \code{b} is required in order to
@@ -195,6 +195,10 @@
 #' @export
 #'
 #' @references
+#'
+#'
+#' Chalmers, R. P. (accepted). Solving Variables with Monte Carlo Simulation Experiments: A
+#' Stochastic Root-Solving Approach. \code{Psychological Methods}.
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
