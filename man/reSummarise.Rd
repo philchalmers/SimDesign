@@ -10,7 +10,7 @@ reSummarise(
   files = NULL,
   results = NULL,
   Design = NULL,
-  fixed_objects = NULL,
+  fixed_objects,
   boot_method = "none",
   boot_draws = 1000L,
   CI = 0.95,
@@ -69,17 +69,17 @@ and final collection of the respective results.
 
 Design <- createDesign(N = c(10, 20, 30))
 
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects) {
     dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     ret <- c(mean=mean(dat), median=median(dat)) # mean/median of sample data
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL){
+Summarise <- function(condition, results, fixed_objects){
     colMeans(results)
 }
 
@@ -94,7 +94,7 @@ runSimulation(design=Design, replications=50,
 res <- reSummarise(Summarise, dir = 'simresults/')
 res
 
-Summarise2 <- function(condition, results, fixed_objects = NULL){
+Summarise2 <- function(condition, results, fixed_objects){
     ret <- c(mean_ests=colMeans(results), SE=colSDs(results))
     ret
 }

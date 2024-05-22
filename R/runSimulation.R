@@ -52,9 +52,9 @@
 #'
 #' \describe{
 #'   \item{\code{Design <- createDesign(...)}}{}
-#'   \item{\code{Generate <- function(condition, fixed_objects = NULL) \{...\} }}{}
-#'   \item{\code{Analyse <- function(condition, dat, fixed_objects = NULL) \{...\} }}{}
-#'   \item{\code{Summarise <- function(condition, results, fixed_objects = NULL) \{...\} }}{}
+#'   \item{\code{Generate <- function(condition, fixed_objects) \{...\} }}{}
+#'   \item{\code{Analyse <- function(condition, dat, fixed_objects) \{...\} }}{}
+#'   \item{\code{Summarise <- function(condition, results, fixed_objects) \{...\} }}{}
 #'   \item{\code{res <- runSimulation(design=Design, replications, generate=Generate,
 #'         analyse=Analyse, summarise=Summarise)}}{}
 #' }
@@ -652,19 +652,19 @@
 #' #### Step 2 --- Define generate, analyse, and summarise functions
 #'
 #' # help(Generate)
-#' Generate <- function(condition, fixed_objects = NULL) {
+#' Generate <- function(condition, fixed_objects) {
 #'     dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
 #'     dat
 #' }
 #'
 #' # help(Analyse)
-#' Analyse <- function(condition, dat, fixed_objects = NULL) {
+#' Analyse <- function(condition, dat, fixed_objects) {
 #'     ret <- c(mean=mean(dat)) # mean of the sample data vector
 #'     ret
 #' }
 #'
 #' # help(Summarise)
-#' Summarise <- function(condition, results, fixed_objects = NULL) {
+#' Summarise <- function(condition, results, fixed_objects) {
 #'     # mean and SD summary of the sample means
 #'     ret <- c(mu=mean(results$mean), SE=sd(results$mean))
 #'     ret
@@ -773,7 +773,7 @@
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Step 2 --- Define generate, analyse, and summarise functions
 #'
-#' Generate <- function(condition, fixed_objects = NULL) {
+#' Generate <- function(condition, fixed_objects) {
 #'     N <- condition$sample_size      # could use Attach() to make objects available
 #'     grs <- condition$group_size_ratio
 #'     sd <- condition$standard_deviation_ratio
@@ -790,7 +790,7 @@
 #'     dat
 #' }
 #'
-#' Analyse <- function(condition, dat, fixed_objects = NULL) {
+#' Analyse <- function(condition, dat, fixed_objects) {
 #'     welch <- t.test(DV ~ group, dat)$p.value
 #'     independent <- t.test(DV ~ group, dat, var.equal=TRUE)$p.value
 #'
@@ -800,7 +800,7 @@
 #'     ret
 #' }
 #'
-#' Summarise <- function(condition, results, fixed_objects = NULL) {
+#' Summarise <- function(condition, results, fixed_objects) {
 #'     #find results of interest here (e.g., alpha < .1, .05, .01)
 #'     ret <- EDR(results, alpha = .05)
 #'     ret
@@ -848,7 +848,7 @@
 #'
 #' ## Alternatively, place a browser() within the desired function line to
 #' ##   jump to a specific location
-#' Summarise <- function(condition, results, fixed_objects = NULL) {
+#' Summarise <- function(condition, results, fixed_objects) {
 #'     #find results of interest here (e.g., alpha < .1, .05, .01)
 #'     browser()
 #'     ret <- EDR(results[,nms], alpha = .05)
@@ -963,7 +963,7 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          fixed_objects = NULL, packages = NULL, filename = NULL,
+                          fixed_objects, packages = NULL, filename = NULL,
                           debug = 'none', load_seed = NULL, save = any(replications > 2),
                           store_results = TRUE, save_results = FALSE,
                           parallel = FALSE, ncores = parallel::detectCores() - 1L,
@@ -1002,7 +1002,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         }
     }
     if(missing(generate) && !missing(analyse))
-        generate <- function(condition, dat, fixed_objects = NULL){}
+        generate <- function(condition, dat, fixed_objects){}
     if(is.list(generate)){
         if(debug %in% c('all', 'generate'))
             stop('debug input not supported when generate is a list', call.=FALSE)
@@ -1097,7 +1097,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!missing(summarise)){
         NA_summarise <- if(!is.function(summarise) && is.na(summarise)) TRUE else FALSE
         if(NA_summarise){
-            summarise <- function(condition, results, fixed_objects = NULL){0}
+            summarise <- function(condition, results, fixed_objects){0}
             if(!save_results)
                 message('NA value for summarise input supplied; automatically setting save_results to TRUE\n')
             save <- save_results <- TRUE
@@ -1143,7 +1143,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     debug <- tolower(debug)
     summarise_asis <- FALSE
     if(missing(summarise)){
-        summarise <- function(condition, results, fixed_objects = NULL) results
+        summarise <- function(condition, results, fixed_objects) results
         summarise_asis <- TRUE
         stored_time <- 0
         if(save || save_results)

@@ -11,7 +11,7 @@ test_that('SimDesign', {
                            sample_sizes_group2=sample_sizes,
                            standard_deviations=standard_deviations)
 
-    mysim <- function(condition, fixed_objects = NULL){
+    mysim <- function(condition, fixed_objects){
 
         Attach(condition)
 
@@ -26,7 +26,7 @@ test_that('SimDesign', {
         return(dat)
     }
 
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
 
         #wrap computational statistics in try() statements to control estimation problems
         welch <- t.test(DV ~ group, dat)
@@ -40,7 +40,7 @@ test_that('SimDesign', {
         return(ret)
     }
 
-    mycompute2 <- function(condition, dat, fixed_objects = NULL){
+    mycompute2 <- function(condition, dat, fixed_objects){
 
         if(condition$standard_deviations == 4) stop('error')
 
@@ -55,7 +55,7 @@ test_that('SimDesign', {
         return(ret)
     }
 
-    mycollect <-  function(condition, results, fixed_objects = NULL){
+    mycollect <-  function(condition, results, fixed_objects){
 
         #find results of interest here
         nms <- c('welch', 'independent')
@@ -70,7 +70,7 @@ test_that('SimDesign', {
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
-    mycollect <-  function(condition, results, fixed_objects = NULL){
+    mycollect <-  function(condition, results, fixed_objects){
 
         # return the results that will be appended to the Design input
         ret <- EDR(results, .05)
@@ -126,7 +126,7 @@ test_that('SimDesign', {
     Final2 <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
                             replications = parallel::detectCores(), parallel=FALSE, save=FALSE, verbose = FALSE)
 
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
 
         if(runif(1, 0, 1) < .9) t.test('char')
         if(runif(1, 0, 1) < .9) aov('char')
@@ -152,7 +152,7 @@ test_that('SimDesign', {
     expect_true(dim(error_seeds)[1L] > 0)
 
     # results no summarise
-    mycompute3 <- function(condition, dat, fixed_objects = NULL){
+    mycompute3 <- function(condition, dat, fixed_objects){
 
         #wrap computational statistics in try() statements to control estimation problems
         welch <- t.test(DV ~ group, dat)
@@ -181,7 +181,7 @@ test_that('SimDesign', {
     SimClean(dir()[grepl('\\.rds', dir())])
 
     # error test
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
         stop('this error')
     }
     expect_warning(out <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
@@ -200,7 +200,7 @@ test_that('SimDesign', {
                                replications = 3, parallel=TRUE, ncores=2L,
                                save=TRUE, verbose = FALSE, control = list(stop_on_fatal = TRUE)))
 
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
         ret <- does_not_exist(TRUE)
         ret
     }
@@ -210,20 +210,20 @@ test_that('SimDesign', {
                                replications = 3, parallel=TRUE, ncores=2L,
                                save=FALSE, verbose = FALSE))
 
-    mysim <- function(condition, fixed_objects = NULL){
+    mysim <- function(condition, fixed_objects){
         stop('something silly', call.=FALSE)
     }
     expect_warning(runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 3, parallel=FALSE, save=FALSE, verbose = FALSE))
 
 
-    mycompute <- function(condition, dat, fixed_objects = NULL) {
+    mycompute <- function(condition, dat, fixed_objects) {
         c(ret = 1)
     }
-    mygenerate <- function(condition, fixed_objects = NULL) {
+    mygenerate <- function(condition, fixed_objects) {
         rgumbel(5)
     }
-    mycollect <- function(condition, results, fixed_objects = NULL) {
+    mycollect <- function(condition, results, fixed_objects) {
         mean(results$ret)
     }
     expect_warning(runSimulation(Design, replications = 3,
@@ -242,7 +242,7 @@ test_that('SimDesign', {
     expect_is(out2, 'SimDesign')
 
     # warnings
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
         if(sample(c(FALSE, TRUE), 1)) log(-1)
         if(sample(c(FALSE, TRUE), 1)) log(-2)
         if(sample(c(FALSE, TRUE), 1)) warning('Manual warning')
@@ -276,7 +276,7 @@ test_that('SimDesign', {
         if(sample(c(TRUE, FALSE), 1, prob = c(.1, .9))) warning('Show a different warning')
         1
     }
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
         out1 <- fn1()
         out2 <- fn2()
         c(ret = 1)
@@ -286,7 +286,7 @@ test_that('SimDesign', {
                              generate=mygenerate, analyse=mycompute, summarise=mycollect,
                              parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_equal(results$WARNINGS, c(21, 14, 22, 21, 15, 15, 17, 23))
-    mycompute2 <- function(condition, dat, fixed_objects = NULL){
+    mycompute2 <- function(condition, dat, fixed_objects){
         out1 <- fn1()
         out2 <- convertWarnings(fn2(), "Show a different warning")
         c(ret = 1)
@@ -297,13 +297,13 @@ test_that('SimDesign', {
                              parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_equal(results$ERRORS, c(10, 8, 11, 12,  7,  8,  5,  7))
 
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
         if(sample(c(FALSE, TRUE), 1, prob = c(.5, .5))) warning('This is a warning')
         if(sample(c(FALSE, TRUE), 1, prob = c(.5, .5))) stop('This is an error')
         if(sample(c(FALSE, TRUE), 1, prob = c(.5, .5))) stop('This is a different error')
         list(ret = 1)
     }
-    mycollect <- function(condition, results, fixed_objects = NULL){
+    mycollect <- function(condition, results, fixed_objects){
         c(ret = 1)
     }
     results <- runSimulation(Design, replications = 3, packages = 'extraDistr', seed=1:8,
@@ -323,7 +323,7 @@ test_that('SimDesign', {
     }
 
     # NAs
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
         ret <- c(ret = sample(c(NA, 1), 1, prob = c(.1, .9)))
         ret
     }
@@ -334,7 +334,7 @@ test_that('SimDesign', {
     expect_equal(results$ERRORS, c(0,1,0,3,4,1,0,4))
 
     #data.frame test
-    mysim <- function(condition, fixed_objects = NULL){
+    mysim <- function(condition, fixed_objects){
         N1 <- condition$sample_sizes_group1
         N2 <- condition$sample_sizes_group2
         sd <- condition$standard_deviations
@@ -344,14 +344,14 @@ test_that('SimDesign', {
         dat
     }
 
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
         welch <- t.test(DV ~ group, dat)
         ind <- stats::t.test(DV ~ group, dat, var.equal=TRUE)
         ret <- data.frame(welch = welch$p.value, independent = ind$p.value)
         ret
     }
 
-    mycollect <-  function(condition, results, fixed_objects = NULL){
+    mycollect <-  function(condition, results, fixed_objects){
         ret <- EDR(results, alpha = .05)
         ret
     }
@@ -378,16 +378,16 @@ test_that('SimDesign', {
     expect_equal(nrow(F3), 4)
 
     # dummy run with no design
-    Generate <- function(condition, fixed_objects = NULL)
+    Generate <- function(condition, fixed_objects)
         rnorm(100, mean = 10)
-    Analyse <- function(condition, dat, fixed_objects = NULL)
+    Analyse <- function(condition, dat, fixed_objects)
         t.test(dat)$conf.int
-    Analyse2 <- function(condition, dat, fixed_objects = NULL){
+    Analyse2 <- function(condition, dat, fixed_objects){
         CIs <- t.test(dat)$conf.int
         names(CIs) <- c('lower', 'upper')
         CIs
     }
-    Summarise <- function(condition, results, fixed_objects = NULL)
+    Summarise <- function(condition, results, fixed_objects)
         ECR(results, 10)
 
     results <- runSimulation(replications = 10, generate = Generate,
@@ -401,9 +401,9 @@ test_that('SimDesign', {
     expect_equal(ncol(results), 5L)
 
     # dummy run with no design and returning lists
-    Generate <- function(condition, fixed_objects = NULL)
+    Generate <- function(condition, fixed_objects)
         rnorm(100, mean = 10)
-    Analyse <- function(condition, dat, fixed_objects = NULL){
+    Analyse <- function(condition, dat, fixed_objects){
         ret <- list(val1=0, val2=t.test(dat)$conf.int)
         ret
     }
@@ -415,17 +415,17 @@ test_that('SimDesign', {
 
     # stop and resume
     Design <- data.frame(N=c(10, 20))
-    Generate <- function(condition, fixed_objects = NULL)
+    Generate <- function(condition, fixed_objects)
         rnorm(condition$N, mean = 10)
-    Analyse1 <- function(condition, dat, fixed_objects = NULL){
+    Analyse1 <- function(condition, dat, fixed_objects){
         Attach(condition)
         if(N == 20) stop('Oh no, not 20!')
         mean(dat)
     }
-    Analyse2 <- function(condition, dat, fixed_objects = NULL)
+    Analyse2 <- function(condition, dat, fixed_objects)
         mean(dat)
 
-    Summarise <- function(condition, results, fixed_objects = NULL)
+    Summarise <- function(condition, results, fixed_objects)
         bias(results, 0)
     expect_error(runSimulation(Design, replications = 10, save=TRUE,
                                save_details = list(tmpfilename = 'thisfile.rds'),
@@ -450,30 +450,30 @@ test_that('SimDesign', {
         expect_false('thatfile.rds' %in% dir("~/mytmpdir"))
     }
 
-    gen_anal <- function(condition, dat, fixed_objects = NULL){
+    gen_anal <- function(condition, dat, fixed_objects){
         dat <- rnorm(100)
         mean(dat)
     }
-    Summarise <- function(condition, results, fixed_objects = NULL)
+    Summarise <- function(condition, results, fixed_objects)
         bias(results, 0)
     results <- runSimulation(replications = 10, analyse=gen_anal,
                              summarise=Summarise, verbose=FALSE)
     expect_is(results, 'SimDesign')
 
     # warnings/error in generate
-    mycompute <- function(condition, dat, fixed_objects = NULL) {
+    mycompute <- function(condition, dat, fixed_objects) {
         int <- sample(1:10, 1)
         if(int > 5) warning('greater than 5')
         if(int == 1) stop('generate error')
         c(ret = 1)
     }
-    mygenerate <- function(condition, fixed_objects = NULL) {
+    mygenerate <- function(condition, fixed_objects) {
         int <- sample(1:10, 1)
         if(int > 5) warning('greater than 5 in analyse')
         if(int == 1) stop('generate error in analyse')
         rnorm(5)
     }
-    mycollect <- function(condition, results, fixed_objects = NULL) {
+    mycollect <- function(condition, results, fixed_objects) {
         mean(results[,1])
     }
     result <- runSimulation(replications = 100, seed=1234, verbose=FALSE,
@@ -500,13 +500,13 @@ test_that('SimDesign', {
     fo <- list(mean = c(10,10),
                sigma = matrix(c(10,4,4,20), 2, 2))
 
-    generate <- function(condition, fixed_objects = NULL) {
+    generate <- function(condition, fixed_objects) {
         Attach(fixed_objects)
         dat <- rmvnorm(condition$N, mean=mean, sigma=sigma)
         dat
     }
 
-    analyse <- function(condition, dat, fixed_objects = NULL) {
+    analyse <- function(condition, dat, fixed_objects) {
         meanest <- colMeans(dat)
         names(meanest) <- paste0("M", 1:ncol(dat))
         covest <- cov(dat)
@@ -515,7 +515,7 @@ test_that('SimDesign', {
         ret
     }
 
-    summarise <- function(condition, results, fixed_objects = NULL) {
+    summarise <- function(condition, results, fixed_objects) {
         means <- map(results, 'meanest')
         mean_res <- list(bias=bias(means, fixed_objects$mean),
                          RMSD=RMSD(means, fixed_objects$mean))
@@ -537,22 +537,22 @@ test_that('SimDesign', {
     Design <- createDesign(factor1 = 1,
                            factor2 = c(1,2))
 
-    generate <- function(condition, fixed_objects = NULL) {
+    generate <- function(condition, fixed_objects) {
         dat <- 1
         dat
     }
 
-    analyse1 <- function(condition, dat, fixed_objects = NULL) {
+    analyse1 <- function(condition, dat, fixed_objects) {
         ret <- c(a1=1)
         ret
     }
 
-    analyse2 <- function(condition, dat, fixed_objects = NULL) {
+    analyse2 <- function(condition, dat, fixed_objects) {
         ret <- c(a2=2)
         ret
     }
 
-    summarise <- function(condition, results, fixed_objects = NULL) {
+    summarise <- function(condition, results, fixed_objects) {
         ret <- colMeans(results)
         ret
     }
@@ -563,7 +563,7 @@ test_that('SimDesign', {
     expect_true(all(c("analyse1.a1", "analyse2.a2") %in% names(res)))
 
     # skip over some
-    analyse1 <- function(condition, dat, fixed_objects = NULL) {
+    analyse1 <- function(condition, dat, fixed_objects) {
         AnalyseIf(factor2 != 2, condition)
         ret <- c(a1=1)
         ret
@@ -576,7 +576,7 @@ test_that('SimDesign', {
     expect_true(is.na(res$analyse1.a1[2]))
 
     # fuzzy strings
-    Analyse <- function(condition, dat, fixed_objects = NULL) {
+    Analyse <- function(condition, dat, fixed_objects) {
         C <- matrix(c(1,.2, 0, 1), 2)
         if(sample(c(TRUE, FALSE), 1))
             C[2,2] <- runif(1, -1e-8, 1e-8)
@@ -584,7 +584,7 @@ test_that('SimDesign', {
         ret
     }
 
-    Summarise <- function(condition, results, fixed_objects = NULL) {
+    Summarise <- function(condition, results, fixed_objects) {
         ret <- c(bias = NaN, RMSE = NaN)
         ret
     }
@@ -600,12 +600,12 @@ test_that('SimDesign', {
     ## multi-errors and warnings
     Design <- createDesign(N = c(10, 20, 30))
 
-    Generate <- function(condition, fixed_objects = NULL) {
+    Generate <- function(condition, fixed_objects) {
         ret <- with(condition, rnorm(N))
         ret
     }
 
-    Analyse.a1 <- function(condition, dat, fixed_objects = NULL) {
+    Analyse.a1 <- function(condition, dat, fixed_objects) {
         whc <- sample(c(0, 1, 2, 3), 1, prob = c(.7, .20, .05, .05))
         if (whc == 0) {
             ret <- mean(dat)
@@ -627,12 +627,12 @@ test_that('SimDesign', {
         ret
     }
 
-    Analyse.a2 <- function(condition, dat, fixed_objects = NULL) {
+    Analyse.a2 <- function(condition, dat, fixed_objects) {
         ret <- median(dat)
         ret
     }
 
-    Summarise <- function(condition, results, fixed_objects = NULL) {
+    Summarise <- function(condition, results, fixed_objects) {
         ret <- c(bias = bias(results, 0))
         ret
     }

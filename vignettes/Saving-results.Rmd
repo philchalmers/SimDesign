@@ -39,17 +39,17 @@ Design <- createDesign(N = c(10,20,30))
 ```
 
 ```{r}
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects) {
     dat <- rnorm(condition$N)    
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     ret <- c(p = t.test(dat)$p.value)
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL) {
+Summarise <- function(condition, results, fixed_objects) {
     ret <- EDR(results, alpha = .05)
     ret
 }
@@ -68,7 +68,7 @@ The `save` flag triggers whether temporary results should be saved to the hard-d
 As a simple example, say that in the $N=30$ condition something went terribly wrong and the simulation crashed. However, the first two design conditions are perfectly fine. The `save` flag is very helpful here because the state is not lost and the results are still useful. Finally, supplying a `filename` argument will safely save the aggregate simulation results to the hard-drive for future reference; however, this won't be called until the simulation is complete.
 
 ```{r eval=FALSE}
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     if(condition$N == 30) stop('Danger Will Robinson!')
     ret <- c(p = t.test(dat)$p.value)
     ret
@@ -80,7 +80,7 @@ res <- runSimulation(Design, replications = 1000, save=TRUE, filename='my-simple
 ```
 
 ```{r echo=FALSE}
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     if(condition$N == 30) stop('Danger Will Robinson!')
     ret <- c(p = t.test(dat)$p.value)
     ret
@@ -106,7 +106,7 @@ Notice here that the simulation stopped at 67% because the third design conditio
 After we fix this portion of the code the simulation can be restarted at the previous state and continue on as normal. Therefore, in the event of unforeseen program execution crashes no time is lost.
 
 ```{r}
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     ret <- c(p = t.test(dat)$p.value)
     ret
 }

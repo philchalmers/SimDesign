@@ -42,7 +42,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' generate <- function(condition, fixed_objects = NULL) {
+#' generate <- function(condition, fixed_objects) {
 #'     N1 <- condition$sample_sizes_group1
 #'     N2 <- condition$sample_sizes_group2
 #'     sd <- condition$standard_deviations
@@ -58,7 +58,7 @@
 #' }
 #'
 #' # similar to above, but using the Attach() function instead of indexing
-#' generate <- function(condition, fixed_objects = NULL) {
+#' generate <- function(condition, fixed_objects) {
 #'     Attach(condition)
 #'     N1 <- sample_sizes_group1
 #'     N2 <- sample_sizes_group2
@@ -71,13 +71,13 @@
 #'     dat
 #' }
 #'
-#' generate2 <- function(condition, fixed_objects = NULL) {
+#' generate2 <- function(condition, fixed_objects) {
 #'     mu <- sample(c(-1,0,1), 1)
 #'     dat <- rnorm(100, mu)
 #'     dat        #return simple vector (discard mu information)
 #' }
 #'
-#' generate3 <- function(condition, fixed_objects = NULL) {
+#' generate3 <- function(condition, fixed_objects) {
 #'     mu <- sample(c(-1,0,1), 1)
 #'     dat <- data.frame(DV = rnorm(100, mu))
 #'     dat
@@ -85,7 +85,7 @@
 #'
 #' }
 #'
-Generate <- function(condition, fixed_objects = NULL) NULL
+Generate <- function(condition, fixed_objects) NULL
 
 #=================================================================================================#
 
@@ -142,7 +142,7 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #' @examples
 #' \dontrun{
 #'
-#' analyse <- function(condition, dat, fixed_objects = NULL) {
+#' analyse <- function(condition, dat, fixed_objects) {
 #'
 #'     # require packages/define functions if needed, or better yet index with the :: operator
 #'     require(stats)
@@ -162,13 +162,13 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #'
 #' # A more modularized example approach
 #'
-#' analysis_welch <- function(condition, dat, fixed_objects = NULL) {
+#' analysis_welch <- function(condition, dat, fixed_objects) {
 #'     welch <- t.test(DV ~ group, dat)
 #'     ret <- c(p=welch$p.value)
 #'     ret
 #' }
 #'
-#' analysis_ind <- function(condition, dat, fixed_objects = NULL) {
+#' analysis_ind <- function(condition, dat, fixed_objects) {
 #'     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
 #'     ret <- c(p=ind$p.value)
 #'     ret
@@ -178,7 +178,7 @@ Generate <- function(condition, fixed_objects = NULL) NULL
 #' # runSimulation(..., analyse=list(welch=analyse_welch, independent=analysis_ind))
 #'
 #' }
-Analyse <- function(condition, dat, fixed_objects = NULL) NULL
+Analyse <- function(condition, dat, fixed_objects) NULL
 
 
 
@@ -222,7 +222,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #' @examples
 #' \dontrun{
 #'
-#' summarise <- function(condition, results, fixed_objects = NULL) {
+#' summarise <- function(condition, results, fixed_objects) {
 #'
 #'     #find results of interest here (alpha < .1, .05, .01)
 #'     lessthan.05 <- EDR(results, alpha = .05)
@@ -234,7 +234,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) NULL
 #'
 #' }
 #'
-Summarise <- function(condition, results, fixed_objects = NULL) NULL
+Summarise <- function(condition, results, fixed_objects) NULL
 
 
 #=================================================================================================#

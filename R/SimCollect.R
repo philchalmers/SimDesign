@@ -101,17 +101,17 @@
 #'
 #' #-------------------------------------------------------------------
 #'
-#' Generate <- function(condition, fixed_objects = NULL) {
+#' Generate <- function(condition, fixed_objects) {
 #'     dat <- with(condition, rnorm(N, mean=mu))
 #'     dat
 #' }
 #'
-#' Analyse <- function(condition, dat, fixed_objects = NULL) {
+#' Analyse <- function(condition, dat, fixed_objects) {
 #'     ret <- c(mean=mean(dat), SD=sd(dat))
 #'     ret
 #' }
 #'
-#' Summarise <- function(condition, results, fixed_objects = NULL) {
+#' Summarise <- function(condition, results, fixed_objects) {
 #'     ret <- colMeans(results)
 #'     ret
 #' }

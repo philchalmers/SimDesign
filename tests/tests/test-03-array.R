@@ -6,23 +6,23 @@ test_that('array', {
 
     Design <- createDesign(N = c(10, 20, 30))
 
-    Generate <- function(condition, fixed_objects = NULL) {
+    Generate <- function(condition, fixed_objects) {
         dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
         dat
     }
 
-    Analyse <- function(condition, dat, fixed_objects = NULL) {
+    Analyse <- function(condition, dat, fixed_objects) {
         ret <- c(mean=mean(dat), median=median(dat)) # mean/median of sample data
         ret
     }
 
-    Analyse.slow <- function(condition, dat, fixed_objects = NULL) {
+    Analyse.slow <- function(condition, dat, fixed_objects) {
         Sys.sleep(1)
         ret <- c(mean=mean(dat), median=median(dat)) # mean/median of sample data
         ret
     }
 
-    Summarise <- function(condition, results, fixed_objects = NULL){
+    Summarise <- function(condition, results, fixed_objects){
         colMeans(results)
     }
 
@@ -96,7 +96,7 @@ test_that('array', {
 
     SimClean('mylongsim-14.rds')
 
-    Analyse_big <- function(condition, dat, fixed_objects = NULL) {
+    Analyse_big <- function(condition, dat, fixed_objects) {
         ret <- runif(1e4)
         names(ret) <- paste0('x', 1:length(ret))
         # object.size(ret) |> format('MB')

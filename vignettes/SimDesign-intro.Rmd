@@ -118,7 +118,7 @@ We first start by defining the data generation functional component. The only ar
 possible to pass a `fixed_objects` object to the function for including fixed sets of population parameters and other conditions, however for this simple simulation this input is not required.
 
 ```{r}
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects) {
     N <- condition$sample_size
     dist <- condition$distribution
     if(dist == 'norm'){
@@ -135,7 +135,7 @@ be analysed each with a population mean of 3 (because a $\chi^2$ distribution ha
 Next, we define the `analyse` component to analyse said data:
 
 ```{r}
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     M0 <- mean(dat)
     M1 <- mean(dat, trim = .1)
     M2 <- mean(dat, trim = .2)
@@ -157,7 +157,7 @@ This is where computing meta-statistics such as bias, root mean-square error, de
 and so on are of primary importance. Unsurprisingly, then, this is the purpose of the `summarise` component:
 
 ```{r}
-Summarise <- function(condition, results, fixed_objects = NULL) {
+Summarise <- function(condition, results, fixed_objects) {
     obs_bias <- bias(results, parameter = 3)
     obs_RMSE <- RMSE(results, parameter = 3)
     ret <- c(bias=obs_bias, RMSE=obs_RMSE, RE=RE(obs_RMSE))

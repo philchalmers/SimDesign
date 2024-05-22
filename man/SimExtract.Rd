@@ -42,21 +42,21 @@ final simulation object.
 
 \dontrun{
 
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects) {
     int <- sample(1:10, 1)
     if(int > 5) warning('GENERATE WARNING: int greater than 5')
     if(int == 1) stop('GENERATE WARNING: integer is 1')
     rnorm(5)
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     int <- sample(1:10, 1)
     if(int > 5) warning('ANALYSE WARNING: int greater than 5')
     if(int == 1) stop('ANALYSE WARNING: int is 1')
     c(ret = 1)
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL) {
+Summarise <- function(condition, results, fixed_objects) {
     mean(results)
 }
 

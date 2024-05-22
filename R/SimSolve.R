@@ -237,7 +237,7 @@
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Step 2 --- Define generate, analyse, and summarise functions
 #'
-#' Generate <- function(condition, fixed_objects = NULL) {
+#' Generate <- function(condition, fixed_objects) {
 #'     Attach(condition)
 #'     group1 <- rnorm(N)
 #'     group2 <- rnorm(N, mean=d)
@@ -246,12 +246,12 @@
 #'     dat
 #' }
 #'
-#' Analyse <- function(condition, dat, fixed_objects = NULL) {
+#' Analyse <- function(condition, dat, fixed_objects) {
 #'     p <- t.test(DV ~ group, dat, var.equal=TRUE)$p.value
 #'     p
 #' }
 #'
-#' Summarise <- function(condition, results, fixed_objects = NULL) {
+#' Summarise <- function(condition, results, fixed_objects) {
 #'     # Must return a single number corresponding to f(x) in the
 #'     # root equation f(x) = b
 #'
@@ -515,7 +515,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     solve_name <- apply(design, 1L, function(x) colnames(design)[is.na(x)])
 
     if(missing(generate) && !missing(analyse))
-        generate <- function(condition, dat, fixed_objects = NULL){}
+        generate <- function(condition, dat, fixed_objects){}
     GENERATE_FUNCTIONS <- generate
     char_functions <- c(deparse(substitute(ANALYSE_FUNCTIONS)),
                              deparse(substitute(GENERATE_FUNCTIONS)))

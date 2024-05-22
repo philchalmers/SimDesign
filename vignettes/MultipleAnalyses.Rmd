@@ -83,7 +83,7 @@ P_ogive <- function(a, d, Theta) pnorm(a * Theta + d)
 ```
 
 ```{r eval=FALSE}
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects) {
 
     N <- condition$sample_size
     nitems <- condition$nitems
@@ -104,7 +104,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     as.data.frame(dat) #data.frame works nicer with lavaan
 }
 
-Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
+Analyse.FIML <- function(condition, dat, fixed_objects) {
     mod <- mirt(dat, 1L, verbose=FALSE)
     if(!extract.mirt(mod, 'converged')) stop('mirt did not converge')
     cfs <- mirt::coef(mod, simplify = TRUE, digits = Inf)
@@ -114,7 +114,7 @@ Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
     ret
 }
 
-Analyse.DWLS <- function(condition, dat, fixed_objects = NULL) {
+Analyse.DWLS <- function(condition, dat, fixed_objects) {
     nitems <- condition$nitems
     lavmod <- paste0('F =~ ', paste0('NA*', colnames(dat)[1L], ' + '),
                      paste0(colnames(dat)[-1L], collapse = ' + '),
@@ -130,7 +130,7 @@ Analyse.DWLS <- function(condition, dat, fixed_objects = NULL) {
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL) {
+Summarise <- function(condition, results, fixed_objects) {
     nitems <- condition$nitems
     nitems_name <- ifelse(nitems == 10, 'ten', 'twenty')
 
@@ -559,7 +559,7 @@ Design
 Provided that the `Generate()` step utilized this `indicators` character vector, this would imply that the `dat` object returned from `Generate()` could consist of discrete or continuous data. In the case of continuous indicator variables, `lavaan` could be used as it supports such indicator types; however, `mirt` cannot. So, to ensure that only the analysis function pertaining to `lavaan` is used one could include the following replacement definition that used `mirt`, but now includes an `AnalyseIf()` logical given the `indicators` variable's state.
 
 ```{r}
-Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
+Analyse.FIML <- function(condition, dat, fixed_objects) {
     AnalyseIf(condition$indicators == 'discrete')
     # equivalently: 
     #   AnalyseIf(indicators == 'discrete', condition)
@@ -579,13 +579,13 @@ Using this definition the final object returned by `runSimulation()` will provid
 Note that a similar logic can be made for multiple `Generate()` functions, templated via `SimDesign::SimFunctions(nGenerate = 2)`, and requiring specific `GenerateIf()` tests to indicate which generation function should be used. For those interested in this type of structure, the following could be used to separate the discrete/continuous data generation per `Design` row:
 
 ```{r eval=FALSE}
-Generate.G1 <- function(condition, fixed_objects = NULL) {
+Generate.G1 <- function(condition, fixed_objects) {
     GenerateIf(condition$indicators == 'discrete')
     ...
     dat
 }
 
-Generate.G2 <- function(condition, fixed_objects = NULL) {
+Generate.G2 <- function(condition, fixed_objects) {
     GenerateIf(condition$indicators == 'continuous')
     ...
     dat
@@ -611,12 +611,12 @@ Design
 and the analysis functions above were supplied defined as 
 
 ```{r eval=FALSE}
-Analyse.FIML <- function(condition, dat, fixed_objects = NULL) {
+Analyse.FIML <- function(condition, dat, fixed_objects) {
     AnalyseIf(method == 'FIML', condition)
     #...
 }
 
-Analyse.DWLS <- function(condition, dat, fixed_objects = NULL) {
+Analyse.DWLS <- function(condition, dat, fixed_objects) {
     AnalyseIf(method == 'DWLS', condition)
     # ...
 }

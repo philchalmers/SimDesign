@@ -4,7 +4,7 @@
 \alias{Analyse}
 \title{Compute estimates and statistics}
 \usage{
-Analyse(condition, dat, fixed_objects = NULL)
+Analyse(condition, dat, fixed_objects)
 }
 \arguments{
 \item{condition}{a single row from the design input (as a \code{data.frame}), indicating the
@@ -48,7 +48,7 @@ but the maximum number of iterations were reached).
 \examples{
 \dontrun{
 
-analyse <- function(condition, dat, fixed_objects = NULL) {
+analyse <- function(condition, dat, fixed_objects) {
 
     # require packages/define functions if needed, or better yet index with the :: operator
     require(stats)
@@ -68,13 +68,13 @@ analyse <- function(condition, dat, fixed_objects = NULL) {
 
 # A more modularized example approach
 
-analysis_welch <- function(condition, dat, fixed_objects = NULL) {
+analysis_welch <- function(condition, dat, fixed_objects) {
     welch <- t.test(DV ~ group, dat)
     ret <- c(p=welch$p.value)
     ret
 }
 
-analysis_ind <- function(condition, dat, fixed_objects = NULL) {
+analysis_ind <- function(condition, dat, fixed_objects) {
     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
     ret <- c(p=ind$p.value)
     ret

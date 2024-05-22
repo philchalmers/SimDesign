@@ -60,7 +60,7 @@ Design <- createDesign(N1=c(10,20),
 Design
 
 # does not use Attach()
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects ) {
     # condition = single row of Design input (e.g., condition <- Design[1,])
     N1 <- condition$N1
     N2 <- condition$N2
@@ -74,7 +74,7 @@ Generate <- function(condition, fixed_objects = NULL) {
 }
 
 # similar to above, but using the Attach() function instead of indexing
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects ) {
     Attach(condition) # N1, N2, and sd are now 'attached' and visible
 
     group1 <- rnorm(N1)
@@ -94,7 +94,7 @@ Attach(Design, RStudio_flags=TRUE)
 # when # !diagnostics ... is added added to the source file(s)
 
 # !diagnostics suppress=N1,N2,sd
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects ) {
     Attach(condition) # N1, N2, and sd are now 'attached' and visible
 
     group1 <- rnorm(N1)

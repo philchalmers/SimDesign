@@ -4,7 +4,7 @@
 \alias{Summarise}
 \title{Summarise simulated data using various population comparison statistics}
 \usage{
-Summarise(condition, results, fixed_objects = NULL)
+Summarise(condition, results, fixed_objects)
 }
 \arguments{
 \item{condition}{a single row from the \code{design} input from \code{\link{runSimulation}}
@@ -30,7 +30,7 @@ estimates such as RMSE, bias, Type I error rates, coverage rates, etc. See the
 \examples{
 \dontrun{
 
-summarise <- function(condition, results, fixed_objects = NULL) {
+summarise <- function(condition, results, fixed_objects) {
 
     #find results of interest here (alpha < .1, .05, .01)
     lessthan.05 <- EDR(results, alpha = .05)

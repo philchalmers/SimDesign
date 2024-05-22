@@ -38,7 +38,7 @@
 #'                        group_size_ratio = c(1, 4, 8),
 #'                        standard_deviation_ratio = c(.5, 1, 2))
 #'
-#' Generate <- function(condition, fixed_objects = NULL) {
+#' Generate <- function(condition, fixed_objects) {
 #'     N <- condition$sample_size
 #'     grs <- condition$group_size_ratio
 #'     sd <- condition$standard_deviation_ratio
@@ -55,7 +55,7 @@
 #'     dat
 #' }
 #'
-#' Analyse <- function(condition, dat, fixed_objects = NULL) {
+#' Analyse <- function(condition, dat, fixed_objects) {
 #'     welch <- t.test(DV ~ group, dat)
 #'     ind <- t.test(DV ~ group, dat, var.equal=TRUE)
 #'
@@ -65,7 +65,7 @@
 #'     ret
 #' }
 #'
-#' Summarise <- function(condition, results, fixed_objects = NULL) {
+#' Summarise <- function(condition, results, fixed_objects) {
 #'     #find results of interest here (e.g., alpha < .1, .05, .01)
 #'     ret <- EDR(results, alpha = .05)
 #'     ret

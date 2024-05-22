@@ -10,7 +10,7 @@ bootPredict(
   generate,
   analyse,
   summarise,
-  fixed_objects = NULL,
+  fixed_objects,
   ...,
   Rstar = seq(100, 500, by = 100),
   boot_draws = 1000
@@ -60,19 +60,19 @@ Design <- createDesign(sigma = c(1, 2))
 
 #-------------------------------------------------------------------
 
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects) {
     dat <- rnorm(100, 0, condition$sigma)
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     CIs <- t.test(dat)$conf.int
     names(CIs) <- c('lower', 'upper')
     ret <- c(mean = mean(dat), CIs)
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL) {
+Summarise <- function(condition, results, fixed_objects) {
     ret <- c(mu_bias = bias(results[,1], 0),
              mu_coverage = ECR(results[,2:3], parameter = 0))
     ret

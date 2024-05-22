@@ -26,26 +26,26 @@ therefore be skipped.
 
 Design <- createDesign(N=c(10,20,30), var.equal = c(TRUE, FALSE))
 
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects) {
   Attach(condition)
   dat <- data.frame(DV = rnorm(N*2), IV = gl(2, N, labels=c('G1', 'G2')))
   dat
 }
 
 # always run this analysis for each row in Design
-Analyse1 <- function(condition, dat, fixed_objects = NULL) {
+Analyse1 <- function(condition, dat, fixed_objects) {
   mod <- t.test(DV ~ IV, data=dat)
   mod$p.value
 }
 
 # Only perform analysis when variances are equal and N = 20 or 30
-Analyse2 <- function(condition, dat, fixed_objects = NULL) {
+Analyse2 <- function(condition, dat, fixed_objects) {
   AnalyseIf(var.equal && N \%in\% c(20, 30), condition)
   mod <- t.test(DV ~ IV, data=dat, var.equal=TRUE)
   mod$p.value
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL) {
+Summarise <- function(condition, results, fixed_objects) {
   ret <- EDR(results, alpha=.05)
   ret
 }

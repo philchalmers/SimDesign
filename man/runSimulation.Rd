@@ -12,7 +12,7 @@ runSimulation(
   generate,
   analyse,
   summarise,
-  fixed_objects = NULL,
+  fixed_objects,
   packages = NULL,
   filename = NULL,
   debug = "none",
@@ -584,9 +584,9 @@ with the exact functional arguments listed:
 
 \describe{
   \item{\code{Design <- createDesign(...)}}{}
-  \item{\code{Generate <- function(condition, fixed_objects = NULL) \{...\} }}{}
-  \item{\code{Analyse <- function(condition, dat, fixed_objects = NULL) \{...\} }}{}
-  \item{\code{Summarise <- function(condition, results, fixed_objects = NULL) \{...\} }}{}
+  \item{\code{Generate <- function(condition, fixed_objects) \{...\} }}{}
+  \item{\code{Analyse <- function(condition, dat, fixed_objects) \{...\} }}{}
+  \item{\code{Summarise <- function(condition, results, fixed_objects) \{...\} }}{}
   \item{\code{res <- runSimulation(design=Design, replications, generate=Generate,
         analyse=Analyse, summarise=Summarise)}}{}
 }
@@ -692,19 +692,19 @@ Design <- createDesign(N = c(10, 20, 30))
 #### Step 2 --- Define generate, analyse, and summarise functions
 
 # help(Generate)
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects) {
     dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
     dat
 }
 
 # help(Analyse)
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     ret <- c(mean=mean(dat)) # mean of the sample data vector
     ret
 }
 
 # help(Summarise)
-Summarise <- function(condition, results, fixed_objects = NULL) {
+Summarise <- function(condition, results, fixed_objects) {
     # mean and SD summary of the sample means
     ret <- c(mu=mean(results$mean), SE=sd(results$mean))
     ret
@@ -813,7 +813,7 @@ Design
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 2 --- Define generate, analyse, and summarise functions
 
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects) {
     N <- condition$sample_size      # could use Attach() to make objects available
     grs <- condition$group_size_ratio
     sd <- condition$standard_deviation_ratio
@@ -830,7 +830,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     welch <- t.test(DV ~ group, dat)$p.value
     independent <- t.test(DV ~ group, dat, var.equal=TRUE)$p.value
 
@@ -840,7 +840,7 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL) {
+Summarise <- function(condition, results, fixed_objects) {
     #find results of interest here (e.g., alpha < .1, .05, .01)
     ret <- EDR(results, alpha = .05)
     ret
@@ -888,7 +888,7 @@ runSimulation(design=Design, replications=1000,
 
 ## Alternatively, place a browser() within the desired function line to
 ##   jump to a specific location
-Summarise <- function(condition, results, fixed_objects = NULL) {
+Summarise <- function(condition, results, fixed_objects) {
     #find results of interest here (e.g., alpha < .1, .05, .01)
     browser()
     ret <- EDR(results[,nms], alpha = .05)

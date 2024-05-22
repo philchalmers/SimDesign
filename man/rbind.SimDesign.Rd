@@ -32,17 +32,17 @@ object combinations.
 Design <- createDesign(N = c(10, 20),
                        SD = c(1, 2))
 
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects) {
     dat <- with(condition, rnorm(N, 10, sd=SD))
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     ret <- mean(dat) # mean of the sample data vector
     ret
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL) {
+Summarise <- function(condition, results, fixed_objects) {
     ret <- c(mu=mean(results), SE=sd(results)) # mean and SD summary of the sample means
     ret
 }

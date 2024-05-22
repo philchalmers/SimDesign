@@ -36,7 +36,7 @@
 #'
 #' Design <- createDesign(N=c(10,20,30), var.equal = c(TRUE, FALSE))
 #'
-#' Generate.G1 <- function(condition, fixed_objects = NULL) {
+#' Generate.G1 <- function(condition, fixed_objects) {
 #'   GenerateIf(condition$var.equal == FALSE) # only run when unequal vars
 #'   Attach(condition)
 #'   dat <- data.frame(DV = c(rnorm(N), rnorm(N, sd=2)),
@@ -44,19 +44,19 @@
 #'   dat
 #' }
 #'
-#' Generate.G2 <- function(condition, fixed_objects = NULL) {
+#' Generate.G2 <- function(condition, fixed_objects) {
 #'   Attach(condition)
 #'   dat <- data.frame(DV = rnorm(N*2), IV = gl(2, N, labels=c('G1', 'G2')))
 #'   dat
 #' }
 #'
 #' # always run this analysis for each row in Design
-#' Analyse <- function(condition, dat, fixed_objects = NULL) {
+#' Analyse <- function(condition, dat, fixed_objects) {
 #'   mod <- t.test(DV ~ IV, data=dat)
 #'   mod$p.value
 #' }
 #'
-#' Summarise <- function(condition, results, fixed_objects = NULL) {
+#' Summarise <- function(condition, results, fixed_objects) {
 #'   ret <- EDR(results, alpha=.05)
 #'   ret
 #' }

@@ -402,7 +402,7 @@ lapply_timer <- function(X, FUN, max_time, max_RAM, ...){
     ret
 }
 
-combined_Analyses <- function(condition, dat, fixed_objects = NULL){
+combined_Analyses <- function(condition, dat, fixed_objects){
     if(!is.null(.SIMDENV$ANALYSE_FUNCTIONS)){
         ANALYSE_FUNCTIONS <- .SIMDENV$ANALYSE_FUNCTIONS
         TRY_ALL_ANALYSE <- .SIMDENV$TRY_ALL_ANALYSE
@@ -440,7 +440,7 @@ combined_Analyses <- function(condition, dat, fixed_objects = NULL){
     ret
 }
 
-combined_Generate <- function(condition, fixed_objects = NULL){
+combined_Generate <- function(condition, fixed_objects){
     if(!is.null(.SIMDENV$GENERATE_FUNCTIONS))
         GENERATE_FUNCTIONS <- .SIMDENV$GENERATE_FUNCTIONS
     nfuns <- length(GENERATE_FUNCTIONS)

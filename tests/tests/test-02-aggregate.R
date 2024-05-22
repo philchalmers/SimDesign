@@ -11,7 +11,7 @@ test_that('aggregate', {
                            sample_sizes_group2=sample_sizes,
                            standard_deviations=standard_deviations)
 
-    mysim <- function(condition, fixed_objects = NULL){
+    mysim <- function(condition, fixed_objects){
 
         Attach(condition)
 
@@ -26,7 +26,7 @@ test_that('aggregate', {
         return(dat)
     }
 
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
 
         #wrap computational statistics in try() statements to control estimation problems
         welch <- t.test(DV ~ group, dat)
@@ -40,7 +40,7 @@ test_that('aggregate', {
         return(ret)
     }
 
-    mycompute2 <- function(condition, dat, fixed_objects = NULL){
+    mycompute2 <- function(condition, dat, fixed_objects){
 
         if(condition$standard_deviations == 4) stop('error')
 
@@ -55,7 +55,7 @@ test_that('aggregate', {
         return(ret)
     }
 
-    mycollect <-  function(condition, results, fixed_objects = NULL){
+    mycollect <-  function(condition, results, fixed_objects){
 
         #find results of interest here
         nms <- c('welch', 'independent')
@@ -127,7 +127,7 @@ test_that('aggregate', {
     #                      replications = 2, parallel=FALSE, load_seed = load_seed)
     # SimClean(seeds = TRUE)
 
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
 
         if(runif(1, 0, 1) < .9) t.test('char')
         if(runif(1, 0, 1) < .9) aov('char')
@@ -184,7 +184,7 @@ test_that('aggregate', {
     SimClean(results = TRUE)
 
     # reSummarise test
-    mycomputeGood <- function(condition, dat, fixed_objects = NULL){
+    mycomputeGood <- function(condition, dat, fixed_objects){
 
         welch <- t.test(DV ~ group, dat)
         ind <- stats::t.test(DV ~ group, dat, var.equal=TRUE)
@@ -210,21 +210,21 @@ test_that('aggregate', {
     SimClean(results = TRUE)
 
     #aggregate different files
-    mycompute <- function(condition, dat, fixed_objects = NULL) {
+    mycompute <- function(condition, dat, fixed_objects) {
         c(ret = 1)
     }
-    mygenerate <- function(condition, fixed_objects = NULL) {
+    mygenerate <- function(condition, fixed_objects) {
         rgumbel(5)
     }
-    mycollect <- function(condition, results, fixed_objects = NULL) {
+    mycollect <- function(condition, results, fixed_objects) {
         mean(results$ret)
     }
 
-    mycompute2 <- function(condition, dat, fixed_objects = NULL){
+    mycompute2 <- function(condition, dat, fixed_objects){
         if(sample(c(FALSE, TRUE), 1, prob = c(.9, .1))) stop('error')
         c(ret = 1)
     }
-    mycompute3 <- function(condition, dat, fixed_objects = NULL){
+    mycompute3 <- function(condition, dat, fixed_objects){
         c(ret = 1)
     }
     set.seed(1)
@@ -245,11 +245,11 @@ test_that('aggregate', {
     expect_equal(6, nrow(readRDS('SimDesign_aggregate_results/results-row-1.rds')$results))
     SimClean(dirs = c('SimDesign_aggregate_results','dir1', 'dir2', 'dir3'))
 
-    mycompute <- function(condition, dat, fixed_objects = NULL){
+    mycompute <- function(condition, dat, fixed_objects){
         if(sample(c(FALSE, TRUE), 1, prob = c(.9, .1))) stop('error')
         list(ret = 1)
     }
-    mycollect <- function(condition, results, fixed_objects = NULL) {
+    mycollect <- function(condition, results, fixed_objects) {
         c(ret=1)
     }
     results <- runSimulation(Design, replications = 2, packages = 'extraDistr',

@@ -63,7 +63,7 @@ Design
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Step 2 --- Define generate, analyse, and summarise functions
 
-Generate <- function(condition, fixed_objects = NULL) {
+Generate <- function(condition, fixed_objects) {
     Attach(condition)
     group1 <- rnorm(N)
     group2 <- rnorm(N, mean=d)
@@ -72,12 +72,12 @@ Generate <- function(condition, fixed_objects = NULL) {
     dat
 }
 
-Analyse <- function(condition, dat, fixed_objects = NULL) {
+Analyse <- function(condition, dat, fixed_objects) {
     p <- c(p = t.test(DV ~ group, dat, var.equal=TRUE)$p.value)
     p
 }
 
-Summarise <- function(condition, results, fixed_objects = NULL) {
+Summarise <- function(condition, results, fixed_objects) {
     ret <- EDR(results, alpha = .05)
     ret
 }
