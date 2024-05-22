@@ -12,7 +12,7 @@ runSimulation(
   generate,
   analyse,
   summarise,
-  fixed_objects,
+  fixed_objects = NULL,
   packages = NULL,
   filename = NULL,
   debug = "none",
