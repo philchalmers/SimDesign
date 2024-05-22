@@ -384,7 +384,7 @@ in the simulation}
      Note that this argument is generally intended for debugging/early planning
      stages when designing a simulation experiment. If specific warnings are known to
      be problematic and should be treated as errors then please use
-     \code{\link{convertWarnings}} instead}
+     \code{\link{manageWarnings}} instead}
 
      \item{\code{save_seeds}}{
      logical; save the \code{.Random.seed} states prior to performing
@@ -1008,7 +1008,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
   \code{\link{SimExtract}},
   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
   \code{\link{SimCollect}}, \code{\link{Attach}}, \code{\link{AnalyseIf}},
-  \code{\link{SimShiny}}, \code{\link{convertWarnings}}, \code{\link{runArraySimulation}}
+  \code{\link{SimShiny}}, \code{\link{manageWarnings}}, \code{\link{runArraySimulation}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}

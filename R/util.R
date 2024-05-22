@@ -115,9 +115,9 @@ notification_final <- function(Final){
 #' @param cat logical; print all concatenate and calls from \code{\link{cat}}?
 #'
 #' @param warnings logical; print all warning messages (generally recommended to leave
-#'   as \code{TRUE}; see \code{link{convertWarnings}} for better alternative)
+#'   as \code{TRUE}; see \code{link{manageWarnings}} for better alternative)
 #'
-#' @seealso \code{\link{convertWarnings}}
+#' @seealso \code{\link{manageWarnings}}
 #'
 #' @export
 #'
@@ -150,7 +150,7 @@ notification_final <- function(Final){
 #' out
 #'
 #' # suppress messages, cats, and warnings (not recommended)
-#' #   see convertWarnings(ignorable=...) for better alternative
+#' #   see manageWarnings(ignorable=...) for better alternative
 #' out2 <- quiet(myfun(2, warn=TRUE)) # warning gets through
 #' out2 <- quiet(myfun(2, warn=TRUE), warnings = FALSE) # but not here
 #'

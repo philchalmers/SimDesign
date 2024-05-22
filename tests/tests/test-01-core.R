@@ -288,7 +288,7 @@ test_that('SimDesign', {
     expect_equal(results$WARNINGS, c(21, 14, 22, 21, 15, 15, 17, 23))
     mycompute2 <- function(condition, dat, fixed_objects){
         out1 <- fn1()
-        out2 <- convertWarnings(fn2(), "Show a different warning")
+        out2 <- manageWarnings(fn2(), "Show a different warning")
         c(ret = 1)
     }
     results <- runSimulation(Design, replications = 100, packages='extraDistr',

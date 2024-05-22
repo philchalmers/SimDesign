@@ -14,7 +14,7 @@ quiet(..., messages = FALSE, cat = FALSE, warnings = TRUE)
 \item{cat}{logical; print all concatenate and calls from \code{\link{cat}}?}
 
 \item{warnings}{logical; print all warning messages (generally recommended to leave
-as \code{TRUE}; see \code{link{convertWarnings}} for better alternative)}
+as \code{TRUE}; see \code{link{manageWarnings}} for better alternative)}
 }
 \description{
 This function is used to suppress information printed from external functions
@@ -45,7 +45,7 @@ out <- quiet(myfun(1))
 out
 
 # suppress messages, cats, and warnings (not recommended)
-#   see convertWarnings(ignorable=...) for better alternative
+#   see manageWarnings(ignorable=...) for better alternative
 out2 <- quiet(myfun(2, warn=TRUE)) # warning gets through
 out2 <- quiet(myfun(2, warn=TRUE), warnings = FALSE) # but not here
 
@@ -60,5 +60,5 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
 }
 \seealso{
-\code{\link{convertWarnings}}
+\code{\link{manageWarnings}}
 }
