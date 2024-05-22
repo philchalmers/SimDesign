@@ -38,7 +38,7 @@ The purpose of this function is to provide more nuanced managing of warning
 messages that appear in function calls outside the front-end users control
 (e.g., via functions written in third-party packages). In particular,
 this functions provides a less nuclear approach than, for example,
-\code{\link{suppressWarning}}, which suppresses all warning messages
+\code{\link{suppressWarnings}}, which suppresses all warning messages
 rather than those which are known
 to be innocuous to the current application, or when setting \code{options(warn=2)},
 which has the opposite effect of treating all warnings messages as errors globally.
