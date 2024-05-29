@@ -2,9 +2,9 @@
 % Please edit documentation in R/manageWarnings.R
 \name{manageWarnings}
 \alias{manageWarnings}
-\title{Mange specific warning messages}
+\title{Manage specific warning messages}
 \usage{
-manageWarnings(expr, warning2error = NULL, ignorable = NULL)
+manageWarnings(expr, warning2error = FALSE, ignorable = NULL)
 }
 \arguments{
 \item{expr}{expression to be evaluated (e.g., \code{ret <- myfun(args)}
@@ -12,13 +12,17 @@ should be wrapped as either \code{manageWarnings(ret <- myfun(args))},
 \code{ret <- manageWarnings(myfun(args))}, or more readably
 \code{ret <- myfun(args) |> manageWarnings()} )}
 
-\item{warning2error}{a character vector of warning messages
-that should be converted to errors. Each warning message is
-matched using a \code{\link{grepl}} expression, so partial matching
-is supported (though more specific messages are less likely to throw
-false positives). If \code{NULL}, all observed warning messages
-will be treated as errors (same behaviour as \code{options(warn=2)},
-though defined locally)}
+\item{warning2error}{Logical or character vector (see below) to control the
+  conversion of warnings to errors. Setting this input to \code{TRUE} will treat
+  all observed warning messages as errors (same behaviour as \code{options(warn=2)},
+  though defined locally), while setting to \code{FALSE} (default)
+  will leave all warnings messages as-is.
+
+  Alternatively, and more usefully, a character vector  of warning messages
+  can be defined to specify which warnings should be converted to errors.
+  Each warning message is matched using a \code{\link{grepl}} expression,
+  so partial matching is supported (though more specific messages are less likely to throw
+  false positives).}
 
 \item{ignorable}{a character vector indicating warning messages that
 are anticipated but generally ignorable if they are determined to be
@@ -26,49 +30,35 @@ innocuous a priori. Each warning message is
 matched using a \code{\link{grepl}} expression, so partial matching
 is supported (though more specific messages are less likely to throw
 false positives). If \code{NULL}, no warning message will be treated
-as ignorable}
+as ignorable.}
 }
 \value{
 returns the original result of \code{eval(expr)}, with warning
  messages either left the same, increased to errors, or suppressed (depending
- on the specifications)
+ on the input specifications)
 }
 \description{
-The purpose of this function is to provide more nuanced managing of warning
+Function provides more nuanced management of known warning
 messages that appear in function calls outside the front-end users control
-(e.g., via functions written in third-party packages). In particular,
+(e.g., functions written in third-party packages). Specifically,
 this functions provides a less nuclear approach than, for example,
-\code{\link{suppressWarnings}}, which suppresses all warning messages
+\code{\link{suppressWarnings}} (which suppresses all warning messages
 rather than those which are known
-to be innocuous to the current application, or when setting \code{options(warn=2)},
-which has the opposite effect of treating all warnings messages as errors globally.
-Both of these approaches are generally bad practice when writing self-contained code
-as they may inadvertently suppress or increase the intensity of a yet-to-be-seen
-warning raised.
-}
-\details{
-The main goal of this function is to \emph{explicitly} indicate whether known warning
-messages are innocuous or problematic in the current application.
-For instance, in many function implementations only a subset
-of identified warnings should be treated as errors (c.f. \code{warnings_as_errors} in
-\code{\link{runSimulation}}, as well as \code{option(warn=2)} to
-convert all warnings to errors globally).
-On the other hand, some warnings could be considered "noise" or generally innocuous,
-and therefore not problematic in the current application. Base functions
-such as \code{\link{suppressWarnings}} can accomplish this, however will
-suppress all of the warnings messages rather than specific ones,
-potentially obfuscating important
-warnings messages that the front-end user has simply not encounter yet and
-should therefore still be raised. Note that for suppressing message
-and printing calls from generally noisy functions see \code{\link{quiet}}.
+to be innocuous to the current application) or when globally setting \code{options(warn=2)},
+which has the opposite effect of treating all warnings messages as errors
+in the function executions. In either case, global/nuclear behaviour of
+known warning messages should be avoided
+as it is generally bad practice as important
+warning messages (that the front-end user may not have even encounter yet) could be obfuscated, or
+known to be innocuous warnings messages may be unnecessarily raised to an error.
 }
 \examples{
 \dontrun{
 
 fun <- function(warn1=FALSE, warn2=FALSE, warn3=FALSE, error=FALSE){
-   if(warn1) warning('Show this warning')
-   if(warn2) warning('Show a different warning')
-   if(warn3) warning('Last warning message')
+   if(warn1) warning('Message one')
+   if(warn2) warning('Message two')
+   if(warn3) warning('Message three')
    if(error) stop('terminate function call')
    return('Returned from fun()')
 }
@@ -86,43 +76,47 @@ out <- fun() |> manageWarnings()
 fun(error=TRUE)
 fun(error=TRUE) |> manageWarnings()
 
-# all warnings converted to errors (similar to options(warn=2))
-fun(warn1=TRUE)
-fun(warn1=TRUE) |> manageWarnings()
-fun(warn2=TRUE) |> manageWarnings()
+# all warnings/returns treated normally by default
+ret1 <- fun(warn1=TRUE)
+ret2 <- fun(warn1=TRUE) |> manageWarnings()
+identical(ret1, ret2)
+
+# all warnings converted to errors (similar to options(warn=2), but local)
+fun(warn1=TRUE) |> manageWarnings(warning2error=TRUE)
+fun(warn2=TRUE) |> manageWarnings(warning2error=TRUE)
 
 # Specific warnings treated as errors (others stay as warnings)
 # Here, treat first warning message as error but not the second or third
-fun(warn1=TRUE) # warning
-ret <- fun(warn1=TRUE) |> manageWarnings("Show this warning")  # now error
-ret <- fun(warn2=TRUE) |> manageWarnings("Show this warning")  # still a warning
+ret <- fun(warn1=TRUE) # warning
+ret <- fun(warn1=TRUE) |> manageWarnings("Message one")  # now error
+ret <- fun(warn2=TRUE) |> manageWarnings("Message one")  # still a warning
 
 # multiple warnings raised but not converted as they do not match criteria
 fun(warn2=TRUE, warn3=TRUE)
-fun(warn2=TRUE, warn3=TRUE) |> manageWarnings("Show this warning")
+fun(warn2=TRUE, warn3=TRUE) |> manageWarnings("Message one")
 
 # Explicitly convert multiple warning messages, allowing others through.
 #   This is generally the best use of the function's specificity
 fun(warn1=TRUE, warn2=TRUE)
-ret <- fun(warn1=TRUE) |>   # error given either message
-           manageWarnings(c("Show this warning", "Show a different warning"))
-ret <- fun(warn2=TRUE) |>
-           manageWarnings(c("Show this warning", "Show a different warning"))
+fun(warn1=TRUE) |>   # error given either message
+        manageWarnings(c("Message one", "Message two"))
+fun(warn2=TRUE) |>
+       manageWarnings(c("Message one", "Message two"))
 
-# last warning gets through (left as valid warning), but message still raised
-ret3 <- fun(warn3=TRUE) |>
-            manageWarnings(c("Show this warning", "Show a different warning"))
-ret3
+# last warning gets through (left as valid warning)
+ret <- fun(warn3=TRUE) |>
+            manageWarnings(c("Message one", "Message two"))
+ret
 
 ###########
-# combine with quiet()
+# Combine with quiet() and ingorable argument to suppress innocuous messages
 
 fun <- function(warn1=FALSE, warn2=FALSE, warn3=FALSE, error=FALSE){
    message('This function is rather chatty')
    cat("It even prints in different output forms!\n")
-   if(warn1) warning('This warning is fine')
-   if(warn2) warning('Show this warning')
-   if(warn3) warning('Last warning message')
+   if(warn1) warning('Message one')
+   if(warn2) warning('Message two')
+   if(warn3) warning('Message three')
    if(error) stop('terminate function call')
    return('Returned from fun()')
 }
@@ -131,28 +125,29 @@ fun <- function(warn1=FALSE, warn2=FALSE, warn3=FALSE, error=FALSE){
 out <- fun()
 out <- quiet(fun()) # using "indoor voice"
 
-# suppress all print messages and warnings (latter not recommended)
+# suppress all print messages and warnings (not recommended)
+fun(warn2=TRUE) |> quiet()
 fun(warn2=TRUE) |> quiet() |> suppressWarnings()
 
-# convert warning to errors, but keep suppressing messages via quiet()
-fun(warn2=TRUE) |> quiet() |> manageWarnings()
+# convert all warning to errors, and keep suppressing messages via quiet()
+fun(warn2=TRUE) |> quiet() |> manageWarnings(warning2error=TRUE)
 
-# tolerable warning message (warn1 ignored)
-fun(warn1=TRUE) |> quiet() |>
-  manageWarnings(ignorable = 'This warning is fine')
+# define tolerable warning messages (warn1 deemed ignorable)
+ret <- fun(warn1=TRUE) |> quiet() |>
+  manageWarnings(ignorable = 'Message one')
 
-# warn2 or warn3 raised to an error
+# all other warnings raised to an error except ignorable ones
 fun(warn1=TRUE, warn2=TRUE) |> quiet() |>
-  manageWarnings(ignorable = 'This warning is fine')
+  manageWarnings(warning2error=TRUE, ignorable = 'Message one')
 
 # only warn2 raised to an error explicitly (warn3 remains as warning)
-fun(warn1=TRUE, warn3=TRUE) |> quiet() |>
-  manageWarnings(warning2error = 'Show this warning',
-                 ignorable = 'This warning is fine')
+ret <- fun(warn1=TRUE, warn3=TRUE) |> quiet() |>
+  manageWarnings(warning2error = 'Message two',
+                 ignorable = 'Message one')
 
 fun(warn1=TRUE, warn2 = TRUE, warn3=TRUE) |> quiet() |>
-  manageWarnings(warning2error = 'Show this warning',
-                 ignorable = 'This warning is fine')
+  manageWarnings(warning2error = 'Message two',
+                 ignorable = 'Message one')
 
 }
 
