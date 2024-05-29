@@ -8,32 +8,43 @@
 #' rather than those which are known
 #' to be innocuous to the current application) or when globally setting \code{options(warn=2)},
 #' which has the opposite effect of treating all warnings messages as errors
-#' in the function executions. In either case, global/nuclear behaviour of
-#' known warning messages should be avoided
-#' as it is generally bad practice as important
-#' warning messages (that the front-end user may not have even encounter yet) could be obfuscated, or
-#' known to be innocuous warnings messages may be unnecessarily raised to an error.
+#' in the function executions. To avoid these two extremes, \code{character} vectors
+#' can be supplied to this function to either leave the raised warnings
+#' as-is (default behaviour), raise only specific warning messages to errors,
+#' or specify warning messages that can be ignored (and therefore suppressed).
+#'
+#' In general, global/nuclear behaviour of
+#' known warning messages should be avoided as it is bad practice. Important
+#' warning messages that the front-end user may not have even encounter yet could easily
+#' become obfuscated (e.g., when using \code{\link{suppressWarnings}}) while known to be
+#' innocuous warning messages may be unwantingly raised to an error
+#' (e.g., using \code{options(warn=2)}). To avoid these extremes,
+#' front-end users should make note of the warning messages
+#' that have been raised in their prior code executions attempts and organized these messages
+#' into vectors of
+#' ignorable warnings (least severe), warnings that should remain as warnings (even if not detected
+#' yet), and warnings that ought to be considered errors for the current application (most severe).
 #'
 #' @param expr expression to be evaluated (e.g., \code{ret <- myfun(args)}
 #'   should be wrapped as either \code{manageWarnings(ret <- myfun(args))},
 #'   \code{ret <- manageWarnings(myfun(args))}, or more readably
 #'   \code{ret <- myfun(args) |> manageWarnings()} )
 #'
-#' @param warning2error Logical or character vector (see below) to control the
+#' @param warning2error Logical or \code{character} vector to control the
 #'   conversion of warnings to errors. Setting this input to \code{TRUE} will treat
 #'   all observed warning messages as errors (same behaviour as \code{options(warn=2)},
-#'   though defined locally), while setting to \code{FALSE} (default)
-#'   will leave all warnings messages as-is.
+#'   though defined on a per expression basis instead of globally),
+#'   while setting to \code{FALSE} (default) will leave all warning messages as-is.
 #'
-#'   Alternatively, and more usefully, a character vector  of warning messages
-#'   can be defined to specify which warnings should be converted to errors.
-#'   Each warning message is matched using a \code{\link{grepl}} expression,
-#'   so partial matching is supported (though more specific messages are less likely to throw
-#'   false positives).
+#'   Alternatively, and more useful for specificity reasons,
+#'   input can be a \code{character} vector containing known-to-be-severe
+#'   warning messages that should be converted to errors. Each supplied
+#'   character vector element is matched using a \code{\link{grepl}} expression,
+#'   so partial matching is supported (though more specific messages are less
+#'   likely to throw false positives).
 #'
-#' @param ignorable a character vector indicating warning messages that
-#'   are anticipated but generally ignorable if they are determined to be
-#'   innocuous a priori. Each warning message is
+#' @param ignorable a \code{character} vector indicating warning messages that
+#'   are known to be ignorable a priori. Each warning message is
 #'   matched using a \code{\link{grepl}} expression, so partial matching
 #'   is supported (though more specific messages are less likely to throw
 #'   false positives). If \code{NULL}, no warning message will be treated
@@ -167,6 +178,7 @@ manageWarnings <- function(expr, warning2error = FALSE, ignorable = NULL){
     stopifnot(!missing(expr))
     if(!is.null(warning2error)){
         if(is.logical(warning2error)){
+            stopifnot(length(warning2error) == 1L)
             warning2error <-
                 if(isTRUE(warning2error)) NULL else ""
         }
