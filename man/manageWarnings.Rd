@@ -7,10 +7,9 @@
 manageWarnings(expr, warning2error = FALSE, ignorable = NULL)
 }
 \arguments{
-\item{expr}{expression to be evaluated (e.g., \code{ret <- myfun(args)}
-should be wrapped as either \code{manageWarnings(ret <- myfun(args))},
-\code{ret <- manageWarnings(myfun(args))}, or more readably
-\code{ret <- myfun(args) |> manageWarnings()} )}
+\item{expr}{expression to be evaluated (e.g., \code{myfun(args)}
+should be wrapped as either \code{manageWarnings(myfun(args), ...)} or more
+readably as a pipe \code{myfun(args) |> manageWarnings(...)} )}
 
 \item{warning2error}{Logical or \code{character} vector to control the
   conversion of warnings to errors. Setting this input to \code{TRUE} will treat
