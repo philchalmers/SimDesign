@@ -157,9 +157,9 @@ knitr::opts_chunk$set(
 ```
 
 
-On occasion functions will return `warning` message that either boarder on (or should be treated as) error messages if they influence the veracity of the simulation results. Such examples may include models that appear to 'converge' but do so with non-nonsensical parameter estimates (e.g., negative variances, non-positive definite correlation matrices, maximum iterations reached in an numerical searching algorithm, etc). However, because such issues are non-fatal the software may simply raise a `warning` message for further inspection, whereas in a Monte Carlo simulation experiment such issues should generally be treated as invalid (though their frequency of occurrence should still be tracked, as is the default in `SimDesign`).
+On occasion functions will return `warning` message that either boarder on (or should be treated as) error messages if they influence the veracity of the simulation results. Such examples may include models that appear to 'converge' but do so with non-nonsensical parameter estimates (e.g., negative variances, non-positive definite correlation matrices, maximum iterations reached in an numerical searching algorithm, etc). However, because such issues are non-fatal third-party software (i.e., functions not written by the developer of the simulation) may simply raise a `warning` message for further inspection, whereas in a Monte Carlo simulation experiment such issues should generally be treated as invalid (though their frequency of occurrence should still be tracked, as is the default in `SimDesign`).
 
-To resolve this issue, and to avoid using a more nuclear option such as setting `option(warn=2)` to treat *all* warnings as errors in the simulation, the function `manageWarnings()` can be used to explicit convert known warning message strings into error messages that disrupt the code execution while allowing other warning messages to be raised if they are suspected to be innocuous (or, more likely, have simply not been raised yet in any given generated dataset). 
+To resolve this issue, and to avoid using a more nuclear option such as setting `option(warn=2)` to treat *all* warnings as errors in the simulation, the function `manageWarnings()` can be used to explicit convert known warning message strings into errors that disrupt the code execution while allowing other warning messages to continue to be raised. 
 
 For example, if a function utilized in a simulation was
 
@@ -186,18 +186,18 @@ then whenever the serious warning message is raised it could be explicitly conve
 ```{r error=TRUE}
 set.seed(1)
 out1 <- manageWarnings(myfun(), 
-                        'This warning is serious')
+                        warning2error='This warning is serious')
 out1
 
 set.seed(2)
 out2 <- manageWarnings(myfun(), 
-                        'This warning is serious')
+                        warning2error='This warning is serious')
 out2
 
 set.seed(7)
 out3 <- manageWarnings(myfun(), 
-                        'This warning is serious')
+                        warning2error='This warning is serious')
 out3
 ```
-which now converts the previous warning message into an error message, thereby correctly disrupting the flow of the Monte Carlo simulation experiment and prompting a new call to `Generate()`. Of course, all warning and error messages are tallied in the resulting `runSimulation()` object, though now the serious warnings will be tallied as disruptive errors instead of warnings that continued normally.
+which now converts the previous warning message into an error message, thereby correctly disrupting the flow of the Monte Carlo simulation experiment and prompting a new call to `Generate()`. Of course, all warning and error messages are tallied in the resulting `runSimulation()` object, though now the serious warnings will be tallied as disruptive errors instead of warnings that continued normally.  
 
