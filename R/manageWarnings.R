@@ -13,17 +13,28 @@
 #' as-is (default behaviour), raise only specific warning messages to errors,
 #' or specify warning messages that can be ignored (and therefore suppressed).
 #'
-#' In general, global/nuclear behaviour of
-#' known warning messages should be avoided as it is bad practice. Important
-#' warning messages that the front-end user may not have even encounter yet could easily
-#' become obfuscated (e.g., when using \code{\link{suppressWarnings}}) while known to be
-#' innocuous warning messages may be unwantingly raised to an error
-#' (e.g., using \code{options(warn=2)}). To avoid these extremes,
-#' front-end users should make note of the warning messages
-#' that have been raised in their prior code executions attempts and organized these messages
-#' into vectors of
-#' ignorable warnings (least severe), warnings that should remain as warnings (even if not detected
-#' yet), and warnings that ought to be considered errors for the current application (most severe).
+#' In general, global/nuclear behaviour of warning messages should be avoided
+#' as they are bad practice. On one extreme,
+#' when suppressing all warning messages using \code{\link{suppressWarnings}},
+#' potentially important warning messages will become muffled, which can be problematic
+#' if the code developer has not yet become aware of these (now muffled) warnings.
+#' Moreover, this can become a long-term sustainability issue when third-party functions
+#' that the code developer's code depends throw new warnings in the future as the
+#' code developer is less likely to become aware of these new warnings.
+#'
+#' On the other extreme, where all warning messages are turned into errors
+#' using \code{options(warn=2)}, innocuous warning messages will be (unwantingly)
+#' raised to an error. This can negatively affect the logical workflow of the code
+#' developer's functions, where more error messages must be manually managed
+#' (e.g., via \code{\link{tryCatch}}), including the innocuous warnings as these
+#' are now considered as errors.
+#'
+#' To avoid these extremes, front-end users should make note of the warning messages
+#' that have been raised in their prior code executions attempts, and organized these messages
+#' into vectors of ignorable warnings (least severe), known/unknown warnings
+#' that should remain as warnings (even if not known by the code developer yet),
+#' and explicit warnings that ought to be considered errors for the current
+#' application (most severe).
 #'
 #' @param expr expression to be evaluated (e.g., \code{myfun(args)}
 #'   should be wrapped as either \code{manageWarnings(myfun(args), ...)} or more
