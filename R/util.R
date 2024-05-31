@@ -97,7 +97,7 @@ notification_final <- function(Final){
     invisible(NULL)
 }
 
-#' Suppress function messages and (concatenate and print)
+#' Suppress verbose function messages
 #'
 #' This function is used to suppress information printed from external functions
 #' that make internal use of \code{link{message}} and \code{\link{cat}}, which

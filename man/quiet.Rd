@@ -2,7 +2,7 @@
 % Please edit documentation in R/util.R
 \name{quiet}
 \alias{quiet}
-\title{Suppress function messages and (concatenate and print)}
+\title{Suppress verbose function messages}
 \usage{
 quiet(..., messages = FALSE, cat = FALSE)
 }
