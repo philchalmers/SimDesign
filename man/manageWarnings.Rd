@@ -4,7 +4,7 @@
 \alias{manageWarnings}
 \title{Manage specific warning messages}
 \usage{
-manageWarnings(expr, warning2error = FALSE, ignorable = NULL)
+manageWarnings(expr, warning2error = FALSE, ignore = NULL)
 }
 \arguments{
 \item{expr}{expression to be evaluated (e.g., \code{myfun(args)}
@@ -24,7 +24,7 @@ readably as a pipe \code{myfun(args) |> manageWarnings(...)} )}
   so partial matching is supported (though more specific messages are less
   likely to throw false positives).}
 
-\item{ignorable}{a \code{character} vector indicating warning messages that
+\item{ignore}{a \code{character} vector indicating warning messages that
 are known to be ignorable a priori. Each warning message is
 matched using a \code{\link{grepl}} expression, so partial matching
 is supported (though more specific messages are less likely to throw
@@ -156,20 +156,20 @@ fun(warn2=TRUE) |> quiet() |> manageWarnings(warning2error=TRUE)
 
 # define tolerable warning messages (warn1 deemed ignorable)
 ret <- fun(warn1=TRUE) |> quiet() |>
-  manageWarnings(ignorable = 'Message one')
+  manageWarnings(ignore = 'Message one')
 
 # all other warnings raised to an error except ignorable ones
 fun(warn1=TRUE, warn2=TRUE) |> quiet() |>
-  manageWarnings(warning2error=TRUE, ignorable = 'Message one')
+  manageWarnings(warning2error=TRUE, ignore = 'Message one')
 
 # only warn2 raised to an error explicitly (warn3 remains as warning)
 ret <- fun(warn1=TRUE, warn3=TRUE) |> quiet() |>
   manageWarnings(warning2error = 'Message two',
-                 ignorable = 'Message one')
+                 ignore = 'Message one')
 
 fun(warn1=TRUE, warn2 = TRUE, warn3=TRUE) |> quiet() |>
   manageWarnings(warning2error = 'Message two',
-                 ignorable = 'Message one')
+                 ignore = 'Message one')
 
 }
 

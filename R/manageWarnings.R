@@ -53,7 +53,7 @@
 #'   so partial matching is supported (though more specific messages are less
 #'   likely to throw false positives).
 #'
-#' @param ignorable a \code{character} vector indicating warning messages that
+#' @param ignore a \code{character} vector indicating warning messages that
 #'   are known to be ignorable a priori. Each warning message is
 #'   matched using a \code{\link{grepl}} expression, so partial matching
 #'   is supported (though more specific messages are less likely to throw
@@ -156,26 +156,26 @@
 #'
 #' # define tolerable warning messages (warn1 deemed ignorable)
 #' ret <- fun(warn1=TRUE) |> quiet() |>
-#'   manageWarnings(ignorable = 'Message one')
+#'   manageWarnings(ignore = 'Message one')
 #'
 #' # all other warnings raised to an error except ignorable ones
 #' fun(warn1=TRUE, warn2=TRUE) |> quiet() |>
-#'   manageWarnings(warning2error=TRUE, ignorable = 'Message one')
+#'   manageWarnings(warning2error=TRUE, ignore = 'Message one')
 #'
 #' # only warn2 raised to an error explicitly (warn3 remains as warning)
 #' ret <- fun(warn1=TRUE, warn3=TRUE) |> quiet() |>
 #'   manageWarnings(warning2error = 'Message two',
-#'                  ignorable = 'Message one')
+#'                  ignore = 'Message one')
 #'
 #' fun(warn1=TRUE, warn2 = TRUE, warn3=TRUE) |> quiet() |>
 #'   manageWarnings(warning2error = 'Message two',
-#'                  ignorable = 'Message one')
+#'                  ignore = 'Message one')
 #'
 #' }
 #'
-manageWarnings <- function(expr, warning2error = FALSE, ignorable = NULL){
-    stopit <- function(message, warning2error, ignorable){
-        if(message %in% ignorable) return(TRUE)
+manageWarnings <- function(expr, warning2error = FALSE, ignore = NULL){
+    stopit <- function(message, warning2error, ignore){
+        if(message %in% ignore) return(TRUE)
         if(is.null(warning2error)) stop(message, call.=FALSE)
         sapply(warning2error, function(warn){
             if(warn == "") return(invisible(NULL))
@@ -197,7 +197,7 @@ manageWarnings <- function(expr, warning2error = FALSE, ignorable = NULL){
         eval(expr)
     }, warning=function(w) {
         message <- conditionMessage(w)
-        muffleL <- stopit(message, warning2error=warning2error, ignorable=ignorable)
+        muffleL <- stopit(message, warning2error=warning2error, ignore=ignore)
         if(muffleL) invokeRestart("muffleWarning")
     })
     ret
