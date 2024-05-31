@@ -4,7 +4,7 @@
 \alias{quiet}
 \title{Suppress function messages and (concatenate and print)}
 \usage{
-quiet(..., messages = FALSE, cat = FALSE, warnings = TRUE)
+quiet(..., messages = FALSE, cat = FALSE)
 }
 \arguments{
 \item{...}{the functional expression to be evaluated}
@@ -12,28 +12,24 @@ quiet(..., messages = FALSE, cat = FALSE, warnings = TRUE)
 \item{messages}{logical; print all messages?}
 
 \item{cat}{logical; print all concatenate and calls from \code{\link{cat}}?}
-
-\item{warnings}{logical; print all warning messages (generally recommended to leave
-as \code{TRUE}; see \code{link{manageWarnings}} for better alternative)}
 }
 \description{
 This function is used to suppress information printed from external functions
 that make internal use of \code{link{message}} and \code{\link{cat}}, which
 provide information in interactive R sessions. For simulations, the session
 is not interactive, and therefore this type of output should be suppressed.
-For similar behaviour for suppressing warning messages see
-\code{\link{suppressWarnings}}, though use this function carefully as some
-warnings can be meaningful and unexpected (see \code{link{convertWarnigs}}
-for a more lawful alternative).
+For similar behaviour for suppressing warning messages, see
+\code{link{manageWarnings}}.
 }
 \examples{
+
 myfun <- function(x, warn=FALSE){
    message('This function is rather chatty')
    cat("It even prints in different output forms!\n")
    message('And even at different....')
    cat("...times!\n")
    if(warn)
-     warning('It may even throw warnings, though careful suppressing these!')
+     warning('It may even throw warnings!')
    x
 }
 
@@ -44,10 +40,14 @@ out
 out <- quiet(myfun(1))
 out
 
-# suppress messages, cats, and warnings (not recommended)
-#   see manageWarnings(ignorable=...) for better alternative
-out2 <- quiet(myfun(2, warn=TRUE)) # warning gets through
-out2 <- quiet(myfun(2, warn=TRUE), warnings = FALSE) # but not here
+# Warning messages still get through (see manageWarnings(suppress)
+#  for better alternative than using suppressWarnings())
+out2 <- myfun(2, warn=TRUE) |> quiet() # warning gets through
+out2
+
+# suppress warning message explicitly, allowing others to be raised if present
+myfun(2, warn=TRUE) |> quiet() |>
+   manageWarnings(suppress='It may even throw warnings!')
 
 }
 \references{
