@@ -43,40 +43,46 @@ returns the original result of \code{eval(expr)}, with warning
 Function provides more nuanced management of known warning
 messages that appear in function calls outside the front-end users control
 (e.g., functions written in third-party packages). Specifically,
-this functions provides a less nuclear approach than, for example,
-\code{\link{suppressWarnings}} (which suppresses all warning messages
+this function provides a less nuclear approach than
+\code{\link{suppressWarnings}}, which suppresses all warning messages
 rather than those which are known
-to be innocuous to the current application) or when globally setting \code{options(warn=2)},
+to be innocuous to the current application, or when globally setting \code{options(warn=2)},
 which has the opposite effect of treating all warnings messages as errors
-in the function executions. To avoid these two extremes, \code{character} vectors
-can be supplied to this function to either leave the raised warnings
+in the function executions. To avoid these two extreme behaviors,
+\code{character} vectors can instead be supplied to this function
+to either leave the raised warnings
 as-is (default behaviour), raise only specific warning messages to errors,
 or specify specific warning messages that can be generally be ignored
-(and therefore suppressed).
+(and therefore suppressed) while allowing new or yet to be discovered warnings
+to still be raised.
 }
 \details{
 In general, global/nuclear behaviour of warning messages should be avoided
-as they are bad practice. On one extreme,
+as they are generally bad practice. On one extreme,
 when suppressing all warning messages using \code{\link{suppressWarnings}},
 potentially important warning messages will become muffled, which can be problematic
-if the code developer has not yet become aware of these (now muffled) warnings.
+if the code developer has not become aware of these (now muffled) warnings.
 Moreover, this can become a long-term sustainability issue when third-party functions
-that the code developer's code depends throw new warnings in the future as the
-code developer is less likely to become aware of these new warnings.
+that the developer's code depends upon throw new warnings in the future as the
+code developer will be less likely to become aware of these newly implemented warnings.
 
 On the other extreme, where all warning messages are turned into errors
-using \code{options(warn=2)}, innocuous warning messages will be (unwantingly)
-raised to an error. This can negatively affect the logical workflow of the code
-developer's functions, where more error messages must be manually managed
-(e.g., via \code{\link{tryCatch}}), including the innocuous warnings as these
-are now considered as errors.
+using \code{options(warn=2)}, innocuous warning messages can and will be (unwantingly)
+raised to an error. This negatively affects the logical workflow of the
+developer's functions, where more error messages must now be manually managed
+(e.g., via \code{\link{tryCatch}}), including the known to be innocuous
+warning messages as these will now considered as errors.
 
-To avoid these extremes, front-end users should make note of the warning messages
-that have been raised in their prior code executions attempts, and organized these messages
+To avoid these extremes, front-end users should first make note of the warning messages
+that have been raised in their prior executions, and organized these messages
 into vectors of ignorable warnings (least severe), known/unknown warnings
 that should remain as warnings (even if not known by the code developer yet),
 and explicit warnings that ought to be considered errors for the current
-application (most severe).
+application (most severe). Once collected, these can be passed to the respective
+\code{warning2error} argument to increase the intensity of a specific warning
+raised, or to the \code{suppress} argument to suppress only the messages that
+have been deemed ignorable a priori (and therefore allowing all other warning
+messages to be raised).
 }
 \examples{
 \dontrun{
