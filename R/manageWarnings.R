@@ -11,7 +11,8 @@
 #' in the function executions. To avoid these two extremes, \code{character} vectors
 #' can be supplied to this function to either leave the raised warnings
 #' as-is (default behaviour), raise only specific warning messages to errors,
-#' or specify warning messages that can be ignored (and therefore suppressed).
+#' or specify specific warning messages that can be generally be ignored
+#' (and therefore suppressed).
 #'
 #' In general, global/nuclear behaviour of warning messages should be avoided
 #' as they are bad practice. On one extreme,
@@ -36,29 +37,32 @@
 #' and explicit warnings that ought to be considered errors for the current
 #' application (most severe).
 #'
-#' @param expr expression to be evaluated (e.g., \code{myfun(args)}
-#'   should be wrapped as either \code{manageWarnings(myfun(args), ...)} or more
-#'   readably as a pipe \code{myfun(args) |> manageWarnings(...)} )
+#' @param expr expression to be evaluated (e.g., ret <- \code{myfun(args)}).
+#'   Function should either be used as a wrapper,
+#'   such as \code{manageWarnings(ret <- myfun(args), ...)} or
+#'   \code{ret <- manageWarnings(myfun(args), ...)}, or more
+#'   readably as a pipe, \code{ret <- myfun(args) |> manageWarnings(...)}
 #'
-#' @param warning2error Logical or \code{character} vector to control the
+#' @param warning2error \code{logical} or \code{character} vector to control the
 #'   conversion of warnings to errors. Setting this input to \code{TRUE} will treat
-#'   all observed warning messages as errors (same behaviour as \code{options(warn=2)},
-#'   though defined on a per expression basis instead of globally),
-#'   while setting to \code{FALSE} (default) will leave all warning messages as-is.
+#'   all observed warning messages as errors (same behavior as \code{options(warn=2)},
+#'   though defined on a per expression basis rather than globally),
+#'   while setting to \code{FALSE} (default) will leave all warning messages as-is,
+#'   retaining the default behavior
 #'
 #'   Alternatively, and more useful for specificity reasons,
 #'   input can be a \code{character} vector containing known-to-be-severe
 #'   warning messages that should be converted to errors. Each supplied
-#'   character vector element is matched using a \code{\link{grepl}} expression,
+#'   \code{character} vector element is matched using a \code{\link{grepl}} expression,
 #'   so partial matching is supported (though more specific messages are less
 #'   likely to throw false positives).
 #'
-#' @param ignore a \code{character} vector indicating warning messages that
-#'   are known to be ignorable a priori. Each warning message is
+#' @param suppress a \code{character} vector indicating warning messages that
+#'   are known to be innocuous a priori and can therefore be suppressed.
+#'   Each supplied warning message is
 #'   matched using a \code{\link{grepl}} expression, so partial matching
 #'   is supported (though more specific messages are less likely to throw
-#'   false positives). If \code{NULL}, no warning message will be treated
-#'   as ignorable.
+#'   false positives). If \code{NULL}, no warning message will be suppressed
 #'
 #' @return returns the original result of \code{eval(expr)}, with warning
 #'  messages either left the same, increased to errors, or suppressed (depending
@@ -131,7 +135,7 @@
 #' ret
 #'
 #' ###########
-#' # Combine with quiet() and ingorable argument to suppress innocuous messages
+#' # Combine with quiet() and suppress argument to suppress innocuous messages
 #'
 #' fun <- function(warn1=FALSE, warn2=FALSE, warn3=FALSE, error=FALSE){
 #'    message('This function is rather chatty')
@@ -156,26 +160,26 @@
 #'
 #' # define tolerable warning messages (warn1 deemed ignorable)
 #' ret <- fun(warn1=TRUE) |> quiet() |>
-#'   manageWarnings(ignore = 'Message one')
+#'   manageWarnings(suppress = 'Message one')
 #'
 #' # all other warnings raised to an error except ignorable ones
 #' fun(warn1=TRUE, warn2=TRUE) |> quiet() |>
-#'   manageWarnings(warning2error=TRUE, ignore = 'Message one')
+#'   manageWarnings(warning2error=TRUE, suppress = 'Message one')
 #'
 #' # only warn2 raised to an error explicitly (warn3 remains as warning)
 #' ret <- fun(warn1=TRUE, warn3=TRUE) |> quiet() |>
 #'   manageWarnings(warning2error = 'Message two',
-#'                  ignore = 'Message one')
+#'                  suppress = 'Message one')
 #'
 #' fun(warn1=TRUE, warn2 = TRUE, warn3=TRUE) |> quiet() |>
 #'   manageWarnings(warning2error = 'Message two',
-#'                  ignore = 'Message one')
+#'                  suppress = 'Message one')
 #'
 #' }
 #'
-manageWarnings <- function(expr, warning2error = FALSE, ignore = NULL){
-    stopit <- function(message, warning2error, ignore){
-        if(message %in% ignore) return(TRUE)
+manageWarnings <- function(expr, warning2error = FALSE, suppress = NULL){
+    stopit <- function(message, warning2error, suppress){
+        if(message %in% suppress) return(TRUE)
         if(is.null(warning2error)) stop(message, call.=FALSE)
         sapply(warning2error, function(warn){
             if(warn == "") return(invisible(NULL))
@@ -197,7 +201,7 @@ manageWarnings <- function(expr, warning2error = FALSE, ignore = NULL){
         eval(expr)
     }, warning=function(w) {
         message <- conditionMessage(w)
-        muffleL <- stopit(message, warning2error=warning2error, ignore=ignore)
+        muffleL <- stopit(message, warning2error=warning2error, suppress=suppress)
         if(muffleL) invokeRestart("muffleWarning")
     })
     ret

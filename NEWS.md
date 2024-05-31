@@ -2,10 +2,12 @@
 
 ## Changes in SimDesign 2.16
 
-- `manageWarnings()` gains an `ignorable` argument to specify warnings that should
-  be ignored (i.e., are known to be innocuous)
+- `manageWarnings()` gains an `suppress` argument to specify explicit 
+  warnings strings that can be suppressed (i.e., are known to be innocuous).
+  This provides better coding practice than the nuclear alternative
+  `base::suppressWarnings()`
   
-- `convertWarnings()` name changed to `manageWarning()` given its increased functionality
+- `convertWarnings()` name changed to `manageWarning()` given its increased functionality. 
 
 - `timeFormater()` function added to isolate logic of SBATCH time specification
   utility. Now used in several places of the package (e.g., 
