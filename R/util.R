@@ -168,7 +168,7 @@ quiet <- function(..., cat=TRUE, keep=FALSE, attr.name='quiet.messages'){
     mess <- if(cat)
         testthat::capture_messages(
             testthat::capture_output_lines(ret <- fun(...)) -> capts)
-    else testthat::capture_messages(fun(...))
+    else testthat::capture_messages(ret <- fun(...))
     if(keep)
         attr(ret, attr.name) <- c(message.=mess, cat.=capts)
     ret
