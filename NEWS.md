@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.16
 
+- `manageMessages()` added in a similiar spirt to `manageWarnigns()`, though
+  to chanage messages into either errors or warnings (default behaviour is the 
+  same as `quiet()`)
+
 - `manageWarnings()` gains an `suppress` argument to specify explicit 
   warnings strings that can be suppressed (i.e., are known to be innocuous).
   This provides better coding practice than the nuclear alternative
