@@ -4,7 +4,7 @@
 \alias{manageWarnings}
 \title{Manage specific warning messages}
 \usage{
-manageWarnings(expr, warning2error = FALSE, suppress = NULL)
+manageWarnings(expr, warning2error = FALSE, suppress = NULL, ...)
 }
 \arguments{
 \item{expr}{expression to be evaluated (e.g., ret <- \code{myfun(args)}).
@@ -33,6 +33,8 @@ Each supplied warning message is
 matched using a \code{\link{grepl}} expression, so partial matching
 is supported (though more specific messages are less likely to throw
 false positives). If \code{NULL}, no warning message will be suppressed}
+
+\item{...}{additional arguments passed to \code{\link{grepl}}}
 }
 \value{
 returns the original result of \code{eval(expr)}, with warning
@@ -164,7 +166,7 @@ fun(warn2=TRUE) |> quiet() |> suppressWarnings()
 # convert all warning to errors, and keep suppressing messages via quiet()
 fun(warn2=TRUE) |> quiet() |> manageWarnings(warning2error=TRUE)
 
-# define tolerable warning messages (warn1 deemed ignorable)
+# define tolerable warning messages (only warn1 deemed ignorable)
 ret <- fun(warn1=TRUE) |> quiet() |>
   manageWarnings(suppress = 'Message one')
 

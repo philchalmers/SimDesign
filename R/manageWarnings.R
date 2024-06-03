@@ -70,6 +70,8 @@
 #'   is supported (though more specific messages are less likely to throw
 #'   false positives). If \code{NULL}, no warning message will be suppressed
 #'
+#' @param ... additional arguments passed to \code{\link{grepl}}
+#'
 #' @return returns the original result of \code{eval(expr)}, with warning
 #'  messages either left the same, increased to errors, or suppressed (depending
 #'  on the input specifications)
@@ -164,7 +166,7 @@
 #' # convert all warning to errors, and keep suppressing messages via quiet()
 #' fun(warn2=TRUE) |> quiet() |> manageWarnings(warning2error=TRUE)
 #'
-#' # define tolerable warning messages (warn1 deemed ignorable)
+#' # define tolerable warning messages (only warn1 deemed ignorable)
 #' ret <- fun(warn1=TRUE) |> quiet() |>
 #'   manageWarnings(suppress = 'Message one')
 #'
@@ -183,13 +185,13 @@
 #'
 #' }
 #'
-manageWarnings <- function(expr, warning2error = FALSE, suppress = NULL){
-    stopit <- function(message, warning2error, suppress){
+manageWarnings <- function(expr, warning2error = FALSE, suppress = NULL, ...){
+    stopit <- function(message, warning2error, suppress, ...){
         if(message %in% suppress) return(TRUE)
         if(is.null(warning2error)) stop(message, call.=FALSE)
         sapply(warning2error, function(warn){
             if(warn == "") return(invisible(NULL))
-            match <- grepl(warn, message)
+            match <- grepl(warn, message, ...)
             if(match) stop(message, call.=FALSE)
         })
         return(FALSE)
@@ -207,7 +209,8 @@ manageWarnings <- function(expr, warning2error = FALSE, suppress = NULL){
         eval(expr)
     }, warning=function(w) {
         message <- conditionMessage(w)
-        muffleL <- stopit(message, warning2error=warning2error, suppress=suppress)
+        muffleL <- stopit(message, warning2error=warning2error,
+                          suppress=suppress, , ...)
         if(muffleL) invokeRestart("muffleWarning")
     })
     ret

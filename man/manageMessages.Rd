@@ -8,7 +8,8 @@ manageMessages(
   expr,
   allow = NULL,
   message2warning = NULL,
-  message2error = NULL
+  message2error = NULL,
+  ...
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ likely to throw false positives).}
 \item{message2error}{(optional) Input can be a \code{character} vector containing known-to-be-severe
 messages that should be converted to errors for the current application.
 See \code{message2warning} for details.}
+
+\item{...}{additional arguments passed to \code{\link{grepl}}}
 }
 \value{
 returns the original result of \code{eval(expr)}, with warning
@@ -58,11 +61,11 @@ calls appear in the original function is not retained.
 myfun <- function(x, warn=FALSE){
    message('This function is rather chatty')
    cat("It even prints in different output forms!\n")
-   message('And even at different....')
-   cat("...times!\n")
-   cat("Messages can be annoying sometimes...\n")
+   message('And even at different ')
+   cat(" many times!\n")
+   cat("Too many messages can be annoying \n")
    if(warn)
-     warning('It may even throw warnings!')
+     warning('It may even throw warnings ')
    x
 }
 
@@ -78,32 +81,34 @@ out2 <- manageMessages(myfun(1))
 identical(out, out2)
 
 # allow some messages to still get printed
-out2 <- manageMessages(myfun(1), allow = "...times!")
+out2 <- manageMessages(myfun(1), allow = "many times!")
 out2 <- manageMessages(myfun(1), allow = "This function is rather chatty")
-out2 <- manageMessages(myfun(1), allow = c("...times",
+
+# note: . matches single character (regex)
+out2 <- manageMessages(myfun(1), allow = c("many times.",
                                            "This function is rather chatty"))
 
 # convert specific message to warning
-out3 <- manageMessages(myfun(1), message2warning = "...times!")
+out3 <- manageMessages(myfun(1), message2warning = "many times!")
 identical(out, out3)
 
 # other warnings also get through
-out3 <- manageMessages(myfun(1, warn=TRUE), message2warning = "...times!")
+out3 <- manageMessages(myfun(1, warn=TRUE), message2warning = "times!")
 identical(out, out3)
 
 # convert message to error
-manageMessages(myfun(1), message2error = "...times!")
+manageMessages(myfun(1), message2error = "m... times!")
 
 # multiple message intensity changes
 manageMessages(myfun(1),
   message2warning = "It even prints in different output forms",
-  message2error = "...times!")
+  message2error = "many times!")
 
 manageMessages(myfun(1),
   allow = c("This function is rather chatty",
-            "Messages can be annoying sometimes..."),
+            "Too many messages can be annoying"),
   message2warning = "It even prints in different output forms",
-  message2error = "...times!")
+  message2error = "many times!")
 
 }
 
