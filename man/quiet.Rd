@@ -4,14 +4,18 @@
 \alias{quiet}
 \title{Suppress verbose function messages}
 \usage{
-quiet(..., messages = FALSE, cat = FALSE)
+quiet(..., cat = TRUE, keep = FALSE, attr.name = "quiet.messages")
 }
 \arguments{
 \item{...}{the functional expression to be evaluated}
 
-\item{messages}{logical; print all messages?}
+\item{cat}{logical; also capture calls from \code{\link{cat}}? If
+\code{FALSE} only \code{\link{messages}} will be suppressed}
 
-\item{cat}{logical; print all concatenate and calls from \code{\link{cat}}?}
+\item{keep}{logical; return a character vector of the messages/concatenate
+and print strings as an attribute to the resulting object from \code{expr(...)}?}
+
+\item{attr.name}{attribute name to use when \code{keep = TRUE}}
 }
 \description{
 This function is used to suppress information printed from external functions
@@ -39,6 +43,10 @@ out
 # tell the function to shhhh
 out <- quiet(myfun(1))
 out
+
+# which messages are suppressed? Extract stored attribute
+out <- quiet(myfun(1), keep = TRUE)
+attr(out, 'quiet.messages')
 
 # Warning messages still get through (see manageWarnings(suppress)
 #  for better alternative than using suppressWarnings())

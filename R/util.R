@@ -108,9 +108,13 @@ notification_final <- function(Final){
 #'
 #' @param ... the functional expression to be evaluated
 #'
-#' @param messages logical; print all messages?
+#' @param cat logical; also capture calls from \code{\link{cat}}? If
+#'   \code{FALSE} only \code{\link{messages}} will be suppressed
 #'
-#' @param cat logical; print all concatenate and calls from \code{\link{cat}}?
+#' @param keep logical; return a character vector of the messages/concatenate
+#'   and print strings as an attribute to the resulting object from \code{expr(...)}?
+#'
+#' @param attr.name attribute name to use when \code{keep = TRUE}
 #'
 #' @seealso \code{\link{manageWarnings}}
 #'
@@ -145,6 +149,10 @@ notification_final <- function(Final){
 #' out <- quiet(myfun(1))
 #' out
 #'
+#' # which messages are suppressed? Extract stored attribute
+#' out <- quiet(myfun(1), keep = TRUE)
+#' attr(out, 'quiet.messages')
+#'
 #' # Warning messages still get through (see manageWarnings(suppress)
 #' #  for better alternative than using suppressWarnings())
 #' out2 <- myfun(2, warn=TRUE) |> quiet() # warning gets through
@@ -154,19 +162,16 @@ notification_final <- function(Final){
 #' myfun(2, warn=TRUE) |> quiet() |>
 #'    manageWarnings(suppress='It may even throw warnings!')
 #'
-quiet <- function(..., messages=FALSE, cat=FALSE){
-    if(!cat){
-        tmpf <- tempfile()
-        sink(tmpf)
-        on.exit({sink(); file.remove(tmpf)})
-    }
-    supwarn <- function(x) eval(x)
-    out <- if(messages){
-        supwarn(...)
-    } else {
-        suppressMessages(supwarn(...))
-    }
-    out
+quiet <- function(..., cat=TRUE, keep=FALSE, attr.name='quiet.messages'){
+    fun <- function(x) eval(x)
+    capts <- NULL
+    mess <- if(cat)
+        testthat::capture_messages(
+            testthat::capture_output_lines(ret <- fun(...)) -> capts)
+    else testthat::capture_messages(fun(...))
+    if(keep)
+        attr(ret, attr.name) <- c(message.=mess, cat.=capts)
+    ret
 }
 
 #' Auto-named Concatenation of Vector or List

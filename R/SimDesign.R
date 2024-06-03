@@ -30,6 +30,7 @@
 #' @importFrom R.utils withTimeout
 #' @importFrom pbapply pblapply pboptions
 #' @importFrom dplyr as_tibble bind_rows select mutate
+#' @importFrom testthat capture_messages capture_output_lines capture_warnings
 #' @importFrom future.apply future_lapply
 #' @importFrom progressr progressor
 #' @importFrom beepr beep
