@@ -10,7 +10,7 @@ quiet(..., cat = TRUE, keep = FALSE, attr.name = "quiet.messages")
 \item{...}{the functional expression to be evaluated}
 
 \item{cat}{logical; also capture calls from \code{\link{cat}}? If
-\code{FALSE} only \code{\link{messages}} will be suppressed}
+\code{FALSE} only \code{\link{message}} will be suppressed}
 
 \item{keep}{logical; return a character vector of the messages/concatenate
 and print strings as an attribute to the resulting object from \code{expr(...)}?}

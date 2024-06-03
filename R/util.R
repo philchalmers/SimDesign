@@ -109,7 +109,7 @@ notification_final <- function(Final){
 #' @param ... the functional expression to be evaluated
 #'
 #' @param cat logical; also capture calls from \code{\link{cat}}? If
-#'   \code{FALSE} only \code{\link{messages}} will be suppressed
+#'   \code{FALSE} only \code{\link{message}} will be suppressed
 #'
 #' @param keep logical; return a character vector of the messages/concatenate
 #'   and print strings as an attribute to the resulting object from \code{expr(...)}?

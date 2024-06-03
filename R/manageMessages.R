@@ -57,6 +57,7 @@
 #'    cat("It even prints in different output forms!\n")
 #'    message('And even at different....')
 #'    cat("...times!\n")
+#'    cat("Messages can be annoying sometimes...\n")
 #'    if(warn)
 #'      warning('It may even throw warnings!')
 #'    x
@@ -73,26 +74,31 @@
 #' out2 <- manageMessages(myfun(1))
 #' identical(out, out2)
 #'
-#' # allow messages to still get printed
+#' # allow some messages to still get printed
 #' out2 <- manageMessages(myfun(1), allow = "...times!")
 #' out2 <- manageMessages(myfun(1), allow = "This function is rather chatty")
 #' out2 <- manageMessages(myfun(1), allow = c("...times",
 #'                                            "This function is rather chatty"))
 #'
-#' # convert message to warning
+#' # convert specific message to warning
+#' out3 <- manageMessages(myfun(1), message2warning = "...times!")
+#' identical(out, out3)
+#'
+#' # other warnings also get through
 #' out3 <- manageMessages(myfun(1, warn=TRUE), message2warning = "...times!")
 #' identical(out, out3)
 #'
 #' # convert message to error
 #' manageMessages(myfun(1), message2error = "...times!")
 #'
-#' # multiple changes
+#' # multiple message intensity changes
 #' manageMessages(myfun(1),
 #'   message2warning = "It even prints in different output forms",
 #'   message2error = "...times!")
 #'
 #' manageMessages(myfun(1),
-#'   allow = "This function is rather chatty",
+#'   allow = c("This function is rather chatty",
+#'             "Messages can be annoying sometimes..."),
 #'   message2warning = "It even prints in different output forms",
 #'   message2error = "...times!")
 #'
