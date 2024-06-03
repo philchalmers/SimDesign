@@ -110,7 +110,8 @@ manageMessages <- function(expr, allow = NULL,
     msgs <- attr(ret, "quiet.messages")
     attr(ret, "quiet.messages") <- NULL
     if(!is.null(allow)){
-        whc <- msgs[lapply(allow, \(x) grepl(x, msgs)) |> sapply(which)]
+        pick <- lapply(allow, \(x) which(grepl(x, msgs)))
+        whc <- msgs[do.call(c,pick)]
         if(length(whc)){
             nms <- names(whc)
             whc.cat <- grepl('cat.', nms)
