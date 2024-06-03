@@ -2,8 +2,8 @@
 
 ## Changes in SimDesign 2.16
 
-- `manageMessages()` added in a similiar spirt to `manageWarnigns()`, though
-  to chanage messages into either errors or warnings (default behaviour is the 
+- `manageMessages()` added in a similar spirit to `manageWarnigns()`, though
+  to change messages into either errors or warnings (default behavior is the 
   same as `quiet()`)
 
 - `manageWarnings()` gains an `suppress` argument to specify explicit 
@@ -11,7 +11,8 @@
   This provides better coding practice than the nuclear alternative
   `base::suppressWarnings()`
   
-- `convertWarnings()` name changed to `manageWarning()` given its increased functionality. 
+- `convertWarnings()` name changed to `manageWarning()` given its 
+  increased functionality. 
 
 - `timeFormater()` function added to isolate logic of SBATCH time specification
   utility. Now used in several places of the package (e.g., 
