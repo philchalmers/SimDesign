@@ -84,6 +84,8 @@
 #'
 #' @export
 #'
+#' @seealso \code{\link{manageMessages}}, \code{\link{quiet}}
+#'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
 #' @examples

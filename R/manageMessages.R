@@ -49,6 +49,8 @@
 #'
 #' @export
 #'
+#' @seealso \code{\link{manageWarnings}}, \code{\link{quiet}}
+#'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
 #' @examples
