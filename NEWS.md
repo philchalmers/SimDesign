@@ -2,6 +2,9 @@
 
 ## Changes in SimDesign 2.16
 
+- Fix for `SimCollect()` when `runArraySimulatino()` result contains 
+  mixed warning outputs  (reported by Michael Troung)
+
 - `manageMessages()` added in a similar spirit to `manageWarnigns()`, though
   to change messages into either errors or warnings (default behavior is the 
   same as `quiet()`)
