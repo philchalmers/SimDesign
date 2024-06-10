@@ -97,7 +97,7 @@ As well, in order for this approach to be at all optimal the HPC cluster must as
 #SBATCH --mem=192G            ## Build a computer with 192GB of RAM 
 #SBATCH --cpus-per-task=96    ## Build a computer with 96 cores
 
-module load R/4.3.1
+module load r/4.3.1
 Rscript --vanilla SimDesign_simulation.R
 ```
 
@@ -218,7 +218,7 @@ When submitting to the HPC cluster you'll need to include information about how 
 #SBATCH --cpus-per-task=1
 #SBATCH --array=1-300         ## Slurm schedulers often allow up to 10,000 arrays
 
-module load R/4.3.1
+module load r/4.3.1
 Rscript --vanilla mySimDesignScript.R
 ```
 
@@ -360,7 +360,7 @@ Of course, nothing really stops you from mixing and matching the above ideas rel
 #SBATCH --cpus-per-task=16    ## 16 CPUs per array, likely built from 1 node
 #SBATCH --array=1-9           ## 9 array jobs 
 
-module load R/4.3.1
+module load r/4.3.1
 Rscript --vanilla mySimDesignScript.R
 ```
 
