@@ -113,7 +113,7 @@
 #' res2
 #'
 reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Design = NULL,
-                        fixed_objects, boot_method = 'none', boot_draws = 1000L, CI = .95,
+                        fixed_objects = NULL, boot_method = 'none', boot_draws = 1000L, CI = .95,
                         prefix = "results-row"){
     if(!is.null(results)){
         read_files <- FALSE

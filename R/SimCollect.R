@@ -213,7 +213,10 @@ SimCollect <- function(files = NULL, filename = NULL,
                   "total_elapsed_time", "stored_Random.seeds_list")] <- NULL
     errors <- lapply(readin, function(x)
         as.data.frame(x[ ,grepl('ERROR', colnames(x)), drop=FALSE]))
+    warnings <- lapply(readin, function(x)
+        as.data.frame(x[ ,grepl('WARNINGS', colnames(x)), drop=FALSE]))
     nms <- unique(do.call(c, lapply(errors, function(x) colnames(x))))
+    nmsw <- unique(do.call(c, lapply(warnings, function(x) colnames(x))))
     readin <- lapply(readin, function(x) x[ ,!(
         grepl('ERROR', colnames(x)) | grepl('WARNINGS', colnames(x))), drop=FALSE])
     if(length(unique(sapply(readin, ncol))) > 1L)
@@ -238,12 +241,16 @@ SimCollect <- function(files = NULL, filename = NULL,
     full_out <- vector('list', length(unique.set.index))
     readin.old <- readin
     errors.old <- errors
+    warnings.old <- warnings
     design_names <- attr(readin[[1L]], "design_names")$design
     for(j in unique.set.index){
         readin <- readin.old[which(j == set.index)]
         errors <- errors.old[which(j == set.index)]
+        warnings <- warnings.old[which(j == set.index)]
         try_errors <- as.data.frame(matrix(0L, nrow(readin[[1L]]), length(nms)))
+        caught_warnings <- as.data.frame(matrix(0L, nrow(readin[[1L]]), length(nms)))
         names(try_errors) <- nms
+        names(caught_warnings) <- nmsw
         ret <- readin[[1L]]
         pick <- sapply(readin[[1L]], is.numeric) & !(colnames(readin[[1]]) %in% design_names)
         ret[, pick] <- 0
@@ -262,6 +269,11 @@ SimCollect <- function(files = NULL, filename = NULL,
                 try_errors[,match(nms, names(try_errors))] <- errors[[i]][ ,tmp] +
                     try_errors[,match(nms, names(try_errors))]
             }
+            tmp <- stats::na.omit(match(nmsw, names(warnings[[i]])))
+            if(length(tmp) > 0L){
+                caught_warnings[,match(nmsw, names(caught_warnings))] <- warnings[[i]][ ,tmp] +
+                    caught_warnings[,match(nmsw, names(caught_warnings))]
+            }
             ret$SIM_TIME <- ret$SIM_TIME + readin[[i]]$SIM_TIME
             ret[ ,pick] <- ret[ ,pick] + weights[i] * readin[[i]][ ,pick]
             if(has_stored_results & i > 1L){
@@ -273,7 +285,8 @@ SimCollect <- function(files = NULL, filename = NULL,
         if(has_stored_results)
             results <- attr(ret, 'extra_info')$stored_results
         try_errors[try_errors == 0L] <- NA
-        out <- dplyr::as_tibble(data.frame(ret, try_errors, check.names = FALSE))
+        caught_warnings[caught_warnings == 0L] <- NA
+        out <- dplyr::as_tibble(data.frame(ret, try_errors, caught_warnings, check.names = FALSE))
         out$SEED <- NULL
         if(has_stored_results)
             attr(out, 'extra_info') <- list(stored_results=results)
@@ -315,7 +328,7 @@ SimCollect <- function(files = NULL, filename = NULL,
     extra_info1$number_of_conditions <- nrow(out)
     extra_info1$ncores <- ncores
     attr(out, 'extra_info') <- extra_info1
-    invisible(out)
+    out
 }
 
 subset_results <- function(obj, select){

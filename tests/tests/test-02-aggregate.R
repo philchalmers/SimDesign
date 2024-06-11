@@ -265,5 +265,47 @@ test_that('aggregate', {
     expect_equal(4, length(readRDS('SimDesign_aggregate_results/results-row-1.rds')$results))
     SimClean(dirs = c('SimDesign_aggregate_results','dir1', 'dir2'))
 
+    ## warning and other information
+    mysim_ew <- function(condition, fixed_objects){
+        dat <- 1
+        return(dat)
+    }
+
+    mycompute_ew <- function(condition, dat, fixed_objects){
+
+        # In this function the p values for the t-tests are returned,
+        #  and make sure to name each element, for future reference
+        ret <- 1
+
+        if(condition$stop_some) if(runif(1) > .95) stop('stopped this time')
+        if(condition$warn) warning('warn')
+        if(condition$warn2) warning('warn2')
+
+        return(ret)
+    }
+
+    mycollect <- function(condition, results, fixed_objects) {
+        c(ret=1)
+    }
+
+    design <- createDesign(stop_some=c(FALSE, TRUE),
+                           warn=c(FALSE, TRUE),
+                           warn2=c(FALSE, TRUE))
+
+
+    set.seed(1)
+    results <- runSimulation(design, replications = 100, generate=mysim_ew,
+                             analyse=mycompute_ew, summarise=mycollect, verbose=FALSE,
+                             filename='sim1')
+    set.seed(2)
+    results2 <- runSimulation(design, replications = 100, generate=mysim_ew,
+                             analyse=mycompute_ew, summarise=mycollect, verbose=FALSE,
+                             filename='sim2')
+
+    ret <- SimCollect(c('sim1.rds', 'sim2.rds'))
+    expect_true(all(na.omit(ret$WARNINGS == c(NA,NA,200,200,200,200,400,400))))
+    expect_true(all(ret$ERRORS > 0 | is.na(ret$ERRORS)))
+    SimClean(c('sim1.rds', 'sim2.rds'))
+
 })
 
