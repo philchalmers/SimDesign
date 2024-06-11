@@ -216,7 +216,9 @@ SimCollect <- function(files = NULL, filename = NULL,
     warnings <- lapply(readin, function(x)
         as.data.frame(x[ ,grepl('WARNINGS', colnames(x)), drop=FALSE]))
     nms <- unique(do.call(c, lapply(errors, function(x) colnames(x))))
+    if(!length(nms)) nms <- 'ERRORS'
     nmsw <- unique(do.call(c, lapply(warnings, function(x) colnames(x))))
+    if(!length(nmsw)) nmsw <- 'WARNINGS'
     readin <- lapply(readin, function(x) x[ ,!(
         grepl('ERROR', colnames(x)) | grepl('WARNINGS', colnames(x))), drop=FALSE])
     if(length(unique(sapply(readin, ncol))) > 1L)
