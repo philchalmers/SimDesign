@@ -10,7 +10,7 @@ reSummarise(
   files = NULL,
   results = NULL,
   Design = NULL,
-  fixed_objects,
+  fixed_objects = NULL,
   boot_method = "none",
   boot_draws = 1000L,
   CI = 0.95,
