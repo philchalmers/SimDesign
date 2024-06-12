@@ -94,7 +94,8 @@ SimExtract <- function(object, what, fuzzy = TRUE){
     ret <- if(what == 'results'){
         extract_results(object)
     } else if(what == 'errors'){
-        cbind(Design, extract_errors(object, fuzzy=fuzzy))
+        err <- extract_errors(object, fuzzy=fuzzy)
+        if(length(err)) cbind(Design, err) else err
     } else if(what == 'summarise'){
         extract_summarise(object)
     }  else if(what == 'seeds'){
@@ -104,7 +105,8 @@ SimExtract <- function(object, what, fuzzy = TRUE){
     } else if(what == 'error_seeds'){
         extract_error_seeds(object)
     } else if(what == 'warnings'){
-        cbind(Design, extract_warnings(object, fuzzy=fuzzy))
+        wrn <- extract_warnings(object, fuzzy=fuzzy)
+        if(length(wrn)) cbind(Design, wrn) else wrn
     } else if(what == 'warning_seeds'){
         extract_warning_seeds(object)
     } else if(what == 'save_results_dirname'){
@@ -184,6 +186,7 @@ extract_summarise <- function(object){
 }
 
 fuzzy_reduce <- function(df){
+    if(!length(df)) return(df)
     nms <- colnames(df)
     matched <- logical(length(nms))
     unames <- c()
