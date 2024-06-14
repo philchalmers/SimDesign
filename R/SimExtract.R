@@ -30,6 +30,8 @@
 #'   \emph{"System is computationally singular: reciprocal condition number = 2.15321e-16"} are
 #'   effectively the same, and likely should be reported in the same columns of the extracted output
 #'
+#' @param append logical; append the design conditions when extracting error/warning messages?
+#'
 #' @export
 #'
 #' @references
@@ -82,7 +84,7 @@
 #'
 #'
 #' }
-SimExtract <- function(object, what, fuzzy = TRUE){
+SimExtract <- function(object, what, fuzzy = TRUE, append = TRUE){
     stopifnot(is(object, "SimDesign"))
     what <- tolower(what)
     pick <- attr(object, 'design_names')$design
@@ -95,7 +97,7 @@ SimExtract <- function(object, what, fuzzy = TRUE){
         extract_results(object)
     } else if(what == 'errors'){
         err <- extract_errors(object, fuzzy=fuzzy)
-        if(length(err)) cbind(Design, err) else err
+        if(length(err) && append) cbind(Design, err) else err
     } else if(what == 'summarise'){
         extract_summarise(object)
     }  else if(what == 'seeds'){
@@ -106,7 +108,7 @@ SimExtract <- function(object, what, fuzzy = TRUE){
         extract_error_seeds(object)
     } else if(what == 'warnings'){
         wrn <- extract_warnings(object, fuzzy=fuzzy)
-        if(length(wrn)) cbind(Design, wrn) else wrn
+        if(length(wrn) && append) cbind(Design, wrn) else wrn
     } else if(what == 'warning_seeds'){
         extract_warning_seeds(object)
     } else if(what == 'save_results_dirname'){

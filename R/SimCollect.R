@@ -245,6 +245,10 @@ SimCollect <- function(files = NULL, filename = NULL,
     errors.old <- errors
     warnings.old <- warnings
     design_names <- attr(readin[[1L]], "design_names")$design
+    errors_info <- lapply(readin.old, \(x) SimExtract(x, 'errors',
+                                                      append=FALSE, fuzzy=FALSE))
+    warnings_info <- lapply(readin.old, \(x) SimExtract(x, 'warnings',
+                                                        append=FALSE, fuzzy=FALSE))
     for(j in unique.set.index){
         readin <- readin.old[which(j == set.index)]
         errors <- errors.old[which(j == set.index)]
@@ -297,11 +301,16 @@ SimCollect <- function(files = NULL, filename = NULL,
     if(length(unique.set.index) == 1L){
         out <- full_out[[1L]]
         extra_info1$stored_results <- attr(out, 'extra_info')$stored_results
+        browser() # FIXME
+        errors_info <- dplyr::as_tibble(do.call(cbind, errors_info))
+        warnings_info <- dplyr::as_tibble(do.call(cbind, warnings_info))
     } else {
         out <- do.call(rbind, full_out)
         if(has_stored_results)
             extra_info1$stored_results <- do.call(rbind,
                             lapply(full_out, \(x) attr(x, 'extra_info')$stored_results))
+        errors_info <- dplyr::as_tibble(do.call(rbind, errors_info))
+        warnings_info <- dplyr::as_tibble(do.call(rbind, warnings_info))
     }
     if(check.only){
         if(is.null(target.reps)) target.reps <- max(out$REPLICATIONS)
@@ -330,6 +339,8 @@ SimCollect <- function(files = NULL, filename = NULL,
     extra_info1$number_of_conditions <- nrow(out)
     extra_info1$ncores <- ncores
     attr(out, 'extra_info') <- extra_info1
+    attr(out, 'ERROR_msg') <- errors_info
+    attr(out, 'WARNING_msg') <- warnings_info
     out
 }
 
