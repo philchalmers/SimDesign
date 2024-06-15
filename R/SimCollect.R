@@ -301,9 +301,8 @@ SimCollect <- function(files = NULL, filename = NULL,
     if(length(unique.set.index) == 1L){
         out <- full_out[[1L]]
         extra_info1$stored_results <- attr(out, 'extra_info')$stored_results
-        browser() # FIXME
-        errors_info <- dplyr::as_tibble(do.call(cbind, errors_info))
-        warnings_info <- dplyr::as_tibble(do.call(cbind, warnings_info))
+        errors_info <- add_cbind(errors_info)
+        warnings_info <- add_cbind(warnings_info)
     } else {
         out <- do.call(rbind, full_out)
         if(has_stored_results)

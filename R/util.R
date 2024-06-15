@@ -913,3 +913,32 @@ gen_seeds <- function(...){
     genSeeds(...)
 
 }
+
+add_cbind <- function(lst){
+    len <- sapply(lst, length)
+    if(!any(len)) return(lst[[1L]])
+    lst <- lapply(lst, \(x){
+        x[is.na(x)] <- 0
+        x
+    })
+    for(i in 1L:length(lst)){
+        if(length(lst[[i]])){
+            ret <- lst[[i]]
+            if(i == length(lst)) return(ret)
+            break
+        }
+    }
+    from <- i + 1L
+    for(i in from:length(lst)){
+        nms <- colnames(ret)
+        nms2 <- colnames(lst[[i]])
+        matched <- nms %in% nms2
+        if(any(matched)){
+            for(j in 1L:length(nms))
+                if(matched[j])
+                    ret[,nms[j]] <- ret[,nms[j]] + lst[[i]][,nms[j]]
+        }
+        ret <- cbind(ret, lst[[i]][,!matched])
+    }
+    dplyr::as_tibble(ret)
+}

@@ -82,6 +82,8 @@ test_that('aggregate', {
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
     expect_equal(nrow(SimExtract(Final, 'results')), 4 * nrow(Design))
+    expect_equal(length(SimExtract(Final, 'errors')), 0)
+    expect_equal(length(SimExtract(Final, 'warnings')), 0)
     saveRDS(Final, 'collect1.rds')
     Final2 <- SimCollect(files = c('newfile2.rds', 'newfile3.rds'))
     expect_is(Final2, 'data.frame')
@@ -156,12 +158,15 @@ test_that('aggregate', {
     tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                          replications = 2, parallel=FALSE, filename='this', save=TRUE,
                          max_errors=Inf, verbose = FALSE)
-    tmp <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, max_errors=Inf,
+    tmp2 <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, max_errors=Inf,
                          replications = 2, parallel=FALSE, filename = 'newfile', save=TRUE,
                          verbose = FALSE)
     Final <- SimCollect(c('this.rds', 'newfile.rds'))
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
+    expect_equal(tmp$ERRORS + tmp2$ERRORS, Final$ERRORS)
+    expect_true(all( (SimExtract(tmp, 'errors', append = FALSE) +
+            SimExtract(tmp2, 'errors', append = FALSE)) == SimExtract(Final, 'errors', append=FALSE)))
     SimClean(dir()[grepl('\\.rds', dir())])
 
     #results
@@ -305,6 +310,11 @@ test_that('aggregate', {
     ret <- SimCollect(c('sim1.rds', 'sim2.rds'))
     expect_true(all(na.omit(ret$WARNINGS == c(NA,NA,200,200,200,200,400,400))))
     expect_true(all(ret$ERRORS > 0 | is.na(ret$ERRORS)))
+    expect_equal(sum(results$ERRORS + results2$ERRORS), sum(ret$ERRORS, na.rm=TRUE))
+    expect_true(all( (SimExtract(results, 'errors', append = FALSE) +
+                          SimExtract(results2, 'errors', append = FALSE)) == SimExtract(ret, 'errors', append=FALSE)))
+    expect_true(all( (SimExtract(results, 'warnings', append = FALSE) +
+                          SimExtract(results2, 'warnings', append = FALSE)) == SimExtract(ret, 'warnings', append=FALSE)))
     SimClean(c('sim1.rds', 'sim2.rds'))
 
 })

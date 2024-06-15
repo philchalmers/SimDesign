@@ -1,6 +1,6 @@
 Package: SimDesign
 Title: Structure for Organizing Monte Carlo Simulation Designs
-Version: 2.15.7
+Version: 2.15.8
 Authors@R: c(person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com", role = c("aut", "cre"),
                     comment = c(ORCID="0000-0001-5332-2810")),
              person("Matthew", "Sigal", role = c("ctb")),
