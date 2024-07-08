@@ -11,7 +11,7 @@
 
 <meta name="author" content="Phil Chalmers" />
 
-<meta name="date" content="2024-05-09" />
+<meta name="date" content="2024-07-08" />
 
 <title>Unreliability example for paired-samples t-test</title>
 
@@ -475,7 +475,7 @@ pre code {
 
 <h1 class="title toc-ignore">Unreliability example for paired-samples <span class="math inline">\(t\)</span>-test</h1>
 <h4 class="author">Phil Chalmers</h4>
-<h4 class="date">2024-05-09</h4>
+<h4 class="date">2024-07-08</h4>
 
 </div>
 
@@ -525,16 +525,16 @@ res</code></pre>
 <pre><code>## # A tibble: 64 × 10
 ##      rxx     N    dT  power   mean_diff       SE REPLICATIONS SIM_TIME      SEED
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;        &lt;int&gt;
-##  1   1      50     0 0.0542  0.0027604  0.19909          5000 0.73s     1.8729e9
-##  2   0.8    50     0 0.0558 -0.0025361  0.22285          5000 0.74s     1.8054e9
-##  3   0.6    50     0 0.048  -0.0038304  0.25691          5000 0.82s     2.9287e8
-##  4   0.4    50     0 0.0532 -0.0065259  0.31405          5000 0.60s     7.3150e8
-##  5   1     100     0 0.049   0.00058374 0.14118          5000 0.70s     9.4274e8
-##  6   0.8   100     0 0.0488  0.00086313 0.15757          5000 0.62s     1.8236e9
-##  7   0.6   100     0 0.0558 -0.0043502  0.18205          5000 0.57s     9.6827e8
-##  8   0.4   100     0 0.0538 -0.0010283  0.22289          5000 0.59s     1.5101e8
-##  9   1     200     0 0.051   0.00067477 0.099933         5000 0.68s     1.4649e9
-## 10   0.8   200     0 0.0516 -0.00096696 0.11171          5000 0.55s     1.3044e9
+##  1   1      50     0 0.0542  0.0027604  0.19909          5000 0.61s     1.8729e9
+##  2   0.8    50     0 0.0558 -0.0025361  0.22285          5000 0.53s     1.8054e9
+##  3   0.6    50     0 0.048  -0.0038304  0.25691          5000 0.52s     2.9287e8
+##  4   0.4    50     0 0.0532 -0.0065259  0.31405          5000 0.68s     7.3150e8
+##  5   1     100     0 0.049   0.00058374 0.14118          5000 0.78s     9.4274e8
+##  6   0.8   100     0 0.0488  0.00086313 0.15757          5000 2.52s     1.8236e9
+##  7   0.6   100     0 0.0558 -0.0043502  0.18205          5000 16.29s    9.6827e8
+##  8   0.4   100     0 0.0538 -0.0010283  0.22289          5000 12.79s    1.5101e8
+##  9   1     200     0 0.051   0.00067477 0.099933         5000 01m 56.9… 1.4649e9
+## 10   0.8   200     0 0.0516 -0.00096696 0.11171          5000 02m 18.4… 1.3044e9
 ## # ℹ 54 more rows
 ## # ℹ 1 more variable: COMPLETED &lt;chr&gt;</code></pre>
 </div>
@@ -1042,7 +1042,8 @@ DesignNA</code></pre>
 <pre class="r"><code>solved &lt;- SimSolve(design=DesignNA, b=.80, interval=c(3, 1000),
                    generate=Generate, analyse=Analyse, summarise=Summarise,
                    verbose=FALSE)</code></pre>
-<pre><code>## Warning: interval range supplied appears to be *below* the probable root.</code></pre>
+<pre><code>## Warning: supplied interval range appears to be *below* the probable root.
+## Resulting root estimates were [-0.720, -0.040]</code></pre>
 <pre class="r"><code>solved</code></pre>
 <pre><code>## # A tibble: 12 × 3
 ##      rxx     N    dT
