@@ -237,7 +237,7 @@ primarily useful for debugging purposes.
   computing plan when the jobs are completed}
 
 \item{ncores}{number of cores to be used in parallel execution (ignored if using the
-\code{future} package approach). Default uses all available minus 1}
+\code{\link[future]{future}} package approach). Default uses all available minus 1}
 
 \item{cl}{cluster object defined by \code{\link{makeCluster}} used to run code in parallel
   (ignored if using the \code{\link[future]{future}} package approach).
@@ -535,7 +535,8 @@ This function runs a Monte Carlo simulation study given a set of predefined simu
 design conditions, and number of replications. Results can be saved as temporary files in case of
 interruptions and may be restored by re-running \code{runSimulation}, provided that the respective temp
 file can be found in the working directory. \code{runSimulation} supports parallel
-and cluster computing (with the \code{parallel} and \code{future} packages; see also
+and cluster computing (with the \code{\link[parallel]{parallel}} and
+\code{\link[future]{future}} packages; see also
 \code{\link{runArraySimulation}} for submitting array jobs to HPC clusters),
 global and local debugging, error handling (including fail-safe
 stopping when functions fail too often, even across nodes), provides bootstrap estimates of the
@@ -658,7 +659,7 @@ in the R console to remove any previously saved temporary objects.
 
 
 When running simulations in parallel (either with \code{parallel = TRUE}
-or when using the \code{\link{future}} approach with a \code{plan()} other than sequential)
+or when using the \code{\link[future]{future}} approach with a \code{plan()} other than sequential)
 R objects defined in the global environment will generally \emph{not} be visible across nodes.
 Hence, you may see errors such as \code{Error: object 'something' not found} if you try to use
 an object that is defined in the work space but is not passed to \code{runSimulation}.
