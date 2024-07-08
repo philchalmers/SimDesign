@@ -471,6 +471,9 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      predCI = .95, predCI.tol = NULL, ...){
 
     # robust <- FALSE
+    org.opts <- options()
+    options(warn = 1)
+    on.exit(options(org.opts), add = TRUE)
     if(is.null(control$print_RAM)) control$print_RAM <- FALSE
     burnin.iter <- 15L
     if(is.list(replications)){
