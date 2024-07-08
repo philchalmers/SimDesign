@@ -214,8 +214,10 @@ PBA <- function(f, interval, ..., p = .6,
         }
         no_root <- (upper[1L] + lower[1L]) != 1L
         if(no_root){
-            msg <- sprintf('interval range supplied appears to be %s the probable root.',
-                           ifelse(upper[1L] == 0, '*above*', '*below*'))
+            msg <- sprintf('supplied interval range appears to be %s the probable root.
+                           Resulting root estimates were [%.3f, %.3f]',
+                           ifelse(upper[1L] == 0, '*above*', '*below*'),
+                           lower[2L], upper[2L])
             old.opts <- options()
             options(warn=1)
             warning(msg, call.=FALSE)

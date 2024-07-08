@@ -9,7 +9,7 @@
 #' the \code{design} input are taken as variables to be estimated rather than
 #' fixed, and the constant \code{b} is required in order to
 #' solve the root equation \code{f(x) - b = 0}. Stochastic root search is terminated
-#' based on the successive behaviour of the \code{x} estimates.
+#' based on the successive behavior of the \code{x} estimates.
 #' For even greater advertised accuracy with ProBABLI, termination criteria
 #' can be based on the width of the advertised predicting interval
 #' (via \code{predCI.tol}) or by specifying how long the investigator
@@ -183,7 +183,7 @@
 #'   Note that if individual  results from the \code{analyse} steps should
 #'   not be used (i.e., only the aggregate from \code{summarise} is meaningful)
 #'   then set \code{control = list(summarise.reg_data = TRUE)} to override the default
-#'   behaviour, thereby using only the aggregate information and weights
+#'   behavior, thereby using only the aggregate information and weights
 #'
 #' @param ... additional arguments to be pasted to \code{\link{PBA}}
 #'
