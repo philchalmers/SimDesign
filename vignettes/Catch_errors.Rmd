@@ -197,7 +197,6 @@ out2
 set.seed(7)
 out3 <- manageWarnings(myfun(), 
                         warning2error='This warning is serious')
-out3
 ```
 which now converts the previous warning message into an error message, thereby correctly disrupting the flow of the Monte Carlo simulation experiment and prompting a new call to `Generate()`. Of course, all warning and error messages are tallied in the resulting `runSimulation()` object, though now the serious warnings will be tallied as disruptive errors instead of warnings that continued normally.  
 
