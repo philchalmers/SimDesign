@@ -322,11 +322,11 @@ reduceTable <- function(tab){
 sim_results_check <- function(sim_results){
     if(is(sim_results, 'try-error'))
         stop(c("Summarise() should not throw errors. Message was:\n    ", sim_results), call.=FALSE)
-    if(is.data.frame(sim_results)){
+    if(is.data.frame(sim_results) || is.matrix(sim_results)){
         if(nrow(sim_results) > 1L){
             sim_results <- list(sim_results)
         } else {
-            nms <- names(sim_results)
+            nms <- colnames(sim_results)
             sim_results <- as.numeric(sim_results)
             names(sim_results) <- nms
         }

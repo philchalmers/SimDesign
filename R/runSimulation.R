@@ -155,7 +155,14 @@
 #' @param summarise optional (but strongly recommended) user-defined summary function
 #'   from \code{\link{Summarise}} to be used to compute meta-statistical summary
 #'   information after all the replications have completed within
-#'   each \code{design} condition. Note that unlike the Generate and Analyse
+#'   each \code{design} condition. Return of this function, in order
+#'   of increasing complexity, should be: a named numeric vector or \code{data.frame}
+#'   with one row, a \code{matrix} or \code{data.frame} with more than one row, and,
+#'   failing these more atomic types, a named \code{list}. For summary objects that
+#'   are not easily appended to the original \code{design} object use
+#'   \code{\link{SimExtract}} with the option \code{what = 'summarise'}.
+#'
+#'   Note that unlike the Generate and Analyse
 #'   steps, the Summarise portion is not as important to perfectly organize
 #'   as the results can be summarised later on by using the built-in
 #'   \code{\link{reSummarise}} function (provided either
