@@ -257,7 +257,7 @@ runArraySimulation <- function(design, ..., replications,
                          replications=replications[arrayID],
                          filename=filename, seed=seed,
                          verbose=FALSE, save_details=save_details,
-                         control=control, ...)
+                         control=control, save=FALSE, ...)
     if(addArrayInfo && (is.null(dots$store_results) ||
        (!is.null(dots$store_results) && isTRUE(dots$store_results)))){
         results <- SimExtract(ret, 'results')
