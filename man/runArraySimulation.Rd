@@ -184,6 +184,8 @@ SimClean('mylongsim-14.rds')
 
 ###
 # Emulate the arrayID distribution, storing all results in a 'sim/' folder
+# (if 'sim/' does not exist in runArraySimulation() it will be
+# created automatically)
 dir.create('sim/')
 
 # Emulate distribution to nrow(Design5) = 15 independent job arrays

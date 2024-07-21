@@ -180,6 +180,8 @@
 #'
 #' ###
 #' # Emulate the arrayID distribution, storing all results in a 'sim/' folder
+#' # (if 'sim/' does not exist in runArraySimulation() it will be
+#' # created automatically)
 #' dir.create('sim/')
 #'
 #' # Emulate distribution to nrow(Design5) = 15 independent job arrays
@@ -247,6 +249,9 @@ runArraySimulation <- function(design, ..., replications,
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)
     if(!is.null(dirname)){
+        browser()
+        if(!dir.exists(dirname))
+            dir.create(dirname, showWarnings = FALSE)
         filename <- file.path(dirname, filename)
         filename <- gsub("//", "/", filename)
     }
