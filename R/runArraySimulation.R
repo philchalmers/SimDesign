@@ -249,7 +249,6 @@ runArraySimulation <- function(design, ..., replications,
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)
     if(!is.null(dirname)){
-        browser()
         if(!dir.exists(dirname))
             dir.create(dirname, showWarnings = FALSE)
         filename <- file.path(dirname, filename)
