@@ -25,6 +25,15 @@
 #' @param trailingOnly logical value passed to \code{\link{commandArgs}}.
 #'   Only used when \code{type} is an integer
 #'
+#' @param ID.shift single integer value used to shift the array ID by a constant.
+#'   Useful when there are array range limitation that must be specified in the
+#'   shell files (e.g., array can only be 10000 but there are more rows
+#'   in the \code{design} object). For example, if the array ID should be 10000 through
+#'   12000, but the cluster computer enviroment does not allow these indices, then
+#'   including the arrange range as 1-2000 in the shell file with \code{shift=9999}
+#'   would add this constant to the detected arrayID, thereby indexing the remaining
+#'   row elements in the \code{design} object
+#'
 #' @export
 #'
 #' @seealso \code{\link{runArraySimulation}}
@@ -42,9 +51,13 @@
 #' # pass to
 #' # runArraySimulation(design, ...., arrayID = arrayID)
 #'
+#' # increase detected arrayID by constant 9999 (for array
+#'     specification limitations)
+#'  arrayID <- getArrayID(ID.shift=9999)
+#'
 #' }
 #'
-getArrayID <- function(type = 'slurm', trailingOnly = TRUE){
+getArrayID <- function(type = 'slurm', trailingOnly = TRUE, ID.shift = 0L){
     stopifnot(length(type) == 1L)
     ret <- if(is.numeric(type)){
         args <- commandArgs(trailingOnly = trailingOnly)
@@ -54,7 +67,7 @@ getArrayID <- function(type = 'slurm', trailingOnly = TRUE){
     } else {
         stop('type not supported')
     }
-    ret <- as.integer(ret)
+    ret <- as.integer(ret) +
     if(is.na(ret)) warning("array ID is missing")
-    ret
+    ret + ID.shift
 }

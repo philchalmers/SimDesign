@@ -4,7 +4,7 @@
 \alias{getArrayID}
 \title{Get job array ID (e.g., from SLURM or other HPC array distributions)}
 \usage{
-getArrayID(type = "slurm", trailingOnly = TRUE)
+getArrayID(type = "slurm", trailingOnly = TRUE, ID.shift = 0L)
 }
 \arguments{
 \item{type}{an integer indicating the element from the result of
@@ -13,6 +13,15 @@ the type of. Default is \code{'slurm'}}
 
 \item{trailingOnly}{logical value passed to \code{\link{commandArgs}}.
 Only used when \code{type} is an integer}
+
+\item{ID.shift}{single integer value used to shift the array ID by a constant.
+Useful when there are array range limitation that must be specified in the
+shell files (e.g., array can only be 10000 but there are more rows
+in the \code{design} object). For example, if the array ID should be 10000 through
+12000, but the cluster computer enviroment does not allow these indices, then
+including the arrange range as 1-2000 in the shell file with \code{shift=9999}
+would add this constant to the detected arrayID, thereby indexing the remaining
+row elements in the \code{design} object}
 }
 \description{
 Get the array ID from an HPC array distribution job (e.g., from SLURM or
@@ -46,6 +55,10 @@ arrayID <- getArrayID(type = 1)
 
 # pass to
 # runArraySimulation(design, ...., arrayID = arrayID)
+
+# increase detected arrayID by constant 9999 (for array
+    specification limitations)
+ arrayID <- getArrayID(ID.shift=9999)
 
 }
 
