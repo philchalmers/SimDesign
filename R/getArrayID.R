@@ -67,7 +67,7 @@ getArrayID <- function(type = 'slurm', trailingOnly = TRUE, ID.shift = 0L){
     } else {
         stop('type not supported')
     }
-    ret <- as.integer(ret) +
+    ret <- as.integer(ret)
     if(is.na(ret)) warning("array ID is missing")
     ret + ID.shift
 }
