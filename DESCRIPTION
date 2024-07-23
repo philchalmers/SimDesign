@@ -51,6 +51,5 @@ Suggests:
 License: GPL (>=2)
 ByteCompile: yes
 LazyData: true
-URL: https://github.com/philchalmers/SimDesign,
-    https://github.com/philchalmers/SimDesign/wiki
+URL: https://github.com/philchalmers/SimDesign, https://github.com/philchalmers/SimDesign/wiki, http://philchalmers.github.io/SimDesign/
 RoxygenNote: 7.3.2

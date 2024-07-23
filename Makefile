@@ -12,11 +12,14 @@ install:
 	cd ..;\
 	R CMD INSTALL $(PKGSRC)
 
-check: 
+check:
 	Rscript -e "devtools::check(document = FALSE, args = '--as-cran')"
 
 news:
 	sed -e 's/^-/  -/' -e 's/^## *//' -e 's/^# //' <NEWS.md | fmt -80 >NEWS
+
+pkgdown:
+	Rscript -e "pkgdown::build_site()"
 
 test:
 	Rscript -e "library('testthat',quietly=TRUE);library('SimDesign',quietly=TRUE);options(warn=2);test_dir('tests/tests')"
