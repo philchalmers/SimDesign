@@ -981,6 +981,14 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           control = list(), progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
+    if(length(control)){
+        stopifnot("Argument(s) to control list invalid"=
+                      all(names(control) %in% valid_control.list()))
+    }
+    if(length(save_details)){
+        stopifnot("Argument(s) to save_details list invalid"=
+                      all(names(save_details) %in% valid_save_details.list()))
+    }
     if(replications < 3L){
         if(verbose)
             message('save, stop_on_fatal, and print_RAM flags disabled for testing purposes')

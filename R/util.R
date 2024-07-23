@@ -883,6 +883,15 @@ sbatch_time2sec <- function(time){
     ret
 }
 
+valid_control.list <- function()
+    c("stop_on_fatal", "warnings_as_errors", "save_seeds", "store_Random.seeds",
+      "store_warning_seeds", "include_replication_index", "include_reps", "try_all_analyse",
+      "allow_na", "allow_nan", "type", "print_RAM", "max_time", "max_RAM")
+
+valid_save_details.list <- function()
+    c("safe", "compname", "out_rootdir", "save_results_dirname", "save_results_filename",
+      "save_seeds_dirname", 'arrayID')
+
 # Test cases:
 #
 # sbatch_RAM2bytes("1024MB")
