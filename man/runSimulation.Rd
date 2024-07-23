@@ -366,6 +366,10 @@ in the simulation}
       \code{filename} is defined, otherwise the filename is used to replace 'SimDesign'
       in the string}
 
+      \item{\code{tmpfilename}}{string indicating the temporary file name to save
+        provisional information to. If not specified the following will be used:
+        \code{paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')}}
+
   }}
 
 \item{control}{a list for extra information flags for controlling less

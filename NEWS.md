@@ -1,5 +1,11 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.17
+
+- Better name checking when using the supported `list` inputs in `runSimulation()`
+  and `runArraySimulation()`
+
+
 ## Changes in SimDesign 2.16
 
 - Fix for `SimCollect()` when `runArraySimulatino()` result contains 

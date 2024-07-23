@@ -890,7 +890,7 @@ valid_control.list <- function()
 
 valid_save_details.list <- function()
     c("safe", "compname", "out_rootdir", "save_results_dirname", "save_results_filename",
-      "save_seeds_dirname", 'arrayID')
+      "save_seeds_dirname", 'arrayID', "tmpfilename")
 
 # Test cases:
 #

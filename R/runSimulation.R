@@ -480,6 +480,10 @@
 #'       \code{filename} is defined, otherwise the filename is used to replace 'SimDesign'
 #'       in the string}
 #'
+#'       \item{\code{tmpfilename}}{string indicating the temporary file name to save
+#'         provisional information to. If not specified the following will be used:
+#'         \code{paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')}}
+#'
 #'   }
 #'
 #' @param max_errors the simulation will terminate when more than this number of consecutive
