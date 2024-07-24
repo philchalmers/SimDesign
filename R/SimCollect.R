@@ -270,7 +270,7 @@ SimCollect <- function(files = NULL, filename = NULL,
         if(i %in% print_when) cat(".")
         left <- setdiff(1L:length(designs), identical_set)
         pick_design <- designs[[min(left)]]
-        matched <- which(sapply(designs, \(x) identical(x, pick_design)))
+        matched <- which(sapply(designs, \(x) all(x == pick_design)))
         set.index[matched] <- rep(set.count, length(matched))
         set.count <- set.count + 1L
         identical_set <- c(identical_set, matched)
