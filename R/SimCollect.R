@@ -306,10 +306,10 @@ SimCollect <- function(files = NULL, filename = NULL,
     } else {
         out <- do.call(rbind, full_out)
         if(has_stored_results)
-            extra_info1$stored_results <- do.call(rbind,
-                            lapply(full_out, \(x) attr(x, 'extra_info')$stored_results))
-        errors_info <- dplyr::as_tibble(do.call(rbind, errors_info))
-        warnings_info <- dplyr::as_tibble(do.call(rbind, warnings_info))
+            extra_info1$stored_results <- dplyr::bind_rows(
+                lapply(full_out, \(x) attr(x, 'extra_info')$stored_results))
+        errors_info <- dplyr::bind_rows(errors_info)
+        warnings_info <- dplyr::bind_rows(warnings_info)
     }
     if(check.only){
         if(is.null(target.reps)) target.reps <- max(out$REPLICATIONS)
