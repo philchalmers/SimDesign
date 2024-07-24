@@ -32,6 +32,11 @@
 #'   the simulation files returned the desired number of replications. If missing, the highest
 #'   detected value from the collected set of replication information will be used
 #'
+#' @param batch.filesize if the number of files exceed this number the
+#'   aggregation will be done in batches of this size instead until complete
+#'
+#' @param verbose logical; include verbose progress output?
+#'
 #' @return if \code{files} is used the function returns a \code{data.frame/tibble} with the (weighted) average
 #'   of the simulation results. Otherwise, if \code{dirs} is used, the function returns NULL
 #'
@@ -152,7 +157,28 @@
 #' }
 SimCollect <- function(files = NULL, filename = NULL,
                        dirs = NULL, results_dirname = 'SimDesign_aggregate_results',
-                       select = NULL, check.only = FALSE, target.reps = NULL){
+                       select = NULL, check.only = FALSE, target.reps = NULL,
+                       batch.filesize = 100, verbose = TRUE){
+    if(!is.null(files) && length(files) > batch.filesize){
+        index <- seq(0L, length(files), by = batch.filesize)
+        if(max(index) != length(files)) index <- c(index, length(files))
+        tmpfilenames <- character(length(index) - 1L)
+        for(i in 1L:(length(index)-1L)){
+            if(verbose)
+                cat(sprintf('Batch %i/%i\n', i, length(tmpfilenames)))
+            pick <- (index[i]+1L):index[i+1L]
+            tmpfilenames[i] <- tempfile()
+            out <- SimCollect(files=files[pick], filename=tmpfilenames[i],
+                              dirs=dirs, results_dirname=results_dirname,
+                              select=select, verbose=FALSE)
+        }
+        ret <- SimCollect(files=tmpfilenames, filename=filename,
+                   dirs=dirs, results_dirname=results_dirname, select=NULL,
+                   check.only=FALSE, target.reps=target.repts, batch.filesize=Inf,
+                   verbose=verbose)
+        sapply(tmpfilenames, \(f) file.remove(f))
+        return(ret)
+    }
     if(check.only) select <- 'REPLICATIONS'
     oldfiles <- files
     if(!is.null(dirs)){
@@ -166,7 +192,8 @@ SimCollect <- function(files = NULL, filename = NULL,
             stop(sprintf('Directory \'%s/\' already exists. Please fix', results_dirname),
                  call.=FALSE)
         dir.create(results_dirname)
-        message(sprintf('Writing aggregate results folders to \"%s\"', results_dirname))
+        if(verbose)
+            message(sprintf('Writing aggregate results folders to \"%s\"', results_dirname))
         for(f in files){
             readin <- lapply(1:ndirs, function(x){
                 inp <- readRDS(paste0(dirs[x], '/', f))
@@ -204,7 +231,7 @@ SimCollect <- function(files = NULL, filename = NULL,
                                     select == 'REPLICATIONS', TRUE, FALSE)
 
     print_when <- NA
-    if(length(filenames) > 20L){
+    if(length(filenames) > 20L && verbose){
         cat("Reading in files ")
         print_when <- floor(seq(1, length(filenames), length.out=20))
     }
@@ -235,7 +262,7 @@ SimCollect <- function(files = NULL, filename = NULL,
     identical_set <- integer(0)
     set.count <- 1L
     set.index <- rep(NA, length(designs))
-    if(length(filenames) > 20L)
+    if(length(filenames) > 20L && verbose)
         cat("\nCombining information accross files ")
     i <- 0L
     while(TRUE){
@@ -340,11 +367,6 @@ SimCollect <- function(files = NULL, filename = NULL,
         }
     }
     class(out) <- c('SimDesign', class(out))
-    if(!is.null(filename)){
-        message(sprintf('Writing combinded file from %i simulations to \"%s\"',
-                        length(filenames), filename))
-        saveRDS(out, filename)
-    }
     if(length(unique(out$REPLICATIONS)) != 1L)
         warning("Simulation results do not contain the same number of REPLICATIONS")
     extra_info1$total_elapsed_time <- sum(out$SIM_TIME)
@@ -353,6 +375,13 @@ SimCollect <- function(files = NULL, filename = NULL,
     attr(out, 'extra_info') <- extra_info1
     attr(out, 'ERROR_msg') <- errors_info
     attr(out, 'WARNING_msg') <- warnings_info
+    attr(out, "design_names") <- attr(readin[[1L]], "design_names")
+    if(!is.null(filename)){
+        if(verbose)
+            message(sprintf('Writing combinded file from %i simulations to \"%s\"',
+                            length(filenames), filename))
+        saveRDS(out, filename)
+    }
     out
 }
 

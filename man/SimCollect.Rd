@@ -12,7 +12,9 @@ SimCollect(
   results_dirname = "SimDesign_aggregate_results",
   select = NULL,
   check.only = FALSE,
-  target.reps = NULL
+  target.reps = NULL,
+  batch.filesize = 100,
+  verbose = TRUE
 )
 
 aggregate_simulations(...)
@@ -41,6 +43,11 @@ character \code{'NONE'}}
 \item{target.reps}{(optional) number of replications to check against to evaluate whether
 the simulation files returned the desired number of replications. If missing, the highest
 detected value from the collected set of replication information will be used}
+
+\item{batch.filesize}{if the number of files exceed this number the
+aggregation will be done in batches of this size instead until complete}
+
+\item{verbose}{logical; include verbose progress output?}
 
 \item{...}{not used}
 }

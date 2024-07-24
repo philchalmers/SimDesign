@@ -925,7 +925,7 @@ gen_seeds <- function(...){
 }
 
 add_cbind <- function(lst){
-    len <- sapply(lst, length)
+    len <- sapply(lst, ncol)
     if(!any(len)) return(lst[[1L]])
     lst <- lapply(lst, \(x){
         x[is.na(x)] <- 0
@@ -948,7 +948,7 @@ add_cbind <- function(lst){
                 if(matched[j])
                     ret[,nms[j]] <- ret[,nms[j]] + lst[[i]][,nms[j]]
         }
-        ret <- cbind(ret, lst[[i]][,!matched])
+        ret <- cbind(ret, lst[[i]][,!(nms2 %in% nms)])
     }
     dplyr::as_tibble(ret)
 }
