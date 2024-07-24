@@ -74,7 +74,9 @@ nodes/computing cores (e.g., see <code><a href="runArraySimulation.html">runArra
 <span>  results_dirname <span class="op">=</span> <span class="st">"SimDesign_aggregate_results"</span>,</span>
 <span>  select <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  check.only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  target.reps <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  target.reps <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  batch.filesize <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">aggregate_simulations</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -120,6 +122,15 @@ character <code>'NONE'</code></p></dd>
 <dd><p>(optional) number of replications to check against to evaluate whether
 the simulation files returned the desired number of replications. If missing, the highest
 detected value from the collected set of replication information will be used</p></dd>
+
+
+<dt id="arg-batch-filesize">batch.filesize<a class="anchor" aria-label="anchor" href="#arg-batch-filesize"></a></dt>
+<dd><p>if the number of files exceed this number the
+aggregation will be done in batches of this size instead until complete</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>logical; include verbose progress output?</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
