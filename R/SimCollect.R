@@ -202,8 +202,15 @@ SimCollect <- function(files = NULL, filename = NULL,
                  call.=FALSE)
     replications_only <- ifelse(!is.null(select) && length(select) == 1L &&
                                     select == 'REPLICATIONS', TRUE, FALSE)
+
+    print_when <- NA
+    if(length(filenames) > 20L){
+        cat("Reading in files ")
+        print_when <- floor(seq(1, length(filenames), length.out=20))
+    }
     readin <- vector('list', length(filenames))
     for(i in 1:length(filenames)){
+        if(i %in% print_when) cat(".")
         readin[[i]] <- readRDS(filenames[i])
         readin[[i]] <- subset_results(readin[[i]], select=select)
     }
@@ -228,7 +235,12 @@ SimCollect <- function(files = NULL, filename = NULL,
     identical_set <- integer(0)
     set.count <- 1L
     set.index <- rep(NA, length(designs))
+    if(length(filenames) > 20L)
+        cat("\nCombining information accross files ")
+    i <- 0L
     while(TRUE){
+        i <- i+1L
+        if(i %in% print_when) cat(".")
         left <- setdiff(1L:length(designs), identical_set)
         pick_design <- designs[[min(left)]]
         matched <- which(sapply(designs, \(x) all(x == pick_design)))
@@ -239,6 +251,7 @@ SimCollect <- function(files = NULL, filename = NULL,
         if(set.count > length(designs)) # while(sanity_check)
             stop('while() loop counter is broken (contact package maintainer for fix)')
     }
+    if(length(filenames) > 20L) cat("\n")
     unique.set.index <- unique(set.index)
     full_out <- vector('list', length(unique.set.index))
     readin.old <- readin
