@@ -72,7 +72,9 @@ nodes/computing cores (e.g., see <code><a href="runArraySimulation.html">runArra
 <span>  filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  select <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  check.only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  target.reps <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  target.reps <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  warning_details <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  error_details <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">aggregate_simulations</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -109,6 +111,16 @@ character <code>'NONE'</code></p></dd>
 <dd><p>(optional) number of replications to check against to evaluate whether
 the simulation files returned the desired number of replications. If missing, the highest
 detected value from the collected set of replication information will be used</p></dd>
+
+
+<dt id="arg-warning-details">warning_details<a class="anchor" aria-label="anchor" href="#arg-warning-details"></a></dt>
+<dd><p>logical; include the aggregate of the warnings to be extracted via
+<code><a href="SimExtract.html">SimExtract</a></code>?</p></dd>
+
+
+<dt id="arg-error-details">error_details<a class="anchor" aria-label="anchor" href="#arg-error-details"></a></dt>
+<dd><p>logical; include the aggregate of the errors to be extracted via
+<code><a href="SimExtract.html">SimExtract</a></code>?</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
