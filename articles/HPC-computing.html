@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2024-07-23</h4>
+            <h4 data-toc-skip class="date">2024-07-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/HPC-computing.Rmd" class="external-link"><code>vignettes/HPC-computing.Rmd</code></a></small>
       <div class="d-none name"><code>HPC-computing.Rmd</code></div>
@@ -128,7 +128,7 @@ automatically when using
 <code>runSimulation(..., parallel=TRUE)</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># SimDesign::SimFunctions()</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/philchalmers/SimDesign" class="external-link">SimDesign</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">createDesign</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -565,7 +565,7 @@ file <code>mySimDesignScript.R</code>,</li>
 storing the files on the computer used to submit the array job</li>
 </ul>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/philchalmers/SimDesign" class="external-link">SimDesign</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">createDesign</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -623,7 +623,7 @@ to the working directory containing the simulation files and use
 <code><a href="../reference/SimCollect.html">SimCollect()</a></code> with the files names to be aggregated:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">'mysimfiles'</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/philchalmers/SimDesign" class="external-link">SimDesign</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
 <span><span class="va">Final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimCollect.html">SimCollect</a></span><span class="op">(</span>files<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">Final</span></span></code></pre></div>
 <pre><code># A tibble: 3 × 8
@@ -674,7 +674,7 @@ Rscript --vanilla mySimDesignScript.R</code></pre>
 <p>with the associated <code>.R</code> file containing, in this case,
 nine simulation conditions across the rows in <code>Design</code>.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/philchalmers/SimDesign" class="external-link">SimDesign</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">createDesign</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span><span class="op">)</span>,</span>
 <span>                       SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>

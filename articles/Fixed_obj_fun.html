@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2024-07-23</h4>
+            <h4 data-toc-skip class="date">2024-07-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/Fixed_obj_fun.Rmd" class="external-link"><code>vignettes/Fixed_obj_fun.Rmd</code></a></small>
       <div class="d-none name"><code>Fixed_obj_fun.Rmd</code></div>
@@ -149,7 +149,7 @@ they will clearly be visible at runtime. The following
 <code>fixed_objects</code> approach is really only useful when the
 defined objects contain a large amount of code.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/philchalmers/SimDesign" class="external-link">SimDesign</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
 <span><span class="co">#SimFunctions(comments = FALSE)</span></span>
 <span></span>
 <span><span class="co">### Define design conditions and number of replications</span></span>
@@ -191,9 +191,9 @@ defined objects contain a large amount of code.</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
 <span><span class="co">##       N     p REPLICATIONS SIM_TIME       SEED COMPLETED               </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.044         <span style="text-decoration: underline;">1</span>000 0.24s     488<span style="text-decoration: underline;">349</span>520 Tue Jul 23 19:31:59 2024</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.06          <span style="text-decoration: underline;">1</span>000 0.24s     469<span style="text-decoration: underline;">344</span>150 Tue Jul 23 19:31:59 2024</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.054         <span style="text-decoration: underline;">1</span>000 0.27s    <span style="text-decoration: underline;">1</span>550<span style="text-decoration: underline;">099</span>436 Tue Jul 23 19:32:00 2024</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.044         <span style="text-decoration: underline;">1</span>000 0.24s     488<span style="text-decoration: underline;">349</span>520 Wed Jul 24 14:03:51 2024</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.06          <span style="text-decoration: underline;">1</span>000 0.24s     469<span style="text-decoration: underline;">344</span>150 Wed Jul 24 14:03:51 2024</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.054         <span style="text-decoration: underline;">1</span>000 0.26s    <span style="text-decoration: underline;">1</span>550<span style="text-decoration: underline;">099</span>436 Wed Jul 24 14:03:52 2024</span></span></code></pre>
 <p>By placing objects in a list and passing this to
 <code>fixed_objects</code>, the objects are safely exported to all
 relevant functions. Furthermore, running this code in parallel will also

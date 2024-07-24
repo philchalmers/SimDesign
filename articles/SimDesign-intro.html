@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2024-07-23</h4>
+            <h4 data-toc-skip class="date">2024-07-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/SimDesign-intro.Rmd" class="external-link"><code>vignettes/SimDesign-intro.Rmd</code></a></small>
       <div class="d-none name"><code>SimDesign-intro.Rmd</code></div>
@@ -138,11 +138,11 @@ files, however there organization is very simple conceptually.</p>
 <p>To begin, the following code should be copied and saved to an
 external source (i.e., text) file.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/philchalmers/SimDesign" class="external-link">SimDesign</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/SimFunctions.html">SimFunctions</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#-------------------------------------------------------------------</span></span>
 <span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/philchalmers/SimDesign" class="external-link">SimDesign</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">createDesign</a></span><span class="op">(</span>factor1 <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>                       factor2 <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
@@ -338,25 +338,25 @@ processor, and finally store the results to an object called
 <span><span class="co">## Design: 1/8;   RAM Used: 70 Mb;   Replications: 1000;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: sample_size=30, distribution=norm</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 2/8;   RAM Used: 71 Mb;   Replications: 1000;   Total Time: 0.21s </span></span>
+<span><span class="co">## Design: 2/8;   RAM Used: 71 Mb;   Replications: 1000;   Total Time: 0.22s </span></span>
 <span><span class="co">##  Conditions: sample_size=60, distribution=norm</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Design: 3/8;   RAM Used: 71.1 Mb;   Replications: 1000;   Total Time: 0.42s </span></span>
 <span><span class="co">##  Conditions: sample_size=120, distribution=norm</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 4/8;   RAM Used: 71.1 Mb;   Replications: 1000;   Total Time: 0.62s </span></span>
+<span><span class="co">## Design: 4/8;   RAM Used: 71.1 Mb;   Replications: 1000;   Total Time: 0.63s </span></span>
 <span><span class="co">##  Conditions: sample_size=240, distribution=norm</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 5/8;   RAM Used: 71.1 Mb;   Replications: 1000;   Total Time: 0.85s </span></span>
+<span><span class="co">## Design: 5/8;   RAM Used: 71.1 Mb;   Replications: 1000;   Total Time: 0.86s </span></span>
 <span><span class="co">##  Conditions: sample_size=30, distribution=chi</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 6/8;   RAM Used: 71.2 Mb;   Replications: 1000;   Total Time: 1.05s </span></span>
+<span><span class="co">## Design: 6/8;   RAM Used: 71.2 Mb;   Replications: 1000;   Total Time: 1.06s </span></span>
 <span><span class="co">##  Conditions: sample_size=60, distribution=chi</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 7/8;   RAM Used: 71.2 Mb;   Replications: 1000;   Total Time: 1.26s </span></span>
+<span><span class="co">## Design: 7/8;   RAM Used: 71.2 Mb;   Replications: 1000;   Total Time: 1.27s </span></span>
 <span><span class="co">##  Conditions: sample_size=120, distribution=chi</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 8/8;   RAM Used: 71.2 Mb;   Replications: 1000;   Total Time: 1.48s </span></span>
+<span><span class="co">## Design: 8/8;   RAM Used: 71.2 Mb;   Replications: 1000;   Total Time: 1.49s </span></span>
 <span><span class="co">##  Conditions: sample_size=240, distribution=chi</span></span>
 <span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
