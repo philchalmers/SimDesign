@@ -27,6 +27,12 @@
 #'   the simulation files returned the desired number of replications. If missing, the highest
 #'   detected value from the collected set of replication information will be used
 #'
+#' @param warning_details logical; include the aggregate of the warnings to be extracted via
+#'   \code{\link{SimExtract}}?
+#'
+#' @param error_details logical; include the aggregate of the errors to be extracted via
+#'   \code{\link{SimExtract}}?
+#'
 #'
 #' @return if \code{files} is used the function returns a \code{data.frame/tibble} with the (weighted) average
 #'   of the simulation results. Otherwise, if \code{dirs} is used, the function returns NULL
@@ -129,7 +135,10 @@
 #'
 #' }
 SimCollect <- function(files = NULL, filename = NULL,
-                       select = NULL, check.only = FALSE, target.reps = NULL){
+                       select = NULL, check.only = FALSE,
+                       target.reps = NULL,
+                       warning_details = FALSE,
+                       error_details = FALSE){
     if(check.only) select <- 'REPLICATIONS'
     oldfiles <- files
     files <- oldfiles
@@ -256,15 +265,19 @@ SimCollect <- function(files = NULL, filename = NULL,
     if(length(unique.set.index) == 1L){
         out <- full_out[[1L]]
         extra_info1$stored_results <- attr(out, 'extra_info')$stored_results
-        errors_info <- add_cbind(errors_info)
-        warnings_info <- add_cbind(warnings_info)
+        if(error_details)
+            errors_info <- add_cbind(errors_info)
+        if(warning_details)
+            warnings_info <- add_cbind(warnings_info)
     } else {
         out <- do.call(rbind, full_out)
         if(has_stored_results)
             extra_info1$stored_results <- dplyr::bind_rows(
                 lapply(full_out, \(x) attr(x, 'extra_info')$stored_results))
-        errors_info <- dplyr::bind_rows(errors_info)
-        warnings_info <- dplyr::bind_rows(warnings_info)
+        if(error_details)
+            errors_info <- dplyr::bind_rows(errors_info)
+        if(warning_details)
+            warnings_info <- dplyr::bind_rows(warnings_info)
     }
     if(check.only){
         if(is.null(target.reps)) target.reps <- max(out$REPLICATIONS)
@@ -288,8 +301,10 @@ SimCollect <- function(files = NULL, filename = NULL,
     extra_info1$number_of_conditions <- nrow(out)
     extra_info1$ncores <- ncores
     attr(out, 'extra_info') <- extra_info1
-    attr(out, 'ERROR_msg') <- errors_info
-    attr(out, 'WARNING_msg') <- warnings_info
+    if(error_details)
+        attr(out, 'ERROR_msg') <- errors_info
+    if(warning_details)
+        attr(out, 'WARNING_msg') <- warnings_info
     attr(out, "design_names") <- attr(readin[[1L]], "design_names")
     if(!is.null(filename)){
         if(verbose)

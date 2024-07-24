@@ -10,7 +10,9 @@ SimCollect(
   filename = NULL,
   select = NULL,
   check.only = FALSE,
-  target.reps = NULL
+  target.reps = NULL,
+  warning_details = FALSE,
+  error_details = FALSE
 )
 
 aggregate_simulations(...)
@@ -34,6 +36,12 @@ character \code{'NONE'}}
 \item{target.reps}{(optional) number of replications to check against to evaluate whether
 the simulation files returned the desired number of replications. If missing, the highest
 detected value from the collected set of replication information will be used}
+
+\item{warning_details}{logical; include the aggregate of the warnings to be extracted via
+\code{\link{SimExtract}}?}
+
+\item{error_details}{logical; include the aggregate of the errors to be extracted via
+\code{\link{SimExtract}}?}
 
 \item{...}{not used}
 }
