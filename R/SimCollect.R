@@ -165,7 +165,7 @@ SimCollect <- function(files = NULL, filename = NULL,
         tmpfilenames <- character(length(index) - 1L)
         for(i in 1L:(length(index)-1L)){
             if(verbose)
-                cat(sprintf('Batch %i/%i\n', i, length(tmpfilenames)))
+                cat(sprintf('Batch %i/%i', i, length(tmpfilenames)))
             pick <- (index[i]+1L):index[i+1L]
             tmpfilenames[i] <- tempfile()
             out <- SimCollect(files=files[pick], filename=tmpfilenames[i],
