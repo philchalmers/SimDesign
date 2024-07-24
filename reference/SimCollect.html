@@ -70,13 +70,9 @@ nodes/computing cores (e.g., see <code><a href="runArraySimulation.html">runArra
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SimCollect</span><span class="op">(</span></span>
 <span>  files <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  dirs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  results_dirname <span class="op">=</span> <span class="st">"SimDesign_aggregate_results"</span>,</span>
 <span>  select <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  check.only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  target.reps <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  batch.filesize <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  target.reps <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">aggregate_simulations</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -93,15 +89,6 @@ nodes/computing cores (e.g., see <code><a href="runArraySimulation.html">runArra
 <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>(optional) name of .rds file to save aggregate simulation file to. If not specified
 then the results will only be returned in the R console</p></dd>
-
-
-<dt id="arg-dirs">dirs<a class="anchor" aria-label="anchor" href="#arg-dirs"></a></dt>
-<dd><p>a <code>character</code> vector containing the names of the <code>save_results</code> directories to be
-aggregated. A new folder will be created and placed in the <code>results_dirname</code> output folder</p></dd>
-
-
-<dt id="arg-results-dirname">results_dirname<a class="anchor" aria-label="anchor" href="#arg-results-dirname"></a></dt>
-<dd><p>the new directory to place the aggregated results files</p></dd>
 
 
 <dt id="arg-select">select<a class="anchor" aria-label="anchor" href="#arg-select"></a></dt>
@@ -122,15 +109,6 @@ character <code>'NONE'</code></p></dd>
 <dd><p>(optional) number of replications to check against to evaluate whether
 the simulation files returned the desired number of replications. If missing, the highest
 detected value from the collected set of replication information will be used</p></dd>
-
-
-<dt id="arg-batch-filesize">batch.filesize<a class="anchor" aria-label="anchor" href="#arg-batch-filesize"></a></dt>
-<dd><p>if the number of files exceed this number the
-aggregation will be done in batches of this size instead until complete</p></dd>
-
-
-<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p>logical; include verbose progress output?</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -162,7 +140,87 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">'my_working_directory'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## run simulations to save the .rds files (or move them to the working directory)</span></span></span>
+<span class="r-in"><span><span class="co"># seeds1 &lt;- genSeeds(design)</span></span></span>
+<span class="r-in"><span><span class="co"># seeds2 &lt;- genSeeds(design, old.seeds=seeds1)</span></span></span>
+<span class="r-in"><span><span class="co"># ret1 &lt;- runSimulation(design, ..., seed=seeds1, filename='file1')</span></span></span>
+<span class="r-in"><span><span class="co"># ret2 &lt;- runSimulation(design, ..., seed=seeds2, filename='file2')</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># saves to the hard-drive and stores in workspace</span></span></span>
+<span class="r-in"><span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu">SimCollect</span><span class="op">(</span>files <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'file1.rds'</span>, <span class="st">'file2.rds'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">final</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If filename not included, can be extracted from results</span></span></span>
+<span class="r-in"><span><span class="co"># files &lt;- c(SimExtract(ret1, 'filename'), SimExtract(ret2, 'filename'))</span></span></span>
+<span class="r-in"><span><span class="co"># final &lt;- SimCollect(files = files)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#################################################</span></span></span>
+<span class="r-in"><span><span class="co"># Example where each row condition is repeated, evaluated independently,</span></span></span>
+<span class="r-in"><span><span class="co"># and later collapsed into a single analysis object</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Each condition repeated four times (hence, replications</span></span></span>
+<span class="r-in"><span><span class="co"># should be set to desired.reps/4)</span></span></span>
+<span class="r-in"><span><span class="va">Design</span> <span class="op">&lt;-</span> <span class="fu"><a href="createDesign.html">createDesign</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       N  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">60</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Design</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># assume the N=60 takes longer, and should be spread out across more arrays</span></span></span>
+<span class="r-in"><span><span class="va">Design_long</span> <span class="op">&lt;-</span> <span class="fu"><a href="expandDesign.html">expandDesign</a></span><span class="op">(</span><span class="va">Design</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Design_long</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">replications</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">8</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">Design_long</span>, <span class="va">replications</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#-------------------------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">Generate</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">condition</span>, <span class="va">fixed_objects</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">condition</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span>, mean<span class="op">=</span><span class="va">mu</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">dat</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">Analyse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">condition</span>, <span class="va">dat</span>, <span class="va">fixed_objects</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">ret</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>, SD<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">ret</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">Summarise</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">condition</span>, <span class="va">results</span>, <span class="va">fixed_objects</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">ret</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">ret</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#-------------------------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create directory to store all final simulation files</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="st">'sim_files/'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># distribute jobs independently (explicitly parallelize here on cluster,</span></span></span>
+<span class="r-in"><span><span class="co"># which is more elegantly managed via runArraySimulation)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Design_long</span><span class="op">)</span>, \<span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="runSimulation.html">runSimulation</a></span><span class="op">(</span>design<span class="op">=</span><span class="va">Design_long</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span>, replications<span class="op">=</span><span class="va">replications</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span>,</span></span>
+<span class="r-in"><span>                filename<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'sim_files/job-'</span>, <span class="va">i</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># check that all replications satisfy target</span></span></span>
+<span class="r-in"><span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'sim_files/job-'</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Design</span><span class="op">)</span>, <span class="st">".rds"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">SimCollect</span><span class="op">(</span>files <span class="op">=</span> <span class="va">files</span>, check.only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># this would have been returned were the target.rep supposed to be 1000</span></span></span>
+<span class="r-in"><span><span class="fu">SimCollect</span><span class="op">(</span>files <span class="op">=</span> <span class="va">files</span>, check.only <span class="op">=</span> <span class="cn">TRUE</span>, target.reps<span class="op">=</span><span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># aggregate into single object</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">SimCollect</span><span class="op">(</span>files <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'sim_files/job-'</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Design</span><span class="op">)</span>, <span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sim</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="SimClean.html">SimClean</a></span><span class="op">(</span>dir<span class="op">=</span><span class="st">'sim_files/'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
