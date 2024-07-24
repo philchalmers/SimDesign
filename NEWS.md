@@ -4,7 +4,9 @@
 
 - Better name checking when using the supported `list` inputs in `runSimulation()`
   and `runArraySimulation()`
-
+  
+- `SimCollect()` more efficient when combining a large number of files (e.g.,
+  greater than 5000 `.rds` files stored via `runArraySimulation()`)
 
 ## Changes in SimDesign 2.16
 
