@@ -13,11 +13,6 @@
 #' @param filename (optional) name of .rds file to save aggregate simulation file to. If not specified
 #'   then the results will only be returned in the R console
 #'
-#' @param dirs a \code{character} vector containing the names of the \code{save_results} directories to be
-#'   aggregated. A new folder will be created and placed in the \code{results_dirname} output folder
-#'
-#' @param results_dirname the new directory to place the aggregated results files
-#'
 #' @param select a character vector indicating columns to variables to select from the
 #'   \code{SimExtract(what='results')} information. This is mainly useful when RAM is an issue
 #'   given simulations with many stored estimates. Default includes the results objects
@@ -32,10 +27,6 @@
 #'   the simulation files returned the desired number of replications. If missing, the highest
 #'   detected value from the collected set of replication information will be used
 #'
-#' @param batch.filesize if the number of files exceed this number the
-#'   aggregation will be done in batches of this size instead until complete
-#'
-#' @param verbose logical; include verbose progress output?
 #'
 #' @return if \code{files} is used the function returns a \code{data.frame/tibble} with the (weighted) average
 #'   of the simulation results. Otherwise, if \code{dirs} is used, the function returns NULL
@@ -75,21 +66,6 @@
 #' # files <- c(SimExtract(ret1, 'filename'), SimExtract(ret2, 'filename'))
 #' # final <- SimCollect(files = files)
 #'
-#' # aggregate saved results for .rds files and results directories
-#' # runSimulation(..., seed=seeds1, save_results = TRUE,
-#' #      save_details = list(save_results_dirname = 'dir1'))
-#' # runSimulation(..., seed=seeds2, save_results = TRUE,
-#' #      save_details = list(save_results_dirname = 'dir2'))
-#'
-#' # place new saved results in 'SimDesign_results/' by default
-#' SimCollect(files = c('file1.rds', 'file2.rds'),
-#'            filename='aggreged_sim.rds',
-#'            dirs = c('dir1', 'dir2'))
-#'
-#' # If dirnames not included, can be extracted from results
-#' # dirs <- c(SimExtract(ret1, 'save_results_dirname'),
-#'             SimExtract(ret2, 'save_results_dirname'))
-#' # SimCollect(dirs = dirs)
 #'
 #' #################################################
 #' # Example where each row condition is repeated, evaluated independently,
@@ -97,12 +73,16 @@
 #'
 #' # Each condition repeated four times (hence, replications
 #' # should be set to desired.reps/4)
-#' Design <- createDesign(N  = c(30, 60),
-#'                        mu = c(0,5))
+#' Design <- createDesign(mu = c(0,5),
+#'                        N  = c(30, 60))
 #' Design
 #'
-#' Design4 <- expandDesign(Design, 4)
-#' Design4
+#' # assume the N=60 takes longer, and should be spread out across more arrays
+#' Design_long <- expandDesign(Design, c(2,2,4,4))
+#' Design_long
+#'
+#' replications <- c(rep(50, 4), rep(25,8))
+#' data.frame(Design_long, replications)
 #'
 #' #-------------------------------------------------------------------
 #'
@@ -123,22 +103,13 @@
 #'
 #' #-------------------------------------------------------------------
 #'
-#' # Generate fixed seeds to be distributed
-#' set.seed(1234)
-#' seeds <- genSeeds(Design)
-#' seeds
-#'
-#' # replications vector (constant is fine if the same across conditions;
-#' # below is vectorized to demonstrate that this could change)
-#' replications <- rep(250, nrow(Design))
-#'
 #' # create directory to store all final simulation files
 #' dir.create('sim_files/')
 #'
 #' # distribute jobs independently (explicitly parallelize here on cluster,
 #' # which is more elegantly managed via runArraySimulation)
-#' sapply(1:nrow(Design), \(i) {
-#'   runSimulation(design=Design[i, ], replications=replications[i],
+#' sapply(1:nrow(Design_long), \(i) {
+#'   runSimulation(design=Design_long[i, ], replications=replications[i],
 #'                 generate=Generate, analyse=Analyse, summarise=Summarise,
 #'                 filename=paste0('sim_files/job-', i)) |> invisible()
 #' })
@@ -154,69 +125,13 @@
 #' sim <- SimCollect(files = paste0('sim_files/job-', 1:nrow(Design), ".rds"))
 #' sim
 #'
+#' SimClean(dir='sim_files/')
+#'
 #' }
 SimCollect <- function(files = NULL, filename = NULL,
-                       dirs = NULL, results_dirname = 'SimDesign_aggregate_results',
-                       select = NULL, check.only = FALSE, target.reps = NULL,
-                       batch.filesize = 100, verbose = TRUE){
-    if(!is.null(files) && length(files) > batch.filesize){
-        index <- seq(0L, length(files), by = batch.filesize)
-        if(max(index) != length(files)) index <- c(index, length(files))
-        tmpfilenames <- character(length(index) - 1L)
-        for(i in 1L:(length(index)-1L)){
-            if(verbose)
-                cat(sprintf('Batch %i/%i', i, length(tmpfilenames)))
-            pick <- (index[i]+1L):index[i+1L]
-            tmpfilenames[i] <- tempfile()
-            out <- SimCollect(files=files[pick], filename=tmpfilenames[i],
-                              dirs=dirs, results_dirname=results_dirname,
-                              select=select, verbose=FALSE)
-        }
-        ret <- SimCollect(files=tmpfilenames, filename=filename,
-                   dirs=dirs, results_dirname=results_dirname, select=NULL,
-                   check.only=FALSE, target.reps=target.repts, batch.filesize=Inf,
-                   verbose=verbose)
-        sapply(tmpfilenames, \(f) file.remove(f))
-        return(ret)
-    }
+                       select = NULL, check.only = FALSE, target.reps = NULL){
     if(check.only) select <- 'REPLICATIONS'
     oldfiles <- files
-    if(!is.null(dirs)){
-        if(!all(sapply(dirs, dir.exists))) stop('One or more directories not found')
-        files <- lapply(dirs, function(x) dir(x))
-        if(!all(sapply(files, function(x) all(x == files[[1L]]))))
-            stop('File names are not all the same')
-        files <- files[[1L]]
-        ndirs <- length(dirs)
-        if(dir.exists(results_dirname))
-            stop(sprintf('Directory \'%s/\' already exists. Please fix', results_dirname),
-                 call.=FALSE)
-        dir.create(results_dirname)
-        if(verbose)
-            message(sprintf('Writing aggregate results folders to \"%s\"', results_dirname))
-        for(f in files){
-            readin <- lapply(1:ndirs, function(x){
-                inp <- readRDS(paste0(dirs[x], '/', f))
-                inp <- subset_results(inp, select=select)
-                inp
-            })
-            ret <- readin[[1L]]
-            collapse <- !is.list(ret$results) || is.data.frame(ret$results)
-            results <- lapply(readin, function(x) x$results)
-            ret$results <- do.call(if(collapse) rbind else c, results)
-            tmp <- do.call(c, lapply(readin, function(x) x$warnings))
-            nms <- names(tmp)
-            if(length(nms))
-                ret$warnings <- table(do.call(c, lapply(1:length(nms),
-                                                        function(x) rep(nms[x], each = tmp[x]))))
-            tmp <- do.call(c, lapply(readin, function(x) x$errors))
-            nms <- names(tmp)
-            if(length(nms))
-                ret$errors <- table(do.call(c, lapply(1:length(nms),
-                                                      function(x) rep(nms[x], each = tmp[x]))))
-            saveRDS(ret, paste0(results_dirname, '/', f))
-        }
-    }
     files <- oldfiles
     if(!is.null(files)){
         filenames <- files
