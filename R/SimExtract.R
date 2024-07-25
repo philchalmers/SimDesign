@@ -115,7 +115,10 @@ SimExtract <- function(object, what, fuzzy = TRUE, append = TRUE){
         attr(object, 'extra_info')$save_info['save_results_dirname']
     } else if(what == 'filename'){
         attr(object, 'extra_info')$save_info['filename']
-    } else stop('Input provided to \"what" is not supported')
+    } else if(what == 'design.id'){
+        attr(object, 'extra_info')$Design.ID
+    }
+    else stop('Input provided to \"what" is not supported')
     ret
 }
 

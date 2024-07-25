@@ -1174,13 +1174,16 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     Functions <- list(generate=generate, analyse=analyse, summarise=summarise)
     dummy_run <- FALSE
     if(missing(design)){
-        design <- data.frame(dummy_run=NA)
+        design <- createDesign(dummy_run=NA)
         dummy_run <- TRUE
     }
     if(nrow(design) == 1L){
         verbose <- FALSE
         store_results <- TRUE
     }
+    if(is.null(attr(design, 'Design.ID')))
+        attr(design, 'Design.ID') <- 1L:nrow(design)
+    Design.ID <- attr(design, 'Design.ID')
     if(save_results) store_results <- FALSE
     SimSolveRun <- !is.null(attr(design, 'SimSolve'))
     stopifnot(!missing(replications))
@@ -1684,7 +1687,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       error_seeds=dplyr::as_tibble(error_seeds),
                                       warning_seeds=dplyr::as_tibble(warning_seeds),
                                       stored_results = if(store_results) stored_Results_list else NULL,
-                                      summarise_list=summarise_list)
+                                      summarise_list=summarise_list, Design.ID=Design.ID)
     if(!is.null(summarise_list[[1L]]) && verbose)
         message('Note: To extract Summarise() results use SimExtract(., what = \'summarise\')')
     if(dummy_run) Final$dummy_run <- NULL
