@@ -11,8 +11,8 @@ SimCollect(
   select = NULL,
   check.only = FALSE,
   target.reps = NULL,
-  warning_details = FALSE,
-  error_details = FALSE
+  warning_details = TRUE,
+  error_details = TRUE
 )
 
 aggregate_simulations(...)
@@ -117,13 +117,14 @@ Summarise <- function(condition, results, fixed_objects) {
 # create directory to store all final simulation files
 dir.create('sim_files/')
 
-# distribute jobs independently (explicitly parallelize here on cluster,
-# which is more elegantly managed via runArraySimulation)
+iseed <- genSeeds()
+
+# distribute jobs independently
 sapply(1:nrow(Design_long), \(i) {
-  runSimulation(design=Design_long[i, ], replications=replications[i],
+  runArraySimulation(design=Design_long, replications=replications,
                 generate=Generate, analyse=Analyse, summarise=Summarise,
-                filename=paste0('sim_files/job-', i)) |> invisible()
-})
+                arrayID=i, dirname='sim_files/', filename='job', iseed=iseed)
+}) |> invisible()
 
 # check that all replications satisfy target
 files <- paste0('sim_files/job-', 1:nrow(Design), ".rds")

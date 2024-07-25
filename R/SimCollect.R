@@ -112,13 +112,14 @@
 #' # create directory to store all final simulation files
 #' dir.create('sim_files/')
 #'
-#' # distribute jobs independently (explicitly parallelize here on cluster,
-#' # which is more elegantly managed via runArraySimulation)
+#' iseed <- genSeeds()
+#'
+#' # distribute jobs independently
 #' sapply(1:nrow(Design_long), \(i) {
-#'   runSimulation(design=Design_long[i, ], replications=replications[i],
+#'   runArraySimulation(design=Design_long, replications=replications,
 #'                 generate=Generate, analyse=Analyse, summarise=Summarise,
-#'                 filename=paste0('sim_files/job-', i)) |> invisible()
-#' })
+#'                 arrayID=i, dirname='sim_files/', filename='job', iseed=iseed)
+#' }) |> invisible()
 #'
 #' # check that all replications satisfy target
 #' files <- paste0('sim_files/job-', 1:nrow(Design), ".rds")
@@ -137,8 +138,8 @@
 SimCollect <- function(files = NULL, filename = NULL,
                        select = NULL, check.only = FALSE,
                        target.reps = NULL,
-                       warning_details = FALSE,
-                       error_details = FALSE){
+                       warning_details = TRUE,
+                       error_details = TRUE){
     if(check.only) select <- 'REPLICATIONS'
     oldfiles <- files
     files <- oldfiles
@@ -181,29 +182,10 @@ SimCollect <- function(files = NULL, filename = NULL,
         grepl('ERROR', colnames(x)) | grepl('WARNINGS', colnames(x))), drop=FALSE])
     if(length(unique(sapply(readin, ncol))) > 1L)
         stop('Number of columns in the replications not equal')
-    designs <- lapply(readin, \(x) SimExtract(x, 'Design'))
-
-    identical_set <- integer(0)
-    set.count <- 1L
-    set.index <- rep(NA, length(designs))
-    if(length(filenames) > 20L && verbose)
-        cat("\nCombining information accross files ")
-    i <- 0L
-    while(TRUE){
-        i <- i+1L
-        if(i %in% print_when) cat(".")
-        left <- setdiff(1L:length(designs), identical_set)
-        pick_design <- designs[[min(left)]]
-        matched <- which(sapply(designs, \(x) all(x == pick_design)))
-        set.index[matched] <- rep(set.count, length(matched))
-        set.count <- set.count + 1L
-        identical_set <- c(identical_set, matched)
-        if(all(!is.na(set.index))) break
-        if(set.count > length(designs)) # while(sanity_check)
-            stop('while() loop counter is broken (contact package maintainer for fix)')
-    }
-    if(length(filenames) > 20L) cat("\n")
-    unique.set.index <- unique(set.index)
+    Design.ID <- sapply(readin, \(x) SimExtract(x, 'Design.ID'))
+    if(is.matrix(Design.ID))
+        Design.ID <- Design.ID[,1L, drop=TRUE]
+    unique.set.index <- unique(Design.ID)
     full_out <- vector('list', length(unique.set.index))
     readin.old <- readin
     errors.old <- errors
@@ -214,9 +196,9 @@ SimCollect <- function(files = NULL, filename = NULL,
     warnings_info <- lapply(readin.old, \(x) SimExtract(x, 'warnings',
                                                         append=FALSE, fuzzy=FALSE))
     for(j in unique.set.index){
-        readin <- readin.old[which(j == set.index)]
-        errors <- errors.old[which(j == set.index)]
-        warnings <- warnings.old[which(j == set.index)]
+        readin <- readin.old[which(j == Design.ID)]
+        errors <- errors.old[which(j == Design.ID)]
+        warnings <- warnings.old[which(j == Design.ID)]
         try_errors <- as.data.frame(matrix(0L, nrow(readin[[1L]]), length(nms)))
         caught_warnings <- as.data.frame(matrix(0L, nrow(readin[[1L]]), length(nms)))
         names(try_errors) <- nms
