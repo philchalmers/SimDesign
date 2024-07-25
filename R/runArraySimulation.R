@@ -234,17 +234,16 @@ runArraySimulation <- function(design, ..., replications,
     RNGkind("L'Ecuyer-CMRG")
     on.exit(RNGkind(rngkind[1L]))
     stopifnot(!missing(design))
-    if(is.null(attr(design, 'condition')))
-        attr(design, 'condition') <- 1L:nrow(design)
+    if(is.null(attr(design, 'Design.ID')))
+        attr(design, 'Design.ID') <- 1L:nrow(design)
     stopifnot(!missing(iseed))
     stopifnot(!missing(filename))
     stopifnot(nrow(design) > 1L)
-    stopifnot(!missing(replications))
-    if(length(replications) == 1L)
-        replications <- rep(replications, nrow(design))
-    stopifnot(length(replications) == nrow(design))
     stopifnot("arrayID is not a single integer identifier"=
                   length(arrayID) == 1L && is.numeric(arrayID) && !is.na(arrayID))
+    stopifnot(!missing(replications))
+    if(length(replications) > 1L)
+        replications <- replications[arrayID]
     stopifnot(arrayID %in% 1L:nrow(design))
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)
@@ -256,16 +255,17 @@ runArraySimulation <- function(design, ..., replications,
     }
     save_details$arrayID <- arrayID
     seed <- genSeeds(design, iseed=iseed, arrayID=arrayID)
+    dsub <- design[arrayID, , drop=FALSE]
+    attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[arrayID]
 
-    ret <- runSimulation(design=design[arrayID, , drop=FALSE],
-                         replications=replications[arrayID],
+    ret <- runSimulation(design=dsub, replications=replications,
                          filename=filename, seed=seed,
                          verbose=FALSE, save_details=save_details,
                          control=control, save=FALSE, ...)
     if(addArrayInfo && (is.null(dots$store_results) ||
        (!is.null(dots$store_results) && isTRUE(dots$store_results)))){
         results <- SimExtract(ret, 'results')
-        condition <- attr(design, 'condition')
+        condition <- attr(design, 'Design.ID')
         results <- dplyr::mutate(results, arrayID=arrayID, .before=1L)
         results <- dplyr::mutate(results, condition=condition[arrayID], .before=1L)
         attr(ret, "extra_info")$stored_results <- results

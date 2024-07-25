@@ -129,6 +129,7 @@ createDesign <- function(..., subset, fractional = NULL,
     if(any(pick))
         ret[,pick] <- as.numeric(ret[,pick])
     if(tibble) ret <- dplyr::as_tibble(ret)
+    attr(ret, 'Design.ID') <- 1L:nrow(ret)
     class(ret) <- c('Design', class(ret))
     ret
 }
@@ -202,7 +203,7 @@ expandDesign <- function(Design, repeat_conditions){
                   length(repeat_conditions) == nrow(Design))
     rep_vec <- rep(1L:nrow(Design), times=repeat_conditions)
     ret <- Design[sort(rep_vec), ]
-    attr(ret, 'condition') <- rep_vec
+    attr(ret, 'Design.ID') <- rep_vec
     rownames(ret) <- NULL
     ret
 }
