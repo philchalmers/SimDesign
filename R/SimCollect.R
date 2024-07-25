@@ -183,9 +183,13 @@ SimCollect <- function(files = NULL, filename = NULL,
     if(length(unique(sapply(readin, ncol))) > 1L)
         stop('Number of columns in the replications not equal')
     Design.ID <- sapply(readin, \(x) SimExtract(x, 'Design.ID'))
-    if(is.matrix(Design.ID))
-        Design.ID <- Design.ID[,1L, drop=TRUE]
-    unique.set.index <- unique(Design.ID)
+    if(is.matrix(Design.ID)){
+        set.index <- rep(1L, ncol(Design.ID))
+        Design.ID <- Design.ID[,1]
+    } else {
+        set.index <- Design.ID
+    }
+    unique.set.index <- unique(set.index)
     full_out <- vector('list', length(unique.set.index))
     readin.old <- readin
     errors.old <- errors
@@ -196,9 +200,9 @@ SimCollect <- function(files = NULL, filename = NULL,
     warnings_info <- lapply(readin.old, \(x) SimExtract(x, 'warnings',
                                                         append=FALSE, fuzzy=FALSE))
     for(j in unique.set.index){
-        readin <- readin.old[which(j == Design.ID)]
-        errors <- errors.old[which(j == Design.ID)]
-        warnings <- warnings.old[which(j == Design.ID)]
+        readin <- readin.old[which(j == set.index)]
+        errors <- errors.old[which(j == set.index)]
+        warnings <- warnings.old[which(j == set.index)]
         try_errors <- as.data.frame(matrix(0L, nrow(readin[[1L]]), length(nms)))
         caught_warnings <- as.data.frame(matrix(0L, nrow(readin[[1L]]), length(nms)))
         names(try_errors) <- nms
