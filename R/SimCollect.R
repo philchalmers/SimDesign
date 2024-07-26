@@ -156,7 +156,7 @@ SimCollect <- function(files = NULL, filename = NULL,
                                     select == 'REPLICATIONS', TRUE, FALSE)
 
     print_when <- NA
-    if(length(filenames) > 20L && verbose){
+    if(length(filenames) > 20L){
         cat("Reading in files ")
         print_when <- floor(seq(1, length(filenames), length.out=20))
     }
@@ -293,9 +293,8 @@ SimCollect <- function(files = NULL, filename = NULL,
         attr(out, 'WARNING_msg') <- warnings_info
     attr(out, "design_names") <- attr(readin[[1L]], "design_names")
     if(!is.null(filename)){
-        if(verbose)
-            message(sprintf('Writing combinded file from %i simulations to \"%s\"',
-                            length(filenames), filename))
+        message(sprintf('Writing combinded file from %i simulations to \"%s\"',
+                        length(filenames), filename))
         saveRDS(out, filename)
     }
     out
