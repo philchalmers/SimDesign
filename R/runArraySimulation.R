@@ -56,6 +56,17 @@
 #'   to. If omitted the files will be stored in the same working directory
 #'   where the script was submitted
 #'
+#' @param parallel logical; use parallel computations via the a "SOCK" cluster?
+#'   Only use when the instruction shell file requires more than 1 core
+#'   (number of cores detected via \code{ncores})
+#'
+#' @param cl cluster definition. If omitted a "SOCK" cluster will be defined
+#'
+#' @param ncores number of cores to use when \code{parallel=TRUE}. Note that
+#'   the default uses 1 minus the number of available cores, therefore this
+#'   will only be useful when \code{ncores > 2} as defined in the shell instruction
+#'   file
+#'
 #' @param filename_suffix suffix to add to the \code{filename};
 #'   default add '-' with the \code{arrayID}
 #'
@@ -222,6 +233,8 @@ runArraySimulation <- function(design, ..., replications,
                                arrayID = getArrayID(),
                                filename_suffix = paste0("-", arrayID),
                                addArrayInfo = TRUE,
+                               parallel = FALSE, cl = NULL,
+                               ncores = parallel::detectCores() - 1L,
                                save_details = list(),
                                control = list()){
     dots <- list(...)
@@ -254,6 +267,12 @@ runArraySimulation <- function(design, ..., replications,
         filename <- gsub("//", "/", filename)
     }
     save_details$arrayID <- arrayID
+    if(parallel){
+        if(is.null(cl)){
+            cl <- parallel::makeCluster(ncores, type="SOCK")
+            on.exit(parallel::stopCluster(cl), add=TRUE)
+        }
+    }
     seed <- genSeeds(design, iseed=iseed, arrayID=arrayID)
     dsub <- design[arrayID, , drop=FALSE]
     attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[arrayID]
@@ -261,6 +280,7 @@ runArraySimulation <- function(design, ..., replications,
     ret <- runSimulation(design=dsub, replications=replications,
                          filename=filename, seed=seed,
                          verbose=FALSE, save_details=save_details,
+                         parallel=parallel, cl=cl,
                          control=control, save=FALSE, ...)
     if(addArrayInfo && (is.null(dots$store_results) ||
        (!is.null(dots$store_results) && isTRUE(dots$store_results)))){

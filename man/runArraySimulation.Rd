@@ -14,6 +14,9 @@ runArraySimulation(
   arrayID = getArrayID(),
   filename_suffix = paste0("-", arrayID),
   addArrayInfo = TRUE,
+  parallel = FALSE,
+  cl = NULL,
+  ncores = parallel::detectCores() - 1L,
   save_details = list(),
   control = list()
 )
@@ -52,6 +55,17 @@ default add '-' with the \code{arrayID}}
 
 \item{addArrayInfo}{logical; should the array ID and original design row number
 be added to the \code{SimExtract(..., what='results')} output?}
+
+\item{parallel}{logical; use parallel computations via the a "SOCK" cluster?
+Only use when the instruction shell file requires more than 1 core
+(number of cores detected via \code{ncores})}
+
+\item{cl}{cluster definition. If omitted a "SOCK" cluster will be defined}
+
+\item{ncores}{number of cores to use when \code{parallel=TRUE}. Note that
+the default uses 1 minus the number of available cores, therefore this
+will only be useful when \code{ncores > 2} as defined in the shell instruction
+file}
 
 \item{save_details}{optional list of extra file saving details.
 See \code{\link{runSimulation}}}

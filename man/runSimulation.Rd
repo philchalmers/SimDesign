@@ -470,7 +470,7 @@ in the simulation}
      \item{\code{allow_nan}}{logical (default is \code{FALSE}); should \code{NaN}s be allowed in the
        analyse step as a valid result from the simulation analysis?}
 
-     \item{\code{type}}{default type of cluster to create for the \code{cl} object if no supplied.
+     \item{\code{type}}{default type of cluster to create for the \code{cl} object if not supplied.
        For Windows OS this defaults to \code{"PSOCK"}, otherwise \code{"SOCK"} is selected
        (suitable for Linux and Mac OSX). This is ignored if the user specifies their own \code{cl} object}
 
