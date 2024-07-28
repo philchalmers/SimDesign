@@ -310,7 +310,7 @@ test_that('aggregate', {
                              analyse=mycompute_ew, summarise=mycollect, verbose=FALSE,
                              filename='sim2')
 
-    ret <- SimCollect(c('sim1.rds', 'sim2.rds'))
+    ret <- SimCollect(c('sim1.rds', 'sim2.rds'), warning_details = TRUE)
     expect_true(all(na.omit(ret$WARNINGS == c(NA,NA,200,200,200,200,400,400))))
     expect_true(all(ret$ERRORS > 0 | is.na(ret$ERRORS)))
     expect_equal(sum(results$ERRORS + results2$ERRORS), sum(ret$ERRORS, na.rm=TRUE))
