@@ -11,7 +11,7 @@ SimCollect(
   select = NULL,
   check.only = FALSE,
   target.reps = NULL,
-  warning_details = TRUE,
+  warning_details = FALSE,
   error_details = TRUE
 )
 
