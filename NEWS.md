@@ -2,6 +2,11 @@
 
 ## Changes in SimDesign 2.17
 
+- `runArraySimulation()` gains `parallel` flag and friends to use multi-core
+  processing within array distributions. RNG numbers within the L'Ecuyer-CMRG
+  algorithm are incremented using `parallel::nextRNGSubStream()` within each 
+  defined core
+
 - Better name checking when using the supported `list` inputs in `runSimulation()`
   and `runArraySimulation()`
   
@@ -10,7 +15,7 @@
 
 ## Changes in SimDesign 2.16
 
-- Fix for `SimCollect()` when `runArraySimulatino()` result contains 
+- Fix for `SimCollect()` when `runArraySimulation()` result contains 
   mixed warning outputs  (reported by Michael Troung)
 
 - `manageMessages()` added in a similar spirit to `manageWarnigns()`, though

@@ -71,7 +71,11 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
             stop('MPI structure no longer supported. Please use the parallel = \"future" approach',
                  call. = FALSE)
         } else {
-            if(!is.null(seed)) parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
+            if(!is.null(seed)){
+                if(is.list(seed)){
+                    clusterSetRNGSubStream(cl=cl, seed=seed)
+                } else parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
+            }
             results <- if(progress){
                 try(pbapply::pblapply(1L:replications, mainsim,
                                     condition=condition, generate=Functions$generate,

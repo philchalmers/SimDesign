@@ -58,7 +58,8 @@ be added to the \code{SimExtract(..., what='results')} output?}
 
 \item{parallel}{logical; use parallel computations via the a "SOCK" cluster?
 Only use when the instruction shell file requires more than 1 core
-(number of cores detected via \code{ncores})}
+(number of cores detected via \code{ncores}). For this application
+the random seeds further distributed using \code{\link[parallel]{nextRNGSubStream}}}
 
 \item{cl}{cluster definition. If omitted a "SOCK" cluster will be defined}
 
@@ -116,7 +117,8 @@ each isolated condition rather than between all conditions). As such, this
 function requires the seeds to be generated using
 \code{\link{gen_seeds}} with the \code{iseed} and \code{arrayID}
 inputs to ensure that each job is analyzing a high-quality
-set of random numbers via L'Ecuyer-CMRG's (2002) method.
+set of random numbers via L'Ecuyer-CMRG's (2002) method, incremented using
+\code{\link[parallel]{nextRNGStream}}.
 
 Additionally, for timed simulations on HPC clusters it is also recommended to pass a
 \code{control = list(max_time)} value to avoid discarding
@@ -164,6 +166,15 @@ arrayID <- 1L
 res <- runArraySimulation(design=Design, replications=50,
                       generate=Generate, analyse=Analyse,
                       summarise=Summarise, arrayID=arrayID,
+                      iseed=iseed, filename='mysim') # saved as 'mysim-1.rds'
+res
+SimResults(res) # condition and replication count stored
+
+# same, but evaluated with multiple cores
+res <- runArraySimulation(design=Design, replications=50,
+                      generate=Generate, analyse=Analyse,
+                      summarise=Summarise, arrayID=arrayID,
+                      parallel=TRUE, ncores=3,
                       iseed=iseed, filename='mysim') # saved as 'mysim-1.rds'
 res
 SimResults(res) # condition and replication count stored

@@ -672,6 +672,23 @@ set_seed <- function(seed){
     invisible(NULL)
 }
 
+recvResult_fun <- utils::getFromNamespace("recvResult", "snow")
+
+clusterSetRNGSubStream <- function(cl, seed){
+    nc <- length(cl)
+    seeds <- vector("list", nc)
+    seeds[[1L]] <- seed[[1L]]
+    for (i in seq_len(nc - 1L)) seeds[[i + 1L]] <-
+        parallel::nextRNGSubStream(seeds[[i]])
+    for (i in seq_along(cl)) {
+        expr <- substitute(assign(".Random.seed", seed, envir = .GlobalEnv),
+                           list(seed = seeds[[i]]))
+        snow::sendCall(cl[[i]], eval, list(expr))
+    }
+    snow::checkForRemoteErrors(lapply(cl, recvResult_fun))
+    invisible()
+}
+
 valid_results <- function(x)
     is(x, 'numeric') || is(x, 'data.frame') || is(x, 'list') || is(x, 'logical') || is(x, 'try-error')
 
