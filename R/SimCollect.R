@@ -280,6 +280,8 @@ SimCollect <- function(files = NULL, filename = NULL,
             return(invisible(TRUE))
         }
     }
+    if(all(is.na(out$WARNINGS))) out$WARNINGS <- NULL
+    if(all(is.na(out$ERRORS))) out$ERRORS <- NULL
     class(out) <- c('SimDesign', class(out))
     if(length(unique(out$REPLICATIONS)) != 1L)
         warning("Simulation results do not contain the same number of REPLICATIONS")

@@ -12,7 +12,8 @@ runArraySimulation(
   filename,
   dirname = NULL,
   arrayID = getArrayID(),
-  filename_suffix = paste0("-", arrayID),
+  array2row = function(arrayID) arrayID,
+  filename_suffix = paste0("-", array2row(arrayID)),
   addArrayInfo = TRUE,
   parallel = FALSE,
   cl = NULL,
@@ -49,6 +50,15 @@ where the script was submitted}
 1 and \code{nrow(design)}. If not specified then \code{\link{getArrayID}} will
 be called automatically, which assumes the environmental variables are available
 according the SLURM scheduler}
+
+\item{array2row}{user defined function with the single argument \code{arrayID}.
+  Used to convert the detected \code{arrayID}
+  into a suitable row index in the \code{design} object input. By default
+  each \code{arrayID} is associated with its respective row in \code{design}.
+
+  For example, if each \code{arrayID} should evaluate 10 rows in
+  the \code{design} object then the function
+  \code{function(arrayID){1:10 + 10 * (arrayID-1)}} can be passed to \code{array2row}}
 
 \item{filename_suffix}{suffix to add to the \code{filename};
 default add '-' with the \code{arrayID}}
@@ -243,6 +253,54 @@ SimResults(final) |> View()
 
 setwd('..')
 SimClean(dirs='sim/')
+
+
+############
+# same as above, however passing different amounts of information depending
+# on the array ID
+array2row <- function(arrayID){
+  switch(arrayID,
+    "1"=1:8,
+    "2"=9:14,
+    "3"=15)
+}
+
+# arrayID 1 does row 1 though 8, arrayID 2 does 9 to 14
+array2row(1)
+array2row(2)
+array2row(3)  # arrayID 3 does 15 only
+
+# emulate remote array distribution with only 3 arrays
+sapply(1:3, \(arrayID)
+     runArraySimulation(design=Design5, replications=10,
+          generate=Generate, analyse=Analyse,
+          summarise=Summarise, iseed=iseed, arrayID=arrayID,
+          filename='condition', dirname='sim', array2row=array2row)) |> invisible()
+
+#  If necessary, conditions above will manually terminate before
+#  4 hours and 4GB of RAM are used, returning any
+#  successfully completed results before the HPC session times
+#  out (provided .slurm script specified more than 4 hours)
+
+# list saved files
+dir('sim/')
+
+setwd('sim')
+
+# note that all row conditions are still stored separately
+condition14 <- readRDS('condition-14.rds')
+condition14
+SimResults(condition14)
+
+# aggregate simulation results into single file
+final <- SimCollect(files=dir())
+final
+
+SimResults(final) |> View()
+
+setwd('..')
+SimClean(dirs='sim/')
+
 
 }
 

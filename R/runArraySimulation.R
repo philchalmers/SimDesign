@@ -78,6 +78,15 @@
 #' @param addArrayInfo logical; should the array ID and original design row number
 #'   be added to the \code{SimExtract(..., what='results')} output?
 #'
+#' @param array2row user defined function with the single argument \code{arrayID}.
+#'   Used to convert the detected \code{arrayID}
+#'   into a suitable row index in the \code{design} object input. By default
+#'   each \code{arrayID} is associated with its respective row in \code{design}.
+#'
+#'   For example, if each \code{arrayID} should evaluate 10 rows in
+#'   the \code{design} object then the function
+#'   \code{function(arrayID){1:10 + 10 * (arrayID-1)}} can be passed to \code{array2row}
+#'
 #' @param control control list passed to \code{\link{runSimulation}}.
 #'   In addition to the original \code{control} elements two
 #'   additional arguments have been added:
@@ -237,12 +246,61 @@
 #' setwd('..')
 #' SimClean(dirs='sim/')
 #'
+#'
+#' ############
+#' # same as above, however passing different amounts of information depending
+#' # on the array ID
+#' array2row <- function(arrayID){
+#'   switch(arrayID,
+#'     "1"=1:8,
+#'     "2"=9:14,
+#'     "3"=15)
+#' }
+#'
+#' # arrayID 1 does row 1 though 8, arrayID 2 does 9 to 14
+#' array2row(1)
+#' array2row(2)
+#' array2row(3)  # arrayID 3 does 15 only
+#'
+#' # emulate remote array distribution with only 3 arrays
+#' sapply(1:3, \(arrayID)
+#'      runArraySimulation(design=Design5, replications=10,
+#'           generate=Generate, analyse=Analyse,
+#'           summarise=Summarise, iseed=iseed, arrayID=arrayID,
+#'           filename='condition', dirname='sim', array2row=array2row)) |> invisible()
+#'
+#' #  If necessary, conditions above will manually terminate before
+#' #  4 hours and 4GB of RAM are used, returning any
+#' #  successfully completed results before the HPC session times
+#' #  out (provided .slurm script specified more than 4 hours)
+#'
+#' # list saved files
+#' dir('sim/')
+#'
+#' setwd('sim')
+#'
+#' # note that all row conditions are still stored separately
+#' condition14 <- readRDS('condition-14.rds')
+#' condition14
+#' SimResults(condition14)
+#'
+#' # aggregate simulation results into single file
+#' final <- SimCollect(files=dir())
+#' final
+#'
+#' SimResults(final) |> View()
+#'
+#' setwd('..')
+#' SimClean(dirs='sim/')
+#'
+#'
 #' }
 #'
 runArraySimulation <- function(design, ..., replications,
                                iseed, filename, dirname = NULL,
                                arrayID = getArrayID(),
-                               filename_suffix = paste0("-", arrayID),
+                               array2row = function(arrayID) arrayID,
+                               filename_suffix = paste0("-", array2row(arrayID)),
                                addArrayInfo = TRUE,
                                parallel = FALSE, cl = NULL,
                                ncores = parallel::detectCores() - 1L,
@@ -269,6 +327,7 @@ runArraySimulation <- function(design, ..., replications,
     if(length(replications) > 1L)
         replications <- replications[arrayID]
     stopifnot(arrayID %in% 1L:nrow(design))
+    rowpick <- array2row(arrayID)
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)
     if(!is.null(dirname)){
@@ -284,23 +343,26 @@ runArraySimulation <- function(design, ..., replications,
             on.exit(parallel::stopCluster(cl), add=TRUE)
         }
     }
-    seed <- genSeeds(design, iseed=iseed, arrayID=arrayID)
-    dsub <- design[arrayID, , drop=FALSE]
-    attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[arrayID]
-
-    ret <- runSimulation(design=dsub, replications=replications,
-                         filename=filename, seed=seed,
-                         verbose=FALSE, save_details=save_details,
-                         parallel=parallel, cl=cl,
-                         control=control, save=FALSE, ...)
-    if(addArrayInfo && (is.null(dots$store_results) ||
-       (!is.null(dots$store_results) && isTRUE(dots$store_results)))){
-        results <- SimExtract(ret, 'results')
-        condition <- attr(design, 'Design.ID')
-        results <- dplyr::mutate(results, arrayID=arrayID, .before=1L)
-        results <- dplyr::mutate(results, condition=condition[arrayID], .before=1L)
-        attr(ret, "extra_info")$stored_results <- results
-        saveRDS(ret, paste0(filename, '.rds'))
+    for(i in 1L:length(rowpick)){
+        row <- rowpick[i]
+        seed <- genSeeds(design, iseed=iseed, arrayID=row)
+        dsub <- design[row, , drop=FALSE]
+        attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[row]
+        ret <- runSimulation(design=dsub, replications=replications,
+                             filename=filename[i], seed=seed,
+                             verbose=FALSE, save_details=save_details,
+                             parallel=parallel, cl=cl,
+                             control=control, save=FALSE, ...)
+        if(addArrayInfo && (is.null(dots$store_results) ||
+           (!is.null(dots$store_results) && isTRUE(dots$store_results)))){
+            results <- SimExtract(ret, 'results')
+            condition <- attr(design, 'Design.ID')
+            results <- dplyr::mutate(results, arrayID=arrayID, .before=1L)
+            results <- dplyr::mutate(results, condition=condition[arrayID], .before=1L)
+            attr(ret, "extra_info")$stored_results <- results
+            saveRDS(ret, paste0(filename[i], '.rds'))
+        }
     }
+    if(length(rowpick) > 1L) ret <- NULL
     invisible(ret)
 }

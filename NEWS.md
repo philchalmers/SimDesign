@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.17
 
+- `runArraySimulation()` gains a `array2row` function to allow array jobs
+  to index multiple conditions in the `design` object (default uses one 
+  `arrayID` per row, the original behaviour)
+
 - `runArraySimulation()` gains `parallel` flag and friends to use multi-core
   processing within array distributions. RNG numbers within the L'Ecuyer-CMRG
   algorithm are incremented using `parallel::nextRNGSubStream()` within each 
