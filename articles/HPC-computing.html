@@ -657,7 +657,7 @@ above ideas related to multicore computing and array jobs on Slurm and
 other HPC clusters. For example, if you wanted to take the original
 <code>design</code> object and submit batches of these instead (e.g.,
 submit one or more rows of the <code>design</code> object as an array
-job), where within each batch multicore processing is requested, then
+job), where within each array multicore processing is requested, then
 something like the following would work just fine:</p>
 <pre><code>#!/bin/bash
 #SBATCH --job-name="My simulation (arrays + multiple CPUs)"
@@ -719,48 +719,37 @@ object to each assigned array.</p>
 <span><span class="kw">if</span><span class="op">(</span><span class="va">multirow</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="co"># If selecting multiple design rows per array, such as the first 3 rows, </span></span>
 <span>    <span class="co">#  then next 3 rows, and so on, something like the following would work</span></span>
-<span>    <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from<span class="op">=</span><span class="fl">1</span>, to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Design</span><span class="op">)</span>, by<span class="op">=</span><span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Design</span><span class="op">)</span><span class="op">+</span><span class="fl">1L</span><span class="op">)</span></span>
 <span>    </span>
-<span>    <span class="co">## For arrayID=1, rows2pick is c(1,2,3); for arrayID2, rows2pick is c(4,5,6)</span></span>
-<span>    <span class="va">rows2pick</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">[</span><span class="va">arrayID</span><span class="op">]</span><span class="op">:</span><span class="op">(</span><span class="va">s</span><span class="op">[</span><span class="va">arrayID</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
-<span>    <span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'mysim-'</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">rows2pick</span>, collapse<span class="op">=</span><span class="st">''</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="co">## For arrayID=1, rows 1 through 3 are evaluated </span></span>
+<span>    <span class="co">## For arrayID=2, rows 4 through 6 are evaluated</span></span>
+<span>    <span class="co">## For arrayID=3, rows 7 through 9 are evaluated</span></span>
+<span>    <span class="va">array2row</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">arrayID</span><span class="op">)</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span> <span class="op">+</span> <span class="fl">3</span> <span class="op">*</span> <span class="op">(</span><span class="va">arrayID</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>    <span class="co"># otherwise, submit each row independently across array</span></span>
-<span>    <span class="va">rows2pick</span> <span class="op">&lt;-</span> <span class="va">arrayID</span></span>
-<span>    <span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'mysim-'</span>, <span class="va">rows2pick</span><span class="op">)</span></span>
+<span>    <span class="co"># otherwise, use one row per respective arrayID</span></span>
+<span>    <span class="va">array2row</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">arrayID</span><span class="op">)</span> <span class="va">arrayID</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Make sure parallel=TRUE flag is on! Also, it's important to change the computer</span></span>
-<span><span class="co"># name to something unique to the array job to avoid overwriting files (even temporary ones)</span></span>
-<span><span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span>design<span class="op">=</span><span class="va">Design</span><span class="op">[</span><span class="va">rows2pick</span>, <span class="op">]</span>, replications<span class="op">=</span><span class="fl">10000</span>, </span>
-<span>              generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span>, </span>
-<span>              parallel<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="va">filename</span>, </span>
-<span>              save_details<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>compname<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'array-'</span>, <span class="va">arrayID</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>  </span></code></pre></div>
+<span><span class="co"># Make sure parallel=TRUE flag is on to use all available cores! </span></span>
+<span><span class="fu"><a href="../reference/runArraySimulation.html">runArraySimulation</a></span><span class="op">(</span>design<span class="op">=</span><span class="va">Design</span>, replications<span class="op">=</span><span class="fl">10000</span>, </span>
+<span>                   generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span>, </span>
+<span>                   iseed<span class="op">=</span><span class="va">iseed</span>, dirname<span class="op">=</span><span class="st">'mysimfiles'</span>, filename<span class="op">=</span><span class="st">'mysim'</span>, </span>
+<span>                   parallel<span class="op">=</span><span class="cn">TRUE</span>, arrayID<span class="op">=</span><span class="va">arrayID</span>, array2row<span class="op">=</span><span class="va">array2row</span><span class="op">)</span>  </span></code></pre></div>
 <p>When complete, the function <code><a href="../reference/SimCollect.html">SimCollect()</a></code> can again be
 used to put the simulation results together given the nine saved files
-(or three, if <code>multirow</code> is <code>TRUE</code> and
-<code>#SBATCH --array=1-3</code> were used instead).</p>
+(nine files would also saved were <code>multirow</code> set to
+<code>TRUE</code> and <code>#SBATCH --array=1-3</code> were used instead
+as these are stored on a per-row basis).</p>
 <p>This type of hybrid approach is a middle ground between submitting
 the complete job (top of this vignette) and the <code>condition</code> +
 <code>replication</code> distributed load in the previous section,
 though has similar overhead + inefficiency issues as before (though less
-so, as the <code>array</code> jobs are evaluated independently).
-Moreover, if the row’s take very different amounts of time to evaluate
-then this strategy can prove inefficient (e.g., the first two rows may
+so, as the <code>array</code> jobs are evaluated independently). Note
+that if the row’s take very different amounts of time to evaluate then
+this strategy can prove less efficient (e.g., the first two rows may
 take 2 hours to complete, while the third row may take 12 hours to
-complete; hence, the complete simulation results would not be available
-until the most demanding simulation conditions are returned!).
-Nevertheless, for moderate intensity simulations the above approach can
-be sufficient as each (batch) of simulation conditions can be evaluated
-independently across each <code>array</code> on the HPC cluster.</p>
-<p>For more intense simulations, particularly those prone to time outs
-or other exhausted resources, the <code><a href="../reference/runArraySimulation.html">runArraySimulation()</a></code>
-approach remains the recommended approach as the <code>max_RAM</code>
-and <code>max_time</code> fail-safes are more naturally accommodated
-within the replications, the jobs can be explicitly distributed given
-the anticipated intensity of each simulation condition, and the quality
-and reproducibility of multiple job submissions is easier to manage (see
-the FAQ section below).</p>
+complete), in which case a more nuanced <code>array2row()</code>
+function should be defined to help explicit balance the load on the
+computing cluster.</p>
 </div>
 <div class="section level2">
 <h2 id="extra-information-faqs">Extra information (FAQs)<a class="anchor" aria-label="anchor" href="#extra-information-faqs"></a>
@@ -796,14 +785,13 @@ recommended</strong> to add a <code>max_time</code> and/or
 <code>max_RAM</code> argument to the <code>control</code> list (see
 <code><a href="../reference/runArraySimulation.html">help(runArraySimulation)</a></code> for supported specifications),
 which are less than the Slurm specifications. These control flags will
-halt the <code><a href="../reference/runArraySimulation.html">runArraySimulation()</a></code>/<code><a href="../reference/runSimulation.html">runSimulation()</a></code>
-executions early and return only the complete simulation results up to
-this point. However, this will only work if these arguments are
-<em>non-trivially less than the allocated Slurm resources</em>;
-otherwise, you’ll run the risk that the job terminates before the
-<code>SimDesign</code> functions have the chance to store the
-successfully completed replications. Setting these to around 90-95% of
-the respective <code>#SBATCH --time=</code> and
+halt the <code><a href="../reference/runArraySimulation.html">runArraySimulation()</a></code> executions early and return
+only the complete simulation results up to this point. However, this
+will only work if these arguments are <em>non-trivially less than the
+allocated Slurm resources</em>; otherwise, you’ll run the risk that the
+job terminates before the <code>SimDesign</code> functions have the
+chance to store the successfully completed replications. Setting these
+to around 90-95% of the respective <code>#SBATCH --time=</code> and
 <code>#SBATCH --mem=</code> inputs should, however, be sufficient in
 most cases.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
