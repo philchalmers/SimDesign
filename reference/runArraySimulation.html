@@ -360,8 +360,7 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="SimCollect.html">SimCollect</a></span><span class="op">(</span>files<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">final</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">final</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># clean simulation directory</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">'..'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="SimClean.html">SimClean</a></span><span class="op">(</span>dirs<span class="op">=</span><span class="st">'sim/'</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -388,11 +387,6 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span>          summarise<span class="op">=</span><span class="va">Summarise</span>, iseed<span class="op">=</span><span class="va">iseed</span>, arrayID<span class="op">=</span><span class="va">arrayID</span>,</span></span>
 <span class="r-in"><span>          filename<span class="op">=</span><span class="st">'condition'</span>, dirname<span class="op">=</span><span class="st">'sim'</span>, array2row<span class="op">=</span><span class="va">array2row</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#  If necessary, conditions above will manually terminate before</span></span></span>
-<span class="r-in"><span><span class="co">#  4 hours and 4GB of RAM are used, returning any</span></span></span>
-<span class="r-in"><span><span class="co">#  successfully completed results before the HPC session times</span></span></span>
-<span class="r-in"><span><span class="co">#  out (provided .slurm script specified more than 4 hours)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># list saved files</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="st">'sim/'</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -407,8 +401,7 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="SimCollect.html">SimCollect</a></span><span class="op">(</span>files<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">final</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">final</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># clean simulation directory</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">'..'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="SimClean.html">SimClean</a></span><span class="op">(</span>dirs<span class="op">=</span><span class="st">'sim/'</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
