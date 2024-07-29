@@ -214,7 +214,7 @@ When submitting to the HPC cluster you'll need to include information about how 
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
 #SBATCH --time=12:00:00       ## HH:MM:SS
-#SBATCH --mem-per-cpu=2G      
+#SBATCH --mem-per-cpu=4G      ## 4GB of RAM per cpu
 #SBATCH --cpus-per-task=1
 #SBATCH --array=1-300         ## Slurm schedulers often allow up to 10,000 arrays
 
@@ -226,7 +226,7 @@ For reference later, label this file `simulation.slurm` as this is the file that
 
 The top part of this `.slurm` file provides the BASH instructions for the Slurm scheduler via the `#SBATCH` statements. In this case, how many array jobs to queue (1 through 300), how much memory to use per job (2GB), time limits (12 hours), and more; [see here for SBATCH details](https://slurm.schedmd.com/sbatch.html).
 
-The most important input to focus on in this context is **#SBATCH --array=1-300** as this is what is used by the Slurm scheduler to assign a unique ID to each array job. What the scheduler does is take the defined `mySimDesignScript.R` script and send this to 300 independent resources (each with 1 CPU and 2GB of RAM, in this case), where the independent jobs are assigned a unique array ID number within the `--array=1-300` range (e.g., distribution to the first computing resource would be assigned `arrayID=1`, the second resource `arrayID=2`, and so on). In the `runArraySimulation()` function this is used to subset the `Design300` object by row; hence, *the array range must correspond to the row identifiers in the `design` object for proper subsetting!* 
+The most important input to focus on in this context is **#SBATCH --array=1-300** as this is what is used by the Slurm scheduler to assign a unique ID to each array job. What the scheduler does is take the defined `mySimDesignScript.R` script and send this to 300 independent resources (each with 1 CPU and 4GB of RAM, in this case), where the independent jobs are assigned a unique array ID number within the `--array=1-300` range (e.g., distribution to the first computing resource would be assigned `arrayID=1`, the second resource `arrayID=2`, and so on). In the `runArraySimulation()` function this is used to subset the `Design300` object by row; hence, *the array range must correspond to the row identifiers in the `design` object for proper subsetting!* 
 
 Collecting this single number assigned by the Slurm scheduler is also easy. Just include 
 ```{r eval=FALSE}
@@ -356,7 +356,7 @@ Of course, nothing really stops you from mixing and matching the above ideas rel
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
 #SBATCH --time=04:00:00       ## HH:MM:SS
-#SBATCH --mem-per-cpu=2G      ## Build a computer with 32GB of RAM 
+#SBATCH --mem-per-cpu=4G      ## Build a computing cluster with 64GB of RAM 
 #SBATCH --cpus-per-task=16    ## 16 CPUs per array, likely built from 1 node
 #SBATCH --array=1-9           ## 9 array jobs 
 
