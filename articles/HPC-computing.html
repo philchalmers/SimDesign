@@ -171,8 +171,8 @@ with this job, as well as larger amounts of RAM.</p>
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
 #SBATCH --time=12:00:00       ## HH:MM:SS
-#SBATCH --mem=192G            ## Build a computer with 192GB of RAM 
 #SBATCH --cpus-per-task=96    ## Build a computer with 96 cores
+#SBATCH --mem-per-cpu=2G      ## Build a computer with 192GB of RAM 
 
 module load r/4.3.1
 Rscript --vanilla SimDesign_simulation.R</code></pre>
@@ -463,7 +463,7 @@ following, stored into a suitable <code>.slurm</code> file:</p>
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
 #SBATCH --time=12:00:00       ## HH:MM:SS
-#SBATCH --mem=2G
+#SBATCH --mem-per-cpu=2G      
 #SBATCH --cpus-per-task=1
 #SBATCH --array=1-300         ## Slurm schedulers often allow up to 10,000 arrays
 
@@ -665,7 +665,7 @@ something like the following would work just fine:</p>
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
 #SBATCH --time=04:00:00       ## HH:MM:SS
-#SBATCH --mem=32G             ## 32 GB RAM per array
+#SBATCH --mem-per-cpu=2G      ## Build a computer with 32GB of RAM 
 #SBATCH --cpus-per-task=16    ## 16 CPUs per array, likely built from 1 node
 #SBATCH --array=1-9           ## 9 array jobs 
 
@@ -792,8 +792,8 @@ allocated Slurm resources</em>; otherwise, you’ll run the risk that the
 job terminates before the <code>SimDesign</code> functions have the
 chance to store the successfully completed replications. Setting these
 to around 90-95% of the respective <code>#SBATCH --time=</code> and
-<code>#SBATCH --mem=</code> inputs should, however, be sufficient in
-most cases.</p>
+<code>#SBATCH --mem-per-cpu=</code> inputs should, however, be
+sufficient in most cases.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Return successful results up to the 11 hour mark, and terminate early </span></span>
 <span><span class="co">#   if more than 3.5 GB of RAM are required to store the internal results</span></span>
