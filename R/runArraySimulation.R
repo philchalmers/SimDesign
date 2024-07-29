@@ -241,8 +241,7 @@
 #' final <- SimCollect(files=dir())
 #' final
 #'
-#' SimResults(final) |> View()
-#'
+#' # clean simulation directory
 #' setwd('..')
 #' SimClean(dirs='sim/')
 #'
@@ -269,11 +268,6 @@
 #'           summarise=Summarise, iseed=iseed, arrayID=arrayID,
 #'           filename='condition', dirname='sim', array2row=array2row)) |> invisible()
 #'
-#' #  If necessary, conditions above will manually terminate before
-#' #  4 hours and 4GB of RAM are used, returning any
-#' #  successfully completed results before the HPC session times
-#' #  out (provided .slurm script specified more than 4 hours)
-#'
 #' # list saved files
 #' dir('sim/')
 #'
@@ -288,8 +282,7 @@
 #' final <- SimCollect(files=dir())
 #' final
 #'
-#' SimResults(final) |> View()
-#'
+#' # clean simulation directory
 #' setwd('..')
 #' SimClean(dirs='sim/')
 #'
