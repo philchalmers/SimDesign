@@ -347,7 +347,7 @@ You should now consider moving this `"final_sim.rds"` off the Slurm landing node
 
 # Array jobs and multicore computing simultaneously
 
-Of course, nothing really stops you from mixing and matching the above ideas related to multicore computing and array jobs on Slurm and other HPC clusters. For example, if you wanted to take the original `design` object and submit batches of these instead (e.g., submit one or more rows of the `design` object as an array job), where within each batch multicore processing is requested, then something like the following would work just fine: 
+Of course, nothing really stops you from mixing and matching the above ideas related to multicore computing and array jobs on Slurm and other HPC clusters. For example, if you wanted to take the original `design` object and submit batches of these instead (e.g., submit one or more rows of the `design` object as an array job), where within each array  multicore processing is requested, then something like the following would work just fine: 
 
 ```
 #!/bin/bash
@@ -400,30 +400,26 @@ multirow <- FALSE  # submit multiple rows of Design object to array?
 if(multirow){
     # If selecting multiple design rows per array, such as the first 3 rows, 
     #  then next 3 rows, and so on, something like the following would work
-    s <- c(seq(from=1, to=nrow(Design), by=3), nrow(Design)+1L)
     
-    ## For arrayID=1, rows2pick is c(1,2,3); for arrayID2, rows2pick is c(4,5,6)
-    rows2pick <- s[arrayID]:(s[arrayID + 1] - 1)
-    filename <- paste0('mysim-', paste0(rows2pick, collapse=''))
+    ## For arrayID=1, rows 1 through 3 are evaluated 
+    ## For arrayID=2, rows 4 through 6 are evaluated
+    ## For arrayID=3, rows 7 through 9 are evaluated
+    array2row <- function(arrayID) 1:3 + 3 * (arrayID-1)
 } else {
-    # otherwise, submit each row independently across array
-    rows2pick <- arrayID
-    filename <- paste0('mysim-', rows2pick)
+    # otherwise, use one row per respective arrayID
+    array2row <- function(arrayID) arrayID
 }
 
-# Make sure parallel=TRUE flag is on! Also, it's important to change the computer
-# name to something unique to the array job to avoid overwriting files (even temporary ones)
-runSimulation(design=Design[rows2pick, ], replications=10000, 
-              generate=Generate, analyse=Analyse, summarise=Summarise, 
-              parallel=TRUE, filename=filename, 
-              save_details=list(compname=paste0('array-', arrayID)))  
+# Make sure parallel=TRUE flag is on to use all available cores! 
+runArraySimulation(design=Design, replications=10000, 
+                   generate=Generate, analyse=Analyse, summarise=Summarise, 
+                   iseed=iseed, dirname='mysimfiles', filename='mysim', 
+                   parallel=TRUE, arrayID=arrayID, array2row=array2row)  
 ```
 
-When complete, the function `SimCollect()` can again be used to put the simulation results together given the nine  saved files (or three, if `multirow` is `TRUE` and `#SBATCH --array=1-3` were used instead). 
+When complete, the function `SimCollect()` can again be used to put the simulation results together given the nine saved files (nine files would also saved were `multirow` set to `TRUE` and `#SBATCH --array=1-3` were used instead as these are stored on a per-row basis). 
 
-This type of hybrid approach is a middle ground between submitting the complete job (top of this vignette) and the `condition` + `replication` distributed load in the previous section, though has similar overhead + inefficiency issues as before (though less so, as the `array` jobs are evaluated independently). Moreover, if the row's take very different amounts of time to evaluate then this strategy can prove inefficient (e.g., the first two rows may take 2 hours to complete, while the third row may take 12 hours to complete; hence, the complete simulation results would not be available until the most demanding simulation conditions are returned!). Nevertheless, for moderate intensity simulations the above approach can be sufficient as each (batch) of simulation conditions can be evaluated independently across each `array` on the HPC cluster.
-
-For more intense simulations, particularly those prone to time outs or other exhausted resources, the `runArraySimulation()` approach remains the recommended approach as the `max_RAM` and `max_time` fail-safes are more naturally accommodated within the replications, the jobs can be explicitly distributed given the anticipated intensity of each simulation condition, and the quality and reproducibility of multiple job submissions is easier to manage (see the FAQ section below). 
+This type of hybrid approach is a middle ground between submitting the complete job (top of this vignette) and the `condition` + `replication` distributed load in the previous section, though has similar overhead + inefficiency issues as before (though less so, as the `array` jobs are evaluated independently). Note that if the row's take very different amounts of time to evaluate then this strategy can prove less efficient (e.g., the first two rows may take 2 hours to complete, while the third row may take 12 hours to complete), in which case a more nuanced `array2row()` function should be defined to help explicit balance the load on the computing cluster. 
 
 # Extra information (FAQs)
 
@@ -443,7 +439,7 @@ scancel -u <username>   # cancel all queued and running jobs for a specific user
 
 This issue is important whenever the HPC cluster has mandatory time/RAM limits for the job submissions, where the array job may not complete within the assigned resources --- hence, if not properly managed, will discard any valid replication information when abruptly terminated. Unfortunately, this is a very likely occurrence, and is largely a function of being unsure about how long each simulation condition/replication will take to complete when distributed across the arrays (some conditions/replications will take longer than others, and it is difficult to be perfectly knowledgeable about this information beforehand) or how large the final objects will grow as the simulation progresses.
 
-To avoid this time/resource waste it is **strongly recommended** to add a `max_time` and/or `max_RAM` argument to the `control` list (see `help(runArraySimulation)` for supported specifications), which are less than the Slurm specifications. These control flags will halt the `runArraySimulation()`/`runSimulation()` executions early and return only the complete simulation results up to this point. However, this will only work if these arguments are *non-trivially less than the allocated Slurm resources*; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting these to around 90-95% of the respective `#SBATCH --time=` and `#SBATCH --mem=` inputs should, however, be sufficient in most cases.
+To avoid this time/resource waste it is **strongly recommended** to add a `max_time` and/or `max_RAM` argument to the `control` list (see `help(runArraySimulation)` for supported specifications), which are less than the Slurm specifications. These control flags will halt the `runArraySimulation()` executions early and return only the complete simulation results up to this point. However, this will only work if these arguments are *non-trivially less than the allocated Slurm resources*; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting these to around 90-95% of the respective `#SBATCH --time=` and `#SBATCH --mem=` inputs should, however, be sufficient in most cases.
 
 ```{r eval=FALSE}
 # Return successful results up to the 11 hour mark, and terminate early 
