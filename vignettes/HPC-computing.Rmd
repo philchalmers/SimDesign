@@ -94,8 +94,8 @@ As well, in order for this approach to be at all optimal the HPC cluster must as
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
 #SBATCH --time=12:00:00       ## HH:MM:SS
-#SBATCH --mem=192G            ## Build a computer with 192GB of RAM 
 #SBATCH --cpus-per-task=96    ## Build a computer with 96 cores
+#SBATCH --mem-per-cpu=2G      ## Build a computer with 192GB of RAM 
 
 module load r/4.3.1
 Rscript --vanilla SimDesign_simulation.R
@@ -214,7 +214,7 @@ When submitting to the HPC cluster you'll need to include information about how 
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
 #SBATCH --time=12:00:00       ## HH:MM:SS
-#SBATCH --mem=2G
+#SBATCH --mem-per-cpu=2G      
 #SBATCH --cpus-per-task=1
 #SBATCH --array=1-300         ## Slurm schedulers often allow up to 10,000 arrays
 
@@ -356,7 +356,7 @@ Of course, nothing really stops you from mixing and matching the above ideas rel
 #SBATCH --mail-user=somewhere@out.there
 #SBATCH --output=/dev/null    ## (optional) delete .out files
 #SBATCH --time=04:00:00       ## HH:MM:SS
-#SBATCH --mem=32G             ## 32 GB RAM per array
+#SBATCH --mem-per-cpu=2G      ## Build a computer with 32GB of RAM 
 #SBATCH --cpus-per-task=16    ## 16 CPUs per array, likely built from 1 node
 #SBATCH --array=1-9           ## 9 array jobs 
 
@@ -439,7 +439,7 @@ scancel -u <username>   # cancel all queued and running jobs for a specific user
 
 This issue is important whenever the HPC cluster has mandatory time/RAM limits for the job submissions, where the array job may not complete within the assigned resources --- hence, if not properly managed, will discard any valid replication information when abruptly terminated. Unfortunately, this is a very likely occurrence, and is largely a function of being unsure about how long each simulation condition/replication will take to complete when distributed across the arrays (some conditions/replications will take longer than others, and it is difficult to be perfectly knowledgeable about this information beforehand) or how large the final objects will grow as the simulation progresses.
 
-To avoid this time/resource waste it is **strongly recommended** to add a `max_time` and/or `max_RAM` argument to the `control` list (see `help(runArraySimulation)` for supported specifications), which are less than the Slurm specifications. These control flags will halt the `runArraySimulation()` executions early and return only the complete simulation results up to this point. However, this will only work if these arguments are *non-trivially less than the allocated Slurm resources*; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting these to around 90-95% of the respective `#SBATCH --time=` and `#SBATCH --mem=` inputs should, however, be sufficient in most cases.
+To avoid this time/resource waste it is **strongly recommended** to add a `max_time` and/or `max_RAM` argument to the `control` list (see `help(runArraySimulation)` for supported specifications), which are less than the Slurm specifications. These control flags will halt the `runArraySimulation()` executions early and return only the complete simulation results up to this point. However, this will only work if these arguments are *non-trivially less than the allocated Slurm resources*; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting these to around 90-95% of the respective `#SBATCH --time=` and `#SBATCH --mem-per-cpu=` inputs should, however, be sufficient in most cases.
 
 ```{r eval=FALSE}
 # Return successful results up to the 11 hour mark, and terminate early 
