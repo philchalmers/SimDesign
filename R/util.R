@@ -25,6 +25,12 @@ get_packages <- function(packages){
     sapply(packages, function(x) as.character(packageVersion(x)))
 }
 
+check_ncores <- function(ncores){
+    ncores <- ifelse(is.na(ncores), 1L, ncores)
+    ncores <- ifelse(ncores < 1L, 1L, ncores)
+    ncores
+}
+
 # base-code borrowed and modified from pbapply
 timeFormater_internal <- function(time, decimals = TRUE){
     dec <- time - floor(time)

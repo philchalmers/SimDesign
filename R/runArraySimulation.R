@@ -300,6 +300,7 @@ runArraySimulation <- function(design, ..., replications,
                                save_details = list(),
                                control = list()){
     dots <- list(...)
+    ncores <- check_ncores(ncores)
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))
         stop('save_results not supported for array jobs. Please use store_results only')
     if(!is.null(control$save_seeds) && isTRUE(control$save_seeds))

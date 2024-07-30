@@ -985,6 +985,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           control = list(), progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
+    ncores <- check_ncores(ncores)
     if(length(control)){
         stopifnot("Argument(s) to control list invalid"=
                       all(names(control) %in% valid_control.list()))

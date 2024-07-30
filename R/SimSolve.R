@@ -472,6 +472,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
 
     # robust <- FALSE
     org.opts <- options()
+    ncores <- check_ncores(ncores)
     options(warn = 1)
     on.exit(options(org.opts), add = TRUE)
     if(is.null(control$print_RAM)) control$print_RAM <- FALSE
