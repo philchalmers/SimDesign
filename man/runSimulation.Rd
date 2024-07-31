@@ -21,7 +21,7 @@ runSimulation(
   store_results = TRUE,
   save_results = FALSE,
   parallel = FALSE,
-  ncores = parallelly::availableCores() - 1L,
+  ncores = parallelly::availableCores(omit = 1L),
   cl = NULL,
   notification = "none",
   beep = FALSE,

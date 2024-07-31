@@ -296,7 +296,7 @@ runArraySimulation <- function(design, ..., replications,
                                filename_suffix = paste0("-", array2row(arrayID)),
                                addArrayInfo = TRUE,
                                parallel = FALSE, cl = NULL,
-                               ncores = parallelly::availableCores() - 1L,
+                               ncores = parallelly::availableCores(omit = 1L),
                                save_details = list(),
                                control = list()){
     dots <- list(...)
