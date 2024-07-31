@@ -58,7 +58,7 @@
 #'   where the script was submitted
 #'
 #' @param parallel logical; use parallel computations via the a "SOCK" cluster?
-#'   Only use when the instruction shell file requires more than 1 core
+#'   Only useful when the instruction shell file requires more than 1 core
 #'   (number of cores detected via \code{ncores}). For this application
 #'   the random seeds further distributed using \code{\link[parallel]{nextRNGSubStream}}
 #'
@@ -301,6 +301,7 @@ runArraySimulation <- function(design, ..., replications,
                                control = list()){
     dots <- list(...)
     ncores <- check_ncores(ncores)
+    if(parallel && ncores == 1L) parallel <- FALSE
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))
         stop('save_results not supported for array jobs. Please use store_results only')
     if(!is.null(control$save_seeds) && isTRUE(control$save_seeds))

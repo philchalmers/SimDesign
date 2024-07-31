@@ -67,7 +67,7 @@ default add '-' with the \code{arrayID}}
 be added to the \code{SimExtract(..., what='results')} output?}
 
 \item{parallel}{logical; use parallel computations via the a "SOCK" cluster?
-Only use when the instruction shell file requires more than 1 core
+Only useful when the instruction shell file requires more than 1 core
 (number of cores detected via \code{ncores}). For this application
 the random seeds further distributed using \code{\link[parallel]{nextRNGSubStream}}}
 
