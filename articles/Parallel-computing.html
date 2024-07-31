@@ -109,16 +109,16 @@ managing the random number generation will require additional care.</p>
 function is executed with only a single core. However, setting the
 argument <code>runSimulation(..., parallel = TRUE)</code> will
 automatically define a cluster object using one core less than the
-system has available (detect via <code><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">parallel::detectCores()</a></code>).
-This allows a straightforward way to construct a suitable, locally
-supported cluster object for parallel processing on just the active
-computer. Depending on the <code>verbose</code> and
-<code>progress</code> flags, the progress of each distributed
-replication will also be printed to the console to indicate the amount
-of estimated time remaining for the selection simulation condition to
-complete. This process is then repeated again for each condition in the
-supplied <code>design</code> object until all rows have been
-evaluated.</p>
+system has available (detect via
+<code><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">parallelly::availableCores()</a></code>). This allows a
+straightforward way to construct a suitable, locally supported cluster
+object for parallel processing on just the active computer. Depending on
+the <code>verbose</code> and <code>progress</code> flags, the progress
+of each distributed replication will also be printed to the console to
+indicate the amount of estimated time remaining for the selection
+simulation condition to complete. This process is then repeated again
+for each condition in the supplied <code>design</code> object until all
+rows have been evaluated.</p>
 <p>This setup is the most painless way to construct and distribute the
 independent replications per condition, where within each evaluated
 condition (i.e., each row of the <code>design</code> object)

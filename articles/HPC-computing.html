@@ -123,7 +123,7 @@ the <code>sbatch</code> utility is used along with the set of
 instructions specifying the type of hardware required in the file
 <code>slurmInstructions.slurm</code>. In the R side of the simulation,
 the defined code must grab all available cores (minus 1) that are
-detectable via <code><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">parallel::detectCores()</a></code>, which occurs
+detectable via <code><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">parallelly::availableCores()</a></code>, which occurs
 automatically when using
 <code>runSimulation(..., parallel=TRUE)</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
