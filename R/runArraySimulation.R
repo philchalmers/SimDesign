@@ -296,11 +296,10 @@ runArraySimulation <- function(design, ..., replications,
                                filename_suffix = paste0("-", array2row(arrayID)),
                                addArrayInfo = TRUE,
                                parallel = FALSE, cl = NULL,
-                               ncores = parallel::detectCores() - 1L,
+                               ncores = parallelly::availableCores() - 1L,
                                save_details = list(),
                                control = list()){
     dots <- list(...)
-    ncores <- check_ncores(ncores)
     if(parallel && ncores == 1L) parallel <- FALSE
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))
         stop('save_results not supported for array jobs. Please use store_results only')

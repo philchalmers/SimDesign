@@ -17,7 +17,7 @@ runArraySimulation(
   addArrayInfo = TRUE,
   parallel = FALSE,
   cl = NULL,
-  ncores = parallel::detectCores() - 1L,
+  ncores = parallelly::availableCores() - 1L,
   save_details = list(),
   control = list()
 )

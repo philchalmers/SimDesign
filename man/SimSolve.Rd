@@ -24,7 +24,7 @@ SimSolve(
   resume = TRUE,
   method = "ProBABLI",
   wait.time = NULL,
-  ncores = parallel::detectCores() - 1L,
+  ncores = parallelly::availableCores() - 1L,
   type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
   maxiter = 100L,
   check.interval = TRUE,

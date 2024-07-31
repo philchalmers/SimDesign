@@ -978,14 +978,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           fixed_objects = NULL, packages = NULL, filename = NULL,
                           debug = 'none', load_seed = NULL, save = any(replications > 2),
                           store_results = TRUE, save_results = FALSE,
-                          parallel = FALSE, ncores = parallel::detectCores() - 1L,
+                          parallel = FALSE, ncores = parallelly::availableCores() - 1L,
                           cl = NULL, notification = 'none', beep = FALSE, sound = 1,
                           CI = .95, seed = NULL, boot_method='none', boot_draws = 1000L,
                           max_errors = 50L, resume = TRUE, save_details = list(),
                           control = list(), progress = TRUE, verbose = TRUE)
 {
     stopifnot(!missing(analyse))
-    ncores <- check_ncores(ncores)
     if(length(control)){
         stopifnot("Argument(s) to control list invalid"=
                       all(names(control) %in% valid_control.list()))

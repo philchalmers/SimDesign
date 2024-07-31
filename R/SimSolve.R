@@ -464,7 +464,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      integer = TRUE, formula = y ~ poly(x, 2), family = 'binomial',
                      parallel = FALSE, cl = NULL, save = TRUE, resume = TRUE,
                      method = 'ProBABLI', wait.time = NULL,
-                     ncores = parallel::detectCores() - 1L,
+                     ncores = parallelly::availableCores() - 1L,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
                      maxiter = 100L, check.interval = TRUE,
                      verbose = TRUE, control = list(),
@@ -472,7 +472,6 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
 
     # robust <- FALSE
     org.opts <- options()
-    ncores <- check_ncores(ncores)
     options(warn = 1)
     on.exit(options(org.opts), add = TRUE)
     if(is.null(control$print_RAM)) control$print_RAM <- FALSE

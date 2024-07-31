@@ -100,7 +100,7 @@ test_that('SimDesign', {
     expect_equal(nrow(out), nrow(Design) * 2)
 
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
-                           replications = parallel::detectCores(),
+                           replications = parallelly::availableCores(),
                            parallel=TRUE, ncores=2L, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
@@ -116,15 +116,15 @@ test_that('SimDesign', {
 
     #seeds
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
-                           replications = parallel::detectCores(),
+                           replications = parallelly::availableCores(),
                            parallel=TRUE, ncores=2L, save=FALSE, verbose = FALSE)
     Final2 <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
-                           replications = parallel::detectCores(),
+                           replications = parallelly::availableCores(),
                            parallel=TRUE, ncores=2L, save=FALSE, verbose = FALSE)
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
-                           replications = parallel::detectCores(), parallel=FALSE, save=FALSE, verbose = FALSE)
+                           replications = parallelly::availableCores(), parallel=FALSE, save=FALSE, verbose = FALSE)
     Final2 <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, seed = 1:8,
-                            replications = parallel::detectCores(), parallel=FALSE, save=FALSE, verbose = FALSE)
+                            replications = parallelly::availableCores(), parallel=FALSE, save=FALSE, verbose = FALSE)
 
     mycompute <- function(condition, dat, fixed_objects){
 

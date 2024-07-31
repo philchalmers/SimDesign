@@ -49,7 +49,7 @@ To start, the structure of the simulation code used later on to distribute the j
 
 Suppose the following simulation was to be evaluated, though for time constraint reasons would not be possible to execute on a single computer (or a smaller network of computers) and therefore should be submitted to an HPC cluster. 
 
-The following script (hypothetically written in a file called `SimDesign_simulation.R`) contains a simulation experiment whose instructions are to be submitted to the Slurm scheduler. To do so, the `sbatch` utility is used along with the set of instructions specifying the type of hardware required in the file `slurmInstructions.slurm`. In the R side of the simulation, the defined code must grab all available cores (minus 1) that are detectable via `parallel::detectCores()`, which occurs automatically when using `runSimulation(..., parallel=TRUE)`. 
+The following script (hypothetically written in a file called `SimDesign_simulation.R`) contains a simulation experiment whose instructions are to be submitted to the Slurm scheduler. To do so, the `sbatch` utility is used along with the set of instructions specifying the type of hardware required in the file `slurmInstructions.slurm`. In the R side of the simulation, the defined code must grab all available cores (minus 1) that are detectable via `parallelly::availableCores()`, which occurs automatically when using `runSimulation(..., parallel=TRUE)`. 
 ```{r}
 # SimDesign::SimFunctions()
 library(SimDesign)
