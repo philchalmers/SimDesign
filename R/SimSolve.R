@@ -507,7 +507,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     if(is.null(control$summarise.reg_data))
         control$summarise.reg_data <- FALSE
     if(is.null(control$rel.tol)) control$rel.tol <- .0001
-    if(is.null(control$k.sucess)) control$k.success <- 3L
+    if(is.null(control$k.success)) control$k.success <- 3L
     if(is.null(control$interpolate.R)) control$interpolate.R <- 3000L
     if(is.null(control$bolster)) control$bolster <- TRUE
     if(is.null(control$include_reps)) control$include_reps <- FALSE

@@ -81,6 +81,32 @@ test_that('SimDesign', {
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
+    # Simsolve test
+    condition <- Design[1,]
+    condition$mean_diff <- NA
+
+    mysim_md <- function(condition, fixed_objects){
+
+        Attach(condition)
+
+        N1 <- sample_sizes_group1
+        N2 <- condition$sample_sizes_group2
+        sd <- condition$standard_deviations
+
+        group1 <- rnorm(N1)
+        group2 <- rnorm(N2, sd=sd, mean=condition$mean_diff)
+        dat <- data.frame(group = c(rep('g1', N1), rep('g2', N2)), DV = c(group1, group2))
+
+        return(dat)
+    }
+
+    set.seed(1234)
+    res <- SimSolve(condition, b=.80, interval=c(.1, 3), integer=FALSE,
+                    generate=mysim_md, analyse=mycompute, summarise=mycollect,
+                    maxiter=30, verbose=FALSE)
+    expect_is(res, 'SimSolve')
+    expect_equal(res$mean_diff, 1.321, tol=1e-3)
+
     # test that future package works
     suppressPackageStartupMessages(suppressWarnings(library(future)))
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,

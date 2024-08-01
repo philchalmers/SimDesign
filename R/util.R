@@ -903,7 +903,9 @@ sbatch_time2sec <- function(time){
 valid_control.list <- function()
     c("stop_on_fatal", "warnings_as_errors", "save_seeds", "store_Random.seeds",
       "store_warning_seeds", "include_replication_index", "include_reps", "try_all_analyse",
-      "allow_na", "allow_nan", "type", "print_RAM", "max_time", "max_RAM")
+      "allow_na", "allow_nan", "type", "print_RAM", "max_time", "max_RAM",
+      "tol", "summarise.reg_data", "rel.tol", "k.success", "interpolate.R", "bolster",
+      "include_reps")
 
 valid_save_details.list <- function()
     c("safe", "compname", "out_rootdir", "save_results_dirname", "save_results_filename",
