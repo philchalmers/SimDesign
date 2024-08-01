@@ -16,6 +16,8 @@
   
 - `SimCollect()` more efficient when combining a large number of files (e.g.,
   greater than 5000 `.rds` files stored via `runArraySimulation()`)
+  
+- `SimCheck()` repurposed to check for missing files for `runArraySimulation()` 
 
 ## Changes in SimDesign 2.16
 
