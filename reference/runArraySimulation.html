@@ -85,7 +85,6 @@ vignette for a brief tutorial of this setup.</p>
 <span>  dirname <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  arrayID <span class="op">=</span> <span class="fu"><a href="getArrayID.html">getArrayID</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  array2row <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">arrayID</span><span class="op">)</span> <span class="va">arrayID</span>,</span>
-<span>  filename_suffix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"-"</span>, <span class="fu">array2row</span><span class="op">(</span><span class="va">arrayID</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  addArrayInfo <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  cl <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -123,9 +122,9 @@ of the same name, along with the supplied <code>arrayID</code></p></dd>
 <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>file name to save simulation files to (does not need to
 specify extension). However, the array ID will be appended to each
-<code>filename</code> (see <code>filename_suffix</code>). For example, if
+<code>filename</code>. For example, if
 <code>filename = 'mysim'</code> then files stored will be <code>'mysim-1.rds'</code>,
-<code>'mysim-2.rds'</code>, and so on for each row in <code>design</code></p></dd>
+<code>'mysim-2.rds'</code>, and so on for each row ID in <code>design</code></p></dd>
 
 
 <dt id="arg-dirname">dirname<a class="anchor" aria-label="anchor" href="#arg-dirname"></a></dt>
@@ -149,11 +148,6 @@ according the SLURM scheduler</p></dd>
 <p>For example, if each <code>arrayID</code> should evaluate 10 rows in
   the <code>design</code> object then the function
   <code>function(arrayID){1:10 + 10 * (arrayID-1)}</code> can be passed to <code>array2row</code></p></dd>
-
-
-<dt id="arg-filename-suffix">filename_suffix<a class="anchor" aria-label="anchor" href="#arg-filename-suffix"></a></dt>
-<dd><p>suffix to add to the <code>filename</code>;
-default add '-' with the <code>arrayID</code></p></dd>
 
 
 <dt id="arg-addarrayinfo">addArrayInfo<a class="anchor" aria-label="anchor" href="#arg-addarrayinfo"></a></dt>
@@ -281,7 +275,8 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="co">###   and therefore should be used in real SLURM submissions</span></span></span>
 <span class="r-in"><span><span class="va">arrayID</span> <span class="op">&lt;-</span> <span class="fu"><a href="getArrayID.html">getArrayID</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">'slurm'</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># However, for the following example array ID is set to first row only</span></span></span>
+<span class="r-in"><span><span class="co"># However, the following example arrayID is set to</span></span></span>
+<span class="r-in"><span><span class="co">#  the first row only for testing purposes</span></span></span>
 <span class="r-in"><span><span class="va">arrayID</span> <span class="op">&lt;-</span> <span class="fl">1L</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># run the simulation (results not caught on job submission, only files saved)</span></span></span>
