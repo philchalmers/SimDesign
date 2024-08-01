@@ -1,27 +1,24 @@
-#' Check the status of the simulation's temporary results
+#' Check for missing files in array simulations
 #'
-#' This function reads the temporary file saved by \code{\link{runSimulation}}
-#' by collapsing the information into a suitable (albeit temporary) object of
-#' class \code{'SimDesign'}. This is useful when taking a quick-peak at how the
-#' early simulation results are performing (useful long running simulation
-#' results with many rows in the \code{Design} object). Returns a tibble-based
-#' data.frame object (\code{tbl_df}).
+#' Given the saved files from a \code{\link{runArraySimulation}} remote
+#' evaluation check whether all \code{.rds} files have been saved. If missing
+#' the missing row condition numbers will be returned
 #'
-#' @param file the temp file currently saving the simulation state. If missing
-#'   the file is assumed to be in the current working directory, and start with the
-#'   name \code{'SIMDESIGN-TEMPFILE'}
+#' @param files vector of file names referring to the saved simulation files.
+#'   E.g. \code{c('mysim-1.rds', 'mysim-2.rds', ...)}
 #'
-#' @seealso \code{\link{runSimulation}}
+#' @param min minimum number after the \code{'-'} deliminator. Default is 1
+#'
+#' @param max maximum number after the \code{'-'} deliminator. If not specified
+#'   is taken to be the highest number of the \code{files} input
+#'
+#' @seealso \code{\link{runArraySimulation}}
 #'
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 #' \doi{10.20982/tqmp.16.4.p248}
-#'
-#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
-#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
 #'
 #' @export
 #'
@@ -30,34 +27,25 @@
 #' @examples
 #' \dontrun{
 #'
-#' # explicit
-#' temp_results <- SimCheck(file = 'SIMDESIGN-TEMPFILE_mycomp.rds')
-#' temp_results
-#'
-#' # works if file is in the current working directory
-#' temp_results <- SimCheck()
-#' temp_results
+#' setwd('mysimfiles/')
+#' files <- dir()
+#' SimCheck()
 #'
 #' }
 #'
-SimCheck <- function(file){
-    pat <- 'SIMDESIGN-TEMPFILE'
-    input <- if(missing(file)){
-        files <- dir()
-        pick <- grepl(pat, files)
-        if(!any(pick)){
-            message("No temporary file found")
-            return(invisible(NULL))
-        }
-        readRDS(files[pick][1L])
-    } else {
-        if(!file.exists(file)){
-            message("file name does not exist")
-            return(invisible(NULL))
-        }
-        readRDS(file)
+SimCheck <- function(files, min = 1L, max = NULL){
+    filename <- strsplit(files[1], '-')[[1L]][1L]
+    if(is.null(max)){
+        subfiles <- gsub(paste0(filename, '-'), files, replacement = '')
+        subfiles <- gsub('.rds', subfiles, replacement = '')
+        max <- max(as.integer(subfiles))
     }
-    ret <- dplyr::as_tibble(dplyr::bind_rows(input))
-    ret <- subset(ret, select = !(names(ret) %in% c('ID', 'REPLICATION')))
-    ret
+    minmax <- min:max
+    notin <- !(paste0(filename, '-', minmax, '.rds') %in% files)
+    if(any(notin)){
+        cat(sprintf('The following row conditions were missing:\n%s',
+            paste0(minmax[notin], collapse=',')))
+    } else
+        cat(sprintf('No missing conditions from %i to %i were detected', min, max))
+    invisible(NULL)
 }

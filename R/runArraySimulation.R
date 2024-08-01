@@ -129,7 +129,8 @@
 #' \doi{10.1080/10691898.2016.1246953}
 #'
 #' @seealso \code{\link{runSimulation}}, \code{\link{expandDesign}},
-#'   \code{\link{gen_seeds}}, \code{\link{SimCollect}}, \code{\link{getArrayID}}
+#'   \code{\link{gen_seeds}}, \code{\link{SimCheck}},
+#'   \code{\link{SimCollect}}, \code{\link{getArrayID}}
 #'
 #' @examples
 #'
@@ -231,6 +232,9 @@
 #'
 #' # list saved files
 #' dir('sim/')
+#'
+#' # check that all files saved
+#' SimCheck(dir('sim/'))
 #'
 #' setwd('sim')
 #' condition14 <- readRDS('condition-14.rds')

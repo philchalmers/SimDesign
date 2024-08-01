@@ -240,6 +240,9 @@ sapply(1:nrow(Design5), \(arrayID)
 # list saved files
 dir('sim/')
 
+# check that all files saved
+SimCheck(dir('sim/'))
+
 setwd('sim')
 condition14 <- readRDS('condition-14.rds')
 condition14
@@ -309,7 +312,8 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 }
 \seealso{
 \code{\link{runSimulation}}, \code{\link{expandDesign}},
-  \code{\link{gen_seeds}}, \code{\link{SimCollect}}, \code{\link{getArrayID}}
+  \code{\link{gen_seeds}}, \code{\link{SimCheck}},
+  \code{\link{SimCollect}}, \code{\link{getArrayID}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}
