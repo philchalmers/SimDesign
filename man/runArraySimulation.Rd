@@ -13,7 +13,6 @@ runArraySimulation(
   dirname = NULL,
   arrayID = getArrayID(),
   array2row = function(arrayID) arrayID,
-  filename_suffix = paste0("-", array2row(arrayID)),
   addArrayInfo = TRUE,
   parallel = FALSE,
   cl = NULL,
@@ -38,9 +37,9 @@ of the same name, along with the supplied \code{arrayID}}
 
 \item{filename}{file name to save simulation files to (does not need to
 specify extension). However, the array ID will be appended to each
-\code{filename} (see \code{filename_suffix}). For example, if
+\code{filename}. For example, if
 \code{filename = 'mysim'} then files stored will be \code{'mysim-1.rds'},
-\code{'mysim-2.rds'}, and so on for each row in \code{design}}
+\code{'mysim-2.rds'}, and so on for each row ID in \code{design}}
 
 \item{dirname}{directory to save the files associated with \code{filename}
 to. If omitted the files will be stored in the same working directory
@@ -59,9 +58,6 @@ according the SLURM scheduler}
   For example, if each \code{arrayID} should evaluate 10 rows in
   the \code{design} object then the function
   \code{function(arrayID){1:10 + 10 * (arrayID-1)}} can be passed to \code{array2row}}
-
-\item{filename_suffix}{suffix to add to the \code{filename};
-default add '-' with the \code{arrayID}}
 
 \item{addArrayInfo}{logical; should the array ID and original design row number
 be added to the \code{SimExtract(..., what='results')} output?}
@@ -169,7 +165,8 @@ iseed <- 554184288
 ###   and therefore should be used in real SLURM submissions
 arrayID <- getArrayID(type = 'slurm')
 
-# However, for the following example array ID is set to first row only
+# However, the following example arrayID is set to
+#  the first row only for testing purposes
 arrayID <- 1L
 
 # run the simulation (results not caught on job submission, only files saved)

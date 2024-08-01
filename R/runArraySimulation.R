@@ -49,9 +49,9 @@
 #'
 #' @param filename file name to save simulation files to (does not need to
 #'   specify extension). However, the array ID will be appended to each
-#'   \code{filename} (see \code{filename_suffix}). For example, if
+#'   \code{filename}. For example, if
 #'   \code{filename = 'mysim'} then files stored will be \code{'mysim-1.rds'},
-#'   \code{'mysim-2.rds'}, and so on for each row in \code{design}
+#'   \code{'mysim-2.rds'}, and so on for each row ID in \code{design}
 #'
 #' @param dirname directory to save the files associated with \code{filename}
 #'   to. If omitted the files will be stored in the same working directory
@@ -68,9 +68,6 @@
 #'   the default uses 1 minus the number of available cores, therefore this
 #'   will only be useful when \code{ncores > 2} as defined in the shell instruction
 #'   file
-#'
-#' @param filename_suffix suffix to add to the \code{filename};
-#'   default add '-' with the \code{arrayID}
 #'
 #' @param iseed initial seed to be passed to \code{\link{gen_seeds}}'s argument
 #'   of the same name, along with the supplied \code{arrayID}
@@ -162,7 +159,8 @@
 #' ###   and therefore should be used in real SLURM submissions
 #' arrayID <- getArrayID(type = 'slurm')
 #'
-#' # However, for the following example array ID is set to first row only
+#' # However, the following example arrayID is set to
+#' #  the first row only for testing purposes
 #' arrayID <- 1L
 #'
 #' # run the simulation (results not caught on job submission, only files saved)
@@ -297,7 +295,6 @@ runArraySimulation <- function(design, ..., replications,
                                iseed, filename, dirname = NULL,
                                arrayID = getArrayID(),
                                array2row = function(arrayID) arrayID,
-                               filename_suffix = paste0("-", array2row(arrayID)),
                                addArrayInfo = TRUE,
                                parallel = FALSE, cl = NULL,
                                ncores = parallelly::availableCores(omit = 1L),
@@ -318,6 +315,9 @@ runArraySimulation <- function(design, ..., replications,
         attr(design, 'Design.ID') <- 1L:nrow(design)
     stopifnot(!missing(iseed))
     stopifnot(!missing(filename))
+    if(grepl('-', filename))
+        stop('filename cannot contain the character \"-\" as this is used in the suffix')
+    filename_suffix <- paste0("-", array2row(arrayID))
     stopifnot(nrow(design) > 1L)
     stopifnot("arrayID is not a single integer identifier"=
                   length(arrayID) == 1L && is.numeric(arrayID) && !is.na(arrayID))
