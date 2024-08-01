@@ -7,7 +7,7 @@
 #' jobs to HPC clusters where a job array number is available (e.g., via SLURM),
 #' where the simulation results must be saved to independent files as they
 #' complete. Use of \code{\link{expandDesign}} is useful for distributing replications
-#' to different jobs, while \code{\link{gen_seeds}} is required to ensure high-quality
+#' to different jobs, while \code{\link{genSeeds}} is required to ensure high-quality
 #' random number generation across the array submissions. See the associated
 #' vignette for a brief tutorial of this setup.
 #'
@@ -17,7 +17,7 @@
 #' approach, which uses this method to distribute random seeds within
 #' each isolated condition rather than between all conditions). As such, this
 #' function requires the seeds to be generated using
-#' \code{\link{gen_seeds}} with the \code{iseed} and \code{arrayID}
+#' \code{\link{genSeeds}} with the \code{iseed} and \code{arrayID}
 #' inputs to ensure that each job is analyzing a high-quality
 #' set of random numbers via L'Ecuyer-CMRG's (2002) method, incremented using
 #' \code{\link[parallel]{nextRNGStream}}.
@@ -69,11 +69,11 @@
 #'   will only be useful when \code{ncores > 2} as defined in the shell instruction
 #'   file
 #'
-#' @param iseed initial seed to be passed to \code{\link{gen_seeds}}'s argument
+#' @param iseed initial seed to be passed to \code{\link{genSeeds}}'s argument
 #'   of the same name, along with the supplied \code{arrayID}
 #'
 #' @param addArrayInfo logical; should the array ID and original design row number
-#'   be added to the \code{SimExtract(..., what='results')} output?
+#'   be added to the \code{SimResults(...)} output?
 #'
 #' @param array2row user defined function with the single argument \code{arrayID}.
 #'   Used to convert the detected \code{arrayID}
@@ -121,12 +121,8 @@
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 #' \doi{10.20982/tqmp.16.4.p248}
 #'
-#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
-#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
-#' \doi{10.1080/10691898.2016.1246953}
-#'
 #' @seealso \code{\link{runSimulation}}, \code{\link{expandDesign}},
-#'   \code{\link{gen_seeds}}, \code{\link{SimCheck}},
+#'   \code{\link{genSeeds}}, \code{\link{SimCheck}},
 #'   \code{\link{SimCollect}}, \code{\link{getArrayID}}
 #'
 #' @examples
@@ -176,12 +172,12 @@
 #'                       generate=Generate, analyse=Analyse,
 #'                       summarise=Summarise, arrayID=arrayID,
 #'                       parallel=TRUE, ncores=3,
-#'                       iseed=iseed, filename='mysim') # saved as 'mysim-1.rds'
+#'                       iseed=iseed, filename='myparsim')
 #' res
 #' SimResults(res) # condition and replication count stored
 #'
 #' dir()
-#' SimClean('mysim-1.rds')
+#' SimClean(c('mysim-1.rds', 'myparsim-1.rds'))
 #'
 #' ########################
 #' # Same submission job as above, however split the replications over multiple
@@ -275,7 +271,8 @@
 #'
 #' setwd('sim')
 #'
-#' # note that all row conditions are still stored separately
+#' # note that all row conditions are still stored separately, though note that
+#' #  arrayID is now 2 instead
 #' condition14 <- readRDS('condition-14.rds')
 #' condition14
 #' SimResults(condition14)
