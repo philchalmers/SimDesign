@@ -43,9 +43,9 @@ SimCheck <- function(files, min = 1L, max = NULL){
     minmax <- min:max
     notin <- !(paste0(filename, '-', minmax, '.rds') %in% files)
     if(any(notin)){
-        cat(sprintf('The following row conditions were missing:\n%s',
+        cat(sprintf('The following row conditions were missing:\n%s\n',
             paste0(minmax[notin], collapse=',')))
     } else
-        cat(sprintf('No missing conditions from %i to %i were detected', min, max))
+        cat(sprintf('No missing conditions from %i to %i were detected\n', min, max))
     invisible(NULL)
 }
