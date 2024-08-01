@@ -493,8 +493,8 @@ pwr.t.test(n=50, d = .8, sig.level=solved$sig.level[3])
 }
 }
 \references{
-Chalmers, R. P. (accepted). Solving Variables with Monte Carlo Simulation Experiments: A
-Stochastic Root-Solving Approach. \code{Psychological Methods}.
+Chalmers, R. P. (in press). Solving Variables with Monte Carlo Simulation Experiments: A
+Stochastic Root-Solving Approach. \code{Psychological Methods}. DOI: 10.1037/met0000689
 
 Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
 with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
