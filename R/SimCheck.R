@@ -47,5 +47,9 @@ SimCheck <- function(files, min = 1L, max = NULL){
             paste0(minmax[notin], collapse=',')))
     } else
         cat(sprintf('No missing conditions from %i to %i were detected\n', min, max))
+    nonzero <- sapply(files, file.size) > 0
+    if(any(!nonzero))
+        cat(sprintf('The following row conditions have nothing saved:\n%s\n',
+                    paste0(minmax[!nonzero], collapse=',')))
     invisible(NULL)
 }
