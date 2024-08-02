@@ -372,7 +372,7 @@ lapply_timer <- function(X, FUN, max_time, max_RAM, ...){
         time_left <- total
         for(i in 1L:length(ret)){
             st <- proc.time()['elapsed']
-            val <- R.utils::withTimeout(FUN(...),
+            val <- R.utils::withTimeout(FUN(i, ...),
                                         timeout = time_left,
                                         onTimeout = 'warning')
             elapsed <- elapsed + proc.time()['elapsed'] - st
@@ -394,7 +394,7 @@ lapply_timer <- function(X, FUN, max_time, max_RAM, ...){
     } else {
         ret <- vector('list', length(X))
         for(i in 1L:length(ret)){
-            val <- FUN(...)
+            val <- FUN(i, ...)
             ret[[i]] <- val
             if(is.finite(max_RAM) && object.size(ret) > max_RAM){
                 message(sprintf(c("Simulation terminated due to max_RAM constraint",
