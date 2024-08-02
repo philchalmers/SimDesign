@@ -163,8 +163,10 @@ SimCollect <- function(files = NULL, filename = NULL,
     readin <- vector('list', length(filenames))
     for(i in 1:length(filenames)){
         if(i %in% print_when) cat(".")
-        readin[[i]] <- readRDS(filenames[i])
-        readin[[i]] <- subset_results(readin[[i]], select=select)
+        tmp <- try(readRDS(filenames[i]), TRUE)
+        if(is(tmp, 'try-error'))
+            stop(c('Could not read file ', filenames[i]))
+        readin[[i]] <- subset_results(tmp, select=select)
     }
     extra_info1 <- attr(readin[[1L]], 'extra_info')
     ncores <- sum(sapply(readin, function(x) attr(x, 'extra_info')$ncores))
