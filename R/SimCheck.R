@@ -5,7 +5,8 @@
 #' the missing row condition numbers will be returned
 #'
 #' @param files vector of file names referring to the saved simulation files.
-#'   E.g. \code{c('mysim-1.rds', 'mysim-2.rds', ...)}
+#'   E.g. \code{c('mysim-1.rds', 'mysim-2.rds', ...)}. Default assumes
+#'   that all the files are available in the current working directory
 #'
 #' @param min minimum number after the \code{'-'} deliminator. Default is 1
 #'
@@ -33,7 +34,7 @@
 #'
 #' }
 #'
-SimCheck <- function(files, min = 1L, max = NULL){
+SimCheck <- function(files = dir(), min = 1L, max = NULL){
     filename <- strsplit(files[1], '-')[[1L]][1L]
     if(is.null(max)){
         subfiles <- gsub(paste0(filename, '-'), files, replacement = '')

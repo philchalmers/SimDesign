@@ -8,10 +8,13 @@
 #' use as the random numbers will tend to correlate the more it is used) or run independently across different
 #' nodes/computing cores (e.g., see \code{\link{runArraySimulation}}.
 #'
-#' @param files a \code{character} vector containing the names of the simulation's final \code{.rds} files
+#' @param files a \code{character} vector containing the names of the simulation's final \code{.rds} files.
+#'   Default assumes that the current working directory contains all the files
 #'
 #' @param filename (optional) name of .rds file to save aggregate simulation file to. If not specified
-#'   then the results will only be returned in the R console
+#'   then the results will only be returned in the R console. Note that you probably
+#'   want to save this one level higher than where the files are listed (e.g.,
+#'   \code{filename = '../mysim'})
 #'
 #' @param select a character vector indicating columns to variables to select from the
 #'   \code{SimExtract(what='results')} information. This is mainly useful when RAM is an issue
@@ -135,7 +138,7 @@
 #' SimClean(dir='sim_files/')
 #'
 #' }
-SimCollect <- function(files = NULL, filename = NULL,
+SimCollect <- function(files = dir(), filename = NULL,
                        select = NULL, check.only = FALSE,
                        target.reps = NULL,
                        warning_details = FALSE,

@@ -4,11 +4,12 @@
 \alias{SimCheck}
 \title{Check for missing files in array simulations}
 \usage{
-SimCheck(files, min = 1L, max = NULL)
+SimCheck(files = dir(), min = 1L, max = NULL)
 }
 \arguments{
 \item{files}{vector of file names referring to the saved simulation files.
-E.g. \code{c('mysim-1.rds', 'mysim-2.rds', ...)}}
+E.g. \code{c('mysim-1.rds', 'mysim-2.rds', ...)}. Default assumes
+that all the files are available in the current working directory}
 
 \item{min}{minimum number after the \code{'-'} deliminator. Default is 1}
 

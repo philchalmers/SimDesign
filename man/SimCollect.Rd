@@ -6,7 +6,7 @@
 \title{Collapse separate simulation files into a single result}
 \usage{
 SimCollect(
-  files = NULL,
+  files = dir(),
   filename = NULL,
   select = NULL,
   check.only = FALSE,
@@ -18,10 +18,13 @@ SimCollect(
 aggregate_simulations(...)
 }
 \arguments{
-\item{files}{a \code{character} vector containing the names of the simulation's final \code{.rds} files}
+\item{files}{a \code{character} vector containing the names of the simulation's final \code{.rds} files.
+Default assumes that the current working directory contains all the files}
 
 \item{filename}{(optional) name of .rds file to save aggregate simulation file to. If not specified
-then the results will only be returned in the R console}
+then the results will only be returned in the R console. Note that you probably
+want to save this one level higher than where the files are listed (e.g.,
+\code{filename = '../mysim'})}
 
 \item{select}{a character vector indicating columns to variables to select from the
 \code{SimExtract(what='results')} information. This is mainly useful when RAM is an issue
