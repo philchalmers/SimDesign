@@ -55,7 +55,7 @@ the missing row condition numbers will be returned</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SimCheck</span><span class="op">(</span><span class="va">files</span>, min <span class="op">=</span> <span class="fl">1L</span>, max <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SimCheck</span><span class="op">(</span>files <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span>, min <span class="op">=</span> <span class="fl">1L</span>, max <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -64,7 +64,8 @@ the missing row condition numbers will be returned</p>
 
 <dl><dt id="arg-files">files<a class="anchor" aria-label="anchor" href="#arg-files"></a></dt>
 <dd><p>vector of file names referring to the saved simulation files.
-E.g. <code>c('mysim-1.rds', 'mysim-2.rds', ...)</code></p></dd>
+E.g. <code>c('mysim-1.rds', 'mysim-2.rds', ...)</code>. Default assumes
+that all the files are available in the current working directory</p></dd>
 
 
 <dt id="arg-min">min<a class="anchor" aria-label="anchor" href="#arg-min"></a></dt>

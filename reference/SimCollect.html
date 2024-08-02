@@ -68,7 +68,7 @@ nodes/computing cores (e.g., see <code><a href="runArraySimulation.html">runArra
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SimCollect</span><span class="op">(</span></span>
-<span>  files <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  files <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  select <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  check.only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -85,12 +85,15 @@ nodes/computing cores (e.g., see <code><a href="runArraySimulation.html">runArra
 
 
 <dl><dt id="arg-files">files<a class="anchor" aria-label="anchor" href="#arg-files"></a></dt>
-<dd><p>a <code>character</code> vector containing the names of the simulation's final <code>.rds</code> files</p></dd>
+<dd><p>a <code>character</code> vector containing the names of the simulation's final <code>.rds</code> files.
+Default assumes that the current working directory contains all the files</p></dd>
 
 
 <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>(optional) name of .rds file to save aggregate simulation file to. If not specified
-then the results will only be returned in the R console</p></dd>
+then the results will only be returned in the R console. Note that you probably
+want to save this one level higher than where the files are listed (e.g.,
+<code>filename = '../mysim'</code>)</p></dd>
 
 
 <dt id="arg-select">select<a class="anchor" aria-label="anchor" href="#arg-select"></a></dt>
