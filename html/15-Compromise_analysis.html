@@ -412,16 +412,16 @@ sim &lt;- runSimulation(design=Design, replications=100000,
                      summarise=Summarise)</code></pre>
 <pre><code>## 
 ## 
-Design: 1/1;   RAM Used: 280.5 Mb;   Replications: 100000;   Total Time: 0.00s 
+Design: 1/1;   RAM Used: 281 Mb;   Replications: 100000;   Total Time: 0.00s 
 ##  Conditions: N=100, d=0.3, alpha=0.05
 ## </code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 02m 7.47s</code></pre>
+## Simulation complete. Total execution time: 02m 9.40s</code></pre>
 <pre class="r"><code>sim</code></pre>
 <pre><code>## # A tibble: 1 × 9
 ##       N     d alpha      q REPLICATIONS SIM_TIME  RAM_USED       SEED COMPLETED 
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;     
-## 1   100   0.3  0.05 8.8326       100000 02m 7.47s 281.4 Mb 1185262641 Mon Jul  …</code></pre>
+## 1   100   0.3  0.05 8.8326       100000 02m 9.40s 281.9 Mb 1185262641 Thu Aug  …</code></pre>
 <p>However, because <code>store_results=TRUE</code> is used (the default) the results can be <code>reSummarise()</code>ed using a different <span class="math inline">\(\alpha\)</span> cut-off, where it is instead possible to obtain some target <span class="math inline">\(q\)</span> given the stored stimulation results. For example,</p>
 <pre class="r"><code># compute beta/alpha ratio given different alpha
 compromise &lt;- function(alpha, sim, Design){
@@ -529,16 +529,16 @@ sim &lt;- runSimulation(design=Design, replications=100000,
                      summarise=Summarise, store_results=TRUE)</code></pre>
 <pre><code>## 
 ## 
-Design: 1/1;   RAM Used: 283.9 Mb;   Replications: 100000;   Total Time: 0.00s 
+Design: 1/1;   RAM Used: 284.4 Mb;   Replications: 100000;   Total Time: 0.00s 
 ##  Conditions: N=100, d=0.3, alpha=0.05
 ## </code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 03m 34.66s</code></pre>
+## Simulation complete. Total execution time: 03m 37.43s</code></pre>
 <pre class="r"><code>sim</code></pre>
 <pre><code>## # A tibble: 1 × 9
 ##       N     d alpha      q REPLICATIONS SIM_TIME   RAM_USED       SEED COMPLETED
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;    
-## 1   100   0.3  0.05 8.7932       100000 03m 34.66s 285.4 Mb 1739255291 Mon Jul …</code></pre>
+## 1   100   0.3  0.05 8.7932       100000 03m 37.43s 285.9 Mb 1739255291 Thu Aug …</code></pre>
 <pre class="r"><code># compute beta/alpha ratio given different alpha
 compromise &lt;- function(alpha, sim, Design){
     Design$alpha &lt;- alpha
