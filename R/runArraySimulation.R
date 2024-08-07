@@ -228,9 +228,9 @@
 #' dir('sim/')
 #'
 #' # check that all files saved
-#' SimCheck(dir('sim/'))
-#'
 #' setwd('sim')
+#' SimCheck()
+#'
 #' condition14 <- readRDS('condition-14.rds')
 #' condition14
 #' SimResults(condition14)
@@ -314,15 +314,15 @@ runArraySimulation <- function(design, ..., replications,
     stopifnot(!missing(filename))
     if(grepl('-', filename))
         stop('filename cannot contain the character \"-\" as this is used in the suffix')
-    filename_suffix <- paste0("-", array2row(arrayID))
     stopifnot(nrow(design) > 1L)
     stopifnot("arrayID is not a single integer identifier"=
                   length(arrayID) == 1L && is.numeric(arrayID) && !is.na(arrayID))
+    rowpick <- array2row(arrayID)
+    filename_suffix <- paste0("-", rowpick)
     stopifnot(!missing(replications))
     if(length(replications) > 1L)
-        replications <- replications[arrayID]
-    stopifnot(arrayID %in% 1L:nrow(design))
-    rowpick <- array2row(arrayID)
+        replications <- replications[rowpick]
+    stopifnot(rowpick %in% 1L:nrow(design))
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)
     if(!is.null(dirname)){
@@ -353,7 +353,7 @@ runArraySimulation <- function(design, ..., replications,
             results <- SimExtract(ret, 'results')
             condition <- attr(design, 'Design.ID')
             results <- dplyr::mutate(results, arrayID=arrayID, .before=1L)
-            results <- dplyr::mutate(results, condition=condition[arrayID], .before=1L)
+            results <- dplyr::mutate(results, condition=condition[row], .before=1L)
             attr(ret, "extra_info")$stored_results <- results
         }
         saveRDS(ret, paste0(filename[i], '.rds'))

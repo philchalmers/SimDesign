@@ -238,9 +238,9 @@ sapply(1:nrow(Design5), \(arrayID)
 dir('sim/')
 
 # check that all files saved
-SimCheck(dir('sim/'))
-
 setwd('sim')
+SimCheck()
+
 condition14 <- readRDS('condition-14.rds')
 condition14
 SimResults(condition14)
