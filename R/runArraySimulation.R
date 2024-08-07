@@ -355,8 +355,8 @@ runArraySimulation <- function(design, ..., replications,
             results <- dplyr::mutate(results, arrayID=arrayID, .before=1L)
             results <- dplyr::mutate(results, condition=condition[arrayID], .before=1L)
             attr(ret, "extra_info")$stored_results <- results
-            saveRDS(ret, paste0(filename[i], '.rds'))
         }
+        saveRDS(ret, paste0(filename[i], '.rds'))
     }
     if(length(rowpick) > 1L) ret <- NULL
     invisible(ret)
