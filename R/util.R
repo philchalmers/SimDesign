@@ -22,7 +22,7 @@ unique_filename <- function(filename, safe = TRUE, verbose = TRUE){
         }
         if(count > 1L)
             if(verbose && safe)
-                message(paste0('\nWARNING:\n\"', filename0, '\.rds" existed in the working directory.
+                message(paste0('\nWARNING:\n\"', filename0, '.rds\" existed in the working directory.
                                Using a unique file name instead.\n'))
     }
     filename
