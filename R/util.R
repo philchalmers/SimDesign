@@ -10,6 +10,7 @@ parent_env_fun <- function(){
 
 unique_filename <- function(filename, safe = TRUE, verbose = TRUE){
     if(!is.null(filename) && safe){ #save file
+        filename <- gsub('.rds', "", filename)
         filename0 <- filename
         count <- 1L
         # create a new file name if old one exists, and throw warning

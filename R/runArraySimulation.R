@@ -343,8 +343,7 @@ runArraySimulation <- function(design, ..., replications,
         seed <- genSeeds(design, iseed=iseed, arrayID=row)
         dsub <- design[row, , drop=FALSE]
         attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[row]
-        ret <- runSimulation(design=dsub, replications=replications,
-                             filename=filename[i], seed=seed,
+        ret <- runSimulation(design=dsub, replications=replications, seed=seed,
                              verbose=FALSE, save_details=save_details,
                              parallel=parallel, cl=cl,
                              control=control, save=FALSE, ...)
@@ -357,7 +356,7 @@ runArraySimulation <- function(design, ..., replications,
             attr(ret, "extra_info")$stored_results <- results
         }
         filename.u <- unique_filename(filename[i], safe=TRUE, verbose=FALSE)
-        saveRDS(ret, paste0(filename.u, '.rds'))
+        saveRDS(ret, filename.u)
     }
     if(length(rowpick) > 1L) ret <- NULL
     invisible(ret)
