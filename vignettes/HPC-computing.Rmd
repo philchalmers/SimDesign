@@ -97,11 +97,12 @@ As well, in order for this approach to be at all optimal the HPC cluster must as
 #SBATCH --cpus-per-task=96    ## Build a computer with 96 cores
 #SBATCH --mem-per-cpu=2G      ## Build a computer with 192GB of RAM 
 
-module load r/4.3.1
+module load r
 Rscript --vanilla SimDesign_simulation.R
 ```
 
-This job request a computing cluster be built with 192 GB of RAM with 96 CPUs, which the `SimDesign_simulation.R` is evaluated in, and is submitted to the scheduler via `sbatch slurmInstructions.slurm`.
+This job request a computing cluster be built with 192 GB of RAM with 96 CPUs (across whatever computing nodes
+are available; likely 2 or more), which the `SimDesign_simulation.R` is evaluated in, and is submitted to the scheduler via `sbatch slurmInstructions.slurm`.
 
 ### Limitations
 
@@ -218,7 +219,7 @@ When submitting to the HPC cluster you'll need to include information about how 
 #SBATCH --cpus-per-task=1
 #SBATCH --array=1-300         ## Slurm schedulers often allow up to 10,000 arrays
 
-module load r/4.3.1
+module load r
 Rscript --vanilla mySimDesignScript.R
 ```
 
@@ -322,6 +323,8 @@ After some time has elapsed, and the job evaluation is now complete, you'll have
 ```{r eval=FALSE}
 setwd('mysimfiles')
 library(SimDesign)
+SimCheck()  # check whether all the .rds files in the simulation are present
+
 Final <- SimCollect(files=dir())
 Final
 ```
@@ -341,13 +344,13 @@ This function detects which `Design300` rows belong to the original `Design` obj
 # save the aggregated simulation object for subsequent analyses
 saveRDS(Final, "../final_sim.rds")
 ```
-You should now consider moving this `"final_sim.rds"` off the Slurm landing node and onto your home computer via `scp` or your other favourite method (e.g., using `WinSCP` on Windows). You could also move all the saved `*.rds` files off your scp landing in there is need to inspect these files further (e.g., for debugging purposes).
+You should now consider moving this `"final_sim.rds"` off the Slurm landing node and onto your home computer via `scp` or your other favourite method (e.g., using `WinSCP` on Windows). You could also move all the saved `*.rds` files off your ssh landing in case there is need to inspect these files further (e.g., for debugging purposes).
 
 ***
 
 # Array jobs and multicore computing simultaneously
 
-Of course, nothing really stops you from mixing and matching the above ideas related to multicore computing and array jobs on Slurm and other HPC clusters. For example, if you wanted to take the original `design` object and submit batches of these instead (e.g., submit one or more rows of the `design` object as an array job), where within each array  multicore processing is requested, then something like the following would work just fine: 
+Of course, nothing really stops you from mixing and matching the above ideas related to multicore computing and array jobs on Slurm and other HPC clusters. For example, if you wanted to take the original `design` object and submit batches of these instead (e.g., submit one or more rows of the `design` object as an array job), where within each array  multicore processing is requested, then something like the following would work: 
 
 ```
 #!/bin/bash
@@ -360,7 +363,7 @@ Of course, nothing really stops you from mixing and matching the above ideas rel
 #SBATCH --cpus-per-task=16    ## 16 CPUs per array, likely built from 1 node
 #SBATCH --array=1-9           ## 9 array jobs 
 
-module load r/4.3.1
+module load r
 Rscript --vanilla mySimDesignScript.R
 ```
 
