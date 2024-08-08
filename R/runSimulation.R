@@ -1623,23 +1623,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(all(is.na(Final$FATAL_TERMINATION))) Final$FATAL_TERMINATION <- NULL
     if(is.null(Final$SEED)) Final$SEED <- NA
     if(!is.null(seed)) Final$SEED <- seed
-    if(!is.null(filename) && safe){ #save file
-        files <- dir(out_rootdir)
-        filename0 <- filename
-        count <- 1L
-        # create a new file name if old one exists, and throw warning
-        while(TRUE){
-            filename <- paste0(filename, '.rds')
-            if(filename %in% files){
-                filename <- paste0(filename0, '-', count)
-                count <- count + 1L
-            } else break
-        }
-        if(count > 1L)
-            if(verbose && save)
-                message(paste0('\nWARNING:\n', filename0, ' existed in the working directory.
-                               Using a unique file name instead.\n'))
-    }
+    filename <- unique_filename(filename, safe=safe, verbose=verbose)
     dn <- colnames(design)
     dn <- dn[!(dn %in% c('ID', 'REPLICATION'))]
     ten <- colnames(Final)[grepl('ERROR:', colnames(Final))]

@@ -8,6 +8,26 @@ parent_env_fun <- function(){
     return(nms[is_fun])
 }
 
+unique_filename <- function(filename, safe = TRUE, verbose = TRUE){
+    if(!is.null(filename) && safe){ #save file
+        filename0 <- filename
+        count <- 1L
+        # create a new file name if old one exists, and throw warning
+        while(TRUE){
+            filename <- paste0(filename, '.rds')
+            if(file.exists(filename)){
+                filename <- paste0(filename0, '-', count)
+                count <- count + 1L
+            } else break
+        }
+        if(count > 1L)
+            if(verbose && safe)
+                message(paste0('\nWARNING:\n\"', filename0, '\.rds" existed in the working directory.
+                               Using a unique file name instead.\n'))
+    }
+    filename
+}
+
 load_packages <- function(packages){
     if(!is.null(packages)){
         for(pack in packages){
