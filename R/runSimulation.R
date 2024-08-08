@@ -1700,6 +1700,7 @@ summary.SimDesign <- function(object, ...){
     ret$error_seeds <- NULL
     ret$warning_seeds <- NULL
     ret$summarise_list <- NULL
+    ret <- ret[!sapply(ret, is.null)]
     ret
 }
 
