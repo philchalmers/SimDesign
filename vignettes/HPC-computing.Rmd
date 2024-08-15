@@ -317,7 +317,7 @@ Once complete you can now go get a beer, coffee, or whatever else tickles your f
 
 # Post-evaluation: Combine the files 
 
-After some time has elapsed, and the job evaluation is now complete, you'll have access to the complete set of simulation files store in the file names `mysim-#.rds`. The final step in this process is then to collect all independent results into a simulation object that resembles what would have been returned from the canonical `runSimulation()` function. Fortunately, this is easy to do with `SimCollect()`. All you must do at this point is change to the working directory containing the simulation files and use `SimCollect()` with the files names to be aggregated:
+After some time has elapsed, and the job evaluation is now complete, you'll have access to the complete set of simulation files store in the file names `mysim-#.rds`. The final step in this process is then to collect all independent results into a simulation object that resembles what would have been returned from the canonical `runSimulation()` function. Fortunately, this is easy to do with `SimCollect()`. All you must do at this point is point to the working directory containing the simulation files and use `SimCollect()`:
 
 
 ```{r eval=FALSE}

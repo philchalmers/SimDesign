@@ -161,7 +161,7 @@ test_that('aggregate', {
     tmp2 <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect, max_errors=Inf,
                          replications = 2, parallel=FALSE, filename = 'newfile', save=TRUE,
                          verbose = FALSE)
-    Final <- SimCollect(c('this.rds', 'newfile.rds'))
+    Final <- SimCollect(files=c('this.rds', 'newfile.rds'))
     expect_is(Final, 'data.frame')
     expect_true(all(Final$REPLICATIONS == 4L))
     expect_equal(tmp$ERRORS + tmp2$ERRORS, Final$ERRORS)
@@ -310,7 +310,7 @@ test_that('aggregate', {
                              analyse=mycompute_ew, summarise=mycollect, verbose=FALSE,
                              filename='sim2')
 
-    ret <- SimCollect(c('sim1.rds', 'sim2.rds'), warning_details = TRUE)
+    ret <- SimCollect(files=c('sim1.rds', 'sim2.rds'), warning_details = TRUE)
     expect_true(all(na.omit(ret$WARNINGS == c(NA,NA,200,200,200,200,400,400))))
     expect_true(all(ret$ERRORS > 0 | is.na(ret$ERRORS)))
     expect_equal(sum(results$ERRORS + results2$ERRORS), sum(ret$ERRORS, na.rm=TRUE))
