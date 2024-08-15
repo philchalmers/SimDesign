@@ -15,7 +15,8 @@
   and `runArraySimulation()`
   
 - `SimCollect()` more efficient when combining a large number of files (e.g.,
-  greater than 5000 `.rds` files stored via `runArraySimulation()`)
+  greater than 5000 `.rds` files stored via `runArraySimulation()`). Gains a 
+  `dir` argument for this purpose as well so that a full directory can be specified
   
 - `SimCheck()` repurposed to check for missing files for `runArraySimulation()` 
 

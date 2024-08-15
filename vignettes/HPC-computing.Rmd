@@ -321,11 +321,10 @@ After some time has elapsed, and the job evaluation is now complete, you'll have
 
 
 ```{r eval=FALSE}
-setwd('mysimfiles')
 library(SimDesign)
-SimCheck()  # check whether all the .rds files in the simulation are present
+SimCheck('mysimfiles/')  # check whether all the .rds files in the simulation are present
 
-Final <- SimCollect(files=dir())
+Final <- SimCollect('mysimfiles/')
 Final
 ```
 
@@ -464,7 +463,7 @@ Related to early termination issue above is what to do about the missing replica
 To start, locate the simulation conditions in the aggregated result that do not meet the target replication criteria. This could be obtained via inspection of the aggregated results
 
 ```{r eval=FALSE}
-Final <- SimCollect(files=dir())
+Final <- SimCollect('mysimfiles/')
 Final
 ```
 
@@ -547,9 +546,9 @@ to
 Submit this job to compute all the missing replication information, which stores these files into the same working directory but with the new information stored as `mysim-301.rds` through `mysim-400.rds`. In this example, there will now be a total of 400 files that have been saved. Once complete, run 
 ```{r eval=FALSE}
 # See if any missing still
-SimCollect(files=dir(), check.only=TRUE)
+SimCollect('mysimfiles', check.only=TRUE)
 
 # Obtain complete simulation results
-Final <- SimCollect(files=dir())
+Final <- SimCollect('mysimfiles')
 ```
 one last time, which now reads in the complete set of 400 stored files instead of the previous 300, thereby obtaining the complete set of high-quality simulation results. Rinse and repeat if the same issue appears yet again on the second submission.

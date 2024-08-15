@@ -4,12 +4,14 @@
 \alias{SimCheck}
 \title{Check for missing files in array simulations}
 \usage{
-SimCheck(files = dir(), min = 1L, max = NULL)
+SimCheck(dir = NULL, files = NULL, min = 1L, max = NULL)
 }
 \arguments{
+\item{dir}{character vector input indicating the directory
+containing the \code{.rds} files (see \code{files})}
+
 \item{files}{vector of file names referring to the saved simulation files.
-E.g. \code{c('mysim-1.rds', 'mysim-2.rds', ...)}. Default assumes
-that all the files are available in the current working directory}
+E.g. \code{c('mysim-1.rds', 'mysim-2.rds', ...)}}
 
 \item{min}{minimum number after the \code{'-'} deliminator. Default is 1}
 
@@ -24,9 +26,12 @@ the missing row condition numbers will be returned
 \examples{
 \dontrun{
 
+# if files are in mysimfiles/ directory
+SimCheck('mysimfiles')
+
+# specifying files explicility
 setwd('mysimfiles/')
-files <- dir()
-SimCheck()
+SimCheck(files=dir())
 
 }
 

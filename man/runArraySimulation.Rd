@@ -238,19 +238,17 @@ sapply(1:nrow(Design5), \(arrayID)
 dir('sim/')
 
 # check that all files saved
-setwd('sim')
-SimCheck()
+SimCheck('sim/')
 
-condition14 <- readRDS('condition-14.rds')
+condition14 <- readRDS('sim/condition-14.rds')
 condition14
 SimResults(condition14)
 
 # aggregate simulation results into single file
-final <- SimCollect(files=dir())
+final <- SimCollect('sim/')
 final
 
 # clean simulation directory
-setwd('..')
 SimClean(dirs='sim/')
 
 
@@ -279,22 +277,18 @@ sapply(1:3, \(arrayID)
 # list saved files
 dir('sim/')
 
-setwd('sim')
-
 # note that all row conditions are still stored separately, though note that
 #  arrayID is now 2 instead
-condition14 <- readRDS('condition-14.rds')
+condition14 <- readRDS('sim/condition-14.rds')
 condition14
 SimResults(condition14)
 
 # aggregate simulation results into single file
-final <- SimCollect(files=dir())
+final <- SimCollect('sim/')
 final
 
 # clean simulation directory
-setwd('..')
 SimClean(dirs='sim/')
-
 
 }
 

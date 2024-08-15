@@ -8,13 +8,14 @@
 #' use as the random numbers will tend to correlate the more it is used) or run independently across different
 #' nodes/computing cores (e.g., see \code{\link{runArraySimulation}}.
 #'
+#'
+#' @param dir a \code{character} vector pointing to the directory name containing the \code{.rds} files.
+#'   All \code{.rds} files in this directory will be used. For greater specificity use the
+#'   \code{files} argument instead
 #' @param files a \code{character} vector containing the names of the simulation's final \code{.rds} files.
-#'   Default assumes that the current working directory contains all the files
 #'
 #' @param filename (optional) name of .rds file to save aggregate simulation file to. If not specified
-#'   then the results will only be returned in the R console. Note that you probably
-#'   want to save this one level higher than where the files are listed (e.g.,
-#'   \code{filename = '../mysim'})
+#'   then the results will only be returned in the R console.
 #'
 #' @param select a character vector indicating columns to variables to select from the
 #'   \code{SimExtract(what='results')} information. This is mainly useful when RAM is an issue
@@ -50,7 +51,7 @@
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 #' \doi{10.1080/10691898.2016.1246953}
 #'
-#' @seealso \code{\link{runSimulation}}
+#' @seealso \code{\link{runSimulation}}, \code{\link{runArraySimulation}}
 #'
 #' @export
 #'
@@ -125,25 +126,32 @@
 #' }) |> invisible()
 #'
 #' # check that all replications satisfy target
-#' files <- paste0('sim_files/job-', 1:nrow(Design), ".rds")
-#' SimCollect(files = files, check.only = TRUE)
+#' SimCollect('sim_files/', check.only = TRUE)
 #'
 #' # this would have been returned were the target.rep supposed to be 1000
-#' SimCollect(files = files, check.only = TRUE, target.reps=1000)
+#' SimCollect('sim_files/', check.only = TRUE, target.reps=1000)
 #'
 #' # aggregate into single object
-#' sim <- SimCollect(files = paste0('sim_files/job-', 1:nrow(Design), ".rds"))
+#' sim <- SimCollect('sim_files/')
 #' sim
 #'
 #' SimClean(dir='sim_files/')
 #'
 #' }
-SimCollect <- function(files = dir(), filename = NULL,
+SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
                        select = NULL, check.only = FALSE,
                        target.reps = NULL,
                        warning_details = FALSE,
                        error_details = TRUE){
+    if(is.null(dir) && is.null(files))
+        stop('either dir or files must be specified')
+    if(!is.null(dir) && !is.null(files))
+        stop('dir OR files must be specified, not both')
     if(check.only) select <- 'REPLICATIONS'
+    if(!is.null(dir)){
+        files <- dir(dir)
+    } else dir <- './'
+    files <- paste0(dir, files)
     oldfiles <- files
     files <- oldfiles
     if(!is.null(files)){
@@ -152,7 +160,7 @@ SimCollect <- function(files = dir(), filename = NULL,
         return(invisible(NULL))
     }
     if(!is.null(filename))
-        if(filename %in% dir())
+        if(filename %in% dir(dir))
             stop(sprintf('File \'%s\' already exists in working directory', filename),
                  call.=FALSE)
     replications_only <- ifelse(!is.null(select) && length(select) == 1L &&

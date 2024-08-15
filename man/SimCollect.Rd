@@ -6,7 +6,8 @@
 \title{Collapse separate simulation files into a single result}
 \usage{
 SimCollect(
-  files = dir(),
+  dir = NULL,
+  files = NULL,
   filename = NULL,
   select = NULL,
   check.only = FALSE,
@@ -18,13 +19,14 @@ SimCollect(
 aggregate_simulations(...)
 }
 \arguments{
-\item{files}{a \code{character} vector containing the names of the simulation's final \code{.rds} files.
-Default assumes that the current working directory contains all the files}
+\item{dir}{a \code{character} vector pointing to the directory name containing the \code{.rds} files.
+All \code{.rds} files in this directory will be used. For greater specificity use the
+\code{files} argument instead}
+
+\item{files}{a \code{character} vector containing the names of the simulation's final \code{.rds} files.}
 
 \item{filename}{(optional) name of .rds file to save aggregate simulation file to. If not specified
-then the results will only be returned in the R console. Note that you probably
-want to save this one level higher than where the files are listed (e.g.,
-\code{filename = '../mysim'})}
+then the results will only be returned in the R console.}
 
 \item{select}{a character vector indicating columns to variables to select from the
 \code{SimExtract(what='results')} information. This is mainly useful when RAM is an issue
@@ -130,14 +132,13 @@ sapply(1:nrow(Design_long), \(i) {
 }) |> invisible()
 
 # check that all replications satisfy target
-files <- paste0('sim_files/job-', 1:nrow(Design), ".rds")
-SimCollect(files = files, check.only = TRUE)
+SimCollect('sim_files/', check.only = TRUE)
 
 # this would have been returned were the target.rep supposed to be 1000
-SimCollect(files = files, check.only = TRUE, target.reps=1000)
+SimCollect('sim_files/', check.only = TRUE, target.reps=1000)
 
 # aggregate into single object
-sim <- SimCollect(files = paste0('sim_files/job-', 1:nrow(Design), ".rds"))
+sim <- SimCollect('sim_files/')
 sim
 
 SimClean(dir='sim_files/')
@@ -154,7 +155,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
 }
 \seealso{
-\code{\link{runSimulation}}
+\code{\link{runSimulation}}, \code{\link{runArraySimulation}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}
