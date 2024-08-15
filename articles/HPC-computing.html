@@ -619,9 +619,9 @@ file names <code>mysim-#.rds</code>. The final step in this process is
 then to collect all independent results into a simulation object that
 resembles what would have been returned from the canonical
 <code><a href="../reference/runSimulation.html">runSimulation()</a></code> function. Fortunately, this is easy to do
-with <code><a href="../reference/SimCollect.html">SimCollect()</a></code>. All you must do at this point is change
+with <code><a href="../reference/SimCollect.html">SimCollect()</a></code>. All you must do at this point is point
 to the working directory containing the simulation files and use
-<code><a href="../reference/SimCollect.html">SimCollect()</a></code> with the files names to be aggregated:</p>
+<code><a href="../reference/SimCollect.html">SimCollect()</a></code>:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/SimCheck.html">SimCheck</a></span><span class="op">(</span><span class="st">'mysimfiles/'</span><span class="op">)</span>  <span class="co"># check whether all the .rds files in the simulation are present</span></span>
