@@ -68,7 +68,8 @@ nodes/computing cores (e.g., see <code><a href="runArraySimulation.html">runArra
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SimCollect</span><span class="op">(</span></span>
-<span>  files <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  files <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  select <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  check.only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -84,16 +85,19 @@ nodes/computing cores (e.g., see <code><a href="runArraySimulation.html">runArra
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-files">files<a class="anchor" aria-label="anchor" href="#arg-files"></a></dt>
-<dd><p>a <code>character</code> vector containing the names of the simulation's final <code>.rds</code> files.
-Default assumes that the current working directory contains all the files</p></dd>
+<dl><dt id="arg-dir">dir<a class="anchor" aria-label="anchor" href="#arg-dir"></a></dt>
+<dd><p>a <code>character</code> vector pointing to the directory name containing the <code>.rds</code> files.
+All <code>.rds</code> files in this directory will be used. For greater specificity use the
+<code>files</code> argument instead</p></dd>
+
+
+<dt id="arg-files">files<a class="anchor" aria-label="anchor" href="#arg-files"></a></dt>
+<dd><p>a <code>character</code> vector containing the names of the simulation's final <code>.rds</code> files.</p></dd>
 
 
 <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>(optional) name of .rds file to save aggregate simulation file to. If not specified
-then the results will only be returned in the R console. Note that you probably
-want to save this one level higher than where the files are listed (e.g.,
-<code>filename = '../mysim'</code>)</p></dd>
+then the results will only be returned in the R console.</p></dd>
 
 
 <dt id="arg-select">select<a class="anchor" aria-label="anchor" href="#arg-select"></a></dt>
@@ -146,7 +150,7 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="runSimulation.html">runSimulation</a></code></p></div>
+    <div class="dont-index"><p><code><a href="runSimulation.html">runSimulation</a></code>, <code><a href="runArraySimulation.html">runArraySimulation</a></code></p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -223,14 +227,13 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># check that all replications satisfy target</span></span></span>
-<span class="r-in"><span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'sim_files/job-'</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Design</span><span class="op">)</span>, <span class="st">".rds"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">SimCollect</span><span class="op">(</span>files <span class="op">=</span> <span class="va">files</span>, check.only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">SimCollect</span><span class="op">(</span><span class="st">'sim_files/'</span>, check.only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># this would have been returned were the target.rep supposed to be 1000</span></span></span>
-<span class="r-in"><span><span class="fu">SimCollect</span><span class="op">(</span>files <span class="op">=</span> <span class="va">files</span>, check.only <span class="op">=</span> <span class="cn">TRUE</span>, target.reps<span class="op">=</span><span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">SimCollect</span><span class="op">(</span><span class="st">'sim_files/'</span>, check.only <span class="op">=</span> <span class="cn">TRUE</span>, target.reps<span class="op">=</span><span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># aggregate into single object</span></span></span>
-<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">SimCollect</span><span class="op">(</span>files <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'sim_files/job-'</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Design</span><span class="op">)</span>, <span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">SimCollect</span><span class="op">(</span><span class="st">'sim_files/'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="SimClean.html">SimClean</a></span><span class="op">(</span>dir<span class="op">=</span><span class="st">'sim_files/'</span><span class="op">)</span></span></span>

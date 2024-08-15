@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2024-08-08</h4>
+            <h4 data-toc-skip class="date">2024-08-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/HPC-computing.Rmd" class="external-link"><code>vignettes/HPC-computing.Rmd</code></a></small>
       <div class="d-none name"><code>HPC-computing.Rmd</code></div>
@@ -623,11 +623,10 @@ with <code><a href="../reference/SimCollect.html">SimCollect()</a></code>. All y
 to the working directory containing the simulation files and use
 <code><a href="../reference/SimCollect.html">SimCollect()</a></code> with the files names to be aggregated:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">'mysimfiles'</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/SimCheck.html">SimCheck</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># check whether all the .rds files in the simulation are present</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/SimCheck.html">SimCheck</a></span><span class="op">(</span><span class="st">'mysimfiles/'</span><span class="op">)</span>  <span class="co"># check whether all the .rds files in the simulation are present</span></span>
 <span></span>
-<span><span class="va">Final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimCollect.html">SimCollect</a></span><span class="op">(</span>files<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">Final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimCollect.html">SimCollect</a></span><span class="op">(</span><span class="st">'mysimfiles/'</span><span class="op">)</span></span>
 <span><span class="va">Final</span></span></code></pre></div>
 <pre><code># A tibble: 3 × 8
       N    mean  median REPLICATIONS   SIM_TIME  COMPLETED               
@@ -827,7 +826,7 @@ ultimately resulting in sub-optimal results.</p>
 that do not meet the target replication criteria. This could be obtained
 via inspection of the aggregated results</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimCollect.html">SimCollect</a></span><span class="op">(</span>files<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">Final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimCollect.html">SimCollect</a></span><span class="op">(</span><span class="st">'mysimfiles/'</span><span class="op">)</span></span>
 <span><span class="va">Final</span></span></code></pre></div>
 <pre><code># A tibble: 3 × 8
       N    mean  median REPLICATIONS   SIM_TIME  COMPLETED               
@@ -930,10 +929,10 @@ new information stored as <code>mysim-301.rds</code> through
 of 400 files that have been saved. Once complete, run</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># See if any missing still</span></span>
-<span><span class="fu"><a href="../reference/SimCollect.html">SimCollect</a></span><span class="op">(</span>files<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span>, check.only<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/SimCollect.html">SimCollect</a></span><span class="op">(</span><span class="st">'mysimfiles'</span>, check.only<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Obtain complete simulation results</span></span>
-<span><span class="va">Final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimCollect.html">SimCollect</a></span><span class="op">(</span>files<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">Final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimCollect.html">SimCollect</a></span><span class="op">(</span><span class="st">'mysimfiles'</span><span class="op">)</span></span></code></pre></div>
 <p>one last time, which now reads in the complete set of 400 stored
 files instead of the previous 300, thereby obtaining the complete set of
 high-quality simulation results. Rinse and repeat if the same issue
