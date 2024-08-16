@@ -4,7 +4,7 @@
 parent_env_fun <- function(){
     nms <- ls(envir = globalenv())
     is_fun <- sapply(nms, function(x, envir) is.function(get(x, envir=envir)),
-                     envir = parent.frame(2L))
+                     envir = globalenv())
     return(nms[is_fun])
 }
 
