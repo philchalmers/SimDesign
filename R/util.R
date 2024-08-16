@@ -1,10 +1,10 @@
 .SIMDENV <- new.env(parent=emptyenv())
 
 # return a character vector of functions defined in .GlobalEnv
-parent_env_fun <- function(){
-    nms <- ls(envir = globalenv())
+parent_env_fun <- function(level=2){
+    nms <- ls(envir = parent.frame(level))
     is_fun <- sapply(nms, function(x, envir) is.function(get(x, envir=envir)),
-                     envir = globalenv())
+                     envir = parent.frame(level))
     return(nms[is_fun])
 }
 
@@ -942,7 +942,7 @@ valid_control.list <- function()
       "store_warning_seeds", "include_replication_index", "include_reps", "try_all_analyse",
       "allow_na", "allow_nan", "type", "print_RAM", "max_time", "max_RAM",
       "tol", "summarise.reg_data", "rel.tol", "k.success", "interpolate.R", "bolster",
-      "include_reps")
+      "include_reps", 'from.runArraySimulation')
 
 valid_save_details.list <- function()
     c("safe", "compname", "out_rootdir", "save_results_dirname", "save_results_filename",

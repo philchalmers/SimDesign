@@ -1274,7 +1274,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             on.exit(undebug(Functions[[debug]]), add = TRUE)
         }
     }
-    export_funs <- parent_env_fun()
+    export_funs <- if(!is.null(control$from.runArraySimulation))
+        parent_env_fun(3L) else parent_env_fun()
     if(parallel){
         if(!useFuture && is.null(cl)){
             cl <- parallel::makeCluster(ncores, type=type)
