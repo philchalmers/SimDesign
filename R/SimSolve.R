@@ -553,7 +553,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                              generate=generate, analyse=analyse,
                              summarise=summarise, parallel=parallel, cl=cl,
                              save=FALSE, resume=FALSE, verbose=FALSE,
-                             control=.SIMDENV$FromSimSolve$control, ...)
+                             control=.SIMDENV$FromSimSolve$control, ...) |>
+            manageWarnings(suppress="\'package:stats\' may not be available when loading")
         val <- ifelse(is.list(ret), ret[[1L]], ret[1L])
         if(store){
             pick <- min(which(sapply(.SIMDENV$stored_results, is.null)))
