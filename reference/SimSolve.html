@@ -253,14 +253,46 @@ iteration</p></dd>
 
 <dt id="arg-wait-time">wait.time<a class="anchor" aria-label="anchor" href="#arg-wait-time"></a></dt>
 <dd><p>(optional) argument passed to <code><a href="PBA.html">PBA</a></code> to indicate
-  the time to wait (specified in minutes) per row in the <code>Design</code> object
-  rather than using pre-determined termination criteria based on the estimates.
-  For example, if three three conditions were defined in
-  <code>Design</code>, and <code>wait.time="5"</code>,
-  then the total search time till terminate after 15 minutes regardless of
-  independently specified termination criteria in <code>control</code>. Note that
-  <code>maxiter</code> is still used alongside <code>wait.time</code>, therefore this should
-  be increased as well (e.g., to <code>maxiter = 1000</code>)</p>
+the time to wait (specified in minutes) per row in the <code>Design</code> object
+rather than using pre-determined termination criteria based on the estimates.
+For example, if three three conditions were defined in
+<code>Design</code>, and <code>wait.time="5"</code>,
+then the total search time till terminate after 15 minutes regardless of
+independently specified termination criteria in <code>control</code>. Note that
+<code>maxiter</code> is still used alongside <code>wait.time</code>, therefore this should
+be increased as well (e.g., to <code>maxiter = 1000</code>)</p></dd>
+
+
+<dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
+<dd><p>see <code><a href="runSimulation.html">runSimulation</a></code></p></dd>
+
+
+<dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
+<dd><p>type of cluster object to define. If <code>type</code> used in <code>plot</code>
+then can be <code>'density'</code> to plot the density of the iteration history
+after the burn-in stage, <code>'iterations'</code> for a bubble plot with inverse
+replication weights. If not specified then the default PBA
+plots are provided (see <code><a href="PBA.html">PBA</a></code>)</p></dd>
+
+
+<dt id="arg-maxiter">maxiter<a class="anchor" aria-label="anchor" href="#arg-maxiter"></a></dt>
+<dd><p>the maximum number of iterations (default 100)</p></dd>
+
+
+<dt id="arg-check-interval">check.interval<a class="anchor" aria-label="anchor" href="#arg-check-interval"></a></dt>
+<dd><p>logical; should an initial check be made to determine
+whether <code>f(interval[1L])</code> and <code>f(interval[2L])</code> have opposite
+signs? If <code>FALSE</code>, the specified <code>interval</code> is assumed to contain a root,
+where <code>f(interval[1]) &lt; 0</code> and <code>f(interval[2] &gt; 0</code>. Default is <code>TRUE</code></p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>logical; print information to the console?</p></dd>
+
+
+<dt id="arg-control">control<a class="anchor" aria-label="anchor" href="#arg-control"></a></dt>
+<dd><p>a <code>list</code> of the algorithm control parameters. If not specified,
+  the defaults described below are used.</p>
 <dl><dt><code>tol</code></dt>
 <dd><p>tolerance criteria for early termination (.1 for
      <code>integer = TRUE</code> searches; .00025 for non-integer searches</p></dd>
@@ -296,38 +328,6 @@ iteration</p></dd>
 
 
 </dl></dd>
-
-
-<dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
-<dd><p>see <code><a href="runSimulation.html">runSimulation</a></code></p></dd>
-
-
-<dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>type of cluster object to define. If <code>type</code> used in <code>plot</code>
-then can be <code>'density'</code> to plot the density of the iteration history
-after the burn-in stage, <code>'iterations'</code> for a bubble plot with inverse
-replication weights. If not specified then the default PBA
-plots are provided (see <code><a href="PBA.html">PBA</a></code>)</p></dd>
-
-
-<dt id="arg-maxiter">maxiter<a class="anchor" aria-label="anchor" href="#arg-maxiter"></a></dt>
-<dd><p>the maximum number of iterations (default 100)</p></dd>
-
-
-<dt id="arg-check-interval">check.interval<a class="anchor" aria-label="anchor" href="#arg-check-interval"></a></dt>
-<dd><p>logical; should an initial check be made to determine
-whether <code>f(interval[1L])</code> and <code>f(interval[2L])</code> have opposite
-signs? If <code>FALSE</code>, the specified <code>interval</code> is assumed to contain a root,
-where <code>f(interval[1]) &lt; 0</code> and <code>f(interval[2] &gt; 0</code>. Default is <code>TRUE</code></p></dd>
-
-
-<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p>logical; print information to the console?</p></dd>
-
-
-<dt id="arg-control">control<a class="anchor" aria-label="anchor" href="#arg-control"></a></dt>
-<dd><p>a <code>list</code> of the algorithm control parameters. If not specified,
-the defaults described below are used.</p></dd>
 
 
 <dt id="arg-predci">predCI<a class="anchor" aria-label="anchor" href="#arg-predci"></a></dt>
