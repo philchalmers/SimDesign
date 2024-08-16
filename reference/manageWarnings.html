@@ -247,9 +247,14 @@ with the SimDesign Package. <code>The Quantitative Methods for Psychology, 16</c
 <span class="r-in"><span><span class="fu">fun</span><span class="op">(</span>warn_trailing<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">fun</span><span class="op">(</span>warn_trailing<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># does not match because string is not identical</span></span></span>
+<span class="r-in"><span><span class="co"># partial match, therefore suppressed</span></span></span>
 <span class="r-in"><span><span class="fu">fun</span><span class="op">(</span>warn_trailing<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">manageWarnings</span><span class="op">(</span>suppress<span class="op">=</span><span class="st">"Message with lots of random trailings: "</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># multiple suppress strings</span></span></span>
+<span class="r-in"><span><span class="fu">fun</span><span class="op">(</span>warn_trailing<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">manageWarnings</span><span class="op">(</span>suppress<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Message with lots of random trailings: "</span>,</span></span>
+<span class="r-in"><span>                           <span class="st">"Suppress this too"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># could also use .* to catch all remaining characters (finer regex control)</span></span></span>
 <span class="r-in"><span><span class="fu">fun</span><span class="op">(</span>warn_trailing<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
