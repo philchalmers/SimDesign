@@ -2,6 +2,12 @@
 
 ## Changes in SimDesign 2.17
 
+- `manageWarnings(... suppress)` argument now allows for partial matching 
+  and other regex inputs
+
+- `SimCollect()` now automatically checks whether all files are expected to 
+  be present via `SimCheck()`
+
 - `runArraySimulation()` gains a `array2row` function to allow array jobs
   to index multiple conditions in the `design` object (default uses one 
   `arrayID` per row, the original behaviour)
