@@ -150,9 +150,14 @@ fun(warn_trailing=TRUE)
 fun(warn_trailing=TRUE)
 fun(warn_trailing=TRUE)
 
-# does not match because string is not identical
+# partial match, therefore suppressed
 fun(warn_trailing=TRUE) |>
   manageWarnings(suppress="Message with lots of random trailings: ")
+
+# multiple suppress strings
+fun(warn_trailing=TRUE) |>
+  manageWarnings(suppress=c("Message with lots of random trailings: ",
+                           "Suppress this too"))
 
 # could also use .* to catch all remaining characters (finer regex control)
 fun(warn_trailing=TRUE) |>

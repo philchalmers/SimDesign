@@ -152,9 +152,14 @@
 #' fun(warn_trailing=TRUE)
 #' fun(warn_trailing=TRUE)
 #'
-#' # does not match because string is not identical
+#' # partial match, therefore suppressed
 #' fun(warn_trailing=TRUE) |>
 #'   manageWarnings(suppress="Message with lots of random trailings: ")
+#'
+#' # multiple suppress strings
+#' fun(warn_trailing=TRUE) |>
+#'   manageWarnings(suppress=c("Message with lots of random trailings: ",
+#'                            "Suppress this too"))
 #'
 #' # could also use .* to catch all remaining characters (finer regex control)
 #' fun(warn_trailing=TRUE) |>
@@ -240,8 +245,11 @@
 #'
 manageWarnings <- function(expr, warning2error = FALSE, suppress = NULL, ...){
     stopit <- function(message, warning2error, suppress, ...){
-        if(!is.null(suppress))
-            if(grepl(suppress, message, ...)) return(TRUE)
+        if(!is.null(suppress)){
+            match_suppress <- sapply(suppress, function(supp)
+                grepl(supp, message, ...))
+            if(any(match_suppress)) return(TRUE)
+        }
         if(is.null(warning2error)) stop(message, call.=FALSE)
         sapply(warning2error, function(warn){
             if(warn == "") return(invisible(NULL))
