@@ -89,10 +89,13 @@ messages to be raised).
 \examples{
 \dontrun{
 
-fun <- function(warn1=FALSE, warn2=FALSE, warn3=FALSE, error=FALSE){
+fun <- function(warn1=FALSE, warn2=FALSE, warn3=FALSE,
+                warn_trailing = FALSE, error=FALSE){
    if(warn1) warning('Message one')
    if(warn2) warning('Message two')
    if(warn3) warning('Message three')
+   if(warn_trailing) warning(sprintf('Message with lots of random trailings: \%s',
+                             paste0(sample(letters, sample(1:20, 1)), collapse=',')))
    if(error) stop('terminate function call')
    return('Returned from fun()')
 }
@@ -141,6 +144,20 @@ fun(warn2=TRUE) |>
 ret <- fun(warn3=TRUE) |>
             manageWarnings(c("Message one", "Message two"))
 ret
+
+# suppress warnings that have only partial matching
+fun(warn_trailing=TRUE)
+fun(warn_trailing=TRUE)
+fun(warn_trailing=TRUE)
+
+# does not match because string is not identical
+fun(warn_trailing=TRUE) |>
+  manageWarnings(suppress="Message with lots of random trailings: ")
+
+# could also use .* to catch all remaining characters (finer regex control)
+fun(warn_trailing=TRUE) |>
+  manageWarnings(suppress="Message with lots of random trailings: .*")
+
 
 ###########
 # Combine with quiet() and suppress argument to suppress innocuous messages
