@@ -183,7 +183,7 @@ SAGE Publications, 38</em>, 471-479.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="runSimulation.html">runSimulation</a></span><span class="op">(</span>design<span class="op">=</span><span class="va">Design</span>, replications<span class="op">=</span><span class="fl">10</span>,</span></span>
 <span class="r-in"><span>                     generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>,</span></span>
-<span class="r-in"><span>                     summarise<span class="op">=</span><span class="va">Summarise</span>, store_results<span class="op">=</span><span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                     summarise<span class="op">=</span><span class="va">Summarise</span>, store_results<span class="op">=</span><span class="cn">TRUE</span>, save<span class="op">=</span><span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                     progress<span class="op">=</span><span class="cn">FALSE</span>, control<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>print_RAM<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span></span></span>
 <span class="r-in"><span></span></span>
@@ -224,7 +224,7 @@ SAGE Publications, 38</em>, 471-479.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sim2</span> <span class="op">&lt;-</span> <span class="fu"><a href="runSimulation.html">runSimulation</a></span><span class="op">(</span>design<span class="op">=</span><span class="va">Design</span>, replications<span class="op">=</span><span class="fl">100</span>,</span></span>
 <span class="r-in"><span>                     generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>,</span></span>
-<span class="r-in"><span>                     summarise<span class="op">=</span><span class="va">Summarise</span>, store_results<span class="op">=</span><span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                     summarise<span class="op">=</span><span class="va">Summarise</span>, store_results<span class="op">=</span><span class="cn">TRUE</span>, save<span class="op">=</span><span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                     progress<span class="op">=</span><span class="cn">FALSE</span>, control<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>print_RAM<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim2</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">sim2</span><span class="op">$</span><span class="va">REPLICATIONS</span><span class="op">)</span> <span class="co"># more replications in total</span></span></span>
@@ -264,7 +264,7 @@ SAGE Publications, 38</em>, 471-479.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sim3</span> <span class="op">&lt;-</span> <span class="fu"><a href="runSimulation.html">runSimulation</a></span><span class="op">(</span>design<span class="op">=</span><span class="va">Design</span>, replications<span class="op">=</span><span class="fl">50</span>,</span></span>
 <span class="r-in"><span>                      generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>,</span></span>
-<span class="r-in"><span>                      summarise<span class="op">=</span><span class="va">Summarise</span>, store_results<span class="op">=</span><span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                      summarise<span class="op">=</span><span class="va">Summarise</span>, store_results<span class="op">=</span><span class="cn">TRUE</span>, save<span class="op">=</span><span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                      progress<span class="op">=</span><span class="cn">FALSE</span>, control<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>print_RAM<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim3</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">sim3</span><span class="op">$</span><span class="va">REPLICATIONS</span><span class="op">)</span></span></span>
