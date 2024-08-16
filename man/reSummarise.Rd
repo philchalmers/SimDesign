@@ -102,7 +102,7 @@ Summarise2 <- function(condition, results, fixed_objects){
 res2 <- reSummarise(Summarise2, dir = 'simresults/')
 res2
 
-SimClean('simresults/')
+SimClean(dir='simresults/')
 
 }
 

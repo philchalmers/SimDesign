@@ -97,7 +97,7 @@
 #' res2 <- reSummarise(Summarise2, dir = 'simresults/')
 #' res2
 #'
-#' SimClean('simresults/')
+#' SimClean(dir='simresults/')
 #'
 #' }
 #'

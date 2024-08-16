@@ -10,7 +10,7 @@ bootPredict(
   generate,
   analyse,
   summarise,
-  fixed_objects,
+  fixed_objects = NULL,
   ...,
   Rstar = seq(100, 500, by = 100),
   boot_draws = 1000
@@ -73,8 +73,8 @@ Analyse <- function(condition, dat, fixed_objects) {
 }
 
 Summarise <- function(condition, results, fixed_objects) {
-    ret <- c(mu_bias = bias(results[,1], 0),
-             mu_coverage = ECR(results[,2:3], parameter = 0))
+    ret <- c(mu_bias = bias(results[,"mean"], 0),
+             mu_coverage = ECR(results[,c("lower", "upper")], parameter = 0))
     ret
 }
 

@@ -1028,10 +1028,8 @@ ECR <- function(CIs, parameter, tails = FALSE, CI_width = FALSE,
     if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
     if(length(parameter) != 1L) stopifnot(length(parameter) == nrow(CIs))
-    if(CIs[1,1] > CIs[1,2]){
-        warning('First column not less than second. Temporarily switching')
-        CIs <- cbind(CIs[,2L], CIs[,1L])
-    }
+    if(any(CIs[,1] > CIs[,2]))
+        stop('lower CIs higher than upper CIs. Please inspect')
     if(CI_width){
         ret <- mean(CIs[,2L] - CIs[,1L])
         if(!is.null(names))

@@ -91,7 +91,7 @@ Summarise <- function(condition, results, fixed_objects) {
 
 sim <- runSimulation(design=Design, replications=10,
                      generate=Generate, analyse=Analyse,
-                     summarise=Summarise, store_results=TRUE,
+                     summarise=Summarise, store_results=TRUE, save=FALSE,
                      progress=FALSE, control=list(print_RAM=FALSE))
 sim
 
@@ -132,7 +132,7 @@ Design
 
 sim2 <- runSimulation(design=Design, replications=100,
                      generate=Generate, analyse=Analyse,
-                     summarise=Summarise, store_results=TRUE,
+                     summarise=Summarise, store_results=TRUE, save=FALSE,
                      progress=FALSE, control=list(print_RAM=FALSE))
 sim2
 sum(sim2$REPLICATIONS) # more replications in total
@@ -172,7 +172,7 @@ Design
 
 sim3 <- runSimulation(design=Design, replications=50,
                       generate=Generate, analyse=Analyse,
-                      summarise=Summarise, store_results=TRUE,
+                      summarise=Summarise, store_results=TRUE, save=FALSE,
                       progress=FALSE, control=list(print_RAM=FALSE))
 sim3
 sum(sim3$REPLICATIONS)
