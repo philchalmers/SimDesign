@@ -1,6 +1,9 @@
 # NEWS file for SimDesign
 
-## Changes in SimDesign 2.17
+## Changes in SimDesign 2.17.1
+
+- `runArraySimulation()` now correctly searches in `.GlobalEnv` for user
+  defined functions
 
 - `manageWarnings(... suppress)` argument now allows for partial matching 
   and other regex inputs
