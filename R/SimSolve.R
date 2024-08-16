@@ -116,9 +116,6 @@
 #'   is consistently between [.795, .805] then \code{predCI.tol = .01} to indicate this
 #'   tolerance range
 #'
-#' @param control a \code{list} of the algorithm control parameters. If not specified,
-#'   the defaults described below are used.
-#'
 #' @param wait.time (optional) argument passed to \code{\link{PBA}} to indicate
 #'   the time to wait (specified in minutes) per row in the \code{Design} object
 #'   rather than using pre-determined termination criteria based on the estimates.
@@ -128,6 +125,9 @@
 #'   independently specified termination criteria in \code{control}. Note that
 #'   \code{maxiter} is still used alongside \code{wait.time}, therefore this should
 #'   be increased as well (e.g., to \code{maxiter = 1000})
+#'
+#' @param control a \code{list} of the algorithm control parameters. If not specified,
+#'   the defaults described below are used.
 #'
 #' \describe{
 #'    \item{\code{tol}}{tolerance criteria for early termination (.1 for
