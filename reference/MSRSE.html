@@ -45,7 +45,7 @@ closely matched the sampling variability of the parameter estimates."></head><bo
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Compute the relative performance behavior of collections of standard errors</h1>
-      <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/v2.17/R/summary_functions.R" class="external-link"><code>R/summary_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/R/summary_functions.R" class="external-link"><code>R/summary_functions.R</code></a></small>
       <div class="d-none name"><code>MSRSE.Rd</code></div>
     </div>
 
@@ -145,17 +145,9 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="runSimulation.html">runSimulation</a></span><span class="op">(</span>replications<span class="op">=</span><span class="fl">500</span>, generate<span class="op">=</span><span class="va">Generate</span>,</span></span>
 <span class="r-in"><span>                         analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 1/1;   RAM Used: 128.6 Mb;   Replications: 500;   Total Time: 0.00s </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: dummy_run=NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Simulation complete. Total execution time: 0.48s</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in nms[is_fun]:</span> invalid subscript type 'list'</span>
 <span class="r-in"><span><span class="va">results</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   `SE.(Intercept)`   SE.X REPLICATIONS SIM_TIME RAM_USED      SEED COMPLETED    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>          0.988<span style="text-decoration: underline;">22</span> 1.178<span style="text-decoration: underline;">1</span>          500 0.48s    129.7 Mb 402<span style="text-decoration: underline;">147</span>477 Fri Aug 16 1…</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'results' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
