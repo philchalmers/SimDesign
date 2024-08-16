@@ -2,7 +2,7 @@
 #'
 #' Given the saved files from a \code{\link{runArraySimulation}} remote
 #' evaluation check whether all \code{.rds} files have been saved. If missing
-#' the missing row condition numbers will be returned
+#' the missing row condition numbers will be returned.
 #'
 #' @param dir character vector input indicating the directory
 #'   containing the \code{.rds} files (see \code{files})
@@ -13,9 +13,11 @@
 #' @param min minimum number after the \code{'-'} deliminator. Default is 1
 #'
 #' @param max maximum number after the \code{'-'} deliminator. If not specified
-#'   is taken to be the highest number of the \code{files} input
+#'   is extracted from the attributes in the first file
 #'
-#' @seealso \code{\link{runArraySimulation}}
+#' @seealso \code{\link{runArraySimulation}}, \code{\link{SimCollect}}
+#'
+#' @return returns an invisible TRUE if all the files are present and FALSE otherwise
 #'
 #' @references
 #'
@@ -50,20 +52,18 @@ SimCheck <- function(dir = NULL, files = NULL, min = 1L, max = NULL){
     files <- paste0(dir, files)
     filename <- strsplit(files[1], '-')[[1L]][1L]
     if(is.null(max)){
-        subfiles <- gsub(paste0(filename, '-'), files, replacement = '')
-        subfiles <- gsub('.rds', subfiles, replacement = '')
-        max <- max(as.integer(subfiles))
+        tmp <- readRDS(files[1])
+        max <- attr(tmp, 'extra_info')$number_of_conditions
     }
     minmax <- min:max
     notin <- !(paste0(filename, '-', minmax, '.rds') %in% files)
     if(any(notin)){
-        cat(sprintf('The following row conditions were missing:\n%s\n',
+        warning(sprintf('The following row conditions were missing:\n%s\n',
             paste0(minmax[notin], collapse=',')))
-    } else
-        cat(sprintf('No missing conditions from %i to %i were detected\n', min, max))
+    }
     nonzero <- sapply(files, file.size) > 0
     if(any(!nonzero))
-        cat(sprintf('The following row conditions have nothing saved:\n%s\n',
+        warning(sprintf('The following row conditions have nothing saved:\n%s\n',
                     paste0(minmax[!nonzero], collapse=',')))
-    invisible(NULL)
+    invisible(any(notin) || any(nonzero))
 }

@@ -322,8 +322,8 @@ After some time has elapsed, and the job evaluation is now complete, you'll have
 
 ```{r eval=FALSE}
 library(SimDesign)
-SimCheck('mysimfiles/')  # check whether all the .rds files in the simulation are present
 
+# automatically checks whether all saved files are present via SimCheck()
 Final <- SimCollect('mysimfiles/')
 Final
 ```

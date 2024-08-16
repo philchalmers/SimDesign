@@ -227,8 +227,8 @@
 #' # list saved files
 #' dir('sim/')
 #'
-#' # check that all files saved
-#' SimCheck('sim/')
+#' # check that all files saved (warnings will be raised if missing files)
+#' SimCheck('sim/') |> isTRUE()
 #'
 #' condition14 <- readRDS('sim/condition-14.rds')
 #' condition14
@@ -341,6 +341,7 @@ runArraySimulation <- function(design, ..., replications,
                              verbose=FALSE, save_details=save_details,
                              parallel=parallel, cl=cl,
                              control=control, save=FALSE, ...)
+        attr(ret, 'extra_info')$number_of_conditions <- nrow(design)
         if(addArrayInfo && (is.null(dots$store_results) ||
            (!is.null(dots$store_results) && isTRUE(dots$store_results)))){
             results <- SimExtract(ret, 'results')

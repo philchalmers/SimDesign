@@ -16,12 +16,15 @@ E.g. \code{c('mysim-1.rds', 'mysim-2.rds', ...)}}
 \item{min}{minimum number after the \code{'-'} deliminator. Default is 1}
 
 \item{max}{maximum number after the \code{'-'} deliminator. If not specified
-is taken to be the highest number of the \code{files} input}
+is extracted from the attributes in the first file}
+}
+\value{
+returns an invisible TRUE if all the files are present and FALSE otherwise
 }
 \description{
 Given the saved files from a \code{\link{runArraySimulation}} remote
 evaluation check whether all \code{.rds} files have been saved. If missing
-the missing row condition numbers will be returned
+the missing row condition numbers will be returned.
 }
 \examples{
 \dontrun{
@@ -42,7 +45,7 @@ with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4
 \doi{10.20982/tqmp.16.4.p248}
 }
 \seealso{
-\code{\link{runArraySimulation}}
+\code{\link{runArraySimulation}}, \code{\link{SimCollect}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}
