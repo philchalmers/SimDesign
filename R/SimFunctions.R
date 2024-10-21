@@ -32,7 +32,7 @@
 #'   often makes organization and debugging slightly easier larger Monte Carlo simulations, though in principle
 #'   all files could be stored into a single R script
 #'
-#' @param extra_file logical; should and extra file be saved containing user-defined functions or objects?
+#' @param extra_file logical; should an extra file be saved containing user-defined functions or objects?
 #'   Default is \code{FALSE}
 #'
 #' @param summarise include \code{summarise} function? Default is \code{TRUE}
