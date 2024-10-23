@@ -626,6 +626,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     }
     for(i in start:nrow(design)){
         if(verbose && nrow(design) > 1L){
+            if(i > 1L) cat("\n")
             cat(sprintf('\n#############\nDesign row %s:\n\n', i))
             print(cbind(as.data.frame(design[i,]), b = b))
         }
@@ -695,6 +696,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             tmp <- as.data.frame(design[i,])
             cat(sprintf(paste0("\nSolution for %s: %", if(integer) ".1f" else ".3f"),
                 colnames(design)[which(is.na(tmp))], roots[[i]]$root))
+            if(verbose && i == nrow(design)) cat("\n\n")
         }
         if(save && i < nrow(design)) saveRDS(roots, tmpfilename)
     }
