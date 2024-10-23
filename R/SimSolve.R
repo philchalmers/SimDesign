@@ -625,11 +625,11 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                    ' using integer=TRUE search'), call.=FALSE)
     }
     for(i in start:nrow(design)){
-        if(verbose){
-            cat(sprintf('\n\n#############\nDesign row %s:\n\n', i))
+        if(verbose && nrow(design) > 1L){
+            cat(sprintf('\n#############\nDesign row %s:\n\n', i))
             print(cbind(as.data.frame(design[i,]), b = b))
-            cat("\n")
         }
+        if(verbose) cat("\n")
 
         .SIMDENV$stored_results <- vector('list', maxiter)
         .SIMDENV$stored_medhistory <- rep(NA, maxiter)
