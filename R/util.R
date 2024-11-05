@@ -96,6 +96,7 @@ print_progress <- function(row, trow, stored_time, RAM, progress,
                     row, trow, replications, RAM, timeFormater_internal(sum(stored_time))))
     cat(sprintf('\n Conditions: %s\n', condstring))
     if(progress) cat('\r')
+    flush.console()
     invisible(NULL)
 }
 

@@ -136,6 +136,7 @@ RobbinsMonro <- function(f, p, ...,
             else
                 cat(sprintf("\rIter: %i; Max change in p = %.3f",
                             i, change))
+            flush.console()
         }
         if(i > miniter && all(change < tol)){
             k.succ <- k.succ + 1L
