@@ -190,6 +190,8 @@
 #' @return the filled-in \code{design} object containing the associated lower and upper interval
 #'   estimates from the stochastic optimization
 #'
+#' @importFrom utils flush.console
+#'
 #' @seealso \code{\link{SFA}}
 #'
 #' @export
@@ -629,7 +631,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             if(i > 1L) cat("\n")
             cat(sprintf('\n#############\nDesign row %s:\n\n', i))
             print(cbind(as.data.frame(design[i,]), b = b))
-            flush.console()
+            utils::flush.console()
         }
         if(verbose) cat("\n")
 

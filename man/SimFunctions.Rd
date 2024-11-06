@@ -33,7 +33,7 @@ separate files. The purpose for this structure is because multiple structured fi
 often makes organization and debugging slightly easier larger Monte Carlo simulations, though in principle
 all files could be stored into a single R script}
 
-\item{extra_file}{logical; should and extra file be saved containing user-defined functions or objects?
+\item{extra_file}{logical; should an extra file be saved containing user-defined functions or objects?
 Default is \code{FALSE}}
 
 \item{nAnalyses}{number of analysis functions to create (default is 1). Increasing the value

@@ -320,7 +320,7 @@ PBA <- function(f, interval, ..., p = .6,
                 cat(sprintf(paste0('; k.tol = %i; Pred = %',
                                    if(integer) ".1f" else ".3f"),
                             k.successes, glmpred0[1L]))
-            flush.console()
+            utils::flush.console()
         }
 
         if(!is.null(wait.time))
