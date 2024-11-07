@@ -130,7 +130,7 @@ notification_final <- function(Final){
 #' provide information in interactive R sessions. For simulations, the session
 #' is not interactive, and therefore this type of output should be suppressed.
 #' For similar behaviour for suppressing warning messages, see
-#' \code{link{manageWarnings}}.
+#' \code{\link{manageWarnings}}.
 #'
 #' @param ... the functional expression to be evaluated
 #'
