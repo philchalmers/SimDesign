@@ -562,7 +562,7 @@
 #'   generation independence across conditions and replications, while the vector input
 #'   ensures independence within the replications per conditions but not necessarily
 #'   across conditions. Default randomly generates seeds within the
-#'   range 1 to 2147483647 for each condition via \code{link{gen_seeds}}
+#'   range 1 to 2147483647 for each condition via \code{\link{gen_seeds}}
 #'
 #' @param progress logical; display a progress bar (using the \code{pbapply} package)
 #'   for each simulation condition?

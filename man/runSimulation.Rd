@@ -292,7 +292,7 @@ numbers must have been generated from \code{\link{gen_seeds}} with the argument
 generation independence across conditions and replications, while the vector input
 ensures independence within the replications per conditions but not necessarily
 across conditions. Default randomly generates seeds within the
-range 1 to 2147483647 for each condition via \code{link{gen_seeds}}}
+range 1 to 2147483647 for each condition via \code{\link{gen_seeds}}}
 
 \item{boot_method}{method for performing non-parametric bootstrap confidence intervals
 for the respective meta-statistics computed by the \code{Summarise} function.

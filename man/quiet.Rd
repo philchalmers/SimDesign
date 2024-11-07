@@ -19,7 +19,7 @@ and print strings as an attribute to the resulting object from \code{expr(...)}?
 }
 \description{
 This function is used to suppress information printed from external functions
-that make internal use of \code{link{message}} and \code{\link{cat}}, which
+that make internal use of \code{\link{message}} and \code{\link{cat}}, which
 provide information in interactive R sessions. For simulations, the session
 is not interactive, and therefore this type of output should be suppressed.
 For similar behaviour for suppressing warning messages, see

@@ -126,7 +126,7 @@ notification_final <- function(Final){
 #' Suppress verbose function messages
 #'
 #' This function is used to suppress information printed from external functions
-#' that make internal use of \code{link{message}} and \code{\link{cat}}, which
+#' that make internal use of \code{\link{message}} and \code{\link{cat}}, which
 #' provide information in interactive R sessions. For simulations, the session
 #' is not interactive, and therefore this type of output should be suppressed.
 #' For similar behaviour for suppressing warning messages, see
