@@ -725,7 +725,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
 summary.SimSolve <- function(object, tab.only = FALSE, reps.cutoff = 300, ...)
 {
     ret <- attr(object, 'roots')
-    if(ret[[1L]]$integer){
+    if(!is.null(ret[[1L]]$integer) && ret[[1L]]$integer){
         stored_tab <- lapply(ret, function(x) attr(x, "stored_tab"))
         stored_tab <- lapply(stored_tab, function(x)
             x[x$reps > reps.cutoff, , drop=FALSE])
