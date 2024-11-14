@@ -1578,7 +1578,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         return(Result_list)
     }
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))
-    if(verbose)
+    if(verbose && nrow(design) > 1L)
         message('\nSimulation complete. Total execution time: ',
                 timeFormater_internal(sum(stored_time)), "\n")
     stored_time <- do.call(c, lapply(Result_list, function(x) x$SIM_TIME))

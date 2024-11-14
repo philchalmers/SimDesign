@@ -89,8 +89,7 @@ print_progress <- function(row, trow, stored_time, RAM, progress,
     }
     if(RAM != "") RAM <- sprintf(';   RAM Used: %s;', RAM)
     if(row == 1 && trow == 1)
-        cat(sprintf('\rReplications: %i%s   Total Time: %s ',
-                    replications, RAM, timeFormater_internal(sum(stored_time))))
+        cat(sprintf('\rReplications: %i%s   ', replications, RAM))
     else
         cat(sprintf('\rDesign: %i/%i;   Replications: %i%s   Total Time: %s ',
                     row, trow, replications, RAM, timeFormater_internal(sum(stored_time))))
