@@ -699,6 +699,9 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             tmp <- as.data.frame(design[i,])
             cat(sprintf(paste0("\nSolution for %s: %", if(integer) ".1f" else ".3f"),
                 colnames(design)[which(is.na(tmp))], roots[[i]]$root))
+            cat(sprintf(paste0("\n%s%% Prediction Interval: ",
+                               if(integer) "[%.1f, %.1f]" else "[%.3f, %.3f]"),
+                               predCI*100, roots[[i]]$predCIs_root[1], roots[[i]]$predCIs_root[2]))
             if(verbose && i == nrow(design)) cat("\n\n")
             flush.console()
         }
