@@ -694,7 +694,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         tab <- .SIMDENV$stored_history[!sapply(.SIMDENV$stored_history, is.null)]
         if(ReturnSimSolveInternals) return(tab)
         attr(roots[[i]], 'stored_tab') <- if(integer) reduceTable(tab) else tab
-        if(verbose){
+        if(verbose > 0 && verbose < 2){
             cat("\r")
             tmp <- as.data.frame(design[i,])
             cat(sprintf(paste0("\nSolution for %s: %", if(integer) ".1f" else ".3f"),
