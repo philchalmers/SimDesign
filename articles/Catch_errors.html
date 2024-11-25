@@ -8,8 +8,8 @@
 <title>Managing warning and error messages • SimDesign</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Managing warning and error messages">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.17.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.17.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2024-11-14</h4>
+            <h4 data-toc-skip class="date">2024-11-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/Catch_errors.Rmd" class="external-link"><code>vignettes/Catch_errors.Rmd</code></a></small>
       <div class="d-none name"><code>Catch_errors.Rmd</code></div>
@@ -140,13 +140,13 @@ iterations).</p>
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">100</span>, </span>
 <span>                       generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Design: 1/3;   Replications: 100;   RAM Used: 67.8 Mb;   Total Time: 0.00s </span></span>
+<span><span class="co">## Design: 1/3;   Replications: 100;   RAM Used: 67.9 Mb;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: N=10</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Design: 2/3;   Replications: 100;   RAM Used: 69 Mb;   Total Time: 0.05s </span></span>
 <span><span class="co">##  Conditions: N=20</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/3;   Replications: 100;   RAM Used: 69.1 Mb;   Total Time: 0.10s </span></span>
+<span><span class="co">## Design: 3/3;   Replications: 100;   RAM Used: 69.2 Mb;   Total Time: 0.10s </span></span>
 <span><span class="co">##  Conditions: N=30</span></span>
 <span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -154,9 +154,9 @@ iterations).</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 9</span></span></span>
 <span><span class="co">##       N     bias REPLICATIONS SIM_TIME RAM_USED       SEED COMPLETED      ERRORS</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.05s    69 Mb    <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Thu Nov 14 22…     53</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.05s    69.1 Mb   312<span style="text-decoration: underline;">928</span>385 Thu Nov 14 22…     52</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.04s    69.3 Mb   866<span style="text-decoration: underline;">248</span>189 Thu Nov 14 22…     42</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.05s    69 Mb    <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Mon Nov 25 16…     53</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.05s    69.2 Mb   312<span style="text-decoration: underline;">928</span>385 Mon Nov 25 16…     52</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.04s    69.3 Mb   866<span style="text-decoration: underline;">248</span>189 Mon Nov 25 16…     42</span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: WARNINGS &lt;int&gt;</span></span></span></code></pre>
 <p>What you’ll immediately notice from this output object is that counts
 of the error and warning messages have been appended to the

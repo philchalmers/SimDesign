@@ -8,8 +8,8 @@
 <title>Exporting objects and functions from the workspace • SimDesign</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Exporting objects and functions from the workspace">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.17.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.17.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2024-11-14</h4>
+            <h4 data-toc-skip class="date">2024-11-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/Fixed_obj_fun.Rmd" class="external-link"><code>vignettes/Fixed_obj_fun.Rmd</code></a></small>
       <div class="d-none name"><code>Fixed_obj_fun.Rmd</code></div>
@@ -191,9 +191,9 @@ defined objects contain a large amount of code.</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
 <span><span class="co">##       N     p REPLICATIONS SIM_TIME      SEED COMPLETED               </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.038         <span style="text-decoration: underline;">1</span>000 0.22s    525<span style="text-decoration: underline;">310</span>970 Thu Nov 14 22:01:40 2024</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.05          <span style="text-decoration: underline;">1</span>000 0.22s    529<span style="text-decoration: underline;">914</span>981 Thu Nov 14 22:01:41 2024</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.056         <span style="text-decoration: underline;">1</span>000 0.23s    602<span style="text-decoration: underline;">604</span>143 Thu Nov 14 22:01:41 2024</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.038         <span style="text-decoration: underline;">1</span>000 0.23s    525<span style="text-decoration: underline;">310</span>970 Mon Nov 25 16:14:10 2024</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.05          <span style="text-decoration: underline;">1</span>000 0.23s    529<span style="text-decoration: underline;">914</span>981 Mon Nov 25 16:14:10 2024</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.056         <span style="text-decoration: underline;">1</span>000 0.25s    602<span style="text-decoration: underline;">604</span>143 Mon Nov 25 16:14:11 2024</span></span></code></pre>
 <p>By placing objects in a list and passing this to
 <code>fixed_objects</code>, the objects are safely exported to all
 relevant functions. Furthermore, running this code in parallel will also
