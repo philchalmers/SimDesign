@@ -481,7 +481,10 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     on.exit(options(org.opts), add = TRUE)
     if(is.null(control$print_RAM)) control$print_RAM <- FALSE
     burnin.iter <- 15L
-    if(!is.null(wait.time) && maxiter == 100L) maxiter <- 3000L
+    if(!is.null(wait.time) && maxiter == 100L){
+        maxiter <- 3000L
+        predCI.tol <- 0
+    }
     if(is.list(replications)){
         if(is.null(replications$burnin.iter)) replications$burnin.iter <- burnin.iter else
             burnin.iter <- replications$burnin.iter
