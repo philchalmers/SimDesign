@@ -338,19 +338,17 @@
 #' # Solutions involving more iterations will be more accurate,
 #' # and therefore it is recommended to run the ProBABLI root-solver as long
 #' # the analyst can tolerate if the most accurate estimates are desired.
-#' # Below executes the simulation for 5 minutes for each condition
+#' # Below executes the simulation for 2 minutes per condition
 #'
-#' solved_5min <- SimSolve(design=Design, b=.8, interval=c(10, 500),
+#' solved_2min <- SimSolve(design=Design[1, ], b=.8, interval=c(10, 500),
 #'                 generate=Generate, analyse=Analyse, summarise=Summarise,
-#'                 wait.time="5")
-#' solved_5min
-#' summary(solved_5min)
+#'                 wait.time="2")
+#' solved_2min
+#' summary(solved_2min)
 #'
 #' # use estimated N results to see how close power was
-#' N <- solved_5min$N
+#' N <- solved_2min$N
 #' pwr.t.test(d=.2, n=N[1])
-#' pwr.t.test(d=.5, n=N[2])
-#' pwr.t.test(d=.8, n=N[3])
 #'
 #'
 #' #------------------------------------------------
