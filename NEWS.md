@@ -1,5 +1,10 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.18
+
+- Use of `SimSolve(..., wait.time)` now automatically sets the `maxiter` to 
+  3000 to avoid early terminations
+
 ## Changes in SimDesign 2.17.1
 
 - `runArraySimulation()` now correctly searches in `.GlobalEnv` for user

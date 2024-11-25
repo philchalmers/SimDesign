@@ -1,21 +1,14 @@
 #' One Dimensional Root (Zero) Finding in Simulation Experiments
 #'
-#' This function provides a stochastic root-finding approach to solving
+#' Function provides a stochastic root-finding approach to solve
 #' specific quantities in simulation experiments (e.g., solving for a specific
 #' sample size to meet a target power rate) using the
 #' Probablistic Bisection Algorithm with Bolstering and Interpolations
-#' (ProBABLI; Chalmers, accepted). The structure follows the
-#' steps outlined in \code{\link{runSimulation}}, however portions of
+#' (ProBABLI; Chalmers, 2024). The structure follows the
+#' three functional steps outlined in \code{\link{runSimulation}}, however portions of
 #' the \code{design} input are taken as variables to be estimated rather than
-#' fixed, and the constant \code{b} is required in order to
-#' solve the root equation \code{f(x) - b = 0}. Stochastic root search is terminated
-#' based on the successive behavior of the \code{x} estimates.
-#' For even greater advertised accuracy with ProBABLI, termination criteria
-#' can be based on the width of the advertised predicting interval
-#' (via \code{predCI.tol}) or by specifying how long the investigator
-#' is willing to wait for the final estimates (via \code{wait.time},
-#' where longer wait times lead to progressively better accuracy in
-#' the final estimates).
+#' fixed, where an additional constant \code{b} is required in order to
+#' solve the root equation \code{f(x) - b = 0}.
 #'
 #' Root finding is performed using a progressively bolstered version of the
 #' probabilistic bisection algorithm (\code{\link{PBA}}) to find the
@@ -25,16 +18,25 @@
 #' associated root via interpolation. If interpolations fail, then the last
 #' iteration of the PBA search is returned as the best guess.
 #'
+#' For greater advertised accuracy with ProBABLI, termination criteria
+#' can be based on the width of the advertised predicting interval
+#' (via \code{predCI.tol}) or by specifying how long the investigator
+#' is willing to wait for the final estimates (via \code{wait.time},
+#' where longer wait times lead to progressively better accuracy in
+#' the final estimates).
+#'
 #' @param design a \code{tibble} or \code{data.frame} object containing
 #'   the Monte Carlo simulation conditions to be studied, where each row
-#'   represents a unique condition and each column a factor  to be varied
-#'   (see also \code{\link{createDesign}}). However, exactly one column of this
-#'   object must be specified with \code{NA} placeholders to indicate
-#'   that the missing value should be solved via the stochastic optimizer
+#'   represents a unique condition and each column a factor to be varied
+#'   (see \code{\link{createDesign}}). However, exactly one column of this
+#'   object in each row must be specified with \code{NA} placeholders to indicate
+#'   that the missing value should be estimated via the select
+#'   stochastic optimizer
 #'
 #' @param b a single constant used to solve the root equation \code{f(x) - b = 0}
 #'
-#' @param replications a named list or vector indicating the number of replication to
+#' @param replications a named \code{list} or \code{vector}
+#'   indicating the number of replication to
 #'   use for each design condition per PBA iteration. By default the input is a
 #'   \code{list} with the arguments \code{burnin.iter = 15L}, specifying the number
 #'   of burn-in iterations to used, \code{burnin.reps = 100L} to indicate how many
@@ -43,21 +45,20 @@
 #'   \code{min.total.reps = 9000L} to avoid termination when very few replications
 #'   have been explored (lower bound of the replication budget),
 #'   and \code{increase.by = 10L} to indicate how many replications to increase
-#'   after the burn-in stage. Unless otherwise specified these defaults will
-#'   be used, but can be overwritten by explicit definition (e.g.,
-#'   \code{replications = list(increase.by = 25L)})
+#'   after the burn-in stage. Default can overwritten by explicit definition (e.g.,
+#'   \code{replications = list(increase.by = 25L)}).
 #'
-#'   Vector inputs can specify the exact replications
-#'   for each iterations. As a general rule, early iterations
+#'   Vector inputs can specify the exact replications  for each respective
+#'   iteration. As a general rule, early iterations
 #'   should be relatively low for initial searches to avoid unnecessary computations
-#'   for locating the approximate root, though the number of replications should
-#'   gradually increase to reduce the sampling variability as the PBA approaches
-#'   the root.
+#'   when locating the approximate location of the root,
+#'   while the number of replications should gradually increase after this burn-in
+#'   to reduce the sampling variability.
 #'
 #' @param method optimizer method to use. Default is the stochastic root-finder
 #'   \code{'ProBABLI'}, but can also be the deterministic options \code{'Brent'}
 #'   (which uses the function \code{\link{uniroot}}) or \code{'bisection'}
-#'   (for the classical bisection method). If using deterministic root-finders then
+#'   for the classical bisection method. If using deterministic root-finders then
 #'   \code{replications} must either equal a single constant to reflect
 #'   the number of replication to use per deterministic iteration or be a
 #'   vector of length \code{maxiter} to indicate the replications to use per
@@ -68,21 +69,21 @@
 #' @param analyse analysis function. See \code{\link{runSimulation}}
 #'
 #' @param summarise summary function that returns a single number corresponding
-#'   to a function evaluation \code{f(x)} in the equation
+#'   to the function evaluation \code{f(x)} in the equation
 #'   \code{f(x) = b} to be solved as a root \code{f(x) - b = 0}.
 #'   Unlike in the standard \code{runSimulation()} definitions this input
 #'   is required. For further information on this function specification,
 #'   see \code{\link{runSimulation}}
 #'
-#' @param interval a vector of length two, or matrix with \code{nrow(design)}
-#'   and two columns, containing the end-points of the interval to be searched.
+#' @param interval a \code{vector} of length two, or \code{matrix} with
+#'   \code{nrow(design)} rows and two columns, containing the end-points
+#'   of the interval to be searched per row condition.
 #'   If a vector then the interval will be used for all rows in the supplied
 #'   \code{design} object
 #'
 #' @param integer logical; should the values of the root be considered integer
 #'   or numeric? If \code{TRUE} then bolstered directional decisions will be
-#'   made in the \code{pba} function based on the collected sampling history
-#'   throughout the search
+#'   made in the \code{\link{PBA}} function based on the collected sampling history
 #'
 #' @param save logical; store temporary file in case of crashes. If detected
 #'   in the working directory will automatically be loaded to resume (see
@@ -107,14 +108,14 @@
 #'
 #' @param predCI.tol (optional) rather than relying on the changes between successive
 #'   estimates (default), if the predicting CI is consistently within this
-#'   supplied tolerance input range then terminate.
+#'   supplied tolerance range then the search will be terminated.
 #'   This provides termination behaviour based on the predicted
 #'   precision of the root solutions rather than their stability history, and therefore
 #'   can be used to obtain estimates with a particular level of advertised accuracy.
 #'   For example, when solving for a sample size value (\code{N}) if the solution
 #'   associated with  \code{b = .80} requires that the advertised 95% prediction CI
-#'   is consistently between [.795, .805] then \code{predCI.tol = .01} to indicate this
-#'   tolerance range
+#'   is consistently between [.795, .805] then \code{predCI.tol = .01} should be
+#'   used to reflect this tolerance range
 #'
 #' @param wait.time (optional) argument passed to \code{\link{PBA}} to indicate
 #'   the time to wait (specified in minutes) per row in the \code{Design} object
@@ -122,9 +123,8 @@
 #'   For example, if three three conditions were defined in
 #'   \code{Design}, and \code{wait.time="5"},
 #'   then the total search time till terminate after 15 minutes regardless of
-#'   independently specified termination criteria in \code{control}. Note that
-#'   \code{maxiter} is still used alongside \code{wait.time}, therefore this should
-#'   be increased as well (e.g., to \code{maxiter = 1000})
+#'   independently specified termination criteria in \code{control}. See
+#'   \code{\link{timeFormater}} for alternative specifications
 #'
 #' @param control a \code{list} of the algorithm control parameters. If not specified,
 #'   the defaults described below are used.
@@ -133,8 +133,8 @@
 #'    \item{\code{tol}}{tolerance criteria for early termination (.1 for
 #'      \code{integer = TRUE} searches; .00025 for non-integer searches}
 #'    \item{\code{rel.tol}}{relative tolerance criteria for early termination (default .0001)}
-#'    \item{\code{k.success}}{number of consecutive tolerance success given \code{rel.tol} and
-#'      \code{tol} criteria. Consecutive failures add -1 to the counter (default is 3)}
+#'    \item{\code{k.success}}{number of consecutive tolerance successes given \code{rel.tol} and
+#'      \code{tol} criteria (default is 3)}
 #'    \item{\code{bolster}}{logical; should the PBA evaluations use bolstering based on previous
 #'      evaluations? Default is \code{TRUE}, though only applicable when \code{integer = TRUE} }
 #'    \item{\code{interpolate.R}}{number of replications to collect prior to performing
@@ -143,8 +143,9 @@
 #'      interpolation computations}
 #'    \item{\code{include_reps}}{logical; include a column in the \code{condition}
 #'      elements to indicate how many replications are currently being evaluated? Mainly
-#'      useful when further precision tuning within each ProBABLI iteration is
-#'      desirable (e.g., for bootstrapping). Default is \code{FALSE}}
+#'      useful when further tuning within each ProBABLI iteration is
+#'      desirable (e.g., for increasing/decreasing bootstrap draws as the search progresses).
+#'      Default is \code{FALSE}}
 #'    \item{\code{summarise.reg_data}}{logical; should the aggregate results from \code{Summarise}
 #'      (along with its associated weights) be used for the interpolation steps, or the
 #'      raw data from the \code{Analyse} step? Set this to \code{TRUE} when the individual
@@ -155,7 +156,9 @@
 #      to discard from the interpolation computations. This is included to further
 #      remove the effect of early estimates that are far away from the solution
 #
-#' @param maxiter the maximum number of iterations (default 100)
+#' @param maxiter the maximum number of iterations (default 100) except when
+#'   \code{wait.time} is specified (automatically increased to 3000
+#'   to avoid early termination)
 #'
 #' @param parallel for parallel computing for slower simulation experiments
 #'   (see \code{\link{runSimulation}} for details)
@@ -164,7 +167,10 @@
 #'
 #' @param ncores see \code{\link{runSimulation}}
 #'
-#' @param type type of cluster object to define. If \code{type} used in \code{plot}
+#' @param type type of cluster (see \code{\link[parallel]{makeCluster}})
+#'   or plotting type to use.
+#'
+#'   If \code{type} used in \code{plot}
 #'   then can be \code{'density'} to plot the density of the iteration history
 #'   after the burn-in stage, \code{'iterations'} for a bubble plot with inverse
 #'   replication weights. If not specified then the default PBA
@@ -176,14 +182,14 @@
 #' @param family \code{family} argument passed to \code{\link{glm}}. By default
 #'   the \code{'binomial'} family is used, as this function defaults to power
 #'   analysis setups where isolated results passed to \code{summarise} will
-#'   return 0/1s, however other families should be used had \code{summarise}
-#'   returned something else (e.g., if solving for a particular standard error
+#'   return 0/1s, however other families should be used if \code{summarise}
+#'   returns something else (e.g., if solving for a particular standard error
 #'   then a \code{'gaussian'} family would be more appropriate).
 #'
-#'   Note that if individual  results from the \code{analyse} steps should
+#'   Note that if individual results from the \code{analyse} steps should
 #'   not be used (i.e., only the aggregate from \code{summarise} is meaningful)
 #'   then set \code{control = list(summarise.reg_data = TRUE)} to override the default
-#'   behavior, thereby using only the aggregate information and weights
+#'   behaviour, thereby using only the aggregate information and weights
 #'
 #' @param ... additional arguments to be pasted to \code{\link{PBA}}
 #'
@@ -199,10 +205,10 @@
 #' @references
 #'
 #'
-#' Chalmers, R. P. (in press). Solving Variables with Monte Carlo Simulation Experiments: A
+#' Chalmers, R. P. (2024). Solving Variables with Monte Carlo Simulation Experiments: A
 #' Stochastic Root-Solving Approach. \code{Psychological Methods}. DOI: 10.1037/met0000689
 #'
-#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
+#' Chalmers, R. P., & Adkins, M. C. (2020). Writing Effective and Reliable Monte Carlo Simulations
 #' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
 #' \doi{10.20982/tqmp.16.4.p248}
 #'
@@ -332,12 +338,11 @@
 #' # Solutions involving more iterations will be more accurate,
 #' # and therefore it is recommended to run the ProBABLI root-solver as long
 #' # the analyst can tolerate if the most accurate estimates are desired.
-#' # Below executes the simulation for 5 minutes for each condition up
-#' # to a maximum of 1000 iterations, terminating based on whichever occurs first
+#' # Below executes the simulation for 5 minutes for each condition
 #'
 #' solved_5min <- SimSolve(design=Design, b=.8, interval=c(10, 500),
 #'                 generate=Generate, analyse=Analyse, summarise=Summarise,
-#'                 wait.time="5", maxiter=1000)
+#'                 wait.time="5")
 #' solved_5min
 #' summary(solved_5min)
 #'
@@ -478,6 +483,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     on.exit(options(org.opts), add = TRUE)
     if(is.null(control$print_RAM)) control$print_RAM <- FALSE
     burnin.iter <- 15L
+    if(!is.null(wait.time) && maxiter == 100L) maxiter <- 3000L
     if(is.list(replications)){
         if(is.null(replications$burnin.iter)) replications$burnin.iter <- burnin.iter else
             burnin.iter <- replications$burnin.iter
@@ -721,9 +727,9 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
 
 #' @rdname SimSolve
 #' @param object object of class \code{'SimSolve'}
-#' @param tab.only logical; print only the (reduce) table of estimates?
-#' @param reps.cutoff integer indicating the rows to omit from output
-#'  if the number of replications do no reach this value
+#' @param tab.only logical; print only the (reduced) table of estimates?
+#' @param reps.cutoff integer indicating the rows to omit from the output
+#'  if the number of replications are less than this value
 #' @export
 summary.SimSolve <- function(object, tab.only = FALSE, reps.cutoff = 300, ...)
 {
