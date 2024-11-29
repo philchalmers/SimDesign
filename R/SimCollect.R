@@ -278,9 +278,16 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
             warnings_info <- add_cbind(warnings_info)
     } else {
         out <- do.call(rbind, full_out)
-        if(has_stored_results)
-            extra_info1$stored_results <- dplyr::bind_rows(
-                lapply(full_out, \(x) attr(x, 'extra_info')$stored_results))
+        if(has_stored_results){
+            tmp <- attr(full_out[[1]], 'extra_info')$stored_results
+            if(is(tmp, 'tbl_df')){
+                extra_info1$stored_results <- dplyr::bind_rows(
+                    lapply(full_out, \(x) attr(x, 'extra_info')$stored_results))
+            } else {
+                extra_info1$stored_results <- do.call(c,
+                    lapply(full_out, \(x) attr(x, 'extra_info')$stored_results))
+            }
+        }
         if(error_details)
             errors_info <- dplyr::bind_rows(errors_info)
         if(warning_details)

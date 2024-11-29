@@ -347,8 +347,14 @@ runArraySimulation <- function(design, ..., replications,
            (!is.null(dots$store_results) && isTRUE(dots$store_results)))){
             results <- SimExtract(ret, 'results')
             condition <- attr(design, 'Design.ID')
-            results <- dplyr::mutate(results, arrayID=arrayID, .before=1L)
-            results <- dplyr::mutate(results, condition=condition[row], .before=1L)
+            if(is(results, 'tbl_df')){
+                results <- dplyr::mutate(results, arrayID=arrayID, .before=1L)
+                results <- dplyr::mutate(results, condition=condition[row], .before=1L)
+            } else {
+                results <- lapply(results,
+                                  \(x) c(arrayID=arrayID, condition=condition[row], x))
+                names(results) <- NULL
+            }
             attr(ret, "extra_info")$stored_results <- results
         }
         filename.u <- unique_filename(filename[i], safe=TRUE, verbose=FALSE)
