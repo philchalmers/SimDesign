@@ -331,8 +331,8 @@ PBA <- function(f, interval, ..., p = .6,
     converged <- iter < maxiter
     predCIs <- c(NA, NA, NA)
     predCIs_root <- c(NA, NA)
-    names(predCIs_root) <- paste0('CI_', predCI*100)
     if(!is.null(FromSimSolve)){
+        names(predCIs_root) <- paste0('CI_', predCI*100)
         predCIs <- SimSolveUniroot(SimMod=SimMod, b=dots$b,
                                interval=quantile(medhistory[medhistory != 0],
                                                  probs = c(.05, .95)),
