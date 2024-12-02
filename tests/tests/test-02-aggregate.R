@@ -181,11 +181,11 @@ test_that('aggregate', {
     expect_true(all(names(x) %in% c('condition', 'results', 'errors', 'warnings', "error_seeds",
                                     'warning_seeds')))
     row1 <- SimResults(tmp, 1)
-    expect_is(row1, 'list')
-    expect_equal(length(row1), 6)
+    expect_is(row1, 'tbl_df')
+    expect_equal(nrow(row1), 2)
     row1to5 <- SimResults(tmp, 1:5)
-    expect_is(row1to5, 'list')
-    expect_equal(length(row1to5), 5)
+    expect_is(row1to5, 'tbl_df')
+    expect_equal(nrow(row1to5), 10)
     SimClean(results = TRUE)
     # SimClean(dirs=DIR)
 
