@@ -86,11 +86,20 @@ SimResults <- function(obj, which, prefix = "results-row", wd = getwd()){
     file_nums <- gsub(paste0(prefix, '-'), '', file_nums)
     file_nums <- as.numeric(gsub('.rds', '', file_nums))
     files <- data.frame(file_nums, files, stringsAsFactors = FALSE)
-    ret <- vector('list', length(which))
+    stored_Results_list <- vector('list', length(which))
     for(i in seq_len(length(which))){
         pick <- which(files$file_num == which[i])
-        ret[[i]] <- readRDS(files$files[pick])
+        stored_Results_list[[i]] <- readRDS(files$files[pick])
     }
-    if(length(which) == 1L) ret <- ret[[1]]
-    ret
+    design <- SimExtract(obj, 'design')
+    if(is(stored_Results_list[[1L]]$results, 'data.frame') ||
+       is(stored_Results_list[[1L]]$results, 'matrix')){
+        for(i in seq_len(length(stored_Results_list)))
+            stored_Results_list[[i]] <- cbind(design[i,],
+                                              stored_Results_list[[i]]$results, row.names=NULL)
+        stored_Results_list <- dplyr::bind_rows(stored_Results_list)
+        stored_Results_list$ID <- NULL
+        stored_Results_list <- dplyr::as_tibble(stored_Results_list)
+    }
+    stored_Results_list
 }

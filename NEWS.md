@@ -2,6 +2,9 @@
 
 ## Changes in SimDesign 2.18
 
+- `SimResults()` now gives the same output behavior when `store_results` or 
+  `save_results` are used (see issue #45)
+
 - Use of `SimSolve(..., wait.time)` now automatically sets the `maxiter` to 
   3000 to avoid early terminations
 
