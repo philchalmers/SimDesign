@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.17.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.17.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2024-11-29</h4>
+            <h4 data-toc-skip class="date">2024-12-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/Saving-results.Rmd" class="external-link"><code>vignettes/Saving-results.Rmd</code></a></small>
       <div class="d-none name"><code>Saving-results.Rmd</code></div>
@@ -143,14 +143,14 @@ called until the simulation is complete.</p>
 <span><span class="co">## Design: 2/3;   Replications: 1000;   RAM Used: 68.8 Mb;   Total Time: 0.18s </span></span>
 <span><span class="co">##  Conditions: N=20</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/3;   Replications: 1000;   RAM Used: 68.8 Mb;   Total Time: 0.35s </span></span>
+<span><span class="co">## Design: 3/3;   Replications: 1000;   RAM Used: 68.8 Mb;   Total Time: 0.34s </span></span>
 <span><span class="co">##  Conditions: N=30</span></span>
 <span><span class="co">## </span></span></code></pre>
 <p>Check that temporary file still exists.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">files</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">'SIMDESIGN'</span>, <span class="va">files</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "SIMDESIGN-TEMPFILE_fv-az1024-956.rds"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "SIMDESIGN-TEMPFILE_fv-az1456-869.rds"</span></span></code></pre>
 <p>Notice here that the simulation stopped at 67% because the third
 design condition threw too many consecutive errors (this is a built-in
 fail-safe in <code>SimDesign</code>). To imitate a type of crash/power
@@ -170,7 +170,7 @@ of unforeseen program execution crashes no time is lost.</p>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">1000</span>, save<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">'my-simple-sim'</span>,</span>
 <span>                     generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/3;   Replications: 1000   Total Time: 0.35s </span></span>
+<span><span class="co">## Design: 3/3;   Replications: 1000   Total Time: 0.34s </span></span>
 <span><span class="co">##  Conditions: N=30</span></span>
 <span><span class="co">## </span></span></code></pre>
 <p>Check which files exist.</p>
@@ -215,7 +215,7 @@ example,</p>
 <span><span class="co">## Design: 2/3;   Replications: 3;   RAM Used: 69.5 Mb;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: N=20</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/3;   Replications: 3;   RAM Used: 69.5 Mb;   Total Time: 0.01s </span></span>
+<span><span class="co">## Design: 3/3;   Replications: 3;   RAM Used: 69.5 Mb;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: N=30</span></span>
 <span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -259,7 +259,7 @@ correctly tracked.</p>
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">1000</span>, save_results<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>                     generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Design: 1/3;   Replications: 1000;   RAM Used: 71.7 Mb;   Total Time: 0.00s </span></span>
+<span><span class="co">## Design: 1/3;   Replications: 1000;   RAM Used: 71.8 Mb;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: N=10</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Design: 2/3;   Replications: 1000;   RAM Used: 71.7 Mb;   Total Time: 0.17s </span></span>
@@ -315,19 +315,9 @@ the folder with the computer node name and a prefixed
 <code class="sourceCode R"><span><span class="co"># first row</span></span>
 <span><span class="va">row1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">res</span>, which <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">row1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## List of 6</span></span>
-<span><span class="co">##  $ condition    : tibble [1 × 1] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">##   ..$ N: num 10</span></span>
-<span><span class="co">##  $ results      :'data.frame':   1000 obs. of  1 variable:</span></span>
-<span><span class="co">##   ..$ p: num [1:1000] 0.976 0.397 0.143 0.595 0.453 ...</span></span>
-<span><span class="co">##  $ errors       : 'table' int[0 (1d)] </span></span>
-<span><span class="co">##   ..- attr(*, "dimnames")=List of 1</span></span>
-<span><span class="co">##   .. ..$ : NULL</span></span>
-<span><span class="co">##  $ error_seeds  : NULL</span></span>
-<span><span class="co">##  $ warnings     : 'table' int[0 (1d)] </span></span>
-<span><span class="co">##   ..- attr(*, "dimnames")=List of 1</span></span>
-<span><span class="co">##   .. ..$ warnings: NULL</span></span>
-<span><span class="co">##  $ warning_seeds: NULL</span></span></code></pre>
+<pre><code><span><span class="co">## tibble [1,000 × 2] (S3: tbl_df/tbl/data.frame)</span></span>
+<span><span class="co">##  $ N: num [1:1000] 10 10 10 10 10 10 10 10 10 10 ...</span></span>
+<span><span class="co">##  $ p: num [1:1000] 0.976 0.397 0.143 0.595 0.453 ...</span></span></code></pre>
 <p>The <code><a href="../reference/SimResults.html">SimResults()</a></code> function has the added benefit that it
 can read-in all simulation results at once (only recommended if RAM can
 hold all the information), or simply hand pick which ones should be
@@ -336,46 +326,9 @@ inspected:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">input</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">input</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## List of 3</span></span>
-<span><span class="co">##  $ :List of 6</span></span>
-<span><span class="co">##   ..$ condition    : tibble [1 × 1] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">##   .. ..$ N: num 10</span></span>
-<span><span class="co">##   ..$ results      :'data.frame':    1000 obs. of  1 variable:</span></span>
-<span><span class="co">##   .. ..$ p: num [1:1000] 0.976 0.397 0.143 0.595 0.453 ...</span></span>
-<span><span class="co">##   ..$ errors       : 'table' int[0 (1d)] </span></span>
-<span><span class="co">##   .. ..- attr(*, "dimnames")=List of 1</span></span>
-<span><span class="co">##   .. .. ..$ : NULL</span></span>
-<span><span class="co">##   ..$ error_seeds  : NULL</span></span>
-<span><span class="co">##   ..$ warnings     : 'table' int[0 (1d)] </span></span>
-<span><span class="co">##   .. ..- attr(*, "dimnames")=List of 1</span></span>
-<span><span class="co">##   .. .. ..$ warnings: NULL</span></span>
-<span><span class="co">##   ..$ warning_seeds: NULL</span></span>
-<span><span class="co">##  $ :List of 6</span></span>
-<span><span class="co">##   ..$ condition    : tibble [1 × 1] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">##   .. ..$ N: num 20</span></span>
-<span><span class="co">##   ..$ results      :'data.frame':    1000 obs. of  1 variable:</span></span>
-<span><span class="co">##   .. ..$ p: num [1:1000] 0.824 0.823 0.857 0.904 0.297 ...</span></span>
-<span><span class="co">##   ..$ errors       : 'table' int[0 (1d)] </span></span>
-<span><span class="co">##   .. ..- attr(*, "dimnames")=List of 1</span></span>
-<span><span class="co">##   .. .. ..$ : NULL</span></span>
-<span><span class="co">##   ..$ error_seeds  : NULL</span></span>
-<span><span class="co">##   ..$ warnings     : 'table' int[0 (1d)] </span></span>
-<span><span class="co">##   .. ..- attr(*, "dimnames")=List of 1</span></span>
-<span><span class="co">##   .. .. ..$ warnings: NULL</span></span>
-<span><span class="co">##   ..$ warning_seeds: NULL</span></span>
-<span><span class="co">##  $ :List of 6</span></span>
-<span><span class="co">##   ..$ condition    : tibble [1 × 1] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">##   .. ..$ N: num 30</span></span>
-<span><span class="co">##   ..$ results      :'data.frame':    1000 obs. of  1 variable:</span></span>
-<span><span class="co">##   .. ..$ p: num [1:1000] 0.00466 0.32682 0.71914 0.01076 0.3534 ...</span></span>
-<span><span class="co">##   ..$ errors       : 'table' int[0 (1d)] </span></span>
-<span><span class="co">##   .. ..- attr(*, "dimnames")=List of 1</span></span>
-<span><span class="co">##   .. .. ..$ : NULL</span></span>
-<span><span class="co">##   ..$ error_seeds  : NULL</span></span>
-<span><span class="co">##   ..$ warnings     : 'table' int[0 (1d)] </span></span>
-<span><span class="co">##   .. ..- attr(*, "dimnames")=List of 1</span></span>
-<span><span class="co">##   .. .. ..$ warnings: NULL</span></span>
-<span><span class="co">##   ..$ warning_seeds: NULL</span></span></code></pre>
+<pre><code><span><span class="co">## tibble [3,000 × 2] (S3: tbl_df/tbl/data.frame)</span></span>
+<span><span class="co">##  $ N: num [1:3000] 10 10 10 10 10 10 10 10 10 10 ...</span></span>
+<span><span class="co">##  $ p: num [1:3000] 0.976 0.397 0.143 0.595 0.453 ...</span></span></code></pre>
 <p>Should the need arise to remove the results directory then the
 <code><a href="../reference/SimClean.html">SimClean()</a></code> function is the easiest way to remove all
 unwanted files and directories.</p>
