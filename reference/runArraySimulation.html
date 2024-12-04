@@ -90,7 +90,8 @@ vignette for a brief tutorial of this setup.</p>
 <span>  cl <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ncores <span class="op">=</span> <span class="fu">parallelly</span><span class="fu">::</span><span class="fu"><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">availableCores</a></span><span class="op">(</span>omit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span>,</span>
 <span>  save_details <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -201,6 +202,13 @@ See <code><a href="runSimulation.html">runSimulation</a></code></p></dd>
   Useful for larger HPC cluster jobs with RAM constraints that could terminate abruptly.
   As a rule of thumb this should be set to around 90<!-- % of the maximum possible storage -->
   available. Default applies no memory limit</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>logical; pass a verbose flag to <code><a href="runSimulation.html">runSimulation</a></code>.
+Unlike <code><a href="runSimulation.html">runSimulation</a></code> this is set to FALSE during interactive
+sessions, though set to TRUE when non-interactive and information about the
+session itself should be stored (e.g., in SLURM <code>.out</code> files)</p></dd>
 
 </dl></div>
     <div class="section level2">
