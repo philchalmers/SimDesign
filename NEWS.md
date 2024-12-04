@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.18
 
+- `runArraySimulation(..., max_time)` now correctly applies the maximum 
+  time across all subsetted conditions rather than over each condition, thereby
+  matching, for example, SBATCH commands in SLURM (reported by Michael Troung)
+
 - `SimResults()` now gives the same output behavior when `store_results` or 
   `save_results` are used (see issue #45)
 

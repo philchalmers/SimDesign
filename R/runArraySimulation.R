@@ -27,7 +27,7 @@
 #' conditions that require more than the specified time in the shell script.
 #' The \code{max_time} value should be less than the maximum time allocated
 #' on the HPC cluster (e.g., approximately 90% of this time or less, though
-#' depends on how long each replication takes). Simulations with missing
+#' depends on how long, and how variable, each replication is). Simulations with missing
 #' replication information should submit a new set of jobs at a later time
 #' to collect the missing replication information.
 #'
@@ -338,11 +338,20 @@ runArraySimulation <- function(design, ..., replications,
             on.exit(parallel::stopCluster(cl), add=TRUE)
         }
     }
+    max_time <- control$max_time
+    if(!is.null(max_time))
+        max_time <- timeFormater(max_time)
+    start_time <- proc.time()[3L]
     for(i in 1L:length(rowpick)){
         row <- rowpick[i]
         seed <- genSeeds(design, iseed=iseed, arrayID=row)
         dsub <- design[row, , drop=FALSE]
         attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[row]
+        if(!is.null(max_time)){
+            control$max_time <- max_time - (proc.time()['elapsed'] - start_time)
+            if(max_time <= 0)
+                stop('max_time limit exceeded', call.=FALSE)
+        }
         ret <- runSimulation(design=dsub, replications=replications, seed=seed,
                              verbose=verbose, save_details=save_details,
                              parallel=parallel, cl=cl,
