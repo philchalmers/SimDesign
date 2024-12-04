@@ -338,13 +338,11 @@ PBA <- function(f, interval, ..., p = .6,
                                                  probs = c(.05, .95)),
                                max.interval=interval,median=med, CI=predCI)
         predCIs_root[1L] <- SimSolveUniroot(SimMod=SimMod, b=predCIs[2L],
-                                            interval=quantile(medhistory[medhistory != 0],
-                                                              probs = c(.05, .95)),
-                                            max.interval=interval,median=med, CI=predCI)[1L]
+                                            interval=c(min(medhistory[medhistory != 0]), predCIs[1]),
+                                            max.interval=c(interval[1], predCIs[1]), median=med, CI=predCI)[1L]
         predCIs_root[2L] <- SimSolveUniroot(SimMod=SimMod, b=predCIs[3L],
-                                            interval=quantile(medhistory[medhistory != 0],
-                                                              probs = c(.05, .95)),
-                                            max.interval=interval,median=med, CI=predCI)[1L]
+                                            interval=c(predCIs[1], max(medhistory[medhistory != 0])),
+                                            max.interval=c(predCIs[1], interval[2]), median=med, CI=predCI)[1L]
     }
     if(verbose)
         cat("\n")
