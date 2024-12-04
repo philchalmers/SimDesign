@@ -532,8 +532,7 @@ SimSolveData <- function(burnin, full = TRUE){
     ret
 }
 
-SimSolveUniroot <- function(SimMod, b, interval, max.interval, median, CI=NULL,
-                            force=FALSE){
+SimSolveUniroot <- function(SimMod, b, interval, max.interval, median, CI=NULL){
     f.root <- function(x, b)
         predict(SimMod, newdata = data.frame(x=x), type = 'response') - b
     res <- try(uniroot(f.root, b=b, interval = interval), silent = TRUE)
@@ -550,13 +549,7 @@ SimSolveUniroot <- function(SimMod, b, interval, max.interval, median, CI=NULL,
             }
         }
     }
-    if(is(res, 'try-error') && force){
-        f.root2 <- function(x, b) f.root(x, b)^2
-        res <- try(optimize(f.root2, interval=org.interval, b=b), silent=TRUE)
-        if(!is(res, 'try-error'))
-            res$root <- res$minimum
-    }
-    if(is(res, 'try-error') && !force) return(c(NA, NA, NA))
+    if(is(res, 'try-error')) return(c(NA, NA, NA))
     root <- res$root
     abias <- bias(root, median, type = 'abs_relative')
     if(abias > .5) root <- median
