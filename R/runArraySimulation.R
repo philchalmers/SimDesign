@@ -111,6 +111,11 @@
 #'
 #' @param ... additional arguments to be passed to \code{\link{runSimulation}}
 #'
+#' @param verbose logical; pass a verbose flag to \code{\link{runSimulation}}.
+#'   Unlike \code{\link{runSimulation}} this is set to FALSE during interactive
+#'   sessions, though set to TRUE when non-interactive and information about the
+#'   session itself should be stored (e.g., in SLURM \code{.out} files)
+#'
 #' @export
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
@@ -289,8 +294,8 @@ runArraySimulation <- function(design, ..., replications,
                                addArrayInfo = TRUE,
                                parallel = FALSE, cl = NULL,
                                ncores = parallelly::availableCores(omit = 1L),
-                               save_details = list(),
-                               control = list()){
+                               save_details = list(), control = list(),
+                               verbose = ifelse(interactive(), FALSE, TRUE)){
     dots <- list(...)
     if(parallel && ncores == 1L) parallel <- FALSE
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))
@@ -339,7 +344,7 @@ runArraySimulation <- function(design, ..., replications,
         dsub <- design[row, , drop=FALSE]
         attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[row]
         ret <- runSimulation(design=dsub, replications=replications, seed=seed,
-                             verbose=FALSE, save_details=save_details,
+                             verbose=verbose, save_details=save_details,
                              parallel=parallel, cl=cl,
                              control=control, save=FALSE, ...)
         attr(ret, 'extra_info')$number_of_conditions <- nrow(design)
