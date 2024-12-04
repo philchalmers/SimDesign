@@ -537,13 +537,8 @@ SimSolveUniroot <- function(SimMod, b, interval, max.interval, median, CI=NULL,
     f.root <- function(x, b)
         predict(SimMod, newdata = data.frame(x=x), type = 'response') - b
     res <- try(uniroot(f.root, b=b, interval = interval), silent = TRUE)
-    if(is(res, 'try-error') && force){
-        f.root2 <- function(x, b) f.root(x, b)^2
-        res <- try(optimize(f.root2, interval=interval, b=b), silent=TRUE)
-        if(!is(res, 'try-error'))
-            res$root <- res$minimum
-    }
     if(is(res, 'try-error')){
+        org.interval <- interval
         # in case original interval is poor for interpolation
         interval <- max.interval
         for(i in seq_len(20L)){
@@ -554,6 +549,12 @@ SimSolveUniroot <- function(SimMod, b, interval, max.interval, median, CI=NULL,
                 if(!is(res, 'try-error')) break
             }
         }
+    }
+    if(is(res, 'try-error') && force){
+        f.root2 <- function(x, b) f.root(x, b)^2
+        res <- try(optimize(f.root2, interval=org.interval, b=b), silent=TRUE)
+        if(!is(res, 'try-error'))
+            res$root <- res$minimum
     }
     if(is(res, 'try-error') && !force) return(c(NA, NA, NA))
     root <- res$root
