@@ -48,4 +48,8 @@ timeFormater("30", output = 'hour')
 timeFormater("30:30", output = 'hour')
 timeFormater("4:30:30", output = 'hour')
 
+# numeric input is understood as seconds by default
+timeFormater(42)
+timeFormater(42, output='min') # minutes
+
 }

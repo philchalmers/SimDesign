@@ -4,7 +4,7 @@
 
 - `runArraySimulation(..., max_time)` now correctly applies the maximum 
   time across all subsetted conditions rather than over each condition, thereby
-  matching, for example, SBATCH commands in SLURM (reported by Michael Troung)
+  matching, for example, SBATCH commands in SLURM (reported by Michael S. Truong)
 
 - `SimResults()` now gives the same output behavior when `store_results` or 
   `save_results` are used (see issue #45)
@@ -44,7 +44,7 @@
 ## Changes in SimDesign 2.16
 
 - Fix for `SimCollect()` when `runArraySimulation()` result contains 
-  mixed warning outputs  (reported by Michael Troung)
+  mixed warning outputs  (reported by Michael S. Truong)
 
 - `manageMessages()` added in a similar spirit to `manageWarnigns()`, though
   to change messages into either errors or warnings (default behavior is the 

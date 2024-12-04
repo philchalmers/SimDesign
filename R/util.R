@@ -899,13 +899,17 @@ genSeeds <- function(design = 1L, iseed = NULL, arrayID = NULL, old.seeds = NULL
 #' timeFormater("30:30", output = 'hour')
 #' timeFormater("4:30:30", output = 'hour')
 #'
+#' # numeric input is understood as seconds by default
+#' timeFormater(42)
+#' timeFormater(42, output='min') # minutes
+#'
 timeFormater <- function(time, output='sec'){
     stopifnot(length(time) == 1L && length(output) == 1L)
     stopifnot(output %in% c('sec', 'min', 'hour', 'day'))
     time <- sbatch_time2sec(time)
     if(output == 'min') time <- time / 60
     if(output == 'hour') time <- time / 60 / 60
-    if(output == 'min') time <- time / 60 / 60 / 24
+    if(output == 'day') time <- time / 60 / 60 / 24
     time
 }
 

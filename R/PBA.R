@@ -134,7 +134,7 @@ PBA <- function(f, interval, ..., p = .6,
                 verbose = TRUE){
 
     if(maxiter < miniter) maxiter <- miniter
-    if(!is.null(wait.time) && is.character(wait.time))
+    if(!is.null(wait.time))
         wait.time <- timeFormater(wait.time)
     stopifnot(length(p) == 1L)
     if(p <= 0.5)

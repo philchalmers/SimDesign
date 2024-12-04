@@ -485,7 +485,8 @@ in the simulation}
        where \code{max_time} is only evaluated after every row in the
        \code{design} object has been completed (hence, is notably more approximate as it
        has the potential to overshoot by a wider margin). Default sets no time limit.
-       See \code{\link{timeFormater}} for the input specifications.
+       See \code{\link{timeFormater}} for the input specifications; otherwise, can be
+       specified as a \code{numeric} input reflecting the maximum time in seconds.
      }
 
      \item{\code{max_RAM}}{

@@ -28,8 +28,8 @@
 #' The \code{max_time} value should be less than the maximum time allocated
 #' on the HPC cluster (e.g., approximately 90% of this time or less, though
 #' depends on how long, and how variable, each replication is). Simulations with missing
-#' replication information should submit a new set of jobs at a later time
-#' to collect the missing replication information.
+#' replications should submit a new set of jobs at a later time
+#' to collect the missing information.
 #'
 #' @param design design object containing simulation conditions on a per row basis.
 #'   This function is design to submit each row as in independent job on a HPC cluster.
