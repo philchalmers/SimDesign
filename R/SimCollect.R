@@ -356,7 +356,7 @@ subset_results <- function(obj, select){
             obj <- dplyr::select(obj, c(design.names, select))
     } else {
         if(length(select))
-            obj <- dplyr::select(obj, c(design.names, select))
+            res <- dplyr::select(res, select)
     }
     attr(obj, 'extra_info')$stored_results <- res
     obj
