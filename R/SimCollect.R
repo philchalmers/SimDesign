@@ -298,6 +298,9 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
         reps_bad <- out$REPLICATIONS != target.reps
         if(any(reps_bad)){
             diff <- target.reps - out$REPLICATIONS
+            if(diff < 0)
+                stop('target.reps is less than the number of replications collected',
+                     call.=FALSE)
             out$MISSED_REPLICATIONS <- as.integer(diff)
             out$TARGET_REPLICATIONS <- as.integer(target.reps)
             out$REPLICATIONS <- NULL
