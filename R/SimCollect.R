@@ -182,6 +182,7 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
             stop(c('Could not read file ', filenames[i]))
         readin[[i]] <- subset_results(tmp, select=select)
     }
+    rm(tmp)
     extra_info1 <- attr(readin[[1L]], 'extra_info')
     ncores <- sum(sapply(readin, function(x) attr(x, 'extra_info')$ncores))
     extra_info1[c("seeds", "date_completed", "summarise_list", "stored_results",
