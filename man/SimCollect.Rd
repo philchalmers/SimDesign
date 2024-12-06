@@ -13,7 +13,8 @@ SimCollect(
   check.only = FALSE,
   target.reps = NULL,
   warning_details = FALSE,
-  error_details = TRUE
+  error_details = TRUE,
+  gc = FALSE
 )
 
 aggregate_simulations(...)
@@ -48,6 +49,10 @@ detected value from the collected set of replication information will be used}
 
 \item{error_details}{logical; include the aggregate of the errors to be extracted via
 \code{\link{SimExtract}}?}
+
+\item{gc}{logical; explicitly call R's garbage collector \code{\link{gc}}? May help when
+memory is severely constrained during the file read-ins. Otherwise, the \code{select}
+argument should be used to take more memory-friendly subsets}
 
 \item{...}{not used}
 }
@@ -134,6 +139,10 @@ sapply(1:nrow(Design_long), \(i) {
 
 # check that all replications satisfy target
 SimCollect('sim_files/', check.only = TRUE)
+
+# specify files explicitly
+SimCollect(files = list.files(path='sim_files/', pattern="*.rds", full.names=TRUE),
+   check.only = TRUE)
 
 # this would have been returned were the target.rep supposed to be 1000
 SimCollect('sim_files/', check.only = TRUE, target.reps=1000)

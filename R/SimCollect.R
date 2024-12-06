@@ -39,6 +39,10 @@
 #' @param error_details logical; include the aggregate of the errors to be extracted via
 #'   \code{\link{SimExtract}}?
 #'
+#' @param gc logical; explicitly call R's garbage collector \code{\link{gc}}? May help when
+#'   memory is severely constrained during the file read-ins. Otherwise, the \code{select}
+#'   argument should be used to take more memory-friendly subsets
+#'
 #' @return returns a \code{data.frame/tibble} with the (weighted) average/aggregate
 #'   of the simulation results
 #'
@@ -130,6 +134,10 @@
 #' # check that all replications satisfy target
 #' SimCollect('sim_files/', check.only = TRUE)
 #'
+#' # specify files explicitly
+#' SimCollect(files = list.files(path='sim_files/', pattern="*.rds", full.names=TRUE),
+#'    check.only = TRUE)
+#'
 #' # this would have been returned were the target.rep supposed to be 1000
 #' SimCollect('sim_files/', check.only = TRUE, target.reps=1000)
 #'
@@ -144,7 +152,8 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
                        select = NULL, check.only = FALSE,
                        target.reps = NULL,
                        warning_details = FALSE,
-                       error_details = TRUE){
+                       error_details = TRUE,
+                       gc = FALSE){
     if(is.null(dir) && is.null(files))
         stop('either dir or files must be specified')
     if(!is.null(dir) && !is.null(files))
@@ -153,7 +162,7 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
     if(!is.null(dir)) SimCheck(dir=dir)
     if(!is.null(dir)){
         files <- dir(dir)
-    } else dir <- './'
+    } else dir <- ''
     files <- paste0(dir, files)
     oldfiles <- files
     files <- oldfiles
@@ -181,8 +190,11 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
         if(is(tmp, 'try-error'))
             stop(c('Could not read file ', filenames[i]))
         readin[[i]] <- subset_results(tmp, select=select)
+        if(gc){
+            rm(tmp)
+            gc()
+        }
     }
-    rm(tmp)
     extra_info1 <- attr(readin[[1L]], 'extra_info')
     ncores <- sum(sapply(readin, function(x) attr(x, 'extra_info')$ncores))
     extra_info1[c("seeds", "date_completed", "summarise_list", "stored_results",
