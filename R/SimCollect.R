@@ -311,16 +311,16 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
         reps_bad <- out$REPLICATIONS != target.reps
         if(any(reps_bad)){
             diff <- target.reps - out$REPLICATIONS
-            if(diff < 0)
+            if(any(diff < 0))
                 stop('target.reps is less than the number of replications collected',
                      call.=FALSE)
             out$MISSED_REPLICATIONS <- as.integer(diff)
             out$TARGET_REPLICATIONS <- as.integer(target.reps)
             out$REPLICATIONS <- NULL
-            message("The following design conditions did not satisfy the target.reps")
+            message("\nThe following design conditions did not satisfy the target.reps")
             return(out[reps_bad,])
         } else {
-            message(c('All replications satisfied target.reps criteria of ', target.reps))
+            message(c('\nAll replications satisfied target.reps criteria of ', target.reps))
             return(invisible(TRUE))
         }
     }
@@ -349,10 +349,14 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
 subset_results <- function(obj, select){
     if(is.null(select)) return(obj)
     res <- attr(obj, 'extra_info')$stored_results
+    design.names <- attr(obj, 'design')$design
     if(length(select) == 1L && select %in% c('NONE', 'REPLICATIONS')){
         res <- NULL
+        if(select != 'NONE')
+            obj <- dplyr::select(obj, c(design.names, select))
     } else {
-        res <- dplyr::select(res, select)
+        if(length(select))
+            obj <- dplyr::select(obj, c(design.names, select))
     }
     attr(obj, 'extra_info')$stored_results <- res
     obj
