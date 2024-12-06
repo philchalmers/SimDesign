@@ -75,7 +75,8 @@ nodes/computing cores (e.g., see <code><a href="runArraySimulation.html">runArra
 <span>  check.only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  target.reps <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  warning_details <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  error_details <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  error_details <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  gc <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">aggregate_simulations</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -129,6 +130,12 @@ detected value from the collected set of replication information will be used</p
 <dt id="arg-error-details">error_details<a class="anchor" aria-label="anchor" href="#arg-error-details"></a></dt>
 <dd><p>logical; include the aggregate of the errors to be extracted via
 <code><a href="SimExtract.html">SimExtract</a></code>?</p></dd>
+
+
+<dt id="arg-gc">gc<a class="anchor" aria-label="anchor" href="#arg-gc"></a></dt>
+<dd><p>logical; explicitly call R's garbage collector <code><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc</a></code>? May help when
+memory is severely constrained during the file read-ins. Otherwise, the <code>select</code>
+argument should be used to take more memory-friendly subsets</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -230,6 +237,10 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># check that all replications satisfy target</span></span></span>
 <span class="r-in"><span><span class="fu">SimCollect</span><span class="op">(</span><span class="st">'sim_files/'</span>, check.only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># specify files explicitly</span></span></span>
+<span class="r-in"><span><span class="fu">SimCollect</span><span class="op">(</span>files <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>path<span class="op">=</span><span class="st">'sim_files/'</span>, pattern<span class="op">=</span><span class="st">"*.rds"</span>, full.names<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   check.only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># this would have been returned were the target.rep supposed to be 1000</span></span></span>
 <span class="r-in"><span><span class="fu">SimCollect</span><span class="op">(</span><span class="st">'sim_files/'</span>, check.only <span class="op">=</span> <span class="cn">TRUE</span>, target.reps<span class="op">=</span><span class="fl">1000</span><span class="op">)</span></span></span>
