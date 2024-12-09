@@ -186,6 +186,14 @@
 #'   \code{save_results = TRUE} with or without a supplied \code{summarise}
 #'   definition.
 #'
+#'   Finally, there are keywords that should not be returned from this
+#'   functions since they will cause a conflict with the aggregated simulation
+#'   objects. These are currently those listed in capital letters (e.g.,
+#'   \code{ERRORS}, \code{WARNINGS}, \code{REPLICATIONS}, etc), all of which can
+#'   be avoided if the returned objects are not entirely capitalized
+#'   (e.g., \code{Errors}, \code{errors}, \code{ErRoRs}, ..., will all avoid
+#'   conflicts)
+#'
 #' @param replications number of independent replications to perform per
 #'   condition (i.e., each row in \code{design}). Can be a single number, which
 #'   will be used for each design condition, or an integer vector with length

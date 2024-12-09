@@ -100,7 +100,15 @@ analyses the simulated data). See \code{\link{Analyse}} for details}
   the within-condition replication information are of interest, though
   of course this  can be circumvented by using \code{store_results = TRUE} or
   \code{save_results = TRUE} with or without a supplied \code{summarise}
-  definition.}
+  definition.
+
+  Finally, there are keywords that should not be returned from this
+  functions since they will cause a conflict with the aggregated simulation
+  objects. These are currently those listed in capital letters (e.g.,
+  \code{ERRORS}, \code{WARNINGS}, \code{REPLICATIONS}, etc), all of which can
+  be avoided if the returned objects are not entirely capitalized
+  (e.g., \code{Errors}, \code{errors}, \code{ErRoRs}, ..., will all avoid
+  conflicts)}
 
 \item{fixed_objects}{(optional) an object (usually a named \code{list})
 containing additional user-defined objects
