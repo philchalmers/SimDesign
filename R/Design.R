@@ -267,3 +267,35 @@ printDesign <- function(x, whichlist, ..., n = NULL, width = NULL, n_extra = NUL
     cat_line(ff)
     invisible(x)
 }
+
+#' @param x object of class \code{'Design'}
+#' @param i row index
+#' @param j column index
+#' @param drop logical; drop to lower dimension class?
+#' @rdname createDesign
+#' @export
+`[.Design` <- function(x, i, j, ..., drop = FALSE){
+    class(x) <- class(x)[-1]
+    x <- if(missing(i))
+        x[ ,j, drop=drop]
+    else if(missing(j))
+        x[i, , drop=drop]
+    else x[i,j, drop=drop]
+    if(!missing(i))
+        attr(x, 'Design.ID') <- attr(x, 'Design.ID')[i]
+    class(x) <- c('Design', class(x))
+    x
+}
+
+#' @rdname createDesign
+#' @export
+rbind.Design <- function(...){
+    dots <- list(...)
+    for(i in 1:length(dots))
+        class(dots[[i]]) <- class(dots[[i]])[-1]
+    x <- do.call(rbind, dots)
+    attr(x, 'Design.ID') <- 1:nrow(x)
+    class(x) <- c('Design', class(x))
+    x
+}
+

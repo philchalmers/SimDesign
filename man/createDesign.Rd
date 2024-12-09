@@ -3,6 +3,8 @@
 \name{createDesign}
 \alias{createDesign}
 \alias{print.Design}
+\alias{[.Design}
+\alias{rbind.Design}
 \title{Create the simulation design object}
 \usage{
 createDesign(
@@ -14,6 +16,10 @@ createDesign(
 )
 
 \method{print}{Design}(x, list2char = TRUE, pillar.sigfig = 5, ...)
+
+\method{[}{Design}(x, i, j, ..., drop = FALSE)
+
+\method{rbind}{Design}(...)
 }
 \arguments{
 \item{...}{comma separated list of named input objects representing the simulation
@@ -34,7 +40,7 @@ respective \code{...} inputs}
 \item{stringsAsFactors}{logical; should character variable inputs be coerced
 to factors when building a \code{data.frame}? Default is FALSE}
 
-\item{x}{object returned by \code{\link{createDesign}}}
+\item{x}{object of class \code{'Design'}}
 
 \item{list2char}{logical; for \code{tibble} object re-evaluate list elements
 as character vectors for better printing of the levels? Note that this
@@ -42,6 +48,12 @@ does not change the original classes of the object, just how they are printed.
 Default is TRUE}
 
 \item{pillar.sigfig}{number of significant digits to print. Default is 5}
+
+\item{i}{row index}
+
+\item{j}{column index}
+
+\item{drop}{logical; drop to lower dimension class?}
 }
 \value{
 a \code{tibble} or \code{data.frame} containing the simulation experiment

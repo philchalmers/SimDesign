@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.18
 
+- Objects built by `createDesign()` gain `[]` and `rbind()` S3 functions for 
+  subsetting and combining by rows. Largely included so that internal attributes
+  such as `Design.ID` are better tracked (reported by Michael S. Truong)
+
 - `runArraySimulation(..., max_time)` now correctly applies the maximum 
   time across all subsetted conditions rather than over each condition, thereby
   matching, for example, SBATCH commands in SLURM (reported by Michael S. Truong)

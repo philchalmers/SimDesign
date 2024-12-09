@@ -695,5 +695,24 @@ test_that('SimDesign', {
     expect_true(length(dir('mydirname')) == 4L)
     SimClean(dirs = 'mydirname')
 
+    # modifying Design object
+    Design <- createDesign(N = c(10, 20),
+                           SD = c(1, 2, 3))
+    expect_equal(attr(Design, 'Design.ID'), 1:6)
+
+    sDesign <- Design[2:3, ]
+    expect_equal(attr(sDesign, 'Design.ID'), 2:3)
+
+    Design2 <- createDesign(N = c(30),
+                            SD = c(1, 2, 3))
+    Design3 <- createDesign(N = c(40, 50),
+                            SD = c(1, 2, 3))
+
+    bDesign <- rbind(Design, Design2, Design3)
+    expect_equal(attr(bDesign, 'Design.ID'), 1:nrow(bDesign))
+
+    bDesign <- rbind(Design3, Design2, Design)
+    expect_equal(attr(bDesign, 'Design.ID'), 1:nrow(bDesign))
+
 })
 
