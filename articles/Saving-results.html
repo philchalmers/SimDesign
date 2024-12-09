@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.17.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.17.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -137,20 +137,20 @@ called until the simulation is complete.</p>
 <span>                     generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span>,</span>
 <span>                     control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stop_on_fatal <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Design: 1/3;   Replications: 1000;   RAM Used: 67.9 Mb;   Total Time: 0.00s </span></span>
+<span><span class="co">## Design: 1/3;   Replications: 1000;   RAM Used: 68 Mb;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: N=10</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 2/3;   Replications: 1000;   RAM Used: 68.9 Mb;   Total Time: 0.19s </span></span>
+<span><span class="co">## Design: 2/3;   Replications: 1000;   RAM Used: 69 Mb;   Total Time: 0.18s </span></span>
 <span><span class="co">##  Conditions: N=20</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/3;   Replications: 1000;   RAM Used: 68.9 Mb;   Total Time: 0.36s </span></span>
+<span><span class="co">## Design: 3/3;   Replications: 1000;   RAM Used: 69 Mb;   Total Time: 0.35s </span></span>
 <span><span class="co">##  Conditions: N=30</span></span>
 <span><span class="co">## </span></span></code></pre>
 <p>Check that temporary file still exists.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">files</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">'SIMDESIGN'</span>, <span class="va">files</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "SIMDESIGN-TEMPFILE_fv-az1022-891.rds"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "SIMDESIGN-TEMPFILE_fv-az1756-138.rds"</span></span></code></pre>
 <p>Notice here that the simulation stopped at 67% because the third
 design condition threw too many consecutive errors (this is a built-in
 fail-safe in <code>SimDesign</code>). To imitate a type of crash/power
@@ -170,7 +170,7 @@ of unforeseen program execution crashes no time is lost.</p>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">1000</span>, save<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">'my-simple-sim'</span>,</span>
 <span>                     generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/3;   Replications: 1000   Total Time: 0.36s </span></span>
+<span><span class="co">## Design: 3/3;   Replications: 1000   Total Time: 0.35s </span></span>
 <span><span class="co">##  Conditions: N=30</span></span>
 <span><span class="co">## </span></span></code></pre>
 <p>Check which files exist.</p>
@@ -209,7 +209,7 @@ example,</p>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">3</span>, </span>
 <span>              generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Design: 1/3;   Replications: 3;   RAM Used: 69.6 Mb;   Total Time: 0.00s </span></span>
+<span><span class="co">## Design: 1/3;   Replications: 3;   RAM Used: 69.7 Mb;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: N=10</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Design: 2/3;   Replications: 3;   RAM Used: 69.6 Mb;   Total Time: 0.00s </span></span>
@@ -262,10 +262,10 @@ correctly tracked.</p>
 <span><span class="co">## Design: 1/3;   Replications: 1000;   RAM Used: 71.9 Mb;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: N=10</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 2/3;   Replications: 1000;   RAM Used: 71.8 Mb;   Total Time: 0.17s </span></span>
+<span><span class="co">## Design: 2/3;   Replications: 1000;   RAM Used: 71.9 Mb;   Total Time: 0.17s </span></span>
 <span><span class="co">##  Conditions: N=20</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/3;   Replications: 1000;   RAM Used: 71.8 Mb;   Total Time: 0.33s </span></span>
+<span><span class="co">## Design: 3/3;   Replications: 1000;   RAM Used: 71.9 Mb;   Total Time: 0.34s </span></span>
 <span><span class="co">##  Conditions: N=30</span></span>
 <span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
