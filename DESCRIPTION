@@ -19,7 +19,7 @@ Description: Provides tools to safely and efficiently organize and execute
     the package and its design philosophy see Chalmers and Adkins (2020) <doi:10.20982/tqmp.16.4.p248>.
 VignetteBuilder: knitr
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports:
     methods,
     testthat,
