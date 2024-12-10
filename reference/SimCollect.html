@@ -107,7 +107,8 @@ then the results will only be returned in the R console.</p></dd>
 <code>SimExtract(what='results')</code> information. This is mainly useful when RAM is an issue
 given simulations with many stored estimates. Default includes the results objects
 in their entirety, though to omit all internally stored simulation results pass the
-character <code>'NONE'</code></p></dd>
+character <code>'NONE'</code>. To investigate the stored warnings and error messages in isolation
+pass <code>'WARNINGS'</code> or <code>'ERRORS'</code>, respectively</p></dd>
 
 
 <dt id="arg-check-only">check.only<a class="anchor" aria-label="anchor" href="#arg-check-only"></a></dt>
@@ -248,6 +249,9 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="co"># aggregate into single object</span></span></span>
 <span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">SimCollect</span><span class="op">(</span><span class="st">'sim_files/'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># view list of error messages (if there were any raised)</span></span></span>
+<span class="r-in"><span><span class="fu">SimCollect</span><span class="op">(</span><span class="st">'sim_files/'</span>, select <span class="op">=</span> <span class="st">'ERRORS'</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="SimClean.html">SimClean</a></span><span class="op">(</span>dir<span class="op">=</span><span class="st">'sim_files/'</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
