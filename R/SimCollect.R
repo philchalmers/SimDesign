@@ -193,7 +193,8 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
         tmp <- try(readRDS(filenames[i]), TRUE)
         if(is(tmp, 'try-error'))
             stop(c('Could not read file ', filenames[i]))
-        readin[[i]] <- if(!is.null(select) && select %in% c('ERRORS', 'WARNINGS')){
+        readin[[i]] <- if(!is.null(select) && length(select) == 1L &&
+                          any(select %in% c('ERRORS', 'WARNINGS'))){
             SimExtract(tmp, what=tolower(select))
         } else subset_results(tmp, select=select)
         if(gc){
@@ -201,7 +202,8 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
             gc()
         }
     }
-    if(!is.null(select) && select %in% c('ERRORS', 'WARNINGS')) return(readin)
+    if(!is.null(select) && length(select) == 1L &&
+       any(select %in% c('ERRORS', 'WARNINGS'))) return(readin)
     extra_info1 <- attr(readin[[1L]], 'extra_info')
     ncores <- sum(sapply(readin, function(x) attr(x, 'extra_info')$ncores))
     extra_info1[c("seeds", "date_completed", "summarise_list", "stored_results",
