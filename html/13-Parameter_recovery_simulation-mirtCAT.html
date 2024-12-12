@@ -404,432 +404,426 @@ res &lt;- runSimulation(design=Design, replications=1, seed = 1:nrow(Design),
                      generate=Generate, analyse=Analyse, fixed_objects=fo, debug=&#39;none&#39;)</code></pre>
 <pre><code>## save, stop_on_fatal, and print_RAM flags disabled for testing purposes</code></pre>
 <pre><code>## 
-## 
-Design: 1/6;   Replications: 1;   Total Time: 0.00s 
+## Design: 1/6;   Replications: 1   Total Time: 0.00s 
 ##  Conditions: nitems=100, discrimination=0.5
 ## 
-## 
-Design: 2/6;   Replications: 1;   Total Time: 20.71s 
+## Design: 2/6;   Replications: 1   Total Time: 20.77s 
 ##  Conditions: nitems=300, discrimination=0.5
 ## 
-## 
-Design: 3/6;   Replications: 1;   Total Time: 38.74s 
+## Design: 3/6;   Replications: 1   Total Time: 37.79s 
 ##  Conditions: nitems=500, discrimination=0.5
 ## 
-## 
-Design: 4/6;   Replications: 1;   Total Time: 59.42s 
+## Design: 4/6;   Replications: 1   Total Time: 58.24s 
 ##  Conditions: nitems=100, discrimination=1.5
 ## 
-## 
-Design: 5/6;   Replications: 1;   Total Time: 01m 12.85s 
+## Design: 5/6;   Replications: 1   Total Time: 01m 11.83s 
 ##  Conditions: nitems=300, discrimination=1.5
 ## 
-## 
-Design: 6/6;   Replications: 1;   Total Time: 01m 29.51s 
+## Design: 6/6;   Replications: 1   Total Time: 01m 28.60s 
 ##  Conditions: nitems=500, discrimination=1.5
 ## </code></pre>
 <pre class="r"><code>dplyr::glimpse(res[1:2])</code></pre>
 <pre><code>## List of 2
 ##  $ nitems=100; discrimination=0.5:List of 1
 ##   ..$ :List of 1000
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
 ##   .. .. [list output truncated]
 ##  $ nitems=300; discrimination=0.5:List of 1
 ##   ..$ :List of 1000
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
-##   .. ..$ :List of 14
+##   .. ..$ :List of 15
 ##   .. .. ..- attr(*, &quot;class&quot;)= chr &quot;mirtCAT&quot;
 ##   .. .. [list output truncated]</code></pre>
 <pre class="r"><code># person 100 from the first condition
