@@ -41,10 +41,11 @@ Design <- createDesign(N = NA)
 
 # sample size to 95% power
 res <- SimSolve(design=Design, b=.95, interval=c(10, 50),
-                generate=Generate, parallel=TRUE,
+                generate=Generate, parallel=TRUE, verbose=FALSE,
                 analyse=Analyse, summarise=Summarise, packages='simr')
 res
 summary(res)
 plot(res)
 plot(res, type = 'history')
+
 

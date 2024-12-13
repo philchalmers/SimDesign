@@ -51,7 +51,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 # Terminate if prediction CI is consistently within [.795, .805]
 solved <- SimSolve(design=Design, b=.8, interval=c(10, 500),
 				   generate=Generate, analyse=Analyse,
-				   summarise=Summarise, predCI.tol = .01)
+				   summarise=Summarise, predCI.tol = .01, verbose=FALSE)
 solved
 summary(solved)
 plot(solved, 1)
@@ -104,7 +104,7 @@ Design    # solve for NA's
 # is based on whether the prediction CI is consistently within [.795, .805]
 solved <- SimSolve(design=Design, b = .8, interval=c(.1, 2),
 				   generate=Generate, analyse=Analyse,
-				   summarise=Summarise, integer=FALSE, predCI.tol=.01)
+				   summarise=Summarise, integer=FALSE, predCI.tol=.01, verbose=FALSE)
 solved
 summary(solved)
 plot(solved, 1)

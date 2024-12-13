@@ -65,7 +65,7 @@ Design <- createDesign(N=NA, fcor=.25, loadings=.8, residuals=.36)
 
 solved <- SimSolve(design=Design, b=.8, interval=c(100,300), generate=Generate,
                    analyse=Analyse, summarise=Summarise, packages='lavaan',
-                   parallel=TRUE, predCI.tol=.01)
+                   parallel=TRUE, predCI.tol=.01, verbose=FALSE)
 solved
 summary(solved)
 plot(solved)

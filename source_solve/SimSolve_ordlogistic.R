@@ -45,7 +45,7 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 # terminate when prediction CI between [.895, .905]
 solved <- SimSolve(design=Design, b=.9, interval=c(30,300), parallel=TRUE,
                    analyse=Analyse, summarise=Summarise,
-                   predCI.tol=.01, maxiter = 200)
+                   predCI.tol=.01, maxiter = 200, verbose=FALSE)
 solved
 summary(solved)  # note that prediction CI is within [.895, .905]
 plot(solved)
