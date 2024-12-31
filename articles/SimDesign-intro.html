@@ -66,9 +66,9 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2024-12-14</h4>
+            <h4 data-toc-skip class="date">2024-12-31</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/v2.18/vignettes/SimDesign-intro.Rmd" class="external-link"><code>vignettes/SimDesign-intro.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/SimDesign-intro.Rmd" class="external-link"><code>vignettes/SimDesign-intro.Rmd</code></a></small>
       <div class="d-none name"><code>SimDesign-intro.Rmd</code></div>
     </div>
 
@@ -138,8 +138,11 @@ files, however there organization is very simple conceptually.</p>
 <p>To begin, the following code should be copied and saved to an
 external source (i.e., text) file.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/SimFunctions.html">SimFunctions</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code>Error in get(paste0(generic, ".", class), envir = get_method_env()) : 
+  object 'type_sum.accel' not found</code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/SimFunctions.html">SimFunctions</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#-------------------------------------------------------------------</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
@@ -174,13 +177,13 @@ copy-and-pasting, <code><a href="../reference/SimFunctions.html">SimFunctions()<
 file by providing a <code>filename</code> argument. The following
 creates a file (<code>mysim.R</code>) containing the simulation
 design/execution and required user-defined functions.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">SimDesign</span><span class="fu">::</span><span class="fu"><a href="../reference/SimFunctions.html">SimFunctions</a></span><span class="op">(</span><span class="st">'mysim'</span><span class="op">)</span></span></code></pre></div>
 <p>For larger simulations, you may want to use two files, and if you’d
 prefer to have helpful comments included then these can be achieved with
 the <code>singlefile</code> and <code>comments</code> arguments,
 respectively.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/SimFunctions.html">SimFunctions</a></span><span class="op">(</span><span class="st">'mysim'</span>, singlefile <span class="op">=</span> <span class="cn">FALSE</span>, comments <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>The choice of using a single file or not is entirely a matter of
 preference, and will not influence the overall simulation
@@ -212,7 +215,7 @@ symmetric and skewed distribution. The use of
 <code><a href="../reference/createDesign.html">createDesign()</a></code> is extremely helpful here to create a
 completely crossed-design for each combination (there are 8 in
 total).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">createDesign</a></span><span class="op">(</span>sample_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">60</span>, <span class="fl">120</span>, <span class="fl">240</span><span class="op">)</span>, </span>
 <span>                       distribution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'norm'</span>, <span class="st">'chi'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">Design</span></span></code></pre></div>
@@ -245,7 +248,7 @@ also possible to pass a <code>fixed_objects</code> object to the
 function for including fixed sets of population parameters and other
 conditions, however for this simple simulation this input is not
 required.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Generate</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">condition</span>, <span class="va">fixed_objects</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">N</span> <span class="op">&lt;-</span> <span class="va">condition</span><span class="op">$</span><span class="va">sample_size</span></span>
 <span>    <span class="va">dist</span> <span class="op">&lt;-</span> <span class="va">condition</span><span class="op">$</span><span class="va">distribution</span></span>
@@ -264,7 +267,7 @@ containing the data to be analysed each with a population mean of 3
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>χ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\chi^2</annotation></semantics></math>
 distribution has a mean equal to its df). Next, we define the
 <code>analyse</code> component to analyse said data:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Analyse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">condition</span>, <span class="va">dat</span>, <span class="va">fixed_objects</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">M0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span>    <span class="va">M1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">dat</span>, trim <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span></span>
@@ -290,7 +293,7 @@ statistics to describe their empirical properties. This is where
 computing meta-statistics such as bias, root mean-square error,
 detection rates, and so on are of primary importance. Unsurprisingly,
 then, this is the purpose of the <code>summarise</code> component:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Summarise</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">condition</span>, <span class="va">results</span>, <span class="va">fixed_objects</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">obs_bias</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bias.html">bias</a></span><span class="op">(</span><span class="va">results</span>, parameter <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span>    <span class="va">obs_RMSE</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RMSE.html">RMSE</a></span><span class="op">(</span><span class="va">results</span>, parameter <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -331,35 +334,35 @@ temporary results, debugging functions, and so on are available. Below
 we simply request that each condition be run 1000 times on a single
 processor, and finally store the results to an object called
 <code>results</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">1000</span>, generate<span class="op">=</span><span class="va">Generate</span>, </span>
 <span>                         analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Design: 1/8;   Replications: 1000;   RAM Used: 70.6 Mb;   Total Time: 0.00s </span></span>
+<span><span class="co">## Design: 1/8;   Replications: 1000;   RAM Used: 70.5 Mb;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: sample_size=30, distribution=norm</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 2/8;   Replications: 1000;   RAM Used: 71.6 Mb;   Total Time: 0.21s </span></span>
+<span><span class="co">## Design: 2/8;   Replications: 1000;   RAM Used: 71.5 Mb;   Total Time: 0.21s </span></span>
 <span><span class="co">##  Conditions: sample_size=60, distribution=norm</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/8;   Replications: 1000;   RAM Used: 71.6 Mb;   Total Time: 0.41s </span></span>
+<span><span class="co">## Design: 3/8;   Replications: 1000;   RAM Used: 71.5 Mb;   Total Time: 0.41s </span></span>
 <span><span class="co">##  Conditions: sample_size=120, distribution=norm</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Design: 4/8;   Replications: 1000;   RAM Used: 71.6 Mb;   Total Time: 0.61s </span></span>
 <span><span class="co">##  Conditions: sample_size=240, distribution=norm</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 5/8;   Replications: 1000;   RAM Used: 71.7 Mb;   Total Time: 0.83s </span></span>
+<span><span class="co">## Design: 5/8;   Replications: 1000;   RAM Used: 71.6 Mb;   Total Time: 0.84s </span></span>
 <span><span class="co">##  Conditions: sample_size=30, distribution=chi</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 6/8;   Replications: 1000;   RAM Used: 71.7 Mb;   Total Time: 1.02s </span></span>
+<span><span class="co">## Design: 6/8;   Replications: 1000;   RAM Used: 71.6 Mb;   Total Time: 1.04s </span></span>
 <span><span class="co">##  Conditions: sample_size=60, distribution=chi</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 7/8;   Replications: 1000;   RAM Used: 71.7 Mb;   Total Time: 1.22s </span></span>
+<span><span class="co">## Design: 7/8;   Replications: 1000;   RAM Used: 71.7 Mb;   Total Time: 1.23s </span></span>
 <span><span class="co">##  Conditions: sample_size=120, distribution=chi</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 8/8;   Replications: 1000;   RAM Used: 71.8 Mb;   Total Time: 1.44s </span></span>
+<span><span class="co">## Design: 8/8;   Replications: 1000;   RAM Used: 71.7 Mb;   Total Time: 1.45s </span></span>
 <span><span class="co">##  Conditions: sample_size=240, distribution=chi</span></span>
 <span><span class="co">## </span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Final simulation object</span></span>
 <span><span class="va">res</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 19</span></span></span>
@@ -381,7 +384,7 @@ processor, and finally store the results to an object called
 <p>If <code>runSimulation(..., store_results = TRUE)</code> were used,
 which is the current default in the package if RAM is not an issue, then
 the complete stored results can be viewed using</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract complete set of stored results</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="va">results</span></span></code></pre></div>
@@ -430,7 +433,7 @@ of trimming results in even less efficiency, and using the median as a
 proxy to estimate the mean is the least effective method. This is
 witnessed rather clearly in the following table, which prints the
 relative efficiency of the estimators:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">REs</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">'RE\\.'</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">Design</span>, <span class="va">REs</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   sample_size distribution RE.mean_no_trim RE.mean_trim.1 RE.mean_trim.2</span></span>
@@ -471,18 +474,18 @@ we demonstrate the results from the first condition (row 1 of
 <code>Design</code>) to show what each function returns.</p>
 <p>A single replication in a Monte Carlo simulation results in the
 following objects:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="va">Design</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
 <span><span class="co">##   sample_size distribution</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>          30 norm</span></span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Generate.html">Generate</a></span><span class="op">(</span><span class="va">condition</span><span class="op">)</span></span>
 <span><span class="va">dat</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] 2.37 3.18 2.16 4.60 3.33 2.18 3.49 3.74 3.58 2.69 4.51 3.39 2.38 0.79 4.12</span></span>
 <span><span class="co">## [16] 2.96 2.98 3.94 3.82 3.59 3.92 3.78 3.07 1.01 3.62 2.94 2.84 1.53 2.52 3.42</span></span></code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Analyse.html">Analyse</a></span><span class="op">(</span><span class="va">condition</span>, <span class="va">dat</span><span class="op">)</span></span>
 <span><span class="va">res</span></span></code></pre></div>
 <pre><code><span><span class="co">## mean_no_trim  mean_trim.1  mean_trim.2       median </span></span>
@@ -494,7 +497,7 @@ using the generated data, and returns a named vector with the observed
 parameter estimates. Of course, this is only a single replication, and
 therefore is not really meaningful in the grand scheme of things; so, it
 must be repeated a number of times.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># repeat 1000x</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span>, <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
@@ -516,7 +519,7 @@ estimates returned from each statistic. After this is obtained, we can
 move on to summarising the output through the <code><a href="../reference/Summarise.html">Summarise()</a></code>
 function to obtain average estimates, their associated sampling error,
 their efficiency, and so on.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/Summarise.html">Summarise</a></span><span class="op">(</span><span class="va">condition</span>, <span class="va">results</span><span class="op">)</span> </span></code></pre></div>
 <pre><code><span><span class="co">## bias.mean_no_trim  bias.mean_trim.1  bias.mean_trim.2       bias.median </span></span>
 <span><span class="co">##           -0.0011           -0.0031           -0.0035           -0.0037 </span></span>

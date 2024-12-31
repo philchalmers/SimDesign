@@ -66,9 +66,9 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2024-12-14</h4>
+            <h4 data-toc-skip class="date">2024-12-31</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/v2.18/vignettes/Catch_errors.Rmd" class="external-link"><code>vignettes/Catch_errors.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/Catch_errors.Rmd" class="external-link"><code>vignettes/Catch_errors.Rmd</code></a></small>
       <div class="d-none name"><code>Catch_errors.Rmd</code></div>
     </div>
 
@@ -93,11 +93,14 @@ returned object.</p>
 </h2>
 <p>As usual, define the functions of interest.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
-<span><span class="co"># SimFunctions(comments=FALSE)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
+<span><span class="co">##   object 'type_sum.accel' not found</span></span></code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># SimFunctions(comments=FALSE)</span></span>
 <span></span>
 <span><span class="va">Design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">createDesign</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Generate</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">condition</span>, <span class="va">fixed_objects</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">ret</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">condition</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="va">ret</span></span>
@@ -136,27 +139,27 @@ iterations).</p>
 <div class="section level2">
 <h2 id="run-the-simulation">Run the simulation<a class="anchor" aria-label="anchor" href="#run-the-simulation"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">100</span>, </span>
 <span>                       generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Design: 1/3;   Replications: 100;   RAM Used: 68 Mb;   Total Time: 0.00s </span></span>
+<span><span class="co">## Design: 1/3;   Replications: 100;   RAM Used: 67.9 Mb;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: N=10</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 2/3;   Replications: 100;   RAM Used: 69.2 Mb;   Total Time: 0.05s </span></span>
+<span><span class="co">## Design: 2/3;   Replications: 100;   RAM Used: 69 Mb;   Total Time: 0.05s </span></span>
 <span><span class="co">##  Conditions: N=20</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/3;   Replications: 100;   RAM Used: 69.3 Mb;   Total Time: 0.10s </span></span>
+<span><span class="co">## Design: 3/3;   Replications: 100;   RAM Used: 69.1 Mb;   Total Time: 0.10s </span></span>
 <span><span class="co">##  Conditions: N=30</span></span>
 <span><span class="co">## </span></span></code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 9</span></span></span>
 <span><span class="co">##       N     bias REPLICATIONS SIM_TIME RAM_USED       SEED COMPLETED      ERRORS</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.05s    69.2 Mb  <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Sat Dec 14 14…     53</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.05s    69.3 Mb   312<span style="text-decoration: underline;">928</span>385 Sat Dec 14 14…     52</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.04s    69.4 Mb   866<span style="text-decoration: underline;">248</span>189 Sat Dec 14 14…     42</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.05s    69 Mb    <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Tue Dec 31 17…     53</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.05s    69.1 Mb   312<span style="text-decoration: underline;">928</span>385 Tue Dec 31 17…     52</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.04s    69.3 Mb   866<span style="text-decoration: underline;">248</span>189 Tue Dec 31 17…     42</span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: WARNINGS &lt;int&gt;</span></span></span></code></pre>
 <p>What you’ll immediately notice from this output object is that counts
 of the error and warning messages have been appended to the
@@ -169,7 +172,7 @@ occurred more often than the manually thrown error as well as the
 invalid-input error) after extracting and inspecting
 <code>SimExtract(results, what = 'errors')</code> and
 <code>SimExtract(results, what = 'warnings')</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/SimExtract.html">SimExtract</a></span><span class="op">(</span><span class="va">result</span>, what <span class="op">=</span> <span class="st">'errors'</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    N ERROR:  Error in t.test.default("invalid") : not enough 'x' observations\n</span></span>
 <span><span class="co">## 1 10                                                                         12</span></span>
@@ -215,7 +218,7 @@ of iterations, etc). For instance, say that the fourth row of the
 be inspected further. One useful approach then would be to debug the 4th
 row on the instance that an error is raised, which can be achieved using
 the following:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">...</span>, debug <span class="op">=</span> <span class="st">'error-4'</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>error</code> flag is used to enter R’s debugger on the
 first instance of an error, while the <code>-4</code> indicates that
@@ -255,7 +258,7 @@ seed stored column-wise, where the associated error message is contained
 in the column name itself (and allowed to be coerced into a valid column
 name to make it easier to use the <code>$</code> operator). For
 example,</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seeds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimExtract.html">SimExtract</a></span><span class="op">(</span><span class="va">result</span>, what <span class="op">=</span> <span class="st">'error_seeds'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">seeds</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
@@ -280,7 +283,7 @@ makes the most sense to immediately go into the debugging mode via the
 <p><strong>Note</strong>: It is important to manually select the correct
 <code>Design</code> row using this error extraction approach; otherwise,
 the seed will clearly not replicate the exact problem state.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">picked_seed</span> <span class="op">&lt;-</span> <span class="va">seeds</span><span class="op">$</span><span class="va">Design_row_1.1..Error.in.t.test.default..invalid.....not.enough..x..observations.</span></span>
 <span></span>
 <span><span class="co"># debug analyse() for first row of Design object via debug='analyse-1'</span></span>
@@ -317,7 +320,7 @@ be used to explicit convert known warning message strings into errors
 that disrupt the code execution while allowing other warning messages to
 continue to be raised.</p>
 <p>For example, if a function utilized in a simulation was</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myfun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.1</span>, <span class="fl">.9</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>        <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">'This warning is serious'</span><span class="op">)</span></span>
@@ -332,28 +335,28 @@ continue to be raised.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">myfun</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in myfun(): This warning is no big deal</span></span></code></pre>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
 <span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">myfun</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in myfun(): This warning is serious</span></span></code></pre>
 <p>then whenever the serious warning message is raised it could be
 explicitly converted to an error using an internal <code><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl()</a></code>
 test.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">out1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manageWarnings.html">manageWarnings</a></span><span class="op">(</span><span class="fu">myfun</span><span class="op">(</span><span class="op">)</span>, </span>
 <span>                        warning2error<span class="op">=</span><span class="st">'This warning is serious'</span><span class="op">)</span></span>
 <span><span class="va">out1</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 1</span></span></code></pre>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">out2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manageWarnings.html">manageWarnings</a></span><span class="op">(</span><span class="fu">myfun</span><span class="op">(</span><span class="op">)</span>, </span>
 <span>                        warning2error<span class="op">=</span><span class="st">'This warning is serious'</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in myfun(): This warning is no big deal</span></span></code></pre>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out2</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 1</span></span></code></pre>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
 <span><span class="va">out3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manageWarnings.html">manageWarnings</a></span><span class="op">(</span><span class="fu">myfun</span><span class="op">(</span><span class="op">)</span>, </span>
 <span>                        warning2error<span class="op">=</span><span class="st">'This warning is serious'</span><span class="op">)</span></span></code></pre></div>
