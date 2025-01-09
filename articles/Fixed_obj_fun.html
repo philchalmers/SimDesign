@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2024-12-31</h4>
+            <h4 data-toc-skip class="date">2025-01-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/Fixed_obj_fun.Rmd" class="external-link"><code>vignettes/Fixed_obj_fun.Rmd</code></a></small>
       <div class="d-none name"><code>Fixed_obj_fun.Rmd</code></div>
@@ -149,11 +149,8 @@ they will clearly be visible at runtime. The following
 <code>fixed_objects</code> approach is really only useful when the
 defined objects contain a large amount of code.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
-<span><span class="co">##   object 'type_sum.accel' not found</span></span></code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#SimFunctions(comments = FALSE)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
+<span><span class="co">#SimFunctions(comments = FALSE)</span></span>
 <span></span>
 <span><span class="co">### Define design conditions and number of replications</span></span>
 <span><span class="va">Design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">createDesign</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
@@ -194,15 +191,15 @@ defined objects contain a large amount of code.</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
 <span><span class="co">##       N     p REPLICATIONS SIM_TIME      SEED COMPLETED               </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.038         <span style="text-decoration: underline;">1</span>000 0.24s    525<span style="text-decoration: underline;">310</span>970 Tue Dec 31 17:22:45 2024</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.05          <span style="text-decoration: underline;">1</span>000 0.24s    529<span style="text-decoration: underline;">914</span>981 Tue Dec 31 17:22:45 2024</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.056         <span style="text-decoration: underline;">1</span>000 0.27s    602<span style="text-decoration: underline;">604</span>143 Tue Dec 31 17:22:45 2024</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.038         <span style="text-decoration: underline;">1</span>000 0.23s    525<span style="text-decoration: underline;">310</span>970 Thu Jan  9 16:40:36 2025</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.05          <span style="text-decoration: underline;">1</span>000 0.23s    529<span style="text-decoration: underline;">914</span>981 Thu Jan  9 16:40:36 2025</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.056         <span style="text-decoration: underline;">1</span>000 0.26s    602<span style="text-decoration: underline;">604</span>143 Thu Jan  9 16:40:36 2025</span></span></code></pre>
 <p>By placing objects in a list and passing this to
 <code>fixed_objects</code>, the objects are safely exported to all
 relevant functions. Furthermore, running this code in parallel will also
 be valid as a consequence (see below) because all objects are properly
 exported to each core.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, <span class="va">replications</span>, verbose<span class="op">=</span><span class="cn">FALSE</span>, fixed_objects<span class="op">=</span><span class="va">fixed_objects</span>,</span>
 <span>                     generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span>, debug<span class="op">=</span><span class="st">'none'</span>,</span>
 <span>                     parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
