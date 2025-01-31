@@ -698,7 +698,7 @@ set_seed <- function(seed){
     invisible(NULL)
 }
 
-recvResult_fun <- utils::getFromNamespace("recvResult", "snow")
+recvResult_fun <- utils::getFromNamespace("recvResult", "parallel")
 
 #' Set RNG sub-stream for  Pierre L'Ecuyer's RngStreams
 #'
