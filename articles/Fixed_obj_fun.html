@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.18</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.18.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2025-01-09</h4>
+            <h4 data-toc-skip class="date">2025-01-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/Fixed_obj_fun.Rmd" class="external-link"><code>vignettes/Fixed_obj_fun.Rmd</code></a></small>
       <div class="d-none name"><code>Fixed_obj_fun.Rmd</code></div>
@@ -189,11 +189,11 @@ defined objects contain a large amount of code.</p>
 <span>                     generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span>, debug<span class="op">=</span><span class="st">'none'</span><span class="op">)</span></span>
 <span><span class="va">res</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
-<span><span class="co">##       N     p REPLICATIONS SIM_TIME      SEED COMPLETED               </span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.038         <span style="text-decoration: underline;">1</span>000 0.23s    525<span style="text-decoration: underline;">310</span>970 Thu Jan  9 16:40:36 2025</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.05          <span style="text-decoration: underline;">1</span>000 0.23s    529<span style="text-decoration: underline;">914</span>981 Thu Jan  9 16:40:36 2025</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.056         <span style="text-decoration: underline;">1</span>000 0.26s    602<span style="text-decoration: underline;">604</span>143 Thu Jan  9 16:40:36 2025</span></span></code></pre>
+<span><span class="co">##       N     p REPLICATIONS SIM_TIME       SEED COMPLETED               </span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.044         <span style="text-decoration: underline;">1</span>000 0.23s     488<span style="text-decoration: underline;">349</span>520 Fri Jan 31 04:23:14 2025</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.06          <span style="text-decoration: underline;">1</span>000 0.23s     469<span style="text-decoration: underline;">344</span>150 Fri Jan 31 04:23:15 2025</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.054         <span style="text-decoration: underline;">1</span>000 0.25s    <span style="text-decoration: underline;">1</span>550<span style="text-decoration: underline;">099</span>436 Fri Jan 31 04:23:15 2025</span></span></code></pre>
 <p>By placing objects in a list and passing this to
 <code>fixed_objects</code>, the objects are safely exported to all
 relevant functions. Furthermore, running this code in parallel will also
