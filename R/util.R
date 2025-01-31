@@ -710,7 +710,7 @@ recvResult_fun <- utils::getFromNamespace("recvResult", "snow")
 #'
 #' @param seed An integer vector of length 7 as given by \code{.Random.seed} when
 #'   the L'Ecuyer-CMR RNG is in use. See\code{\link{RNG}} for the valid values
-#' @param cl A cluster from the \code{parallel} or \code{snow} package, or
+#' @param cl A cluster from the \code{parallel} package, or
 #'   (if \code{NULL}) the registered cluster
 #' @return invisible NULL
 #' @export
@@ -725,11 +725,15 @@ clusterSetRNGSubStream <- function(cl, seed){
     for (i in seq_along(cl)) {
         expr <- substitute(assign(".Random.seed", seed, envir = .GlobalEnv),
                            list(seed = seeds[[i]]))
-        snow::sendCall(cl[[i]], eval, list(expr))
+        sendCall.imp(cl[[i]], eval, list(expr))
     }
-    snow::checkForRemoteErrors(lapply(cl, recvResult_fun))
+    checkForRemoteErrors.imp(lapply(cl, recvResult_fun))
     invisible()
 }
+
+sendCall.imp <- utils::getFromNamespace('sendCall', 'parallel')
+checkForRemoteErrors.imp <- utils::getFromNamespace('checkForRemoteErrors',
+                                                    'parallel')
 
 valid_results <- function(x)
     is(x, 'numeric') || is(x, 'data.frame') || is(x, 'list') || is(x, 'logical') || is(x, 'try-error')

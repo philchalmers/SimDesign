@@ -7,7 +7,7 @@
 clusterSetRNGSubStream(cl, seed)
 }
 \arguments{
-\item{cl}{A cluster from the \code{parallel} or \code{snow} package, or
+\item{cl}{A cluster from the \code{parallel} package, or
 (if \code{NULL}) the registered cluster}
 
 \item{seed}{An integer vector of length 7 as given by \code{.Random.seed} when
