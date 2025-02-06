@@ -486,6 +486,10 @@ in the simulation}
        used throughout the simulation? Set to \code{FALSE} if unnecessary or if the call to
        \code{\link{gc}} is unnecessarily time consuming}
 
+     \item{\code{global_fun_level}}{determines how many levels to search until global environment
+       frame is located. Default is 2, though for \code{\link{runArraySimulation}} this is set to 3.
+       Use 3 or more whenever \code{runSimulation} is used within the context of another function}
+
      \item{\code{max_time}}{
        Similar to \code{\link{runArraySimulation}}, specifies the (approximate) maximum
        time that the simulation is allowed to be executed. However, unlike the implementation

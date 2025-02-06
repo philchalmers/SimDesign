@@ -422,6 +422,10 @@
 #'        used throughout the simulation? Set to \code{FALSE} if unnecessary or if the call to
 #'        \code{\link{gc}} is unnecessarily time consuming}
 #'
+#'      \item{\code{global_fun_level}}{determines how many levels to search until global environment
+#'        frame is located. Default is 2, though for \code{\link{runArraySimulation}} this is set to 3.
+#'        Use 3 or more whenever \code{runSimulation} is used within the context of another function}
+#'
 #'      \item{\code{max_time}}{
 #'        Similar to \code{\link{runArraySimulation}}, specifies the (approximate) maximum
 #'        time that the simulation is allowed to be executed. However, unlike the implementation
@@ -1002,6 +1006,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         stopifnot("Argument(s) to save_details list invalid"=
                       all(names(save_details) %in% valid_save_details.list()))
     }
+    if(!is.null(control$global_fun_level)) control$global_fun_level <- 2
     if(replications < 3L){
         if(verbose)
             message('save, stop_on_fatal, and print_RAM flags disabled for testing purposes')
@@ -1283,8 +1288,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             on.exit(undebug(Functions[[debug]]), add = TRUE)
         }
     }
-    export_funs <- if(!is.null(control$from.runArraySimulation))
-        parent_env_fun(3L) else parent_env_fun()
+    export_funs <- parent_env_fun(control$global_fun_level)
     if(parallel){
         if(!useFuture && is.null(cl)){
             cl <- parallel::makeCluster(ncores, type=type)

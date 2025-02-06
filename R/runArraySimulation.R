@@ -303,7 +303,7 @@ runArraySimulation <- function(design, ..., replications,
     if(!is.null(control$save_seeds) && isTRUE(control$save_seeds))
         stop(c('save_seeds not supported for array jobs. If this is truely',
                ' necessary use store_Random.seeds instead'))
-    control$from.runArraySimulation <- TRUE
+    control$global_fun_level <- 3
     rngkind <- RNGkind()
     RNGkind("L'Ecuyer-CMRG")
     on.exit(RNGkind(rngkind[1L]))
