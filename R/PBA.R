@@ -10,7 +10,7 @@
 #' approximately when \code{check.interval=TRUE}).
 #' See Waeber, Frazier, and Henderson (2013) for details.
 #'
-#' @param f noisy function for which the root is sought
+#' @param f.root noisy function for which the root is sought
 #'
 #' @param f.prior density function indicating the likely location of the prior
 #'   (e.g., if root is within [0,1] then \code{\link{dunif}} works, otherwise custom
@@ -126,7 +126,7 @@
 #'
 #' }
 #'
-PBA <- function(f, interval, ..., p = .6,
+PBA <- function(f.root, interval, ..., p = .6,
                 integer = FALSE, tol = if(integer) .01 else .0001,
                 maxiter = 300L, miniter = 100L, wait.time = NULL,
                 f.prior = NULL, resolution = 10000L,
@@ -204,13 +204,13 @@ PBA <- function(f, interval, ..., p = .6,
 
     if(check.interval){
         if(!is.null(FromSimSolve)){
-            upper <- bool.f(f.root=f, interval[2L], replications=replications[1L],
+            upper <- bool.f(f.root=f.root, interval[2L], replications=replications[1L],
                             store = FALSE, ...)
-            lower <- bool.f(f.root=f, interval[1L], replications=replications[1L],
+            lower <- bool.f(f.root=f.root, interval[1L], replications=replications[1L],
                             store = FALSE, ...)
         } else {
-            upper <- bool.f(f.root=f, interval[2L], ...)
-            lower <- bool.f(f.root=f, interval[1L], ...)
+            upper <- bool.f(f.root=f.root, interval[2L], ...)
+            lower <- bool.f(f.root=f.root, interval[1L], ...)
         }
         no_root <- (upper[1L] + lower[1L]) != 1L
         if(no_root){
@@ -246,8 +246,8 @@ PBA <- function(f, interval, ..., p = .6,
         }
         medhistory[iter] <- med
         feval <- if(!is.null(FromSimSolve))
-            bool.f(f.root=f, med, replications=replications[iter], ...)
-        else bool.f(f.root=f, med, ...)
+            bool.f(f.root=f.root, med, replications=replications[iter], ...)
+        else bool.f(f.root=f.root, med, ...)
         z <- feval[1]
         roothistory[iter] <- feval[2]
         if(z){

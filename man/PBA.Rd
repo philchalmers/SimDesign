@@ -7,7 +7,7 @@
 \title{Probabilistic Bisection Algorithm}
 \usage{
 PBA(
-  f,
+  f.root,
   interval,
   ...,
   p = 0.6,
@@ -28,7 +28,7 @@ PBA(
 \method{plot}{PBA}(x, type = "posterior", main = "Probabilistic Bisection Posterior", ...)
 }
 \arguments{
-\item{f}{noisy function for which the root is sought}
+\item{f.root}{noisy function for which the root is sought}
 
 \item{interval}{a vector containing the end-points of the interval
 to be searched for the root}
