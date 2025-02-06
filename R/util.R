@@ -5,7 +5,8 @@ parent_env_fun <- function(level=2){
     nms <- ls(envir = parent.frame(level))
     is_fun <- sapply(nms, function(x, envir) is.function(get(x, envir=envir)),
                      envir = parent.frame(level))
-    return(nms[is_fun])
+    if(any(is_fun)) return(nms[is_fun])
+    ""
 }
 
 unique_filename <- function(filename, safe = TRUE, verbose = TRUE){
