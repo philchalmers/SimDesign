@@ -2,11 +2,14 @@
 
 # return a character vector of functions defined in .GlobalEnv
 parent_env_fun <- function(level=2){
-    nms <- ls(envir = parent.frame(level))
-    is_fun <- sapply(nms, function(x, envir) is.function(get(x, envir=envir)),
-                     envir = parent.frame(level))
-    if(any(is_fun)) return(nms[is_fun])
-    NULL
+    ret <- NULL
+    for(lev in level:2){
+        nms <- ls(envir = parent.frame(lev))
+        is_fun <- sapply(nms, function(x, envir) is.function(get(x, envir=envir)),
+                         envir = parent.frame(lev))
+        if(any(is_fun)) ret <- c(ret, nms[is_fun])
+    }
+    ret
 }
 
 unique_filename <- function(filename, safe = TRUE, verbose = TRUE){
