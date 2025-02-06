@@ -1006,7 +1006,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         stopifnot("Argument(s) to save_details list invalid"=
                       all(names(save_details) %in% valid_save_details.list()))
     }
-    if(!is.null(control$global_fun_level)) control$global_fun_level <- 2
+    if(is.null(control$global_fun_level)) control$global_fun_level <- 2
     if(replications < 3L){
         if(verbose)
             message('save, stop_on_fatal, and print_RAM flags disabled for testing purposes')
