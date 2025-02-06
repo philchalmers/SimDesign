@@ -480,6 +480,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     options(warn = 1)
     on.exit(options(org.opts), add = TRUE)
     if(is.null(control$print_RAM)) control$print_RAM <- FALSE
+    if(is.null(control$global_fun_level)) control$global_fun_level <- 2
     burnin.iter <- 15L
     if(!is.null(wait.time) && maxiter == 100L){
         maxiter <- 3000L
