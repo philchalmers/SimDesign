@@ -604,7 +604,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             on.exit(parallel::stopCluster(cl), add = TRUE)
         }
     }
-    export_funs <- parent_env_fun()
+    export_funs <- parent_env_fun(control$global_fun_level)
     if(parallel){
         if(!useFuture && is.null(cl)){
             cl <- parallel::makeCluster(ncores, type=type)
