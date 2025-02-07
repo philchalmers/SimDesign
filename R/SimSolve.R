@@ -39,13 +39,13 @@
 #'   indicating the number of replication to
 #'   use for each design condition per PBA iteration. By default the input is a
 #'   \code{list} with the arguments \code{burnin.iter = 15L}, specifying the number
-#'   of burn-in iterations to used, \code{burnin.reps = 100L} to indicate how many
+#'   of burn-in iterations to used, \code{burnin.reps = 50L} to indicate how many
 #'   replications to use in each burn-in iteration, \code{max.reps = 500L} to
 #'   prevent the replications from increasing higher than this number,
 #'   \code{min.total.reps = 9000L} to avoid termination when very few replications
 #'   have been explored (lower bound of the replication budget),
 #'   and \code{increase.by = 10L} to indicate how many replications to increase
-#'   after the burn-in stage. Default can overwritten by explicit definition (e.g.,
+#'   per iteration after the burn-in stage. Default can overwritten by explicit definition (e.g.,
 #'   \code{replications = list(increase.by = 25L)}).
 #'
 #'   Vector inputs can specify the exact replications  for each respective
@@ -463,7 +463,7 @@
 #'
 #' }
 SimSolve <- function(design, interval, b, generate, analyse, summarise,
-                     replications = list(burnin.iter = 15L, burnin.reps = 100L,
+                     replications = list(burnin.iter = 15L, burnin.reps = 50L,
                                          max.reps = 500L, min.total.reps = 9000L,
                                          increase.by = 10L),
                      integer = TRUE, formula = y ~ poly(x, 2), family = 'binomial',
