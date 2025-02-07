@@ -349,7 +349,7 @@ PBA <- function(f.root, interval, ..., p = .6,
     root <- if(!interpolate || is.na(glmpred0[1]))
         medhistory[length(medhistory)] else glmpred0[1L]
     if(interpolate && is.na(glmpred0[1]))
-        warning('Interpolation model failed; root value set to last PBA root estimate',
+        warning('Interpolation model failed; root set to last PBA estimate',
                 call.=FALSE)
     ret <- list(iter=iter, root=root, terminated_early=converged, integer=integer,
                 e.froot=e.froot, x=x, fx=fx, medhistory=medhistory,
