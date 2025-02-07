@@ -346,7 +346,11 @@ PBA <- function(f.root, interval, ..., p = .6,
     fx <- exp(fx) / sum(exp(fx)) # normalize final result
     medhistory <- medhistory[1L:(iter-1L)]
     # BI <- belief_interval(x, fx, CI=CI)
-    root <- if(!interpolate) medhistory[length(medhistory)] else glmpred0[1L]
+    root <- if(!interpolate || is.na(glmpred0[1]))
+        medhistory[length(medhistory)] else glmpred0[1L]
+    if(interpolate && is.na(glmpred0[1]))
+        warning('Interpolation model failed; root value set to last PBA root estimate',
+                call.=FALSE)
     ret <- list(iter=iter, root=root, terminated_early=converged, integer=integer,
                 e.froot=e.froot, x=x, fx=fx, medhistory=medhistory,
                 time=as.numeric(proc.time()[3L]-start_time),
