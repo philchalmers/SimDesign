@@ -80,7 +80,7 @@ solve the root equation <code>f(x) - b = 0</code>.</p>
 <span>  <span class="va">generate</span>,</span>
 <span>  <span class="va">analyse</span>,</span>
 <span>  <span class="va">summarise</span>,</span>
-<span>  replications <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>burnin.iter <span class="op">=</span> <span class="fl">15L</span>, burnin.reps <span class="op">=</span> <span class="fl">100L</span>, max.reps <span class="op">=</span> <span class="fl">500L</span>,</span>
+<span>  replications <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>burnin.iter <span class="op">=</span> <span class="fl">15L</span>, burnin.reps <span class="op">=</span> <span class="fl">50L</span>, max.reps <span class="op">=</span> <span class="fl">500L</span>,</span>
 <span>    min.total.reps <span class="op">=</span> <span class="fl">9000L</span>, increase.by <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span>,</span>
 <span>  integer <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  formula <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html" class="external-link">poly</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">2</span><span class="op">)</span>,</span>
@@ -157,13 +157,13 @@ see <code><a href="runSimulation.html">runSimulation</a></code></p></dd>
   indicating the number of replication to
   use for each design condition per PBA iteration. By default the input is a
   <code>list</code> with the arguments <code>burnin.iter = 15L</code>, specifying the number
-  of burn-in iterations to used, <code>burnin.reps = 100L</code> to indicate how many
+  of burn-in iterations to used, <code>burnin.reps = 50L</code> to indicate how many
   replications to use in each burn-in iteration, <code>max.reps = 500L</code> to
   prevent the replications from increasing higher than this number,
   <code>min.total.reps = 9000L</code> to avoid termination when very few replications
   have been explored (lower bound of the replication budget),
   and <code>increase.by = 10L</code> to indicate how many replications to increase
-  after the burn-in stage. Default can overwritten by explicit definition (e.g.,
+  per iteration after the burn-in stage. Default can overwritten by explicit definition (e.g.,
   <code>replications = list(increase.by = 25L)</code>).</p>
 <p>Vector inputs can specify the exact replications  for each respective
   iteration. As a general rule, early iterations
