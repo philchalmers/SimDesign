@@ -168,7 +168,7 @@ PBA <- function(f.root, interval, ..., p = .6,
             rel.tol <- 0
         }
         interpolate.burnin <- FromSimSolve$interpolate.burnin
-        glmpred.last <- glmpred <- c(NA, NA)
+        glmpred.last <- glmpred <- glmpred0 <- c(NA, NA)
         k.success <- FromSimSolve$k.success
         k.successes <- 0L
     } else{
