@@ -27,10 +27,10 @@
 #' @param save_structure character indicating the number of files to break the simulation code into
 #'   when \code{filename} is included (default is 'single' for one file). When \code{save_structure = 'double'} the
 #'   output is saved to two separate files containing the functions and design definitions,
-#'   and when \code{save_structure = 'all'} the generate, analyse, summarise, and execution code area all saved into
-#'   separate files. The purpose for this structure is because multiple structured files
-#'   often makes organization and debugging slightly easier larger Monte Carlo simulations, though in principle
-#'   all files could be stored into a single R script
+#'   and when \code{save_structure = 'all'} the generate, analyse, summarise, and execution code are all saved into
+#'   separate files. The purpose of this structure is because multiple structured files
+#'   often makes organization and debugging slightly easier for larger Monte Carlo simulations, though, in principle,
+#'   all files could be stored in a single R script
 #'
 #' @param extra_file logical; should an extra file be saved containing user-defined functions or objects?
 #'   Default is \code{FALSE}
