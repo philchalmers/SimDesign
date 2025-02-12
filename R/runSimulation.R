@@ -174,7 +174,7 @@
 #'   \code{Analyse()} call was a one-dimensional vector.
 #'   For more general objects returned by \code{Analyse()}
 #'   (such as \code{list}s), a \code{list}
-#'   containing the results returned form \code{\link{Analyse}}.
+#'   containing the results returned from \code{\link{Analyse}}.
 #'   This is generally only recommended for didactic purposes because the results
 #'   will leave out a large amount of
 #'   information (e.g., try-errors, warning messages, saving files, etc), can
@@ -182,12 +182,12 @@
 #'   and generally is not as flexible internally. However, it may be useful
 #'   when replications are expensive and ANOVA-based decompositions involving
 #'   the within-condition replication information are of interest, though
-#'   of course this  can be circumvented by using \code{store_results = TRUE} or
+#'   of course this can be circumvented by using \code{store_results = TRUE} or
 #'   \code{save_results = TRUE} with or without a supplied \code{summarise}
 #'   definition.
 #'
 #'   Finally, there are keywords that should not be returned from this
-#'   functions since they will cause a conflict with the aggregated simulation
+#'   function, since they will cause a conflict with the aggregated simulation
 #'   objects. These are currently those listed in capital letters (e.g.,
 #'   \code{ERRORS}, \code{WARNINGS}, \code{REPLICATIONS}, etc), all of which can
 #'   be avoided if the returned objects are not entirely capitalized
