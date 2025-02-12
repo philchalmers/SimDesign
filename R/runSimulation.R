@@ -150,7 +150,7 @@
 #' @param analyse user-defined analysis function (or named list of functions)
 #'   that acts on the data generated from
 #'   \code{\link{Generate}} (or, if \code{generate} was omitted, can be used to generate and
-#'   analyses the simulated data). See \code{\link{Analyse}} for details
+#'   analyse the simulated data). See \code{\link{Analyse}} for details
 #'
 #' @param summarise optional (but strongly recommended) user-defined summary function
 #'   from \code{\link{Summarise}} to be used to compute meta-statistical summary
