@@ -5,8 +5,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      export_funs, summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds,
                      include_replication_index, packages, .options.mpi, useFuture, multirow,
-                     allow_gen_errors, max_time, max_RAM, store_Random.seeds,
-                     save_results_filename = NULL, arrayID = NULL)
+                     allow_gen_errors, max_time, max_RAM, store_Random.seeds, useGenerate,
+                     useAnalyseHandler, save_results_filename = NULL, arrayID = NULL)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
@@ -23,8 +23,8 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                                    store_warning_seeds=store_warning_seeds,
                                                    save_results_out_rootdir=save_results_out_rootdir,
                                                    store_Random.seeds=store_Random.seeds,
-                                                   save_seeds=save_seeds,
-                                                   load_seed=load_seed,
+                                                   save_seeds=save_seeds, useAnalyseHandler=useAnalyseHandler,
+                                                   load_seed=load_seed, useGenerate=useGenerate,
                                                    save_seeds_dirname=save_seeds_dirname,
                                                    warnings_as_errors=warnings_as_errors,
                                                    include_replication_index=include_replication_index,
@@ -45,6 +45,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    save_seeds=save_seeds, load_seed=load_seed,
                    save_seeds_dirname=save_seeds_dirname,
                    warnings_as_errors=warnings_as_errors,
+                   useGenerate=useGenerate, useAnalyseHandler=useAnalyseHandler,
                    include_replication_index=include_replication_index,
                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
                    allow_gen_errors=allow_gen_errors), TRUE)
@@ -62,6 +63,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                            store_warning_seeds=store_warning_seeds,
                            save_seeds_dirname=save_seeds_dirname,
                            warnings_as_errors=warnings_as_errors,
+                           useGenerate=useGenerate, useAnalyseHandler=useAnalyseHandler,
                            include_replication_index=include_replication_index,
                            allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
                            allow_gen_errors=allow_gen_errors), TRUE)
@@ -81,27 +83,27 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     condition=condition, generate=Functions$generate,
                                     analyse=Functions$analyse, load_seed=load_seed,
                                     fixed_objects=fixed_objects, save=save,
-                                    store_Random.seeds=store_Random.seeds,
+                                    store_Random.seeds=store_Random.seeds, useGenerate=useGenerate,
                                     save_results_out_rootdir=save_results_out_rootdir,
                                     max_errors=max_errors, store_warning_seeds=store_warning_seeds,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
                                     include_replication_index=include_replication_index,
                                     allow_nan=allow_nan, allow_gen_errors=allow_gen_errors,
-                                    use_try=use_try, cl=cl), TRUE)
+                                    useAnalyseHandler=useAnalyseHandler, use_try=use_try, cl=cl), TRUE)
             } else {
                 try(parallel::parLapply(cl, 1L:replications, mainsim,
                                     condition=condition, generate=Functions$generate,
                                     analyse=Functions$analyse, load_seed=load_seed,
                                     store_Random.seeds=store_Random.seeds,
-                                    fixed_objects=fixed_objects, save=save,
+                                    fixed_objects=fixed_objects, save=save, useGenerate=useGenerate,
                                     save_results_out_rootdir=save_results_out_rootdir,
                                     max_errors=max_errors, store_warning_seeds=store_warning_seeds,
                                     save_seeds=save_seeds, save_seeds_dirname=save_seeds_dirname,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
                                     include_replication_index=include_replication_index,
                                     allow_nan=allow_nan, allow_gen_errors=allow_gen_errors,
-                                    use_try=use_try), TRUE)
+                                    useAnalyseHandler=useAnalyseHandler, use_try=use_try), TRUE)
             }
         }
     }

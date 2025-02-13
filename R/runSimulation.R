@@ -1007,6 +1007,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                       all(names(save_details) %in% valid_save_details.list()))
     }
     if(is.null(control$global_fun_level)) control$global_fun_level <- 2
+    if(is.null(control$useAnalyseHandler)) control$useAnalyseHandler <- TRUE
+    useAnalyseHandler <- control$useAnalyseHandler
     if(replications < 3L){
         if(verbose)
             message('save, stop_on_fatal, and print_RAM flags disabled for testing purposes')
@@ -1035,8 +1037,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             seed <- seed[as.integer(tmp[2L])]
         }
     }
-    if(missing(generate) && !missing(analyse))
+    useGenerate <- TRUE
+    if(missing(generate) && !missing(analyse)){
         generate <- function(condition, dat, fixed_objects){}
+        useGenerate <- FALSE
+    }
     if(is.list(generate)){
         if(debug %in% c('all', 'generate'))
             stop('debug input not supported when generate is a list', call.=FALSE)
@@ -1447,6 +1452,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          save_results_filename=save_results_filename,
                                          arrayID=save_details$arrayID,
                                          multirow=nrow(design) > 1L,
+                                         useGenerate=useGenerate, useAnalyseHandler=useAnalyseHandler,
                                          save_seeds=save_seeds, summarise_asis=summarise_asis,
                                          save_seeds_dirname=save_seeds_dirname,
                                          max_errors=max_errors, packages=packages,
@@ -1487,6 +1493,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             save_seeds_dirname=save_seeds_dirname,
                             arrayID=save_details$arrayID,
                             multirow=nrow(design) > 1L,
+                            useGenerate=useGenerate, useAnalyseHandler=useAnalyseHandler,
                             max_errors=max_errors, packages=packages,
                             include_replication_index=include_replication_index,
                             load_seed=load_seed, export_funs=export_funs,
