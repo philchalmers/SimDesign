@@ -1,5 +1,10 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.19
+
+- Multiple parameter `bias()` returned incorrect behavior/errors
+  for `relative` and `abs_relative` types (see #60)
+
 ## Changes in SimDesign 2.18
 
 - Objects built by `createDesign()` gain `[]` and `rbind()` S3 functions for 

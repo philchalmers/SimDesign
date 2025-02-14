@@ -80,6 +80,8 @@
 #' # different parameter associated with each column
 #' mat <- cbind(M1=rnorm(1000, 2, sd = 0.25), M2 = rnorm(1000, 3, sd = .25))
 #' bias(mat, parameter = c(2,3))
+#' bias(mat, parameter = c(2,3), type='relative')
+#' bias(mat, parameter = c(2,3), type='standardized')
 #'
 #' # same, but with data.frame
 #' df <- data.frame(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
@@ -128,8 +130,8 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE,
     if(!equal_len)
         stopifnot(ncol(estimate) == length(parameter))
     diff <- t(t(estimate) - parameter)
-    ret <- if(type == 'relative') colMeans(diff / parameter)
-        else if(type == 'abs_relative') colMeans(diff / abs(parameter))
+    ret <- if(type == 'relative') rowMeans(t(diff) / parameter)
+        else if(type == 'abs_relative') rowMeans(t(diff) / abs(parameter))
         else if(type == 'standardized') colMeans(diff) / colSDs(estimate)
         else colMeans(diff)
     if(abs) ret <- abs(ret)
