@@ -874,13 +874,13 @@ genSeeds <- function(design = 1L, iseed = NULL, arrayID = NULL, old.seeds = NULL
 #' \code{"days-hours"}, \code{"days-hours:minutes"} and
 #' \code{"days-hours:minutes:seconds"}.
 #'
-#' For example, \code{max_time = "60"} indicates a maximum time of 60 minutes,
-#' \code{max_time = "03:00:00"} a maximum time of 3 hours,
-#' \code{max_time = "4-12"} a maximum of 4 days and 12 hours, and
-#' \code{max_time = "2-02:30:00"} a maximum of 2 days, 2 hours and 30 minutes.
+#' For example, \code{time = "60"} indicates a maximum time of 60 minutes,
+#' \code{time = "03:00:00"} a maximum time of 3 hours,
+#' \code{time = "4-12"} a maximum of 4 days and 12 hours, and
+#' \code{time = "2-02:30:00"} a maximum of 2 days, 2 hours and 30 minutes.
 #'
 #' @param time a character string to be formatted. If a numeric vector is supplied
-#' then this will be interpreted as seconds.
+#' then this will be interpreted as minutes due to character coercion.
 #'
 #' @param output type of numeric output to convert time into.
 #' Currently supported are \code{'sec'} for seconds (default),
@@ -908,11 +908,12 @@ genSeeds <- function(design = 1L, iseed = NULL, arrayID = NULL, old.seeds = NULL
 #' timeFormater("30:30", output = 'hour')
 #' timeFormater("4:30:30", output = 'hour')
 #'
-#' # numeric input is understood as seconds by default
-#' timeFormater(42)
+#' # numeric input is understood as minutes
+#' timeFormater(42)               # seconds
 #' timeFormater(42, output='min') # minutes
 #'
 timeFormater <- function(time, output='sec'){
+    if(!is.character(time)) time <- as.character(time)
     stopifnot(length(time) == 1L && length(output) == 1L)
     stopifnot(output %in% c('sec', 'min', 'hour', 'day'))
     time <- sbatch_time2sec(time)

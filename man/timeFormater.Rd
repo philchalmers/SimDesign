@@ -8,7 +8,7 @@ timeFormater(time, output = "sec")
 }
 \arguments{
 \item{time}{a character string to be formatted. If a numeric vector is supplied
-then this will be interpreted as seconds.}
+then this will be interpreted as minutes due to character coercion.}
 
 \item{output}{type of numeric output to convert time into.
 Currently supported are \code{'sec'} for seconds (default),
@@ -23,10 +23,10 @@ Accepted time formats include \code{"minutes"},
 \code{"days-hours:minutes:seconds"}.
 }
 \details{
-For example, \code{max_time = "60"} indicates a maximum time of 60 minutes,
-\code{max_time = "03:00:00"} a maximum time of 3 hours,
-\code{max_time = "4-12"} a maximum of 4 days and 12 hours, and
-\code{max_time = "2-02:30:00"} a maximum of 2 days, 2 hours and 30 minutes.
+For example, \code{time = "60"} indicates a maximum time of 60 minutes,
+\code{time = "03:00:00"} a maximum time of 3 hours,
+\code{time = "4-12"} a maximum of 4 days and 12 hours, and
+\code{time = "2-02:30:00"} a maximum of 2 days, 2 hours and 30 minutes.
 }
 \examples{
 
@@ -48,8 +48,8 @@ timeFormater("30", output = 'hour')
 timeFormater("30:30", output = 'hour')
 timeFormater("4:30:30", output = 'hour')
 
-# numeric input is understood as seconds by default
-timeFormater(42)
+# numeric input is understood as minutes
+timeFormater(42)               # seconds
 timeFormater(42, output='min') # minutes
 
 }
