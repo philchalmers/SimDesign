@@ -486,9 +486,9 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     if(!is.null(wait.time) && maxiter == 100L){
         maxiter <- 3000L
         predCI.tol <- 0
-        if(!is.character(wait.time))
-            wait.time <- as.character(wait.time)
     }
+    if(!is.null(wait.time) && !is.character(wait.time))
+        wait.time <- as.character(wait.time)
     if(is.list(replications)){
         if(is.null(replications$burnin.iter)) replications$burnin.iter <- burnin.iter else
             burnin.iter <- replications$burnin.iter
