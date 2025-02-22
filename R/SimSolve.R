@@ -118,7 +118,8 @@
 #'   used to reflect this tolerance range
 #'
 #' @param wait.time (optional) argument passed to \code{\link{PBA}} to indicate
-#'   the time to wait (specified in minutes) per row in the \code{Design} object
+#'   the time to wait (specified in minutes if a numeric vector is passed)
+#'   per row in the \code{Design} object
 #'   rather than using pre-determined termination criteria based on the estimates.
 #'   For example, if three three conditions were defined in
 #'   \code{Design}, and \code{wait.time="5"},
@@ -485,6 +486,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     if(!is.null(wait.time) && maxiter == 100L){
         maxiter <- 3000L
         predCI.tol <- 0
+        if(!is.character(wait.time))
+            wait.time <- as.character(wait.time)
     }
     if(is.list(replications)){
         if(is.null(replications$burnin.iter)) replications$burnin.iter <- burnin.iter else

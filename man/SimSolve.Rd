@@ -131,7 +131,8 @@ vector of length \code{maxiter} to indicate the replications to use per
 iteration}
 
 \item{wait.time}{(optional) argument passed to \code{\link{PBA}} to indicate
-the time to wait (specified in minutes) per row in the \code{Design} object
+the time to wait (specified in minutes if a numeric vector is passed)
+per row in the \code{Design} object
 rather than using pre-determined termination criteria based on the estimates.
 For example, if three three conditions were defined in
 \code{Design}, and \code{wait.time="5"},
