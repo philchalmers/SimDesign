@@ -46,7 +46,7 @@ test_that('array', {
     expect_true(nrow(results) == 9)
 
     # define initial seed (do this only once to keep it constant!)
-    # iseed <- gen_seeds()
+    # iseed <- genSeeds()
     iseed <- 554184288
 
     ### On cluster submission, the active array ID is obtained via getArrayID(),
@@ -75,7 +75,7 @@ test_that('array', {
     # evaluations and combine when complete
     Design5 <- expandDesign(Design, 5)
 
-    # iseed <- gen_seeds()
+    # iseed <- genSeeds()
     iseed <- 554184288
 
     # arrayID <- getArrayID(type = 'slurm')

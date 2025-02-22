@@ -570,12 +570,11 @@
 #'   If the input is a vector then \code{\link{set.seed}} or
 #'   \code{\link{clusterSetRNGStream}} for each condition will be called, respectively.
 #'   If a list is provided then these
-#'   numbers must have been generated from \code{\link{gen_seeds}} with the argument
-#'   \code{CMRG.seed} used to specify the initial. The list approach ensures random number
-#'   generation independence across conditions and replications, while the vector input
-#'   ensures independence within the replications per conditions but not necessarily
-#'   across conditions. Default randomly generates seeds within the
-#'   range 1 to 2147483647 for each condition via \code{\link{gen_seeds}}
+#'   numbers must have been generated from \code{\link{genSeeds}}. The list approach
+#'   ensures random number generation independence across conditions and replications,
+#'   while the vector input ensures independence within the replications per conditions
+#'   but not necessarily across conditions. Default randomly generates seeds within the
+#'   range 1 to 2147483647 for each condition via \code{\link{genSeeds}}
 #'
 #' @param progress logical; display a progress bar (using the \code{pbapply} package)
 #'   for each simulation condition?
