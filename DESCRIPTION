@@ -54,3 +54,4 @@ ByteCompile: yes
 LazyData: true
 URL: http://philchalmers.github.io/SimDesign/, https://github.com/philchalmers/SimDesign/wiki
 RoxygenNote: 7.3.2
+Encoding: UTF-8
