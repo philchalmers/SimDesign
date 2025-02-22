@@ -73,7 +73,7 @@ Accepted time formats include <code>"minutes"</code>,
 
 <dl><dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
 <dd><p>a character string to be formatted. If a numeric vector is supplied
-then this will be interpreted as seconds.</p></dd>
+then this will be interpreted as minutes due to character coercion.</p></dd>
 
 
 <dt id="arg-output">output<a class="anchor" aria-label="anchor" href="#arg-output"></a></dt>
@@ -84,10 +84,10 @@ Currently supported are <code>'sec'</code> for seconds (default),
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>For example, <code>max_time = "60"</code> indicates a maximum time of 60 minutes,
-<code>max_time = "03:00:00"</code> a maximum time of 3 hours,
-<code>max_time = "4-12"</code> a maximum of 4 days and 12 hours, and
-<code>max_time = "2-02:30:00"</code> a maximum of 2 days, 2 hours and 30 minutes.</p>
+    <p>For example, <code>time = "60"</code> indicates a maximum time of 60 minutes,
+<code>time = "03:00:00"</code> a maximum time of 3 hours,
+<code>time = "4-12"</code> a maximum of 4 days and 12 hours, and
+<code>time = "2-02:30:00"</code> a maximum of 2 days, 2 hours and 30 minutes.</p>
     </div>
 
     <div class="section level2">
@@ -123,11 +123,11 @@ Currently supported are <code>'sec'</code> for seconds (default),
 <span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="st">"4:30:30"</span>, output <span class="op">=</span> <span class="st">'hour'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4.508333</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># numeric input is understood as seconds by default</span></span></span>
-<span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 42</span>
+<span class="r-in"><span><span class="co"># numeric input is understood as minutes</span></span></span>
+<span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>               <span class="co"># seconds</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2520</span>
 <span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">42</span>, output<span class="op">=</span><span class="st">'min'</span><span class="op">)</span> <span class="co"># minutes</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 42</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
