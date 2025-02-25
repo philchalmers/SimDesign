@@ -1,3 +1,13 @@
+#' Send a simulation notification
+#'
+#' Package extensions can implement custom notifiers by creating S3 methods
+#' for this generic.
+#'
+#' @param notifier The notifier object
+#' @param event Character string indicating the notification trigger ("condition" or "complete")
+#' @param event_data List containing context information for the notification
+#'
+#' @keywords internal
 notify <- function(notifier, event, event_data) {
     UseMethod("notify")
 }
@@ -116,7 +126,7 @@ generate_notification <- function(notifier, event, event_data) {
 #'
 #' To use \code{RPushbullet} in \code{SimDesign}, create a \code{PushbulletNotifier}
 #' object using \code{new_PushbulletNotifier()} and pass it to the \code{notifier}
-#' argument in \code{runSimulation().
+#' argument in \code{runSimulation()}.
 #'
 #' @param config_path A character string specifying the path to the Pushbullet configuration file.
 #'   Defaults to \code{"~/.rpushbullet.json"}.
@@ -129,7 +139,6 @@ generate_notification <- function(notifier, event, event_data) {
 #' # Create a Pushbullet notifier (requires a valid configuration file)
 #' pushbullet_notifier <- new_PushbulletNotifier(verbose_issues = TRUE)
 #'
-#' @seealso \code{\link{notify.PushbulletNotifier}}
 #' @export
 new_PushbulletNotifier <- function(config_path = "~/.rpushbullet.json", verbose_issues = FALSE) {
 
@@ -152,8 +161,16 @@ new_PushbulletNotifier <- function(config_path = "~/.rpushbullet.json", verbose_
     )
 }
 
+#' S3 method to send notifications via Pushbullet
+#'
+#' @param notifier A TelegramNotifier object created with new_TelegramNotifier()
+#' @param event Character string indicating the notification trigger ("condition" or "complete")
+#' @param event_data List containing context information for the notification
+#'
+#' @return Invisibly returns NULL
+#' @exportS3Method
+#' @keywords internal
 notify.PushbulletNotifier <- function(notifier, event, event_data) {
-
     notification <- generate_notification(notifier, event, event_data)
     RPushbullet::pbPost(
         type = 'note',
@@ -181,11 +198,11 @@ notify.PushbulletNotifier <- function(notifier, event, event_data) {
 #' @param verbose_issues Logical. If TRUE, provides detailed information about warnings and errors in the notifications.
 #'
 #' @return An S3 object of class \code{"TelegramNotifier"}.
-#' @examples
-#' \dontrun{
+#'
+#' @examplesIf interactive()
+#' # Create a Telegram notifier (requires setting up a Telegram Bot)
 #' telegram_notifier <- new_TelegramNotifier(bot_token = "123456:ABC-xyz", chat_id = "987654321")
 #'
-#' @seealso \code{\link{notify.TelegramNotifier}}
 #' @export
 new_TelegramNotifier <- function(bot_token, chat_id, verbose_issues = FALSE) {
 
@@ -203,6 +220,15 @@ new_TelegramNotifier <- function(bot_token, chat_id, verbose_issues = FALSE) {
     )
 }
 
+#' S3 method to send notifications through the Telegram API.
+#'
+#' @param notifier A TelegramNotifier object created with new_TelegramNotifier()
+#' @param event Character string indicating the notification trigger ("condition" or "complete")
+#' @param event_data List containing context information for the notification
+#'
+#' @return Invisibly returns NULL
+#' @exportS3Method
+#' @keywords internal
 notify.TelegramNotifier <- function(notifier, event, event_data) {
 
     bot_url <- sprintf("https://api.telegram.org/bot%s/sendMessage", notifier$bot_token)

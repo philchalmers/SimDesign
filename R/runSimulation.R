@@ -585,7 +585,7 @@
 #' @param progress logical; display a progress bar (using the \code{pbapply} package)
 #'   for each simulation condition?
 #'   This is useful when simulations conditions take a long time to run (see also the
-#'   \code{notifications} argument). Default is \code{TRUE}
+#'   \code{notification} argument). Default is \code{TRUE}
 #'
 #' @param boot_method method for performing non-parametric bootstrap confidence intervals
 #'  for the respective meta-statistics computed by the \code{Summarise} function.
@@ -858,9 +858,10 @@
 #'
 #' ## same as above, but send a notification via Pushbullet upon completion
 #' library(RPushbullet) # read-in default JSON file
+#' pushbullet_notifier <- new_PushbulletNotifier(verbose_issues = TRUE)
 #' runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
 #'               generate=Generate, analyse=Analyse, summarise=Summarise,
-#'               notification = 'complete')
+#'               notification = 'complete', notifier = pushbullet_notifier)
 #'
 #' ## Submit as RStudio job (requires job package and active RStudio session)
 #' job::job({
