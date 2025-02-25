@@ -172,7 +172,8 @@ new_PushbulletNotifier <- function(config_path = "~/.rpushbullet.json", verbose_
 #' @keywords internal
 notify.PushbulletNotifier <- function(notifier, event, event_data) {
     notification <- generate_notification(notifier, event, event_data)
-    RPushbullet::pbPost(
+    rpushbullet_pbpost <- get("pbPost", asNamespace("RPushbullet"))
+    rpushbullet_pbpost(
         type = 'note',
         title = notification$title,
         body = notification$body
@@ -239,7 +240,8 @@ notify.TelegramNotifier <- function(notifier, event, event_data) {
         if (!is.null(notification$issue_details)) sprintf("\n\n*Details:* \n_%s_", notification$issue_details) else ""
     )
 
-    httr::POST(
+    httr_post <- get("POST", asNamespace("httr"))
+    httr_post(
         url = bot_url,
         body = list(
             chat_id = notifier$chat_id,
@@ -267,6 +269,7 @@ notify.TelegramNotifier <- function(notifier, event, event_data) {
 #' listAvailableNotifiers()
 #' # [1] "PushbulletNotifier" "TelegramNotifier"
 #' }
+#' @importFrom utils methods
 #' @export
 listAvailableNotifiers <- function() {
     s3_methods <- methods("notify")
