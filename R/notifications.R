@@ -36,7 +36,6 @@ summarize_issues_per_condition <- function(result, verbose_issues = FALSE) {
 }
 
 generate_notification <- function(notifier, event, event_data) {
-    browser()
     issue_details <- NULL
     if(event == "condition") {
         issues <- summarize_issues_per_condition(
