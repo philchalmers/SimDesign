@@ -20,101 +20,110 @@ notify_single_or_list <- function(notifier, event, event_data) {
     }
 }
 
-summarize_issues_per_condition <- function(result, verbose_issues = FALSE) {
+generate_notification <- function(notifier, event, event_data) {
+    if (event == "condition") {
+        return(generate_condition_notification(notifier, event_data))
+    } else if (event == "complete") {
+        return(generate_complete_notification(notifier, event_data))
+    }
+}
 
-    error_cols <- grep("^ERROR:", names(result), value = TRUE)
-    warning_cols <- grep("^WARNING:", names(result), value = TRUE)
+generate_condition_notification <- function(notifier, event_data) {
+    issue_details <- NULL
+    total_time <- timeFormater_internal(event_data$result$SIM_TIME)
+    error_cols <- grep("^ERROR:", names(event_data$result), value = TRUE)
+    warning_cols <- grep("^WARNING:", names(event_data$result), value = TRUE)
     error_warning_cols <- c(error_cols, warning_cols)
 
-    total_errors <- if (length(error_cols) > 0) sum(as.matrix(result[, error_cols, drop = FALSE]), na.rm = TRUE) else 0
-    total_warnings <- if (length(warning_cols) > 0) sum(as.matrix(result[, warning_cols, drop = FALSE]), na.rm = TRUE) else 0
+    total_errors <- if (length(error_cols) > 0) {
+        sum(as.matrix(event_data$result[, error_cols, drop = FALSE]), na.rm = TRUE)
+    } else {
+        0
+    }
 
-    issue_details <- "No errors or warnings."
-    if (verbose_issues && length(error_warning_cols) > 0) {
+    total_warnings <- if (length(warning_cols) > 0) {
+        sum(as.matrix(event_data$result[, warning_cols, drop = FALSE]), na.rm = TRUE)
+    } else {
+        0
+    }
+
+    notification_title <- sprintf("Condition %i/%i completed", event_data$condition$ID, event_data$total)
+    notification_body <- sprintf(
+        "Execution time: %s\nErrors: %i\nWarnings: %i",
+        total_time,
+        total_errors,
+        total_warnings
+    )
+
+    if (notifier$verbose_issues && length(error_warning_cols) > 0) {
         issue_counts <- colSums(
-            as.data.frame(lapply(result[, error_warning_cols, drop = FALSE], as.numeric), check.names = FALSE),
+            as.data.frame(
+                lapply(event_data$result[, error_warning_cols, drop = FALSE], as.numeric),
+                check.names = FALSE
+            ),
             na.rm = TRUE
         )
         issue_details <- paste(names(issue_counts), issue_counts, sep = " = ", collapse = "\n")
     }
 
-    list(
-        total_errors   = total_errors,
-        total_warnings = total_warnings,
-        details = issue_details
-    )
-}
-
-generate_notification <- function(notifier, event, event_data) {
-    issue_details <- NULL
-    if(event == "condition") {
-        issues <- summarize_issues_per_condition(
-            result = event_data$result,
-            verbose_issues = notifier$verbose_issues
-        )
-        total_time <- timeFormater_internal(event_data$result$SIM_TIME)
-        notification_title <- sprintf("Condition %i/%i completed", event_data$condition$ID, event_data$total)
-        notification_body <- sprintf(
-            "Execution time: %s\nErrors: %i\nWarnings: %i",
-            total_time,
-            issues$total_errors,
-            issues$total_warnings
-        )
-
-        if (notifier$verbose_issues && !is.null(issues$details)) {
-            issue_details <- issues$details
-        }
-
-    } else if(event == "complete") {
-        total_time_simulation <- timeFormater_internal(sum(event_data$final$SIM_TIME))
-        total_errors <- if ("ERRORS" %in% names(event_data$final)) {
-            sum(event_data$final$ERRORS, na.rm = TRUE)
-        } else {
-            0
-        }
-        total_warnings <- if ("WARNINGS" %in% names(event_data$final)) {
-            sum(event_data$final$WARNINGS, na.rm = TRUE)
-        } else {
-            0
-        }
-        notification_title <- "Simulation completed"
-        notification_body <- sprintf(
-            "Execution time: %s\nErrors: %i\nWarnings: %i",
-            total_time_simulation,
-            total_errors,
-            total_warnings
-        )
-
-        if (notifier$verbose_issues) {
-            error_msg <- attr(event_data$final, "ERROR_msg")
-            warning_msg <- attr(event_data$final, "WARNING_msg")
-
-            error_string <- NULL
-            warning_string <- NULL
-
-            if (!is.null(error_msg)) {
-                error_counts <- colSums(error_msg, na.rm = TRUE)
-                error_string <- paste(sprintf("%s = %d", names(error_counts), error_counts), collapse = "\n")
-            }
-            if (!is.null(warning_msg)) {
-                warning_counts <- colSums(warning_msg, na.rm = TRUE)
-                warning_string <- paste(sprintf("%s\n = %d", names(warning_counts), warning_counts), collapse = "\n")
-            }
-
-            issue_details <- paste(
-                c(error_string, warning_string),
-                collapse = "\n"
-            )
-        }
-    }
-
-    notification <- list(
+    return(list(
         title = notification_title,
         body = notification_body,
         issue_details = issue_details
+    ))
+}
+
+generate_complete_notification <- function(notifier, event_data) {
+    issue_details <- NULL
+    total_time <- timeFormater_internal(sum(event_data$final$SIM_TIME))
+
+    total_errors <- if ("ERRORS" %in% names(event_data$final)) {
+        sum(event_data$final$ERRORS, na.rm = TRUE)
+    } else {
+        0
+    }
+
+    total_warnings <- if ("WARNINGS" %in% names(event_data$final)) {
+        sum(event_data$final$WARNINGS, na.rm = TRUE)
+    } else {
+        0
+    }
+
+    notification_title <- "Simulation completed"
+    notification_body <- sprintf(
+        "Execution time: %s\nErrors: %i\nWarnings: %i",
+        total_time,
+        total_errors,
+        total_warnings
     )
 
-    return(notification)
+    if (notifier$verbose_issues) {
+        error_msg <- attr(event_data$final, "ERROR_msg")
+        warning_msg <- attr(event_data$final, "WARNING_msg")
+
+        error_string <- NULL
+        warning_string <- NULL
+
+        if (!is.null(error_msg)) {
+            error_counts <- colSums(error_msg, na.rm = TRUE)
+            error_string <- paste(sprintf("%s = %d", names(error_counts), error_counts), collapse = "\n")
+        }
+        if (!is.null(warning_msg)) {
+            warning_counts <- colSums(warning_msg, na.rm = TRUE)
+            warning_string <- paste(sprintf("%s = %d", names(warning_counts), warning_counts), collapse = "\n")
+        }
+
+        issue_details <- paste(
+            c(error_string, warning_string),
+            collapse = "\n"
+        )
+    }
+
+    return(list(
+        title = notification_title,
+        body = notification_body,
+        issue_details = issue_details
+    ))
 }
 
 #' Create a Pushbullet Notifier
