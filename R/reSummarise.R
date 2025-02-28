@@ -9,7 +9,13 @@
 #' and final collection of the respective results.
 #'
 #' @param summarise a summarise function to apply to the read-in files.
-#'   See \code{\link{runSimulation}} for details
+#'   See \code{\link{runSimulation}} for details.
+#'
+#'   Note that if the simulation contained
+#'   only one row then the new summarise function can be defined as either
+#'   \code{summarise <- function(results, fixed_objects)}, if
+#'   \code{fixed_objects} is required, or
+#'   \code{summarise <- function(results)},
 #'
 #' @param dir directory pointing to the .rds files to be
 #'   read-in that were saved from \code{runSimulation(..., save_results=TRUE)}.
@@ -146,18 +152,28 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
     }
     res <- vector('list', length(files))
     conditions <- vector('list', length(files))
+    nargs <- length(formals(args(summarise)))
+    stopifnot(nargs %in% 1:3)
 
     for(i in 1L:length(files)){
         if(read_files){
             inp <- readRDS(files[i])
             conditions[[i]] <- inp$condition
-            summ <- try(summarise(condition=inp$condition, results=inp$results,
-                              fixed_objects=fixed_objects))
+            summ <- if(nargs == 3)
+                try(summarise(condition=inp$condition, results=inp$results,
+                                  fixed_objects=fixed_objects))
+            else if(nargs == 2)
+                try(summarise(results=inp$results, fixed_objects=fixed_objects))
+            else try(summarise(inp$results))
             if(is(summ, 'try-error'))
                 stop(sprintf("File \'%s\' threw an error in the summarise() function", files[i]))
         } else {
-            summ <- try(summarise(condition=Design[i,], results=results[[i]],
+            summ <- if(nargs == 3)
+                try(summarise(condition=Design[i,], results=results[[i]],
                                   fixed_objects=fixed_objects))
+            else if(nargs == 2)
+                try(summarise(results=results[[i]], fixed_objects=fixed_objects))
+            else try(summarise(results[[i]]))
             if(is(summ, 'try-error'))
                 stop(sprintf("Results objec \'%s\' threw an error in the summarise() function", files[i]))
         }

@@ -19,7 +19,13 @@ reSummarise(
 }
 \arguments{
 \item{summarise}{a summarise function to apply to the read-in files.
-See \code{\link{runSimulation}} for details}
+  See \code{\link{runSimulation}} for details.
+
+  Note that if the simulation contained
+  only one row then the new summarise function can be defined as either
+  \code{summarise <- function(results, fixed_objects)}, if
+  \code{fixed_objects} is required, or
+  \code{summarise <- function(results)},}
 
 \item{dir}{directory pointing to the .rds files to be
 read-in that were saved from \code{runSimulation(..., save_results=TRUE)}.
