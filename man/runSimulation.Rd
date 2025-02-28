@@ -24,6 +24,7 @@ runSimulation(
   ncores = parallelly::availableCores(omit = 1L),
   cl = NULL,
   notification = "none",
+  notifier = NULL,
   beep = FALSE,
   sound = 1,
   CI = 0.95,
@@ -267,22 +268,27 @@ primarily useful for debugging purposes.
   \code{plan()} will be followed instead}
 
 \item{notification}{an optional character vector input that can be used to send
-  Pushbullet notifications from a configured
-  computer. This reports information such as the total execution time, the condition
-  completed, and error/warning
-  messages recorded. This arguments assumes that users have already A) registered for
-  a Pushbullet account,
-  B) installed the application on their mobile device and computer, and C) created an
-  associated JSON file of the form
-  \code{~/.rpushbullet.json} using \code{RPushbullet::pbSetup()}).
+notifications with information about execution time and recorded errors and warnings.
+Pass one of the following supported options:
+\code{'none'} (default; send no notification), \code{'condition'} to send a notification
+after each condition has completed, or \code{'complete'} to send a notification only
+when the simulation has finished.
+When notification is set to \code{'condition'} or \code{'complete'}, the \code{notifier}
+argument must be supplied with a valid notifier object (or a list of notifier objects).}
 
-  To utilize the \code{RPushbullet} in \code{SimDesign} first call \code{library(RPushbullet}
-  before running \code{runSimulation()} to read-in the default JSON file. Next,
-  pass one of the following supported
-  options: \code{'none'} (default; send no notification),
-  \code{'condition'} to send a notification after each condition has completed,
-  or \code{'complete'} to send
-  a notification only when the simulation has finished.}
+\item{notifier}{A notifier object (or a list of notifier objects, allowing for multiple
+  notification methods) required when \code{notification} is not set to \code{"none"}.
+  See \code{listAvailableNotifiers} for a list of available notifiers and how to use them.
+
+  Example usage:
+  telegram_notifier <- new_TelegramNotifier(bot_token = "123456:ABC-xyz", chat_id = "987654321")
+  runSimulation(..., notification = "condition", notifier = telegram_notifier)
+
+  Using multiple notifiers:
+  pushbullet_notifier <- new_PushbulletNotifier()
+  runSimulation(..., notification = "complete", notifier = list(telegram_notifier, pushbullet_notifier))
+
+  See the \code{R/notifications.R} file for reference on implementing a custom notifier.}
 
 \item{beep}{logical; call the \code{beepr} package when the simulation is completed?}
 
@@ -515,7 +521,7 @@ in the simulation}
 \item{progress}{logical; display a progress bar (using the \code{pbapply} package)
 for each simulation condition?
 This is useful when simulations conditions take a long time to run (see also the
-\code{notifications} argument). Default is \code{TRUE}}
+\code{notification} argument). Default is \code{TRUE}}
 
 \item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 
@@ -892,9 +898,10 @@ runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim
 
 ## same as above, but send a notification via Pushbullet upon completion
 library(RPushbullet) # read-in default JSON file
+pushbullet_notifier <- new_PushbulletNotifier(verbose_issues = TRUE)
 runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
               generate=Generate, analyse=Analyse, summarise=Summarise,
-              notification = 'complete')
+              notification = 'complete', notifier = pushbullet_notifier)
 
 ## Submit as RStudio job (requires job package and active RStudio session)
 job::job({
