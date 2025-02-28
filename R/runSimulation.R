@@ -150,7 +150,7 @@
 #' @param analyse user-defined analysis function (or named list of functions)
 #'   that acts on the data generated from
 #'   \code{\link{Generate}} (or, if \code{generate} was omitted, can be used to generate and
-#'   analyses the simulated data). See \code{\link{Analyse}} for details
+#'   analyse the simulated data). See \code{\link{Analyse}} for details
 #'
 #' @param summarise optional (but strongly recommended) user-defined summary function
 #'   from \code{\link{Summarise}} to be used to compute meta-statistical summary
@@ -174,7 +174,7 @@
 #'   \code{Analyse()} call was a one-dimensional vector.
 #'   For more general objects returned by \code{Analyse()}
 #'   (such as \code{list}s), a \code{list}
-#'   containing the results returned form \code{\link{Analyse}}.
+#'   containing the results returned from \code{\link{Analyse}}.
 #'   This is generally only recommended for didactic purposes because the results
 #'   will leave out a large amount of
 #'   information (e.g., try-errors, warning messages, saving files, etc), can
@@ -182,12 +182,12 @@
 #'   and generally is not as flexible internally. However, it may be useful
 #'   when replications are expensive and ANOVA-based decompositions involving
 #'   the within-condition replication information are of interest, though
-#'   of course this  can be circumvented by using \code{store_results = TRUE} or
+#'   of course this can be circumvented by using \code{store_results = TRUE} or
 #'   \code{save_results = TRUE} with or without a supplied \code{summarise}
 #'   definition.
 #'
 #'   Finally, there are keywords that should not be returned from this
-#'   functions since they will cause a conflict with the aggregated simulation
+#'   function, since they will cause a conflict with the aggregated simulation
 #'   objects. These are currently those listed in capital letters (e.g.,
 #'   \code{ERRORS}, \code{WARNINGS}, \code{REPLICATIONS}, etc), all of which can
 #'   be avoided if the returned objects are not entirely capitalized
@@ -570,12 +570,11 @@
 #'   If the input is a vector then \code{\link{set.seed}} or
 #'   \code{\link{clusterSetRNGStream}} for each condition will be called, respectively.
 #'   If a list is provided then these
-#'   numbers must have been generated from \code{\link{gen_seeds}} with the argument
-#'   \code{CMRG.seed} used to specify the initial. The list approach ensures random number
-#'   generation independence across conditions and replications, while the vector input
-#'   ensures independence within the replications per conditions but not necessarily
-#'   across conditions. Default randomly generates seeds within the
-#'   range 1 to 2147483647 for each condition via \code{\link{gen_seeds}}
+#'   numbers must have been generated from \code{\link{genSeeds}}. The list approach
+#'   ensures random number generation independence across conditions and replications,
+#'   while the vector input ensures independence within the replications per conditions
+#'   but not necessarily across conditions. Default randomly generates seeds within the
+#'   range 1 to 2147483647 for each condition via \code{\link{genSeeds}}
 #'
 #' @param progress logical; display a progress bar (using the \code{pbapply} package)
 #'   for each simulation condition?

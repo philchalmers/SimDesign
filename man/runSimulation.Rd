@@ -295,12 +295,11 @@ The length of the vector must be equal the number of rows in \code{design}.
 If the input is a vector then \code{\link{set.seed}} or
 \code{\link{clusterSetRNGStream}} for each condition will be called, respectively.
 If a list is provided then these
-numbers must have been generated from \code{\link{gen_seeds}} with the argument
-\code{CMRG.seed} used to specify the initial. The list approach ensures random number
-generation independence across conditions and replications, while the vector input
-ensures independence within the replications per conditions but not necessarily
-across conditions. Default randomly generates seeds within the
-range 1 to 2147483647 for each condition via \code{\link{gen_seeds}}}
+numbers must have been generated from \code{\link{genSeeds}}. The list approach
+ensures random number generation independence across conditions and replications,
+while the vector input ensures independence within the replications per conditions
+but not necessarily across conditions. Default randomly generates seeds within the
+range 1 to 2147483647 for each condition via \code{\link{genSeeds}}}
 
 \item{boot_method}{method for performing non-parametric bootstrap confidence intervals
 for the respective meta-statistics computed by the \code{Summarise} function.
