@@ -114,7 +114,7 @@ generate_complete_notification <- function(notifier, event_data) {
         }
 
         issue_details <- paste(
-            c(error_string, warning_string),
+            c(Details:\n\n rerror_string, warning_string),
             collapse = "\n"
         )
     }
