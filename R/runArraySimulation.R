@@ -355,7 +355,7 @@ runArraySimulation <- function(design, ..., replications,
         ret <- runSimulation(design=dsub, replications=replications, seed=seed,
                              verbose=verbose, save_details=save_details,
                              parallel=parallel, cl=cl,
-                             control=control, save=FALSE, ...)
+                             control=control, save=FALSE, resume=FALSE, ...)
         attr(ret, 'extra_info')$number_of_conditions <- nrow(design)
         if(addArrayInfo && (is.null(dots$store_results) ||
            (!is.null(dots$store_results) && isTRUE(dots$store_results)))){
