@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.18.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.18.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2025-03-05</h4>
+            <h4 data-toc-skip class="date">2025-03-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/Fixed_obj_fun.Rmd" class="external-link"><code>vignettes/Fixed_obj_fun.Rmd</code></a></small>
       <div class="d-none name"><code>Fixed_obj_fun.Rmd</code></div>
@@ -191,9 +191,9 @@ defined objects contain a large amount of code.</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
 <span><span class="co">##       N     p REPLICATIONS SIM_TIME       SEED COMPLETED               </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.044         <span style="text-decoration: underline;">1</span>000 0.24s     488<span style="text-decoration: underline;">349</span>520 Wed Mar  5 15:06:44 2025</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.06          <span style="text-decoration: underline;">1</span>000 0.24s     469<span style="text-decoration: underline;">344</span>150 Wed Mar  5 15:06:44 2025</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.054         <span style="text-decoration: underline;">1</span>000 0.26s    <span style="text-decoration: underline;">1</span>550<span style="text-decoration: underline;">099</span>436 Wed Mar  5 15:06:45 2025</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.044         <span style="text-decoration: underline;">1</span>000 0.23s     488<span style="text-decoration: underline;">349</span>520 Thu Mar  6 01:58:34 2025</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.06          <span style="text-decoration: underline;">1</span>000 0.23s     469<span style="text-decoration: underline;">344</span>150 Thu Mar  6 01:58:35 2025</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.054         <span style="text-decoration: underline;">1</span>000 0.25s    <span style="text-decoration: underline;">1</span>550<span style="text-decoration: underline;">099</span>436 Thu Mar  6 01:58:35 2025</span></span></code></pre>
 <p>By placing objects in a list and passing this to
 <code>fixed_objects</code>, the objects are safely exported to all
 relevant functions. Furthermore, running this code in parallel will also
