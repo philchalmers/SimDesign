@@ -138,8 +138,12 @@ sapply(1:nrow(Design_long), \(i) {
                 arrayID=i, dirname='sim_files/', filename='job', iseed=iseed)
 }) |> invisible()
 
+# check for any missed files
+SimCheck(dir='sim_files/')
+
 # check that all replications satisfy target
 SimCollect('sim_files/', check.only = TRUE)
+
 
 # specify files explicitly
 SimCollect(files = list.files(path='sim_files/', pattern="*.rds", full.names=TRUE),

@@ -17,7 +17,8 @@
 #'
 #' @seealso \code{\link{runArraySimulation}}, \code{\link{SimCollect}}
 #'
-#' @return returns an invisible TRUE if all the files are present and FALSE otherwise
+#' @return returns an invisible vector of missing indicies. If no missing
+#'   then an empty vector is returned
 #'
 #' @references
 #'
@@ -65,5 +66,8 @@ SimCheck <- function(dir = NULL, files = NULL, min = 1L, max = NULL){
     if(any(!nonzero))
         warning(sprintf('The following row conditions have nothing saved:\n%s\n',
                     paste0(minmax[!nonzero], collapse=',')))
-    invisible(any(notin) || any(nonzero))
+    ret <- if(any(notin) || any(!nonzero)){
+        which(notin | !nonzero) - 1 + min
+    } else integer()
+    invisible(ret)
 }
