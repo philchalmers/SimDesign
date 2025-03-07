@@ -55,9 +55,15 @@
 <url><loc>http://philchalmers.github.io/SimDesign/reference/genSeeds.html</loc></url>
 <url><loc>http://philchalmers.github.io/SimDesign/reference/getArrayID.html</loc></url>
 <url><loc>http://philchalmers.github.io/SimDesign/reference/index.html</loc></url>
+<url><loc>http://philchalmers.github.io/SimDesign/reference/listAvailableNotifiers.html</loc></url>
 <url><loc>http://philchalmers.github.io/SimDesign/reference/manageMessages.html</loc></url>
 <url><loc>http://philchalmers.github.io/SimDesign/reference/manageWarnings.html</loc></url>
 <url><loc>http://philchalmers.github.io/SimDesign/reference/nc.html</loc></url>
+<url><loc>http://philchalmers.github.io/SimDesign/reference/new_PushbulletNotifier.html</loc></url>
+<url><loc>http://philchalmers.github.io/SimDesign/reference/new_TelegramNotifier.html</loc></url>
+<url><loc>http://philchalmers.github.io/SimDesign/reference/notify.PushbulletNotifier.html</loc></url>
+<url><loc>http://philchalmers.github.io/SimDesign/reference/notify.TelegramNotifier.html</loc></url>
+<url><loc>http://philchalmers.github.io/SimDesign/reference/notify.html</loc></url>
 <url><loc>http://philchalmers.github.io/SimDesign/reference/quiet.html</loc></url>
 <url><loc>http://philchalmers.github.io/SimDesign/reference/rHeadrick.html</loc></url>
 <url><loc>http://philchalmers.github.io/SimDesign/reference/rValeMaurelli.html</loc></url>

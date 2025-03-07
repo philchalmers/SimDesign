@@ -106,6 +106,7 @@ must be passed to the <code>fixed_objects</code> input to become available acros
 <span>  ncores <span class="op">=</span> <span class="fu">parallelly</span><span class="fu">::</span><span class="fu"><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">availableCores</a></span><span class="op">(</span>omit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span>,</span>
 <span>  cl <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  notification <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>  notifier <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  beep <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  sound <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  CI <span class="op">=</span> <span class="fl">0.95</span>,</span>
@@ -376,21 +377,26 @@ primarily useful for debugging purposes.
 
 <dt id="arg-notification">notification<a class="anchor" aria-label="anchor" href="#arg-notification"></a></dt>
 <dd><p>an optional character vector input that can be used to send
-  Pushbullet notifications from a configured
-  computer. This reports information such as the total execution time, the condition
-  completed, and error/warning
-  messages recorded. This arguments assumes that users have already A) registered for
-  a Pushbullet account,
-  B) installed the application on their mobile device and computer, and C) created an
-  associated JSON file of the form
-  <code>~/.rpushbullet.json</code> using <code><a href="https://rdrr.io/pkg/RPushbullet/man/pbSetup.html" class="external-link">RPushbullet::pbSetup()</a></code>).</p>
-<p>To utilize the <code>RPushbullet</code> in <code>SimDesign</code> first call <code>library(RPushbullet</code>
-  before running <code>runSimulation()</code> to read-in the default JSON file. Next,
-  pass one of the following supported
-  options: <code>'none'</code> (default; send no notification),
-  <code>'condition'</code> to send a notification after each condition has completed,
-  or <code>'complete'</code> to send
-  a notification only when the simulation has finished.</p></dd>
+notifications with information about execution time and recorded errors and warnings.
+Pass one of the following supported options:
+<code>'none'</code> (default; send no notification), <code>'condition'</code> to send a notification
+after each condition has completed, or <code>'complete'</code> to send a notification only
+when the simulation has finished.
+When notification is set to <code>'condition'</code> or <code>'complete'</code>, the <code>notifier</code>
+argument must be supplied with a valid notifier object (or a list of notifier objects).</p></dd>
+
+
+<dt id="arg-notifier">notifier<a class="anchor" aria-label="anchor" href="#arg-notifier"></a></dt>
+<dd><p>A notifier object (or a list of notifier objects, allowing for multiple
+  notification methods) required when <code>notification</code> is not set to <code>"none"</code>.
+  See <code>listAvailableNotifiers</code> for a list of available notifiers and how to use them.</p>
+<p>Example usage:
+  telegram_notifier &lt;- new_TelegramNotifier(bot_token = "123456:ABC-xyz", chat_id = "987654321")
+  runSimulation(..., notification = "condition", notifier = telegram_notifier)</p>
+<p>Using multiple notifiers:
+  pushbullet_notifier &lt;- new_PushbulletNotifier()
+  runSimulation(..., notification = "complete", notifier = list(telegram_notifier, pushbullet_notifier))</p>
+<p>See the <code>R/notifications.R</code> file for reference on implementing a custom notifier.</p></dd>
 
 
 <dt id="arg-beep">beep<a class="anchor" aria-label="anchor" href="#arg-beep"></a></dt>
@@ -674,7 +680,7 @@ in the simulation</p></dd>
 <dd><p>logical; display a progress bar (using the <code>pbapply</code> package)
 for each simulation condition?
 This is useful when simulations conditions take a long time to run (see also the
-<code>notifications</code> argument). Default is <code>TRUE</code></p></dd>
+<code>notification</code> argument). Default is <code>TRUE</code></p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -978,9 +984,9 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Thu Mar  6 01:58:25 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Thu Mar  6 01:58:25 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Thu Mar  6 01:58:25 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Fri Mar  7 15:21:32 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Fri Mar  7 15:21:32 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Fri Mar  7 15:21:32 20…</span>
 <span class="r-in"><span><span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">Final</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N  mean</span>
@@ -1007,14 +1013,14 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: N=30</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Simulation complete. Total execution time: 0.00s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Simulation complete. Total execution time: 0.01s</span>
 <span class="r-in"><span><span class="va">Final_rep</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Thu Mar  6 01:58:25 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Thu Mar  6 01:58:25 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Thu Mar  6 01:58:25 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Fri Mar  7 15:21:32 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Fri Mar  7 15:21:32 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Fri Mar  7 15:21:32 20…</span>
 <span class="r-in"><span><span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">Final_rep</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N  mean</span>
@@ -1202,7 +1208,7 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 1/36;   Replications: 2   Total Time: 0.00s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=30, group_size_ratio=1, standard_deviation_ratio=0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 2/36;   Replications: 2   Total Time: 0.01s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 2/36;   Replications: 2   Total Time: 0.00s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=60, group_size_ratio=1, standard_deviation_ratio=0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 3/36;   Replications: 2   Total Time: 0.01s </span>
@@ -1271,7 +1277,7 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 24/36;   Replications: 2   Total Time: 0.10s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=120, group_size_ratio=8, standard_deviation_ratio=1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 25/36;   Replications: 2   Total Time: 0.10s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 25/36;   Replications: 2   Total Time: 0.11s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=30, group_size_ratio=1, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 26/36;   Replications: 2   Total Time: 0.11s </span>
@@ -1283,19 +1289,19 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 28/36;   Replications: 2   Total Time: 0.12s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=120, group_size_ratio=1, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 29/36;   Replications: 2   Total Time: 0.12s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 29/36;   Replications: 2   Total Time: 0.14s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=30, group_size_ratio=4, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 30/36;   Replications: 2   Total Time: 0.14s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=60, group_size_ratio=4, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 31/36;   Replications: 2   Total Time: 0.14s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 31/36;   Replications: 2   Total Time: 0.15s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=90, group_size_ratio=4, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 32/36;   Replications: 2   Total Time: 0.15s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=120, group_size_ratio=4, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 33/36;   Replications: 2   Total Time: 0.15s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 33/36;   Replications: 2   Total Time: 0.16s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=30, group_size_ratio=8, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 34/36;   Replications: 2   Total Time: 0.16s </span>
@@ -1304,7 +1310,7 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 35/36;   Replications: 2   Total Time: 0.16s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=90, group_size_ratio=8, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 36/36;   Replications: 2   Total Time: 0.16s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 36/36;   Replications: 2   Total Time: 0.17s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=120, group_size_ratio=8, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -1340,9 +1346,10 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## same as above, but send a notification via Pushbullet upon completion</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">RPushbullet</span><span class="op">)</span> <span class="co"># read-in default JSON file</span></span></span>
+<span class="r-in"><span><span class="va">pushbullet_notifier</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_PushbulletNotifier.html">new_PushbulletNotifier</a></span><span class="op">(</span>verbose_issues <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">runSimulation</span><span class="op">(</span>design<span class="op">=</span><span class="va">Design</span>, replications<span class="op">=</span><span class="fl">1000</span>, parallel<span class="op">=</span><span class="cn">TRUE</span>, filename <span class="op">=</span> <span class="st">'mysim'</span>,</span></span>
 <span class="r-in"><span>              generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span>,</span></span>
-<span class="r-in"><span>              notification <span class="op">=</span> <span class="st">'complete'</span><span class="op">)</span></span></span>
+<span class="r-in"><span>              notification <span class="op">=</span> <span class="st">'complete'</span>, notifier <span class="op">=</span> <span class="va">pushbullet_notifier</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Submit as RStudio job (requires job package and active RStudio session)</span></span></span>
 <span class="r-in"><span><span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="https://lindeloev.github.io/job/reference/job.html" class="external-link">job</a></span><span class="op">(</span><span class="op">{</span></span></span>
