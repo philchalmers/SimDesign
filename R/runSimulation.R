@@ -262,12 +262,16 @@
 #'   See \code{listAvailableNotifiers} for a list of available notifiers and how to use them.
 #'
 #'   Example usage:
-#'   telegram_notifier <- new_TelegramNotifier(bot_token = "123456:ABC-xyz", chat_id = "987654321")
-#'   runSimulation(..., notification = "condition", notifier = telegram_notifier)
+#'
+#'   \code{telegram_notifier <- new_TelegramNotifier(bot_token = "123456:ABC-xyz", chat_id = "987654321")}
+#'
+#'   \code{runSimulation(..., notification = "condition", notifier = telegram_notifier)}
 #'
 #'   Using multiple notifiers:
-#'   pushbullet_notifier <- new_PushbulletNotifier()
-#'   runSimulation(..., notification = "complete", notifier = list(telegram_notifier, pushbullet_notifier))
+#'
+#'   \code{pushbullet_notifier <- new_PushbulletNotifier()}
+#'
+#'   \code{runSimulation(..., notification = "complete", notifier = list(telegram_notifier, pushbullet_notifier))}
 #'
 #'   See the \code{R/notifications.R} file for reference on implementing a custom notifier.
 #'
