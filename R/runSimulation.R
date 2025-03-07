@@ -249,22 +249,27 @@
 #' @param sound \code{sound} argument passed to \code{beepr::beep()}
 #'
 #' @param notification an optional character vector input that can be used to send
-#'   Pushbullet notifications from a configured
-#'   computer. This reports information such as the total execution time, the condition
-#'   completed, and error/warning
-#'   messages recorded. This arguments assumes that users have already A) registered for
-#'   a Pushbullet account,
-#'   B) installed the application on their mobile device and computer, and C) created an
-#'   associated JSON file of the form
-#'   \code{~/.rpushbullet.json} using \code{RPushbullet::pbSetup()}).
+#'   notifications with information about execution time and recorded errors and warnings.
+#'   Pass one of the following supported options:
+#'   \code{'none'} (default; send no notification), \code{'condition'} to send a notification
+#'   after each condition has completed, or \code{'complete'} to send a notification only
+#'   when the simulation has finished.
+#'   When notification is set to \code{'condition'} or \code{'complete'}, the \code{notifier}
+#'   argument must be supplied with a valid notifier object (or a list of notifier objects).
 #'
-#'   To utilize the \code{RPushbullet} in \code{SimDesign} first call \code{library(RPushbullet}
-#'   before running \code{runSimulation()} to read-in the default JSON file. Next,
-#'   pass one of the following supported
-#'   options: \code{'none'} (default; send no notification),
-#'   \code{'condition'} to send a notification after each condition has completed,
-#'   or \code{'complete'} to send
-#'   a notification only when the simulation has finished.
+#' @param notifier A notifier object (or a list of notifier objects, allowing for multiple
+#'   notification methods) required when \code{notification} is not set to \code{"none"}.
+#'   See \code{listAvailableNotifiers} for a list of available notifiers and how to use them.
+#'
+#'   Example usage:
+#'   telegram_notifier <- new_TelegramNotifier(bot_token = "123456:ABC-xyz", chat_id = "987654321")
+#'   runSimulation(..., notification = "condition", notifier = telegram_notifier)
+#'
+#'   Using multiple notifiers:
+#'   pushbullet_notifier <- new_PushbulletNotifier()
+#'   runSimulation(..., notification = "complete", notifier = list(telegram_notifier, pushbullet_notifier))
+#'
+#'   See the \code{R/notifications.R} file for reference on implementing a custom notifier.
 #'
 #' @param save_results logical; save the results returned from \code{\link{Analyse}} to external
 #'   \code{.rds} files located in the defined \code{save_results_dirname} directory/folder?
@@ -579,7 +584,7 @@
 #' @param progress logical; display a progress bar (using the \code{pbapply} package)
 #'   for each simulation condition?
 #'   This is useful when simulations conditions take a long time to run (see also the
-#'   \code{notifications} argument). Default is \code{TRUE}
+#'   \code{notification} argument). Default is \code{TRUE}
 #'
 #' @param boot_method method for performing non-parametric bootstrap confidence intervals
 #'  for the respective meta-statistics computed by the \code{Summarise} function.
@@ -852,9 +857,10 @@
 #'
 #' ## same as above, but send a notification via Pushbullet upon completion
 #' library(RPushbullet) # read-in default JSON file
+#' pushbullet_notifier <- new_PushbulletNotifier(verbose_issues = TRUE)
 #' runSimulation(design=Design, replications=1000, parallel=TRUE, filename = 'mysim',
 #'               generate=Generate, analyse=Analyse, summarise=Summarise,
-#'               notification = 'complete')
+#'               notification = 'complete', notifier = pushbullet_notifier)
 #'
 #' ## Submit as RStudio job (requires job package and active RStudio session)
 #' job::job({
@@ -991,7 +997,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           debug = 'none', load_seed = NULL, save = any(replications > 2),
                           store_results = TRUE, save_results = FALSE,
                           parallel = FALSE, ncores = parallelly::availableCores(omit = 1L),
-                          cl = NULL, notification = 'none', beep = FALSE, sound = 1,
+                          cl = NULL, notification = 'none', notifier = NULL,
+                          beep = FALSE, sound = 1,
                           CI = .95, seed = NULL, boot_method='none', boot_draws = 1000L,
                           max_errors = 50L, resume = TRUE, save_details = list(),
                           control = list(), progress = TRUE, verbose = TRUE)
@@ -1090,10 +1097,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         }
     }
     stopifnot(notification %in% c('none', 'condition', 'complete'))
-    if(notification != 'none')
-        if(!("RPushbullet" %in% (.packages())))
-            stop('Please use library(RPushbullet) to load the default ~/.rpushbullet.json file',
-                 call. = FALSE)
+    if(notification != "none" && is.null(notifier)) {
+        stop(
+            "You requested notifications but did not provide a 'notifier'.\n",
+            "Use 'listAvailableNotifiers()' to see built-in options, or create ",
+            "your own notifier (see ?new_Notifier)."
+        )
+    }
     save_seeds <- ifelse(is.null(control$save_seeds),
                       FALSE, control$save_seeds)
     store_Random.seeds <- ifelse(is.null(control$store_Random.seeds),
@@ -1528,8 +1538,19 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if(save || save_results)
                 saveRDS(Result_list, file.path(out_rootdir, tmpfilename))
         }
-        if(notification == 'condition')
-            notification_condition(design[i,], Result_list[[i]], nrow(design))
+
+        if(notification == "condition") {
+            notify_single_or_list(
+                notifier = notifier,
+                event = "condition",
+                event_data = list(
+                    condition = design[i, ],
+                    result = Result_list[[i]],
+                    total = nrow(design)
+                )
+            )
+        }
+
         if(print_RAM)
             memory_used[i+1L] <- RAM_used()
         if(nrow(design) > 1L && i < nrow(design)){
@@ -1702,7 +1723,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         saveRDS(Final, file.path(out_rootdir, filename))
     }
     if(save || save_results || save_seeds) file.remove(file.path(out_rootdir, tmpfilename))
-    if(notification %in% c('condition', 'complete')) notification_final(Final)
+    if(notification %in% c('condition', 'complete')) notify_single_or_list(notifier, "complete", list(final = Final))
     if(beep)
         beepr::beep(sound=sound)
     return(Final)

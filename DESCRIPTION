@@ -5,7 +5,8 @@ Authors@R: c(person("Phil", "Chalmers", email = "rphilip.chalmers@gmail.com", ro
                     comment = c(ORCID="0000-0001-5332-2810")),
              person("Matthew", "Sigal", role = c("ctb")),
              person("Ogreden", family="Oguzhan", role = c("ctb")),
-             person("Mikko ", family="Ronkko", role = c("ctb")))
+             person("Mikko ", family="Ronkko", role = c("ctb")),
+             person("Moritz", family="Ketzer", role = c("ctb")))
 Description: Provides tools to safely and efficiently organize and execute 
     Monte Carlo simulation experiments in R.
     The package controls the structure and back-end of Monte Carlo simulation experiments
@@ -29,7 +30,6 @@ Imports:
     sessioninfo,
     beepr,
     pbapply (>= 1.3-0),
-    RPushbullet,
     future,
     future.apply,
     progressr,
@@ -48,7 +48,9 @@ Suggests:
     job,
     future.batchtools,
     FrF2,
-    rmarkdown
+    rmarkdown,
+    RPushbullet,
+    httr
 License: GPL (>=2)
 ByteCompile: yes
 LazyData: true
