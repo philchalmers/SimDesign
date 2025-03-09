@@ -294,7 +294,12 @@ rbind.Design <- function(...){
     for(i in 1:length(dots))
         class(dots[[i]]) <- class(dots[[i]])[-1]
     x <- do.call(rbind, dots)
-    attr(x, 'Design.ID') <- 1:nrow(x)
+    ID <- do.call(c, lapply(dots, \(x) attr(x, 'Design.ID')))
+    if(nrow(x) != length(ID)){
+        message('Design.ID attributes do no match objects. Setting to integer sequence')
+        ID <- 1:nrow(x)
+    }
+    attr(x, 'Design.ID') <- ID
     class(x) <- c('Design', class(x))
     x
 }
