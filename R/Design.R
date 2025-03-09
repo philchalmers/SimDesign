@@ -289,7 +289,7 @@ printDesign <- function(x, whichlist, ..., n = NULL, width = NULL, n_extra = NUL
 
 #' @rdname createDesign
 #' @export
-rbind.Design <- function(...){
+rbindDesign <- function(...){
     dots <- list(...)
     for(i in 1:length(dots))
         class(dots[[i]]) <- class(dots[[i]])[-1]

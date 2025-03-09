@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.19
 
+- S3 `rbind.Design()` changed to `rbindDesign` as there was some confusion
+  in the S3 dispatch purpose when internal ID elements needed to be tracked
+  (see #50)
+
 - Multiple parameter `bias()` returned incorrect behavior/errors
   for `relative` and `abs_relative` types (see #60)
 

@@ -207,7 +207,7 @@ test_that('aggregate', {
                          replications = 10, boot_method = 'basic')
     expect_true(all(dim(tmp) == c(8,13)))
 
-    tmp <- runSimulation(rbind(Design, Design), generate=mysim, analyse=mycomputeGood, summarise=mycollect, verbose=FALSE,
+    tmp <- runSimulation(rbindDesign(Design, Design), generate=mysim, analyse=mycomputeGood, summarise=mycollect, verbose=FALSE,
                          replications = 10, parallel=FALSE, save_results = TRUE)
     out <- reSummarise(summarise = mycollect, dir=DIR)
     expect_true(all(dim(out) == c(16,5)))

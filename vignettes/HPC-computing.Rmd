@@ -479,7 +479,7 @@ Final
 or via the more informative (and less memory intensive) `SimCollect(..., check.only=TRUE)` flag.
 
 ```{r eval=FALSE}
-Missed <- aggregate_simulations(files=dir(), check.only=TRUE)
+Missed <- SimCollect(files=dir(), check.only=TRUE)
 Missed
 ```
 
@@ -494,12 +494,12 @@ Missed
 Next, build a new simulation structure containing only the missing information components.
 
 ```{r include=FALSE}
-subDesign <- createDesign(N=c(10,30))
+subDesign <- Design[c(1,3), ]
 replications_missed <- c(1000, 2000)
 ```
 
 ```{r eval=FALSE}
-subDesign <- subset(Missed, select=N)
+subDesign <- Design[c(1,3),]
 replications_missed <- subset(Missed, select=MISSED_REPLICATIONS)
 ```
 
@@ -508,9 +508,11 @@ subDesign
 replications_missed
 ```
 
-At this point, you can return to the above logic of organizing the simulation script job, distributing the information across as many array jobs as necessary to fill in the missing information. However, as before you must be *very careful* about the random number generators per row in `subDesign` **and** the original submission job. The fix in this case is straightforward as well: simply create a continuation from the previous logic, where the new elements are treated as additional rows in the resulting object as though they were part of the initial job submission. 
+At this point, you can return to the above logic of organizing the simulation script job, distributing the information across as many array jobs as necessary to fill in the missing information. However, as before you must be *very careful* about the random number generators per row in `subDesign` **and** the original submission job. The fix in this case is straightforward as well: simply create a continuation from the previous logic, where the new elements are treated as additional rows in the resulting object as though they were part of the initial job submission. Note that the `subDesign` component must use the 
+original `Design` object in its construction so that the internal 
+`Design.ID` attributes are properly tracked.
 
-So, we now just glue on the new `subDesign` information to the original expanded version, though telling the scheduler to only evaluate these new rows in the `#SBATCH --array` specification (this is technically unnecessary, but is conceptually clear and keeps all simulation files and array IDs consistent). 
+Finally, we now glue on the new `subDesign` information to the original expanded version using `rbindDesign()`, though telling the scheduler to only evaluate these new rows in the `#SBATCH --array` specification (this is technically unnecessary, but is conceptually clear and keeps all simulation files and array IDs consistent). 
 
 ```{r}
 rc <- 50
@@ -521,7 +523,7 @@ replications_left <- rep(replications_missed/rc, each=rc)
 table(replications_left)
 
 # new total design and replication objects
-Design_total <- rbind(Design300, Design_left)
+Design_total <- rbindDesign(Design300, Design_left)
 nrow(Design_total)
 replications_total <- c(replications, replications_left)
 table(replications_total)
