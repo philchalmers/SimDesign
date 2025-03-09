@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.18.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.18.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -837,7 +837,7 @@ via inspection of the aggregated results</p>
 <p>or via the more informative (and less memory intensive)
 <code>SimCollect(..., check.only=TRUE)</code> flag.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Missed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimCollect.html">aggregate_simulations</a></span><span class="op">(</span>files<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span>, check.only<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">Missed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimCollect.html">SimCollect</a></span><span class="op">(</span>files<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span>, check.only<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">Missed</span></span></code></pre></div>
 <pre><code># A tibble: 4 × 3
       N MISSED_REPLICATIONS TARGET_REPLICATIONS
@@ -847,7 +847,7 @@ via inspection of the aggregated results</p>
 <p>Next, build a new simulation structure containing only the missing
 information components.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">subDesign</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">Missed</span>, select<span class="op">=</span><span class="va">N</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">subDesign</span> <span class="op">&lt;-</span> <span class="va">Design</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span>,<span class="op">]</span></span>
 <span><span class="va">replications_missed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">Missed</span>, select<span class="op">=</span><span class="va">MISSED_REPLICATIONS</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">subDesign</span></span></code></pre></div>
@@ -867,12 +867,16 @@ row in <code>subDesign</code> <strong>and</strong> the original
 submission job. The fix in this case is straightforward as well: simply
 create a continuation from the previous logic, where the new elements
 are treated as additional rows in the resulting object as though they
-were part of the initial job submission.</p>
-<p>So, we now just glue on the new <code>subDesign</code> information to
-the original expanded version, though telling the scheduler to only
-evaluate these new rows in the <code>#SBATCH --array</code>
-specification (this is technically unnecessary, but is conceptually
-clear and keeps all simulation files and array IDs consistent).</p>
+were part of the initial job submission. Note that the
+<code>subDesign</code> component must use the original
+<code>Design</code> object in its construction so that the internal
+<code>Design.ID</code> attributes are properly tracked.</p>
+<p>Finally, we now glue on the new <code>subDesign</code> information to
+the original expanded version using <code><a href="../reference/createDesign.html">rbindDesign()</a></code>, though
+telling the scheduler to only evaluate these new rows in the
+<code>#SBATCH --array</code> specification (this is technically
+unnecessary, but is conceptually clear and keeps all simulation files
+and array IDs consistent).</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rc</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
 <span><span class="va">Design_left</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expandDesign.html">expandDesign</a></span><span class="op">(</span><span class="va">subDesign</span>, <span class="va">rc</span><span class="op">)</span> <span class="co"># smaller number of reps per array</span></span>
@@ -899,7 +903,7 @@ clear and keeps all simulation files and array IDs consistent).</p>
 <span><span class="co">## 50 50</span></span></code></pre>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># new total design and replication objects</span></span>
-<span><span class="va">Design_total</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">Design300</span>, <span class="va">Design_left</span><span class="op">)</span></span>
+<span><span class="va">Design_total</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">rbindDesign</a></span><span class="op">(</span><span class="va">Design300</span>, <span class="va">Design_left</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Design_total</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 400</span></span></code></pre>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
