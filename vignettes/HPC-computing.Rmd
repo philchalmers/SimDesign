@@ -494,6 +494,7 @@ Missed
 Next, build a new simulation structure containing only the missing information components.
 
 ```{r include=FALSE}
+Design <- createDesign(N = c(10, 20, 30))
 subDesign <- Design[c(1,3), ]
 replications_missed <- c(1000, 2000)
 ```
