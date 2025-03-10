@@ -708,11 +708,14 @@ test_that('SimDesign', {
     Design3 <- createDesign(N = c(40, 50),
                             SD = c(1, 2, 3))
 
-    bDesign <- rbind(Design, Design2, Design3)
+    bDesign <- rbindDesign(Design, Design2, Design3)
     expect_equal(attr(bDesign, 'Design.ID'), 1:nrow(bDesign))
 
-    bDesign <- rbind(Design3, Design2, Design)
+    bDesign <- rbindDesign(Design3, Design2, Design)
     expect_equal(attr(bDesign, 'Design.ID'), 1:nrow(bDesign))
+
+    bDesign <- rbindDesign(Design3, Design2, Design, keep.IDs=TRUE)
+    expect_equal(attr(bDesign, 'Design.ID'), c(1:6, 1:3, 1:6))
 
 })
 

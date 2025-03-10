@@ -513,7 +513,7 @@ At this point, you can return to the above logic of organizing the simulation sc
 original `Design` object in its construction so that the internal 
 `Design.ID` attributes are properly tracked.
 
-Finally, we now glue on the new `subDesign` information to the original expanded version using `rbindDesign()`, though telling the scheduler to only evaluate these new rows in the `#SBATCH --array` specification (this is technically unnecessary, but is conceptually clear and keeps all simulation files and array IDs consistent). 
+Finally, we now glue on the new `subDesign` information to the original expanded version using `rbindDesign()` with `keep.IDs = TRUE`, though telling the scheduler to only evaluate these new rows in the `#SBATCH --array` specification (this is technically unnecessary, but is conceptually clear and keeps all simulation files and array IDs consistent). 
 
 ```{r}
 rc <- 50
@@ -524,7 +524,7 @@ replications_left <- rep(replications_missed/rc, each=rc)
 table(replications_left)
 
 # new total design and replication objects
-Design_total <- rbindDesign(Design300, Design_left)
+Design_total <- rbindDesign(Design300, Design_left, keep.IDs=TRUE)
 nrow(Design_total)
 replications_total <- c(replications, replications_left)
 table(replications_total)

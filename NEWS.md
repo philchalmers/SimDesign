@@ -2,6 +2,9 @@
 
 ## Changes in SimDesign 2.19
 
+- `print.Design()` gains a `show.IDs` flag to show the internally stored condition
+  identifiers. Set to `FALSE` by default
+
 - New notification system in `runSimulation()` contributed by Moritz Ketzer
 
 - `max_time` now behaves more accurately when using multi-core applications 

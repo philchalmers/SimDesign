@@ -215,8 +215,15 @@ expandDesign <- function(Design, repeat_conditions){
 #'   does not change the original classes of the object, just how they are printed.
 #'   Default is TRUE
 #' @param pillar.sigfig number of significant digits to print. Default is 5
+#' @param show.IDs logical; print the internally stored Design ID indicators?
 #' @export
-print.Design <- function(x, list2char = TRUE, pillar.sigfig = 5, ...){
+print.Design <- function(x, list2char = TRUE, pillar.sigfig = 5, show.IDs = FALSE,
+                         ...){
+    cls <- class(x)
+    if(show.IDs){
+        x <- cbind(Design.ID=attr(x, 'Design.ID'), x)
+        class(x) <- cls
+    }
     classes <- sapply(x, class)
     if(list2char && any(classes == 'list') && is(x, 'tbl_df'))
         x <- list2char(x)
@@ -246,7 +253,8 @@ cat_line <- function(...) {
     cat(paste0(..., "\n"), sep = "")
 }
 
-printDesign <- function(x, whichlist, ..., n = NULL, width = NULL, n_extra = NULL) {
+printDesign <- function(x, whichlist, ..., show.IDs=TRUE, n = NULL,
+                        width = NULL, n_extra = NULL) {
     ff <- format(x, ..., n = n, width = width, n_extra = n_extra)
     if(length(whichlist)){
         if(grepl("\\[23m", ff[3])){ # for Rstudio formatting
@@ -288,17 +296,19 @@ printDesign <- function(x, whichlist, ..., n = NULL, width = NULL, n_extra = NUL
 }
 
 #' @rdname createDesign
+#' @param keep.IDs logical; keep the internal ID variables in the
+#'   \code{Design} objects? Use this when row-binding conditions
+#'   that are matched with previous conditions
+#'   (e.g., when using \code{\link{expandDesign}})
 #' @export
-rbindDesign <- function(...){
+rbindDesign <- function(..., keep.IDs=FALSE){
     dots <- list(...)
     for(i in 1:length(dots))
         class(dots[[i]]) <- class(dots[[i]])[-1]
     x <- do.call(rbind, dots)
-    ID <- do.call(c, lapply(dots, \(x) attr(x, 'Design.ID')))
-    if(nrow(x) != length(ID)){
-        message('Design.ID attributes do no match objects. Setting to integer sequence')
-        ID <- 1:nrow(x)
-    }
+    ID <- 1:nrow(x)
+    if(keep.IDs)
+        ID <- do.call(c, lapply(dots, \(x) attr(x, 'Design.ID')))
     attr(x, 'Design.ID') <- ID
     class(x) <- c('Design', class(x))
     x
