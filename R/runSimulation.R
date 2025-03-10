@@ -1007,6 +1007,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           max_errors = 50L, resume = TRUE, save_details = list(),
                           control = list(), progress = TRUE, verbose = TRUE)
 {
+    max_time.start <- if(is.null(control$max_time.start)) proc.time()[3L] else control$max_time.start
     stopifnot(!missing(analyse))
     if(length(control)){
         stopifnot("Argument(s) to control list invalid"=
@@ -1440,7 +1441,6 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(max_RAM < 0)
             stop(sprintf('max_RAM must be higher than %s. Please increase', RAM_used()), call.=FALSE)
     }
-    max_time.start <- if(is.null(control$max_time.start)) proc.time()[3L] else control$max_time.start
     for(i in start:end){
         time0 <- proc.time()[3L]
         if(summarise_asis){
