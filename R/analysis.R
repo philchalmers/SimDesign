@@ -53,8 +53,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
                    allow_gen_errors=allow_gen_errors), TRUE)
         } else {
-            try(lapply_timer(1L:replications, mainsim,
-                           max_time=max_time, max_RAM=max_RAM,
+            try(lapply(1L:replications, mainsim,
                            condition=condition,
                            generate=Functions$generate,
                            analyse=Functions$analyse,
@@ -69,6 +68,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                            useGenerate=useGenerate, useAnalyseHandler=useAnalyseHandler,
                            include_replication_index=include_replication_index,
                            allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
+                           max_time.start=max_time.start, max_time=max_time,
                            allow_gen_errors=allow_gen_errors), TRUE)
         }
     } else {

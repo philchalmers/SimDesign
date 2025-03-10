@@ -428,6 +428,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
 mainsim_maxtime <- function(max_time, max_time.start, ...){
     st <- proc.time()['elapsed']
     time_left <- max_time - (st - max_time.start)
+    if(time_left <= 0)
+        stop("Simulation terminated due to max_time constraint", call.=FALSE)
     out <- R.utils::withTimeout(mainsim(...),
                                 timeout = time_left,
                                 onTimeout = 'warning')
