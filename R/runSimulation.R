@@ -1440,6 +1440,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         if(max_RAM < 0)
             stop(sprintf('max_RAM must be higher than %s. Please increase', RAM_used()), call.=FALSE)
     }
+    max_time.start <- if(is.null(control$max_time.start)) proc.time()[3L] else control$max_time.start
     for(i in start:end){
         time0 <- proc.time()[3L]
         if(summarise_asis){
@@ -1464,7 +1465,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          save_results_dirname=save_results_dirname,
                                          save_results_filename=save_results_filename,
                                          arrayID=save_details$arrayID,
-                                         multirow=nrow(design) > 1L,
+                                         multirow=nrow(design) > 1L, max_time.start=max_time.start,
                                          useGenerate=useGenerate, useAnalyseHandler=useAnalyseHandler,
                                          save_seeds=save_seeds, summarise_asis=summarise_asis,
                                          save_seeds_dirname=save_seeds_dirname,
@@ -1505,7 +1506,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             save_seeds=save_seeds, summarise_asis=summarise_asis,
                             save_seeds_dirname=save_seeds_dirname,
                             arrayID=save_details$arrayID,
-                            multirow=nrow(design) > 1L,
+                            multirow=nrow(design) > 1L, max_time.start=max_time.start,
                             useGenerate=useGenerate, useAnalyseHandler=useAnalyseHandler,
                             max_errors=max_errors, packages=packages,
                             include_replication_index=include_replication_index,

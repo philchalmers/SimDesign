@@ -5,17 +5,18 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                      export_funs, summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds,
                      include_replication_index, packages, .options.mpi, useFuture, multirow,
-                     allow_gen_errors, max_time, max_RAM, store_Random.seeds, useGenerate,
+                     allow_gen_errors, max_time.start, max_time, max_RAM, store_Random.seeds, useGenerate,
                      useAnalyseHandler, save_results_filename = NULL, arrayID = NULL)
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
+    used_mainsim <- if(is.finite(max_time)) mainsim_maxtime else mainsim
     if(useFuture){
         if(!is.null(seed)) set_seed(seed[condition$ID])
         iters <- 1L:replications
         p <- progressr::progressor(along = iters)
         results <- try(future.apply::future_lapply(iters,
-                                                   mainsim, condition=condition,
+                                                   used_mainsim, condition=condition,
                                                    generate=Functions$generate,
                                                    analyse=Functions$analyse,
                                                    fixed_objects=fixed_objects,
@@ -27,6 +28,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                                    load_seed=load_seed, useGenerate=useGenerate,
                                                    save_seeds_dirname=save_seeds_dirname,
                                                    warnings_as_errors=warnings_as_errors,
+                                                   max_time.start=max_time.start, max_time=max_time,
                                                    include_replication_index=include_replication_index,
                                                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
                                                    p=p, future.seed=TRUE, allow_gen_errors=allow_gen_errors),
@@ -34,7 +36,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
     } else if(is.null(cl)){
         if(!is.null(seed)) set_seed(seed[condition$ID])
         results <- if(progress){
-            try(pbapply::pblapply(1L:replications, mainsim, condition=condition,
+            try(pbapply::pblapply(1L:replications, used_mainsim, condition=condition,
                    generate=Functions$generate,
                    analyse=Functions$analyse,
                    fixed_objects=fixed_objects,
@@ -45,6 +47,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    save_seeds=save_seeds, load_seed=load_seed,
                    save_seeds_dirname=save_seeds_dirname,
                    warnings_as_errors=warnings_as_errors,
+                   max_time.start=max_time.start, max_time=max_time,
                    useGenerate=useGenerate, useAnalyseHandler=useAnalyseHandler,
                    include_replication_index=include_replication_index,
                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
@@ -79,7 +82,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                 } else parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
             }
             results <- if(progress){
-                try(pbapply::pblapply(1L:replications, mainsim,
+                try(pbapply::pblapply(1L:replications, used_mainsim,
                                     condition=condition, generate=Functions$generate,
                                     analyse=Functions$analyse, load_seed=load_seed,
                                     fixed_objects=fixed_objects, save=save,
@@ -90,9 +93,10 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
                                     include_replication_index=include_replication_index,
                                     allow_nan=allow_nan, allow_gen_errors=allow_gen_errors,
+                                    max_time.start=max_time.start, max_time=max_time,
                                     useAnalyseHandler=useAnalyseHandler, use_try=use_try, cl=cl), TRUE)
             } else {
-                try(parallel::parLapply(cl, 1L:replications, mainsim,
+                try(parallel::parLapply(cl, 1L:replications, used_mainsim,
                                     condition=condition, generate=Functions$generate,
                                     analyse=Functions$analyse, load_seed=load_seed,
                                     store_Random.seeds=store_Random.seeds,
@@ -103,6 +107,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                                     warnings_as_errors=warnings_as_errors, allow_na=allow_na,
                                     include_replication_index=include_replication_index,
                                     allow_nan=allow_nan, allow_gen_errors=allow_gen_errors,
+                                    max_time.start=max_time.start, max_time=max_time,
                                     useAnalyseHandler=useAnalyseHandler, use_try=use_try), TRUE)
             }
         }

@@ -278,7 +278,7 @@ Summarise <- function(condition, results, fixed_objects) NULL
 #
 # }
 mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
-                    save, allow_na, allow_nan, save_seeds, save_seeds_dirname, load_seed,
+                    save, allow_na, allow_nan, save_seeds, save_seeds_dirname, load_seed, max_time, max_time.start,
                     warnings_as_errors, store_Random.seeds, store_warning_seeds, use_try, include_replication_index,
                     useGenerate, useAnalyseHandler, p = NULL, future = FALSE, allow_gen_errors = TRUE){
 
@@ -423,4 +423,13 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         attr(res, 'warning_message_seeds') <- warning_message_seeds
         return(res)
     }
+}
+
+mainsim_maxtime <- function(max_time, max_time.start, ...){
+    st <- proc.time()['elapsed']
+    time_left <- max_time - (st - max_time.start)
+    out <- R.utils::withTimeout(mainsim(...),
+                                timeout = time_left,
+                                onTimeout = 'warning')
+    out
 }

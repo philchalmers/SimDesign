@@ -2,6 +2,11 @@
 
 ## Changes in SimDesign 2.19
 
+- New notification system in `runSimulation()` contributed by Moritz Ketzer
+
+- `max_time` now behaves more accurately when using multi-core applications 
+  in `runSimulation()` and `runArraySimulation()`
+
 - S3 `rbind.Design()` changed to `rbindDesign` as there was some confusion
   in the S3 dispatch purpose when internal ID elements needed to be tracked
   (see #50)

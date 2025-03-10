@@ -338,20 +338,14 @@ runArraySimulation <- function(design, ..., replications,
             on.exit(parallel::stopCluster(cl), add=TRUE)
         }
     }
-    max_time <- control$max_time
-    if(!is.null(max_time))
-        max_time <- timeFormater(max_time)
-    start_time <- proc.time()[3L]
+    max_time.start <- proc.time()[3L]
+    if(!is.null(control$max_time))
+        control$max_time.start <- max_time.start
     for(i in 1L:length(rowpick)){
         row <- rowpick[i]
         seed <- genSeeds(design, iseed=iseed, arrayID=row)
         dsub <- design[row, , drop=FALSE]
         attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[row]
-        if(!is.null(max_time)){
-            control$max_time <- max_time - (proc.time()['elapsed'] - start_time)
-            if(max_time <= 0)
-                stop('max_time limit exceeded', call.=FALSE)
-        }
         ret <- runSimulation(design=dsub, replications=replications, seed=seed,
                              verbose=verbose, save_details=save_details,
                              parallel=parallel, cl=cl,
