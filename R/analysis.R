@@ -53,7 +53,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
                    allow_na=allow_na, allow_nan=allow_nan, use_try=use_try,
                    allow_gen_errors=allow_gen_errors), TRUE)
         } else {
-            try(lapply(1L:replications, mainsim,
+            try(lapply(1L:replications, used_mainsim,
                            condition=condition,
                            generate=Functions$generate,
                            analyse=Functions$analyse,
