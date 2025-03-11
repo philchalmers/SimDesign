@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2025-03-10</h4>
+            <h4 data-toc-skip class="date">2025-03-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/HPC-computing.Rmd" class="external-link"><code>vignettes/HPC-computing.Rmd</code></a></small>
       <div class="d-none name"><code>HPC-computing.Rmd</code></div>
@@ -872,11 +872,11 @@ were part of the initial job submission. Note that the
 <code>Design</code> object in its construction so that the internal
 <code>Design.ID</code> attributes are properly tracked.</p>
 <p>Finally, we now glue on the new <code>subDesign</code> information to
-the original expanded version using <code><a href="../reference/createDesign.html">rbindDesign()</a></code>, though
-telling the scheduler to only evaluate these new rows in the
-<code>#SBATCH --array</code> specification (this is technically
-unnecessary, but is conceptually clear and keeps all simulation files
-and array IDs consistent).</p>
+the original expanded version using <code><a href="../reference/createDesign.html">rbindDesign()</a></code> with
+<code>keep.IDs = TRUE</code>, though telling the scheduler to only
+evaluate these new rows in the <code>#SBATCH --array</code>
+specification (this is technically unnecessary, but is conceptually
+clear and keeps all simulation files and array IDs consistent).</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rc</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
 <span><span class="va">Design_left</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expandDesign.html">expandDesign</a></span><span class="op">(</span><span class="va">subDesign</span>, <span class="va">rc</span><span class="op">)</span> <span class="co"># smaller number of reps per array</span></span>
@@ -903,7 +903,7 @@ and array IDs consistent).</p>
 <span><span class="co">## 50 50</span></span></code></pre>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># new total design and replication objects</span></span>
-<span><span class="va">Design_total</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">rbindDesign</a></span><span class="op">(</span><span class="va">Design300</span>, <span class="va">Design_left</span><span class="op">)</span></span>
+<span><span class="va">Design_total</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">rbindDesign</a></span><span class="op">(</span><span class="va">Design300</span>, <span class="va">Design_left</span>, keep.IDs<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Design_total</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 400</span></span></code></pre>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">

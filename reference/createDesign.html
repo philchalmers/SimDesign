@@ -67,12 +67,12 @@ variables under study.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'Design'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, list2char <span class="op">=</span> <span class="cn">TRUE</span>, pillar.sigfig <span class="op">=</span> <span class="fl">5</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, list2char <span class="op">=</span> <span class="cn">TRUE</span>, pillar.sigfig <span class="op">=</span> <span class="fl">5</span>, show.IDs <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'Design'</span></span>
 <span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span>, <span class="va">...</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
 <span></span>
-<span><span class="fu">rbindDesign</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">rbindDesign</span><span class="op">(</span><span class="va">...</span>, keep.IDs <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -122,6 +122,10 @@ Default is TRUE</p></dd>
 <dd><p>number of significant digits to print. Default is 5</p></dd>
 
 
+<dt id="arg-show-ids">show.IDs<a class="anchor" aria-label="anchor" href="#arg-show-ids"></a></dt>
+<dd><p>logical; print the internally stored Design ID indicators?</p></dd>
+
+
 <dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
 <dd><p>row index</p></dd>
 
@@ -132,6 +136,13 @@ Default is TRUE</p></dd>
 
 <dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
 <dd><p>logical; drop to lower dimension class?</p></dd>
+
+
+<dt id="arg-keep-ids">keep.IDs<a class="anchor" aria-label="anchor" href="#arg-keep-ids"></a></dt>
+<dd><p>logical; keep the internal ID variables in the
+<code>Design</code> objects? Use this when row-binding conditions
+that are matched with previous conditions
+(e.g., when using <code><a href="expandDesign.html">expandDesign</a></code>)</p></dd>
 
 </dl></div>
     <div class="section level2">
