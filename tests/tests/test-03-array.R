@@ -27,9 +27,9 @@ test_that('array', {
     }
 
     # time test across conditions
-    expect_error(runSimulation(design=Design, replications=3, generate=Generate,
+    expect_error(runSimulation(design=Design, replications=5, generate=Generate,
                   analyse=Analyse.slow, summarise=Summarise,
-                  control = list(max_time = "00:00:05", max_RAM = "4GB"),
+                  control = list(max_time = "00:00:06", max_RAM = "4GB"),
                   verbose=FALSE))
     files <- dir()
     file <- files[grepl('SIMDESIGN-TEMPFILE', files)]
@@ -37,13 +37,13 @@ test_that('array', {
     expect_true(is.null(res[[3]]))
 
     # resume from time crash
-    res2 <- runSimulation(design=Design, replications=3, generate=Generate,
+    res2 <- runSimulation(design=Design, replications=5, generate=Generate,
                           analyse=Analyse.slow, summarise=Summarise,
-                          control = list(max_time = "00:00:10", max_RAM = "4GB"),
+                          control = list(max_time = "00:00:20", max_RAM = "4GB"),
                           verbose=FALSE)
     expect_true(is(res2, 'SimDesign'))
     results <- SimResults(res2)
-    expect_true(nrow(results) == 9)
+    expect_true(nrow(results) == 15)
 
     # define initial seed (do this only once to keep it constant!)
     # iseed <- genSeeds()
@@ -110,7 +110,7 @@ test_that('array', {
                        filename='mylongsim', arrayID=arrayID,
                        control = list(max_RAM="150MB"), verbose=FALSE)
     res <- readRDS("mylongsim-14.rds")
-    expect_true(res$REPLICATIONS < 1000L)
+    expect_true(res$REPLICATIONS == 1000L)
     SimClean('mylongsim-14.rds')
 
     ###

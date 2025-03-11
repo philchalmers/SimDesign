@@ -1345,9 +1345,11 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                 Result_list <- tmp_new
             }
         }
-        start <- ifelse(is.na(resume.row),
-                        min(c(which(sapply(Result_list, is.null)), nrow(design))),
-                        resume.row)
+        pick_tmp <- min(c(which(sapply(Result_list, is.null)), nrow(design)))
+        if(pick_tmp > 1)
+            if(any(colnames(Result_list[[pick_tmp - 1]]) == 'FATAL_TERMINATION'))
+                pick_tmp <- pick_tmp - 1
+        start <- ifelse(is.na(resume.row), pick_tmp, resume.row)
         time0 <- time1 - Result_list[[start-1L]]$SIM_TIME
     }
     TIME0 <- proc.time()[3L]
