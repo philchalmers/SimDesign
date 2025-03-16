@@ -501,13 +501,12 @@ in the simulation}
 
      \item{\code{max_time}}{
        Similar to \code{\link{runArraySimulation}}, specifies the (approximate) maximum
-       time that the simulation is allowed to be executed. However, unlike the implementation
-       in \code{runArraySimulation} is evaluated on a per condition basis,
-       where \code{max_time} is only evaluated after every row in the
-       \code{design} object has been completed (hence, is notably more approximate as it
-       has the potential to overshoot by a wider margin). Default sets no time limit.
+       time that the simulation is allowed to be executed. Default sets no time limit.
        See \code{\link{timeFormater}} for the input specifications; otherwise, can be
        specified as a \code{numeric} input reflecting the maximum time in seconds.
+
+       Note that when \code{parallel = TRUE} the \code{max_time} can only be checked on
+       a per condition basis.
      }
 
      \item{\code{max_RAM}}{
