@@ -1,6 +1,6 @@
 # NEWS file for SimDesign
 
-## Changes in SimDesign 2.19
+## Changes in SimDesign 2.19.1
 
 - `print.Design()` gains a `show.IDs` flag to show the internally stored condition
   identifiers. Set to `FALSE` by default
