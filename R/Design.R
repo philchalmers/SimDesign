@@ -203,7 +203,7 @@ expandDesign <- function(Design, repeat_conditions){
                   length(repeat_conditions) == nrow(Design))
     rep_vec <- rep(1L:nrow(Design), times=repeat_conditions)
     ret <- Design[sort(rep_vec), ]
-    attr(ret, 'Design.ID') <- rep_vec
+    attr(ret, 'Design.ID') <- attr(Design, 'Design.ID')[rep_vec]
     rownames(ret) <- NULL
     ret
 }
