@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ghcr.io/philchalmers/container-SimDesign:latest
+      image: ghcr.io/philchalmers/container-simdesign:latest
 
     steps:
       - name: Check out the repository
