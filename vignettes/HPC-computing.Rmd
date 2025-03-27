@@ -157,6 +157,7 @@ Given the above specifications, you may decide that each of the 300 computing no
 rc <- 100   # number of times the design row was repeated
 Design300 <- expandDesign(Design, repeat_conditions = rc)
 Design300
+print(Design300, show.IDs = TRUE)
 
 # target replication number for each condition
 rep_target <- 10000
@@ -441,16 +442,15 @@ scancel -u <username>   # cancel all queued and running jobs for a specific user
 
 This issue is important whenever the HPC cluster has mandatory time/RAM limits for the job submissions, where the array job may not complete within the assigned resources --- hence, if not properly managed, will discard any valid replication information when abruptly terminated. Unfortunately, this is a very likely occurrence, and is largely a function of being unsure about how long each simulation condition/replication will take to complete when distributed across the arrays (some conditions/replications will take longer than others, and it is difficult to be perfectly knowledgeable about this information beforehand) or how large the final objects will grow as the simulation progresses.
 
-To avoid this time/resource waste it is **strongly recommended** to add a `max_time` and/or `max_RAM` argument to the `control` list (see `help(runArraySimulation)` for supported specifications), which are less than the Slurm specifications. These control flags will halt the `runArraySimulation()` executions early and return only the complete simulation results up to this point. However, this will only work if these arguments are *non-trivially less than the allocated Slurm resources*; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting these to around 90-95% of the respective `#SBATCH --time=` and `#SBATCH --mem-per-cpu=` inputs should, however, be sufficient in most cases.
+To avoid this time/resource waste it is **strongly recommended** to add a `max_time` argument to the `control` list (see `help(runArraySimulation)` for supported specifications) which is less than the Slurm specifications. This control flag will halt the `runArraySimulation()` executions early and return only the complete simulation results up to this point. However, this will only work if the argument is *non-trivially less than the allocated Slurm resources*; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting this to around 90-95% of the respective `#SBATCH --time=` input should, however, be sufficient in most cases.
 
 ```{r eval=FALSE}
-# Return successful results up to the 11 hour mark, and terminate early 
-#   if more than 3.5 GB of RAM are required to store the internal results
+# Return successful results up to the 11 hour mark
 runArraySimulation(design=Design300, replications=replications,
                    generate=Generate, analyse=Analyse,
                    summarise=Summarise, iseed=iseed, arrayID=arrayID, 
                    dirname='mysimfiles', filename='mysim',
-                   control=list(max_time="11:00:00", max_RAM="3.5GB"))   
+                   control=list(max_time="11:00:00"))   
 
 ```
 
@@ -505,7 +505,7 @@ replications_missed <- subset(Missed, select=MISSED_REPLICATIONS)
 ```
 
 ```{r}
-subDesign
+print(subDesign, show.IDs = TRUE)
 replications_missed
 ```
 
@@ -526,6 +526,7 @@ table(replications_left)
 # new total design and replication objects
 Design_total <- rbindDesign(Design300, Design_left, keep.IDs=TRUE)
 nrow(Design_total)
+print(Design_total, show.IDs = TRUE)
 replications_total <- c(replications, replications_left)
 table(replications_total)
 
