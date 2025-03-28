@@ -30,7 +30,7 @@ par(mar=c(3,3,1,1)+.1)
 
 # Including fixed objects
 
-R is fun language for computer programming and statistics, but it's not without it's quirks. For instance, R generally has a recursive strategy when attempting to find objects within functions. If an object can't be found, R will start to look outside the function's environment to see if the object can be located there, and if not, look within even higher-level environments... This recursive search continues until it searches for the object in the user workspace/Global environment, and only when the object can't be found here will an error be thrown. This is a strange feature to most programmers who come from other languages, and when writing simulations may cause some severely unwanted issues. This tutorial demonstrates how to make sure all required user-defined objects are visible to `SimDesign`. 
+R is fun language for computer programming and statistics, but it's not without it's quirks. For instance, R generally has a recursive strategy when attempting to find objects within functions. If an object can't be found, R will start to look outside the function's environment to see if the object can be located there, and if not, look within even higher-level environments... This recursive search continues until it searches for the object in the user workspace/Global environment, and only when the object can't be found here will an error be thrown. This is a strange feature to most programmers who come from other languages, and when writing simulations may cause some severely unwanted masking issues. This tutorial demonstrates how to make sure all required user-defined objects are visible to `SimDesign`. 
 
 # Scoping
 
@@ -76,17 +76,17 @@ clusterExport(cl=cl, c('obj1', 'obj2'))
 parSapply(cl=cl, 1:4, myfun)
 ```
 
-The same reasoning above applies to functions defined in the R workspace as well, including functions defined within external R packages. Hence, in order to use functions from other packages they must either be explicitly loaded with `require()` or `library()` within the distributed code, or referenced via their Namespace with the `::` operator (e.g., `mvtnorm::rmvtnorm()`).
+The same reasoning above applies to functions defined in the R work-space as well, including functions defined within third-party R packages. Hence, in order to use functions from other packages they must either be explicitly loaded with `require()` or `library()` within the distributed code, or referenced via their Namespace with the `::` operator (e.g., `mvtnorm::rmvtnorm()`).
 
 ```{r echo=FALSE}
 stopCluster(cl)
 ```
 
-# Exporting objects example 
+# Exporting objects example in `SimDesign`
 
 In order to make objects safely visible in `SimDesign` the strategy is very simple: wrap all desired objects into a named list (or other object), and pass this to the `fixed_objects` argument. From here, elements can be indexed using the `$` operator or `with()` function, or whatever other method may be convenient. Note, however, this is only required for defined *objects* not *functions* --- `SimDesign` automatically makes user-defined functions available across all nodes.
 
-As an aside, an alternative approach is simply to define/source the objects within the respective `SimDesign` functions; that way they will clearly be visible at runtime. The following `fixed_objects` approach is really only useful when the defined objects contain a large amount of code.
+As an aside, an alternative approach is simply to define/source the objects within the respective `SimDesign` functions; that way they will clearly be visible at run-time. The following `fixed_objects` approach is really only useful when the defined objects contain a large amount of code.
 
 ```{r}
 library(SimDesign)

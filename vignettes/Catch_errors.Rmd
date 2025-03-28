@@ -107,7 +107,7 @@ SimExtract(result, what = 'errors')
 
 
 
-Finally, `SimDesign` has a built-in safety feature controlled by with `max_errors` argument to avoid getting stuck in infinite redrawing loops. By default, if more than 50 errors are consecutively returned then the simulation condition will be halted, and a warning message will be printed to the console indicating the last observed fatal error. These safety features are built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code which should be fixed before continuing. However, when encountering fatal errors in a given simulation condition the remainder of the simulation experiment will still be executed as normal, where for the problematic conditions combinations `NA` placeholders will be assigned to these rows in the final output object. This is so that the entire experiment does not unexpectedly terminate due to one or more problematic row conditions in `Design`, and instead these conditions can be inspected and debugged at a later time. Of course, if inspecting the code directly, the simulation could be manually halted so that these terminal errors can be attended to immediately (e.g., using `Ctrl + c`, or clicking the 'Stop' icon in Rstudio).
+Finally, `SimDesign` has a built-in safety feature controlled by with `max_errors` argument to avoid getting stuck in infinite redrawing loops. By default, if more than 50 errors are consecutively returned then the simulation condition will be halted, and a warning message will be printed to the console indicating the last observed fatal error. These safety features are built-in because too many consecutive `stop()` calls generally indicates a major problem in the simulation code which should be fixed before continuing. However, when encountering fatal errors in a given simulation condition the remainder of the simulation experiment will still be executed as normal, where for the problematic conditions`NA` placeholders will be assigned to these rows in the final output object. This is so that the entire experiment does not unexpectedly terminate due to one or more problematic row conditions in `Design`, and instead these conditions can be inspected and debugged all at once at a later time. Of course, if inspecting the code directly, the simulation could be manually halted so that these terminal errors can be attended to immediately (e.g., using `Ctrl + c`, or clicking the 'Stop' icon in Rstudio).
 
 # What to do (explicit debugging)
 
@@ -146,9 +146,9 @@ runSimulation(Design, replications = 100, load_seed=picked_seed, debug='analyse-
               generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
 
-The `.Random.seed` state will be loaded at this exact state, and will always be related at this state as well (in case `c` is typed in the debugger, or somehow the error is harder to find while walking through the debug mode). Hence, users must type `Q` to exit the debugger after they have better understood the nature of the error message first-hand. 
+The `.Random.seed` state will be loaded at this exact state, and will always be repeated at this state as well (in case `c` is typed in the debugger, or somehow the error is harder to find while walking through the debug mode). Hence, users must type `Q` to exit the debugger after they have better understood the nature of the error message first-hand, after which the `load_seed` input should be removed. 
 
-# Converting warings to errors explicitly
+# Converting warings to errors explicitly via `manageWarnings()`
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(
