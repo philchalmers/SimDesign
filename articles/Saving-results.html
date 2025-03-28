@@ -140,17 +140,17 @@ called until the simulation is complete.</p>
 <span><span class="co">## Design: 1/3;   Replications: 1000;   RAM Used: 68 Mb;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: N=10</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 2/3;   Replications: 1000;   RAM Used: 69 Mb;   Total Time: 0.19s </span></span>
+<span><span class="co">## Design: 2/3;   Replications: 1000;   RAM Used: 69 Mb;   Total Time: 0.18s </span></span>
 <span><span class="co">##  Conditions: N=20</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/3;   Replications: 1000;   RAM Used: 69 Mb;   Total Time: 0.36s </span></span>
+<span><span class="co">## Design: 3/3;   Replications: 1000;   RAM Used: 69 Mb;   Total Time: 0.35s </span></span>
 <span><span class="co">##  Conditions: N=30</span></span>
 <span><span class="co">## </span></span></code></pre>
 <p>Check that temporary file still exists.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">files</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">'SIMDESIGN'</span>, <span class="va">files</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "SIMDESIGN-TEMPFILE_fv-az1444-243.rds"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "SIMDESIGN-TEMPFILE_fv-az2029-105.rds"</span></span></code></pre>
 <p>Notice here that the simulation stopped at 67% because the third
 design condition threw too many consecutive errors (this is a built-in
 fail-safe in <code>SimDesign</code>). To imitate a type of crash/power
@@ -170,7 +170,7 @@ of unforeseen program execution crashes no time is lost.</p>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">1000</span>, save<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">'my-simple-sim'</span>,</span>
 <span>                     generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/3;   Replications: 1000   Total Time: 0.36s </span></span>
+<span><span class="co">## Design: 3/3;   Replications: 1000   Total Time: 0.35s </span></span>
 <span><span class="co">##  Conditions: N=30</span></span>
 <span><span class="co">## </span></span></code></pre>
 <p>Check which files exist.</p>
@@ -185,15 +185,15 @@ of unforeseen program execution crashes no time is lost.</p>
 hard-drive.</p>
 <p>Relatedly, the <code>.Random.seed</code> states for each successful
 replication can be saved by passing
-<code>control = list(store_Random.seeds = TRUE))</code> to , though
-these are generally only useful under exceptional circumstances (e.g.,
-when the generate-analyse results are unusual but did not throw a
-warning or error message, yet should be inspected interactively).</p>
+<code>control = list(store_Random.seeds = TRUE))</code> to
+<code><a href="../reference/runSimulation.html">runSimulation()</a></code>, though these are generally only useful
+under exceptional circumstances (e.g., when the generate-analyse results
+are unusual but did not throw a warning or error message, yet should be
+inspected interactively).</p>
 </div>
 <div class="section level2">
-<h2 id="store_results-true-by-default-though-not-recommended-if-ram-is-suspected-to-be-an-issue">
-<code>store_results</code> (<code>TRUE</code> by default, though not
-recommended if RAM is suspected to be an issue)<a class="anchor" aria-label="anchor" href="#store_results-true-by-default-though-not-recommended-if-ram-is-suspected-to-be-an-issue"></a>
+<h2 id="store_results-true-by-default">
+<code>store_results</code> (<code>TRUE</code> by default)<a class="anchor" aria-label="anchor" href="#store_results-true-by-default"></a>
 </h2>
 <p>Passing <code>store_results = TRUE</code> stores the
 <code>results</code> object information that are passed to
@@ -241,9 +241,8 @@ described below is the recommended approach to resolve potential memory
 issues.</p>
 </div>
 <div class="section level2">
-<h2 id="option-save_results-true-false-by-default-recommended-during-official-simulation-run-if-ram-is-an-issue">Option: <code>save_results = TRUE</code> (<code>FALSE</code> by
-default; recommended during official simulation run if RAM is an
-issue)<a class="anchor" aria-label="anchor" href="#option-save_results-true-false-by-default-recommended-during-official-simulation-run-if-ram-is-an-issue"></a>
+<h2 id="option-save_results-true-false-by-default-set-to-true-if-ram-is-an-issue">Option: <code>save_results = TRUE</code> (<code>FALSE</code> by
+default; set to <code>TRUE</code> if RAM is an issue)<a class="anchor" aria-label="anchor" href="#option-save_results-true-false-by-default-set-to-true-if-ram-is-an-issue"></a>
 </h2>
 <p>Finally, the <code>save_results</code> argument will output the
 <code>results</code> elements that were passed to
@@ -349,8 +348,14 @@ aggregation of the simulation results is often what you are interested
 in then this approach will ensure that the results are stored in a
 succinct manner for later analyses. However, if RAM is suspected to be
 an issue as the simulation progresses then using
-<code>save_results = TRUE</code> is strongly recommended to avoid
-memory-based storage issues.</p>
+<code>save_results = TRUE</code> is recommended to avoid memory-based
+storage issues.</p>
+<p>Note that for array simulations evaluated via
+<code><a href="../reference/runArraySimulation.html">runArraySimulation()</a></code> the results will be stored within each
+respective <code>.rds</code> object using
+<code>store_results = TRUE</code> as files are independently saved on
+the assigned arrays, negating the implicit RAM issue that could arise
+when using <code><a href="../reference/runSimulation.html">runSimulation()</a></code>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

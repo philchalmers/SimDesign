@@ -193,15 +193,15 @@ many consecutive <code><a href="https://rdrr.io/r/base/stop.html" class="externa
 problem in the simulation code which should be fixed before continuing.
 However, when encountering fatal errors in a given simulation condition
 the remainder of the simulation experiment will still be executed as
-normal, where for the problematic conditions combinations
-<code>NA</code> placeholders will be assigned to these rows in the final
-output object. This is so that the entire experiment does not
-unexpectedly terminate due to one or more problematic row conditions in
-<code>Design</code>, and instead these conditions can be inspected and
-debugged at a later time. Of course, if inspecting the code directly,
-the simulation could be manually halted so that these terminal errors
-can be attended to immediately (e.g., using <code>Ctrl + c</code>, or
-clicking the ‘Stop’ icon in Rstudio).</p>
+normal, where for the problematic conditions<code>NA</code> placeholders
+will be assigned to these rows in the final output object. This is so
+that the entire experiment does not unexpectedly terminate due to one or
+more problematic row conditions in <code>Design</code>, and instead
+these conditions can be inspected and debugged all at once at a later
+time. Of course, if inspecting the code directly, the simulation could
+be manually halted so that these terminal errors can be attended to
+immediately (e.g., using <code>Ctrl + c</code>, or clicking the ‘Stop’
+icon in Rstudio).</p>
 </div>
 <div class="section level2">
 <h2 id="what-to-do-explicit-debugging">What to do (explicit debugging)<a class="anchor" aria-label="anchor" href="#what-to-do-explicit-debugging"></a>
@@ -287,15 +287,17 @@ the seed will clearly not replicate the exact problem state.</p>
 <span><span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">100</span>, load_seed<span class="op">=</span><span class="va">picked_seed</span>, debug<span class="op">=</span><span class="st">'analyse-1'</span>,</span>
 <span>              generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>.Random.seed</code> state will be loaded at this exact
-state, and will always be related at this state as well (in case
+state, and will always be repeated at this state as well (in case
 <code>c</code> is typed in the debugger, or somehow the error is harder
 to find while walking through the debug mode). Hence, users must type
 <code>Q</code> to exit the debugger after they have better understood
-the nature of the error message first-hand.</p>
+the nature of the error message first-hand, after which the
+<code>load_seed</code> input should be removed.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="converting-warings-to-errors-explicitly">Converting warings to errors explicitly<a class="anchor" aria-label="anchor" href="#converting-warings-to-errors-explicitly"></a>
+<h2 id="converting-warings-to-errors-explicitly-via-managewarnings">Converting warings to errors explicitly via
+<code>manageWarnings()</code><a class="anchor" aria-label="anchor" href="#converting-warings-to-errors-explicitly-via-managewarnings"></a>
 </h2>
 <p>On occasion functions will return <code>warning</code> message that
 either border on (or should be treated as) error messages if they
