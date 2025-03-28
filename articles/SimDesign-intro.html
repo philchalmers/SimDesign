@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2025-03-27</h4>
+            <h4 data-toc-skip class="date">2025-03-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/SimDesign-intro.Rmd" class="external-link"><code>vignettes/SimDesign-intro.Rmd</code></a></small>
       <div class="d-none name"><code>SimDesign-intro.Rmd</code></div>
@@ -80,20 +80,22 @@ P. Box</p>
 </blockquote>
 <p>Whether you are interested in evaluating the performance of a new
 optimizer or estimation criteria, re-evaluating previous research claims
-(e.g., ANOVA is ‘robust’ to violations of normality), determine power
-rates for an upcoming research proposal, or simply to appease a strange
+(e.g., ANOVA is ‘robust’ to violations of normality), want to determine
+power rates for an upcoming research proposal (cf. the
+<code>Spower</code> package), or simply wish to appease a strange
 thought in your head about a new statistical idea you heard about,
 designing Monte Carlo simulations can be incredibly rewarding and are
-extremely important to those who are statistically oriented. However,
-organizing simulations can be a challenge, particularly to those new to
-the topic, where all too often coders resort to the inefficient and
-error prone strategies (e.g., the dreaded “for-loop” strategy,
-<em>for</em>-ever resulting in confusing, error prone, and simulation
-specific code). The package <code>SimDesign</code> is one attempt to fix
-these and other issues that often arise when designing Monte Carlo
-simulation experiments, while also providing a templated setup that is
-designed to support many useful features that can be useful when
-evaluating simulation research.</p>
+extremely important to those who are statistically oriented.</p>
+<p>However, organizing simulations can be a challenge, particularly to
+those new to the topic, where all too often investigators resort to the
+inefficient and error prone strategies (e.g., the dreaded “for-loop”
+strategy, <em>for</em>-ever resulting in confusing, error prone, and
+simulation specific code). The package <code>SimDesign</code> is one
+attempt to fix these and other issues that often arise when designing
+Monte Carlo simulation experiments, while also providing a templated
+setup that is designed to support many useful features that can be
+useful when evaluating simulation research for novice and advanced
+users.</p>
 <p>Generally speaking, Monte Carlo simulations can be broken into three
 major components:</p>
 <ul>
@@ -130,11 +132,12 @@ where the simulation steps are evaluated, ultimately returning a
 </h2>
 <p>After loading the <code>SimDesign</code> package, we begin by
 defining the required user-constructed functions. To expedite this
-process, a call to <code><a href="../reference/SimFunctions.html">SimFunctions()</a></code> will create a template to
-be filled in, where all the necessary functional arguments have been
-pre-assigned, and only the body of the functions need to be modified.
-The documentation of each argument can be found in the respective R help
-files, however there organization is very simple conceptually.</p>
+process, a call to <code><a href="../reference/SimFunctions.html">SimFunctions()</a></code> can be used to create a
+suitable template, where all the necessary functional arguments have
+been pre-assigned and only the body of the functions need to be
+modified. The documentation of each argument can be found in the
+respective R help files, however the organization is conceptually
+simple.</p>
 <p>To begin, the following code should be copied and saved to an
 external source (i.e., text) file.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -173,7 +176,9 @@ external source (i.e., text) file.</p>
 copy-and-pasting, <code><a href="../reference/SimFunctions.html">SimFunctions()</a></code> can write the output to a
 file by providing a <code>filename</code> argument. The following
 creates a file (<code>mysim.R</code>) containing the simulation
-design/execution and required user-defined functions.</p>
+design/execution and required user-defined functions. For Rstudio users,
+this will also automatically open up the file in a new coding
+window.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">SimDesign</span><span class="fu">::</span><span class="fu"><a href="../reference/SimFunctions.html">SimFunctions</a></span><span class="op">(</span><span class="st">'mysim'</span><span class="op">)</span></span></code></pre></div>
 <p>For larger simulations, you may want to use two files, and if you’d
@@ -195,8 +200,8 @@ response theory model).</p>
 <div class="section level2">
 <h2 id="simulation-determine-estimator-efficiency">Simulation: Determine estimator efficiency<a class="anchor" aria-label="anchor" href="#simulation-determine-estimator-efficiency"></a>
 </h2>
-<p>As a toy example, let’s consider how the following question can be
-investigated with <code>SimDesign</code>:</p>
+<p>As a toy example, let’s consider how the following investigation
+using <code>SimDesign</code>:</p>
 <p><em>Question</em>: How does trimming affect recovering the mean of a
 distribution? Investigate this using different sample sizes with
 Gaussian and
@@ -209,9 +214,8 @@ recover the mean.</p>
 <p>First, define the condition combinations that should be investigated.
 In this case we wish to study 4 different sample sizes, and use a
 symmetric and skewed distribution. The use of
-<code><a href="../reference/createDesign.html">createDesign()</a></code> is extremely helpful here to create a
-completely crossed-design for each combination (there are 8 in
-total).</p>
+<code><a href="../reference/createDesign.html">createDesign()</a></code> is required to create a completely
+crossed-design for each combination (there are 8 in total).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">createDesign</a></span><span class="op">(</span>sample_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">60</span>, <span class="fl">120</span>, <span class="fl">240</span><span class="op">)</span>, </span>
 <span>                       distribution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'norm'</span>, <span class="st">'chi'</span><span class="op">)</span><span class="op">)</span></span>
@@ -231,7 +235,7 @@ total).</p>
 studied in the simulation. In this case, the first condition to be
 studied comes from row 1, where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">N=30</annotation></semantics></math>
-and the distribution should be normal.</p>
+and the distribution is from the Gaussian/normal family.</p>
 </div>
 <div class="section level3">
 <h3 id="define-the-functions">Define the functions<a class="anchor" aria-label="anchor" href="#define-the-functions"></a>
@@ -239,12 +243,11 @@ and the distribution should be normal.</p>
 <p>We first start by defining the data generation functional component.
 The only argument accepted by this function is <code>condition</code>,
 which will always be a <em>single row from the Design data.frame
-object</em> of class <code>data.frame</code>. Conditions are run
-sequentially from row 1 to the last row in <code>Design</code>. It is
-also possible to pass a <code>fixed_objects</code> object to the
-function for including fixed sets of population parameters and other
-conditions, however for this simple simulation this input is not
-required.</p>
+object</em>. Conditions are run sequentially from row 1 to the last row
+in <code>Design</code>. It is also possible to pass a
+<code>fixed_objects</code> object to the function for including fixed
+sets of population parameters and other conditions, however for this
+simple simulation this input is not required.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Generate</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">condition</span>, <span class="va">fixed_objects</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">N</span> <span class="op">&lt;-</span> <span class="va">condition</span><span class="op">$</span><span class="va">sample_size</span></span>
@@ -259,7 +262,7 @@ required.</p>
 <p>As we can see above, <code><a href="../reference/Generate.html">Generate()</a></code> will return a numeric
 vector of length
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
-containing the data to be analysed each with a population mean of 3
+containing the data to be analysed, each with a population mean of 3
 (because a
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>χ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\chi^2</annotation></semantics></math>
 distribution has a mean equal to its df). Next, we define the
@@ -276,7 +279,9 @@ distribution has a mean equal to its df). Next, we define the
 <span><span class="op">}</span></span></code></pre></div>
 <p>This function accepts the data previously returned from
 <code><a href="../reference/Generate.html">Generate()</a></code> (<code>dat</code>), the condition vector
-previously mentioned.</p>
+previously mentioned, and returns 4 named elements. Note that the
+element names do not have to be constant across the row-conditions,
+however it will often make conceptual sense to do so.</p>
 <p>At this point, we may conceptually think of the first two functions
 as being evaluated independently
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
@@ -323,14 +328,14 @@ as in a <code>matrix</code>, <code>data.frame</code>, or
 </h3>
 <p>The last stage of the <code>SimDesign</code> work-flow is to pass the
 four defined elements to the <code><a href="../reference/runSimulation.html">runSimulation()</a></code> function
-which, unsurprisingly given it’s name, runs the simulation. There are
-numerous options available in the function, and these should be
-investigated by reading the <code><a href="../reference/runSimulation.html">help(runSimulation)</a></code> HTML file.
-Options for performing simulations in parallel, storing/resuming
-temporary results, debugging functions, and so on are available. Below
-we simply request that each condition be run 1000 times on a single
-processor, and finally store the results to an object called
-<code>results</code>.</p>
+which, unsurprisingly given its name, runs the simulation.</p>
+<p>There are numerous options available in the function, and these
+should be investigated by reading the <code><a href="../reference/runSimulation.html">help(runSimulation)</a></code>
+HTML file. Options for performing simulations in parallel,
+storing/resuming temporary results, debugging functions, and so on are
+available. Below we simply request that each condition be run 1000 times
+on a single processor, and finally store the results to an object called
+<code>res</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">1000</span>, generate<span class="op">=</span><span class="va">Generate</span>, </span>
 <span>                         analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
@@ -341,22 +346,22 @@ processor, and finally store the results to an object called
 <span><span class="co">## Design: 2/8;   Replications: 1000;   RAM Used: 71.7 Mb;   Total Time: 0.21s </span></span>
 <span><span class="co">##  Conditions: sample_size=60, distribution=norm</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/8;   Replications: 1000;   RAM Used: 71.7 Mb;   Total Time: 0.41s </span></span>
+<span><span class="co">## Design: 3/8;   Replications: 1000;   RAM Used: 71.7 Mb;   Total Time: 0.42s </span></span>
 <span><span class="co">##  Conditions: sample_size=120, distribution=norm</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Design: 4/8;   Replications: 1000;   RAM Used: 71.8 Mb;   Total Time: 0.62s </span></span>
 <span><span class="co">##  Conditions: sample_size=240, distribution=norm</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 5/8;   Replications: 1000;   RAM Used: 71.8 Mb;   Total Time: 0.84s </span></span>
+<span><span class="co">## Design: 5/8;   Replications: 1000;   RAM Used: 71.8 Mb;   Total Time: 0.85s </span></span>
 <span><span class="co">##  Conditions: sample_size=30, distribution=chi</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 6/8;   Replications: 1000;   RAM Used: 71.8 Mb;   Total Time: 1.04s </span></span>
+<span><span class="co">## Design: 6/8;   Replications: 1000;   RAM Used: 71.8 Mb;   Total Time: 1.05s </span></span>
 <span><span class="co">##  Conditions: sample_size=60, distribution=chi</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 7/8;   Replications: 1000;   RAM Used: 71.9 Mb;   Total Time: 1.24s </span></span>
+<span><span class="co">## Design: 7/8;   Replications: 1000;   RAM Used: 71.9 Mb;   Total Time: 1.26s </span></span>
 <span><span class="co">##  Conditions: sample_size=120, distribution=chi</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 8/8;   Replications: 1000;   RAM Used: 71.9 Mb;   Total Time: 1.45s </span></span>
+<span><span class="co">## Design: 8/8;   Replications: 1000;   RAM Used: 71.9 Mb;   Total Time: 1.47s </span></span>
 <span><span class="co">##  Conditions: sample_size=240, distribution=chi</span></span>
 <span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -524,8 +529,9 @@ their efficiency, and so on.</p>
 <span><span class="co">##            0.1739            0.1777            0.1859            0.2146 </span></span>
 <span><span class="co">##   RE.mean_no_trim    RE.mean_trim.1    RE.mean_trim.2         RE.median </span></span>
 <span><span class="co">##            1.0000            1.0442            1.1425            1.5225</span></span></code></pre>
-<p>This process is then repeated for each row in the <code>Design</code>
-object until the entire simulation study is complete.</p>
+<p>This process is then repeated for each row <code>condition</code> in
+the <code>Design</code> object until the entire simulation study is
+complete.</p>
 <p>Of course, <code><a href="../reference/runSimulation.html">runSimulation()</a></code> does much more than this
 conceptual outline, which is why it exists. Namely, errors and warnings
 are controlled and tracked, data is re-drawn when needed, parallel
