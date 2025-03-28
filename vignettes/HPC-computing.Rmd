@@ -157,6 +157,9 @@ Given the above specifications, you may decide that each of the 300 computing no
 rc <- 100   # number of times the design row was repeated
 Design300 <- expandDesign(Design, repeat_conditions = rc)
 Design300
+
+# compare the Design.IDs
+print(Design, show.IDs = TRUE)
 print(Design300, show.IDs = TRUE)
 
 # target replication number for each condition
@@ -438,9 +441,9 @@ scancel <jobid>         # cancel a specific job
 scancel -u <username>   # cancel all queued and running jobs for a specific user
 ```
 
-## My HPC cluster excution time/RAM is limited and terminates before the simulation is complete
+## My HPC cluster excution time is limited and terminates before the simulation is complete
 
-This issue is important whenever the HPC cluster has mandatory time/RAM limits for the job submissions, where the array job may not complete within the assigned resources --- hence, if not properly managed, will discard any valid replication information when abruptly terminated. Unfortunately, this is a very likely occurrence, and is largely a function of being unsure about how long each simulation condition/replication will take to complete when distributed across the arrays (some conditions/replications will take longer than others, and it is difficult to be perfectly knowledgeable about this information beforehand) or how large the final objects will grow as the simulation progresses.
+This issue is important whenever the HPC cluster has mandatory time/RAM limits for the job submissions, where the array job may not complete within the assigned resources --- hence, if not properly managed, will discard any valid replication information when abruptly terminated. Unfortunately, this is a very likely occurrence, and is largely a function of being unsure about how long each simulation condition/replication will take to complete when distributed across the arrays (some conditions/replications will take longer than others, and it is difficult to be perfectly knowledgeable about this information beforehand).
 
 To avoid this time/resource waste it is **strongly recommended** to add a `max_time` argument to the `control` list (see `help(runArraySimulation)` for supported specifications) which is less than the Slurm specifications. This control flag will halt the `runArraySimulation()` executions early and return only the complete simulation results up to this point. However, this will only work if the argument is *non-trivially less than the allocated Slurm resources*; otherwise, you'll run the risk that the job terminates before the `SimDesign` functions have the chance to store the successfully completed replications. Setting this to around 90-95% of the respective `#SBATCH --time=` input should, however, be sufficient in most cases.
 
@@ -491,6 +494,8 @@ Missed
 2    30                2000               10000
 ```
 
+### Create new conditions for missing replications, and use `rbindDesign()`
+
 Next, build a new simulation structure containing only the missing information components.
 
 ```{r include=FALSE}
@@ -504,6 +509,8 @@ subDesign <- Design[c(1,3),]
 replications_missed <- subset(Missed, select=MISSED_REPLICATIONS)
 ```
 
+Notice that the `Design.ID` terms below are associated with the problematic conditions in the original `Design` object.
+
 ```{r}
 print(subDesign, show.IDs = TRUE)
 replications_missed
@@ -513,7 +520,7 @@ At this point, you can return to the above logic of organizing the simulation sc
 original `Design` object in its construction so that the internal 
 `Design.ID` attributes are properly tracked.
 
-Finally, we now glue on the new `subDesign` information to the original expanded version using `rbindDesign()` with `keep.IDs = TRUE`, though telling the scheduler to only evaluate these new rows in the `#SBATCH --array` specification (this is technically unnecessary, but is conceptually clear and keeps all simulation files and array IDs consistent). 
+Finally, the new `subDesign` information is row-bound to the original expanded version using `rbindDesign()` with `keep.IDs = TRUE` (the default), though telling the scheduler to only evaluate these new rows in the `#SBATCH --array` specification. 
 
 ```{r}
 rc <- 50
@@ -535,9 +542,11 @@ iseed <- 1276149341
 ```
 Again, this approach simply expands the original simulation with 300 array jobs to
 one with 400 array jobs as though the added structure was an intended part of the 
-initial design (which is obviously wasn't, but is organized as such). 
+initial design (which is obviously wasn't, but is organized as such). This also ensure that the random number generation is properly accounted for as the new conditions to evaluate will be uncorrelated with the previous array evaluation jobs.
 
-Finally, in the `.slurm` submission file you no longer want to evaluate the first 1-300 cases,
+### Submit the new job, evaluating only the new conditions
+
+Finally, in your new `.slurm` submission file you no longer want to evaluate the first 1-300 cases,
 as these `.rds` files have already been evaluated, and instead want to change the `--array` line from
 
 ```
@@ -547,7 +556,9 @@ to
 ```
 #SBATCH --array=301-400
 ```
-Submit this job to compute all the missing replication information, which stores these files into the same working directory but with the new information stored as `mysim-301.rds` through `mysim-400.rds`. In this example, there will now be a total of 400 files that have been saved. Once complete, run 
+Submit this job to compute all the missing replication information, which stores these files into the same working directory but with the new information stored as `mysim-301.rds` through `mysim-400.rds`. In this example, there will now be a total of 400 files that have been saved. 
+
+Once complete, run 
 ```{r eval=FALSE}
 # See if any missing still
 SimCollect('mysimfiles', check.only=TRUE)

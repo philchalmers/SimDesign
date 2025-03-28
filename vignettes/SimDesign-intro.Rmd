@@ -31,14 +31,15 @@ par(mar=c(3,3,1,1)+.1)
 
 Whether you are interested in evaluating the performance of a new optimizer or estimation criteria, 
 re-evaluating previous research claims (e.g., ANOVA is 'robust' to violations of normality), 
-determine power rates for an upcoming research proposal, 
-or simply to appease a strange thought in your head about a new statistical idea you heard about, 
+want to determine power rates for an upcoming research proposal (cf. the `Spower` package), 
+or simply wish to appease a strange thought in your head about a new statistical idea you heard about, 
 designing Monte Carlo simulations can be incredibly rewarding and are extremely important to those who are statistically oriented. 
+
 However, organizing simulations can be a challenge, particularly to those new to the topic, 
-where all too often coders resort to the inefficient and error prone strategies (e.g., the dreaded 
+where all too often investigators resort to the inefficient and error prone strategies (e.g., the dreaded 
 "for-loop" strategy, *for*-ever resulting in confusing, error prone, and simulation specific code). 
 The package `SimDesign` is one attempt to fix these and other issues that often arise when designing Monte Carlo simulation experiments, while also providing a templated setup that is designed to support many
-useful features that can be useful when evaluating simulation research.
+useful features that can be useful when evaluating simulation research for novice and advanced users.
 
 Generally speaking, Monte Carlo simulations can be broken into three major components:
 
@@ -61,8 +62,8 @@ options(digits = 2)
 ```
 
 After loading the `SimDesign` package, we begin by defining the required user-constructed functions. To expedite this process,
-a call to `SimFunctions()` will create a template to be filled in, where all the necessary functional arguments have been pre-assigned, and only the body of the functions need to be modified. The documentation of each argument can be found in the respective 
-R help files, however there organization is very simple conceptually.
+a call to `SimFunctions()` can be used to create a suitable template, where all the necessary functional arguments have been pre-assigned and only the body of the functions need to be modified. The documentation of each argument can be found in the respective 
+R help files, however the organization is conceptually simple.
 
 To begin, the following code should be copied and saved to an external source (i.e., text) file.
 
@@ -73,7 +74,7 @@ SimFunctions()
 
 Alternatively, if you are lazy (read: efficient) or just don't like copy-and-pasting, `SimFunctions()` can write the output to a file
 by providing a `filename` argument. The following creates a file (`mysim.R`) containing the simulation
-design/execution and required user-defined functions.
+design/execution and required user-defined functions. For Rstudio users, this will also automatically open up the file in a new coding window.
 
 ```{r eval=FALSE}
 SimDesign::SimFunctions('mysim')
@@ -92,7 +93,7 @@ portions of the code (e.g., one analyse function for fitting and extracting comp
 
 # Simulation: Determine estimator efficiency
 
-As a toy example, let's consider how the following question can be investigated with `SimDesign`: 
+As a toy example, let's consider how the following investigation using `SimDesign`: 
 
 *Question*: How does trimming affect recovering the mean of a distribution? Investigate this using
 different sample sizes with Gaussian and $\chi^2$ distributions. Also, demonstrate the effect of using the 
@@ -102,7 +103,7 @@ median to recover the mean.
 
 First, define the condition combinations that should be investigated. In this case we wish to study
 4 different sample sizes, and use a symmetric and skewed distribution. The use of `createDesign()` is
-extremely helpful here to create a completely crossed-design for each combination (there are 8 in total).
+required to create a completely crossed-design for each combination (there are 8 in total).
 
 ```{r}
 Design <- createDesign(sample_size = c(30, 60, 120, 240), 
@@ -110,11 +111,11 @@ Design <- createDesign(sample_size = c(30, 60, 120, 240),
 Design
 ```
 
-Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where $N=30$ and the distribution should be normal. 
+Each row in `Design` represents a unique condition to be studied in the simulation. In this case, the first condition to be studied comes from row 1, where $N=30$ and the distribution is from the Gaussian/normal family. 
 
 ## Define the functions
 
-We first start by defining the data generation functional component. The only argument accepted by this function is `condition`, which will always be a *single row from the Design data.frame object* of class `data.frame`. Conditions are run sequentially from row 1 to the last row in `Design`. It is also
+We first start by defining the data generation functional component. The only argument accepted by this function is `condition`, which will always be a *single row from the Design data.frame object*. Conditions are run sequentially from row 1 to the last row in `Design`. It is also
 possible to pass a `fixed_objects` object to the function for including fixed sets of population parameters and other conditions, however for this simple simulation this input is not required.
 
 ```{r}
@@ -131,7 +132,7 @@ Generate <- function(condition, fixed_objects) {
 ```
 
 As we can see above, `Generate()` will return a numeric vector of length $N$ containing the data to
-be analysed each with a population mean of 3 (because a $\chi^2$ distribution has a mean equal to its df).
+be analysed, each with a population mean of 3 (because a $\chi^2$ distribution has a mean equal to its df).
 Next, we define the `analyse` component to analyse said data:
 
 ```{r}
@@ -147,7 +148,7 @@ Analyse <- function(condition, dat, fixed_objects) {
 ```
 
 This function accepts the data previously returned from `Generate()` (`dat`), the condition vector previously
-mentioned.
+mentioned, and returns 4 named elements. Note that the element names do not have to be constant across the row-conditions, however it will often make conceptual sense to do so.
 
 At this point, we may conceptually think of the first two functions as being evaluated independently $R$ times to obtain
 $R$ sets of results. In other words, if we wanted the number of replications to be 100, the first two functions
@@ -181,11 +182,13 @@ a rectangular form, such as in a `matrix`, `data.frame`, or `tibble`. Well, you'
 ## Putting it all together
 
 The last stage of the `SimDesign` work-flow is to pass the four defined elements to the `runSimulation()` 
-function which, unsurprisingly given it's name, runs the simulation. There are numerous options available in the 
+function which, unsurprisingly given its name, runs the simulation. 
+
+There are numerous options available in the 
 function, and these should be investigated by reading the `help(runSimulation)` HTML file. Options for 
 performing simulations in parallel, storing/resuming temporary results, debugging functions,
 and so on are available. Below we simply request that each condition be run 1000 times on a 
-single processor, and finally store the results to an object called `results`.
+single processor, and finally store the results to an object called `res`.
 
 ```{r include=FALSE}
 set.seed(1234)
@@ -282,7 +285,7 @@ to obtain average estimates, their associated sampling error, their efficiency, 
 Summarise(condition, results) 
 ```
 
-This process is then repeated for each row in the `Design` object until the entire simulation study
+This process is then repeated for each row `condition` in the `Design` object until the entire simulation study
 is complete. 
 
 Of course, `runSimulation()` does much more than this conceptual outline, which is why it exists. Namely, errors and warnings are controlled and tracked, data is re-drawn when needed, parallel processing is supported, debugging is easier with the `debug` input (or by inserting `browser()` directly), temporary and full results can be saved to external files, the simulation state can be saved/restored, build-in safety features are included, and more. The point, however, is that you as the user *should not be bogged down with the nitty-gritty details of setting up the simulation work-flow/features*; instead, you should be focusing your time on the important generate-analyse-summarise steps, organized in the body of the above functions, that are required to obtain your interesting simulation results. After all, the point designing a computer simulation experiment is to understand the resulting output, not to become a master of all aspects of your select computing language pertaining to object storage, parallel processing, RAM storage, defensive coding, progress reporting, reproducibility, post-processing, ..., ad nauseam. 
