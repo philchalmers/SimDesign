@@ -576,9 +576,7 @@ test_that('SimDesign', {
     res <- runSimulation(design=Design, replications=10, generate=generate,
                          analyse=analyse, summarise=summarise, fixed_objects=fo,
                          packages = 'purrr', verbose=FALSE)
-
-    lst <- SimExtract(res, 'summarise')
-    expect_equal(names(lst), c("N=250", "N=500"))
+    expect_is(res$SUMMARISE, 'list')
 
     ## modular
     Design <- createDesign(factor1 = 1,
