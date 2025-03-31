@@ -158,9 +158,9 @@
 #'   each \code{design} condition. Return of this function, in order
 #'   of increasing complexity, should be: a named numeric vector or \code{data.frame}
 #'   with one row, a \code{matrix} or \code{data.frame} with more than one row, and,
-#'   failing these more atomic types, a named \code{list}. For summary objects that
-#'   are not easily appended to the original \code{design} object use
-#'   \code{\link{SimExtract}} with the option \code{what = 'summarise'}.
+#'   failing these more atomic types, a named \code{list}. When a \code{list} is returned
+#'   the final simulation object will contain a column \code{SUMMARISE} containing the
+#'   summary results for each respective condition
 #'
 #'   Note that unlike the Generate and Analyse
 #'   steps, the Summarise portion is not as important to perfectly organize
@@ -1663,10 +1663,14 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!is.null(Final$REPLICATIONS)) replications <- Final$REPLICATIONS
     Final$SIM_TIME <- Final$ID <- Final$COMPLETED <-
         Final$REPLICATIONS <- Final$REPLICATION <- Final$FATAL_TERMINATION <- NULL
+    SUMMARISE <- if(any(!sapply(summarise_list, is.null))){
+        summarise_list
+    } else rep(NA, nrow(Final))
     Final <- data.frame(Final, FATAL_TERMINATION,
                         REPLICATIONS=replications, SIM_TIME=SIM_TIME,
                         RAM_USED=memory_used,
                         COMPLETED, check.names=FALSE, stringsAsFactors=FALSE)
+    if(!all(is.na(SUMMARISE))) Final$SUMMARISE <- SUMMARISE
     if(all(is.na(Final$FATAL_TERMINATION))) Final$FATAL_TERMINATION <- NULL
     if(is.null(Final$SEED)) Final$SEED <- NA
     if(!is.null(seed)) Final$SEED <- seed
@@ -1718,9 +1722,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       error_seeds=dplyr::as_tibble(error_seeds),
                                       warning_seeds=dplyr::as_tibble(warning_seeds),
                                       stored_results = if(store_results) stored_Results_list else NULL,
-                                      summarise_list=summarise_list, Design.ID=Design.ID)
-    if(!is.null(summarise_list[[1L]]) && verbose)
-        message('Note: To extract Summarise() results use SimExtract(., what = \'summarise\')')
+                                      Design.ID=Design.ID)
     if(dummy_run) Final$dummy_run <- NULL
     class(Final) <- c('SimDesign', class(Final))
     if(!is.null(filename)){ #save file

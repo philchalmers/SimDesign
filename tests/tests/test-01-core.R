@@ -66,9 +66,26 @@ test_that('SimDesign', {
         return(ret)
     }
 
+    mycollect_list <-  function(condition, results, fixed_objects){
+
+        #find results of interest here
+        nms <- c('welch', 'independent')
+        lessthan.05 <- EDR(results[,nms], alpha = .05)
+
+        # return the results that will be appended to the Design input
+        ret <- list(lessthan.05=lessthan.05, something=42)
+        return(ret)
+    }
+
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
+
+    # list in summarise
+    Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect_list,
+                           replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
+    expect_is(Final, 'data.frame')
+    expect_is(Final$SUMMARISE, 'list')
 
     mycollect <-  function(condition, results, fixed_objects){
 

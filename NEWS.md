@@ -1,5 +1,11 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.20
+
+- When `summarise()` returns a `list` this information is now stored in a column
+  `SUMMARISE` in the final simulation object. This replaces the previous
+  `SimExtract()` approach to index the same information
+
 ## Changes in SimDesign 2.19.1
 
 - `print.Design()` gains a `show.IDs` flag to show the internally stored condition

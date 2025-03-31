@@ -75,9 +75,9 @@ analyse the simulated data). See \code{\link{Analyse}} for details}
   each \code{design} condition. Return of this function, in order
   of increasing complexity, should be: a named numeric vector or \code{data.frame}
   with one row, a \code{matrix} or \code{data.frame} with more than one row, and,
-  failing these more atomic types, a named \code{list}. For summary objects that
-  are not easily appended to the original \code{design} object use
-  \code{\link{SimExtract}} with the option \code{what = 'summarise'}.
+  failing these more atomic types, a named \code{list}. When a \code{list} is returned
+  the final simulation object will contain a column \code{SUMMARISE} containing the
+  summary results for each respective condition
 
   Note that unlike the Generate and Analyse
   steps, the Summarise portion is not as important to perfectly organize
