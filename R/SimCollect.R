@@ -203,6 +203,8 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
                           any(select %in% c('ERRORS', 'WARNINGS'))){
             SimExtract(tmp, what=tolower(select))
         } else subset_results(tmp, select=select)
+        if(!is.null(readin[[i]]$SUMMARISE))
+            stop('SUMMARISE column cannot be collapsed automatically', call.=FALSE)
         if(gc){
             rm(tmp)
             gc()
