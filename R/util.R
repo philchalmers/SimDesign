@@ -327,7 +327,7 @@ reduceTable <- function(tab){
 
 }
 
-sim_results_check <- function(sim_results){
+sim_results_check <- function(sim_results, return_list = FALSE){
     if(is(sim_results, 'try-error'))
         stop(c("Summarise() should not throw errors. Message was:\n    ", sim_results), call.=FALSE)
     if(is.data.frame(sim_results) || is.matrix(sim_results)){
@@ -343,6 +343,7 @@ sim_results_check <- function(sim_results){
         if(length(sim_results) > 1L && is.null(names(sim_results)))
             stop("List elements must be named in Summarise() definition",
                  call.=FALSE)
+        if(return_list) return(sim_results)
         ret <- numeric(0)
         attr(ret, 'summarise_list') <- sim_results
         return(ret)

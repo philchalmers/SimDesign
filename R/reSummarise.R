@@ -178,7 +178,7 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
                 stop(sprintf("Results objec \'%s\' threw an error in the summarise() function", files[i]))
         }
 
-        res[[i]] <- try(sim_results_check(summ))
+        res[[i]] <- try(sim_results_check(summ, return_list=TRUE))
         if(is(res[[i]], 'try-error'))
             stop(sprintf("File \'%s\' did not return a valid summarise() output", files[i]))
         if(boot_method != 'none'){
@@ -195,10 +195,29 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
             res[[i]] <- c(res[[i]], CIs)
         }
     }
+    is_list <- FALSE
+    new_sum <- if(!is.list(res[[1]])){
+        do.call(rbind, res)
+    } else {
+        is_list <- TRUE
+        res
+    }
     if(read_files){
-        res <- cbind(dplyr::bind_rows(conditions), do.call(rbind, res))
+        Design <- dplyr::bind_rows(conditions)
+        if(is_list){
+            res <- Design
+            res$SUMMARISE <- new_sum
+        } else {
+            res <- cbind(Design, new_sum)
+        }
         res$REPLICATION <- res$ID <- NULL
-    } else
-        res <- cbind(Design, do.call(rbind, res))
+    } else {
+        if(is_list){
+            res <- Design
+            res$SUMMARISE <- new_sum
+        } else {
+            res <- cbind(Design, new_sum)
+        }
+    }
     dplyr::as_tibble(res)
 }

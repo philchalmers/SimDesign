@@ -87,6 +87,10 @@ test_that('SimDesign', {
     expect_is(Final, 'data.frame')
     expect_is(Final$SUMMARISE, 'list')
 
+    # resummarise list info
+    resum <- reSummarise(mycollect_list, results=Final)
+    expect_is(resum$SUMMARISE, 'list')
+
     mycollect <-  function(condition, results, fixed_objects){
 
         # return the results that will be appended to the Design input
