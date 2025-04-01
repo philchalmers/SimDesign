@@ -205,5 +205,35 @@ test_that('array', {
     setwd('..')
     SimClean(dirs='sim/')
 
+    #####################
+
+    # summary list
+
+    Summarise_list <- function(condition, results, fixed_objects) {
+        list(a=42, b=rnorm(5))
+    }
+
+    # Emulate distribution to nrow(Design5) = 15 independent job arrays
+    sapply(1:nrow(Design5), \(arrayID)
+           runArraySimulation(design=Design5, replications=10,
+                              generate=Generate, analyse=Analyse,
+                              summarise=Summarise_list, iseed=iseed, arrayID=arrayID,
+                              dirname='sim', filename='condition', verbose=FALSE)) |> invisible()
+
+    files <- dir('sim/')
+    expect_true(all(files %in% paste0('condition-', 1:nrow(Design5), '.rds')))
+
+    setwd('sim')
+    # final <- SimCollect(files=dir())
+    so <- summary(final)
+    expect_equal(so$ncores, 15L)
+    results <- SimResults(final)
+
+    expect_equal(final$REPLICATIONS, c(50, 50, 50))
+    expect_equal(length(results), 150)
+
+    setwd('..')
+    SimClean(dirs='sim/')
+
 })
 
