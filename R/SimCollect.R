@@ -203,8 +203,8 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
                           any(select %in% c('ERRORS', 'WARNINGS'))){
             SimExtract(tmp, what=tolower(select))
         } else subset_results(tmp, select=select)
-        if(!is.null(readin[[i]]$SUMMARISE))
-            stop('SUMMARISE column cannot be collapsed automatically', call.=FALSE)
+        # if(!is.null(readin[[i]]$SUMMARISE))
+        #     stop('SUMMARISE column cannot be collapsed automatically', call.=FALSE)
         if(gc){
             rm(tmp)
             gc()
@@ -259,8 +259,9 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
         names(try_errors) <- nms
         names(caught_warnings) <- nmsw
         ret <- readin[[1L]]
-        pick <- sapply(readin[[1L]], is.numeric) & !(colnames(readin[[1]]) %in% design_names)
-        ret[, pick] <- 0
+        pick <- (sapply(readin[[1L]], is.numeric)  |
+                     colnames(readin[[1L]]) == 'SUMMARISE') & !(colnames(readin[[1]]) %in% design_names)
+        ret[, pick & colnames(ret) != 'SUMMARISE'] <- 0
         pick <- pick & !(colnames(readin[[1L]]) %in% c('SIM_TIME', 'REPLICATIONS', 'SEED'))
         if(check.only)
             ret <- ret[,c(design_names, 'REPLICATIONS')]
@@ -282,7 +283,18 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
                     caught_warnings[,match(nmsw, names(caught_warnings))]
             }
             ret$SIM_TIME <- ret$SIM_TIME + readin[[i]]$SIM_TIME
-            ret[ ,pick] <- ret[ ,pick] + weights[i] * readin[[i]][ ,pick]
+            if(!is.null(ret$SUMMARISE)){
+                for(row in 1:length(readin[[i]]$SUMMARISE)){
+                    for(el in 1:length(readin[[i]]$SUMMARISE[[row]])){
+                        # TODO make more robust?
+                        out <- try(readin[[i]]$SUMMARISE[[row]][[el]] * weights[i], silent = TRUE)
+                        if(is(out, 'try-error'))
+                            stop('Element in SUMMARISE could not be marginalized')
+                        if(i == 1) ret$SUMMARISE[[row]][[el]] <- out
+                        else ret$SUMMARISE[[row]][[el]] <- ret$SUMMARISE[[row]][[el]] + out
+                    }
+                }
+            } else ret[ ,pick] <- ret[ ,pick] + weights[i] * readin[[i]][ ,pick]
             if(has_stored_results & i > 1L){
                 attr(ret, 'extra_info')$stored_results <-
                 rbind(attr(ret, 'extra_info')$stored_results,

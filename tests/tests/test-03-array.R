@@ -224,7 +224,7 @@ test_that('array', {
     expect_true(all(files %in% paste0('condition-', 1:nrow(Design5), '.rds')))
 
     setwd('sim')
-    # final <- SimCollect(files=dir())
+    final <- SimCollect(files=dir())
     so <- summary(final)
     expect_equal(so$ncores, 15L)
     results <- SimResults(final)
