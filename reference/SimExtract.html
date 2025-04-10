@@ -67,8 +67,9 @@ final simulation object.</p>
 
 
 <dt id="arg-what">what<a class="anchor" aria-label="anchor" href="#arg-what"></a></dt>
-<dd><p>character indicating what information to extract. Possible inputs
-  include <code>'errors'</code> to return a <code>tibble</code> object containing counts of any
+<dd><p>character vector indicating what information to extract, written in agnostic casing
+  (e.g., <code>'ERRORS'</code> and <code>'errors'</code> are equivalent).</p>
+<p>Possible inputs include <code>'errors'</code>  to return a <code>tibble</code> object containing counts of any
   error messages, <code>'warnings'</code> to return a <code>data.frame</code> object containing
   counts of any warning messages, <code>'seeds'</code>  for the specified random number
   generation seeds,  <code>'Random.seeds'</code> for the complete list of
@@ -77,8 +78,9 @@ final simulation object.</p>
   <code>'error_seeds'</code> and <code>'warning_seeds'</code>
   to extract the associated <code>.Random.seed</code> values associated with the ERROR/WARNING messages,
   <code>'results'</code> to extract the simulation results if the option <code>store_results</code> was passed to
-  <code><a href="runSimulation.html">runSimulation</a></code>, and <code>'filename'</code> and <code>'save_results_dirname'</code> for extracting
-  the saved file/directory name information (if used)</p>
+  <code><a href="runSimulation.html">runSimulation</a></code>, <code>'filename'</code> and <code>'save_results_dirname'</code> for extracting
+  the saved file/directory name information (if used), and <code>'design'</code> to extract the original
+  design object</p>
 <p>Note that <code>'warning_seeds'</code> are not stored automatically in
   simulations and require passing <code>store_warning_seeds = TRUE</code> to <code><a href="runSimulation.html">runSimulation</a></code>.</p></dd>
 
