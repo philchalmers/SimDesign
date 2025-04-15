@@ -224,13 +224,14 @@ print.Design <- function(x, list2char = TRUE, pillar.sigfig = 5, show.IDs = FALS
         x <- cbind(Design.ID=attr(x, 'Design.ID'), x)
         class(x) <- cls
     }
-    classes <- sapply(x, class)
-    if(list2char && any(classes == 'list') && is(x, 'tbl_df'))
+    classes <- lapply(x, class)
+    if(list2char && any(sapply(classes, is.list)) && is(x, 'tbl_df'))
         x <- list2char(x)
-    classes2 <- sapply(x, class)
+    classes2 <- lapply(x, class)
     class(x) <- class(x)[!(class(x) %in% 'Design')]
     old <- options(pillar.sigfig=pillar.sigfig)
-    printDesign(x, whichlist=  which(classes != classes2), ...)
+    pick <- sapply(1:length(classes), \(i) all(classes[[i]] != classes2[[i]]))
+    printDesign(x, whichlist=  which(pick), ...)
     options(old)
     invisible(NULL)
 }
