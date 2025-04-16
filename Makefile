@@ -12,7 +12,6 @@ extra:
 
 move:
 	mv -f source/*.html html/
-	mv -f source_solve/*.html html/
 
 clean:
 	$(RM) -r source/*_cache/;

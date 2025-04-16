@@ -1,3 +1,17 @@
+#' ---
+#' title: "Robust Tests for the Equality of Variances"
+#' author: "Phil Chalmers"
+#' format:
+#'   html:
+#'     theme:
+#'       dark: darkly
+#'       light: spacelab
+#'     number_sections: true
+#'     toc: true
+#'     fontsize: 1.1em
+#' ---
+#'
+
 # Simulation from the article:
 #
 # Robust Tests for the Equality of Variances

@@ -1,6 +1,20 @@
+#' ---
+#' title: "Kang and Cohen's (2007) simulation on information criteria in IRT"
+#' author: "Phil Chalmers"
+#' format:
+#'   html:
+#'     theme:
+#'       dark: darkly
+#'       light: spacelab
+#'     number_sections: true
+#'     toc: true
+#'     fontsize: 1.1em
+#' ---
+#'
+
 #-------------------------------------------------------------------
-## Analogous study of Kang and Cohen's 2007 simulation on information 
-## criteria for selecting between dichotomous IRT models. 
+## Analogous study of Kang and Cohen's 2007 simulation on information
+## criteria for selecting between dichotomous IRT models.
 ##
 ## https://journals.sagepub.com/doi/10.1177/0146621606292213
 #-------------------------------------------------------------------
@@ -22,23 +36,23 @@ source("KangCohen2007_extras.R")
 
 Generate <- function(condition, fixed_objects = NULL) {
     Attach(condition)
-    
+
     # get population generating parameters
     theta <- matrix(rnorm(sample_size, mean=ability_mean))
     pars <- get_parameters(condition, fixed_objects)
-    
+
     # simulate response data (via mirt)
-    dat <- with(pars, 
-                simdata(sample_size, a=a, d=d, guess=c, 
+    dat <- with(pars,
+                simdata(sample_size, a=a, d=d, guess=c,
                         Theta = theta, itemtype = '3PL'))
     dat
 }
 
 Analyse <- function(condition, dat, fixed_objects = NULL) {
     Attach(condition)
-    
+
     if(estimator == 'MML'){
-        
+
         # MML estimation
         fit <- sprintf("Theta = 1-%i
                        START = (1-%i, a1, 1.0)
@@ -46,20 +60,20 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
         mod1PL <- mirt(dat, model=fit, itemtype='2PL', verbose = FALSE)
         mod2PL <- mirt(dat, model=1, itemtype='2PL', verbose = FALSE)
         mod3PL <- mirt(dat, model=1, itemtype='3PL', verbose = FALSE)
-        
+
         stopifnot(extract.mirt(mod1PL, 'converged'))
         stopifnot(extract.mirt(mod2PL, 'converged'))
         stopifnot(extract.mirt(mod3PL, 'converged'))
-        
+
     } else if(estimator == 'MCMC'){
-        
+
         # TODO
-        
+
     }
-    
+
     # just return model comparison information (main purpose of the paper)
     if(estimator == "MML"){
-        ret <- as.data.frame(c(M1PL=anova(mod1PL)[c('AIC', 'BIC')], 
+        ret <- as.data.frame(c(M1PL=anova(mod1PL)[c('AIC', 'BIC')],
                                M2PL=anova(mod2PL)[c('AIC', 'BIC')],
                                M3PL=anova(mod3PL)[c('AIC', 'BIC')],
                                LR12=anova(mod1PL, mod2PL, verbose=FALSE)[2, c('X2', 'p')],
@@ -89,9 +103,9 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 
 #-------------------------------------------------------------------
 
-res <- runSimulation(design=Design, replications=500, generate=Generate, 
+res <- runSimulation(design=Design, replications=500, generate=Generate,
                      analyse=Analyse, summarise=Summarise, fixed_objects=fo,
-                     packages='mirt', parallel=TRUE, max_errors = Inf, 
+                     packages='mirt', parallel=TRUE, max_errors = Inf,
                      filename='KangCohen')
 res
 

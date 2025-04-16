@@ -1,3 +1,17 @@
+#' ---
+#' title: "Nordstokke and Zumbo (2007) variance ratio simulation"
+#' author: "Phil Chalmers"
+#' format:
+#'   html:
+#'     theme:
+#'       dark: darkly
+#'       light: spacelab
+#'     number_sections: true
+#'     toc: true
+#'     fontsize: 1.1em
+#' ---
+#'
+
 #-------------------------------------------------------------------
 
 library(SimDesign)

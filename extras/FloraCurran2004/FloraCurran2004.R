@@ -1,3 +1,17 @@
+#' ---
+#' title: "Flora and Curran (2004) CFA simulation"
+#' author: "Phil Chalmers"
+#' format:
+#'   html:
+#'     theme:
+#'       dark: darkly
+#'       light: spacelab
+#'     number_sections: true
+#'     toc: true
+#'     fontsize: 1.1em
+#' ---
+#'
+
 library(SimDesign)
 
 Design <- createDesign(N = c(100, 200, 500, 1000),

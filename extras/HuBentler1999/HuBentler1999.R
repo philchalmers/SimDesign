@@ -1,11 +1,16 @@
 #' ---
 #' title: "Hu and Bentler (1999) Fit Cut-offs Simulation"
-#' output:
-#'   html_document:
-#'     theme: readable
-#'     code_download: true
+#' author: "Phil Chalmers"
+#' format:
+#'   html:
+#'     theme:
+#'       dark: darkly
+#'       light: spacelab
+#'     number_sections: true
+#'     toc: true
+#'     fontsize: 1.1em
 #' ---
-
+#'
 
 #-------------------------------------------------------------------
 
