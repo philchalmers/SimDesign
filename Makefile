@@ -1,11 +1,11 @@
-all: vignettes vignettes_solve move clean clean_solve commit push
+all: script2qmd vignettes move clean clean_solve commit push
 
 vignettes:
 	Rscript -e "setwd('source');library('rmarkdown');files=dir();for(file in files) render(file)"
 
-vignettes_solve:
-	Rscript -e "setwd('source_solve');library('rmarkdown');files=dir();for(file in files) render(file)"
-
+script2qmd:
+	Rscript -e "setwd('source_solve');files=dir();for(file in files) knitr::spin(file, format='qmd', knit=FALSE)"
+	mv -f source_solve/*.qmd source/
 
 extra:
 	Rscript -e "setwd('extras');dirs=dir();for(d in dirs){setwd(d);files <- dir();source(files[which.min(nchar(files))]); setwd('..')}"

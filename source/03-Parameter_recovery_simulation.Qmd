@@ -1,20 +1,19 @@
-%\VignetteIndexEntry{SimDesign}
-%\VignetteEngine{knitr::knitr}
 ---
-title: "SimDesign"
+title: "Comparing two estimators and how effectively they recover population parameters"
 author: "Phil Chalmers"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    code_download: true
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
 ---
 
 ```{r include=FALSE}
 options(digits = 3)
 ```
-
-# Simulation: Comparing two estimators and how effectively they recover population parameters
 
 Item factor analysis (IFA) is a common method for determine the effectiveness and structure of items in
 psychological tests. Two approaches currently exist: full-information IFA via method from the item response

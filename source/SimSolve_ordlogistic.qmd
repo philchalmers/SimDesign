@@ -1,31 +1,35 @@
-#' ---
-#' title: "Ordinal Logistic Regression Power Analysis"
-#' author: "Phil Chalmers"
-#' format:
-#'   html:
-#'     theme:
-#'       dark: darkly
-#'       light: spacelab
-#'     number_sections: true
-#'     toc: true
-#'     fontsize: 1.1em
-#' ---
-#'
+---
+title: "Ordinal Logistic Regression Power Analysis"
+author: "Phil Chalmers"
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
+---
 
 
+```{r}
 # adopted from Greg Snow's answer on CV:
 #  https://stats.stackexchange.com/questions/22406/power-analysis-for-ordinal-logistic-regression/22410#22410
+```
 
-#' # Step 1: Define design and NA condition to solve
+# Step 1: Define design and NA condition to solve
 
+```{r}
 library(SimDesign)
 
 Design <- createDesign(n = NA,
                        beta0 = -1/2, beta1 = 1/4, beta2 = 1/4)
 Design
+```
 
-#' Step 2 --- Define analyse and summarise functions
+Step 2 --- Define analyse and summarise functions
 
+```{r}
 Analyse <- function(condition, dat, fixed_objects = NULL) {
     Attach(condition)
     x <- runif(n, 0, 10)
@@ -43,9 +47,11 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
     ret <- ERR(results, alpha = .05)  ## empirical rejection rate given alpha
     ret
 }
+```
 
-#' Step 3 --- Optimize over the rows in design
+Step 3 --- Optimize over the rows in design
 
+```{r}
 # find n associated with f(n) = 1 - B = .90 power
 # terminate when prediction CI between [.895, .905]
 solved <- SimSolve(design=Design, b=.9, interval=c(30,300), parallel=TRUE,
@@ -55,5 +61,5 @@ solved
 summary(solved)  # note that prediction CI is within [.895, .905]
 plot(solved)
 plot(solved, type = 'history')
-
+```
 

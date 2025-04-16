@@ -1,20 +1,19 @@
-%\VignetteIndexEntry{SimDesign}
-%\VignetteEngine{knitr::knitr}
 ---
-title: "SimDesign"
+title: "Simulations Involving Missing Data"
 author: "Phil Chalmers"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    code_download: true
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
 ---
 
 ```{r include=FALSE}
 options(digits = 3)
 ```
-
-# Missing Data
 
 For some simulations, the purpose is to determine how well estimators behave in the presence of missing data. Several approaches exist for dealing with missing data including case-wise removal, pairwise removal, full-information maximum-likelihood estimation, and multiple imputation. This simulation is simply a demonstration of how to use the `add_missing()` function to the `generate` step to create different missing data mechanisms.
 

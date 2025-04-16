@@ -1,20 +1,19 @@
-%\VignetteIndexEntry{SimDesign}
-%\VignetteEngine{knitr::knitr}
 ---
-title: "Compromised power analysis"
+title: "Compromised power analysis estimates"
 author: "Phil Chalmers"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    code_download: true
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
 ---
 
 ```{r include=FALSE}
 options(digits = 3)
 ```
-
-# Compromised power analysis
 
 In compromised power analyses, $\alpha$ and $1-\beta$ are computed as functions of the effect size, sample size, model, and most importantly the error probability ratio $q=\frac{\beta}{\alpha}$ to indicate a type of trade-off between Type I and II errors. Setting $\alpha=\beta$ results in a $q=1$, indicating an equal trade-off between Type I and Type II errors, while a $q=4$ indicates that Type II errors are four-times as costly to make than a Type I error (hence, rejecting the null when it is in fact true is worse than retaining the null hypothesis when it is in fact false). This is particularly useful when the sample size required from prior power analysis suggest a much larger size than a researcher can afford.
 

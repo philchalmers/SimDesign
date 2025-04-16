@@ -1,13 +1,14 @@
-%\VignetteIndexEntry{SimDesign}
-%\VignetteEngine{knitr::knitr}
 ---
-title: "SimDesign"
+title: "Comparison of For-Loop and SimDesign code"
 author: "Phil Chalmers"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    code_download: true
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
 ---
 
 ```{r include=FALSE}
@@ -15,8 +16,6 @@ options(digits = 3)
 cache_ <- TRUE
 ```
 
-
-# Comparison of For-Loop and SimDesign code
 
 This is an example taken from the tutorial article: "Conducting Simulation Studies in the
 R Programming Environment" in *Tutorials in Quantitative Methods for Psychology*

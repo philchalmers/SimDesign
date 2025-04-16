@@ -1,21 +1,20 @@
-%\VignetteIndexEntry{SimDesign}
-%\VignetteEngine{knitr::knitr}
 ---
-title: "SimDesign"
+title: "Power-curve estimates"
 author: "Phil Chalmers"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    code_download: true
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
 ---
 
 ```{r include=FALSE}
 options(digits = 3)
 set.seed(1)
 ```
-
-# Power-curve
 
 Power-curves are useful when researchers are interested in the range of power effects when varying different population and sample properties. For instance, researchers may be interested in how power improves as the magnitude of the population mean difference for an independent samples $t$-test increases, or how quickly power improves when increasing the sample size ($N$). The following simulation assumes that the population variances are equal.   
 

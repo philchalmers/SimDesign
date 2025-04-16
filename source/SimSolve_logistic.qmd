@@ -1,30 +1,30 @@
-#' ---
-#' title: "Logistic Regression Power Analysis"
-#' author: "Phil Chalmers"
-#' format:
-#'   html:
-#'     theme:
-#'       dark: darkly
-#'       light: spacelab
-#'     number_sections: true
-#'     toc: true
-#'     fontsize: 1.1em
-#' ---
-#'
+---
+title: "Logistic Regression Power Analysis"
+author: "Phil Chalmers"
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
+---
 
+Adopted from Greg Snow's answer on CV:
+ https://stats.stackexchange.com/questions/35940/simulation-of-logistic-regression-power-analysis-designed-experiments
+# Step 1 --- Define design conditions with NA to solve (in this case, sample size)
 
-#' Adopted from Greg Snow's answer on CV:
-#'  https://stats.stackexchange.com/questions/35940/simulation-of-logistic-regression-power-analysis-designed-experiments
-
-#' # Step 1 --- Define design conditions with NA to solve (in this case, sample size)
-
+```{r}
 library(SimDesign)
 
 Design <- createDesign(n = NA)
 Design
+```
 
-#' # Step 2 --- Define analyse and summarise functions
+# Step 2 --- Define analyse and summarise functions
 
+```{r}
 Analyse <- function(condition, dat, fixed_objects = NULL) {
     Attach(fixed_objects)    # make mydat and beta available
     w <- sample(1:6, condition$n, replace=TRUE, prob=c(3, rep(1,5)))
@@ -56,12 +56,14 @@ fit0 <- glm( resp ~ poly(v1, 2, raw=TRUE)*v2, data=mydat,
              weight=rep(100000,6), family=binomial)
 b0 <- coef(fit0)
 fo <- list(mydat=mydat, beta=b0)
+```
 
+# Step 3 --- find n over the rows in design
 
-#' # Step 3 --- find n over the rows in design
-
+```{r}
 # find n associated with f(n) = 1 - B = .80 power
-#+ eval=FALSE
+```
+```{r eval=FALSE}
 solved <- SimSolve(design=Design, b=.8, interval=c(1000,100000),
                    analyse=Analyse, summarise=Summarise,
                    fixed_objects=fo, maxiter=200, parallel=TRUE)
@@ -71,5 +73,5 @@ plot(solved)
 plot(solved, type = 'history')
 
 # solution take a long time (terminates around 75000)
-
+```
 

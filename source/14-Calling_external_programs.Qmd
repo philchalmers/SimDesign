@@ -1,13 +1,14 @@
-%\VignetteIndexEntry{SimDesign}
-%\VignetteEngine{knitr::knitr}
 ---
-title: "SimDesign"
+title: "Calling external programs in simulation experiment"
 author: "Phil Chalmers"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    code_download: true
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
 ---
 
 ```{r include=FALSE}
@@ -15,8 +16,6 @@ options(digits = 3)
 cache_ <- TRUE
 ```
 
-
-# Calling external programs
 
 Often times, researchers are interested in calling programs that were not written in R specifically, and instead were built using some other language. This may include python, C++, Java, and so on, to perform a specific analysis task. However, in situations where compiled software, the source code for these programs may not be, making it more difficult to link R to these external software. Specifically, software may be distributed in the form of *binary* or otherwise *executable* files, typically with the file endings `.exe`, `.bat`, `.bin`, `.so`, and so on. Front-end users then use these pre-built software to perform their analysis by supplying the required arguments to these external software files. 
 

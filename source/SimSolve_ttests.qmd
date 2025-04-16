@@ -1,28 +1,30 @@
-#' ---
-#' title: "Stochastic root solving of independent samples t-tests example"
-#' author: "Phil Chalmers"
-#' format:
-#'   html:
-#'     theme:
-#'       dark: darkly
-#'       light: spacelab
-#'     number_sections: true
-#'     toc: true
-#'     fontsize: 1.1em
-#' ---
-#'
-#' # Step 1: create design and solve for missing values (NA)
+---
+title: "Stochastic root solving of independent samples t-tests example"
+author: "Phil Chalmers"
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
+---
 
+# Step 1: create design and solve for missing values (NA)
+
+```{r}
 library(SimDesign)
 
 Design <- createDesign(N = NA,
 					   d = c(.2, .5, .8),
 					   sig.level = .05)
 Design    # solve for NA's
+```
 
+# Step 2 --- Define generate, analyse, and summarise functions
 
-#' # Step 2 --- Define generate, analyse, and summarise functions
-
+```{r}
 Generate <- function(condition, fixed_objects = NULL) {
 	Attach(condition)
 	group1 <- rnorm(N)
@@ -44,10 +46,11 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 	ret <- EDR(results, alpha = condition$sig.level)
 	ret
 }
+```
 
+# Step 3 --- Optimize N over the rows in design
 
-#' # Step 3 --- Optimize N over the rows in design
-
+```{r}
 # Initial search between N = [10,500] for each row using the default
 # integer solver (integer = TRUE)
 
@@ -83,14 +86,14 @@ N <- ceiling(solved$N)
 pwr.t.test(d=.2, n=N[1], sig.level = .05)
 pwr.t.test(d=.5, n=N[2], sig.level = .05)
 pwr.t.test(d=.8, n=N[3], sig.level = .05)
+```
 
+# Solving effect sizes
+Similar setup as above, however goal is now to solve d given sample
+size and power inputs (inputs for root no longer required to be an integer)
+# Step 1: Create design and solve for missing NAs (effect size d, in this case)
 
-#' # Solving effect sizes
-
-#' Similar setup as above, however goal is now to solve d given sample
-#' size and power inputs (inputs for root no longer required to be an integer)
-
-#' # Step 1: Create design and solve for missing NAs (effect size d, in this case)
+```{r}
 Design <- createDesign(N = c(100, 50, 25),
 					   d = NA,
 					   sig.level = .05)
@@ -114,8 +117,11 @@ summary(solved)
 plot(solved, 1)
 plot(solved, 2)
 plot(solved, 3)
+```
 
-#' Verify with true power from pwr package.
+Verify with true power from pwr package.
+
+```{r}
 library(pwr)
 pwr.t.test(n=100, power = .8, sig.level = .05)
 pwr.t.test(n=50, power = .8, sig.level = .05)
@@ -125,4 +131,5 @@ pwr.t.test(n=25, power = .8, sig.level = .05)
 pwr.t.test(n=100, d = solved$d[1], sig.level = .05)
 pwr.t.test(n=50, d = solved$d[2], sig.level = .05)
 pwr.t.test(n=25, d = solved$d[3], sig.level = .05)
+```
 

@@ -1,19 +1,18 @@
-#' ---
-#' title: "Muthen and Muthen (2002) CFA example"
-#' author: "Phil Chalmers"
-#' format:
-#'   html:
-#'     theme:
-#'       dark: darkly
-#'       light: spacelab
-#'     number_sections: true
-#'     toc: true
-#'     fontsize: 1.1em
-#' ---
-#'
+---
+title: "Muthen and Muthen (2002) CFA example"
+author: "Phil Chalmers"
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
+---
 
 
-
+```{r}
 #-------------------------------------------------------------------
 
 library(SimDesign)
@@ -76,4 +75,5 @@ solved
 summary(solved)
 plot(solved)
 plot(solved, type = 'history')
+```
 

@@ -1,20 +1,19 @@
-%\VignetteIndexEntry{SimDesign}
-%\VignetteEngine{knitr::knitr}
 ---
-title: "SimDesign"
+title: "Type I error rates and Power rate estimates"
 author: "Phil Chalmers"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    code_download: true
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
 ---
 
 ```{r include=FALSE}
 options(digits = 3)
 ```
-
-# Simulation: Type I error rates and Power rates
 
 Determine the Type I error and Power rates for a t-test when different groups sizes are used. The independent t-test has three main assumptions:
 

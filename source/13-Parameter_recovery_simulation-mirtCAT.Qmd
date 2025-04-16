@@ -1,20 +1,19 @@
-%\VignetteIndexEntry{SimDesign}
-%\VignetteEngine{knitr::knitr}
 ---
-title: "SimDesign"
+title: "Simulation example with mirtCAT"
 author: "Phil Chalmers"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    code_download: true
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
 ---
 
 ```{r include=FALSE}
 options(digits = 3)
 ```
-
-# Simulation with mirtCAT
 
 Example simulation for computerized adaptive testing with the `mirtCAT` package. Use of `SimDesign` for this
 package demonstrates a different type of parallelization, whereby the work is distributed within the `analysis`

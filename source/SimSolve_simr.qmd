@@ -1,17 +1,18 @@
-#' ---
-#' title: "Sample size estimation for multi-level model with simr"
-#' author: "Phil Chalmers"
-#' format:
-#'   html:
-#'     theme:
-#'       dark: darkly
-#'       light: spacelab
-#'     number_sections: true
-#'     toc: true
-#'     fontsize: 1.1em
-#' ---
-#'
+---
+title: "Sample size estimation for multi-level model with simr"
+author: "Phil Chalmers"
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
+---
 
+
+```{r}
 library(SimDesign)
 
 #-------------------------------------------------------------------
@@ -52,5 +53,5 @@ res
 summary(res)
 plot(res)
 plot(res, type = 'history')
-
+```
 

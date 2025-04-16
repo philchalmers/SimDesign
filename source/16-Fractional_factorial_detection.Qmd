@@ -1,13 +1,14 @@
-%\VignetteIndexEntry{SimDesign}
-%\VignetteEngine{knitr::knitr}
 ---
-title: "SimDesign"
+title: "Fully-crossed simulation designs"
 author: "Phil Chalmers"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    code_download: true
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
 ---
 
 ```{r include=FALSE}
@@ -15,8 +16,6 @@ options(digits = 3)
 cache_ <- TRUE
 ```
 
-
-# Fully-crossed simulation designs
 
 In situations where researchers are unaware which variables or combinations of variables influence a given outcome, and when computing the relevant models is very expensive, Monte Carlo simulations can be used. In this case computer-driven experimental designs can be constructed with the goal of detecting (or screening) which factors affect a given outcome variable through statistical inference. Montgomery (2017) describes this class of screening experiments as "... tests in which many factors are considered and the objective is to identify those factors that have significant effects", which are typically relevant in early stages of a given project.
 

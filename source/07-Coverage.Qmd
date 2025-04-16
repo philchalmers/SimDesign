@@ -1,20 +1,19 @@
-%\VignetteIndexEntry{SimDesign}
-%\VignetteEngine{knitr::knitr}
 ---
-title: "SimDesign"
+title: "Coverage estimates"
 author: "Phil Chalmers"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    code_download: true
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
 ---
 
 ```{r include=FALSE}
 options(digits = 3)
 ```
-
-# Coverage
 
 Coverage relates to how well a proposed confidence interval captures the population parameters. For instance, given some desired nominal error rate, say, $\alpha = .05$, does the confidence interval mean based on a t-test capture the population mean across 95% of the time across random samples? Intervals that are too narrow (i.e., less than the nominal coverage rate) are generally termed 'liberal', while those that are too wide (i.e., greater than the nominal coverage rate) are considered 'conservative'. In the example below we evaluate whether the z or t-distribution is a suitable candidate to capture the population mean across different sample sizes. 
 
