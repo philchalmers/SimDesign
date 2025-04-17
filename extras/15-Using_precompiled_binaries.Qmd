@@ -1,13 +1,15 @@
-%\VignetteIndexEntry{SimDesign}
-%\VignetteEngine{knitr::knitr}
 ---
 title: "Pre-compiled Binary Files in Simulation Studies"
 author: "Mark Lai and Phil Chalmers"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    code_download: true
+format:
+  html:
+    theme:
+      dark: darkly
+      light: spacelab
+    number_sections: true
+    toc: true
+    fontsize: 1.1em
+    embed-resources: true
 ---
 
 ```{r include=FALSE}
