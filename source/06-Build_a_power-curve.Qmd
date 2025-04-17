@@ -9,6 +9,7 @@ format:
     number_sections: true
     toc: true
     fontsize: 1.1em
+    embed-resources: true
 ---
 
 ```{r include=FALSE}

@@ -8,6 +8,7 @@ output:
     number_sections: yes
     toc: yes
     code_download: true
+    embed-resources: true
 ---
 
 ```{r include=FALSE}

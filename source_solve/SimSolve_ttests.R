@@ -9,6 +9,7 @@
 #'     number_sections: true
 #'     toc: true
 #'     fontsize: 1.1em
+#'     embed-resources: true
 #' ---
 #'
 #' # Step 1: create design and solve for missing values (NA)
