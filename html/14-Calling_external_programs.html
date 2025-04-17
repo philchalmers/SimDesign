@@ -12,7 +12,7 @@
 <meta name="author" content="Phil Chalmers" />
 
 
-<title>SimDesign</title>
+<title>Calling external programs in simulation experiment</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -355,14 +355,12 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">SimDesign</h1>
+<h1 class="title toc-ignore">Calling external programs in simulation experiment</h1>
 <h4 class="author">Phil Chalmers</h4>
 
 </div>
 
 
-<div id="calling-external-programs" class="section level1">
-<h1>Calling external programs</h1>
 <p>Often times, researchers are interested in calling programs that were not written in R specifically, and instead were built using some other language. This may include python, C++, Java, and so on, to perform a specific analysis task. However, in situations where compiled software, the source code for these programs may not be, making it more difficult to link R to these external software. Specifically, software may be distributed in the form of <em>binary</em> or otherwise <em>executable</em> files, typically with the file endings <code>.exe</code>, <code>.bat</code>, <code>.bin</code>, <code>.so</code>, and so on. Front-end users then use these pre-built software to perform their analysis by supplying the required arguments to these external software files.</p>
 <p>This type of setup unfortunately still occurs quite a bit in the field of statistics, where transparency in code (as in packages such R, python, perl, ect) is not available to the front-end user; only the binary files are. If we are fortunate, the developers of their software will allow code instructions to be supplied via the <em>command-line</em> or <em>terminal</em>, in which case communicating with R should be possible through ad-hoc procedures such as saving and reading text files. This vignette demonstrates this exact work-flow when calling the executable binary from Mplus, a statistical software generally well-known for its estimation capabilities for latent variable models.</p>
 <div id="command-line-and-terminal-calls" class="section level2">
@@ -388,7 +386,6 @@ pre code {
 <li>Once all the analyses are completed, the <code>Analyse()</code> step should also include a <em>file removal</em> portion. This is helpful to save space on the hard-drive, and so that the hard-drive does not fill-up because of the temporarily generated datasets</li>
 </ol>
 <p>The following examples demonstrate this work-flow using a simple simulation form, both with and without parallel execution, and in a form which is platform independent.</p>
-</div>
 </div>
 <div id="mplus-example-single-core" class="section level1">
 <h1>Mplus example (single-core)</h1>

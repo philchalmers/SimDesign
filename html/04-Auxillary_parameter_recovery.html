@@ -12,7 +12,7 @@
 <meta name="author" content="Phil Chalmers" />
 
 
-<title>SimDesign</title>
+<title>Auxillary parameter recovery experiment</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -355,14 +355,12 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">SimDesign</h1>
+<h1 class="title toc-ignore">Auxillary parameter recovery experiment</h1>
 <h4 class="author">Phil Chalmers</h4>
 
 </div>
 
 
-<div id="parameter-recovery-of-secondary-estimates" class="section level1">
-<h1>Parameter recovery of secondary estimates</h1>
 <p>In some situations in may be useful to track information other than the data generated from <code>generate</code>. The example demonstrated in this working file relates to recovering latent trait score (also known as factor scores or abilities) from item response theory models. The focus here is how various test characteristics and estimation methods affect the precision of the <span class="math inline">\(N\)</span> recovered estimates. The difference between this and other simulations is that, in addition to analyzing and tracking the data generated from <code>generate</code>, we also want to track information that was used to generate said data (i.e., the latent trait scores).</p>
 <div id="define-conditions" class="section level3">
 <h3>Define conditions</h3>
@@ -456,26 +454,26 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 <pre class="r"><code>res &lt;- runSimulation(Design, replications = 5, parallel = FALSE, packages = &#39;mirt&#39;,
                      generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
-## Design: 1/6;   Replications: 5;   RAM Used: 192.2 Mb;   Total Time: 0.00s 
+## Design: 1/6;   Replications: 5;   RAM Used: 192.1 Mb;   Total Time: 0.00s 
 ##  Conditions: test_length=10, distribution=normal
 ## 
-## Design: 2/6;   Replications: 5;   RAM Used: 198.8 Mb;   Total Time: 3.63s 
+## Design: 2/6;   Replications: 5;   RAM Used: 198.7 Mb;   Total Time: 3.64s 
 ##  Conditions: test_length=20, distribution=normal
 ## 
-## Design: 3/6;   Replications: 5;   RAM Used: 198.9 Mb;   Total Time: 8.97s 
+## Design: 3/6;   Replications: 5;   RAM Used: 198.8 Mb;   Total Time: 8.98s 
 ##  Conditions: test_length=30, distribution=normal
 ## 
-## Design: 4/6;   Replications: 5;   RAM Used: 199 Mb;   Total Time: 15.47s 
+## Design: 4/6;   Replications: 5;   RAM Used: 198.9 Mb;   Total Time: 15.33s 
 ##  Conditions: test_length=10, distribution=bimodal
 ## 
-## Design: 5/6;   Replications: 5;   RAM Used: 199 Mb;   Total Time: 18.63s 
+## Design: 5/6;   Replications: 5;   RAM Used: 199 Mb;   Total Time: 18.44s 
 ##  Conditions: test_length=20, distribution=bimodal
 ## 
-## Design: 6/6;   Replications: 5;   RAM Used: 199.1 Mb;   Total Time: 24.24s 
+## Design: 6/6;   Replications: 5;   RAM Used: 199 Mb;   Total Time: 23.90s 
 ##  Conditions: test_length=30, distribution=bimodal
 ## </code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 31.09s</code></pre>
+## Simulation complete. Total execution time: 30.63s</code></pre>
 <pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 6 × 15
 ##   test_length distribution   bias_EAP   bias_MAP    bias_ML bias_EAP_bimodal
@@ -495,7 +493,6 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 <p>When the <span class="math inline">\(\theta\)</span> estimates were generate from a normal distribution it appeared that all latent trait estimates were fairly unbiased across random <span class="math inline">\(\theta\)</span> sets, however ML estimation generally provided the highest RMSE (this is reasonable, especially in settings where the Bayesian estimates selected a good prior). As the test length increased, all estimates improved in their overall precision to recover the population parameters, which makes sense given that longer tests provide more information about an individuals’ ability.</p>
 <p>When the distribution of the <span class="math inline">\(\theta\)</span>’s were bimodal the same effect occurred, however for the EAP estimates the overall RMSE was actually slightly <em>less</em> than when the correct prior was provided for the population (the default in <em>mirt</em> is <span class="math inline">\(N(0,1)\)</span>). ML estimates were largely unaffected by altering the distribution, mainly because estimates are not influenced by prior beliefs. Finally, when the prior distribution was the same as the population generating model the EAP estimates demonstrated the lowest RMSEs.</p>
 <p>Note that this analysis was about population effects <em>across all sampled ability levels</em>. In general, these estimators may perform differently for specific abilities (i.e., ML estimation may do much worse as <span class="math inline">\(|\theta|\)</span> becomes larger) and when different priors are used. Depending on what the focus of the Monte Carlo study is, this topic may be of more importance than overall bias and RMSE (see the <em>mirtCAT</em> package and the associated JSS paper for further details on this aspect of IRT models).</p>
-</div>
 </div>
 
 

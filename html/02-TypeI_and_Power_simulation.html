@@ -12,7 +12,7 @@
 <meta name="author" content="Phil Chalmers" />
 
 
-<title>SimDesign</title>
+<title>Type I error rates and Power rate estimates</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -355,14 +355,12 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">SimDesign</h1>
+<h1 class="title toc-ignore">Type I error rates and Power rate estimates</h1>
 <h4 class="author">Phil Chalmers</h4>
 
 </div>
 
 
-<div id="simulation-type-i-error-rates-and-power-rates" class="section level1">
-<h1>Simulation: Type I error rates and Power rates</h1>
 <p>Determine the Type I error and Power rates for a t-test when different groups sizes are used. The independent t-test has three main assumptions:</p>
 <ul>
 <li>independence of observations,</li>
@@ -897,7 +895,6 @@ gg + geom_boxplot() + facet_wrap(~standard_deviation_ratio) + ylim(c(0,0.2)) +
 <p>However, when the second group contained a larger variance <strong>AND</strong> a larger sample size than the first group the detection rates became more conservative. The converse was true when larger variances were paired with smaller sample sizes compared to the first group, where the detection rates became progressively more liberal as both the ratio of sample sizes increase and the ratio of standard deviations increased.</p>
 </div>
 </div>
-</div>
 <div id="an-alternative-approach" class="section level1">
 <h1>An alternative approach</h1>
 <p>The following is the same simulation design as above, however the approach is slightly different. Because the <code>design</code> input object is a <code>data.frame</code> object it is technically possible to include <code>list</code>s as factors as well to be passed to <code>createDesign()</code>, thereby creating a fully-crossed simulation design with the <code>list</code> inputs. This may be preferable to some users if, for example, you would rather explicitly include grouping distributions in <code>design</code> rather than using scalars like 1/2, 1, and 2.</p>
@@ -915,25 +912,25 @@ Design &lt;- createDesign(sample_size = c(30, 60, 90, 120),
                        means = list(c(0, 0), c(0, 0.5)))
 Design</code></pre>
 <pre><code>## # A tibble: 72 × 4
-##    sample_size group_sizes                            standard_deviations means 
-##          &lt;dbl&gt; &lt;lst&gt;                                  &lt;lst&gt;               &lt;lst&gt; 
-##  1          30 [0.333333333333333, 0.666666666666667] [1, 1]              [0, 0]
-##  2          60 [0.333333333333333, 0.666666666666667] [1, 1]              [0, 0]
-##  3          90 [0.333333333333333, 0.666666666666667] [1, 1]              [0, 0]
-##  4         120 [0.333333333333333, 0.666666666666667] [1, 1]              [0, 0]
-##  5          30 [0.5, 0.5]                             [1, 1]              [0, 0]
-##  6          60 [0.5, 0.5]                             [1, 1]              [0, 0]
-##  7          90 [0.5, 0.5]                             [1, 1]              [0, 0]
-##  8         120 [0.5, 0.5]                             [1, 1]              [0, 0]
-##  9          30 [0.666666666666667, 0.333333333333333] [1, 1]              [0, 0]
-## 10          60 [0.666666666666667, 0.333333333333333] [1, 1]              [0, 0]
+##    sample_size group_sizes standard_deviations means    
+##          &lt;dbl&gt; &lt;list&gt;      &lt;list&gt;              &lt;list&gt;   
+##  1          30 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt;
+##  2          60 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt;
+##  3          90 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt;
+##  4         120 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt;
+##  5          30 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt;
+##  6          60 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt;
+##  7          90 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt;
+##  8         120 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt;
+##  9          30 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt;
+## 10          60 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt;
 ## # ℹ 62 more rows</code></pre>
 <p>Notice that there are still 72 conditions to be investigated, however now each element in <code>Design$group_sizes</code>, <code>Design$standard_deviation</code>, and <code>Design$means</code> are vectors rather than a scalars. E.g.,</p>
 <pre class="r"><code>Design[1,]</code></pre>
 <pre><code>## # A tibble: 1 × 4
-##   sample_size group_sizes                            standard_deviations means 
-##         &lt;dbl&gt; &lt;lst&gt;                                  &lt;lst&gt;               &lt;lst&gt; 
-## 1          30 [0.333333333333333, 0.666666666666667] [1, 1]              [0, 0]</code></pre>
+##   sample_size group_sizes standard_deviations means    
+##         &lt;dbl&gt; &lt;list&gt;      &lt;list&gt;              &lt;list&gt;   
+## 1          30 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt;</code></pre>
 <pre class="r"><code>Design$group_sizes[[1]]</code></pre>
 <pre><code>## [1] 0.333 0.667</code></pre>
 <p>Hence, all elements are explicitly defined for each group rather than indexed and manipulated as in the previous example. The remainder of the simulation code is as follows (not that in this case only the <code>Generate()</code> function needed to be modified):</p>
@@ -967,18 +964,18 @@ res &lt;- runSimulation(design = Design, replications = 1000, verbose = FALSE, p
                      generate = Generate, analyse = Analyse, summarise = Summarise)
 res</code></pre>
 <pre><code>## # A tibble: 72 × 10
-##    sample_size group_sizes           standard_deviations means welch independent
-##          &lt;dbl&gt; &lt;lst&gt;                 &lt;lst&gt;               &lt;lst&gt; &lt;dbl&gt;       &lt;dbl
-##  1          30 [0.333333333333333, … [1, 1]              [0, … 0.048       0.047
-##  2          60 [0.333333333333333, … [1, 1]              [0, … 0.052       0.051
-##  3          90 [0.333333333333333, … [1, 1]              [0, … 0.041       0.044
-##  4         120 [0.333333333333333, … [1, 1]              [0, … 0.047       0.051
-##  5          30 [0.5, 0.5]            [1, 1]              [0, … 0.046       0.046
-##  6          60 [0.5, 0.5]            [1, 1]              [0, … 0.041       0.041
-##  7          90 [0.5, 0.5]            [1, 1]              [0, … 0.049       0.049
-##  8         120 [0.5, 0.5]            [1, 1]              [0, … 0.067       0.067
-##  9          30 [0.666666666666667, … [1, 1]              [0, … 0.052       0.061
-## 10          60 [0.666666666666667, … [1, 1]              [0, … 0.056       0.052
+##    sample_size group_sizes standard_deviations means     welch independent
+##          &lt;dbl&gt; &lt;list&gt;      &lt;list&gt;              &lt;list&gt;    &lt;dbl&gt;       &lt;dbl&gt;
+##  1          30 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt; 0.048       0.047
+##  2          60 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt; 0.052       0.051
+##  3          90 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt; 0.041       0.044
+##  4         120 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt; 0.047       0.051
+##  5          30 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt; 0.046       0.046
+##  6          60 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt; 0.041       0.041
+##  7          90 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt; 0.049       0.049
+##  8         120 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt; 0.067       0.067
+##  9          30 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt; 0.052       0.061
+## 10          60 &lt;dbl [2]&gt;   &lt;dbl [2]&gt;           &lt;dbl [2]&gt; 0.056       0.052
 ## # ℹ 62 more rows
 ## # ℹ 4 more variables: REPLICATIONS &lt;dbl&gt;, SIM_TIME &lt;chr&gt;, SEED &lt;int&gt;,
 ## #   COMPLETED &lt;chr&gt;</code></pre>

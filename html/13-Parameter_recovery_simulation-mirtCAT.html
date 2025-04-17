@@ -12,7 +12,7 @@
 <meta name="author" content="Phil Chalmers" />
 
 
-<title>SimDesign</title>
+<title>Simulation example with mirtCAT</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -355,14 +355,12 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">SimDesign</h1>
+<h1 class="title toc-ignore">Simulation example with mirtCAT</h1>
 <h4 class="author">Phil Chalmers</h4>
 
 </div>
 
 
-<div id="simulation-with-mirtcat" class="section level1">
-<h1>Simulation with mirtCAT</h1>
 <p>Example simulation for computerized adaptive testing with the <code>mirtCAT</code> package. Use of <code>SimDesign</code> for this package demonstrates a different type of parallelization, whereby the work is distributed within the <code>analysis</code> step rather than across all replications. This showcases how within-function parallelization can be utilized for code which has already been optimized for simulations, but still needs an ‘outer-shell’ to collect the simulation results. Currently requires <code>mirtCAT</code> version 1.1.4 or higher.</p>
 <p>This study explored two major design conditions: size of the item bank, and the magnitude of the discrimination parameter. Just for didactic purposes the discrimination parameters were all set equal, however real studies will call for more intimate control of the properties of the item bank.</p>
 <pre class="r"><code>library(SimDesign)
@@ -407,19 +405,19 @@ res &lt;- runSimulation(design=Design, replications=1, seed = 1:nrow(Design),
 ## Design: 1/6;   Replications: 1   Total Time: 0.00s 
 ##  Conditions: nitems=100, discrimination=0.5
 ## 
-## Design: 2/6;   Replications: 1   Total Time: 20.77s 
+## Design: 2/6;   Replications: 1   Total Time: 20.12s 
 ##  Conditions: nitems=300, discrimination=0.5
 ## 
-## Design: 3/6;   Replications: 1   Total Time: 37.79s 
+## Design: 3/6;   Replications: 1   Total Time: 36.95s 
 ##  Conditions: nitems=500, discrimination=0.5
 ## 
-## Design: 4/6;   Replications: 1   Total Time: 58.24s 
+## Design: 4/6;   Replications: 1   Total Time: 58.04s 
 ##  Conditions: nitems=100, discrimination=1.5
 ## 
-## Design: 5/6;   Replications: 1   Total Time: 01m 11.83s 
+## Design: 5/6;   Replications: 1   Total Time: 01m 11.51s 
 ##  Conditions: nitems=300, discrimination=1.5
 ## 
-## Design: 6/6;   Replications: 1   Total Time: 01m 28.60s 
+## Design: 6/6;   Replications: 1   Total Time: 01m 28.39s 
 ##  Conditions: nitems=500, discrimination=1.5
 ## </code></pre>
 <pre class="r"><code>dplyr::glimpse(res[1:2])</code></pre>
@@ -857,7 +855,6 @@ meta_stats</code></pre>
 ## 5    300            1.5 -0.000141 0.264            45.2
 ## 6    500            1.5  0.007965 0.263            44.9</code></pre>
 <p>From this simple summary we can see that not only did the conditions with larger discrimination parameters provide better accuracy, but the CATs were actually terminated before the maximum 50 item cutoff.</p>
-</div>
 
 
 

@@ -12,7 +12,7 @@
 <meta name="author" content="Phil Chalmers" />
 
 
-<title>SimDesign</title>
+<title>Simulations Involving Missing Data</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -355,14 +355,12 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">SimDesign</h1>
+<h1 class="title toc-ignore">Simulations Involving Missing Data</h1>
 <h4 class="author">Phil Chalmers</h4>
 
 </div>
 
 
-<div id="missing-data" class="section level1">
-<h1>Missing Data</h1>
 <p>For some simulations, the purpose is to determine how well estimators behave in the presence of missing data. Several approaches exist for dealing with missing data including case-wise removal, pairwise removal, full-information maximum-likelihood estimation, and multiple imputation. This simulation is simply a demonstration of how to use the <code>add_missing()</code> function to the <code>generate</code> step to create different missing data mechanisms.</p>
 <div id="define-the-functions" class="section level3">
 <h3>Define the functions</h3>
@@ -438,7 +436,6 @@ res &lt;- runSimulation(Design, replications=1000, verbose=FALSE, parallel = TRU
 ## # ℹ 6 more variables: RE.pairwise &lt;dbl&gt;, REPLICATIONS &lt;dbl&gt;, SIM_TIME &lt;chr&gt;,
 ## #   SEED &lt;int&gt;, COMPLETED &lt;chr&gt;, WARNINGS &lt;int&gt;</code></pre>
 <p>In this case we can see the effect of MNAR influencing the bias of the correlation values. This particular missing data mechanism causes the observed parameter estimates to be too lower on average, thereby underestimating the true magnitude of the correlation statistics.</p>
-</div>
 </div>
 
 

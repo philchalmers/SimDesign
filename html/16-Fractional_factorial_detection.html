@@ -12,7 +12,7 @@
 <meta name="author" content="Phil Chalmers" />
 
 
-<title>SimDesign</title>
+<title>Fully-crossed simulation designs</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -355,14 +355,12 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">SimDesign</h1>
+<h1 class="title toc-ignore">Fully-crossed simulation designs</h1>
 <h4 class="author">Phil Chalmers</h4>
 
 </div>
 
 
-<div id="fully-crossed-simulation-designs" class="section level1">
-<h1>Fully-crossed simulation designs</h1>
 <p>In situations where researchers are unaware which variables or combinations of variables influence a given outcome, and when computing the relevant models is very expensive, Monte Carlo simulations can be used. In this case computer-driven experimental designs can be constructed with the goal of detecting (or screening) which factors affect a given outcome variable through statistical inference. Montgomery (2017) describes this class of screening experiments as “… tests in which many factors are considered and the objective is to identify those factors that have significant effects”, which are typically relevant in early stages of a given project.</p>
 <p>The most common designs implemented (and indeed, the default used by ) are those which fully-cross the factor variables, leading to a set of <span class="math inline">\(C_1\times C_2 \times \cdots \times C_n\)</span> unique conditions to study. Fully-crossed designs are beneficial when detecting main effects, two-way interactions, and up to <span class="math inline">\(n\)</span>-way interactions (provided that the number of replications per unique condition is greater than 1).</p>
 <p>For example, consider the following fully-crossed experimental design that combines five simulation factors in the context of an independent samples <span class="math inline">\(t\)</span>-test’s ability to detect true mean differences: sample size, the magnitude of the mean difference, group variances, distributions, whether the group sizes were equal or unequal, if the distributions were symmetric/asymmetric.</p>
@@ -756,7 +754,6 @@ summary(mod2)</code></pre>
 <ul>
 <li>Montgomery, Douglas C. (2017). <em>Design and Analysis of Experiments (9th ed.)</em>. John Wiley &amp; Sons, Inc.</li>
 </ul>
-</div>
 </div>
 </div>
 

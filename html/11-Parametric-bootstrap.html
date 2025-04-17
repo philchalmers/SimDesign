@@ -12,7 +12,7 @@
 <meta name="author" content="Phil Chalmers" />
 
 
-<title>SimDesign</title>
+<title>Using SimDesign for Parametric Bootstrapping</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -355,14 +355,12 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">SimDesign</h1>
+<h1 class="title toc-ignore">Using SimDesign for Parametric Bootstrapping</h1>
 <h4 class="author">Phil Chalmers</h4>
 
 </div>
 
 
-<div id="parametric-bootstrap" class="section level1">
-<h1>Parametric bootstrap</h1>
 <p>The parametric bootstrap is a type of Monte Carlo simulation method where data are repeatedly generated and analysed based on characteristics from the original data and a specified population of interest. The reason it may be used is to investigate the sampling distribution of a statistic when no known sampling for exists, but a population generating function is assumed to be known a priori. In this document, we demonstrate how <code>SimDesign</code> can be used for parametric bootstrapping as well, thereby becoming useful when used within R functions designed for analyses.</p>
 <div id="example" class="section level2">
 <h2>Example</h2>
@@ -413,7 +411,6 @@ median_parametric_boot(dat, median_diff, cl=cl, parallel=TRUE)</code></pre>
 <pre><code>##   p.N  p.V1 
 ## 1.000 0.935</code></pre>
 <p>The general benefits of <code>SimDesign</code> becomes immediately useful here as well. Consider situations where data must be redrawn during the parametric bootstrap simulation scheme, or when warning messages appear that may suggest issues with the simulation. R’s <code>parallel</code> packages by default will either error-out when <code>stop()</code> messages are thrown (which must be dealt with manually within the user’s code), and information such as <code>warning()</code>s will generally disappear in the output when distributed across many cores (potentially influencing the reliability of the results in unexpected ways). However, as with running general Monte Carlo simulations, <code>runSimulation()</code> will collect all this information in a safe and efficient way, thereby providing the user a safety-blanket when implementing their own parametric bootstrap experiments.</p>
-</div>
 </div>
 
 

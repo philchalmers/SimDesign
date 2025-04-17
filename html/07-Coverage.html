@@ -12,7 +12,7 @@
 <meta name="author" content="Phil Chalmers" />
 
 
-<title>SimDesign</title>
+<title>Coverage estimates</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -355,14 +355,12 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">SimDesign</h1>
+<h1 class="title toc-ignore">Coverage estimates</h1>
 <h4 class="author">Phil Chalmers</h4>
 
 </div>
 
 
-<div id="coverage" class="section level1">
-<h1>Coverage</h1>
 <p>Coverage relates to how well a proposed confidence interval captures the population parameters. For instance, given some desired nominal error rate, say, <span class="math inline">\(\alpha = .05\)</span>, does the confidence interval mean based on a t-test capture the population mean across 95% of the time across random samples? Intervals that are too narrow (i.e., less than the nominal coverage rate) are generally termed ‘liberal’, while those that are too wide (i.e., greater than the nominal coverage rate) are considered ‘conservative’. In the example below we evaluate whether the z or t-distribution is a suitable candidate to capture the population mean across different sample sizes.</p>
 <div id="define-the-functions" class="section level3">
 <h3>Define the functions</h3>
@@ -412,15 +410,15 @@ res &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel = TR
 <pre><code>## # A tibble: 9 × 8
 ##      mu sample_size   t_CI   z_CI REPLICATIONS SIM_TIME       SEED COMPLETED    
 ##   &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;        
-## 1     0          10 0.9531 0.9221        10000 0.52s     488349520 Thu Dec 12 2…
-## 2     5          10 0.9466 0.9169        10000 0.48s     469344150 Thu Dec 12 2…
-## 3    10          10 0.9503 0.9173        10000 0.53s    1550099436 Thu Dec 12 2…
-## 4     0          20 0.9481 0.9325        10000 0.41s      40778633 Thu Dec 12 2…
-## 5     5          20 0.9527 0.9373        10000 0.46s     713327526 Thu Dec 12 2…
-## 6    10          20 0.9523 0.9375        10000 0.36s     831490948 Thu Dec 12 2…
-## 7     0          30 0.9494 0.9408        10000 0.40s    1214377063 Thu Dec 12 2…
-## 8     5          30 0.9476 0.9381        10000 0.43s    1255528026 Thu Dec 12 2…
-## 9    10          30 0.9488 0.9392        10000 0.40s    1229276239 Thu Dec 12 2…</code></pre>
+## 1     0          10 0.9531 0.9221        10000 0.56s     488349520 Wed Apr 16 1…
+## 2     5          10 0.9466 0.9169        10000 0.47s     469344150 Wed Apr 16 1…
+## 3    10          10 0.9503 0.9173        10000 0.56s    1550099436 Wed Apr 16 1…
+## 4     0          20 0.9481 0.9325        10000 0.45s      40778633 Wed Apr 16 1…
+## 5     5          20 0.9527 0.9373        10000 0.50s     713327526 Wed Apr 16 1…
+## 6    10          20 0.9523 0.9375        10000 0.45s     831490948 Wed Apr 16 1…
+## 7     0          30 0.9494 0.9408        10000 0.41s    1214377063 Wed Apr 16 1…
+## 8     5          30 0.9476 0.9381        10000 0.45s    1255528026 Wed Apr 16 1…
+## 9    10          30 0.9488 0.9392        10000 0.41s    1229276239 Wed Apr 16 1…</code></pre>
 <p>From these results it’s clear to see that the t-distribution gives very good coverage rates across all conditions. However, the z-distribution CI is too liberal in the smaller sample sizes, and gives an interval that does not contain the population mean as often as desired. Around a sample size of 30 we can see that the two distributions behave reasonably well.</p>
 <p>Note that the <code>ECR()</code> function was used within the <code>Analyse()</code> function rather than in <code>Summarise()</code>. When only the three values are supplied (CIs + population value) then <code>ECR()</code> will return either a 1 if the population value was within the CI or 0 if it was not. Hence, in the <code>Summarise()</code> function all that is required to obtain the coverage estimate is to find the mean of these 1’s and 0’s. The next section demonstrates how to use <code>ECR()</code> in the <code>Summarise()</code> instead, and it’s really a matter of preference which style you prefer.</p>
 </div>
@@ -469,7 +467,6 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 res &lt;- runSimulation(Design, replications=10000, verbose=FALSE, parallel = FALSE,
                      generate=Generate, analyse=Analyse, summarise=Summarise)</code></pre>
 <p>Many secondary function in <code>SimDesign</code> have this type of flexibility, therefore it’s generally useful to refer to the documentation to help think about easier ways to summarise your results.</p>
-</div>
 </div>
 
 

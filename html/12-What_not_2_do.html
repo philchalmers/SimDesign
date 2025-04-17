@@ -12,7 +12,7 @@
 <meta name="author" content="Phil Chalmers" />
 
 
-<title>SimDesign</title>
+<title>Comparison of For-Loop and SimDesign code</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -355,17 +355,14 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">SimDesign</h1>
+<h1 class="title toc-ignore">Comparison of For-Loop and SimDesign code</h1>
 <h4 class="author">Phil Chalmers</h4>
 
 </div>
 
 
-<div id="comparison-of-for-loop-and-simdesign-code" class="section level1">
-<h1>Comparison of For-Loop and SimDesign code</h1>
 <p>This is an example taken from the tutorial article: “Conducting Simulation Studies in the R Programming Environment” in <em>Tutorials in Quantitative Methods for Psychology</em> (2013, Vol. 9(2), p. 43-60) by Kevin A. Hallgren. While the majority of the article seems to be good at explaining the mechanics of performing Monte Carlo simulations in R, the implementation unfortunately used the <code>for</code> loop strategy, and demonstrates very nicely why <code>for</code> loops make coding simulations very difficult to read, modify, and debug.</p>
 <p>The following is the code from Appendix A regarding how Sobel’s test for mediation performs. However, to save space the comments have been removed. As well, the original code itself actually contained typographical errors (a phenomenon Sigal and Chalmers, 2016, argued happens quite often with the <code>for</code>-loop strategy), which I have commented on below. For further details about the simulation, see the original article.</p>
-</div>
 <div id="simulation-using-for-loops" class="section level1">
 <h1>Simulation Using For-Loops</h1>
 <pre class="r"><code>N_list = c(100, 300)
@@ -414,7 +411,7 @@ d = data.frame(d)
 # the following line was added to determine the computation time
 time1 &lt;- Sys.time()
 time1 - time0</code></pre>
-<pre><code>## Time difference of 5.87 mins</code></pre>
+<pre><code>## Time difference of 5.93 mins</code></pre>
 <pre class="r"><code>head(d)</code></pre>
 <pre><code>##   iteration    a    b   cp   N model Sobel_z
 ## 1         1 -0.3 -0.3 -0.2 100     1  1.7836
@@ -481,200 +478,200 @@ Summarise &lt;- function(condition, results, fixed_objects = NULL) {
 res &lt;- runSimulation(design=Design, replications=1000, generate=Generate, 
                      analyse=Analyse, summarise=Summarise)</code></pre>
 <pre><code>## 
-## Design: 1/54;   Replications: 1000;   RAM Used: 214 Mb;   Total Time: 0.00s 
+## Design: 1/54;   Replications: 1000;   RAM Used: 213.8 Mb;   Total Time: 0.00s 
 ##  Conditions: N=100, a=-0.3, b=-0.3, cp=-0.2
 ## 
-## Design: 2/54;   Replications: 1000;   RAM Used: 214 Mb;   Total Time: 5.62s 
+## Design: 2/54;   Replications: 1000;   RAM Used: 213.8 Mb;   Total Time: 5.86s 
 ##  Conditions: N=300, a=-0.3, b=-0.3, cp=-0.2
 ## 
-## Design: 3/54;   Replications: 1000;   RAM Used: 214 Mb;   Total Time: 11.70s 
+## Design: 3/54;   Replications: 1000;   RAM Used: 213.9 Mb;   Total Time: 11.93s 
 ##  Conditions: N=100, a=0, b=-0.3, cp=-0.2
 ## 
-## Design: 4/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 17.30s 
+## Design: 4/54;   Replications: 1000;   RAM Used: 213.9 Mb;   Total Time: 18.01s 
 ##  Conditions: N=300, a=0, b=-0.3, cp=-0.2
 ## 
-## Design: 5/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 23.17s 
+## Design: 5/54;   Replications: 1000;   RAM Used: 213.9 Mb;   Total Time: 24.06s 
 ##  Conditions: N=100, a=0.3, b=-0.3, cp=-0.2
 ## 
-## Design: 6/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 28.83s 
+## Design: 6/54;   Replications: 1000;   RAM Used: 213.9 Mb;   Total Time: 29.92s 
 ##  Conditions: N=300, a=0.3, b=-0.3, cp=-0.2
 ## 
-## Design: 7/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 34.71s 
+## Design: 7/54;   Replications: 1000;   RAM Used: 213.9 Mb;   Total Time: 35.95s 
 ##  Conditions: N=100, a=-0.3, b=0, cp=-0.2
 ## 
-## Design: 8/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 40.33s 
+## Design: 8/54;   Replications: 1000;   RAM Used: 213.9 Mb;   Total Time: 41.82s 
 ##  Conditions: N=300, a=-0.3, b=0, cp=-0.2
 ## 
-## Design: 9/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 46.21s 
+## Design: 9/54;   Replications: 1000;   RAM Used: 214 Mb;   Total Time: 47.87s 
 ##  Conditions: N=100, a=0, b=0, cp=-0.2
 ## 
-## Design: 10/54;   Replications: 1000;   RAM Used: 214.2 Mb;   Total Time: 52.09s 
+## Design: 10/54;   Replications: 1000;   RAM Used: 214 Mb;   Total Time: 53.93s 
 ##  Conditions: N=300, a=0, b=0, cp=-0.2
 ## 
-## Design: 11/54;   Replications: 1000;   RAM Used: 214.2 Mb;   Total Time: 57.98s 
+## Design: 11/54;   Replications: 1000;   RAM Used: 214 Mb;   Total Time: 59.99s 
 ##  Conditions: N=100, a=0.3, b=0, cp=-0.2
 ## 
-## Design: 12/54;   Replications: 1000;   RAM Used: 214.2 Mb;   Total Time: 01m 3.64s 
+## Design: 12/54;   Replications: 1000;   RAM Used: 214 Mb;   Total Time: 01m 5.83s 
 ##  Conditions: N=300, a=0.3, b=0, cp=-0.2
 ## 
-## Design: 13/54;   Replications: 1000;   RAM Used: 214.2 Mb;   Total Time: 01m 9.48s 
+## Design: 13/54;   Replications: 1000;   RAM Used: 214 Mb;   Total Time: 01m 11.88s 
 ##  Conditions: N=100, a=-0.3, b=0.3, cp=-0.2
 ## 
-## Design: 14/54;   Replications: 1000;   RAM Used: 214.2 Mb;   Total Time: 01m 15.15s 
+## Design: 14/54;   Replications: 1000;   RAM Used: 214 Mb;   Total Time: 01m 17.71s 
 ##  Conditions: N=300, a=-0.3, b=0.3, cp=-0.2
 ## 
-## Design: 15/54;   Replications: 1000;   RAM Used: 214.2 Mb;   Total Time: 01m 20.94s 
+## Design: 15/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 01m 23.76s 
 ##  Conditions: N=100, a=0, b=0.3, cp=-0.2
 ## 
-## Design: 16/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 01m 26.78s 
+## Design: 16/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 01m 29.82s 
 ##  Conditions: N=300, a=0, b=0.3, cp=-0.2
 ## 
-## Design: 17/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 01m 32.62s 
+## Design: 17/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 01m 35.84s 
 ##  Conditions: N=100, a=0.3, b=0.3, cp=-0.2
 ## 
-## Design: 18/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 01m 38.19s 
+## Design: 18/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 01m 41.68s 
 ##  Conditions: N=300, a=0.3, b=0.3, cp=-0.2
 ## 
-## Design: 19/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 01m 44.02s 
+## Design: 19/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 01m 47.71s 
 ##  Conditions: N=100, a=-0.3, b=-0.3, cp=0
 ## 
-## Design: 20/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 01m 49.71s 
+## Design: 20/54;   Replications: 1000;   RAM Used: 214.1 Mb;   Total Time: 01m 53.56s 
 ##  Conditions: N=300, a=-0.3, b=-0.3, cp=0
 ## 
-## Design: 21/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 01m 55.56s 
+## Design: 21/54;   Replications: 1000;   RAM Used: 214.2 Mb;   Total Time: 01m 59.60s 
 ##  Conditions: N=100, a=0, b=-0.3, cp=0
 ## 
-## Design: 22/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 02m 1.39s 
+## Design: 22/54;   Replications: 1000;   RAM Used: 214.2 Mb;   Total Time: 02m 5.66s 
 ##  Conditions: N=300, a=0, b=-0.3, cp=0
 ## 
-## Design: 23/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 02m 7.19s 
+## Design: 23/54;   Replications: 1000;   RAM Used: 214.2 Mb;   Total Time: 02m 11.68s 
 ##  Conditions: N=100, a=0.3, b=-0.3, cp=0
 ## 
-## Design: 24/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 02m 12.74s 
+## Design: 24/54;   Replications: 1000;   RAM Used: 214.2 Mb;   Total Time: 02m 17.54s 
 ##  Conditions: N=300, a=0.3, b=-0.3, cp=0
 ## 
-## Design: 25/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 02m 18.62s 
+## Design: 25/54;   Replications: 1000;   RAM Used: 214.2 Mb;   Total Time: 02m 23.60s 
 ##  Conditions: N=100, a=-0.3, b=0, cp=0
 ## 
-## Design: 26/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 02m 24.22s 
+## Design: 26/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 02m 29.47s 
 ##  Conditions: N=300, a=-0.3, b=0, cp=0
 ## 
-## Design: 27/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 02m 30.07s 
+## Design: 27/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 02m 35.52s 
 ##  Conditions: N=100, a=0, b=0, cp=0
 ## 
-## Design: 28/54;   Replications: 1000;   RAM Used: 214.5 Mb;   Total Time: 02m 35.70s 
+## Design: 28/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 02m 41.38s 
 ##  Conditions: N=300, a=0, b=0, cp=0
 ## 
-## Design: 29/54;   Replications: 1000;   RAM Used: 214.5 Mb;   Total Time: 02m 41.77s 
+## Design: 29/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 02m 47.64s 
 ##  Conditions: N=100, a=0.3, b=0, cp=0
 ## 
-## Design: 30/54;   Replications: 1000;   RAM Used: 214.5 Mb;   Total Time: 02m 47.46s 
+## Design: 30/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 02m 53.50s 
 ##  Conditions: N=300, a=0.3, b=0, cp=0
 ## 
-## Design: 31/54;   Replications: 1000;   RAM Used: 214.5 Mb;   Total Time: 02m 53.28s 
+## Design: 31/54;   Replications: 1000;   RAM Used: 214.3 Mb;   Total Time: 02m 59.58s 
 ##  Conditions: N=100, a=-0.3, b=0.3, cp=0
 ## 
-## Design: 32/54;   Replications: 1000;   RAM Used: 214.5 Mb;   Total Time: 02m 58.93s 
+## Design: 32/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 03m 5.45s 
 ##  Conditions: N=300, a=-0.3, b=0.3, cp=0
 ## 
-## Design: 33/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 03m 4.75s 
+## Design: 33/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 03m 11.53s 
 ##  Conditions: N=100, a=0, b=0.3, cp=0
 ## 
-## Design: 34/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 03m 10.41s 
+## Design: 34/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 03m 17.39s 
 ##  Conditions: N=300, a=0, b=0.3, cp=0
 ## 
-## Design: 35/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 03m 16.50s 
+## Design: 35/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 03m 23.66s 
 ##  Conditions: N=100, a=0.3, b=0.3, cp=0
 ## 
-## Design: 36/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 03m 22.17s 
+## Design: 36/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 03m 29.53s 
 ##  Conditions: N=300, a=0.3, b=0.3, cp=0
 ## 
-## Design: 37/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 03m 28.05s 
+## Design: 37/54;   Replications: 1000;   RAM Used: 214.4 Mb;   Total Time: 03m 35.58s 
 ##  Conditions: N=100, a=-0.3, b=-0.3, cp=0.2
 ## 
-## Design: 38/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 03m 33.71s 
+## Design: 38/54;   Replications: 1000;   RAM Used: 214.5 Mb;   Total Time: 03m 41.44s 
 ##  Conditions: N=300, a=-0.3, b=-0.3, cp=0.2
 ## 
-## Design: 39/54;   Replications: 1000;   RAM Used: 214.7 Mb;   Total Time: 03m 39.57s 
+## Design: 39/54;   Replications: 1000;   RAM Used: 214.5 Mb;   Total Time: 03m 47.55s 
 ##  Conditions: N=100, a=0, b=-0.3, cp=0.2
 ## 
-## Design: 40/54;   Replications: 1000;   RAM Used: 214.7 Mb;   Total Time: 03m 45.21s 
+## Design: 40/54;   Replications: 1000;   RAM Used: 214.5 Mb;   Total Time: 03m 53.44s 
 ##  Conditions: N=300, a=0, b=-0.3, cp=0.2
 ## 
-## Design: 41/54;   Replications: 1000;   RAM Used: 214.7 Mb;   Total Time: 03m 51.33s 
+## Design: 41/54;   Replications: 1000;   RAM Used: 214.5 Mb;   Total Time: 03m 59.71s 
 ##  Conditions: N=100, a=0.3, b=-0.3, cp=0.2
 ## 
-## Design: 42/54;   Replications: 1000;   RAM Used: 214.7 Mb;   Total Time: 03m 57.08s 
+## Design: 42/54;   Replications: 1000;   RAM Used: 214.5 Mb;   Total Time: 04m 5.55s 
 ##  Conditions: N=300, a=0.3, b=-0.3, cp=0.2
 ## 
-## Design: 43/54;   Replications: 1000;   RAM Used: 214.7 Mb;   Total Time: 04m 2.89s 
+## Design: 43/54;   Replications: 1000;   RAM Used: 214.5 Mb;   Total Time: 04m 11.62s 
 ##  Conditions: N=100, a=-0.3, b=0, cp=0.2
 ## 
-## Design: 44/54;   Replications: 1000;   RAM Used: 214.7 Mb;   Total Time: 04m 8.52s 
+## Design: 44/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 04m 17.49s 
 ##  Conditions: N=300, a=-0.3, b=0, cp=0.2
 ## 
-## Design: 45/54;   Replications: 1000;   RAM Used: 214.8 Mb;   Total Time: 04m 14.41s 
+## Design: 45/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 04m 23.55s 
 ##  Conditions: N=100, a=0, b=0, cp=0.2
 ## 
-## Design: 46/54;   Replications: 1000;   RAM Used: 214.8 Mb;   Total Time: 04m 20.10s 
+## Design: 46/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 04m 29.41s 
 ##  Conditions: N=300, a=0, b=0, cp=0.2
 ## 
-## Design: 47/54;   Replications: 1000;   RAM Used: 214.8 Mb;   Total Time: 04m 25.93s 
+## Design: 47/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 04m 35.46s 
 ##  Conditions: N=100, a=0.3, b=0, cp=0.2
 ## 
-## Design: 48/54;   Replications: 1000;   RAM Used: 214.8 Mb;   Total Time: 04m 31.86s 
+## Design: 48/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 04m 41.54s 
 ##  Conditions: N=300, a=0.3, b=0, cp=0.2
 ## 
-## Design: 49/54;   Replications: 1000;   RAM Used: 214.8 Mb;   Total Time: 04m 37.73s 
+## Design: 49/54;   Replications: 1000;   RAM Used: 214.6 Mb;   Total Time: 04m 47.78s 
 ##  Conditions: N=100, a=-0.3, b=0.3, cp=0.2
 ## 
-## Design: 50/54;   Replications: 1000;   RAM Used: 214.8 Mb;   Total Time: 04m 43.41s 
+## Design: 50/54;   Replications: 1000;   RAM Used: 214.7 Mb;   Total Time: 04m 53.65s 
 ##  Conditions: N=300, a=-0.3, b=0.3, cp=0.2
 ## 
-## Design: 51/54;   Replications: 1000;   RAM Used: 214.9 Mb;   Total Time: 04m 49.29s 
+## Design: 51/54;   Replications: 1000;   RAM Used: 214.7 Mb;   Total Time: 04m 59.67s 
 ##  Conditions: N=100, a=0, b=0.3, cp=0.2
 ## 
-## Design: 52/54;   Replications: 1000;   RAM Used: 214.9 Mb;   Total Time: 04m 54.93s 
+## Design: 52/54;   Replications: 1000;   RAM Used: 214.7 Mb;   Total Time: 05m 5.54s 
 ##  Conditions: N=300, a=0, b=0.3, cp=0.2
 ## 
-## Design: 53/54;   Replications: 1000;   RAM Used: 214.9 Mb;   Total Time: 05m 0.82s 
+## Design: 53/54;   Replications: 1000;   RAM Used: 214.7 Mb;   Total Time: 05m 11.60s 
 ##  Conditions: N=100, a=0.3, b=0.3, cp=0.2
 ## 
-## Design: 54/54;   Replications: 1000;   RAM Used: 214.9 Mb;   Total Time: 05m 6.69s 
+## Design: 54/54;   Replications: 1000;   RAM Used: 214.7 Mb;   Total Time: 05m 17.69s 
 ##  Conditions: N=300, a=0.3, b=0.3, cp=0.2
 ## </code></pre>
 <pre><code>## 
-## Simulation complete. Total execution time: 05m 12.54s</code></pre>
+## Simulation complete. Total execution time: 05m 23.74s</code></pre>
 <pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 54 × 11
 ##        N     a     b    cp sobel sobel_incorrect REPLICATIONS SIM_TIME RAM_USED
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;   
-##  1   100  -0.3  -0.3  -0.2 0.487           0.063         1000 5.62s    214 Mb  
-##  2   300  -0.3  -0.3  -0.2 0.995           0.382         1000 6.09s    214 Mb  
-##  3   100   0    -0.3  -0.2 0.012           0.194         1000 5.60s    214.1 Mb
-##  4   300   0    -0.3  -0.2 0.026           0.866         1000 5.87s    214.1 Mb
-##  5   100   0.3  -0.3  -0.2 0.501           0.451         1000 5.66s    214.1 Mb
-##  6   300   0.3  -0.3  -0.2 0.997           0.993         1000 5.88s    214.1 Mb
-##  7   100  -0.3   0    -0.2 0.014           0.003         1000 5.62s    214.1 Mb
-##  8   300  -0.3   0    -0.2 0.034           0.018         1000 5.88s    214.1 Mb
-##  9   100   0     0    -0.2 0               0.002         1000 5.89s    214.2 Mb
-## 10   300   0     0    -0.2 0               0.013         1000 5.89s    214.2 Mb
+##  1   100  -0.3  -0.3  -0.2 0.487           0.063         1000 5.86s    213.8 Mb
+##  2   300  -0.3  -0.3  -0.2 0.995           0.382         1000 6.07s    213.9 Mb
+##  3   100   0    -0.3  -0.2 0.012           0.194         1000 6.08s    213.9 Mb
+##  4   300   0    -0.3  -0.2 0.026           0.866         1000 6.05s    213.9 Mb
+##  5   100   0.3  -0.3  -0.2 0.501           0.451         1000 5.85s    213.9 Mb
+##  6   300   0.3  -0.3  -0.2 0.997           0.993         1000 6.04s    213.9 Mb
+##  7   100  -0.3   0    -0.2 0.014           0.003         1000 5.86s    213.9 Mb
+##  8   300  -0.3   0    -0.2 0.034           0.018         1000 6.05s    214 Mb  
+##  9   100   0     0    -0.2 0               0.002         1000 6.06s    214 Mb  
+## 10   300   0     0    -0.2 0               0.013         1000 6.06s    214 Mb  
 ## # ℹ 44 more rows
 ## # ℹ 2 more variables: SEED &lt;int&gt;, COMPLETED &lt;chr&gt;</code></pre>
 <pre class="r"><code>res</code></pre>
 <pre><code>## # A tibble: 54 × 11
 ##        N     a     b    cp sobel sobel_incorrect REPLICATIONS SIM_TIME RAM_USED
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;   
-##  1   100  -0.3  -0.3  -0.2 0.487           0.063         1000 5.62s    214 Mb  
-##  2   300  -0.3  -0.3  -0.2 0.995           0.382         1000 6.09s    214 Mb  
-##  3   100   0    -0.3  -0.2 0.012           0.194         1000 5.60s    214.1 Mb
-##  4   300   0    -0.3  -0.2 0.026           0.866         1000 5.87s    214.1 Mb
-##  5   100   0.3  -0.3  -0.2 0.501           0.451         1000 5.66s    214.1 Mb
-##  6   300   0.3  -0.3  -0.2 0.997           0.993         1000 5.88s    214.1 Mb
-##  7   100  -0.3   0    -0.2 0.014           0.003         1000 5.62s    214.1 Mb
-##  8   300  -0.3   0    -0.2 0.034           0.018         1000 5.88s    214.1 Mb
-##  9   100   0     0    -0.2 0               0.002         1000 5.89s    214.2 Mb
-## 10   300   0     0    -0.2 0               0.013         1000 5.89s    214.2 Mb
+##  1   100  -0.3  -0.3  -0.2 0.487           0.063         1000 5.86s    213.8 Mb
+##  2   300  -0.3  -0.3  -0.2 0.995           0.382         1000 6.07s    213.9 Mb
+##  3   100   0    -0.3  -0.2 0.012           0.194         1000 6.08s    213.9 Mb
+##  4   300   0    -0.3  -0.2 0.026           0.866         1000 6.05s    213.9 Mb
+##  5   100   0.3  -0.3  -0.2 0.501           0.451         1000 5.85s    213.9 Mb
+##  6   300   0.3  -0.3  -0.2 0.997           0.993         1000 6.04s    213.9 Mb
+##  7   100  -0.3   0    -0.2 0.014           0.003         1000 5.86s    213.9 Mb
+##  8   300  -0.3   0    -0.2 0.034           0.018         1000 6.05s    214 Mb  
+##  9   100   0     0    -0.2 0               0.002         1000 6.06s    214 Mb  
+## 10   300   0     0    -0.2 0               0.013         1000 6.06s    214 Mb  
 ## # ℹ 44 more rows
 ## # ℹ 2 more variables: SEED &lt;int&gt;, COMPLETED &lt;chr&gt;</code></pre>
 <p>To see all the analysis results from <code>Design[1,]</code>, for example, inspect the object returned from <code>SimResults()</code>.</p>

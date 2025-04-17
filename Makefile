@@ -1,4 +1,4 @@
-all: vignettes move clean clean_solve commit push
+all: vignettes move clean commit push
 
 vignettes:
 	Rscript -e "setwd('source');library('rmarkdown');files=dir();for(file in files) render(file)"

@@ -12,7 +12,7 @@
 <meta name="author" content="Phil Chalmers" />
 
 
-<title>Compromised power analysis</title>
+<title>Compromised power analysis estimates</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -355,14 +355,12 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">Compromised power analysis</h1>
+<h1 class="title toc-ignore">Compromised power analysis estimates</h1>
 <h4 class="author">Phil Chalmers</h4>
 
 </div>
 
 
-<div id="compromised-power-analysis" class="section level1">
-<h1>Compromised power analysis</h1>
 <p>In compromised power analyses, <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(1-\beta\)</span> are computed as functions of the effect size, sample size, model, and most importantly the error probability ratio <span class="math inline">\(q=\frac{\beta}{\alpha}\)</span> to indicate a type of trade-off between Type I and II errors. Setting <span class="math inline">\(\alpha=\beta\)</span> results in a <span class="math inline">\(q=1\)</span>, indicating an equal trade-off between Type I and Type II errors, while a <span class="math inline">\(q=4\)</span> indicates that Type II errors are four-times as costly to make than a Type I error (hence, rejecting the null when it is in fact true is worse than retaining the null hypothesis when it is in fact false). This is particularly useful when the sample size required from prior power analysis suggest a much larger size than a researcher can afford.</p>
 <p>For instance, suppose that only <span class="math inline">\(N=100\)</span> per group are possible for an independent samples <span class="math inline">\(t\)</span>-test analysis with a Welch correction, and the true effect size is thought to be <span class="math inline">\(d=.3\)</span>. In such a simulation, and assuming for the moment that <span class="math inline">\(\alpha=.05\)</span> (will be changed momentarily thanks to the <code>store_results = TRUE</code> flag), then the following indicates the <span class="math inline">\(q=\frac{\beta}{\alpha}\)</span> error ratio estimate for this fixed <span class="math inline">\(\alpha\)</span> level.</p>
 <pre class="r"><code>library(SimDesign)
@@ -411,14 +409,14 @@ sim &lt;- runSimulation(design=Design, replications=100000,
                      generate=Generate, analyse=Analyse,
                      summarise=Summarise)</code></pre>
 <pre><code>## 
-## Replications: 100000;   RAM Used: 283.8 Mb;   
+## Replications: 100000;   RAM Used: 283.6 Mb;   
 ##  Conditions: N=100, d=0.3, alpha=0.05
 ## </code></pre>
 <pre class="r"><code>sim</code></pre>
 <pre><code>## # A tibble: 1 × 9
 ##       N     d alpha      q REPLICATIONS SIM_TIME   RAM_USED       SEED COMPLETED
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;    
-## 1   100   0.3  0.05 8.8326       100000 02m 11.52s 284.7 Mb 1185262641 Thu Dec …</code></pre>
+## 1   100   0.3  0.05 8.8326       100000 02m 10.82s 284.5 Mb 1185262641 Wed Apr …</code></pre>
 <p>However, because <code>store_results=TRUE</code> is used (the default) the results can be <code>reSummarise()</code>ed using a different <span class="math inline">\(\alpha\)</span> cut-off, where it is instead possible to obtain some target <span class="math inline">\(q\)</span> given the stored stimulation results. For example,</p>
 <pre class="r"><code># compute beta/alpha ratio given different alpha
 compromise &lt;- function(alpha, sim, Design){
@@ -475,7 +473,6 @@ root4</code></pre>
 ## $estim.prec
 ## [1] 6.1e-05</code></pre>
 <p>Hence, when equal <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\alpha\)</span> errors are desirable then the <span class="math inline">\(\alpha\)</span> to utilize is 0.201, while if the Type I errors are 4 times more costly than the Type II errors then <span class="math inline">\(\alpha\)</span> should be selected to be approximately 0.087.</p>
-</div>
 <div id="compromise-analysis-with-empirical-alpha-estimate" class="section level1">
 <h1>Compromise analysis with empirical <span class="math inline">\(\alpha\)</span> estimate</h1>
 <p>In situations where the Type I error rate controlled by a select <span class="math inline">\(\alpha\)</span>, but the true/empirical Type I error rate associated with this <span class="math inline">\(\alpha\)</span> is in fact sub-optimal (e.g., small samples that utilize maximum-likelihood estimators), then it is possible to define the compromise ratio <span class="math inline">\(q = \frac{\beta}{\alpha}\)</span> in terms of the empirical Type I error rate rather than the assumed nominal <span class="math inline">\(\alpha\)</span>. To do so requires more computation as the null model must also be generated and analysed, however the resulting compromise ratio and root-solved cut-offs should perform more honestly in practice. Below is an example which utilizes the empirical Type I error estimate rather than the assume Type I error = <span class="math inline">\(\alpha\)</span>.</p>
@@ -525,14 +522,14 @@ sim &lt;- runSimulation(design=Design, replications=100000,
                      generate=Generate, analyse=Analyse,
                      summarise=Summarise, store_results=TRUE)</code></pre>
 <pre><code>## 
-## Replications: 100000;   RAM Used: 287.3 Mb;   
+## Replications: 100000;   RAM Used: 287 Mb;   
 ##  Conditions: N=100, d=0.3, alpha=0.05
 ## </code></pre>
 <pre class="r"><code>sim</code></pre>
 <pre><code>## # A tibble: 1 × 9
 ##       N     d alpha      q REPLICATIONS SIM_TIME   RAM_USED       SEED COMPLETED
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;    
-## 1   100   0.3  0.05 8.7932       100000 03m 39.73s 288.8 Mb 1739255291 Thu Dec …</code></pre>
+## 1   100   0.3  0.05 8.7932       100000 03m 41.18s 288.5 Mb 1739255291 Wed Apr …</code></pre>
 <pre class="r"><code># compute beta/alpha ratio given different alpha
 compromise &lt;- function(alpha, sim, Design){
     Design$alpha &lt;- alpha
