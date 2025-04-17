@@ -2572,9 +2572,9 @@ Replications: 100000;   RAM Used: 53.7 Mb;
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 9
-      N     d alpha      q REPLICATIONS SIM_TIME  RAM_USED      SEED COMPLETED  
-  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;      
-1   100   0.3  0.05 8.7706       100000 02m 7.83s 55.8 Mb  492907974 Thu Apr 17…</code></pre>
+      N     d alpha     q REPLICATIONS SIM_TIME   RAM_USED       SEED COMPLETED 
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;     
+1   100   0.3  0.05 8.789       100000 02m 10.13s 55.8 Mb  1930362837 Thu Apr 1…</code></pre>
 </div>
 </div>
 <p>However, because <code>store_results=TRUE</code> is used (the default) the results can be <code>reSummarise()</code>ed using a different <span class="math inline">\(\alpha\)</span> cut-off, where it is instead possible to obtain some target <span class="math inline">\(q\)</span> given the stored stimulation results. For example,</p>
@@ -2589,7 +2589,7 @@ Replications: 100000;   RAM Used: 53.7 Mb;
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># more liberal Type I error (but lower Type II error)</span></span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">compromise</span>(.<span class="dv">3</span>, <span class="at">sim=</span>sim, <span class="at">Design=</span>Design)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.464</code></pre>
+<pre><code>[1] 0.463</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># more conservative Type I error (but higher Type II error)</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">compromise</span>(.<span class="dv">01</span>, <span class="at">sim=</span>sim, <span class="at">Design=</span>Design) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2609,10 +2609,10 @@ Replications: 100000;   RAM Used: 53.7 Mb;
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>root1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$root
-[1] 0.201
+[1] 0.2
 
 $f.root
-[1] 4.48e-05
+[1] -6.58e-05
 
 $iter
 [1] 8
@@ -2632,7 +2632,7 @@ $estim.prec
 [1] 0.0863
 
 $f.root
-[1] 0.00115
+[1] -0.00091
 
 $iter
 [1] 7
@@ -2644,7 +2644,7 @@ $estim.prec
 [1] 6.1e-05</code></pre>
 </div>
 </div>
-<p>Hence, when equal <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\alpha\)</span> errors are desirable then the <span class="math inline">\(\alpha\)</span> to utilize is 0.201, while if the Type I errors are 4 times more costly than the Type II errors then <span class="math inline">\(\alpha\)</span> should be selected to be approximately 0.086.</p>
+<p>Hence, when equal <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\alpha\)</span> errors are desirable then the <span class="math inline">\(\alpha\)</span> to utilize is 0.2, while if the Type I errors are 4 times more costly than the Type II errors then <span class="math inline">\(\alpha\)</span> should be selected to be approximately 0.086.</p>
 <section id="compromise-analysis-with-empirical-alpha-estimate" class="level1">
 <h1>Compromise analysis with empirical <span class="math inline">\(\alpha\)</span> estimate</h1>
 <p>In situations where the Type I error rate controlled by a select <span class="math inline">\(\alpha\)</span>, but the true/empirical Type I error rate associated with this <span class="math inline">\(\alpha\)</span> is in fact sub-optimal (e.g., small samples that utilize maximum-likelihood estimators), then it is possible to define the compromise ratio <span class="math inline">\(q = \frac{\beta}{\alpha}\)</span> in terms of the empirical Type I error rate rather than the assumed nominal <span class="math inline">\(\alpha\)</span>. To do so requires more computation as the null model must also be generated and analysed, however the resulting compromise ratio and root-solved cut-offs should perform more honestly in practice. Below is an example which utilizes the empirical Type I error estimate rather than the assume Type I error = <span class="math inline">\(\alpha\)</span>.</p>
@@ -2706,9 +2706,9 @@ Replications: 100000;   RAM Used: 59.6 Mb;
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>sim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 9
-      N     d alpha      q REPLICATIONS SIM_TIME   RAM_USED       SEED COMPLETED
-  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;    
-1   100   0.3  0.05 8.7967       100000 03m 35.74s 61.1 Mb  1591479633 Thu Apr …</code></pre>
+      N     d alpha      q REPLICATIONS SIM_TIME   RAM_USED      SEED COMPLETED 
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;     
+1   100   0.3  0.05 8.9691       100000 03m 39.79s 61.1 Mb  447974663 Thu Apr 1…</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute beta/alpha ratio given different alpha</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>compromise <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha, sim, Design){</span>
@@ -2719,11 +2719,11 @@ Replications: 100000;   RAM Used: 59.6 Mb;
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="fu">compromise</span>(.<span class="dv">3</span>, <span class="at">sim=</span>sim, <span class="at">Design=</span>Design)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.462</code></pre>
+<pre><code>[1] 0.46</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compromise</span>(.<span class="dv">01</span>, <span class="at">sim=</span>sim, <span class="at">Design=</span>Design)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 68</code></pre>
+<pre><code>[1] 71.1</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>compromise_root <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha, target.q, ...)</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">compromise</span>(alpha, ...) <span class="sc">-</span> target.q</span>
@@ -2735,10 +2735,10 @@ Replications: 100000;   RAM Used: 59.6 Mb;
 <span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>root1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$root
-[1] 0.201
+[1] 0.2
 
 $f.root
-[1] 0.000199
+[1] -0.00015
 
 $iter
 [1] 8
@@ -2755,10 +2755,10 @@ $estim.prec
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>root4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$root
-[1] 0.0862
+[1] 0.0868
 
 $f.root
-[1] -0.00221
+[1] -0.00139
 
 $iter
 [1] 7
@@ -2770,7 +2770,7 @@ $estim.prec
 [1] 6.1e-05</code></pre>
 </div>
 </div>
-<p>Based on the empirical <span class="math inline">\(\hat{\alpha}\)</span> and <span class="math inline">\(\hat{\beta}\)</span> estimates, when equal <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\alpha\)</span> errors are desirable then the <span class="math inline">\(\alpha\)</span> to utilize is 0.201, while if the Type I errors are 4 times more costly than the Type II errors then <span class="math inline">\(\alpha\)</span> should be selected to be approximately 0.086. These agree with the results above for this particular analysis because the empirical <span class="math inline">\(\alpha\)</span> closely matches the theoretical <span class="math inline">\(\alpha\)</span>, however in situations where these quantities do not match the solutions can and will differ.</p>
+<p>Based on the empirical <span class="math inline">\(\hat{\alpha}\)</span> and <span class="math inline">\(\hat{\beta}\)</span> estimates, when equal <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\alpha\)</span> errors are desirable then the <span class="math inline">\(\alpha\)</span> to utilize is 0.2, while if the Type I errors are 4 times more costly than the Type II errors then <span class="math inline">\(\alpha\)</span> should be selected to be approximately 0.087. These agree with the results above for this particular analysis because the empirical <span class="math inline">\(\alpha\)</span> closely matches the theoretical <span class="math inline">\(\alpha\)</span>, however in situations where these quantities do not match the solutions can and will differ.</p>
 </section>
 
 </main>

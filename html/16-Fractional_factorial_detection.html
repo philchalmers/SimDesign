@@ -2607,14 +2607,14 @@ window.Quarto = {
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-sample_size       1    0.8     0.8    8.76 0.00312 ** 
-mean_diff         1   61.6    61.6  647.69 &lt; 2e-16 ***
-variance.ratio    1    2.1     2.1   22.42 2.4e-06 ***
-equal_size        1    1.1     1.1   11.58 0.00068 ***
-dists             1    4.6     4.6   48.41 4.7e-12 ***
-same_dists        1   10.2    10.2  107.28 &lt; 2e-16 ***
-symmetric         1  119.4   119.4 1255.15 &lt; 2e-16 ***
-Residuals      1912  181.9     0.1                    
+sample_size       1    0.2     0.2    2.42   0.120    
+mean_diff         1   62.7    62.7  661.28 &lt; 2e-16 ***
+variance.ratio    1    3.3     3.3   34.28 5.6e-09 ***
+equal_size        1    0.6     0.6    5.98   0.015 *  
+dists             1    4.6     4.6   48.57 4.4e-12 ***
+same_dists        1    6.2     6.2   65.25 1.2e-15 ***
+symmetric         1  107.5   107.5 1133.88 &lt; 2e-16 ***
+Residuals      1912  181.3     0.1                    
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
@@ -2623,34 +2623,34 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                             Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-sample_size                   1    0.8     0.8   13.87 0.00020 ***
-mean_diff                     1   61.6    61.6 1026.01 &lt; 2e-16 ***
-variance.ratio                1    2.1     2.1   35.51 3.0e-09 ***
-equal_size                    1    1.1     1.1   18.35 1.9e-05 ***
-dists                         1    4.6     4.6   76.68 &lt; 2e-16 ***
-same_dists                    1   10.2    10.2  169.94 &lt; 2e-16 ***
-symmetric                     1  119.4   119.4 1988.29 &lt; 2e-16 ***
-sample_size:mean_diff         1    0.9     0.9   15.29 9.5e-05 ***
-sample_size:variance.ratio    1    0.0     0.0    0.03 0.85229    
-sample_size:equal_size        1    0.0     0.0    0.14 0.70959    
-sample_size:dists             1    0.3     0.3    4.17 0.04138 *  
-sample_size:same_dists        1    0.1     0.1    0.87 0.35190    
-sample_size:symmetric         1    0.9     0.9   14.16 0.00017 ***
-mean_diff:variance.ratio      1    1.1     1.1   18.35 1.9e-05 ***
-mean_diff:equal_size          1    0.0     0.0    0.14 0.70959    
-mean_diff:dists               1    0.6     0.6   10.41 0.00128 ** 
-mean_diff:same_dists          1    8.8     8.8  146.53 &lt; 2e-16 ***
-mean_diff:symmetric           1   34.1    34.1  568.09 &lt; 2e-16 ***
-variance.ratio:equal_size     1    0.3     0.3    4.99 0.02555 *  
-variance.ratio:dists          1    0.5     0.5    8.02 0.00469 ** 
-variance.ratio:same_dists     1    0.1     0.1    1.70 0.19253    
-variance.ratio:symmetric      1    2.9     2.9   48.39 4.8e-12 ***
-equal_size:dists              1    0.1     0.1    1.56 0.21109    
-equal_size:same_dists         1    0.1     0.1    1.25 0.26398    
-equal_size:symmetric          1    0.9     0.9   14.16 0.00017 ***
-dists:same_dists              1   16.7    16.7  277.49 &lt; 2e-16 ***
-same_dists:symmetric          1    0.1     0.1    1.05 0.30485    
-Residuals                  1892  113.7     0.1                    
+sample_size                   1    0.2     0.2    3.87 0.04929 *  
+mean_diff                     1   62.7    62.7 1056.73 &lt; 2e-16 ***
+variance.ratio                1    3.3     3.3   54.77 2.0e-13 ***
+equal_size                    1    0.6     0.6    9.56 0.00202 ** 
+dists                         1    4.6     4.6   77.62 &lt; 2e-16 ***
+same_dists                    1    6.2     6.2  104.27 &lt; 2e-16 ***
+symmetric                     1  107.5   107.5 1811.94 &lt; 2e-16 ***
+sample_size:mean_diff         1    0.0     0.0    0.01 0.92537    
+sample_size:variance.ratio    1    0.0     0.0    0.22 0.63955    
+sample_size:equal_size        1    0.0     0.0    0.08 0.77871    
+sample_size:dists             1    0.0     0.0    0.36 0.55112    
+sample_size:same_dists        1    0.1     0.1    1.48 0.22343    
+sample_size:symmetric         1    0.1     0.1    1.07 0.30191    
+mean_diff:variance.ratio      1    0.0     0.0    0.43 0.51205    
+mean_diff:equal_size          1    0.6     0.6    9.56 0.00202 ** 
+mean_diff:dists               1    0.0     0.0    0.74 0.38926    
+mean_diff:same_dists          1    7.9     7.9  132.77 &lt; 2e-16 ***
+mean_diff:symmetric           1   39.6    39.6  666.44 &lt; 2e-16 ***
+variance.ratio:equal_size     1    0.3     0.3    4.64 0.03131 *  
+variance.ratio:dists          1    0.1     0.1    1.58 0.20833    
+variance.ratio:same_dists     1    0.1     0.1    1.97 0.16012    
+variance.ratio:symmetric      1    2.9     2.9   48.98 3.6e-12 ***
+equal_size:dists              1    0.2     0.2    3.20 0.07385 .  
+equal_size:same_dists         1    0.0     0.0    0.08 0.77871    
+equal_size:symmetric          1    0.7     0.7   11.07 0.00089 ***
+dists:same_dists              1   16.4    16.4  276.45 &lt; 2e-16 ***
+same_dists:symmetric          1    0.1     0.1    2.22 0.13598    
+Residuals                  1892  112.3     0.1                    
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
@@ -2659,64 +2659,64 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                        Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-sample_size                              1    0.8     0.8   17.70 2.7e-05 ***
-mean_diff                                1   61.6    61.6 1308.78 &lt; 2e-16 ***
-variance.ratio                           1    2.1     2.1   45.30 2.2e-11 ***
-equal_size                               1    1.1     1.1   23.40 1.4e-06 ***
-dists                                    1    4.6     4.6   97.82 &lt; 2e-16 ***
-same_dists                               1   10.2    10.2  216.77 &lt; 2e-16 ***
-symmetric                                1  119.4   119.4 2536.27 &lt; 2e-16 ***
-sample_size:mean_diff                    1    0.9     0.9   19.51 1.1e-05 ***
-sample_size:variance.ratio               1    0.0     0.0    0.04 0.83343    
-sample_size:equal_size                   1    0.0     0.0    0.18 0.67405    
-sample_size:dists                        1    0.3     0.3    5.31 0.02126 *  
-sample_size:same_dists                   1    0.1     0.1    1.11 0.29309    
-sample_size:symmetric                    1    0.9     0.9   18.07 2.2e-05 ***
-mean_diff:variance.ratio                 1    1.1     1.1   23.40 1.4e-06 ***
-mean_diff:equal_size                     1    0.0     0.0    0.18 0.67405    
-mean_diff:dists                          1    0.6     0.6   13.28 0.00028 ***
-mean_diff:same_dists                     1    8.8     8.8  186.91 &lt; 2e-16 ***
-mean_diff:symmetric                      1   34.1    34.1  724.66 &lt; 2e-16 ***
-variance.ratio:equal_size                1    0.3     0.3    6.37 0.01169 *  
-variance.ratio:dists                     1    0.5     0.5   10.22 0.00141 ** 
-variance.ratio:same_dists                1    0.1     0.1    2.17 0.14110    
-variance.ratio:symmetric                 1    2.9     2.9   61.73 6.6e-15 ***
-equal_size:dists                         1    0.1     0.1    2.00 0.15785    
-equal_size:same_dists                    1    0.1     0.1    1.59 0.20711    
-equal_size:symmetric                     1    0.9     0.9   18.07 2.2e-05 ***
-dists:same_dists                         1   16.7    16.7  353.97 &lt; 2e-16 ***
-same_dists:symmetric                     1    0.1     0.1    1.34 0.24652    
-sample_size:mean_diff:variance.ratio     1    0.1     0.1    2.83 0.09261 .  
-sample_size:mean_diff:equal_size         1    0.0     0.0    0.04 0.83343    
-sample_size:mean_diff:dists              1    0.7     0.7   14.38 0.00015 ***
-sample_size:mean_diff:same_dists         1    0.1     0.1    1.59 0.20711    
-sample_size:mean_diff:symmetric          1    1.9     1.9   39.83 3.5e-10 ***
-sample_size:variance.ratio:equal_size    1    0.1     0.1    2.17 0.14110    
-sample_size:variance.ratio:dists         1    0.1     0.1    1.60 0.20632    
-sample_size:variance.ratio:same_dists    1    0.2     0.2    4.42 0.03557 *  
-sample_size:variance.ratio:symmetric     1    0.1     0.1    2.01 0.15670    
-sample_size:equal_size:dists             1    0.0     0.0    0.01 0.94073    
-sample_size:equal_size:same_dists        1    0.0     0.0    0.40 0.52812    
-sample_size:equal_size:symmetric         1    0.0     0.0    0.02 0.89753    
-sample_size:dists:same_dists             1    0.0     0.0    0.01 0.94073    
-sample_size:same_dists:symmetric         1    0.0     0.0    0.81 0.36738    
-mean_diff:variance.ratio:equal_size      1    0.2     0.2    3.58 0.05851 .  
-mean_diff:variance.ratio:dists           1    1.2     1.2   24.82 6.9e-07 ***
-mean_diff:variance.ratio:same_dists      1    0.0     0.0    0.18 0.67405    
-mean_diff:variance.ratio:symmetric       1    1.9     1.9   39.83 3.5e-10 ***
-mean_diff:equal_size:dists               1    0.3     0.3    5.31 0.02126 *  
-mean_diff:equal_size:same_dists          1    0.1     0.1    2.17 0.14110    
-mean_diff:equal_size:symmetric           1    0.2     0.2    4.79 0.02868 *  
-mean_diff:dists:same_dists               1   18.0    18.0  382.50 &lt; 2e-16 ***
-mean_diff:same_dists:symmetric           1    0.0     0.0    0.02 0.89753    
-variance.ratio:equal_size:dists          1    0.1     0.1    2.44 0.11854    
-variance.ratio:equal_size:same_dists     1    0.1     0.1    1.11 0.29309    
-variance.ratio:equal_size:symmetric      1    0.6     0.6   12.09 0.00052 ***
-variance.ratio:dists:same_dists          1    0.0     0.0    0.27 0.60275    
-variance.ratio:same_dists:symmetric      1    0.0     0.0    0.81 0.36738    
-equal_size:dists:same_dists              1    0.1     0.1    1.24 0.26480    
-equal_size:same_dists:symmetric          1    0.0     0.0    0.15 0.69924    
-Residuals                             1862   87.7     0.0                    
+sample_size                              1    0.2     0.2    4.66 0.03094 *  
+mean_diff                                1   62.7    62.7 1273.28 &lt; 2e-16 ***
+variance.ratio                           1    3.3     3.3   66.00 8.1e-16 ***
+equal_size                               1    0.6     0.6   11.52 0.00070 ***
+dists                                    1    4.6     4.6   93.53 &lt; 2e-16 ***
+same_dists                               1    6.2     6.2  125.64 &lt; 2e-16 ***
+symmetric                                1  107.5   107.5 2183.25 &lt; 2e-16 ***
+sample_size:mean_diff                    1    0.0     0.0    0.01 0.91811    
+sample_size:variance.ratio               1    0.0     0.0    0.26 0.60720    
+sample_size:equal_size                   1    0.0     0.0    0.10 0.75774    
+sample_size:dists                        1    0.0     0.0    0.43 0.51292    
+sample_size:same_dists                   1    0.1     0.1    1.79 0.18144    
+sample_size:symmetric                    1    0.1     0.1    1.28 0.25715    
+mean_diff:variance.ratio                 1    0.0     0.0    0.52 0.47172    
+mean_diff:equal_size                     1    0.6     0.6   11.52 0.00070 ***
+mean_diff:dists                          1    0.0     0.0    0.89 0.34464    
+mean_diff:same_dists                     1    7.9     7.9  159.98 &lt; 2e-16 ***
+mean_diff:symmetric                      1   39.6    39.6  803.01 &lt; 2e-16 ***
+variance.ratio:equal_size                1    0.3     0.3    5.59 0.01812 *  
+variance.ratio:dists                     1    0.1     0.1    1.91 0.16727    
+variance.ratio:same_dists                1    0.1     0.1    2.38 0.12312    
+variance.ratio:symmetric                 1    2.9     2.9   59.02 2.5e-14 ***
+equal_size:dists                         1    0.2     0.2    3.85 0.04976 *  
+equal_size:same_dists                    1    0.0     0.0    0.10 0.75774    
+equal_size:symmetric                     1    0.7     0.7   13.34 0.00027 ***
+dists:same_dists                         1   16.4    16.4  333.11 &lt; 2e-16 ***
+same_dists:symmetric                     1    0.1     0.1    2.68 0.10174    
+sample_size:mean_diff:variance.ratio     1    0.1     0.1    2.38 0.12312    
+sample_size:mean_diff:equal_size         1    0.0     0.0    0.01 0.91811    
+sample_size:mean_diff:dists              1    0.3     0.3    5.08 0.02430 *  
+sample_size:mean_diff:same_dists         1    0.1     0.1    2.38 0.12312    
+sample_size:mean_diff:symmetric          1    0.1     0.1    2.68 0.10174    
+sample_size:variance.ratio:equal_size    1    0.0     0.0    0.86 0.35483    
+sample_size:variance.ratio:dists         1    0.0     0.0    0.89 0.34464    
+sample_size:variance.ratio:same_dists    1    0.0     0.0    0.26 0.60720    
+sample_size:variance.ratio:symmetric     1    0.0     0.0    0.14 0.70560    
+sample_size:equal_size:dists             1    0.1     0.1    2.33 0.12693    
+sample_size:equal_size:same_dists        1    0.0     0.0    0.86 0.35483    
+sample_size:equal_size:symmetric         1    0.0     0.0    0.14 0.70560    
+sample_size:dists:same_dists             1    0.1     0.1    1.53 0.21656    
+sample_size:same_dists:symmetric         1    0.0     0.0    0.02 0.89979    
+mean_diff:variance.ratio:equal_size      1    0.0     0.0    0.52 0.47172    
+mean_diff:variance.ratio:dists           1    1.2     1.2   23.73 1.2e-06 ***
+mean_diff:variance.ratio:same_dists      1    0.9     0.9   17.78 2.6e-05 ***
+mean_diff:variance.ratio:symmetric       1    0.5     0.5    9.91 0.00167 ** 
+mean_diff:equal_size:dists               1    0.4     0.4    8.04 0.00462 ** 
+mean_diff:equal_size:same_dists          1    0.1     0.1    1.28 0.25813    
+mean_diff:equal_size:symmetric           1    1.1     1.1   21.71 3.4e-06 ***
+mean_diff:dists:same_dists               1   14.6    14.6  296.98 &lt; 2e-16 ***
+mean_diff:same_dists:symmetric           1    0.0     0.0    0.02 0.89979    
+variance.ratio:equal_size:dists          1    0.0     0.0    0.13 0.71622    
+variance.ratio:equal_size:same_dists     1    0.0     0.0    0.26 0.60720    
+variance.ratio:equal_size:symmetric      1    0.3     0.3    5.73 0.01681 *  
+variance.ratio:dists:same_dists          1    0.5     0.5   10.71 0.00109 ** 
+variance.ratio:same_dists:symmetric      1    0.0     0.0    0.14 0.70560    
+equal_size:dists:same_dists              1    0.0     0.0    0.43 0.51292    
+equal_size:same_dists:symmetric          1    0.0     0.0    0.78 0.37810    
+Residuals                             1862   91.7     0.0                    
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
@@ -2736,12 +2736,12 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>fr[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   A  B  C  D  E  F  G
-1  1  1  1  1 -1 -1  1
-2  1  1  1 -1 -1  1  1
-3  1 -1  1 -1  1 -1 -1
-4 -1 -1  1  1  1  1  1
-5  1  1  1 -1 -1 -1 -1
-6 -1 -1 -1  1 -1  1  1</code></pre>
+1  1 -1 -1  1  1  1  1
+2  1 -1 -1  1 -1 -1  1
+3  1 -1  1  1  1 -1  1
+4  1  1  1  1  1  1  1
+5 -1  1 -1 -1 -1 -1 -1
+6  1  1  1 -1 -1 -1 -1</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create working simulation design given -1/1 combinations</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>fDesign <span class="ot">&lt;-</span> <span class="fu">createDesign</span>(<span class="at">sample_size=</span><span class="fu">c</span>(<span class="dv">100</span>,<span class="dv">200</span>),</span>
@@ -2759,16 +2759,16 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <pre><code># A tibble: 48 × 7
    sample_size mean_diff variance.ratio equal_size dists same_dists symmetric
          &lt;dbl&gt;     &lt;dbl&gt;          &lt;dbl&gt; &lt;lgl&gt;      &lt;chr&gt; &lt;lgl&gt;      &lt;lgl&gt;    
- 1         100      2                 1 FALSE      skew  TRUE       FALSE    
- 2         200      2                 1 TRUE       skew  FALSE      TRUE     
- 3         100      0.25              1 FALSE      norm  TRUE       FALSE    
- 4         200      2                 1 FALSE      skew  TRUE       TRUE     
- 5         100      2                 4 FALSE      norm  TRUE       FALSE    
- 6         100      0.25              4 FALSE      skew  FALSE      TRUE     
- 7         200      0.25              1 TRUE       skew  FALSE      FALSE    
- 8         100      2                 1 FALSE      norm  FALSE      FALSE    
- 9         100      2                 1 FALSE      skew  FALSE      TRUE     
-10         100      0.25              1 TRUE       skew  TRUE       FALSE    
+ 1         100      0.25              1 TRUE       skew  FALSE      TRUE     
+ 2         200      2                 1 FALSE      skew  FALSE      FALSE    
+ 3         100      2                 4 FALSE      skew  FALSE      FALSE    
+ 4         100      2                 1 TRUE       skew  TRUE       TRUE     
+ 5         100      0.25              4 FALSE      norm  FALSE      FALSE    
+ 6         200      0.25              1 TRUE       norm  TRUE       FALSE    
+ 7         200      2                 4 FALSE      skew  TRUE       FALSE    
+ 8         200      2                 4 TRUE       skew  TRUE       TRUE     
+ 9         200      2                 4 FALSE      norm  FALSE      FALSE    
+10         100      0.25              4 FALSE      skew  TRUE       FALSE    
 # ℹ 38 more rows</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(fDesign)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2786,16 +2786,16 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <pre><code># A tibble: 960 × 8
    sample_size mean_diff variance.ratio equal_size dists same_dists symmetric
          &lt;dbl&gt;     &lt;dbl&gt;          &lt;dbl&gt; &lt;lgl&gt;      &lt;chr&gt; &lt;lgl&gt;      &lt;lgl&gt;    
- 1         100         2              1 FALSE      skew  TRUE       FALSE    
- 2         100         2              1 FALSE      skew  TRUE       FALSE    
- 3         100         2              1 FALSE      skew  TRUE       FALSE    
- 4         100         2              1 FALSE      skew  TRUE       FALSE    
- 5         100         2              1 FALSE      skew  TRUE       FALSE    
- 6         100         2              1 FALSE      skew  TRUE       FALSE    
- 7         100         2              1 FALSE      skew  TRUE       FALSE    
- 8         100         2              1 FALSE      skew  TRUE       FALSE    
- 9         100         2              1 FALSE      skew  TRUE       FALSE    
-10         100         2              1 FALSE      skew  TRUE       FALSE    
+ 1         100      0.25              1 TRUE       skew  FALSE      TRUE     
+ 2         100      0.25              1 TRUE       skew  FALSE      TRUE     
+ 3         100      0.25              1 TRUE       skew  FALSE      TRUE     
+ 4         100      0.25              1 TRUE       skew  FALSE      TRUE     
+ 5         100      0.25              1 TRUE       skew  FALSE      TRUE     
+ 6         100      0.25              1 TRUE       skew  FALSE      TRUE     
+ 7         100      0.25              1 TRUE       skew  FALSE      TRUE     
+ 8         100      0.25              1 TRUE       skew  FALSE      TRUE     
+ 9         100      0.25              1 TRUE       skew  FALSE      TRUE     
+10         100      0.25              1 TRUE       skew  FALSE      TRUE     
 # ℹ 950 more rows
 # ℹ 1 more variable: detect &lt;lgl&gt;</code></pre>
 </div>
@@ -2806,14 +2806,14 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-sample_size      1    0.6     0.6    6.79  0.0093 ** 
-mean_diff        1   33.0    33.0  373.45 &lt; 2e-16 ***
-variance.ratio   1    1.3     1.3   15.28 9.9e-05 ***
-equal_size       1    0.6     0.6    6.79  0.0093 ** 
-dists            1    3.3     3.3   37.72 1.2e-09 ***
-same_dists       1    3.8     3.8   42.43 1.2e-10 ***
-symmetric        1   60.0    60.0  679.21 &lt; 2e-16 ***
-Residuals      952   84.1     0.1                    
+sample_size      1    1.4     1.4   14.88 0.00012 ***
+mean_diff        1   35.3    35.3  388.81 &lt; 2e-16 ***
+variance.ratio   1    1.1     1.1   11.76 0.00063 ***
+equal_size       1    0.3     0.3    3.72 0.05403 .  
+dists            1    1.9     1.9   20.67 6.2e-06 ***
+same_dists       1    4.8     4.8   53.10 6.6e-13 ***
+symmetric        1   57.6    57.6  635.03 &lt; 2e-16 ***
+Residuals      952   86.4     0.1                    
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
@@ -2822,34 +2822,34 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                            Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-sample_size                  1    0.6     0.6   11.76 0.00063 ***
-mean_diff                    1   33.0    33.0  646.67 &lt; 2e-16 ***
-variance.ratio               1    1.3     1.3   26.45 3.3e-07 ***
-equal_size                   1    0.6     0.6   11.76 0.00063 ***
-dists                        1    3.3     3.3   65.31 2.0e-15 ***
-same_dists                   1    3.8     3.8   73.48 &lt; 2e-16 ***
-symmetric                    1   60.0    60.0 1176.10 &lt; 2e-16 ***
-sample_size:mean_diff        1    0.3     0.3    5.22 0.02249 *  
-sample_size:variance.ratio   1    0.0     0.0    0.08 0.77515    
-sample_size:equal_size       1    0.0     0.0    0.73 0.39157    
-sample_size:dists            1    0.2     0.2    3.31 0.06933 .  
-sample_size:same_dists       1    0.2     0.2    4.00 0.04578 *  
-sample_size:symmetric        1    0.8     0.8   14.82 0.00013 ***
-mean_diff:variance.ratio     1    0.1     0.1    1.31 0.25337    
-mean_diff:equal_size         1    0.3     0.3    5.22 0.02249 *  
-mean_diff:dists              1    0.0     0.0    0.16 0.68625    
-mean_diff:same_dists         1    3.3     3.3   64.01 3.7e-15 ***
-mean_diff:symmetric          1   22.5    22.5  440.85 &lt; 2e-16 ***
-variance.ratio:equal_size    1    0.1     0.1    2.04 0.15344    
-variance.ratio:dists         1    0.0     0.0    0.00 1.00000    
-variance.ratio:same_dists    1    0.3     0.3    6.61 0.01028 *  
-variance.ratio:symmetric     1    0.9     0.9   17.63 2.9e-05 ***
-equal_size:dists             1    0.1     0.1    1.47 0.22573    
-equal_size:same_dists        1    0.2     0.2    4.00 0.04578 *  
-equal_size:symmetric         1    0.6     0.6   12.25 0.00049 ***
-dists:same_dists             1    6.8     6.8  132.62 &lt; 2e-16 ***
-same_dists:symmetric         1    0.0     0.0    0.12 0.72646    
-Residuals                  932   47.6     0.1                    
+sample_size                  1    1.4     1.4   27.23 2.2e-07 ***
+mean_diff                    1   35.3    35.3  711.31 &lt; 2e-16 ***
+variance.ratio               1    1.1     1.1   21.51 4.0e-06 ***
+equal_size                   1    0.3     0.3    6.81  0.0092 ** 
+dists                        1    1.9     1.9   37.82 1.2e-09 ***
+same_dists                   1    4.8     4.8   97.15 &lt; 2e-16 ***
+symmetric                    1   57.6    57.6 1161.76 &lt; 2e-16 ***
+sample_size:mean_diff        1    0.3     0.3    6.81  0.0092 ** 
+sample_size:variance.ratio   1    0.1     0.1    2.10  0.1475    
+sample_size:equal_size       1    0.1     0.1    1.34  0.2465    
+sample_size:dists            1    0.3     0.3    6.05  0.0141 *  
+sample_size:same_dists       1    0.0     0.0    0.76  0.3847    
+sample_size:symmetric        1    1.6     1.6   32.27 1.8e-08 ***
+mean_diff:variance.ratio     1    0.2     0.2    4.12  0.0427 *  
+mean_diff:equal_size         1    0.0     0.0    0.34  0.5622    
+mean_diff:dists              1    0.1     0.1    2.06  0.1516    
+mean_diff:same_dists         1    5.1     5.1  102.95 &lt; 2e-16 ***
+mean_diff:symmetric          1   21.8    21.8  438.81 &lt; 2e-16 ***
+variance.ratio:equal_size    1    0.0     0.0    0.34  0.5622    
+variance.ratio:dists         1    0.0     0.0    0.04  0.8376    
+variance.ratio:same_dists    1    0.3     0.3    6.81  0.0092 ** 
+variance.ratio:symmetric     1    0.8     0.8   15.25  0.0001 ***
+equal_size:dists             1    0.0     0.0    0.38  0.5387    
+equal_size:same_dists        1    0.3     0.3    5.38  0.0206 *  
+equal_size:symmetric         1    0.3     0.3    6.18  0.0131 *  
+dists:same_dists             1    8.8     8.8  177.53 &lt; 2e-16 ***
+same_dists:symmetric         1    0.0     0.0    0.13  0.7226    
+Residuals                  932   46.2     0.0                    
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
@@ -2875,16 +2875,16 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <pre><code># A tibble: 12 × 7
    sample_size mean_diff variance.ratio equal_size dists same_dists symmetric
          &lt;dbl&gt;     &lt;dbl&gt;          &lt;dbl&gt; &lt;lgl&gt;      &lt;chr&gt; &lt;lgl&gt;      &lt;lgl&gt;    
- 1         100      0.25              4 FALSE      skew  FALSE      TRUE     
- 2         100      0.25              1 FALSE      norm  FALSE      FALSE    
+ 1         200      0.25              4 FALSE      norm  TRUE       FALSE    
+ 2         100      0.25              4 TRUE       skew  TRUE       FALSE    
  3         200      2                 1 TRUE       norm  TRUE       FALSE    
- 4         200      0.25              4 FALSE      norm  TRUE       FALSE    
+ 4         100      2                 4 TRUE       norm  FALSE      FALSE    
  5         100      2                 1 FALSE      skew  TRUE       FALSE    
- 6         100      0.25              4 TRUE       skew  TRUE       FALSE    
- 7         100      2                 1 TRUE       skew  FALSE      TRUE     
- 8         200      0.25              1 FALSE      skew  TRUE       TRUE     
- 9         100      2                 4 TRUE       norm  FALSE      FALSE    
-10         200      2                 4 FALSE      skew  FALSE      FALSE    
+ 6         100      0.25              1 FALSE      norm  FALSE      FALSE    
+ 7         100      0.25              4 FALSE      skew  FALSE      TRUE     
+ 8         200      2                 4 FALSE      skew  FALSE      FALSE    
+ 9         200      0.25              1 FALSE      skew  TRUE       TRUE     
+10         100      2                 1 TRUE       skew  FALSE      TRUE     
 11         200      0.25              1 TRUE       skew  FALSE      FALSE    
 12         200      2                 4 TRUE       skew  TRUE       TRUE     </code></pre>
 </div>
@@ -2896,16 +2896,16 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <pre><code># A tibble: 240 × 8
    sample_size mean_diff variance.ratio equal_size dists same_dists symmetric
          &lt;dbl&gt;     &lt;dbl&gt;          &lt;dbl&gt; &lt;lgl&gt;      &lt;chr&gt; &lt;lgl&gt;      &lt;lgl&gt;    
- 1         100      0.25              4 FALSE      skew  FALSE      TRUE     
- 2         100      0.25              4 FALSE      skew  FALSE      TRUE     
- 3         100      0.25              4 FALSE      skew  FALSE      TRUE     
- 4         100      0.25              4 FALSE      skew  FALSE      TRUE     
- 5         100      0.25              4 FALSE      skew  FALSE      TRUE     
- 6         100      0.25              4 FALSE      skew  FALSE      TRUE     
- 7         100      0.25              4 FALSE      skew  FALSE      TRUE     
- 8         100      0.25              4 FALSE      skew  FALSE      TRUE     
- 9         100      0.25              4 FALSE      skew  FALSE      TRUE     
-10         100      0.25              4 FALSE      skew  FALSE      TRUE     
+ 1         200      0.25              4 FALSE      norm  TRUE       FALSE    
+ 2         200      0.25              4 FALSE      norm  TRUE       FALSE    
+ 3         200      0.25              4 FALSE      norm  TRUE       FALSE    
+ 4         200      0.25              4 FALSE      norm  TRUE       FALSE    
+ 5         200      0.25              4 FALSE      norm  TRUE       FALSE    
+ 6         200      0.25              4 FALSE      norm  TRUE       FALSE    
+ 7         200      0.25              4 FALSE      norm  TRUE       FALSE    
+ 8         200      0.25              4 FALSE      norm  TRUE       FALSE    
+ 9         200      0.25              4 FALSE      norm  TRUE       FALSE    
+10         200      0.25              4 FALSE      norm  TRUE       FALSE    
 # ℹ 230 more rows
 # ℹ 1 more variable: detect &lt;lgl&gt;</code></pre>
 </div>
@@ -2916,14 +2916,14 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-sample_size      1   2.40    2.40   43.50 2.8e-10 ***
-mean_diff        1   9.60    9.60  174.00 &lt; 2e-16 ***
-variance.ratio   1   3.75    3.75   67.97 1.2e-14 ***
-equal_size       1   4.80    4.80   87.00 &lt; 2e-16 ***
-dists            1   0.07    0.07    1.36    0.24    
-same_dists       1   1.20    1.20   21.75 5.2e-06 ***
-symmetric        1  13.23   13.23  239.70 &lt; 2e-16 ***
-Residuals      232  12.80    0.06                    
+sample_size      1   1.35    1.35   20.29 1.1e-05 ***
+mean_diff        1   9.60    9.60  144.31 &lt; 2e-16 ***
+variance.ratio   1   2.02    2.02   30.32 9.7e-08 ***
+equal_size       1   4.80    4.80   72.16 2.4e-15 ***
+dists            1   0.17    0.17    2.54  0.1126    
+same_dists       1   0.67    0.67   10.15  0.0016 ** 
+symmetric        1  13.81   13.81  207.54 &lt; 2e-16 ***
+Residuals      232  15.43    0.07                    
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
@@ -2932,18 +2932,18 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                            Df Sum Sq Mean Sq F value  Pr(&gt;F)    
-sample_size                  1   2.40    2.40   65.93 2.9e-14 ***
-mean_diff                    1   9.60    9.60  263.71 &lt; 2e-16 ***
-variance.ratio               1   3.75    3.75  103.01 &lt; 2e-16 ***
-equal_size                   1   4.80    4.80  131.86 &lt; 2e-16 ***
-dists                        1   0.07    0.07    2.06  0.1526    
-same_dists                   1   1.20    1.20   32.96 3.0e-08 ***
-symmetric                    1  13.23   13.23  363.29 &lt; 2e-16 ***
-sample_size:mean_diff        1   1.88    1.88   51.51 9.9e-12 ***
-sample_size:variance.ratio   1   0.40    0.40   10.99  0.0011 ** 
-sample_size:equal_size       1   0.63    0.63   17.17 4.8e-05 ***
-sample_size:dists            1   1.60    1.60   43.95 2.4e-10 ***
-Residuals                  228   8.30    0.04                    
+sample_size                  1   1.35    1.35   31.73 5.2e-08 ***
+mean_diff                    1   9.60    9.60  225.65 &lt; 2e-16 ***
+variance.ratio               1   2.02    2.02   47.40 5.5e-11 ***
+equal_size                   1   4.80    4.80  112.82 &lt; 2e-16 ***
+dists                        1   0.17    0.17    3.97 0.04761 *  
+same_dists                   1   0.67    0.67   15.87 9.1e-05 ***
+symmetric                    1  13.81   13.81  324.52 &lt; 2e-16 ***
+sample_size:mean_diff        1   2.55    2.55   59.99 3.1e-13 ***
+sample_size:variance.ratio   1   0.63    0.63   14.69 0.00016 ***
+sample_size:equal_size       1   0.06    0.06    1.32 0.25141    
+sample_size:dists            1   2.50    2.50   58.76 5.1e-13 ***
+Residuals                  228   9.70    0.04                    
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
