@@ -1,7 +1,7 @@
 all: vignettes move clean commit push
 
 vignettes:
-	Rscript -e "setwd('source');files=dir();files=files[grepl('.[Qq]md',files);for(file in files) system(sprintf('quarto render %s',file))"
+	Rscript -e "setwd('source');files=dir();files=files[grepl('.[Qq]md',files)];for(file in files) system(sprintf('quarto render %s',file))"
 
 script2qmd:
 	Rscript -e "setwd('source_solve');files=dir();for(file in files) knitr::spin(file, format='qmd', knit=FALSE)"
