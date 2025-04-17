@@ -81,13 +81,14 @@ Summarise <- function(condition, results, fixed_objects = NULL) {
 # In this example, b = target power of 80%
 interval <- c(20, 1000) # needless wide for most, but shows the point
 
-# Search is terminated when either 200 iterations reached or the
+# Search is terminated when either 100 iterations reached or the
 # prediction CI is within [.795, .805]
 solved <- SimSolve(design=Design, b=.8, interval=interval,
                    generate=Generate, analyse=Analyse, summarise=Summarise,
-                   packages='lavaan', parallel=TRUE,
+                   packages='lavaan', parallel=TRUE, 
+                   ncores = ceiling(parallel::detectCores()/2),
                    verbose=FALSE, check.interval=FALSE,
-                   maxiter=200, predCI.tol=.01)
+                   maxiter=100, predCI.tol=.01)
 solved
 
 #' ## Additional information about the solutions
