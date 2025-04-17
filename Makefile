@@ -1,7 +1,7 @@
 all: vignettes move clean commit push
 
 vignettes:
-	Rscript -e "setwd('source');library('quarto');files=dir();for(file in files) quarto_render(file)"
+	Rscript -e "setwd('source');library('rmarkdown');files=dir();for(file in files) render(file)"
 
 script2qmd:
 	Rscript -e "setwd('source_solve');files=dir();for(file in files) knitr::spin(file, format='qmd', knit=FALSE)"
@@ -18,6 +18,7 @@ clean:
 	$(RM) -r source/*_files/;
 	$(RM) -r source/figure/;
 	$(RM) -r source/SimDesign*/;
+	$(RM) source/SimSolve_*.qmd;
 	$(RM) -r html/reg.html;
 	$(RM) source/*.md;
 	$(RM) source/*.txt;
