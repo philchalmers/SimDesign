@@ -1,4 +1,4 @@
-all: script2qmd vignettes move clean clean_solve commit push
+all: vignettes move clean clean_solve commit push
 
 vignettes:
 	Rscript -e "setwd('source');library('rmarkdown');files=dir();for(file in files) render(file)"
@@ -22,6 +22,7 @@ clean:
 	$(RM) source/*.md;
 	$(RM) source/*.txt;
 	$(RM) source/*.html;
+	$(RM) source/SimSolve_*.qmd;
 
 clean_solve:
 	$(RM) -r source_solve/*_cache/;
@@ -36,4 +37,5 @@ commit:
 	git commit -am "update"
 
 push:
+	git pull --rebase
 	git push

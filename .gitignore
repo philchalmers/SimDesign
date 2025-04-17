@@ -3,3 +3,4 @@ source/cache/
 pres_cache/
 .Rproj.user
 SimDesign-results*
+source/SimSolve_*.qmd
