@@ -1,4 +1,4 @@
-all: vignettes move clean commit push
+all: script2qmd vignettes move clean commit push
 
 vignettes:
 	Rscript -e "setwd('source');files=dir();files=files[grepl('.[Qq]md',files)];for(file in files) system(sprintf('quarto render %s',file))"
