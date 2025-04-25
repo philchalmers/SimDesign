@@ -242,7 +242,8 @@
 #'   \code{\link{library}} or \code{\link{require}} calls within the provided simulation functions.
 #'   Alternatively, functions can be called explicitly without attaching the package
 #'   with the \code{::} operator
-#'   (e.g., \code{extraDistr::rgumbel()})
+#'   (e.g., \code{extraDistr::rgumbel()}). Finally, to attach all previously loaded
+#'   packages use \code{packages = .packages()}
 #'
 #' @param beep logical; call the \code{beepr} package when the simulation is completed?
 #'
@@ -1722,7 +1723,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       error_seeds=dplyr::as_tibble(error_seeds),
                                       warning_seeds=dplyr::as_tibble(warning_seeds),
                                       stored_results = if(store_results) stored_Results_list else NULL,
-                                      Design.ID=Design.ID)
+                                      Design.ID=Design.ID,
+                                      functions=list(Generate=Generate, Analyse=Analyse, Summarise=Summarise))
     if(dummy_run) Final$dummy_run <- NULL
     class(Final) <- c('SimDesign', class(Final))
     if(!is.null(filename)){ #save file

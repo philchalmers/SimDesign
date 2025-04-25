@@ -126,7 +126,8 @@ otherwise the functions must be made available by using explicit
 \code{\link{library}} or \code{\link{require}} calls within the provided simulation functions.
 Alternatively, functions can be called explicitly without attaching the package
 with the \code{::} operator
-(e.g., \code{extraDistr::rgumbel()})}
+(e.g., \code{extraDistr::rgumbel()}). Finally, to attach all previously loaded
+packages use \code{packages = .packages()}}
 
 \item{filename}{(optional) the name of the \code{.rds} file to save the final
 simulation results to. If the extension

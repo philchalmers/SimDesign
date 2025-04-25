@@ -19,8 +19,8 @@
 #'   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
 #'   \code{'results'} to extract the simulation results if the option \code{store_results} was passed to
 #'   \code{\link{runSimulation}}, \code{'filename'} and \code{'save_results_dirname'} for extracting
-#'   the saved file/directory name information (if used), and \code{'design'} to extract the original
-#'   design object
+#'   the saved file/directory name information (if used), \code{'functions'} to extract the defined functions
+#'   used in the experiment, and \code{'design'} to extract the original design object
 #'
 #'   Note that \code{'warning_seeds'} are not stored automatically in
 #'   simulations and require passing \code{store_warning_seeds = TRUE} to \code{\link{runSimulation}}.
@@ -100,8 +100,8 @@ SimExtract <- function(object, what, fuzzy = TRUE, append = TRUE){
     } else if(what == 'errors'){
         err <- extract_errors(object, fuzzy=fuzzy)
         if(length(err) && append) cbind(Design, err) else err
-    } else if(what == 'summarise'){
-        extract_summarise(object)
+    } else if(what == 'functions'){
+        extract_functions(object)
     }  else if(what == 'seeds'){
         extract_seeds(object)
     } else if(what == 'random.seeds'){
@@ -179,6 +179,12 @@ extract_warning_seeds <- function(object){
 extract_seeds <- function(object){
     extra_info <- attr(object, 'extra_info')
     ret <- extra_info$seeds
+    ret
+}
+
+extract_functions <- function(object){
+    extra_info <- attr(object, 'extra_info')
+    ret <- extra_info$functions
     ret
 }
 

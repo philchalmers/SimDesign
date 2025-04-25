@@ -22,8 +22,8 @@ SimExtract(object, what, fuzzy = TRUE, append = TRUE)
   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
   \code{'results'} to extract the simulation results if the option \code{store_results} was passed to
   \code{\link{runSimulation}}, \code{'filename'} and \code{'save_results_dirname'} for extracting
-  the saved file/directory name information (if used), and \code{'design'} to extract the original
-  design object
+  the saved file/directory name information (if used), \code{'functions'} to extract the defined functions
+  used in the experiment, and \code{'design'} to extract the original design object
 
   Note that \code{'warning_seeds'} are not stored automatically in
   simulations and require passing \code{store_warning_seeds = TRUE} to \code{\link{runSimulation}}.}
