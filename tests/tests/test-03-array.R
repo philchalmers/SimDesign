@@ -230,7 +230,7 @@ test_that('array', {
     results <- SimResults(final)
 
     expect_equal(final$REPLICATIONS, c(50, 50, 50))
-    expect_equal(length(results), 150)
+    expect_equal(nrow(results), 150)
 
     setwd('..')
     SimClean(dirs='sim/')
