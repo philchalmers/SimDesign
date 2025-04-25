@@ -283,7 +283,7 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
                     caught_warnings[,match(nmsw, names(caught_warnings))]
             }
             ret$SIM_TIME <- ret$SIM_TIME + readin[[i]]$SIM_TIME
-            if(!is.null(ret$SUMMARISE)){
+            if(any(names(ret) == 'SUMMARISE')){
                 for(row in 1:length(readin[[i]]$SUMMARISE)){
                     for(el in 1:length(readin[[i]]$SUMMARISE[[row]])){
                         # TODO make more robust?
