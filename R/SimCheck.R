@@ -74,7 +74,7 @@ SimCheck <- function(dir = NULL, files = NULL, min = 1L, max = NULL){
         warning(sprintf('The following row conditions have nothing saved:\n%s\n',
                         paste0(ret$Empty_Row_Conditions, collapse=',')))
     }
-    if(any(notin) || any(!nonzero)){
+    if(any(notin) || any(empty_file)){
         ret$Empty_Missing_Row_Conditions <- c(minmax[notin], minmax[empty_file]) |>
             unique() |>
             sort()
