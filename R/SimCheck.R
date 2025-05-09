@@ -17,8 +17,9 @@
 #'
 #' @seealso \code{\link{runArraySimulation}}, \code{\link{SimCollect}}
 #'
-#' @return returns an invisible vector of missing indicies. If no missing
-#'   then an empty vector is returned
+#' @return returns an invisible list of indices of empty, missing and
+#'   empty-and-missing row conditions.. If no missing then an empty list is
+#'   returned
 #'
 #' @references
 #'
@@ -57,17 +58,27 @@ SimCheck <- function(dir = NULL, files = NULL, min = 1L, max = NULL){
         max <- attr(tmp, 'extra_info')$number_of_conditions
     }
     minmax <- min:max
-    notin <- !(paste0(filename, '-', minmax, '.rds') %in% files)
+    mainlist <- paste0(filename, '-', minmax, '.rds')
+    have <- mainlist %in% files
+    notin <- !have
+    names(have) <- mainlist
+    ret <-  list()
     if(any(notin)){
+        ret$Missing_Row_Conditions <- minmax[notin]
         warning(sprintf('The following row conditions were missing:\n%s\n',
-            paste0(minmax[notin], collapse=',')))
+                        paste0(ret$Missing_Row_Conditions, collapse=',')))
     }
-    nonzero <- sapply(files, file.size) > 0
-    if(any(!nonzero))
+    empty_file <- (sapply(names(have)[have], file.size, USE.NAMES = FALSE) == 0)
+    if(any(empty_file)) {
+        ret$Empty_Row_Conditions <- minmax[empty_file]
         warning(sprintf('The following row conditions have nothing saved:\n%s\n',
-                    paste0(minmax[!nonzero], collapse=',')))
-    ret <- if(any(notin) || any(!nonzero)){
-        which(notin | !nonzero) - 1 + min
+                        paste0(ret$Empty_Row_Conditions, collapse=',')))
+    }
+    if(any(notin) || any(empty_file)){
+        ret$Empty_Missing_Row_Conditions <- c(minmax[notin], minmax[empty_file]) |>
+            unique() |>
+            sort()
     } else integer()
+
     invisible(ret)
 }
