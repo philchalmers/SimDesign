@@ -18,7 +18,7 @@
 #' @seealso \code{\link{runArraySimulation}}, \code{\link{SimCollect}}
 #'
 #' @return returns an invisible list of indices of empty, missing and
-#'   empty-and-missing row conditions.. If no missing then an empty list is
+#'   empty-and-missing row conditions. If no missing then an empty list is
 #'   returned
 #'
 #' @references
@@ -62,7 +62,7 @@ SimCheck <- function(dir = NULL, files = NULL, min = 1L, max = NULL){
     have <- mainlist %in% files
     notin <- !have
     names(have) <- mainlist
-    ret <-  list()
+    ret <- list()
     if(any(notin)){
         ret$Missing_Row_Conditions <- minmax[notin]
         warning(sprintf('The following row conditions were missing:\n%s\n',
@@ -78,7 +78,7 @@ SimCheck <- function(dir = NULL, files = NULL, min = 1L, max = NULL){
         ret$Empty_Missing_Row_Conditions <- c(minmax[notin], minmax[empty_file]) |>
             unique() |>
             sort()
-    } else integer()
+    }
 
     invisible(ret)
 }

@@ -233,7 +233,7 @@
 #' dir('sim/')
 #'
 #' # check that all files saved (warnings will be raised if missing files)
-#' SimCheck('sim/') |> isTRUE()
+#' SimCheck('sim/')
 #'
 #' condition14 <- readRDS('sim/condition-14.rds')
 #' condition14

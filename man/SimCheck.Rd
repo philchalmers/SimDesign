@@ -19,8 +19,9 @@ E.g. \code{c('mysim-1.rds', 'mysim-2.rds', ...)}}
 is extracted from the attributes in the first file}
 }
 \value{
-returns an invisible vector of missing indicies. If no missing
-  then an empty vector is returned
+returns an invisible list of indices of empty, missing and
+  empty-and-missing row conditions. If no missing then an empty list is
+  returned
 }
 \description{
 Given the saved files from a \code{\link{runArraySimulation}} remote
