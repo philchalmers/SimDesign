@@ -2,7 +2,7 @@
 % Please edit documentation in R/Design.R
 \name{expandDesign}
 \alias{expandDesign}
-\title{Create the simulation design object}
+\title{Expand the simulation design object for array computing}
 \usage{
 expandDesign(Design, repeat_conditions)
 }
@@ -61,7 +61,8 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
 }
 \seealso{
-\code{\link{createDesign}}, \code{\link{SimCollect}},
+\code{\link{expandReplications}},
+  \code{\link{createDesign}}, \code{\link{SimCollect}},
    \code{\link{runArraySimulation}}
 }
 \author{

@@ -2,6 +2,9 @@
 
 ## Changes in SimDesign 2.20
 
+- Add `expandReplications()` function to more naturally match the `expandDesign()`
+  structure
+
 - When `summarise()` returns a `list` this information is now stored in a column
   `SUMMARISE` in the final simulation object. This replaces the previous
   `SimExtract()` approach to index the same information

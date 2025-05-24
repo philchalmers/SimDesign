@@ -134,7 +134,81 @@ createDesign <- function(..., subset, fractional = NULL,
     ret
 }
 
-#' Create the simulation design object
+#' Expand the replications to match \code{expandDesign}
+#'
+#' Expands the replication budget to match the \code{\link{expandDesign}}
+#' structure.
+#'
+#' @param replications number of replications. Can be a scalar to reflect the same
+#' replications overall, or a vector of unequal replication bugets.
+#'
+#' @param repeat_conditions integer vector used to repeat each design row
+#'   the specified number of times. Can either be a single integer, which repeats
+#'   each row this many times, or an integer vector equal to the number of total
+#'   rows in the created object.
+#'
+#' @return an integer vector of the replication budget matching
+#' the expanded structure in \code{\link{expandDesign}}
+#'
+#' @seealso \code{\link{expandDesign}}
+#'
+#' @references
+#'
+#' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
+#' with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4), 248-280.
+#' \doi{10.20982/tqmp.16.4.p248}
+#'
+#' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
+#' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
+#' \doi{10.1080/10691898.2016.1246953}
+#'
+#' @export
+#'
+#' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
+#'
+#' @examples
+#' \dontrun{
+#'
+#' # repeat each row 4 times (for cluster computing)
+#' Design <- createDesign(N = c(10, 20),
+#'                        SD.equal = c(TRUE, FALSE))
+#' Design4 <- expandDesign(Design, 4)
+#' Design4
+#'
+#' # match the replication budget. Target is 1000 replications
+#' (replications4 <- expandReplications(1000, 4))
+#'
+#' # hence, evaluate each row in Design4 250 times
+#' cbind(Design4, replications4)
+#'
+#' ####
+#' # Unequal Design intensities
+#'
+#' Design <- createDesign(SD.equal = c(TRUE, FALSE),
+#'                        N = c(10, 100, 1000))
+#' # split first two conditions into half rows, next two conditions into quarters,
+#' #  while N=1000 condition into tenths
+#' expand <- c(2,2,4,4,10,10)
+#' eDesign <- expandDesign(Design, expand)
+#' eDesign
+#'
+#' # target replications is R=1000 per condition
+#' (replications24 <- expandReplications(1000, expand))
+#' cbind(Design24, replications24)
+#'
+#' }
+expandReplications <- function(replications, repeat_conditions){
+    stopifnot(length(replications) == 1 ||
+                  length(replications) == length(repeat_conditions))
+    if(length(replications) == 1)
+        replications <- rep(replications, length(repeat_conditions))
+    if(length(repeat_conditions) == 1) return(replications/repeat_conditions)
+    replications <- rep(replications/repeat_conditions,
+                        times=repeat_conditions)
+    replications
+}
+
+#' Expand the simulation design object for array computing
 #'
 #' Repeat each design row the specified number of times. This is primarily used
 #' for cluster computing where jobs are distributed with batches of replications
@@ -160,7 +234,8 @@ createDesign <- function(..., subset, fractional = NULL,
 #' @return a \code{tibble} or \code{data.frame} containing the simulation experiment
 #'   conditions to be evaluated in \code{\link{runSimulation}}
 #'
-#' @seealso \code{\link{createDesign}}, \code{\link{SimCollect}},
+#' @seealso \code{\link{expandReplications}},
+#'   \code{\link{createDesign}}, \code{\link{SimCollect}},
 #'    \code{\link{runArraySimulation}}
 #'
 #' @references
