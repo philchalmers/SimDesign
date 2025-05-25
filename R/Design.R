@@ -184,7 +184,7 @@ createDesign <- function(..., subset, fractional = NULL,
 #' ####
 #' # Unequal Design intensities
 #'
-#' Design <- createDesign(SD.equal = c(TRUE, FALSE),
+#' Design24 <- createDesign(SD.equal = c(TRUE, FALSE),
 #'                        N = c(10, 100, 1000))
 #' # split first two conditions into half rows, next two conditions into quarters,
 #' #  while N=1000 condition into tenths
@@ -194,7 +194,7 @@ createDesign <- function(..., subset, fractional = NULL,
 #'
 #' # target replications is R=1000 per condition
 #' (replications24 <- expandReplications(1000, expand))
-#' cbind(Design24, replications24)
+#' cbind(eDesign, replications24)
 #'
 #' }
 expandReplications <- function(replications, repeat_conditions){
