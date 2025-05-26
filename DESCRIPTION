@@ -25,6 +25,7 @@ Imports:
     methods,
     testthat,
     parallel,
+    snow,
     parallelly,
     dplyr,
     sessioninfo,
