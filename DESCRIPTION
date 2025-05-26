@@ -25,7 +25,6 @@ Imports:
     methods,
     testthat,
     parallel,
-    snow,
     parallelly,
     dplyr,
     sessioninfo,
@@ -37,6 +36,7 @@ Imports:
     R.utils,
     stats
 Suggests:
+    snow,
     knitr,
     ggplot2,
     tidyr,
