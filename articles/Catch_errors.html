@@ -4,72 +4,119 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Managing warning and error messages • SimDesign</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Managing warning and error messages">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Managing warning and error messages">
+<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
 </head>
-<body>
-    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+<body data-spy="scroll" data-target="#toc">
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <div class="container template-article">
+      <header><div class="navbar navbar- navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">SimDesign</a>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.19.3</span>
+      </span>
+    </div>
 
-    <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+<li>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.19.3</small>
-
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/Catch_errors.html">Managing warning and error messages</a></li>
-    <li><a class="dropdown-item" href="../articles/Fixed_obj_fun.html">Exporting objects and functions from the workspace</a></li>
-    <li><a class="dropdown-item" href="../articles/HPC-computing.html">Distributing jobs for high-performance computing (HPC) clusters (e.g., via Slurm)</a></li>
-    <li><a class="dropdown-item" href="../articles/MultipleAnalyses.html">Multiple analysis functions</a></li>
-    <li><a class="dropdown-item" href="../articles/Parallel-computing.html">Parallel computing information</a></li>
-    <li><a class="dropdown-item" href="../articles/Saving-results.html">Saving simulation results and state</a></li>
-    <li><a class="dropdown-item" href="../articles/SimDesign-intro.html">Introduction to the SimDesign package</a></li>
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/Catch_errors.html">Managing warning and error messages</a>
+    </li>
+    <li>
+      <a href="../articles/Fixed_obj_fun.html">Exporting objects and functions from the workspace</a>
+    </li>
+    <li>
+      <a href="../articles/HPC-computing.html">Distributing jobs for high-performance computing (HPC) clusters (e.g., via Slurm)</a>
+    </li>
+    <li>
+      <a href="../articles/MultipleAnalyses.html">Multiple analysis functions</a>
+    </li>
+    <li>
+      <a href="../articles/Parallel-computing.html">Parallel computing information</a>
+    </li>
+    <li>
+      <a href="../articles/Saving-results.html">Saving simulation results and state</a>
+    </li>
+    <li>
+      <a href="../articles/SimDesign-intro.html">Introduction to the SimDesign package</a>
+    </li>
   </ul>
 </li>
-<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
-<ul class="navbar-nav">
-<li class="nav-item"><form class="form-inline" role="search">
- <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
-</form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/philchalmers/SimDesign/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/philchalmers/SimDesign/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-sun"></span>
+
+
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li class="dropdown-header">Light</li>
+    <li class="dropdown-header">Dark</li>
+    <li class="dropdown-header">Auto</li>
+  </ul>
+</li>
       </ul>
 </div>
-
-
+<!--/.nav-collapse -->
   </div>
-</nav><div class="container template-article">
+<!--/.container -->
+</div>
+<!--/.navbar -->
 
 
 
-
-<div class="row">
-  <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>Managing warning and error messages</h1>
+      </header><div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header toc-ignore">
+      <h1 data-toc-skip>Managing warning and error messages</h1>
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2025-05-26</h4>
+            <h4 data-toc-skip class="date">2025-06-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/Catch_errors.Rmd" class="external-link"><code>vignettes/Catch_errors.Rmd</code></a></small>
-      <div class="d-none name"><code>Catch_errors.Rmd</code></div>
+      <div class="hidden name"><code>Catch_errors.Rmd</code></div>
+
     </div>
 
     
@@ -140,13 +187,13 @@ iterations).</p>
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">100</span>, </span>
 <span>                       generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Design: 1/3;   Replications: 100;   RAM Used: 69.2 Mb;   Total Time: 0.00s </span></span>
+<span><span class="co">## Design: 1/3;   Replications: 100;   RAM Used: 69.3 Mb;   Total Time: 0.00s </span></span>
 <span><span class="co">##  Conditions: N=10</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 2/3;   Replications: 100;   RAM Used: 70.4 Mb;   Total Time: 0.05s </span></span>
+<span><span class="co">## Design: 2/3;   Replications: 100;   RAM Used: 70.5 Mb;   Total Time: 0.05s </span></span>
 <span><span class="co">##  Conditions: N=20</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/3;   Replications: 100;   RAM Used: 70.6 Mb;   Total Time: 0.10s </span></span>
+<span><span class="co">## Design: 3/3;   Replications: 100;   RAM Used: 70.7 Mb;   Total Time: 0.10s </span></span>
 <span><span class="co">##  Conditions: N=30</span></span>
 <span><span class="co">## </span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -154,9 +201,9 @@ iterations).</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 9</span></span></span>
 <span><span class="co">##       N     bias REPLICATIONS SIM_TIME RAM_USED       SEED COMPLETED      ERRORS</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.05s    70.4 Mb  <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Mon May 26 03…     53</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.05s    70.6 Mb   312<span style="text-decoration: underline;">928</span>385 Mon May 26 03…     52</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.04s    70.7 Mb   866<span style="text-decoration: underline;">248</span>189 Mon May 26 03…     42</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.05s    70.5 Mb  <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Wed Jun 11 15…     53</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.05s    70.7 Mb   312<span style="text-decoration: underline;">928</span>385 Wed Jun 11 15…     52</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.04s    70.8 Mb   866<span style="text-decoration: underline;">248</span>189 Wed Jun 11 15…     42</span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: WARNINGS &lt;int&gt;</span></span></span></code></pre>
 <p>What you’ll immediately notice from this output object is that counts
 of the error and warning messages have been appended to the
@@ -368,22 +415,29 @@ tallied in the resulting <code><a href="../reference/runSimulation.html">runSimu
 the serious warnings will be tallied as disruptive errors instead of
 warnings that continued normally.</p>
 </div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
-    </nav></aside>
+  </div>
+
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+
+      </div>
+
 </div>
 
 
 
-    <footer><div class="pkgdown-footer-left">
-  <p>Developed by Phil Chalmers.</p>
+      <footer><div class="copyright">
+  <p></p>
+<p>Developed by Phil Chalmers.</p>
 </div>
 
-<div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<div class="pkgdown">
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
-    </footer>
+      </footer>
 </div>
+
 
 
 
