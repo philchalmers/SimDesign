@@ -1,4 +1,6 @@
 url: http://philchalmers.github.io/SimDesign/
 template:
-  bootstrap: 5
+  light-switch: true
+  theme: gruvbox-light
+  theme-dark: gruvbox-dark
 
