@@ -135,7 +135,7 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE,
         stopifnot(ncol(estimate) == length(parameter))
     diff <- t(t(estimate) - parameter)
     ret <- if(type == 'relative') rowMeans(t(diff) / parameter)
-        else if(type == 'abs_relative') rowMeans(t(diff) / abs(parameter))
+        else if(type == 'abs_relative') rowMeans(abs(t(diff) / parameter))
         else if(type == 'standardized') colMeans(diff) / colSDs(estimate)
         else colMeans(diff)
     if(abs) ret <- abs(ret)
