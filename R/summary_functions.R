@@ -23,8 +23,8 @@
 #'   the relative bias statistic (i.e., divide the bias by the value
 #'   in \code{parameter}; note that multiplying this by 100 gives the "percent bias" measure, or
 #'   if Type I error rates (\eqn{\alpha}) are supplied will result in the "percentage error"),
-#'   \code{'abs_relative'} computes the relative bias but the absolute values of the parameters
-#'   are used in the denominator rather than the (potentially) signed input values,
+#'   \code{'abs_relative'} computes the relative bias for each replication independently, takes the
+#'   absolute value of each term, then computes the mean estimate,
 #'   and \code{'standardized'} computes the standardized bias estimate
 #'   (standard bias divided by the standard deviation of the sample estimates)
 #'
@@ -64,6 +64,7 @@
 #' bias(samp, pop)
 #' bias(samp, pop, type = 'relative')
 #' bias(samp, pop, type = 'standardized')
+#' bias(samp, pop, type = 'abs_relative')
 #'
 #' dev <- samp - pop
 #' bias(dev)
