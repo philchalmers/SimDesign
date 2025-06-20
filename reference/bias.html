@@ -134,8 +134,8 @@ form (therefore <code>mean(estimate))</code> will be returned)</p></dd>
 the relative bias statistic (i.e., divide the bias by the value
 in <code>parameter</code>; note that multiplying this by 100 gives the "percent bias" measure, or
 if Type I error rates (\(\alpha\)) are supplied will result in the "percentage error"),
-<code>'abs_relative'</code> computes the relative bias but the absolute values of the parameters
-are used in the denominator rather than the (potentially) signed input values,
+<code>'abs_relative'</code> computes the relative bias for each replication independently, takes the
+absolute value of each term, then computes the mean estimate,
 and <code>'standardized'</code> computes the standardized bias estimate
 (standard bias divided by the standard deviation of the sample estimates)</p></dd>
 
@@ -189,6 +189,8 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01171788</span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span>, type <span class="op">=</span> <span class="st">'standardized'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.04533049</span>
+<span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span>, type <span class="op">=</span> <span class="st">'abs_relative'</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2080012</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dev</span> <span class="op">&lt;-</span> <span class="va">samp</span> <span class="op">-</span> <span class="va">pop</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">dev</span><span class="op">)</span></span></span>
