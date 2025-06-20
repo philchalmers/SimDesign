@@ -155,26 +155,26 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span>, length.out<span class="op">=</span><span class="fl">9</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est1</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">0</span>, <span class="fl">.2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">rds</span> <span class="op">&lt;-</span> <span class="fu">RD</span><span class="op">(</span><span class="va">est1</span>, <span class="va">pop</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  9.161195e-02 -2.856299e-03 -4.743365e-03 -5.027428e-05  7.186801e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6]  8.588291e-05  3.142036e-03  2.113068e-03  1.682020e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.1221416359 -0.0001433052  0.0014094503  0.0001416364  0.0046819446</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6]  0.0029448524  0.0022352420 -0.0015123786  0.0017933783</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rds</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -4.743e-03 -5.027e-05  7.187e-04  1.019e-02  2.113e-03  9.161e-02 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -0.1221416 -0.0001433  0.0014095 -0.0122879  0.0022352  0.0046819 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># matrix</span></span></span>
 <span class="r-in"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est2</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">0</span>, <span class="fl">.2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">RD</span><span class="op">(</span><span class="va">est2</span>, <span class="va">pop</span>, as.vector <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]       [,2]        [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -0.09783211  0.6298721 -0.43147808</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.32422225  0.3607876 -0.07267172</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  0.04717509 -0.2042294  0.12395488</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]      [,3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.04717509 -0.2042294 0.1239549</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.17461297 -0.6481818 0.4303047</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.38129425 -1.0145981 0.5729735</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">rds</span> <span class="op">&lt;-</span> <span class="fu">RD</span><span class="op">(</span><span class="va">est2</span>, <span class="va">pop</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.09783211 -0.32422225  0.04717509  0.62987208  0.36078763 -0.20422939</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7] -0.43147808 -0.07267172  0.12395488</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.04717509  0.17461297  0.38129425 -0.20422939 -0.64818184 -1.01459805</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7]  0.12395488  0.43030474  0.57297354</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rds</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -0.431478 -0.204229 -0.072672  0.003484  0.123955  0.629872 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -1.01460 -0.20423  0.12395 -0.01519  0.38129  0.57297 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

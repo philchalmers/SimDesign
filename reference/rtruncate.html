@@ -180,38 +180,38 @@ calls to <code>rfun</code> are required).</p>
 <span class="r-in"><span><span class="va">vec</span> <span class="op">&lt;-</span> <span class="fu">rtruncate</span><span class="op">(</span><span class="fl">1000</span>, <span class="va">rnorm</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">vec</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -1.96441 -0.59106  0.06295  0.05083  0.64803  2.94607 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -1.99048 -0.53406  0.04363  0.06644  0.67385  2.85335 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># truncated correlated multivariate normal between [-1,4]</span></span></span>
 <span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu">rtruncate</span><span class="op">(</span><span class="fl">1000</span>, <span class="va">rmvnorm</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">4</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>   sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        V1                V2         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Min.   :-0.9951   Min.   :-0.9982  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1st Qu.:-0.1587   1st Qu.:-0.1852  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Median : 0.5094   Median : 0.3215  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Mean   : 0.6414   Mean   : 0.4022  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3rd Qu.: 1.3206   3rd Qu.: 0.9156  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Max.   : 3.9608   Max.   : 3.0498  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Min.   :-0.9998   Min.   :-0.9960  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1st Qu.:-0.2525   1st Qu.:-0.1614  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Median : 0.4880   Median : 0.3145  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Mean   : 0.5777   Mean   : 0.3678  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3rd Qu.: 1.2252   3rd Qu.: 0.8249  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Max.   : 3.8032   Max.   : 3.0367  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># truncated correlated multivariate normal between [-1,4] for the</span></span></span>
 <span class="r-in"><span><span class="co">#  first column and [0,3] for the second column</span></span></span>
 <span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu">rtruncate</span><span class="op">(</span><span class="fl">1000</span>, <span class="va">rmvnorm</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>   sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        V1                 V2          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Min.   :-0.99785   Min.   :0.002002  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1st Qu.: 0.07791   1st Qu.:0.316850  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Median : 0.84390   Median :0.707062  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Mean   : 0.88020   Mean   :0.792454  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3rd Qu.: 1.58988   3rd Qu.:1.147544  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Max.   : 3.89832   Max.   :2.964880  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        V1                V2           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Min.   :-0.9982   Min.   :0.0005329  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1st Qu.: 0.1540   1st Qu.:0.3214723  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Median : 0.8437   Median :0.7322517  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Mean   : 0.9169   Mean   :0.8272766  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3rd Qu.: 1.6181   3rd Qu.:1.2162638  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Max.   : 3.9698   Max.   :2.8991041  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># truncated chi-square with df = 4 between [2,6]</span></span></span>
 <span class="r-in"><span><span class="va">vec</span> <span class="op">&lt;-</span> <span class="fu">rtruncate</span><span class="op">(</span><span class="fl">1000</span>, <span class="va">rchisq</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">6</span><span class="op">)</span>, df <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">vec</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2.000   2.688   3.500   3.637   4.437   5.999 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2.000   2.663   3.482   3.625   4.429   5.999 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

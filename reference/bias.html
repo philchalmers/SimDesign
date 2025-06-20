@@ -184,63 +184,63 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="va">samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0398212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.02343577</span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span>, type <span class="op">=</span> <span class="st">'relative'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0199106</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01171788</span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span>, type <span class="op">=</span> <span class="st">'standardized'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0800926</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.04533049</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dev</span> <span class="op">&lt;-</span> <span class="va">samp</span> <span class="op">-</span> <span class="va">pop</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">dev</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0398212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.02343577</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># equivalent here</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">samp</span><span class="op">)</span>, <span class="va">pop</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0398212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.02343577</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># matrix input</span></span></span>
 <span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>M1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, M2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">mat</span>, parameter <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          M1          M2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -0.01850358  0.07757825 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -0.02424779  0.03586307 </span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">mat</span>, parameter <span class="op">=</span> <span class="fl">2</span>, type <span class="op">=</span> <span class="st">'relative'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          M1          M2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -0.00925179  0.03878912 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -0.01212389  0.01793153 </span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">mat</span>, parameter <span class="op">=</span> <span class="fl">2</span>, type <span class="op">=</span> <span class="st">'standardized'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          M1          M2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -0.03281049  0.08895343 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -0.04423598  0.03869588 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># different parameter associated with each column</span></span></span>
 <span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>M1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>, M2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">3</span>, sd <span class="op">=</span> <span class="fl">.25</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">mat</span>, parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           M1           M2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -0.005719856 -0.003655121 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -0.004776519 -0.004162633 </span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">mat</span>, parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'relative'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           M1           M2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -0.002859928 -0.001218374 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -0.002388259 -0.001387544 </span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">mat</span>, parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'standardized'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          M1          M2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -0.02318099 -0.01474418 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -0.01938046 -0.01682118 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># same, but with data.frame</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>M1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, M2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">df</span>, parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         M1         M2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.04919156 0.07691533 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.06385994 0.05227774 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># parameters of the same size</span></span></span>
 <span class="r-in"><span><span class="va">parameters</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="va">estimates</span> <span class="op">&lt;-</span> <span class="va">parameters</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">estimates</span>, <span class="va">parameters</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.03489829</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.4862697</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># relative difference dividing by the magnitude of parameters</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">estimates</span>, <span class="va">parameters</span>, type <span class="op">=</span> <span class="st">'abs_relative'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.1708617</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.05534452</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># relative bias as a percentage</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">estimates</span>, <span class="va">parameters</span>, type <span class="op">=</span> <span class="st">'abs_relative'</span>, percent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -17.08617</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -5.534452</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># percentage error (PE) statistic given alpha (Type I error) and EDR() result</span></span></span>
 <span class="r-in"><span><span class="co"># edr &lt;- EDR(results, alpha = .05)</span></span></span>

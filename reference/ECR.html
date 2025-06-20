@@ -188,11 +188,11 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">ECR</span><span class="op">(</span><span class="va">CIs</span>, <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.92</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.89</span>
 <span class="r-in"><span><span class="fu">ECR</span><span class="op">(</span><span class="va">CIs</span>, <span class="fl">0</span>, tails <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.03 0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05 0.06</span>
 <span class="r-in"><span><span class="fu">ECR</span><span class="op">(</span><span class="va">CIs</span>, <span class="fl">0</span>, complement <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># proportion outside interval</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.11</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># single vector input</span></span></span>
 <span class="r-in"><span><span class="va">CI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span></span>
@@ -212,11 +212,11 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="va">CIs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">parameters</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, <span class="va">parameters</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">parameters</span> <span class="op">&lt;-</span> <span class="va">parameters</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ECR</span><span class="op">(</span><span class="va">CIs</span>, <span class="va">parameters</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># average width of CIs</span></span></span>
 <span class="r-in"><span><span class="fu">ECR</span><span class="op">(</span><span class="va">CIs</span>, <span class="va">parameters</span>, CI_width<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.107228</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9430346</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ECR() for multiple CI estimates in the same object</span></span></span>
 <span class="r-in"><span><span class="va">parameter</span> <span class="op">&lt;-</span> <span class="fl">10</span></span></span>
@@ -226,26 +226,26 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span>                  upperCI_2<span class="op">=</span><span class="va">parameter</span> <span class="op">+</span> <span class="fl">2</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">CIs</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   lowerCI_1 upperCI_1 lowerCI_2 upperCI_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  9.868010  10.95595  8.056701  11.70004</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  9.540787  10.46340  9.198803  10.49114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  9.990340  10.39441  8.744864  11.23700</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  9.095354  10.05217  9.778473  10.56988</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  9.670788  10.71086  9.079359  11.79476</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  9.392610  10.17076  8.889488  11.87073</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  9.697420  10.43922  9.067682  11.34765</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  9.036860  10.47361  9.943891  11.98180</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  9.879903  10.61021  9.316586  11.41808</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  9.605395  10.04121  9.311876  10.80536</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  9.028351  10.85002  8.656422  11.09058</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  9.599401  10.24557  8.774412  10.10181</span>
 <span class="r-in"><span><span class="fu">ECR</span><span class="op">(</span><span class="va">CIs</span>, <span class="va">parameter</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 1</span>
 <span class="r-in"><span><span class="fu">ECR</span><span class="op">(</span><span class="va">CIs</span>, <span class="va">parameter</span>, tails<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 0 0 0</span>
 <span class="r-in"><span><span class="fu">ECR</span><span class="op">(</span><span class="va">CIs</span>, <span class="va">parameter</span>, CI_width<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8840042 1.9404326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.030260 1.957086</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># often a good idea to provide names for the output</span></span></span>
 <span class="r-in"><span><span class="fu">ECR</span><span class="op">(</span><span class="va">CIs</span>, <span class="va">parameter</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'this'</span>, <span class="st">'that'</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> this that </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1    1 </span>
 <span class="r-in"><span><span class="fu">ECR</span><span class="op">(</span><span class="va">CIs</span>, <span class="va">parameter</span>, CI_width<span class="op">=</span><span class="cn">TRUE</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'this'</span>, <span class="st">'that'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      this      that </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.8840042 1.9404326 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     this     that </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1.030260 1.957086 </span>
 <span class="r-in"><span><span class="fu">ECR</span><span class="op">(</span><span class="va">CIs</span>, <span class="va">parameter</span>, tails<span class="op">=</span><span class="cn">TRUE</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'this'</span>, <span class="st">'that'</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> this_lower this_upper that_lower that_upper </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          0          0          0          0 </span>
