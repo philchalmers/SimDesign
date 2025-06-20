@@ -121,7 +121,11 @@ bias <- function(estimate, parameter = NULL, type = 'bias', abs = FALSE,
     stopifnot(is.matrix(estimate))
     stopifnot(type %in% c('bias', 'standardized', 'relative', 'abs_relative'))
     n_col <- ncol(estimate)
-    if(type == "relative") stopifnot(!is.null(parameter))
+    if(type %in% c("relative", 'abs_relative')){
+        stopifnot(!is.null(parameter))
+        if(any(parameter == 0))
+            stop('relative measures cannot have any parameter = 0', call.=FALSE)
+    }
     if(is.null(parameter)) parameter <- 0
     if(is.data.frame(parameter)) parameter <- unlist(parameter)
     stopifnot(is.vector(parameter))
