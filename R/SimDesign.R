@@ -35,7 +35,7 @@
 #' @importFrom progressr progressor
 #' @importFrom beepr beep
 # @importFrom robustbase glmrob
-#' @importFrom utils recover packageVersion head tail capture.output object.size
+#' @importFrom utils recover packageVersion head tail capture.output object.size sessionInfo
 #' @keywords package
 #' @references
 #'

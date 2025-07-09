@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.20
 
+- Information provided to `runSimulation(..., packages)` now automatically adds `sessionInfo()$otherPkgs`
+  to the list. This detects and adds any explicit `library()` attachments declared before
+  the simulation execution to be exported
+
 - Add `expandReplications()` function to more naturally match the `expandDesign()`
   structure
 

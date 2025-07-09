@@ -121,13 +121,13 @@ constant global elements (e.g., a constant for sample size)}
 
 \item{packages}{a character vector of external packages to be used during the simulation (e.g.,
 \code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when running code in
-parallel to use non-standard functions from additional packages,
-otherwise the functions must be made available by using explicit
-\code{\link{library}} or \code{\link{require}} calls within the provided simulation functions.
-Alternatively, functions can be called explicitly without attaching the package
-with the \code{::} operator
-(e.g., \code{extraDistr::rgumbel()}). Finally, to attach all previously loaded
-packages use \code{packages = .packages()}}
+parallel to use non-standard functions from additional packages. Note that any previously attached
+packages explicitly loaded via \code{\link{library}} or \code{\link{require}}
+will be automatically added to this list, provided that they are visible
+in the \code{otherPkgs} element
+from \code{\link[utils]{sessionInfo}}. Alternatively, functions can be called
+explicitly without attaching the package with the \code{::} operator
+(e.g., \code{extraDistr::rgumbel()})}
 
 \item{filename}{(optional) the name of the \code{.rds} file to save the final
 simulation results to. If the extension

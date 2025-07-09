@@ -62,7 +62,10 @@ Finally, note that all the rules about objects and object naming from the typica
 The following code is [adopted from the Wiki](http://philchalmers.github.io/SimDesign/html/03-Parameter_recovery_simulation.html), and so details about the simulation should be obtained from that source. 
 
 ```{r}
+# Note that all attached packages are automatically exported in SimDesign
 library(SimDesign)
+library(mirt)
+library(lavaan)
 # SimFunctions(nAnalyses = 2)
 
 sample_sizes <- c(250, 500, 1000)
@@ -150,7 +153,7 @@ res <- runSimulation(Design, replications=100, verbose=FALSE, parallel=TRUE,
                      generate=Generate, 
                      analyse=list(FIML=Analyse.FIML, DWLS=Analyse.DWLS), 
                      summarise=Summarise, filename = 'mirt_lavaan',
-                     packages=c('mirt', 'lavaan'), fixed_objects=pars)
+                     fixed_objects=pars)
 ```
 
 ```{r include=FALSE}
@@ -626,7 +629,7 @@ res <- runSimulation(Design, replications=100, verbose=FALSE, parallel=TRUE,
                      generate=Generate, 
                      analyse=list(Analyse.FIML, Analyse.DWLS), 
                      summarise=Summarise, filename = 'mirt_lavaan',
-                     packages=c('mirt', 'lavaan'), fixed_objects=pars)
+                     fixed_objects=pars)
 ```
 
 then only one analysis function will be applied at a time in the simulation experiment. Note that in this case there is no need to append 'MML' or 'DWLS' to the `results` objects as this becomes redundant with the `method` column in the `Design` object, and so the `analyse` list input is specified as an unnamed list (cf. earlier when the input was named, which appended `MML.` and `DWLS.` to the `results` output in `Summarise()`).

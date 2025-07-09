@@ -82,11 +82,30 @@ The same reasoning above applies to functions defined in the R work-space as wel
 stopCluster(cl)
 ```
 
-# Exporting objects example in `SimDesign`
+# Exporting functions for parallel computing
 
-In order to make objects safely visible in `SimDesign` the strategy is very simple: wrap all desired objects into a named list (or other object), and pass this to the `fixed_objects` argument. From here, elements can be indexed using the `$` operator or `with()` function, or whatever other method may be convenient. Note, however, this is only required for defined *objects* not *functions* --- `SimDesign` automatically makes user-defined functions available across all nodes.
+## Exporting third-party libraries 
 
-As an aside, an alternative approach is simply to define/source the objects within the respective `SimDesign` functions; that way they will clearly be visible at run-time. The following `fixed_objects` approach is really only useful when the defined objects contain a large amount of code.
+For simulations that require third-party packages to work correctly (e.g., `rgumbel()` from the `extraDistr` package) there needs to be explicit instructions to indicate which namespace these functions originate from. For parallel computing applications there are three ways to indicate the namespace of a third-party function:
+
+1) Explicitly attach the package prior to executing the simulation via `library()` or `require()`. This must be done prior to using `runSimulation()`
+2) Explicitly pass a character vector containing the packages to be attached to `runSimulation(..., packages)` (e.g., `runSimulation(..., packages = c('extraDistr', 'copula'))`)
+3) Point to the function using the `::` operator (e.g., `extraDistr::rgumbel()`)
+
+For performance and masking related issues it is recommended to only export functions that are actually used in the simulation (e.g., attach `dplyr` and `tidy` explicitly rather than attaching the complete `tidyverse`).
+Note that 2) is technically not required if 1) or 3) is used. 
+
+As a reminder, attaching packages can result in function masking in the R session, and therefore in situations were ambiguity exists it is recommended to use the `::` operator explicitly even if these were attached. Doing so avoids makes it clear where the function originates regardless of the order with which the packages were attached to the session. 
+
+## Exporting user-defined functions
+
+Exporting user-defined functions explicitly is not required in `SimDesign`. Any previously written function that has been defined in the R work space prior to executing `runSimulation()` will automatically be exported (again, be cognizant of any potential function masking). Other R objects, on the other hand, are *not* explicitly exported. See the next section for further details.
+
+# Exporting objects in `SimDesign`
+
+In order to make objects safely visible in `SimDesign` the strategy is very simple: wrap all desired objects into a named list (or other object), and pass this to the `fixed_objects` argument. From here, elements can be indexed using the `$` operator or `with()` function, or whatever other method may be convenient. Note, however, this is only required for defined *objects* not *functions*.
+
+As an aside, an alternative approach is simply to define/source the objects within the respective `SimDesign` functions; that way they will clearly be visible at run-time. The following `fixed_objects` approach is really only useful when the defined objects contain a large amount of code or information.
 
 ```{r}
 library(SimDesign)
@@ -138,4 +157,4 @@ res <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_ob
                      parallel = TRUE)
 ```
 
-Again, remember that this is only required for R **objects**, NOT for user-defined functions!
+Again, remember that this is only required for R **objects**, NOT for user-defined or third-party functions!
