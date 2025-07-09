@@ -20,4 +20,4 @@ jobs:
 
       - name: R CMD CHECK
         run: |
-          Rscript -e 'install.packages(devtools::check(error_on = "warning")'
+          Rscript -e 'devtools::check(error_on = "warning")'
