@@ -171,69 +171,6 @@ P_ogive <- function(a, d, Theta) pnorm(a * Theta + d)
 ```
 
 ```{r eval=FALSE}
-Generate <- function(condition, fixed_objects) {
-
-    N <- condition$sample_size
-    nitems <- condition$nitems
-    nitems_name <- ifelse(nitems == 10, 'ten', 'twenty')
-
-    #extract objects from fixed_objects
-    a <- fixed_objects[[nitems_name]]['a', ]
-    d <- fixed_objects[[nitems_name]]['d', ]
-
-    dat <- matrix(NA, N, nitems)
-    colnames(dat) <- paste0('item_', 1:nitems)
-    Theta <- rnorm(N)
-    for(j in 1:nitems){
-        p <- P_ogive(a[j], d[j], Theta)
-        for(i in 1:N)
-            dat[i,j] <- sample(c(1,0), 1, prob = c(p[i], 1 - p[i]))
-    }
-    as.data.frame(dat) #data.frame works nicer with lavaan
-}
-
-Analyse.FIML <- function(condition, dat, fixed_objects) {
-    mod <- mirt(dat, 1L, verbose=FALSE)
-    if(!extract.mirt(mod, 'converged')) stop('mirt did not converge')
-    cfs <- mirt::coef(mod, simplify = TRUE, digits = Inf)
-    FIML_as <- cfs$items[,1L] / 1.702
-    
-    ret <- c(as=unname(FIML_as))
-    ret
-}
-
-Analyse.DWLS <- function(condition, dat, fixed_objects) {
-    nitems <- condition$nitems
-    lavmod <- paste0('F =~ ', paste0('NA*', colnames(dat)[1L], ' + '),
-                     paste0(colnames(dat)[-1L], collapse = ' + '),
-                     '\nF ~~ 1*F')
-    lmod <- sem(lavmod, dat, ordered = colnames(dat))
-    if(!lavInspect(lmod, 'converged')) stop('lavaan did not converge')
-    cfs2 <- lavaan::coef(lmod)
-    DWLS_alpha <- cfs2[1L:nitems]
-    const <- sqrt(1 - DWLS_alpha^2)
-    DWLS_as <- DWLS_alpha / const
-
-    ret <- c(as=unname(DWLS_as))
-    ret
-}
-
-Summarise <- function(condition, results, fixed_objects) {
-    nitems <- condition$nitems
-    nitems_name <- ifelse(nitems == 10, 'ten', 'twenty')
-
-    #extract objects from fixed_objects
-    a <- fixed_objects[[nitems_name]]['a', ]
-    pop <- c(a, a)
-
-    obt_bias <- bias(results, pop)
-    obt_RMSE <- RMSE(results, pop)
-    ret <- c(bias=obt_bias, RMSE=obt_RMSE)
-    ret
-}
-```
-
-```{r eval=FALSE}
 res <- runSimulation(Design, replications=100, verbose=FALSE, parallel=TRUE,
                      generate=Generate, 
                      analyse=list(FIML=Analyse.FIML, DWLS=Analyse.DWLS), 
