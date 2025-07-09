@@ -61,7 +61,7 @@ Finally, note that all the rules about objects and object naming from the typica
 
 The following code is [adopted from the Wiki](http://philchalmers.github.io/SimDesign/html/03-Parameter_recovery_simulation.html), and so details about the simulation should be obtained from that source. 
 
-```{r}
+```{r eval=FALSE}
 # Note that all attached packages are automatically exported in SimDesign
 library(SimDesign)
 library(mirt)
