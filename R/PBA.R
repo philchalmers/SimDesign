@@ -214,14 +214,16 @@ PBA <- function(f.root, interval, ..., p = .6,
     if(!is.null(lastSolve)){
         # continuation
         root_info <- attr(lastSolve, 'root')[[1]]
-        iter <- root_info$iter - 1
+        iter <- root_info$iter
         fx <- log(root_info$fx)
         x <- root_info$x
         medhistory <- root_info$medhistory
+        roothistory <- root_info$roothistory
         if(length(medhistory) == maxiter)
             stop('Please increase the maximum number of iterations', call.=FALSE)
-        roothistory <- medhistory <-
-            c(medhistory, rep(NA, maxiter - length(medhistory)))
+        roothistory <- c(roothistory, rep(NA, maxiter - length(medhistory)))
+        medhistory <- c(medhistory, numeric(maxiter - length(medhistory)))
+        .SIMDENV$stored_medhistory <- root_info$medhistory
     }
 
     while(TRUE){
@@ -357,7 +359,7 @@ PBA <- function(f.root, interval, ..., p = .6,
     if(verbose)
         cat("\n")
     fx <- exp(fx) / sum(exp(fx)) # normalize final result
-    medhistory <- medhistory[1L:(iter-1L)]
+    medhistory <- medhistory[1L:iter]
     # BI <- belief_interval(x, fx, CI=CI)
     root <- if(!interpolate || is.na(glmpred0[1]))
         medhistory[length(medhistory)] else glmpred0[1L]
@@ -365,7 +367,8 @@ PBA <- function(f.root, interval, ..., p = .6,
         warning('Interpolation model failed; root set to last PBA estimate',
                 call.=FALSE)
     ret <- list(iter=iter, root=root, terminated_early=converged, integer=integer,
-                e.froot=e.froot, x=x, fx=fx, medhistory=medhistory,
+                e.froot=e.froot, x=x, fx=fx,
+                medhistory=medhistory, roothistory=roothistory[1:length(medhistory)],
                 stored_results=.SIMDENV$stored_results,
                 stored_history=.SIMDENV$stored_history,
                 time=as.numeric(proc.time()[3L]-start_time),

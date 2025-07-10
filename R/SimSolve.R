@@ -127,10 +127,9 @@
 #'   independently specified termination criteria in \code{control}. See
 #'   \code{\link{timeFormater}} for alternative specifications
 #'
-#' @param lastSolve \emph{Currently experimental}
-#'   stored object from previous execution of \code{SimSolve} to be updated. Use this
+#' @param lastSolve stored object from previous execution of \code{SimSolve} to be updated. Use this
 #'   if you want to continue the stochastic root search given previously collected
-#'   stochastic root solving information
+#'   root solving information
 #'
 #' @param control a \code{list} of the algorithm control parameters. If not specified,
 #'   the defaults described below are used.
@@ -577,7 +576,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         if(store){
             pick <- min(which(sapply(.SIMDENV$stored_results, is.null)))
             .SIMDENV$stored_results[[pick]] <- ret$summary_results
-            .SIMDENV$stored_medhistory[[pick]] <- x
+            .SIMDENV$stored_medhistory[pick] <- x
             .SIMDENV$stored_history[[pick]] <-
                 data.frame(y=val, x=x, reps=replications)
         }
@@ -679,10 +678,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                 stop('Please increase maxiter', call.=FALSE)
             .SIMDENV$stored_results[1:len] <- root_info$stored_results
             .SIMDENV$stored_history[1:len] <- root_info$stored_history
-            .SIMDENV$stored_medhistory[1:length(root_info$medhistory)] <-
-                root_info$medhistory
         }
-        on.exit(.SIMDENV$FromSimSolve <- NULL, add=TRUE)
+        on.exit(.SIMDENV <- NULL, add=TRUE)
         if(method == 'ProBABLI'){
             roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                                   design.row=as.data.frame(design[i,]),

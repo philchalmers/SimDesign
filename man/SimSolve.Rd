@@ -176,10 +176,9 @@ associated with  \code{b = .80} requires that the advertised 95% prediction CI
 is consistently between [.795, .805] then \code{predCI.tol = .01} should be
 used to reflect this tolerance range}
 
-\item{lastSolve}{\emph{Currently experimental}
-stored object from previous execution of \code{SimSolve} to be updated. Use this
+\item{lastSolve}{stored object from previous execution of \code{SimSolve} to be updated. Use this
 if you want to continue the stochastic root search given previously collected
-stochastic root solving information}
+root solving information}
 
 \item{verbose}{logical; print information to the console?}
 
