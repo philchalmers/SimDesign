@@ -127,10 +127,6 @@
 #'   independently specified termination criteria in \code{control}. See
 #'   \code{\link{timeFormater}} for alternative specifications
 #'
-#' @param lastSolve stored object from previous execution of \code{SimSolve} to be updated. Use this
-#'   if you want to continue the stochastic root search given previously collected
-#'   root solving information
-#'
 #' @param control a \code{list} of the algorithm control parameters. If not specified,
 #'   the defaults described below are used.
 #'
@@ -477,7 +473,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      ncores = parallelly::availableCores(omit = 1L),
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
                      maxiter = 100L, check.interval = TRUE,
-                     predCI = .95, predCI.tol = NULL, lastSolve = NULL,
+                     predCI = .95, predCI.tol = NULL,
                      verbose = TRUE, control = list(), ...){
 
     # robust <- FALSE
@@ -649,7 +645,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             utils::flush.console()
         }
         if(verbose) cat("\n")
-
+        dots <- list(...)
+        lastSolve <- dots$lastSolve ## From Spower(..., lastSpower)
         .SIMDENV$stored_results <- vector('list', maxiter)
         .SIMDENV$stored_medhistory <- rep(NA, maxiter)
         .SIMDENV$stored_history <- vector('list', maxiter)

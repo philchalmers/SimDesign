@@ -30,7 +30,6 @@ SimSolve(
   check.interval = TRUE,
   predCI = 0.95,
   predCI.tol = NULL,
-  lastSolve = NULL,
   verbose = TRUE,
   control = list(),
   ...
@@ -175,10 +174,6 @@ For example, when solving for a sample size value (\code{N}) if the solution
 associated with  \code{b = .80} requires that the advertised 95% prediction CI
 is consistently between [.795, .805] then \code{predCI.tol = .01} should be
 used to reflect this tolerance range}
-
-\item{lastSolve}{stored object from previous execution of \code{SimSolve} to be updated. Use this
-if you want to continue the stochastic root search given previously collected
-root solving information}
 
 \item{verbose}{logical; print information to the console?}
 
