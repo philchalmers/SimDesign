@@ -127,6 +127,11 @@
 #'   independently specified termination criteria in \code{control}. See
 #'   \code{\link{timeFormater}} for alternative specifications
 #'
+#' @param lastSolve \emph{Currently experimental}
+#'   stored object from previous execution of \code{SimSolve} to be updated. Use this
+#'   if you want to continue the stochastic root search given previously collected
+#'   stochastic root solving information
+#'
 #' @param control a \code{list} of the algorithm control parameters. If not specified,
 #'   the defaults described below are used.
 #'
@@ -473,8 +478,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      ncores = parallelly::availableCores(omit = 1L),
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
                      maxiter = 100L, check.interval = TRUE,
-                     verbose = TRUE, control = list(),
-                     predCI = .95, predCI.tol = NULL, ...){
+                     predCI = .95, predCI.tol = NULL, lastSolve = NULL,
+                     verbose = TRUE, control = list(), ...){
 
     # robust <- FALSE
     org.opts <- options()
@@ -665,7 +670,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       # robust = robust,
                                       predCI = c((1-predCI)/2, predCI + (1-predCI)/2),
                                       predCI.tol=predCI.tol,
-                                      interpolate.burnin=burnin.iter)
+                                      interpolate.burnin=burnin.iter,
+                                      lastSolve=lastSolve)
         if(method == 'ProBABLI'){
             roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                                   design.row=as.data.frame(design[i,]),

@@ -28,10 +28,11 @@ SimSolve(
   type = ifelse(.Platform$OS.type == "windows", "PSOCK", "FORK"),
   maxiter = 100L,
   check.interval = TRUE,
-  verbose = TRUE,
-  control = list(),
   predCI = 0.95,
   predCI.tol = NULL,
+  lastSolve = NULL,
+  verbose = TRUE,
+  control = list(),
   ...
 )
 
@@ -160,6 +161,26 @@ whether \code{f(interval[1L])} and \code{f(interval[2L])} have opposite
 signs? If \code{FALSE}, the specified \code{interval} is assumed to contain a root,
 where \code{f(interval[1]) < 0} and \code{f(interval[2] > 0}. Default is \code{TRUE}}
 
+\item{predCI}{advertised confidence interval probability for final
+model-based prediction of target \code{b} given the root input estimate.
+Returned as an element in the \code{summary()} list output}
+
+\item{predCI.tol}{(optional) rather than relying on the changes between successive
+estimates (default), if the predicting CI is consistently within this
+supplied tolerance range then the search will be terminated.
+This provides termination behaviour based on the predicted
+precision of the root solutions rather than their stability history, and therefore
+can be used to obtain estimates with a particular level of advertised accuracy.
+For example, when solving for a sample size value (\code{N}) if the solution
+associated with  \code{b = .80} requires that the advertised 95% prediction CI
+is consistently between [.795, .805] then \code{predCI.tol = .01} should be
+used to reflect this tolerance range}
+
+\item{lastSolve}{\emph{Currently experimental}
+stored object from previous execution of \code{SimSolve} to be updated. Use this
+if you want to continue the stochastic root search given previously collected
+stochastic root solving information}
+
 \item{verbose}{logical; print information to the console?}
 
 \item{control}{a \code{list} of the algorithm control parameters. If not specified,
@@ -187,21 +208,6 @@ where \code{f(interval[1]) < 0} and \code{f(interval[2] > 0}. Default is \code{T
      raw data from the \code{Analyse} step? Set this to \code{TRUE} when the individual
      results from \code{Analyse} give less meaningful information}
    }}
-
-\item{predCI}{advertised confidence interval probability for final
-model-based prediction of target \code{b} given the root input estimate.
-Returned as an element in the \code{summary()} list output}
-
-\item{predCI.tol}{(optional) rather than relying on the changes between successive
-estimates (default), if the predicting CI is consistently within this
-supplied tolerance range then the search will be terminated.
-This provides termination behaviour based on the predicted
-precision of the root solutions rather than their stability history, and therefore
-can be used to obtain estimates with a particular level of advertised accuracy.
-For example, when solving for a sample size value (\code{N}) if the solution
-associated with  \code{b = .80} requires that the advertised 95% prediction CI
-is consistently between [.795, .805] then \code{predCI.tol = .01} should be
-used to reflect this tolerance range}
 
 \item{...}{additional arguments to be pasted to \code{\link{PBA}}}
 
