@@ -30,6 +30,7 @@ SimSolve(
   check.interval = TRUE,
   predCI = 0.95,
   predCI.tol = NULL,
+  lastSolve = NULL,
   verbose = TRUE,
   control = list(),
   ...
@@ -174,6 +175,9 @@ For example, when solving for a sample size value (\code{N}) if the solution
 associated with  \code{b = .80} requires that the advertised 95% prediction CI
 is consistently between [.795, .805] then \code{predCI.tol = .01} should be
 used to reflect this tolerance range}
+
+\item{lastSolve}{stub for \code{Spower} package; not to be used by
+front-end users}
 
 \item{verbose}{logical; print information to the console?}
 

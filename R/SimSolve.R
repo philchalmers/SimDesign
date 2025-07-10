@@ -127,6 +127,9 @@
 #'   independently specified termination criteria in \code{control}. See
 #'   \code{\link{timeFormater}} for alternative specifications
 #'
+#' @param lastSolve stub for \code{Spower} package; not to be used by
+#'   front-end users
+#'
 #' @param control a \code{list} of the algorithm control parameters. If not specified,
 #'   the defaults described below are used.
 #'
@@ -473,7 +476,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      ncores = parallelly::availableCores(omit = 1L),
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
                      maxiter = 100L, check.interval = TRUE,
-                     predCI = .95, predCI.tol = NULL,
+                     predCI = .95, predCI.tol = NULL, lastSolve = NULL,
                      verbose = TRUE, control = list(), ...){
 
     # robust <- FALSE
@@ -646,7 +649,6 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         }
         if(verbose) cat("\n")
         dots <- list(...)
-        lastSolve <- dots$lastSolve ## From Spower(..., lastSpower)
         .SIMDENV$stored_results <- vector('list', maxiter)
         .SIMDENV$stored_medhistory <- rep(NA, maxiter)
         .SIMDENV$stored_history <- vector('list', maxiter)
