@@ -1260,7 +1260,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         parallel <- FALSE
         verbose <- FALSE
     }
-    packages <- unique(c(packages, 'SimDesign', names(utils::sessionInfo()$otherPkgs)))
+    packages <- unique(c(packages, 'SimDesign'))
+    if(all(names(utils::sessionInfo()$otherPkgs) != 'future'))
+        packages <- unique(c(packages, names(utils::sessionInfo()$otherPkgs)))
     char_functions <- deparse(substitute(Functions[[i]]))
     if(any(grepl('browser\\(', char_functions))){
         if(verbose && parallel)
