@@ -25,7 +25,7 @@ solve the root equation f(x) - b = 0."><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.19.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.19.5</span>
       </span>
     </div>
 
@@ -130,10 +130,11 @@ solve the root equation <code>f(x) - b = 0</code>.</p>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">.Platform</span><span class="op">$</span><span class="va">OS.type</span> <span class="op">==</span> <span class="st">"windows"</span>, <span class="st">"PSOCK"</span>, <span class="st">"FORK"</span><span class="op">)</span>,</span>
 <span>  maxiter <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  check.interval <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  predCI <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  predCI.tol <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lastSolve <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -305,6 +306,31 @@ signs? If <code>FALSE</code>, the specified <code>interval</code> is assumed to 
 where <code>f(interval[1]) &lt; 0</code> and <code>f(interval[2] &gt; 0</code>. Default is <code>TRUE</code></p></dd>
 
 
+<dt id="arg-predci">predCI<a class="anchor" aria-label="anchor" href="#arg-predci"></a></dt>
+<dd><p>advertised confidence interval probability for final
+model-based prediction of target <code>b</code> given the root input estimate.
+Returned as an element in the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> list output</p></dd>
+
+
+<dt id="arg-predci-tol">predCI.tol<a class="anchor" aria-label="anchor" href="#arg-predci-tol"></a></dt>
+<dd><p>(optional) rather than relying on the changes between successive
+estimates (default), if the predicting CI is consistently within this
+supplied tolerance range then the search will be terminated.
+This provides termination behaviour based on the predicted
+precision of the root solutions rather than their stability history, and therefore
+can be used to obtain estimates with a particular level of advertised accuracy.
+For example, when solving for a sample size value (<code>N</code>) if the solution
+associated with  <code>b = .80</code> requires that the advertised 95<!-- % prediction CI -->
+is consistently between [.795, .805] then <code>predCI.tol = .01</code> should be
+used to reflect this tolerance range</p></dd>
+
+
+<dt id="arg-lastsolve">lastSolve<a class="anchor" aria-label="anchor" href="#arg-lastsolve"></a></dt>
+<dd><p>stored object from previous execution of <code>SimSolve</code> to be updated. Use this
+if you want to continue the stochastic root search given previously collected
+root solving information</p></dd>
+
+
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>logical; print information to the console?</p></dd>
 
@@ -348,25 +374,6 @@ where <code>f(interval[1]) &lt; 0</code> and <code>f(interval[2] &gt; 0</code>. 
 
 
 </dl></dd>
-
-
-<dt id="arg-predci">predCI<a class="anchor" aria-label="anchor" href="#arg-predci"></a></dt>
-<dd><p>advertised confidence interval probability for final
-model-based prediction of target <code>b</code> given the root input estimate.
-Returned as an element in the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> list output</p></dd>
-
-
-<dt id="arg-predci-tol">predCI.tol<a class="anchor" aria-label="anchor" href="#arg-predci-tol"></a></dt>
-<dd><p>(optional) rather than relying on the changes between successive
-estimates (default), if the predicting CI is consistently within this
-supplied tolerance range then the search will be terminated.
-This provides termination behaviour based on the predicted
-precision of the root solutions rather than their stability history, and therefore
-can be used to obtain estimates with a particular level of advertised accuracy.
-For example, when solving for a sample size value (<code>N</code>) if the solution
-associated with  <code>b = .80</code> requires that the advertised 95<!-- % prediction CI -->
-is consistently between [.795, .805] then <code>predCI.tol = .01</code> should be
-used to reflect this tolerance range</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

@@ -22,7 +22,7 @@ estimates across samples."><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.19.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.19.5</span>
       </span>
     </div>
 
@@ -154,21 +154,21 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">par_ests</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"par"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">SDs</span> <span class="op">&lt;-</span> <span class="fu"><a href="colVars.html">colSDs</a></span><span class="op">(</span><span class="va">par_ests</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       par1       par2       par3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1.00233527 0.09950858 0.06682729 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1.00310962 0.09914041 0.06705057 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">SEs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">R</span>, sd<span class="op">=</span><span class="fl">.01</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>             <span class="fl">1</span><span class="op">/</span><span class="fl">10</span> <span class="op">+</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">R</span>, sd<span class="op">=</span><span class="fl">.01</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>             <span class="fl">1</span><span class="op">/</span><span class="fl">15</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">R</span>, sd<span class="op">=</span><span class="fl">.01</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">E_SEs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">SEs</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.00018554 0.10001727 0.06673456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.00015939 0.10000808 0.06670441</span>
 <span class="r-in"><span><span class="fu">RSE</span><span class="op">(</span><span class="va">SEs</span>, <span class="va">par_ests</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      par1      par2      par3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.9978553 1.0051120 0.9986124 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.9970589 1.0087520 0.9948373 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># equivalent to the form</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">SEs</span><span class="op">)</span> <span class="op">/</span> <span class="va">SDs</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      par1      par2      par3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.9978553 1.0051120 0.9986124 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.9970589 1.0087520 0.9948373 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

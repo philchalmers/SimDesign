@@ -19,7 +19,7 @@ as well as estimate values which are in deviation form."><!-- mathjax --><script
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.19.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.19.5</span>
       </span>
     </div>
 
@@ -189,55 +189,55 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="va">samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5054696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5075164</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dev</span> <span class="op">&lt;-</span> <span class="va">samp</span> <span class="op">-</span> <span class="va">pop</span></span></span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">dev</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5054696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5075164</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span>, type <span class="op">=</span> <span class="st">'NRMSE'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2173464</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1767373</span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">dev</span>, type <span class="op">=</span> <span class="st">'NRMSE'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2173464</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1767373</span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">dev</span>, <span class="va">pop</span>, type <span class="op">=</span> <span class="st">'SRMSE'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.204096</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.136693</span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span>, type <span class="op">=</span> <span class="st">'CV'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5050305</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.488818</span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span>, type <span class="op">=</span> <span class="st">'RMSLE'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2724405</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2894823</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># percentage reported</span></span></span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span>, type <span class="op">=</span> <span class="st">'NRMSE'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2173464</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1767373</span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span>, type <span class="op">=</span> <span class="st">'NRMSE'</span>, percent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 21.73464</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 17.67373</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># matrix input</span></span></span>
 <span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>M1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, M2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">mat</span>, parameter <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        M1        M2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.4792211 1.0632404 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.5053432 0.9771615 </span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">mat</span>, parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        M1        M2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.4792211 1.5376152 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.5053432 1.3365983 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># different parameter associated with each column</span></span></span>
 <span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>M1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>, M2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">3</span>, sd <span class="op">=</span> <span class="fl">.25</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">mat</span>, parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        M1        M2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2514461 0.2531606 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2524631 0.2521457 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># same, but with data.frame</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>M1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, M2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">df</span>, parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        M1        M2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.4382088 1.0450931 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       M1       M2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.491915 1.019048 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># parameters of the same size</span></span></span>
 <span class="r-in"><span><span class="va">parameters</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="va">estimates</span> <span class="op">&lt;-</span> <span class="va">parameters</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">RMSE</span><span class="op">(</span><span class="va">estimates</span>, <span class="va">parameters</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.381805</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.341962</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
