@@ -171,6 +171,7 @@ PBA <- function(f.root, interval, ..., p = .6,
         glmpred.last <- glmpred <- glmpred0 <- c(NA, NA)
         k.success <- FromSimSolve$k.success
         k.successes <- 0L
+        lastSolve <- FromSimSolve$lastSolve
     } else{
         interpolate <- FALSE
         interpolate.burnin <- NULL
@@ -210,6 +211,18 @@ PBA <- function(f.root, interval, ..., p = .6,
     }
     glmpred.converged <- FALSE
     iter <- 0L
+    if(!is.null(lastSolve)){
+        # continuation
+        root_info <- attr(lastSolve, 'root')[[1]]
+        iter <- root_info$iter - 1
+        fx <- log(root_info$fx)
+        x <- root_info$x
+        medhistory <- root_info$medhistory
+        if(length(medhistory) == maxiter)
+            stop('Please increase the maximum number of iterations', call.=FALSE)
+        roothistory <- medhistory <-
+            c(medhistory, rep(NA, maxiter - length(medhistory)))
+    }
 
     while(TRUE){
         iter <- iter + 1L
@@ -353,6 +366,8 @@ PBA <- function(f.root, interval, ..., p = .6,
                 call.=FALSE)
     ret <- list(iter=iter, root=root, terminated_early=converged, integer=integer,
                 e.froot=e.froot, x=x, fx=fx, medhistory=medhistory,
+                stored_results=.SIMDENV$stored_results,
+                stored_history=.SIMDENV$stored_history,
                 time=as.numeric(proc.time()[3L]-start_time),
                 burnin=interpolate.burnin, b=dots$b,
                 predCIs=predCIs[-1L], predCIs_root=predCIs_root)
@@ -421,7 +436,7 @@ getMedian <- function(fx, x){
 }
 
 bool.f <- function(f.root, median, integer, .SIMDENV, ...){
-    val <- valp <- f.root(median, ...)
+    val <- valp <- f.root(median, integer=integer, ...)
     if(integer && !is.null(.SIMDENV$FromSimSolve) && .SIMDENV$FromSimSolve$bolster){
         if(!all(is.na(.SIMDENV$stored_medhistory))){
             whc <- which(median == .SIMDENV$stored_medhistory)

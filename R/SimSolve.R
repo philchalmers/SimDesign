@@ -672,6 +672,17 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                                       predCI.tol=predCI.tol,
                                       interpolate.burnin=burnin.iter,
                                       lastSolve=lastSolve)
+        if(!is.null(lastSolve)){
+            root_info <- attr(lastSolve, 'root')[[1]]
+            len <- length(root_info$stored_results)
+            if(len > maxiter)
+                stop('Please increase maxiter', call.=FALSE)
+            .SIMDENV$stored_results[1:len] <- root_info$stored_results
+            .SIMDENV$stored_history[1:len] <- root_info$stored_history
+            .SIMDENV$stored_medhistory[1:length(root_info$medhistory)] <-
+                root_info$medhistory
+        }
+        on.exit(.SIMDENV$FromSimSolve <- NULL, add=TRUE)
         if(method == 'ProBABLI'){
             roots[[i]] <- try(PBA(root.fun, interval=interval[i, , drop=TRUE], b=b,
                                   design.row=as.data.frame(design[i,]),
