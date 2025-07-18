@@ -27,6 +27,7 @@ runSimulation(
   notifier = NULL,
   beep = FALSE,
   sound = 1,
+  check.globals = FALSE,
   CI = 0.95,
   seed = NULL,
   boot_method = "none",
@@ -298,6 +299,14 @@ argument must be supplied with a valid notifier object (or a list of notifier ob
 \item{beep}{logical; call the \code{beepr} package when the simulation is completed?}
 
 \item{sound}{\code{sound} argument passed to \code{beepr::beep()}}
+
+\item{check.globals}{logical; should the functions be inspected for potential global variable usage?
+Using global object definitions will raise issues with parallel processing, and therefore
+any global object to be use in the simulation should either be defined within the code
+itself of included in the \code{fixed_objects} input. Setting this value to \code{TRUE} will
+return a character vector of potentially problematic objects/functions that appear global, the
+latter of which can be ignored. Careful inspection of this list may prove useful in tracking down
+object export issues}
 
 \item{CI}{bootstrap confidence interval level (default is 95\%)}
 

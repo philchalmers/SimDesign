@@ -25,6 +25,7 @@
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #' @import methods parallel stats
 #' @importFrom sessioninfo session_info
+#' @importFrom codetools findGlobals
 #' @importFrom parallelly availableCores
 #' @importFrom graphics abline
 #' @importFrom R.utils withTimeout

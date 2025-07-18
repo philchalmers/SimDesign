@@ -1,5 +1,10 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.21
+
+- `runSimulation()` gains a `check.globals` argument roughly check for objects 
+  usage from the global environment
+
 ## Changes in SimDesign 2.20
 
 - Information provided to `runSimulation(..., packages)` now automatically adds `sessionInfo()$otherPkgs`

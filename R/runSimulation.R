@@ -258,6 +258,15 @@
 #'   When notification is set to \code{'condition'} or \code{'complete'}, the \code{notifier}
 #'   argument must be supplied with a valid notifier object (or a list of notifier objects).
 #'
+#' @param check.globals logical; should the functions be inspected for potential global variable usage?
+#'   Using global object definitions will raise issues with parallel processing, and therefore
+#'   any global object to be use in the simulation should either be defined within the code
+#'   itself of included in the \code{fixed_objects} input. Setting this value to \code{TRUE} will
+#'   return a character vector of potentially problematic objects/functions that appear global, the
+#'   latter of which can be ignored. Careful inspection of this list may prove useful in tracking down
+#'   object export issues
+#'
+#'
 #' @param notifier A notifier object (or a list of notifier objects, allowing for multiple
 #'   notification methods) required when \code{notification} is not set to \code{"none"}.
 #'   See \code{listAvailableNotifiers} for a list of available notifiers and how to use them.
@@ -1002,7 +1011,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           store_results = TRUE, save_results = FALSE,
                           parallel = FALSE, ncores = parallelly::availableCores(omit = 1L),
                           cl = NULL, notification = 'none', notifier = NULL,
-                          beep = FALSE, sound = 1,
+                          beep = FALSE, sound = 1, check.globals = FALSE,
                           CI = .95, seed = NULL, boot_method='none', boot_draws = 1000L,
                           max_errors = 50L, resume = TRUE, save_details = list(),
                           control = list(), progress = TRUE, verbose = TRUE)
@@ -1322,6 +1331,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if(verbose)
                 message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
         }
+    }
+    if(check.globals){
+        globals <- unique(c(codetools::findGlobals(generate, merge=FALSE)[['variables']],
+                     codetools::findGlobals(analyse, merge=FALSE)[['variables']],
+                     codetools::findGlobals(summarise, merge=FALSE)[['variables']]))
+        return(setdiff(globals, c(names(design), names(fixed_objects))))
     }
     Result_list <- vector('list', nrow(design))
     names(Result_list) <- rownames(design)

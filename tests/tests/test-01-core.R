@@ -102,6 +102,32 @@ test_that('SimDesign', {
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE)
     expect_is(Final, 'data.frame')
 
+    myanalyse_global <-  function(condition, dat, fixed_objects){
+
+        that + 1   # object 'that' not defined in scope
+        nms <- c('welch', 'independent')
+        lessthan.05 <- EDR(results[,nms], alpha = .05)  # results out of scope
+
+        # return the results that will be appended to the Design input
+        ret <- c(lessthan.05=lessthan.05)
+        return(ret)
+    }
+
+    mycollect_global <-  function(condition, results, fixed_objects){
+
+        this + 1   # object 'this' not defined in scope
+        nms <- c('welch', 'independent')
+        lessthan.05 <- EDR(results[,nms], alpha = .05)
+
+        # return the results that will be appended to the Design input
+        ret <- c(lessthan.05=lessthan.05)
+        return(ret)
+    }
+
+    ret <- runSimulation(Design, generate=mysim, analyse=myanalyse_global, summarise=mycollect_global ,
+                  replications = 2, parallel=FALSE, check.globals=TRUE, verbose=FALSE)
+    expect_true(all(ret %in% c('this', 'that', 'results')))
+
     # Simsolve test
     condition <- Design[1,]
     condition$mean_diff <- NA
