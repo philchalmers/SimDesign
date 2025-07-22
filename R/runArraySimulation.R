@@ -332,12 +332,6 @@ runArraySimulation <- function(design, ..., replications,
         filename <- gsub("//", "/", filename)
     }
     save_details$arrayID <- arrayID
-    if(parallel){
-        if(is.null(cl)){
-            cl <- parallel::makeCluster(ncores, type="SOCK")
-            on.exit(parallel::stopCluster(cl), add=TRUE)
-        }
-    }
     max_time.start <- proc.time()[3L]
     if(!is.null(control$max_time))
         control$max_time.start <- max_time.start
@@ -348,7 +342,7 @@ runArraySimulation <- function(design, ..., replications,
         attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[row]
         ret <- runSimulation(design=dsub, replications=replications, seed=seed,
                              verbose=verbose, save_details=save_details,
-                             parallel=parallel, cl=cl,
+                             parallel=parallel, ncores=ncores, cl=cl,
                              control=control, save=FALSE, resume=FALSE, ...)
         attr(ret, 'extra_info')$number_of_conditions <- nrow(design)
         if(addArrayInfo && (is.null(dots$store_results) ||

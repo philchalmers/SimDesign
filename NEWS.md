@@ -4,6 +4,9 @@
 
 - `runSimulation()` gains a `check.globals` argument roughly check for objects 
   usage from the global environment
+  
+- Bugfix in `runArraySimulation()` when distributing complied code with parallel 
+  processing (reported by Udi Alter)
 
 ## Changes in SimDesign 2.20
 
