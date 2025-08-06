@@ -131,7 +131,7 @@ PBA <- function(f.root, interval, ..., p = .6,
                 maxiter = 300L, miniter = 100L, wait.time = NULL,
                 f.prior = NULL, resolution = 10000L,
                 check.interval = TRUE, check.interval.only = FALSE,
-                verbose = TRUE){
+                verbose = ifelse(interactive(), FALSE, TRUE)){
 
     if(maxiter < miniter) maxiter <- miniter
     if(!is.null(wait.time))

@@ -626,7 +626,8 @@
 #'   of all the simulation results for each condition if \code{nrow(Design) > 1}; otherwise, if
 #'   \code{nrow(Design) == 1} or \code{Design} was missing the \code{results} object will be stored as-is
 #'
-#' @param verbose logical; print messages to the R console? Default is \code{TRUE}
+#' @param verbose logical; print messages to the R console? Default is \code{TRUE} when
+#'  in interactive mode
 #'
 #' @return a \code{tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
 #'   with the original \code{design} conditions in the left-most columns,
@@ -1014,7 +1015,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           beep = FALSE, sound = 1, check.globals = FALSE,
                           CI = .95, seed = NULL, boot_method='none', boot_draws = 1000L,
                           max_errors = 50L, resume = TRUE, save_details = list(),
-                          control = list(), progress = TRUE, verbose = TRUE)
+                          control = list(), progress = TRUE,
+                          verbose = ifelse(interactive(), FALSE, TRUE))
 {
     max_time.start <- if(is.null(control$max_time.start)) proc.time()[3L] else control$max_time.start
     stopifnot(!missing(analyse))

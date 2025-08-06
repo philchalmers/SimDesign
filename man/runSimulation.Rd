@@ -37,7 +37,7 @@ runSimulation(
   save_details = list(),
   control = list(),
   progress = TRUE,
-  verbose = TRUE
+  verbose = ifelse(interactive(), FALSE, TRUE)
 )
 
 \method{summary}{SimDesign}(object, ...)
@@ -536,7 +536,8 @@ for each simulation condition?
 This is useful when simulations conditions take a long time to run (see also the
 \code{notification} argument). Default is \code{TRUE}}
 
-\item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
+\item{verbose}{logical; print messages to the R console? Default is \code{TRUE} when
+in interactive mode}
 
 \item{object}{SimDesign object returned from \code{\link{runSimulation}}}
 

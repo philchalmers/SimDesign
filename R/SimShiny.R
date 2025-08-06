@@ -77,11 +77,11 @@
 #'
 #' # print code to console
 #' SimShiny(design=Design, generate=Generate, analyse=Analyse,
-#'          summarise=Summarise, verbose=FALSE)
+#'          summarise=Summarise)
 #'
 #' # save shiny code to file
 #' SimShiny('app.R', design=Design, generate=Generate, analyse=Analyse,
-#'          summarise=Summarise, verbose=FALSE)
+#'          summarise=Summarise)
 #'
 #' # run the application
 #' shiny::runApp()

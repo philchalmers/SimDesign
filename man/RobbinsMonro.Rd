@@ -15,7 +15,7 @@ RobbinsMonro(
   miniter = 100L,
   k = 3L,
   tol = 1e-05,
-  verbose = TRUE,
+  verbose = ifelse(interactive(), FALSE, TRUE),
   fn.a = function(iter, a = 1, b = 1/2, c = 0, ...) a/(iter + c)^b
 )
 

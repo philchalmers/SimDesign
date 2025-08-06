@@ -69,7 +69,7 @@
 #'     mean(results)
 #' }
 #'
-#' res <- runSimulation(replications = 100, seed=1234, verbose=FALSE,
+#' res <- runSimulation(replications = 100, seed=1234,
 #'                      generate=Generate, analyse=Analyse, summarise=Summarise)
 #' res
 #'
