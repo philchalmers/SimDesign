@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.21
 
+- Added `not_parallel` argument to `runSimulation()` to avoid using 
+  parallel processing for specific row conditions. Also works within 
+  `runArraySimulation()`
+
 - `runSimulation()` gains a `check.globals` argument roughly check for objects 
   usage from the global environment
   

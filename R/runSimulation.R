@@ -223,6 +223,11 @@
 #'   However, it is the responsibility of the user to use \code{plan(sequential)} to reset the
 #'   computing plan when the jobs are completed
 #'
+#' @param not_parallel integer vector indicating which rows in the \code{design}
+#'   object should not be run in parallel. This is useful when some version of
+#'   \code{parallel} is used, however the overhead that tags along with parallel processing
+#'   results in higher processing times than simply running the simulation with one core.
+#'
 #' @param cl cluster object defined by \code{\link{makeCluster}} used to run code in parallel
 #'   (ignored if using the \code{\link[future]{future}} package approach).
 #'   If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
@@ -1015,7 +1020,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           beep = FALSE, sound = 1, check.globals = FALSE,
                           CI = .95, seed = NULL, boot_method='none', boot_draws = 1000L,
                           max_errors = 50L, resume = TRUE, save_details = list(),
-                          control = list(), progress = TRUE,
+                          control = list(), not_parallel = NULL, progress = TRUE,
                           verbose = ifelse(interactive(), FALSE, TRUE))
 {
     max_time.start <- if(is.null(control$max_time.start)) proc.time()[3L] else control$max_time.start
@@ -1477,10 +1482,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                            else design[i,],
                                          replications=replications[i],
                                          fixed_objects=fixed_objects,
-                                         cl=cl, MPI=MPI, .options.mpi=.options.mpi, seed=seed,
+                                         cl=if(i %in% not_parallel) NULL else cl,
+                                         MPI=MPI, .options.mpi=.options.mpi, seed=seed,
                                          boot_draws=boot_draws, boot_method=boot_method, CI=CI,
                                          save=save, allow_na=allow_na, allow_nan=allow_nan,
-                                         save_results=save_results, useFuture=useFuture,
+                                         save_results=save_results,
+                                         useFuture=if(i %in% not_parallel) FALSE else useFuture,
                                          store_Random.seeds=store_Random.seeds,
                                          store_warning_seeds=store_warning_seeds,
                                          save_results_out_rootdir=out_rootdir,
@@ -1516,11 +1523,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             condition=if(was_tibble) dplyr::as_tibble(design[i,]) else design[i,],
                             replications=replications[i],
                             fixed_objects=fixed_objects,
-                            cl=cl, MPI=MPI, .options.mpi=.options.mpi, seed=seed,
+                            cl=if(i %in% not_parallel) NULL else cl,
+                            MPI=MPI, .options.mpi=.options.mpi, seed=seed,
                             store_Random.seeds=store_Random.seeds,
                             boot_method=boot_method, boot_draws=boot_draws, CI=CI,
                             save=save, allow_na=allow_na, allow_nan=allow_nan,
-                            save_results=save_results, useFuture=useFuture,
+                            save_results=save_results,
+                            useFuture=if(i %in% not_parallel) FALSE else useFuture,
                             store_warning_seeds=store_warning_seeds,
                             save_results_out_rootdir = out_rootdir,
                             save_results_dirname=save_results_dirname,

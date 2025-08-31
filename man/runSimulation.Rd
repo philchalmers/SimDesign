@@ -36,6 +36,7 @@ runSimulation(
   resume = TRUE,
   save_details = list(),
   control = list(),
+  not_parallel = NULL,
   progress = TRUE,
   verbose = ifelse(interactive(), FALSE, TRUE)
 )
@@ -530,6 +531,11 @@ in the simulation}
      }
 
    }}
+
+\item{not_parallel}{integer vector indicating which rows in the \code{design}
+object should not be run in parallel. This is useful when some version of
+\code{parallel} is used, however the overhead that tags along with parallel processing
+results in higher processing times than simply running the simulation with one core.}
 
 \item{progress}{logical; display a progress bar (using the \code{pbapply} package)
 for each simulation condition?
