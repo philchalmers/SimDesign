@@ -38,7 +38,7 @@ runSimulation(
   control = list(),
   not_parallel = NULL,
   progress = TRUE,
-  verbose = ifelse(interactive(), FALSE, TRUE)
+  verbose = interactive()
 )
 
 \method{summary}{SimDesign}(object, ...)

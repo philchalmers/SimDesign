@@ -1021,7 +1021,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           CI = .95, seed = NULL, boot_method='none', boot_draws = 1000L,
                           max_errors = 50L, resume = TRUE, save_details = list(),
                           control = list(), not_parallel = NULL, progress = TRUE,
-                          verbose = ifelse(interactive(), FALSE, TRUE))
+                          verbose = interactive())
 {
     max_time.start <- if(is.null(control$max_time.start)) proc.time()[3L] else control$max_time.start
     stopifnot(!missing(analyse))
