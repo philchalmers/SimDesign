@@ -385,36 +385,11 @@ on a single processor, and finally store the results to an object called
 <code>res</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">1000</span>, generate<span class="op">=</span><span class="va">Generate</span>, </span>
-<span>                         analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Design: 1/8;   Replications: 1000;   RAM Used: 72.3 Mb;   Total Time: 0.00s </span></span>
-<span><span class="co">##  Conditions: sample_size=30, distribution=norm</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Design: 2/8;   Replications: 1000;   RAM Used: 73.3 Mb;   Total Time: 0.21s </span></span>
-<span><span class="co">##  Conditions: sample_size=60, distribution=norm</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Design: 3/8;   Replications: 1000;   RAM Used: 73.3 Mb;   Total Time: 0.41s </span></span>
-<span><span class="co">##  Conditions: sample_size=120, distribution=norm</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Design: 4/8;   Replications: 1000;   RAM Used: 73.4 Mb;   Total Time: 0.62s </span></span>
-<span><span class="co">##  Conditions: sample_size=240, distribution=norm</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Design: 5/8;   Replications: 1000;   RAM Used: 73.4 Mb;   Total Time: 0.84s </span></span>
-<span><span class="co">##  Conditions: sample_size=30, distribution=chi</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Design: 6/8;   Replications: 1000;   RAM Used: 73.4 Mb;   Total Time: 1.04s </span></span>
-<span><span class="co">##  Conditions: sample_size=60, distribution=chi</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Design: 7/8;   Replications: 1000;   RAM Used: 73.5 Mb;   Total Time: 1.24s </span></span>
-<span><span class="co">##  Conditions: sample_size=120, distribution=chi</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Design: 8/8;   Replications: 1000;   RAM Used: 73.5 Mb;   Total Time: 1.46s </span></span>
-<span><span class="co">##  Conditions: sample_size=240, distribution=chi</span></span>
-<span><span class="co">## </span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Final simulation object</span></span>
+<span>                         analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Final simulation object</span></span>
 <span><span class="va">res</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 19</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 18</span></span></span>
 <span><span class="co">##   sample_size distribution bias.mean_no_trim bias.mean_trim.1 bias.mean_trim.2</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>          30 norm              -<span style="color: #BB0000;">0.004</span><span style="color: #BB0000; text-decoration: underline;">808</span><span style="color: #BB0000;">0</span>        -<span style="color: #BB0000;">0.004</span><span style="color: #BB0000; text-decoration: underline;">683</span><span style="color: #BB0000;">4</span>       -<span style="color: #BB0000;">0.002</span><span style="color: #BB0000; text-decoration: underline;">926</span><span style="color: #BB0000;">5</span> </span></span>
@@ -425,15 +400,15 @@ on a single processor, and finally store the results to an object called
 <span><span class="co">## <span style="color: #BCBCBC;">6</span>          60 chi               -<span style="color: #BB0000;">0.004</span><span style="color: #BB0000; text-decoration: underline;">283</span><span style="color: #BB0000;">5</span>        -<span style="color: #BB0000;">0.346</span><span style="color: #BB0000; text-decoration: underline;">31</span>         -<span style="color: #BB0000;">0.493</span><span style="color: #BB0000; text-decoration: underline;">84</span>   </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">7</span>         120 chi               -<span style="color: #BB0000;">0.005</span><span style="color: #BB0000; text-decoration: underline;">024</span><span style="color: #BB0000;">4</span>        -<span style="color: #BB0000;">0.345</span><span style="color: #BB0000; text-decoration: underline;">66</span>         -<span style="color: #BB0000;">0.488</span><span style="color: #BB0000; text-decoration: underline;">18</span>   </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">8</span>         240 chi               -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">058</span><span style="color: #BB0000;">300</span>      -<span style="color: #BB0000;">0.346</span><span style="color: #BB0000; text-decoration: underline;">50</span>         -<span style="color: #BB0000;">0.489</span><span style="color: #BB0000; text-decoration: underline;">43</span>   </span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 14 more variables: bias.median &lt;dbl&gt;, RMSE.mean_no_trim &lt;dbl&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 13 more variables: bias.median &lt;dbl&gt;, RMSE.mean_no_trim &lt;dbl&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   RMSE.mean_trim.1 &lt;dbl&gt;, RMSE.mean_trim.2 &lt;dbl&gt;, RMSE.median &lt;dbl&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   RE.mean_no_trim &lt;dbl&gt;, RE.mean_trim.1 &lt;dbl&gt;, RE.mean_trim.2 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   RE.median &lt;dbl&gt;, REPLICATIONS &lt;dbl&gt;, SIM_TIME &lt;chr&gt;, RAM_USED &lt;chr&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   SEED &lt;int&gt;, COMPLETED &lt;chr&gt;</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   RE.median &lt;dbl&gt;, REPLICATIONS &lt;dbl&gt;, SIM_TIME &lt;chr&gt;, SEED &lt;int&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   COMPLETED &lt;chr&gt;</span></span></span></code></pre>
 <p>If <code>runSimulation(..., store_results = TRUE)</code> were used,
 which is the current default in the package if RAM is not an issue, then
 the complete stored results can be viewed using</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract complete set of stored results</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="va">results</span></span></code></pre></div>
@@ -482,7 +457,7 @@ of trimming results in even less efficiency, and using the median as a
 proxy to estimate the mean is the least effective method. This is
 witnessed rather clearly in the following table, which prints the
 relative efficiency of the estimators:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">REs</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">'RE\\.'</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">Design</span>, <span class="va">REs</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   sample_size distribution RE.mean_no_trim RE.mean_trim.1 RE.mean_trim.2</span></span>
@@ -523,18 +498,18 @@ we demonstrate the results from the first condition (row 1 of
 <code>Design</code>) to show what each function returns.</p>
 <p>A single replication in a Monte Carlo simulation results in the
 following objects:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="va">Design</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
 <span><span class="co">##   sample_size distribution</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>          30 norm</span></span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Generate.html">Generate</a></span><span class="op">(</span><span class="va">condition</span><span class="op">)</span></span>
 <span><span class="va">dat</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] 2.37 3.18 2.16 4.60 3.33 2.18 3.49 3.74 3.58 2.69 4.51 3.39 2.38 0.79 4.12</span></span>
 <span><span class="co">## [16] 2.96 2.98 3.94 3.82 3.59 3.92 3.78 3.07 1.01 3.62 2.94 2.84 1.53 2.52 3.42</span></span></code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Analyse.html">Analyse</a></span><span class="op">(</span><span class="va">condition</span>, <span class="va">dat</span><span class="op">)</span></span>
 <span><span class="va">res</span></span></code></pre></div>
 <pre><code><span><span class="co">## mean_no_trim  mean_trim.1  mean_trim.2       median </span></span>
@@ -546,7 +521,7 @@ using the generated data, and returns a named vector with the observed
 parameter estimates. Of course, this is only a single replication, and
 therefore is not really meaningful in the grand scheme of things; so, it
 must be repeated a number of times.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># repeat 1000x</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span>, <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
@@ -568,7 +543,7 @@ estimates returned from each statistic. After this is obtained, we can
 move on to summarising the output through the <code><a href="../reference/Summarise.html">Summarise()</a></code>
 function to obtain average estimates, their associated sampling error,
 their efficiency, and so on.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/Summarise.html">Summarise</a></span><span class="op">(</span><span class="va">condition</span>, <span class="va">results</span><span class="op">)</span> </span></code></pre></div>
 <pre><code><span><span class="co">## bias.mean_no_trim  bias.mean_trim.1  bias.mean_trim.2       bias.median </span></span>
 <span><span class="co">##           -0.0011           -0.0031           -0.0035           -0.0037 </span></span>
