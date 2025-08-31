@@ -30,7 +30,7 @@ must be passed to the fixed_objects input to become available across nodes)."><!
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.20.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.20.2</span>
       </span>
     </div>
 
@@ -148,6 +148,7 @@ must be passed to the <code>fixed_objects</code> input to become available acros
 <span>  resume <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  save_details <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  not_parallel <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -716,6 +717,13 @@ in the simulation</p></dd>
 </dl></dd>
 
 
+<dt id="arg-not-parallel">not_parallel<a class="anchor" aria-label="anchor" href="#arg-not-parallel"></a></dt>
+<dd><p>integer vector indicating which rows in the <code>design</code>
+object should not be run in parallel. This is useful when some version of
+<code>parallel</code> is used, however the overhead that tags along with parallel processing
+results in higher processing times than simply running the simulation with one core.</p></dd>
+
+
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
 <dd><p>logical; display a progress bar (using the <code>pbapply</code> package)
 for each simulation condition?
@@ -1025,9 +1033,9 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N      mu       SE REPLICATIONS SIM_TIME       SEED COMPLETED             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.795  0.945<span style="text-decoration: underline;">30</span>             2 0.00s     861<span style="text-decoration: underline;">587</span>564 Thu Aug  7 19:37:30 2…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.346  0.646<span style="text-decoration: underline;">85</span>             2 0.00s    <span style="text-decoration: underline;">1</span>349<span style="text-decoration: underline;">546</span>859 Thu Aug  7 19:37:30 2…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.926<span style="text-decoration: underline;">6</span> 0.091<span style="text-decoration: underline;">657</span>            2 0.00s    <span style="text-decoration: underline;">1</span>903<span style="text-decoration: underline;">890</span>182 Thu Aug  7 19:37:30 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.795  0.945<span style="text-decoration: underline;">30</span>             2 0.00s     861<span style="text-decoration: underline;">587</span>564 Sun Aug 31 15:56:19 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.346  0.646<span style="text-decoration: underline;">85</span>             2 0.00s    <span style="text-decoration: underline;">1</span>349<span style="text-decoration: underline;">546</span>859 Sun Aug 31 15:56:19 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.926<span style="text-decoration: underline;">6</span> 0.091<span style="text-decoration: underline;">657</span>            2 0.00s    <span style="text-decoration: underline;">1</span>903<span style="text-decoration: underline;">890</span>182 Sun Aug 31 15:56:19 2…</span>
 <span class="r-in"><span><span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">Final</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N  mean</span>
@@ -1059,9 +1067,9 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N      mu       SE REPLICATIONS SIM_TIME       SEED COMPLETED             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.795  0.945<span style="text-decoration: underline;">30</span>             2 0.00s     861<span style="text-decoration: underline;">587</span>564 Thu Aug  7 19:37:30 2…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.346  0.646<span style="text-decoration: underline;">85</span>             2 0.00s    <span style="text-decoration: underline;">1</span>349<span style="text-decoration: underline;">546</span>859 Thu Aug  7 19:37:30 2…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.926<span style="text-decoration: underline;">6</span> 0.091<span style="text-decoration: underline;">657</span>            2 0.00s    <span style="text-decoration: underline;">1</span>903<span style="text-decoration: underline;">890</span>182 Thu Aug  7 19:37:30 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.795  0.945<span style="text-decoration: underline;">30</span>             2 0.00s     861<span style="text-decoration: underline;">587</span>564 Sun Aug 31 15:56:19 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.346  0.646<span style="text-decoration: underline;">85</span>             2 0.00s    <span style="text-decoration: underline;">1</span>349<span style="text-decoration: underline;">546</span>859 Sun Aug 31 15:56:19 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.926<span style="text-decoration: underline;">6</span> 0.091<span style="text-decoration: underline;">657</span>            2 0.00s    <span style="text-decoration: underline;">1</span>903<span style="text-decoration: underline;">890</span>182 Sun Aug 31 15:56:19 2…</span>
 <span class="r-in"><span><span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">Final_rep</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N  mean</span>
@@ -1249,7 +1257,7 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 1/36;   Replications: 2   Total Time: 0.00s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=30, group_size_ratio=1, standard_deviation_ratio=0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 2/36;   Replications: 2   Total Time: 0.01s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 2/36;   Replications: 2   Total Time: 0.00s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=60, group_size_ratio=1, standard_deviation_ratio=0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 3/36;   Replications: 2   Total Time: 0.01s </span>
@@ -1282,19 +1290,19 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 12/36;   Replications: 2   Total Time: 0.05s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=120, group_size_ratio=8, standard_deviation_ratio=0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 13/36;   Replications: 2   Total Time: 0.06s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 13/36;   Replications: 2   Total Time: 0.05s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=30, group_size_ratio=1, standard_deviation_ratio=1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 14/36;   Replications: 2   Total Time: 0.06s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=60, group_size_ratio=1, standard_deviation_ratio=1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 15/36;   Replications: 2   Total Time: 0.07s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 15/36;   Replications: 2   Total Time: 0.06s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=90, group_size_ratio=1, standard_deviation_ratio=1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 16/36;   Replications: 2   Total Time: 0.07s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=120, group_size_ratio=1, standard_deviation_ratio=1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 17/36;   Replications: 2   Total Time: 0.08s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 17/36;   Replications: 2   Total Time: 0.07s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=30, group_size_ratio=4, standard_deviation_ratio=1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 18/36;   Replications: 2   Total Time: 0.08s </span>
@@ -1309,7 +1317,7 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 21/36;   Replications: 2   Total Time: 0.09s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=30, group_size_ratio=8, standard_deviation_ratio=1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 22/36;   Replications: 2   Total Time: 0.10s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 22/36;   Replications: 2   Total Time: 0.09s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=60, group_size_ratio=8, standard_deviation_ratio=1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 23/36;   Replications: 2   Total Time: 0.10s </span>
@@ -1318,40 +1326,40 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 24/36;   Replications: 2   Total Time: 0.12s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=120, group_size_ratio=8, standard_deviation_ratio=1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 25/36;   Replications: 2   Total Time: 0.13s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 25/36;   Replications: 2   Total Time: 0.12s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=30, group_size_ratio=1, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 26/36;   Replications: 2   Total Time: 0.13s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=60, group_size_ratio=1, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 27/36;   Replications: 2   Total Time: 0.14s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 27/36;   Replications: 2   Total Time: 0.13s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=90, group_size_ratio=1, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: 28/36;   Replications: 2   Total Time: 0.14s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=120, group_size_ratio=1, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 29/36;   Replications: 2   Total Time: 0.15s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 29/36;   Replications: 2   Total Time: 0.14s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=30, group_size_ratio=4, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 30/36;   Replications: 2   Total Time: 0.15s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 30/36;   Replications: 2   Total Time: 0.14s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=60, group_size_ratio=4, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 31/36;   Replications: 2   Total Time: 0.16s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 31/36;   Replications: 2   Total Time: 0.15s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=90, group_size_ratio=4, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 32/36;   Replications: 2   Total Time: 0.16s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 32/36;   Replications: 2   Total Time: 0.15s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=120, group_size_ratio=4, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 33/36;   Replications: 2   Total Time: 0.17s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 33/36;   Replications: 2   Total Time: 0.16s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=30, group_size_ratio=8, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 34/36;   Replications: 2   Total Time: 0.17s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 34/36;   Replications: 2   Total Time: 0.16s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=60, group_size_ratio=8, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 35/36;   Replications: 2   Total Time: 0.18s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 35/36;   Replications: 2   Total Time: 0.17s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=90, group_size_ratio=8, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 36/36;   Replications: 2   Total Time: 0.18s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: 36/36;   Replications: 2   Total Time: 0.17s </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Conditions: sample_size=120, group_size_ratio=8, standard_deviation_ratio=2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
