@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.21
 
+- `Attach(..., Rstudio_flags = TRUE)` now copies the output to the 
+  clipboard for easier insertion into existing code. Only performed 
+  in interative sessions
+
 - Added `not_parallel` argument to `runSimulation()` to avoid using 
   parallel processing for specific row conditions. Also works within 
   `runArraySimulation()`

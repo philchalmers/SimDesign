@@ -9,7 +9,8 @@ Attach(
   omit = NULL,
   check = TRUE,
   attach_listone = TRUE,
-  RStudio_flags = FALSE
+  RStudio_flags = FALSE,
+  clip = interactive()
 )
 }
 \arguments{
@@ -33,6 +34,10 @@ adding an often unnecessary list 1 index, such as \code{name <- list[[1L]]}}
 \item{RStudio_flags}{logical; print R script output comments that disable flagged
 missing variables in RStudio? Requires the form \code{Attach(Design, RStudio_flags=TRUE)} or
 in an interactive debugging session \code{Attach(condition, RStudio_flags=TRUE)}}
+
+\item{clip}{when \code{Rstudio_flags = TRUE} should the output be copied to the
+clipboard using \code{clipr}? Makes it easier to paste into existing code. Only
+clipped in interactive mode}
 }
 \description{
 The behaviour of this function is very similar to \code{\link{attach}},

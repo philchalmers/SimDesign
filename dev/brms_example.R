@@ -1,11 +1,15 @@
-#-------------------------------------------------------------------
-
 library(SimDesign)
 library(brms)
 
 Design <- createDesign(N=c(30, 60, 90),
                        method=c('lm', 'brms'),
                        b0=1, b1=2, s=1)
+
+# !diagnostics suppress=N,method,b0,b1,s
+Attach(Design, RStudio_flags = TRUE)
+
+# The following .slurm information is used
+cat(readLines('brms.slurm'), sep='\n')
 
 #-------------------------------------------------------------------
 
@@ -43,27 +47,12 @@ Summarise <- function(condition, results, fixed_objects) {
 #-------------------------------------------------------------------
 
 if(FALSE){ # not run, as brms compiles too often
-    res <- runSimulation(design=Design, replications=1000, generate=Generate,
+    res <- runSimulation(design=Design, replications=100, generate=Generate,
                          analyse=Analyse, summarise=Summarise)
     res
 }
 
-
 #-------------------------------------------------------------------
-# brms using precompiled models that are update()ed in simulation
-
-# Precompile models, and meaningfully store. If possible, save to external file
-filename <- 'brms_precompile.rds'
-if(!file.exists(filename)){
-    precompile <- list()
-    for(i in 1:3){
-        dat <- Generate(Design[i,])
-        mod <- brm(y ~ X, data=dat) # compile model and store
-        precompile[[as.character(Design[i,]$N)]] <- mod
-    }
-    saveRDS(precompile, filename)
-} else precompile <- readRDS(filename)
-names(precompile)
 
 # redefine Analyse() to use precompiled objects and update()
 Analyse_precompile <- function(condition, dat, fixed_objects) {
@@ -87,48 +76,22 @@ Analyse_precompile <- function(condition, dat, fixed_objects) {
 
 #-------------------------------------------------------------------
 
+# read in stored precompile list
+precompile <- readRDS('precompile.rds')
+
 res <- runSimulation(design=Design, replications=1000, generate=Generate,
                      analyse=Analyse_precompile, summarise=Summarise,
-                     fixed_objects=precompile, parallel=TRUE, not_parallel=1:3)
+                     fixed_objects=precompile, parallel=TRUE,
+                     not_parallel=1:3, filename='brms_example')
 res
 
+# -----------------------------
+# if using array jobs
+iseed <- 285544376  # Initial seed (use genSeeds() once)
+arrayID <- getArrayID()
 
-#-------------------------------------------------------------------
-# If you're lucky, some precompiles and be re-used across different 
-# data conditions
-
-# Precompile models, and meaningfully store. If possible, save to external file
-filename <- 'brms_precompile_single.rds'
-if(!file.exists(filename)){
-	dat <- Generate(Design[1,])
-	mod <- brm(y ~ X, data=dat) # compile model and store
-	precompile <- mod
-	saveRDS(precompile, filename)
-} else precompile <- readRDS(filename)
-
-# redefine Analyse() to use precompiled objects and update()
-Analyse_precompile <- function(condition, dat, fixed_objects) {
-	if(condition$method == 'brms'){
-		precompile <- fixed_objects
-		mod <- update(precompile, newdata=dat)
-		ests <- fixef(mod)
-		vars <- VarCorr(mod)
-		ret <- c(beta0=ests[1,1], beta1=ests[2,1],
-				 sigma=vars$residual__$sd[1])
-	} else {
-		mod <- lm(y~X, data=dat)
-		ret <- c(beta0=unname(coef(mod)[1]),
-				 beta1=unname(coef(mod)[2]),
-				 sigma=summary(mod)$sigma)
-	}
-	ret
-}
-
-#-------------------------------------------------------------------
-
-res <- runSimulation(design=Design, replications=1000, generate=Generate,
-					 analyse=Analyse_precompile, summarise=Summarise,
-					 fixed_objects=precompile, parallel=TRUE, not_parallel=1:3)
-res
-
-
+runArraySimulation(
+  design=Design, replications=1000, generate=Generate,
+  analyse=Analyse_precompile, summarise=Summarise,
+  fixed_objects=precompile, parallel=TRUE, not_parallel=1:3,
+  iseed=iseed, arrayID=arrayID, filename="brms_example")

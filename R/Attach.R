@@ -37,6 +37,10 @@
 #'   missing variables in RStudio? Requires the form \code{Attach(Design, RStudio_flags=TRUE)} or
 #'   in an interactive debugging session \code{Attach(condition, RStudio_flags=TRUE)}
 #'
+#' @param clip when \code{Rstudio_flags = TRUE} should the output be copied to the
+#'   clipboard using \code{clipr}? Makes it easier to paste into existing code. Only
+#'   clipped in interactive mode
+#'
 #' @seealso \code{\link{runSimulation}}, \code{\link{Generate}}
 #' @references
 #'
@@ -47,6 +51,8 @@
 #' Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 #' Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 #' \doi{10.1080/10691898.2016.1246953}
+#'
+#' @importFrom clipr write_clip
 #'
 #' @export
 #'
@@ -106,7 +112,7 @@
 #'
 #'
 Attach <- function(..., omit = NULL, check = TRUE, attach_listone = TRUE,
-                   RStudio_flags = FALSE){
+                   RStudio_flags = FALSE, clip = interactive()){
     envir <- as.environment(-1L)
     dots <- list(...)
     if(!is.null(omit))
@@ -141,7 +147,14 @@ Attach <- function(..., omit = NULL, check = TRUE, attach_listone = TRUE,
             }
         }
     }
-    if(RStudio_flags)
-        cat(sprintf("# !diagnostics suppress=%s", paste0(collect_names, collapse=',')))
+    if(RStudio_flags){
+        ret <- sprintf("# !diagnostics suppress=%s", paste0(collect_names, collapse=','))
+        if(clip){
+            message(c('The following contents were copied to the clipboard.\n',
+                'Paste this in your script to suppress false positive RStudio flags.\n\n'))
+            clipr::write_clip(ret)
+        }
+        cat(ret)
+    }
     invisible(NULL)
 }
