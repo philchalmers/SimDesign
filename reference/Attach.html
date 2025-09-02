@@ -24,7 +24,7 @@ with(condition, sample_size), for example."><!-- mathjax --><script src="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.20.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.20.3</span>
       </span>
     </div>
 
@@ -111,7 +111,8 @@ in <code>condition</code> directly rather than indexing with <code>condition$sam
 <span>  omit <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  check <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  attach_listone <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  RStudio_flags <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  RStudio_flags <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  clip <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -148,6 +149,12 @@ adding an often unnecessary list 1 index, such as <code>name &lt;- list[[1L]]</c
 <dd><p>logical; print R script output comments that disable flagged
 missing variables in RStudio? Requires the form <code>Attach(Design, RStudio_flags=TRUE)</code> or
 in an interactive debugging session <code>Attach(condition, RStudio_flags=TRUE)</code></p></dd>
+
+
+<dt id="arg-clip">clip<a class="anchor" aria-label="anchor" href="#arg-clip"></a></dt>
+<dd><p>when <code>Rstudio_flags = TRUE</code> should the output be copied to the
+clipboard using <code>clipr</code>? Makes it easier to paste into existing code. Only
+clipped in interactive mode</p></dd>
 
 </dl></div>
     <div id="details">
