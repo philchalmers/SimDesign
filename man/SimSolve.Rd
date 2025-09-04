@@ -31,7 +31,7 @@ SimSolve(
   predCI = 0.95,
   predCI.tol = NULL,
   lastSolve = NULL,
-  verbose = ifelse(interactive(), FALSE, TRUE),
+  verbose = interactive(),
   control = list(),
   ...
 )

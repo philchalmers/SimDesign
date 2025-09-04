@@ -477,7 +477,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
                      type = ifelse(.Platform$OS.type == 'windows', 'PSOCK', 'FORK'),
                      maxiter = 100L, check.interval = TRUE,
                      predCI = .95, predCI.tol = NULL, lastSolve = NULL,
-                     verbose = ifelse(interactive(), FALSE, TRUE),
+                     verbose = interactive(),
                      control = list(), ...){
 
     # robust <- FALSE

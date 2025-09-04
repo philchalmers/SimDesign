@@ -19,7 +19,7 @@ runArraySimulation(
   ncores = parallelly::availableCores(omit = 1L),
   save_details = list(),
   control = list(),
-  verbose = ifelse(interactive(), FALSE, TRUE)
+  verbose = interactive()
 )
 }
 \arguments{

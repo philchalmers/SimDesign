@@ -20,7 +20,7 @@ PBA(
   resolution = 10000L,
   check.interval = TRUE,
   check.interval.only = FALSE,
-  verbose = ifelse(interactive(), FALSE, TRUE)
+  verbose = interactive()
 )
 
 \method{print}{PBA}(x, ...)

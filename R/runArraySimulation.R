@@ -295,7 +295,7 @@ runArraySimulation <- function(design, ..., replications,
                                parallel = FALSE, cl = NULL,
                                ncores = parallelly::availableCores(omit = 1L),
                                save_details = list(), control = list(),
-                               verbose = ifelse(interactive(), FALSE, TRUE)){
+                               verbose = interactive()){
     dots <- list(...)
     if(parallel && ncores == 1L) parallel <- FALSE
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))
