@@ -103,7 +103,8 @@ variables under study.</p>
 <span>  <span class="va">subset</span>,</span>
 <span>  fractional <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tibble <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  fully.crossed <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'Design'</span></span>
@@ -145,6 +146,12 @@ respective <code>...</code> inputs</p></dd>
 <dt id="arg-stringsasfactors">stringsAsFactors<a class="anchor" aria-label="anchor" href="#arg-stringsasfactors"></a></dt>
 <dd><p>logical; should character variable inputs be coerced
 to factors when building a <code>data.frame</code>? Default is FALSE</p></dd>
+
+
+<dt id="arg-fully-crossed">fully.crossed<a class="anchor" aria-label="anchor" href="#arg-fully-crossed"></a></dt>
+<dd><p>logical; create a fully-crossed design object? Setting to <code>FALSE</code>
+will attempt to combine the design elements column-wise via <code>data.frame(...)</code>
+instead of <code>expand.grid(...)</code></p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
@@ -237,6 +244,11 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span>                       combo2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">10</span>,<span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>,<span class="fl">7</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Design</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">Design</span>, list2char <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>   <span class="co"># standard tibble output</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># design without crossing (inputs taken-as is)</span></span></span>
+<span class="r-in"><span><span class="va">Design</span> <span class="op">&lt;-</span> <span class="fu">createDesign</span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, cross<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Design</span>   <span class="co"># only 2 rows</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##########</span></span></span>
 <span class="r-in"><span></span></span>
