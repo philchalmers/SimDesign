@@ -23,6 +23,10 @@
 #' @param stringsAsFactors logical; should character variable inputs be coerced
 #'   to factors when building a \code{data.frame}? Default is FALSE
 #'
+#' @param fully.crossed logical; create a fully-crossed design object? Setting to \code{FALSE}
+#'   will attempt to combine the design elements column-wise via \code{data.frame(...)}
+#'   instead of \code{expand.grid(...)}
+#'
 #' @return a \code{tibble} or \code{data.frame} containing the simulation experiment
 #'   conditions to be evaluated in \code{\link{runSimulation}}
 #'
@@ -71,6 +75,11 @@
 #' Design
 #' print(Design, list2char = FALSE)   # standard tibble output
 #'
+#' # design without crossing (inputs taken-as is)
+#' Design <- createDesign(N = c(10, 20),
+#'                        SD = c(1, 2), cross=FALSE)
+#' Design   # only 2 rows
+#'
 #' ##########
 #'
 #' ## fractional factorial example
@@ -98,7 +107,7 @@
 #'
 #' }
 createDesign <- function(..., subset, fractional = NULL,
-                         tibble = TRUE, stringsAsFactors = FALSE){
+                         tibble = TRUE, stringsAsFactors = FALSE, fully.crossed = TRUE){
     dots <- list(...)
     if(any(sapply(dots, is, class2='data.frame') | sapply(dots, is, class2='tibble')))
         stop('data.frame/tibble design elements not supported; please use a list input instead',
@@ -116,7 +125,10 @@ createDesign <- function(..., subset, fractional = NULL,
         }
         colnames(ret) <- names(dots[[1L]])
     } else {
-        ret <- expand.grid(..., stringsAsFactors = stringsAsFactors)
+        ret <- if(fully.crossed)
+            expand.grid(..., stringsAsFactors = stringsAsFactors)
+        else
+            data.frame(..., stringsAsFactors = stringsAsFactors)
     }
     if (!missing(subset)){
         e <- substitute(subset)
@@ -140,7 +152,7 @@ createDesign <- function(..., subset, fractional = NULL,
 #' structure.
 #'
 #' @param replications number of replications. Can be a scalar to reflect the same
-#' replications overall, or a vector of unequal replication bugets.
+#' replications overall, or a vector of unequal replication budgets.
 #'
 #' @param repeat_conditions integer vector used to repeat each design row
 #'   the specified number of times. Can either be a single integer, which repeats

@@ -12,7 +12,8 @@ createDesign(
   subset,
   fractional = NULL,
   tibble = TRUE,
-  stringsAsFactors = FALSE
+  stringsAsFactors = FALSE,
+  fully.crossed = TRUE
 )
 
 \method{print}{Design}(x, list2char = TRUE, pillar.sigfig = 5, show.IDs = FALSE, ...)
@@ -39,6 +40,10 @@ respective \code{...} inputs}
 
 \item{stringsAsFactors}{logical; should character variable inputs be coerced
 to factors when building a \code{data.frame}? Default is FALSE}
+
+\item{fully.crossed}{logical; create a fully-crossed design object? Setting to \code{FALSE}
+will attempt to combine the design elements column-wise via \code{data.frame(...)}
+instead of \code{expand.grid(...)}}
 
 \item{x}{object of class \code{'Design'}}
 
@@ -100,6 +105,11 @@ Design <- createDesign(N = c(10, 20),
                        combo2 = list(c(5,10,5), c(6,7)))
 Design
 print(Design, list2char = FALSE)   # standard tibble output
+
+# design without crossing (inputs taken-as is)
+Design <- createDesign(N = c(10, 20),
+                       SD = c(1, 2), cross=FALSE)
+Design   # only 2 rows
 
 ##########
 

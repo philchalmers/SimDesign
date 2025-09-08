@@ -8,7 +8,7 @@ expandReplications(replications, repeat_conditions)
 }
 \arguments{
 \item{replications}{number of replications. Can be a scalar to reflect the same
-replications overall, or a vector of unequal replication bugets.}
+replications overall, or a vector of unequal replication budgets.}
 
 \item{repeat_conditions}{integer vector used to repeat each design row
 the specified number of times. Can either be a single integer, which repeats
