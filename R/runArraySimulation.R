@@ -272,6 +272,18 @@
 #' # list saved files
 #' dir('sim/')
 #'
+#' # Also works if the replication input were a suitable vector (not run)
+#' if(FALSE){
+#'     reps <- c(rep(10, 14), 100)
+#'     cbind(Design5, reps)
+#'     sapply(1:3, \(arrayID)
+#'         runArraySimulation(design=Design5, replications=reps,
+#'           generate=Generate, analyse=Analyse,
+#'           summarise=Summarise, iseed=iseed, arrayID=arrayID,
+#'           filename='condition', dirname='sim', array2row=array2row)) |> invisible()
+#' }
+#'
+#'
 #' # note that all row conditions are still stored separately, though note that
 #' #  arrayID is now 2 instead
 #' condition14 <- readRDS('sim/condition-14.rds')
@@ -322,6 +334,8 @@ runArraySimulation <- function(design, ..., replications,
     stopifnot(!missing(replications))
     if(length(replications) > 1L)
         replications <- replications[rowpick]
+    if(length(replications) == 1)
+        replications <- rep(replications, length(rowpick))
     stopifnot(rowpick %in% 1L:nrow(design))
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)
@@ -340,7 +354,7 @@ runArraySimulation <- function(design, ..., replications,
         seed <- genSeeds(design, iseed=iseed, arrayID=row)
         dsub <- design[row, , drop=FALSE]
         attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[row]
-        ret <- runSimulation(design=dsub, replications=replications, seed=seed,
+        ret <- runSimulation(design=dsub, replications=replications[i], seed=seed,
                              verbose=verbose, save_details=save_details,
                              parallel=parallel, ncores=ncores, cl=cl,
                              control=control, save=FALSE, resume=FALSE, ...)
