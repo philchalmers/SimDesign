@@ -329,13 +329,11 @@ runArraySimulation <- function(design, ..., replications,
     stopifnot(nrow(design) > 1L)
     stopifnot("arrayID is not a single integer identifier"=
                   length(arrayID) == 1L && is.numeric(arrayID) && !is.na(arrayID))
+    if(length(replications) == 1)
+        replications <- rep(replications, nrow(design))
     rowpick <- array2row(arrayID)
     filename_suffix <- paste0("-", rowpick)
     stopifnot(!missing(replications))
-    if(length(replications) > 1L)
-        replications <- replications[rowpick]
-    if(length(replications) == 1)
-        replications <- rep(replications, length(rowpick))
     stopifnot(rowpick %in% 1L:nrow(design))
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)
@@ -354,7 +352,7 @@ runArraySimulation <- function(design, ..., replications,
         seed <- genSeeds(design, iseed=iseed, arrayID=row)
         dsub <- design[row, , drop=FALSE]
         attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[row]
-        ret <- runSimulation(design=dsub, replications=replications[i], seed=seed,
+        ret <- runSimulation(design=dsub, replications=replications[row], seed=seed,
                              verbose=verbose, save_details=save_details,
                              parallel=parallel, ncores=ncores, cl=cl,
                              control=control, save=FALSE, resume=FALSE, ...)
