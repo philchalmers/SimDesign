@@ -335,6 +335,7 @@ runArraySimulation <- function(design, ..., replications,
     filename_suffix <- paste0("-", rowpick)
     stopifnot(!missing(replications))
     stopifnot(rowpick %in% 1L:nrow(design))
+    stopifnot(nrow(design) == length(replications))
     if(!is.null(filename))
         filename <- paste0(filename, filename_suffix)
     if(!is.null(dirname)){
