@@ -2,6 +2,15 @@
 
 ## Changes in SimDesign 2.21
 
+- `createDesign()` gains a `fully.crossed = TRUE` argument. When disabled (`FALSE`) will create a 
+  column-binded object instead of a fully crossed experimental design
+
+- `verbose` flags now check for interactivity instead of simple logical. Provides less verbose
+  output when compiled in, for instance, markdown files
+
+- Maximum number of errors (`max_errors`) reduced to 5 during interactive debugging mode to 
+  slightly avoid delayed browsing
+
 - `Attach(..., Rstudio_flags = TRUE)` now copies the output to the 
   clipboard for easier insertion into existing code. Only performed 
   in interative sessions
