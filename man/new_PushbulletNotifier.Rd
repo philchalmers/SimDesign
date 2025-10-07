@@ -31,7 +31,7 @@ object using \code{new_PushbulletNotifier()} and pass it to the \code{notifier}
 argument in \code{runSimulation()}.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 # Create a Pushbullet notifier (requires a valid configuration file)
 pushbullet_notifier <- new_PushbulletNotifier(verbose_issues = TRUE)
 \dontshow{\}) # examplesIf}

@@ -30,7 +30,7 @@ Then use the \code{new_TelegramNotifier()} function to create a \code{TelegramNo
 object and pass it to the \code{notifier} argument in \code{runSimulation()}.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 # Create a Telegram notifier (requires setting up a Telegram Bot)
 telegram_notifier <- new_TelegramNotifier(bot_token = "123456:ABC-xyz", chat_id = "987654321")
 \dontshow{\}) # examplesIf}

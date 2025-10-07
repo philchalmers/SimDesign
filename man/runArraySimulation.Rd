@@ -283,6 +283,18 @@ sapply(1:3, \(arrayID)
 # list saved files
 dir('sim/')
 
+# Also works if the replication input were a suitable vector (not run)
+if(FALSE){
+    reps <- c(rep(10, 14), 100)
+    cbind(Design5, reps)
+    sapply(1:3, \(arrayID)
+        runArraySimulation(design=Design5, replications=reps,
+          generate=Generate, analyse=Analyse,
+          summarise=Summarise, iseed=iseed, arrayID=arrayID,
+          filename='condition', dirname='sim', array2row=array2row)) |> invisible()
+}
+
+
 # note that all row conditions are still stored separately, though note that
 #  arrayID is now 2 instead
 condition14 <- readRDS('sim/condition-14.rds')
