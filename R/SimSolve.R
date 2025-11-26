@@ -79,7 +79,7 @@
 #'   \code{nrow(design)} rows and two columns, containing the end-points
 #'   of the interval to be searched per row condition.
 #'   If a vector then the interval will be used for all rows in the supplied
-#'   \code{design} object
+#'   \code{design} object when passed to the \code{\link{PBA}} engine
 #'
 #' @param integer logical; should the values of the root be considered integer
 #'   or numeric? If \code{TRUE} then bolstered directional decisions will be
@@ -599,7 +599,6 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
         interval <- matrix(interval, nrow=nrow(design), ncol=2, byrow=TRUE)
     }
     stopifnot(is.matrix(interval))
-    stopifnot(all(interval[,1] < interval[,2]))
     roots <- vector('list', nrow(design))
     .SIMDENV$SimSolveInteger <- integer
     if(is.character(parallel)){

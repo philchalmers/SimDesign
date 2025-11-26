@@ -17,7 +17,11 @@
 #'   functions will be required)
 #'
 #' @param interval a vector containing the end-points of the interval
-#'   to be searched for the root
+#'   to be searched for the root of the form \code{c(lower, upper)}.
+#'
+#'   Note that if the interval is specified as \code{c(upper, lower)}, where
+#'   \code{upper > lower} then it the search will be organized such that increasing
+#'   the value of the root estimate will result in lower \code{f(x)} values
 #'
 #' @param tol tolerance criteria for convergence based on average of the
 #'   \code{f(x)} evaluations
@@ -132,7 +136,6 @@ PBA <- function(f.root, interval, ..., p = .6,
                 f.prior = NULL, resolution = 10000L,
                 check.interval = TRUE, check.interval.only = FALSE,
                 verbose = interactive()){
-
     if(maxiter < miniter) maxiter <- miniter
     if(!is.null(wait.time))
         wait.time <- timeFormater(wait.time)
@@ -147,7 +150,11 @@ PBA <- function(f.root, interval, ..., p = .6,
 
     logp <- log(p)
     logq <- log(1-p)
-
+    if(interval[2] < interval[1]){
+        interval <- sort(interval)
+        logp <- log(1-p)
+        logq <- log(p)
+    }
     dots <- list(...)
     lastSolve <- NULL
     FromSimSolve <- .SIMDENV$FromSimSolve

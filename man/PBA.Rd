@@ -31,7 +31,11 @@ PBA(
 \item{f.root}{noisy function for which the root is sought}
 
 \item{interval}{a vector containing the end-points of the interval
-to be searched for the root}
+  to be searched for the root of the form \code{c(lower, upper)}.
+
+  Note that if the interval is specified as \code{c(upper, lower)}, where
+  \code{upper > lower} then it the search will be organized such that increasing
+  the value of the root estimate will result in lower \code{f(x)} values}
 
 \item{...}{additional named arguments to be passed to \code{f}}
 

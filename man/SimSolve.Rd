@@ -53,7 +53,7 @@ stochastic optimizer}
 \code{nrow(design)} rows and two columns, containing the end-points
 of the interval to be searched per row condition.
 If a vector then the interval will be used for all rows in the supplied
-\code{design} object}
+\code{design} object when passed to the \code{\link{PBA}} engine}
 
 \item{b}{a single constant used to solve the root equation \code{f(x) - b = 0}}
 
