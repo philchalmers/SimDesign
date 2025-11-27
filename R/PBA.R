@@ -150,7 +150,9 @@ PBA <- function(f.root, interval, ..., p = .6,
 
     logp <- log(p)
     logq <- log(1-p)
+    reverse_interval <- FALSE
     if(interval[2] < interval[1]){
+        reverse_interval <- TRUE
         interval <- sort(interval)
         logp <- log(1-p)
         logq <- log(p)
@@ -344,23 +346,28 @@ PBA <- function(f.root, interval, ..., p = .6,
                                interval=quantile(medhistory[medhistory != 0],
                                                  probs = c(.05, .95)),
                                max.interval=interval,median=med, CI=predCI)
+        sintervals <- rbind(c(min(medhistory[medhistory != 0]), predCIs[1]),
+                            c(predCIs[1], max(medhistory[medhistory != 0])))
+        if(reverse_interval)
+            sintervals <- rbind(sintervals[2,], sintervals[1,])
         predCIs_root[1L] <- SimSolveUniroot(SimMod=SimMod, b=predCIs[2L],
-                                            interval=c(min(medhistory[medhistory != 0]), predCIs[1]),
+                                            interval=sintervals[1,],
                                             max.interval=c(interval[1], predCIs[1]), median=med, CI=predCI)[1L]
         predCIs_root[2L] <- SimSolveUniroot(SimMod=SimMod, b=predCIs[3L],
-                                            interval=c(predCIs[1], max(medhistory[medhistory != 0])),
+                                            interval=sintervals[2,],
                                             max.interval=c(predCIs[1], interval[2]), median=med, CI=predCI)[1L]
+        predCIs_root <- sort(predCIs_root)
         if(any(is.na(predCIs_root[1:2]))){
             SimMod2 <- try(suppressWarnings(glm(formula = y~x,
                                                 data=SimSolveData, family=family,
                                                 weights=weights)), silent=TRUE)
             if(is.na(predCIs_root[1]))
                 predCIs_root[1L] <- SimSolveUniroot(SimMod=SimMod2, b=predCIs[2L],
-                                                    interval=c(min(medhistory[medhistory != 0]), predCIs[1]),
+                                                    interval=sintervals[1,],
                                                     max.interval=c(interval[1], predCIs[1]), median=med, CI=predCI)[1L]
             if(is.na(predCIs_root[2]))
                 predCIs_root[2L] <- SimSolveUniroot(SimMod=SimMod2, b=predCIs[3L],
-                                                    interval=c(predCIs[1], max(medhistory[medhistory != 0])),
+                                                    interval=sintervals[2,],
                                                     max.interval=c(predCIs[1], interval[2]), median=med, CI=predCI)[1L]
         }
     }
