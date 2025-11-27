@@ -381,9 +381,6 @@ PBA <- function(f.root, interval, ..., p = .6,
     if(interpolate && is.na(glmpred0[1]))
         warning('Interpolation model failed; root set to last PBA estimate',
                 call.=FALSE)
-    if(abs(e.froot) > .05)
-        warning('E(f(x)) indicates that the root may not be sufficiently accurate',
-                call.=FALSE)
     ret <- list(iter=iter, root=root, terminated_early=converged, integer=integer,
                 e.froot=e.froot, x=x, fx=fx,
                 medhistory=medhistory, roothistory=roothistory[1:length(medhistory)],
