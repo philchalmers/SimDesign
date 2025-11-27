@@ -91,7 +91,7 @@ SimExtract <- function(object, what, fuzzy = TRUE, append = TRUE){
     pick <- attr(object, 'design_names')$design
     Design <- if(any(pick != 'dummy_run') &&
                  all(attr(object, 'design_names')$design %in% names(object)))
-        object[,attr(object, 'design_names')$design]
+        dplyr::tibble(object[,attr(object, 'design_names')$design], .rows = nrow(object))
         else dplyr::tibble(.rows = nrow(object))
     if(what == 'design') return(Design)
     if(missing(what)) stop('Please specify what you want to extract')
