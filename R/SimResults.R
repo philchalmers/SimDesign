@@ -10,7 +10,10 @@
 #'
 #' @param obj object returned from \code{\link{runSimulation}} where \code{save_results = TRUE}
 #'   or \code{store_results} was used. If the former then the remaining function arguments can
-#'   be useful for reading in specific files
+#'   be useful for reading in specific files.
+#'
+#'   Alternatively, the object can be from the \code{Spower} package, evaluated
+#'   using either \code{Spower()} or \code{SpowerBatch()}
 #'
 #' @param which a numeric vector indicating which rows should be read in. If missing, all rows will be
 #'   read in
@@ -18,6 +21,10 @@
 #' @param prefix character indicating prefix used for stored files
 #'
 #' @param wd working directory; default is found with \code{\link{getwd}}.
+#'
+#' @param rbind logical; should the results be combined by row or returned as
+#'   a list? Only applicable when the supplied \code{obj} was obtained from the
+#'   function \code{Spower::SpowerBatch()}
 #'
 #' @export
 #'
@@ -70,8 +77,15 @@
 #' rows_all <- SimResults(obj)
 #'
 #' }
-SimResults <- function(obj, which, prefix = "results-row", wd = getwd()){
+SimResults <- function(obj, which, prefix = "results-row", wd = getwd(),
+                       rbind = FALSE){
     stopifnot(!missing(obj))
+    if(is(obj, 'SpowerBatch')){
+        out <- lapply(obj, \(x) SimResults(x, which=which))
+        if(rbind)
+            out <- do.call(base::rbind, out)
+        return(out)
+    }
     results <- SimExtract(obj, what='results')
     if(!is.null(results)) return(results)
     wdold <- getwd()

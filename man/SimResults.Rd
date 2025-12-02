@@ -4,12 +4,15 @@
 \alias{SimResults}
 \title{Function to read in saved simulation results}
 \usage{
-SimResults(obj, which, prefix = "results-row", wd = getwd())
+SimResults(obj, which, prefix = "results-row", wd = getwd(), rbind = FALSE)
 }
 \arguments{
 \item{obj}{object returned from \code{\link{runSimulation}} where \code{save_results = TRUE}
-or \code{store_results} was used. If the former then the remaining function arguments can
-be useful for reading in specific files}
+  or \code{store_results} was used. If the former then the remaining function arguments can
+  be useful for reading in specific files.
+
+  Alternatively, the object can be from the \code{Spower} package, evaluated
+  using either \code{Spower()} or \code{SpowerBatch()}}
 
 \item{which}{a numeric vector indicating which rows should be read in. If missing, all rows will be
 read in}
@@ -17,6 +20,10 @@ read in}
 \item{prefix}{character indicating prefix used for stored files}
 
 \item{wd}{working directory; default is found with \code{\link{getwd}}.}
+
+\item{rbind}{logical; should the results be combined by row or returned as
+a list? Only applicable when the supplied \code{obj} was obtained from the
+function \code{Spower::SpowerBatch()}}
 }
 \value{
 the returned result is either a nested list (when \code{length(which) > 1}) or a single list
