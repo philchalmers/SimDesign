@@ -23,7 +23,7 @@ is read in then the result will be stored in a list)."><!-- mathjax --><script s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.21.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.21.3</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@ is read in then the result will be stored in a list).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SimResults</span><span class="op">(</span><span class="va">obj</span>, <span class="va">which</span>, prefix <span class="op">=</span> <span class="st">"results-row"</span>, wd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SimResults</span><span class="op">(</span><span class="va">obj</span>, <span class="va">which</span>, prefix <span class="op">=</span> <span class="st">"results-row"</span>, wd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, rbind <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -113,8 +113,10 @@ is read in then the result will be stored in a list).</p>
 
 <dl><dt id="arg-obj">obj<a class="anchor" aria-label="anchor" href="#arg-obj"></a></dt>
 <dd><p>object returned from <code><a href="runSimulation.html">runSimulation</a></code> where <code>save_results = TRUE</code>
-or <code>store_results</code> was used. If the former then the remaining function arguments can
-be useful for reading in specific files</p></dd>
+  or <code>store_results</code> was used. If the former then the remaining function arguments can
+  be useful for reading in specific files.</p>
+<p>Alternatively, the object can be from the <code>Spower</code> package, evaluated
+  using either <code>Spower()</code> or <code>SpowerBatch()</code></p></dd>
 
 
 <dt id="arg-which">which<a class="anchor" aria-label="anchor" href="#arg-which"></a></dt>
@@ -128,6 +130,12 @@ read in</p></dd>
 
 <dt id="arg-wd">wd<a class="anchor" aria-label="anchor" href="#arg-wd"></a></dt>
 <dd><p>working directory; default is found with <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></code>.</p></dd>
+
+
+<dt id="arg-rbind">rbind<a class="anchor" aria-label="anchor" href="#arg-rbind"></a></dt>
+<dd><p>logical; should the results be combined by row or returned as
+a list? Only applicable when the supplied <code>obj</code> was obtained from the
+function <code>Spower::SpowerBatch()</code></p></dd>
 
 </dl></div>
     <div id="value">
