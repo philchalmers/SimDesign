@@ -1,4 +1,4 @@
-Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI, seed, save,
+Analysis <- function(Functions, condition, replications, fixed_objects, prepare = NULL, cl, MPI, seed, save,
                      save_results, save_results_out_rootdir, save_results_dirname, max_errors,
                      boot_method, boot_draws, CI,
                      save_seeds, save_seeds_dirname, load_seed,
@@ -10,6 +10,16 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
+
+    # Call prepare function once per condition if provided
+    if(!is.null(prepare)) {
+        prep_result <- try(prepare(condition=condition, fixed_objects=fixed_objects), silent=FALSE)
+        if(is(prep_result, 'try-error')){
+            stop(sprintf('prepare() failed for condition %i with error: %s',
+                         condition$ID, as.character(prep_result)), call.=FALSE)
+        }
+        fixed_objects <- prep_result
+    }
 
     # Configure pbapply for non-interactive mode (e.g., SLURM cluster logs)
     if(progress && !interactive()) {

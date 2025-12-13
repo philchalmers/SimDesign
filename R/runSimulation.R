@@ -201,6 +201,21 @@
 #'   to less than 3 (for initial testing purpose) will disable the \code{save}
 #'   and \code{control$stop_on_fatal} flags
 #'
+#' @param prepare (optional) a function that executes once per simulation condition
+#'   (i.e., once per row in \code{design}) to prepare/modify the \code{fixed_objects}
+#'   before replications are run. This function should accept \code{condition} and
+#'   \code{fixed_objects} as arguments and return the modified \code{fixed_objects}.
+#'
+#'   This is useful for pre-computing expensive condition-specific objects that can be
+#'   reused across replications (e.g., design matrices, correlation matrices, lookup tables)
+#'   without having to either pre-compute them for all conditions (which can cause
+#'   memory issues) or recompute them for every replication (which causes performance issues).
+#'
+#'   The function signature should be:
+#'   \code{prepare <- function(condition, fixed_objects) \{ ... return(fixed_objects) \}}
+#'
+#'   Default is \code{NULL}, in which case no preparation step is performed
+#'
 #' @param fixed_objects (optional) an object (usually a named \code{list})
 #'   containing additional user-defined objects
 #'   that should remain fixed across conditions. This is useful when including
@@ -1014,7 +1029,7 @@
 #' }
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
-                          fixed_objects = NULL, packages = NULL, filename = NULL,
+                          prepare = NULL, fixed_objects = NULL, packages = NULL, filename = NULL,
                           debug = 'none', load_seed = NULL, save = any(replications > 2),
                           store_results = TRUE, save_results = FALSE,
                           parallel = FALSE, ncores = parallelly::availableCores(omit = 1L),
@@ -1246,6 +1261,15 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!is.null(seed))
         stopifnot(nrow(design) == length(seed))
     debug <- tolower(debug)
+    # Validate prepare function
+    if(!is.null(prepare)){
+        if(!is.function(prepare))
+            stop('prepare must be a function', call. = FALSE)
+        fms <- names(formals(prepare))
+        truefms <- c('condition', 'fixed_objects')
+        if(!all(truefms %in% fms))
+            stop('Function arguments for prepare are not correct. Must include: condition, fixed_objects', call. = FALSE)
+    }
     for(i in names(Functions)){
         fms <- names(formals(Functions[[i]]))
         truefms <- switch(i,
@@ -1338,14 +1362,20 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
             parallel::clusterExport(cl=cl, "ANALYSE_FUNCTIONS", envir = environment())
             parallel::clusterExport(cl=cl, "TRY_ALL_ANALYSE", envir = environment())
+            if(!is.null(prepare))
+                parallel::clusterExport(cl=cl, "prepare", envir = environment())
             if(verbose)
                 message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
         }
     }
     if(check.globals){
+        prepare_globals <- if(!is.null(prepare))
+            codetools::findGlobals(prepare, merge=FALSE)[['variables']]
+        else NULL
         globals <- unique(c(codetools::findGlobals(generate, merge=FALSE)[['variables']],
                      codetools::findGlobals(analyse, merge=FALSE)[['variables']],
-                     codetools::findGlobals(summarise, merge=FALSE)[['variables']]))
+                     codetools::findGlobals(summarise, merge=FALSE)[['variables']],
+                     prepare_globals))
         return(setdiff(globals, c(names(design), names(fixed_objects))))
     }
     Result_list <- vector('list', nrow(design))
@@ -1484,6 +1514,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                            else design[i,],
                                          replications=replications[i],
                                          fixed_objects=fixed_objects,
+                                         prepare=prepare,
                                          cl=if(i %in% not_parallel) NULL else cl,
                                          MPI=MPI, .options.mpi=.options.mpi, seed=seed,
                                          boot_draws=boot_draws, boot_method=boot_method, CI=CI,
@@ -1525,6 +1556,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             condition=if(was_tibble) dplyr::as_tibble(design[i,]) else design[i,],
                             replications=replications[i],
                             fixed_objects=fixed_objects,
+                            prepare=prepare,
                             cl=if(i %in% not_parallel) NULL else cl,
                             MPI=MPI, .options.mpi=.options.mpi, seed=seed,
                             store_Random.seeds=store_Random.seeds,
