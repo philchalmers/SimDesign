@@ -10,6 +10,13 @@ Analysis <- function(Functions, condition, replications, fixed_objects, cl, MPI,
 {
     # This defines the work-flow for the Monte Carlo simulation given the condition (row in Design)
     #  and number of replications desired
+
+    # Configure pbapply for non-interactive mode (e.g., SLURM cluster logs)
+    if(progress && !interactive()) {
+        old_pboptions <- pbapply::pboptions(type = "txt", char = "=", style = 3)
+        on.exit(pbapply::pboptions(old_pboptions), add = TRUE)
+    }
+
     used_mainsim <- if(is.finite(max_time)) mainsim_maxtime else mainsim
     if(useFuture){
         if(!is.null(seed)) set_seed(seed[condition$ID])
