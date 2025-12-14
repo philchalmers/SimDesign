@@ -17,6 +17,10 @@
 #'   \code{runSimulation(..., control = list(store_Random.seeds=TRUE))}),
 #'   \code{'error_seeds'} and \code{'warning_seeds'}
 #'   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
+#'   \code{'prepare_seeds'} to extract the \code{.Random.seed} states captured before
+#'   \code{prepare()} was called for each condition, \code{'prepare_error_seed'} to extract the
+#'   \code{.Random.seed} state when \code{prepare()} encountered an error (useful for debugging with
+#'   \code{load_seed_prepare}),
 #'   \code{'results'} to extract the simulation results if the option \code{store_results} was passed to
 #'   \code{\link{runSimulation}}, \code{'filename'} and \code{'save_results_dirname'} for extracting
 #'   the saved file/directory name information (if used), \code{'functions'} to extract the defined functions
@@ -113,6 +117,10 @@ SimExtract <- function(object, what, fuzzy = TRUE, append = TRUE){
         if(length(wrn) && append) cbind(Design, wrn) else wrn
     } else if(what == 'warning_seeds'){
         extract_warning_seeds(object)
+    } else if(what == 'prepare_seeds'){
+        extract_prepare_seeds(object)
+    } else if(what == 'prepare_error_seed'){
+        extract_prepare_error_seed(object)
     } else if(what == 'save_results_dirname'){
         attr(object, 'extra_info')$save_info['save_results_dirname']
     } else if(what == 'filename'){
@@ -185,6 +193,18 @@ extract_seeds <- function(object){
 extract_functions <- function(object){
     extra_info <- attr(object, 'extra_info')
     ret <- extra_info$functions
+    ret
+}
+
+extract_prepare_seeds <- function(object){
+    extra_info <- attr(object, 'extra_info')
+    ret <- extra_info$prepare_seeds
+    ret
+}
+
+extract_prepare_error_seed <- function(object){
+    extra_info <- attr(object, 'extra_info')
+    ret <- extra_info$prepare_error_seeds
     ret
 }
 

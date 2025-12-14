@@ -342,6 +342,15 @@
 #'   then it WILL be important to modify the \code{design} input in order to load this
 #'   exact seed for the corresponding design row. Default is \code{NULL}
 #'
+#' @param load_seed_prepare similar to \code{load_seed}, but specifically for
+#'   debugging the \code{prepare} function. Used to replicate the exact RNG state
+#'   when prepare is called for a given condition. Accepts the same input formats
+#'   as \code{load_seed}: a character string path (e.g., \code{'design-row-2/prepare-seed'}),
+#'   an integer vector containing the \code{.Random.seed} state, or a tibble/data.frame
+#'   with seed values. This is particularly useful when prepare encounters an error
+#'   and you need to reproduce the exact state. The prepare error seed can be
+#'   extracted using \code{SimExtract(res, 'prepare_error_seed')}. Default is \code{NULL}
+#'
 #' @param filename (optional) the name of the \code{.rds} file to save the final
 #' simulation results to. If the extension
 #'   \code{.rds} is not included in the file name (e.g. \code{"mysimulation"}
@@ -1030,7 +1039,8 @@
 #'
 runSimulation <- function(design, replications, generate, analyse, summarise,
                           prepare = NULL, fixed_objects = NULL, packages = NULL, filename = NULL,
-                          debug = 'none', load_seed = NULL, save = any(replications > 2),
+                          debug = 'none', load_seed = NULL, load_seed_prepare = NULL,
+                          save = any(replications > 2),
                           store_results = TRUE, save_results = FALSE,
                           parallel = FALSE, ncores = parallelly::availableCores(omit = 1L),
                           cl = NULL, notification = 'none', notifier = NULL,
@@ -1298,6 +1308,24 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             load_seed <- as.integer(as.data.frame(load_seed)[,1])
         stopifnot(is.integer(load_seed))
     }
+    # Validate load_seed_prepare (same logic as load_seed)
+    if(!is.null(load_seed_prepare)){
+        if(length(load_seed_prepare) == 7L){
+            rngkind <- RNGkind()
+            RNGkind("L'Ecuyer-CMRG")
+            on.exit(RNGkind(rngkind[1L]), add = TRUE)
+        }
+        if(is.character(load_seed_prepare)){
+            # Character path to saved prepare seed file
+            # Only prepend save_seeds_dirname if it's a relative path
+            if(!file.exists(load_seed_prepare))
+                load_seed_prepare <- paste0(save_seeds_dirname, '/', load_seed_prepare)
+            load_seed_prepare <- as.integer(scan(load_seed_prepare, sep = ' ', quiet = TRUE))
+        }
+        if(is(load_seed_prepare, 'tbl'))
+            load_seed_prepare <- as.integer(as.data.frame(load_seed_prepare)[,1])
+        stopifnot(is.integer(load_seed_prepare))
+    }
     if(MPI){
         parallel <- FALSE
         verbose <- FALSE
@@ -1515,6 +1543,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          replications=replications[i],
                                          fixed_objects=fixed_objects,
                                          prepare=prepare,
+                                         load_seed_prepare=load_seed_prepare,
                                          cl=if(i %in% not_parallel) NULL else cl,
                                          MPI=MPI, .options.mpi=.options.mpi, seed=seed,
                                          boot_draws=boot_draws, boot_method=boot_method, CI=CI,
@@ -1557,6 +1586,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             replications=replications[i],
                             fixed_objects=fixed_objects,
                             prepare=prepare,
+                            load_seed_prepare=load_seed_prepare,
                             cl=if(i %in% not_parallel) NULL else cl,
                             MPI=MPI, .options.mpi=.options.mpi, seed=seed,
                             store_Random.seeds=store_Random.seeds,
@@ -1602,6 +1632,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             attr(Result_list[[i]], 'error_seeds') <- attr(tmp, 'error_seeds')
             attr(Result_list[[i]], 'warning_seeds') <- attr(tmp, 'warning_seeds')
             attr(Result_list[[i]], 'summarise_list') <- attr(tmp, 'summarise_list')
+            attr(Result_list[[i]], 'prepare_Random.seed') <- attr(tmp, 'prepare_Random.seed')
+            attr(Result_list[[i]], 'prepare_error_seed') <- attr(tmp, 'prepare_error_seed')
             Result_list[[i]]$COMPLETED <- date()
             time1 <- proc.time()[3L]
             Result_list[[i]]$SIM_TIME <- time1 - time0
@@ -1712,6 +1744,17 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                 rownames(ret))
         t(ret)
     })))
+    # Collect prepare seeds
+    prepare_seeds <- lapply(1L:length(Result_list), function(x) {
+        attr(Result_list[[x]], "prepare_Random.seed")
+    })
+    prepare_error_seeds <- lapply(1L:length(Result_list), function(x) {
+        attr(Result_list[[x]], "prepare_error_seed")
+    })
+    # Remove NULL entries from error seeds
+    prepare_error_seeds <- Filter(Negate(is.null), prepare_error_seeds)
+    if(length(prepare_error_seeds) == 0L) prepare_error_seeds <- NULL
+
     summarise_list <- lapply(1L:length(Result_list), function(x)
         attr(Result_list[[x]], "summarise_list")
     )
@@ -1785,6 +1828,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       date_completed = noquote(date()), total_elapsed_time = sum(SIM_TIME),
                                       error_seeds=dplyr::as_tibble(error_seeds),
                                       warning_seeds=dplyr::as_tibble(warning_seeds),
+                                      prepare_seeds=prepare_seeds,
+                                      prepare_error_seeds=prepare_error_seeds,
                                       stored_results = if(store_results) stored_Results_list else NULL,
                                       Design.ID=Design.ID,
                                       functions=list(Generate=Generate, Analyse=Analyse, Summarise=Summarise))

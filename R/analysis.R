@@ -1,4 +1,5 @@
-Analysis <- function(Functions, condition, replications, fixed_objects, prepare = NULL, cl, MPI, seed, save,
+Analysis <- function(Functions, condition, replications, fixed_objects, prepare = NULL,
+                     load_seed_prepare = NULL, cl, MPI, seed, save,
                      save_results, save_results_out_rootdir, save_results_dirname, max_errors,
                      boot_method, boot_draws, CI,
                      save_seeds, save_seeds_dirname, load_seed,
@@ -12,9 +13,34 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
     #  and number of replications desired
 
     # Call prepare function once per condition if provided
+    prepare_error_seed <- NULL
+    prepare_Random.seed <- NULL
     if(!is.null(prepare)) {
+
+        # Restore seed if debugging prepare
+        if(!is.null(load_seed_prepare))
+            .GlobalEnv$.Random.seed <- load_seed_prepare
+
+        # Ensure .Random.seed exists (initialize RNG if needed)
+        else if(!exists(".Random.seed", envir = .GlobalEnv))
+            runif(1)
+        
+        # Capture seed state before prepare (similar to mainsim line 296)
+        prepare_Random.seed <- .GlobalEnv$.Random.seed
+
+        # Save seed to disk if requested
+        if(save_seeds){
+            filename <- paste0(save_seeds_dirname, '/design-row-', condition$ID, '/prepare-seed')
+            dir.create(dirname(file.path(save_results_out_rootdir, filename)),
+                       showWarnings = FALSE, recursive = TRUE)
+            write(prepare_Random.seed, file.path(save_results_out_rootdir, filename), sep = ' ')
+        }
+
         prep_result <- try(prepare(condition=condition, fixed_objects=fixed_objects), silent=FALSE)
+
         if(is(prep_result, 'try-error')){
+            # Capture seed on error (similar to mainsim)
+            prepare_error_seed <- prepare_Random.seed
             stop(sprintf('prepare() failed for condition %i with error: %s',
                          condition$ID, as.character(prep_result)), call.=FALSE)
         }
@@ -222,9 +248,17 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
     attr(ret, 'error_seeds') <- try_error_seeds
     attr(ret, 'warning_seeds') <- warning_message_seeds
     attr(ret, 'summarise_list') <- summarise_list
+    if(!is.null(prepare_error_seed))
+        attr(ret, 'prepare_error_seed') <- prepare_error_seed
+
     if(store_results)
         attr(ret, 'full_results') <- tabled_results
-    if(store_Random.seeds)
+    if(store_Random.seeds){
         attr(ret, 'stored_Random.seeds') <- stored_Random.seeds
+        # Store prepare seed information
+        if(!is.null(prepare)) {
+            attr(ret, 'prepare_Random.seed') <- prepare_Random.seed
+        }
+    }
     ret
 }
