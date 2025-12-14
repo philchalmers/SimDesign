@@ -600,7 +600,9 @@
 #'   range 1 to 2147483647 for each condition via \code{\link{genSeeds}}
 #'
 #' @param progress logical; display a progress bar (using the \code{pbapply} package)
-#'   for each simulation condition?
+#'   for each simulation condition? In interactive sessions, shows a timer-based
+#'   progress bar. In non-interactive sessions (e.g., HPC cluster jobs), displays
+#'   text-based progress updates that are visible in log files.
 #'   This is useful when simulations conditions take a long time to run (see also the
 #'   \code{notification} argument). Default is \code{TRUE}
 #'
