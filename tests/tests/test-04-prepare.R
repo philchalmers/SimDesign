@@ -83,13 +83,6 @@ test_that('prepare RNG management', {
         return(fixed_objects)
     }
 
-    runSimulation(Design[2,], replications=1,
-                  prepare=prepare_error,
-                  generate=generate,
-                  analyse=analyse,
-                  summarise=summarise,
-                  verbose=FALSE)
-
     expect_error(
         runSimulation(Design[2,], replications=1,
                       prepare=prepare_error,
