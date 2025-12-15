@@ -1,5 +1,23 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.22
+
+- `runSimulation()` gains a `prepare` function argument for loading or preparing
+  condition-specific objects before replications are executed. This function executes
+  once per simulation condition and is particularly useful for loading pre-computed
+  expensive objects (e.g., correlation matrices, design matrices) from disk in cluster
+  workflows. 
+
+- Added `load_seed_prepare` parameter to `runSimulation()` for debugging the `prepare()`
+  function by reproducing exact RNG states. Works similarly to `load_seed` but specifically
+  for the prepare step. Prepare seeds can be extracted using
+  `SimExtract(res, 'prepare_seeds')` when `store_Random.seeds=TRUE`, and error seeds
+  can be extracted with `SimExtract(res, 'prepare_error_seed')`.
+
+- Progress reporting in non-interactive mode (e.g., SLURM clusters) has been improved.
+  Progress bars now display correctly when running batch jobs on cluster systems,
+  providing better visibility into long-running simulations.
+
 ## Changes in SimDesign 2.21
 
 - `createDesign()` gains a `fully.crossed = TRUE` argument. When disabled (`FALSE`) will create a 
