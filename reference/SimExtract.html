@@ -118,6 +118,10 @@ final simulation object.</p>
   <code>runSimulation(..., control = list(store_Random.seeds=TRUE))</code>),
   <code>'error_seeds'</code> and <code>'warning_seeds'</code>
   to extract the associated <code>.Random.seed</code> values associated with the ERROR/WARNING messages,
+  <code>'prepare_seeds'</code> to extract the <code>.Random.seed</code> states captured before
+  <code>prepare()</code> was called for each condition, <code>'prepare_error_seed'</code> to extract the
+  <code>.Random.seed</code> state when <code>prepare()</code> encountered an error (useful for debugging with
+  <code>load_seed_prepare</code>),
   <code>'results'</code> to extract the simulation results if the option <code>store_results</code> was passed to
   <code><a href="runSimulation.html">runSimulation</a></code>, <code>'filename'</code> and <code>'save_results_dirname'</code> for extracting
   the saved file/directory name information (if used), <code>'functions'</code> to extract the defined functions
