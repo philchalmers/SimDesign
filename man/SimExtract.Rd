@@ -20,6 +20,10 @@ SimExtract(object, what, fuzzy = TRUE, append = TRUE)
   \code{runSimulation(..., control = list(store_Random.seeds=TRUE))}),
   \code{'error_seeds'} and \code{'warning_seeds'}
   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
+  \code{'prepare_seeds'} to extract the \code{.Random.seed} states captured before
+  \code{prepare()} was called for each condition, \code{'prepare_error_seed'} to extract the
+  \code{.Random.seed} state when \code{prepare()} encountered an error (useful for debugging with
+  \code{load_seed_prepare}),
   \code{'results'} to extract the simulation results if the option \code{store_results} was passed to
   \code{\link{runSimulation}}, \code{'filename'} and \code{'save_results_dirname'} for extracting
   the saved file/directory name information (if used), \code{'functions'} to extract the defined functions

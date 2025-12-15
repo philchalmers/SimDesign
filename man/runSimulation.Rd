@@ -12,11 +12,13 @@ runSimulation(
   generate,
   analyse,
   summarise,
+  prepare = NULL,
   fixed_objects = NULL,
   packages = NULL,
   filename = NULL,
   debug = "none",
   load_seed = NULL,
+  load_seed_prepare = NULL,
   save = any(replications > 2),
   store_results = TRUE,
   save_results = FALSE,
@@ -113,6 +115,48 @@ analyse the simulated data). See \code{\link{Analyse}} for details}
   (e.g., \code{Errors}, \code{errors}, \code{ErRoRs}, ..., will all avoid
   conflicts)}
 
+\item{prepare}{(optional) a function that executes once per simulation condition
+  (i.e., once per row in \code{design}) to load or prepare condition-specific objects
+  into \code{fixed_objects} before replications are run. This function should accept
+  \code{condition} and \code{fixed_objects} as arguments and return the modified
+  \code{fixed_objects}.
+
+  The primary use case is to load pre-computed objects from disk that were
+  generated offline:
+
+  \code{prepare <- function(condition, fixed_objects) \{}
+
+  \code{  # Create filename from design parameters}
+
+  \code{  fname <- paste0('prepare/N', condition$N, '_SD', condition$SD, '.rds')}
+
+  \code{  fixed_objects$expensive_stuff <- readRDS(fname)}
+
+  \code{  return(fixed_objects)}
+
+  \code{\}}
+
+  This approach allows you to: (1) pre-generate expensive condition-specific objects
+  prior to running the simulation , (2) save them as individual
+  RDS files, and (3) load them efficiently during the simulation. This is preferable to
+  generating objects within \code{prepare()} itself because it allows you to inspect the
+  objects, ensures reproducibility, and separates object generation from the simulation workflow.
+
+  Note: Objects added to \code{fixed_objects} in \code{prepare()} are not stored
+  by \code{runSimulation()} to conserve memory, as they are typically large. You should
+  maintain your own records of these objects outside the simulation.
+
+  RNG Warning: If you generate objects within \code{prepare()} using random number
+  generation (e.g., \code{rnorm()}, \code{runif()}), reproducibility requires explicit RNG
+  state management via \code{store_Random.seeds=TRUE} and \code{load_seed_prepare}. Pre-computing
+  and saving objects as RDS files is the recommended approach for reproducible simulations.
+
+
+  The function signature should be:
+  \code{prepare <- function(condition, fixed_objects) \{ ... return(fixed_objects) \}}
+
+  Default is \code{NULL}, in which case no preparation step is performed}
+
 \item{fixed_objects}{(optional) an object (usually a named \code{list})
 containing additional user-defined objects
 that should remain fixed across conditions. This is useful when including
@@ -194,6 +238,15 @@ primarily useful for debugging purposes.
   if the input is an integer vector (or single column \code{tbl} object)
   then it WILL be important to modify the \code{design} input in order to load this
   exact seed for the corresponding design row. Default is \code{NULL}}
+
+\item{load_seed_prepare}{similar to \code{load_seed}, but specifically for
+debugging the \code{prepare} function. Used to replicate the exact RNG state
+when prepare is called for a given condition. Accepts the same input formats
+as \code{load_seed}: a character string path (e.g., \code{'design-row-2/prepare-seed'}),
+an integer vector containing the \code{.Random.seed} state, or a tibble/data.frame
+with seed values. This is particularly useful when prepare encounters an error
+and you need to reproduce the exact state. The prepare error seed can be
+extracted using \code{SimExtract(res, 'prepare_error_seed')}. Default is \code{NULL}}
 
 \item{save}{logical; save the temporary simulation state to the hard-drive? This is useful
   for simulations which require an extended amount of time, though for shorter simulations
@@ -437,6 +490,8 @@ in the simulation}
      analysis state (mostly useful
      for debugging). When \code{TRUE}, temporary files will also be saved
      to the working directory (in the same way as when \code{save = TRUE}).
+     Additionally, if a \code{prepare} function is provided, the RNG state before
+     \code{prepare()} execution is saved to \code{'design-row-X/prepare-seed'}.
      Default is \code{FALSE}
 
      Note, however, that this option is not typically necessary or recommended since
@@ -454,7 +509,10 @@ in the simulation}
       take up a great deal of unnecessary RAM (see related \code{save_seeds}),
       however this may be useful
       when used with \code{\link{runArraySimulation}}. To extract use
-      \code{SimExtract(..., what = 'stored_Random.seeds')}}
+      \code{SimExtract(..., what = 'stored_Random.seeds')}. Additionally,
+      if a \code{prepare} function is provided, the RNG state before \code{prepare()}
+      execution is stored and can be extracted with
+      \code{SimExtract(..., what = 'prepare_seeds')}}
 
      \item{\code{store_warning_seeds}}{logical (default is \code{FALSE});
       in addition to storing the \code{.Random.seed} states whenever error messages
@@ -538,7 +596,9 @@ object should not be run in parallel. This is useful when some version of
 results in higher processing times than simply running the simulation with one core.}
 
 \item{progress}{logical; display a progress bar (using the \code{pbapply} package)
-for each simulation condition?
+for each simulation condition? In interactive sessions, shows a timer-based
+progress bar. In non-interactive sessions (e.g., HPC cluster jobs), displays
+text-based progress updates that are visible in log files.
 This is useful when simulations conditions take a long time to run (see also the
 \code{notification} argument). Default is \code{TRUE}}
 
@@ -1040,6 +1100,78 @@ ggplot(dd, aes(factor(group_size_ratio), value, fill = factor(standard_deviation
     geom_abline(intercept=0.025, slope=0, col = 'red', linetype='dotted') +
     facet_grid(stats~standard_deviation_ratio) +
     theme(legend.position = 'none')
+
+#-------------------------------------------------------------------------------
+# Example with prepare() function - Loading pre-computed objects
+
+\dontrun{
+
+# Step 1: Pre-generate expensive objects offline (can be parallelized)
+Design <- createDesign(N = c(10, 20), rho = c(0.3, 0.7))
+
+# Create directory for storing prepared objects
+dir.create('prepared_objects', showWarnings = FALSE)
+
+# Generate and save correlation matrices for each condition
+for(i in 1:nrow(Design)) {
+  cond <- Design[i, ]
+
+  # Generate correlation matrix
+  corr_matrix <- matrix(cond$rho, nrow=cond$N, ncol=cond$N)
+  diag(corr_matrix) <- 1
+
+  # Create filename based on design parameters
+  fname <- paste0('prepared_objects/N', cond$N, '_rho', cond$rho, '.rds')
+
+  # Save to disk
+  saveRDS(corr_matrix, file = fname)
+}
+
+# Step 2: Use prepare() to load these objects during simulation
+prepare <- function(condition, fixed_objects) {
+  # Create matching filename
+  fname <- paste0('prepared_objects/N', condition$N,
+                  '_rho', condition$rho, '.rds')
+
+  # Load the pre-computed correlation matrix
+  fixed_objects$corr_matrix <- readRDS(fname)
+
+  return(fixed_objects)
+}
+
+generate <- function(condition, fixed_objects) {
+  # Use the loaded correlation matrix to generate multivariate data
+  dat <- MASS::mvrnorm(n = 50,
+                       mu = rep(0, condition$N),
+                       Sigma = fixed_objects$corr_matrix)
+  data.frame(dat)
+}
+
+analyse <- function(condition, dat, fixed_objects) {
+  # Calculate mean correlation in generated data
+  obs_corr <- cor(dat)
+  c(mean_corr = mean(obs_corr[lower.tri(obs_corr)]))
+}
+
+summarise <- function(condition, results, fixed_objects) {
+  c(mean_corr = mean(results$mean_corr))
+}
+
+# Run simulation - prepare() loads objects efficiently
+results <- runSimulation(design = Design,
+                         replications = 2,
+                         prepare = prepare,
+                         generate = generate,
+                         analyse = analyse,
+                         summarise = summarise,
+                         verbose = FALSE)
+
+results
+
+# Cleanup
+unlink('prepared_objects', recursive = TRUE)
+
+}
 
 }
 
