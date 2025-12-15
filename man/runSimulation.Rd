@@ -132,7 +132,7 @@ analyse the simulated data). See \code{\link{Analyse}} for details}
 
   \code{  fixed_objects$expensive_stuff <- readRDS(fname)}
 
-  \code{  return(fixed_objects)}
+  \code{  fixed_objects}
 
   \code{\}}
 
@@ -878,10 +878,7 @@ res
 head(res[[1]]$results)
 
 # just first condition
-res <- SimResults(Final, which=1)
-head(res$results)
-dplyr::tibble(res$condition, res$results)
-
+SimResults(Final, which=1)
 
 # obtain empirical bootstrapped CIs during an initial run
 # the simulation was completed (necessarily requires save_results = TRUE)
@@ -1012,9 +1009,12 @@ runSimulation(design=Design, replications=1000,
               generate=Generate, analyse=Analyse, summarise=Summarise,
               parallel=TRUE, debug='analyse-2')
 
+}
+
 
 ####################################
-## EXTRA: To run the simulation on a user-define cluster, use the following setup (not run)
+
+\dontrun{
 ## Network linked via ssh (two way ssh key-paired connection must be
 ## possible between master and slave nodes)
 ##
@@ -1061,11 +1061,14 @@ with_progress(res <- runSimulation(design=Design, replications=100, parallel='fu
 # reset future computing plan when complete (good practice)
 plan(sequential)
 
+}
+
 ####################################
 
 ###### Post-analysis: Analyze the results via functions like lm() or SimAnova(), and create
 ###### tables(dplyr) or plots (ggplot2) to help visualize the results.
 ###### This is where you get to be a data analyst!
+
 
 library(dplyr)
 res \%>\% summarise(mean(welch), mean(independent))
@@ -1169,9 +1172,7 @@ results <- runSimulation(design = Design,
 results
 
 # Cleanup
-unlink('prepared_objects', recursive = TRUE)
-
-}
+SimClean(dirs='prepared_objects')
 
 }
 

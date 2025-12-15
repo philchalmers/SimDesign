@@ -31,7 +31,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
             write(prepare_Random.seed, file.path(save_results_out_rootdir, filename), sep = ' ')
         }
 
-        prep_result <- try(prepare(condition=condition, fixed_objects=fixed_objects), silent=FALSE)
+        prep_result <- try(prepare(condition=condition, fixed_objects=fixed_objects), silent=TRUE)
 
         if(is(prep_result, 'try-error')){
             # Capture seed on error (similar to mainsim)

@@ -83,17 +83,20 @@ test_that('prepare RNG management', {
         return(fixed_objects)
     }
 
-    res_fail <- tryCatch(
+    runSimulation(Design[2,], replications=1,
+                  prepare=prepare_error,
+                  generate=generate,
+                  analyse=analyse,
+                  summarise=summarise,
+                  verbose=FALSE)
+
+    expect_error(
         runSimulation(Design[2,], replications=1,
                       prepare=prepare_error,
                       generate=generate,
                       analyse=analyse,
                       summarise=summarise,
-                      verbose=FALSE),
-        error = function(e) e
-    )
-
-    expect_true(inherits(res_fail, 'error'))
+                      verbose=FALSE))
 
     # Test 5: load_seed_prepare with file path
     res5 <- runSimulation(Design, replications=2,
