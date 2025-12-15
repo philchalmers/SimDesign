@@ -16,15 +16,10 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
     prepare_error_seed <- NULL
     prepare_Random.seed <- NULL
     if(!is.null(prepare)) {
-
         # Restore seed if debugging prepare
         if(!is.null(load_seed_prepare))
             .GlobalEnv$.Random.seed <- load_seed_prepare
 
-        # Ensure .Random.seed exists (initialize RNG if needed)
-        else if(!exists(".Random.seed", envir = .GlobalEnv))
-            runif(1)
-        
         # Capture seed state before prepare (similar to mainsim line 296)
         prepare_Random.seed <- .GlobalEnv$.Random.seed
 
