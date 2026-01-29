@@ -1,7 +1,7 @@
-Analysis <- function(Functions, condition, replications, fixed_objects, prepare = NULL,
+Analysis <- function(Functions, condition, condition.row, replications, fixed_objects, prepare = NULL,
                      load_seed_prepare = NULL, cl, MPI, seed, save,
                      save_results, save_results_out_rootdir, save_results_dirname, max_errors,
-                     boot_method, boot_draws, CI,
+                     boot_method, boot_draws, CI, logging,
                      save_seeds, save_seeds_dirname, load_seed,
                      export_funs, summarise_asis, warnings_as_errors, progress, store_results,
                      allow_na, allow_nan, use_try, stop_on_fatal, store_warning_seeds,
@@ -55,10 +55,11 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
         p <- progressr::progressor(along = iters)
         results <- try(future.apply::future_lapply(iters,
                                                    used_mainsim, condition=condition,
+                                                   condition.row=condition.row,
                                                    generate=Functions$generate,
                                                    analyse=Functions$analyse,
                                                    fixed_objects=fixed_objects,
-                                                   max_errors=max_errors, save=save,
+                                                   max_errors=max_errors, save=save, logging=logging,
                                                    store_warning_seeds=store_warning_seeds,
                                                    save_results_out_rootdir=save_results_out_rootdir,
                                                    store_Random.seeds=store_Random.seeds,
@@ -75,6 +76,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
         if(!is.null(seed)) set_seed(seed[condition$ID])
         results <- if(progress){
             try(pbapply::pblapply(1L:replications, used_mainsim, condition=condition,
+                                  condition.row=condition.row,
                    generate=Functions$generate,
                    analyse=Functions$analyse,
                    fixed_objects=fixed_objects,
@@ -84,7 +86,7 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
                    save_results_out_rootdir=save_results_out_rootdir,
                    save_seeds=save_seeds, load_seed=load_seed,
                    save_seeds_dirname=save_seeds_dirname,
-                   warnings_as_errors=warnings_as_errors,
+                   warnings_as_errors=warnings_as_errors, logging=logging,
                    max_time.start=max_time.start, max_time=max_time,
                    useGenerate=useGenerate, useAnalyseHandler=useAnalyseHandler,
                    include_replication_index=include_replication_index,
@@ -92,10 +94,11 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
                    allow_gen_errors=allow_gen_errors), TRUE)
         } else {
             try(lapply(1L:replications, used_mainsim,
+                       condition.row=condition.row,
                            condition=condition,
                            generate=Functions$generate,
                            analyse=Functions$analyse,
-                           fixed_objects=fixed_objects,
+                           fixed_objects=fixed_objects, logging=logging,
                            max_errors=max_errors, save=save,
                            store_Random.seeds=store_Random.seeds,
                            save_results_out_rootdir=save_results_out_rootdir,
@@ -121,9 +124,10 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
             }
             results <- if(progress){
                 try(pbapply::pblapply(1L:replications, used_mainsim,
+                                      condition.row=condition.row,
                                     condition=condition, generate=Functions$generate,
                                     analyse=Functions$analyse, load_seed=load_seed,
-                                    fixed_objects=fixed_objects, save=save,
+                                    fixed_objects=fixed_objects, save=save, logging=logging,
                                     store_Random.seeds=store_Random.seeds, useGenerate=useGenerate,
                                     save_results_out_rootdir=save_results_out_rootdir,
                                     max_errors=max_errors, store_warning_seeds=store_warning_seeds,
@@ -135,9 +139,10 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
                                     useAnalyseHandler=useAnalyseHandler, use_try=use_try, cl=cl), TRUE)
             } else {
                 try(parallel::parLapply(cl, 1L:replications, used_mainsim,
+                                        condition.row=condition.row,
                                     condition=condition, generate=Functions$generate,
                                     analyse=Functions$analyse, load_seed=load_seed,
-                                    store_Random.seeds=store_Random.seeds,
+                                    store_Random.seeds=store_Random.seeds, logging=logging,
                                     fixed_objects=fixed_objects, save=save, useGenerate=useGenerate,
                                     save_results_out_rootdir=save_results_out_rootdir,
                                     max_errors=max_errors, store_warning_seeds=store_warning_seeds,

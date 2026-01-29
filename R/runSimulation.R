@@ -416,6 +416,13 @@
 #'      be problematic and should be treated as errors then please use
 #'      \code{\link{manageWarnings}} instead}
 #'
+#'      \item{\code{logging}}{a character vector indicating whether the execution times for the
+#'        generate and analyse functions should be logged. Values can be \code{'store'} to store the times
+#'        (and later extract using \code{\link{SimExtract}}) or \code{'verbose'} to both store and
+#'        print the times via \code{\link{cat}}
+#'        for \code{stdout} piping (useful on cluster computing)
+#'      }
+#'
 #'      \item{\code{save_seeds}}{
 #'      logical; save the \code{.Random.seed} states prior to performing
 #'      each replication into
@@ -1159,6 +1166,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(is.null(control$global_fun_level)) control$global_fun_level <- 2
     if(is.null(control$useAnalyseHandler)) control$useAnalyseHandler <- TRUE
     useAnalyseHandler <- control$useAnalyseHandler
+    if(is.null(control$logging)) control$logging <- "none"
     if(replications < 3L){
         if(verbose)
             message('save, stop_on_fatal, and print_RAM flags disabled for testing purposes')
@@ -1636,6 +1644,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             Result_list[[i]] <- Analysis(Functions=Functions,
                                          condition=if(was_tibble) dplyr::as_tibble(design[i,])
                                            else design[i,],
+                                         condition.row=i,
                                          replications=replications[i],
                                          fixed_objects=fixed_objects,
                                          prepare=prepare,
@@ -1662,7 +1671,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          warnings_as_errors=warnings_as_errors,
                                          progress=progress, store_results=FALSE, use_try=use_try,
                                          stop_on_fatal=stop_on_fatal, max_time=max_time, max_RAM=max_RAM,
-                                         allow_gen_errors=!SimSolveRun)
+                                         allow_gen_errors=!SimSolveRun, logging=control$logging)
             time1 <- proc.time()[3L]
             stored_time <- stored_time + (time1 - time0)
         } else {
@@ -1679,6 +1688,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                            showWarnings = FALSE)
             tmp <- Analysis(Functions=Functions,
                             condition=if(was_tibble) dplyr::as_tibble(design[i,]) else design[i,],
+                            condition.row=i,
                             replications=replications[i],
                             fixed_objects=fixed_objects,
                             prepare=prepare,
@@ -1705,7 +1715,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             warnings_as_errors=warnings_as_errors,
                             progress=progress, store_results=store_results, use_try=use_try,
                             stop_on_fatal=stop_on_fatal, max_time=max_time, max_RAM=max_RAM,
-                            allow_gen_errors=!SimSolveRun)
+                            allow_gen_errors=!SimSolveRun, logging=control$logging)
             if(SimSolveRun){
                 full_results <- attr(tmp, 'full_results')
                 condition <- if(was_tibble) dplyr::as_tibble(design[i,]) else design[i,]
@@ -1730,7 +1740,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             attr(Result_list[[i]], 'summarise_list') <- attr(tmp, 'summarise_list')
             attr(Result_list[[i]], 'prepare_Random.seed') <- attr(tmp, 'prepare_Random.seed')
             attr(Result_list[[i]], 'prepare_error_seed') <- attr(tmp, 'prepare_error_seed')
-            attr(Result_list[[i]], 'generate_analyse_times') <- attr(tmp, 'generate_analyse_times')
+                attr(Result_list[[i]], 'generate_analyse_times') <- attr(tmp, 'generate_analyse_times')
             Result_list[[i]]$COMPLETED <- date()
             time1 <- proc.time()[3L]
             Result_list[[i]]$SIM_TIME <- time1 - time0

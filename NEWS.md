@@ -3,7 +3,9 @@
 ## Changes in SimDesign 2.23
 
 - `SimExtract()` gains a `log_times` element to view the generate/analyse
-  execution times for each independent replication (see issue #80)
+  execution times for each independent replication (see issue #80). Relatedly,
+  `runSimulation()` gains `control$logging` element to printing and storing the 
+  logging information
 
 ## Changes in SimDesign 2.22
 

@@ -277,10 +277,10 @@ Summarise <- function(condition, results, fixed_objects) NULL
 # print(SimDesign::main)
 #
 # }
-mainsim <- function(index, condition, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
+mainsim <- function(index, condition, condition.row, generate, analyse, fixed_objects, max_errors, save_results_out_rootdir,
                     save, allow_na, allow_nan, save_seeds, save_seeds_dirname, load_seed, max_time, max_time.start,
                     warnings_as_errors, store_Random.seeds, store_warning_seeds, use_try, include_replication_index,
-                    useGenerate, useAnalyseHandler, p = NULL, future = FALSE, allow_gen_errors = TRUE){
+                    useGenerate, useAnalyseHandler, logging, p = NULL, future = FALSE, allow_gen_errors = TRUE){
 
     if(!is.null(p)) p(sprintf("replication = %g", index))
     if(include_replication_index) condition$REPLICATION <- index
@@ -396,7 +396,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                             call.=FALSE), silent=TRUE)
         }
 
-        # if an error was detected in compute(), try again
+        # if an error was detected in analyse(), try again
         if(is(res, 'try-error')){
             res[1L] <-
                 gsub('Error in analyse\\(dat = simlist, condition = condition, fixed_objects = fixed_objects) : \\n  ',
@@ -426,6 +426,10 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             attr(res, 'current_Random.seed') <- current_Random.seed
         attr(res, 'generate_analyse_time') <-
             unname(c(generate_time, analyse_time))
+        if(logging == 'verbose')
+            cat(sprintf("\nDesign row: %s, Replication: %i \n Time (seconds): generate = %s, analyse = %s",
+                condition.row, index,
+                timeFormater(generate_time/60, output = 'sec'), timeFormater(analyse_time/60, output = 'sec')))
         attr(res, 'try_errors') <- try_error
         attr(res, 'try_error_seeds') <- try_error_seeds
         attr(res, 'warnings') <- Warnings

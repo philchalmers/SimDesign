@@ -478,6 +478,13 @@ in the simulation}
      be problematic and should be treated as errors then please use
      \code{\link{manageWarnings}} instead}
 
+     \item{\code{logging}}{a character vector indicating whether the execution times for the
+       generate and analyse functions should be logged. Values can be \code{'store'} to store the times
+       (and later extract using \code{\link{SimExtract}}) or \code{'verbose'} to both store and
+       print the times via \code{\link{cat}}
+       for \code{stdout} piping (useful on cluster computing)
+     }
+
      \item{\code{save_seeds}}{
      logical; save the \code{.Random.seed} states prior to performing
      each replication into
