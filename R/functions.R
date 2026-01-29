@@ -286,6 +286,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
     if(include_replication_index) condition$REPLICATION <- index
     try_error <- try_error_seeds <- warning_message_seeds <- NULL
 
+    generate_time <- analyse_time <- 0
     while(TRUE){
 
         Warnings <- NULL
@@ -307,6 +308,7 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
         }
         if(!is.null(load_seed))
             .GlobalEnv$.Random.seed <- load_seed
+        start_time <- proc.time()[3L]
         simlist <- if(useGenerate){
             if(allow_gen_errors)
                 try(withCallingHandlers(generate(condition=condition,
@@ -337,6 +339,9 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             try_error_seeds <- rbind(try_error_seeds, current_Random.seed)
             next
         }
+        end_time <- proc.time()[3L]
+        generate_time <- generate_time + (end_time - start_time)
+        start_time <- end_time
         res <- if(useAnalyseHandler)
             try(withCallingHandlers(analyse(dat=simlist, condition=condition,
                                fixed_objects=fixed_objects), warning=wHandler), silent=TRUE)
@@ -344,6 +349,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
                          fixed_objects=fixed_objects), silent=TRUE)
         if(!valid_results(res))
             stop("Invalid object returned from Analyse()", call.=FALSE)
+        end_time <- proc.time()[3L]
+        analyse_time <- analyse_time + (end_time - start_time)
         if(!use_try){
             if(is(res, 'try-error')){
                 debug(analyse)
@@ -417,6 +424,8 @@ mainsim <- function(index, condition, generate, analyse, fixed_objects, max_erro
             rownames(warning_message_seeds) <- Warnings
         if(store_Random.seeds)
             attr(res, 'current_Random.seed') <- current_Random.seed
+        attr(res, 'generate_analyse_time') <-
+            unname(c(generate_time, analyse_time))
         attr(res, 'try_errors') <- try_error
         attr(res, 'try_error_seeds') <- try_error_seeds
         attr(res, 'warnings') <- Warnings

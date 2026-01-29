@@ -1,5 +1,10 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.23
+
+- `SimExtract()` gains a `log_times` element to view the generate/analyse
+  execution times for each independent replication (see issue #80)
+
 ## Changes in SimDesign 2.22
 
 - `runSimulation()` gains a `prepare` function argument for loading or preparing

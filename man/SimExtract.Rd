@@ -18,6 +18,8 @@ SimExtract(object, what, fuzzy = TRUE, append = TRUE)
   generation seeds,  \code{'Random.seeds'} for the complete list of
   \code{.Random.seed} states across replications (only stored when
   \code{runSimulation(..., control = list(store_Random.seeds=TRUE))}),
+  \code{'log_times'} for the per replication generate/analyse
+  execution times (recorded in seconds),
   \code{'error_seeds'} and \code{'warning_seeds'}
   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
   \code{'prepare_seeds'} to extract the \code{.Random.seed} states captured before

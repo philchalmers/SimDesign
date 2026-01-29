@@ -15,6 +15,8 @@
 #'   generation seeds,  \code{'Random.seeds'} for the complete list of
 #'   \code{.Random.seed} states across replications (only stored when
 #'   \code{runSimulation(..., control = list(store_Random.seeds=TRUE))}),
+#'   \code{'log_times'} for the per replication generate/analyse
+#'   execution times (recorded in seconds),
 #'   \code{'error_seeds'} and \code{'warning_seeds'}
 #'   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
 #'   \code{'prepare_seeds'} to extract the \code{.Random.seed} states captured before
@@ -125,6 +127,8 @@ SimExtract <- function(object, what, fuzzy = TRUE, append = TRUE){
         attr(object, 'extra_info')$save_info['save_results_dirname']
     } else if(what == 'filename'){
         attr(object, 'extra_info')$save_info['filename']
+    } else if(what == 'log_times'){
+        attr(object, 'extra_info')$log_times
     } else if(what == 'design.id'){
         attr(object, 'extra_info')$Design.ID
     }

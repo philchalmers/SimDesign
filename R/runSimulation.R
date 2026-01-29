@@ -1145,7 +1145,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           control = list(), not_parallel = NULL, progress = TRUE,
                           verbose = interactive())
 {
-    max_time.start <- if(is.null(control$max_time.start)) proc.time()[3L] else control$max_time.start
+    max_time.start <- if(is.null(control$max_time.start))
+        proc.time()[3L] else control$max_time.start
     stopifnot(!missing(analyse))
     if(length(control)){
         stopifnot("Argument(s) to control list invalid"=
@@ -1729,6 +1730,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             attr(Result_list[[i]], 'summarise_list') <- attr(tmp, 'summarise_list')
             attr(Result_list[[i]], 'prepare_Random.seed') <- attr(tmp, 'prepare_Random.seed')
             attr(Result_list[[i]], 'prepare_error_seed') <- attr(tmp, 'prepare_error_seed')
+            attr(Result_list[[i]], 'generate_analyse_times') <- attr(tmp, 'generate_analyse_times')
             Result_list[[i]]$COMPLETED <- date()
             time1 <- proc.time()[3L]
             Result_list[[i]]$SIM_TIME <- time1 - time0
@@ -1850,6 +1852,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     prepare_error_seeds <- Filter(Negate(is.null), prepare_error_seeds)
     if(length(prepare_error_seeds) == 0L) prepare_error_seeds <- NULL
 
+    log_times <- lapply(1L:length(Result_list), function(x)
+        attr(Result_list[[x]], "generate_analyse_times")
+    )
+
     summarise_list <- lapply(1L:length(Result_list), function(x)
         attr(Result_list[[x]], "summarise_list")
     )
@@ -1927,6 +1933,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       prepare_error_seeds=prepare_error_seeds,
                                       stored_results = if(store_results) stored_Results_list else NULL,
                                       Design.ID=Design.ID,
+                                      log_times=log_times,
                                       functions=list(Generate=Generate, Analyse=Analyse, Summarise=Summarise))
     if(dummy_run) Final$dummy_run <- NULL
     class(Final) <- c('SimDesign', class(Final))

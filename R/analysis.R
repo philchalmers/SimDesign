@@ -200,6 +200,9 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
     for(i in seq_len(length(results)))
         attr(results[[i]], 'try_errors') <- attr(results[[i]], 'warnings') <-
         attr(results[[i]], 'try_error_seeds') <- attr(results[[i]], 'warning_message_seeds') <- NULL
+    generate_analyse_times <-
+        do.call(rbind, lapply(results, function(x) attr(x, 'generate_analyse_time')))
+    colnames(generate_analyse_times) <- c('generate', 'analyse')
 
     #collect meta simulation statistics (bias, RMSE, type I errors, etc)
     obs_reps <- length(results)
@@ -255,5 +258,6 @@ Analysis <- function(Functions, condition, replications, fixed_objects, prepare 
             attr(ret, 'prepare_Random.seed') <- prepare_Random.seed
         }
     }
+    attr(ret, 'generate_analyse_times') <- generate_analyse_times
     ret
 }
