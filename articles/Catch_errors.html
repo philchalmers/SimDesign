@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22.1</span>
       </span>
     </div>
 
@@ -112,9 +112,9 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2025-12-17</h4>
+            <h4 data-toc-skip class="date">2026-01-29</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/v2.22/vignettes/Catch_errors.Rmd" class="external-link"><code>vignettes/Catch_errors.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/Catch_errors.Rmd" class="external-link"><code>vignettes/Catch_errors.Rmd</code></a></small>
       <div class="hidden name"><code>Catch_errors.Rmd</code></div>
 
     </div>
@@ -191,9 +191,9 @@ iterations).</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
 <span><span class="co">##       N     bias REPLICATIONS SIM_TIME       SEED COMPLETED      ERRORS WARNINGS</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.06s    <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Wed Dec 17 17…     53       59</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.05s     312<span style="text-decoration: underline;">928</span>385 Wed Dec 17 17…     52       60</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.04s     866<span style="text-decoration: underline;">248</span>189 Wed Dec 17 17…     42       56</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.06s    <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Thu Jan 29 16…     53       59</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.06s     312<span style="text-decoration: underline;">928</span>385 Thu Jan 29 16…     52       60</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.05s     866<span style="text-decoration: underline;">248</span>189 Thu Jan 29 16…     42       56</span></span></code></pre>
 <p>What you’ll immediately notice from this output object is that counts
 of the error and warning messages have been appended to the
 <code>result</code> object. This is useful to determine just how
@@ -395,7 +395,8 @@ test.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
 <span><span class="va">out3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manageWarnings.html">manageWarnings</a></span><span class="op">(</span><span class="fu">myfun</span><span class="op">(</span><span class="op">)</span>, </span>
 <span>                        warning2error<span class="op">=</span><span class="st">'This warning is serious'</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error: This warning is serious</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<span><span class="co">## <span style="color: #BBBB00;">!</span> This warning is serious</span></span></code></pre>
 <p>which now converts the previous warning message into an error
 message, thereby correctly disrupting the flow of the Monte Carlo
 simulation experiment and prompting a new call to

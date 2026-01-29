@@ -30,7 +30,7 @@ must be passed to the fixed_objects input to become available across nodes)."><!
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22.1</span>
       </span>
     </div>
 
@@ -96,7 +96,7 @@ must be passed to the fixed_objects input to become available across nodes)."><!
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Run a Monte Carlo simulation given conditions and simulation functions</h1>
-    <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/v2.22/R/runSimulation.R" class="external-link"><code>R/runSimulation.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/R/runSimulation.R" class="external-link"><code>R/runSimulation.R</code></a></small>
     <div class="hidden name"><code>runSimulation.Rd</code></div>
     </div>
 
@@ -1072,9 +1072,9 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N      mu       SE REPLICATIONS SIM_TIME       SEED COMPLETED             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.795  0.945<span style="text-decoration: underline;">30</span>             2 0.00s     861<span style="text-decoration: underline;">587</span>564 Wed Dec 17 17:15:06 2…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.346  0.646<span style="text-decoration: underline;">85</span>             2 0.00s    <span style="text-decoration: underline;">1</span>349<span style="text-decoration: underline;">546</span>859 Wed Dec 17 17:15:06 2…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.926<span style="text-decoration: underline;">6</span> 0.091<span style="text-decoration: underline;">657</span>            2 0.00s    <span style="text-decoration: underline;">1</span>903<span style="text-decoration: underline;">890</span>182 Wed Dec 17 17:15:06 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.795  0.945<span style="text-decoration: underline;">30</span>             2 0.00s     861<span style="text-decoration: underline;">587</span>564 Thu Jan 29 16:12:46 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.346  0.646<span style="text-decoration: underline;">85</span>             2 0.00s    <span style="text-decoration: underline;">1</span>349<span style="text-decoration: underline;">546</span>859 Thu Jan 29 16:12:46 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.926<span style="text-decoration: underline;">6</span> 0.091<span style="text-decoration: underline;">657</span>            2 0.00s    <span style="text-decoration: underline;">1</span>903<span style="text-decoration: underline;">890</span>182 Thu Jan 29 16:12:46 2…</span>
 <span class="r-in"><span><span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">Final</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N  mean</span>
@@ -1093,9 +1093,9 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N      mu       SE REPLICATIONS SIM_TIME       SEED COMPLETED             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.795  0.945<span style="text-decoration: underline;">30</span>             2 0.00s     861<span style="text-decoration: underline;">587</span>564 Wed Dec 17 17:15:06 2…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.346  0.646<span style="text-decoration: underline;">85</span>             2 0.00s    <span style="text-decoration: underline;">1</span>349<span style="text-decoration: underline;">546</span>859 Wed Dec 17 17:15:06 2…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.926<span style="text-decoration: underline;">6</span> 0.091<span style="text-decoration: underline;">657</span>            2 0.00s    <span style="text-decoration: underline;">1</span>903<span style="text-decoration: underline;">890</span>182 Wed Dec 17 17:15:06 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.795  0.945<span style="text-decoration: underline;">30</span>             2 0.00s     861<span style="text-decoration: underline;">587</span>564 Thu Jan 29 16:12:46 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.346  0.646<span style="text-decoration: underline;">85</span>             2 0.00s    <span style="text-decoration: underline;">1</span>349<span style="text-decoration: underline;">546</span>859 Thu Jan 29 16:12:46 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.926<span style="text-decoration: underline;">6</span> 0.091<span style="text-decoration: underline;">657</span>            2 0.00s    <span style="text-decoration: underline;">1</span>903<span style="text-decoration: underline;">890</span>182 Thu Jan 29 16:12:46 2…</span>
 <span class="r-in"><span><span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">Final_rep</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N  mean</span>
