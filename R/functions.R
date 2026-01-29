@@ -427,9 +427,10 @@ mainsim <- function(index, condition, condition.row, generate, analyse, fixed_ob
         attr(res, 'generate_analyse_time') <-
             unname(c(generate_time, analyse_time))
         if(logging == 'verbose')
-            cat(sprintf("\nDesign row: %s, Replication: %i \n Time (seconds): generate = %s, analyse = %s",
+            cat(sprintf("\nDesign row: %s, Replication: %i \n Time: generate = %s, analyse = %s",
                 condition.row, index,
-                timeFormater(generate_time/60, output = 'sec'), timeFormater(analyse_time/60, output = 'sec')))
+                timeFormater(generate_time, output='SBATCH', input='sec'),
+                timeFormater(analyse_time, output='SBATCH', input='sec')))
         attr(res, 'try_errors') <- try_error
         attr(res, 'try_error_seeds') <- try_error_seeds
         attr(res, 'warnings') <- Warnings

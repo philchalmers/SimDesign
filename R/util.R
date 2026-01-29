@@ -852,7 +852,8 @@ genSeeds <- function(design = 1L, iseed = NULL, arrayID = NULL, old.seeds = NULL
 #' Accepted time formats include \code{"minutes"},
 #' \code{"minutes:seconds"}, \code{"hours:minutes:seconds"},
 #' \code{"days-hours"}, \code{"days-hours:minutes"} and
-#' \code{"days-hours:minutes:seconds"}.
+#' \code{"days-hours:minutes:seconds"}. Alternatively, function can be used to
+#' convert numeric input to SBATCH format.
 #'
 #' For example, \code{time = "60"} indicates a maximum time of 60 minutes,
 #' \code{time = "03:00:00"} a maximum time of 3 hours,
@@ -864,7 +865,16 @@ genSeeds <- function(design = 1L, iseed = NULL, arrayID = NULL, old.seeds = NULL
 #'
 #' @param output type of numeric output to convert time into.
 #' Currently supported are \code{'sec'} for seconds (default),
-#' \code{'min'} for minutes, \code{'hour'}, and \code{'day'}
+#' \code{'min'} for minutes, \code{'hour'}, and \code{'day'}.
+#'
+#' Alternatively, if \code{time} were numeric then setting \code{output} to
+#' \code{'SBATCH'} will return a suitable SBATCH format.
+#'
+#' @param input if supplied \code{time} is a numeric, indicates what the value
+#'   represents. Default assumes the input is in minutes (see \code{output} for
+#'   supported values)
+#'
+#' @param sround function used to round last seconds computation
 #'
 #' @export
 #'
@@ -892,7 +902,23 @@ genSeeds <- function(design = 1L, iseed = NULL, arrayID = NULL, old.seeds = NULL
 #' timeFormater(42)               # seconds
 #' timeFormater(42, output='min') # minutes
 #'
-timeFormater <- function(time, output='sec'){
+#' # convert numeric inputs to SBATCH format
+#' timeFormater(60, output='SBATCH')
+#' timeFormater(3, output='SBATCH', input='day')
+#' timeFormater(7000, output='SBATCH', input='sec')
+#' timeFormater(100000, output='SBATCH', input='sec')
+#'
+#' # rounding seconds
+#' timeFormater(1.55555, output='SBATCH', input='sec') # floor default
+#' timeFormater(1.55555, output='SBATCH', input='sec', sround=ceiling)
+#' timeFormater(1.55555, output='SBATCH', input='sec', sround=\(x) round(x, 3))
+#'
+#'
+timeFormater <- function(time, output='sec', input = 'min', sround=floor){
+    if(output == 'SBATCH'){
+        stopifnot(is.numeric(time))
+        return(time2SBATCH(time, input=input, sround=sround))
+    }
     if(!is.character(time)) time <- as.character(time)
     stopifnot(length(time) == 1L && length(output) == 1L)
     stopifnot(output %in% c('sec', 'min', 'hour', 'day'))
@@ -901,6 +927,24 @@ timeFormater <- function(time, output='sec'){
     if(output == 'hour') time <- time / 60 / 60
     if(output == 'day') time <- time / 60 / 60 / 24
     time
+}
+
+time2SBATCH <- function(time, input, sround){
+    seconds <- switch(input,
+                   'day'=time*86400,
+                   'hour'=time*3600,
+                   'min'=time*60,
+                   'sec'=time)
+    days <- floor(seconds/86400)
+    remainder <- seconds - days*86400
+    hours <- floor(remainder / 3600)
+    remainder <- remainder - hours * 3600
+    minutes <- floor(remainder / 60)
+    seconds <- sround(remainder - minutes * 60)
+    ret <- sprintf('%s:%s:%s', hours, minutes, seconds)
+    if(days > 0)
+        ret <- paste0(days, '-', ret)
+    ret
 }
 
 sbatch_time2sec <- function(time){

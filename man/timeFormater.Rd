@@ -4,7 +4,7 @@
 \alias{timeFormater}
 \title{Format time string to suitable numeric output}
 \usage{
-timeFormater(time, output = "sec")
+timeFormater(time, output = "sec", input = "min", sround = floor)
 }
 \arguments{
 \item{time}{a character string to be formatted. If a numeric vector is supplied
@@ -12,7 +12,16 @@ then this will be interpreted as minutes due to character coercion.}
 
 \item{output}{type of numeric output to convert time into.
 Currently supported are \code{'sec'} for seconds (default),
-\code{'min'} for minutes, \code{'hour'}, and \code{'day'}}
+\code{'min'} for minutes, \code{'hour'}, and \code{'day'}.
+
+Alternatively, if \code{time} were numeric then setting \code{output} to
+\code{'SBATCH'} will return a suitable SBATCH format.}
+
+\item{input}{if supplied \code{time} is a numeric, indicates what the value
+represents. Default assumes the input is in minutes (see \code{output} for
+supported values)}
+
+\item{sround}{function used to round last seconds computation}
 }
 \description{
 Format time input string into suitable numeric output metric (e.g., seconds).
@@ -20,7 +29,8 @@ Input follows the \code{SBATCH} utility specifications.
 Accepted time formats include \code{"minutes"},
 \code{"minutes:seconds"}, \code{"hours:minutes:seconds"},
 \code{"days-hours"}, \code{"days-hours:minutes"} and
-\code{"days-hours:minutes:seconds"}.
+\code{"days-hours:minutes:seconds"}. Alternatively, function can be used to
+convert numeric input to SBATCH format.
 }
 \details{
 For example, \code{time = "60"} indicates a maximum time of 60 minutes,
@@ -51,5 +61,17 @@ timeFormater("4:30:30", output = 'hour')
 # numeric input is understood as minutes
 timeFormater(42)               # seconds
 timeFormater(42, output='min') # minutes
+
+# convert numeric inputs to SBATCH format
+timeFormater(60, output='SBATCH')
+timeFormater(3, output='SBATCH', input='day')
+timeFormater(7000, output='SBATCH', input='sec')
+timeFormater(100000, output='SBATCH', input='sec')
+
+# rounding seconds
+timeFormater(1.55555, output='SBATCH', input='sec') # floor default
+timeFormater(1.55555, output='SBATCH', input='sec', sround=ceiling)
+timeFormater(1.55555, output='SBATCH', input='sec', sround=\(x) round(x, 3))
+
 
 }
