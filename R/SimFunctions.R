@@ -58,6 +58,9 @@
 #'   to be knitted? Default is \code{TRUE}. For those less familiar with \code{spin} documents
 #'   see \code{https://bookdown.org/yihui/rmarkdown-cookbook/spin.html} for further details
 #'
+#' @param clip logical; use the `clipr` package to copy the simulation template to the
+#'  OS clipboard?
+#'
 #' @aliases SimFunctions
 #'
 #' @seealso \code{\link{runSimulation}}
@@ -105,8 +108,10 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
                          save_structure = 'single', extra_file = FALSE,
                          nAnalyses = 1, nGenerate = 1,
                          summarise = TRUE, comments = FALSE, openFiles = TRUE,
-                         spin_header = TRUE, SimSolve = FALSE){
+                         clip = FALSE, spin_header = TRUE, SimSolve = FALSE){
     generate <- TRUE
+    if(clip && is.null(filename))
+        filename <- tempfile()
     if(nGenerate == 0L)
         generate <- FALSE
     if(save_structure == 'single'){
@@ -262,8 +267,9 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
     if(is.null(filename) || out.files == 1L){
         if(out.files == 1L){
             if(!is.null(filename)){
-                cat(sprintf('Writing simulation components to file \"%s\" in \n  directory \"%s\"',
-                            paste0(filename, '.R'), dir))
+                if(!clip)
+                    cat(sprintf('Writing simulation components to file \"%s\" in \n  directory \"%s\"',
+                                paste0(filename, '.R'), dir))
                 sink(paste0(filename, '.R'))
             }
         }
@@ -317,7 +323,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
             }
         }
     }
-    if(!is.null(filename) && openFiles){
+    if(!clip && !is.null(filename) && openFiles){
         message('\n\nOpening file(s) in your current text editor...')
         if(out.files > 1L){
             if(out.files == 2L){
@@ -335,5 +341,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
             file.show(paste0(filename, '-extras.R'))
         file.show(paste0(filename, '.R'))
     }
+    if(clip)
+        clipr::write_clip(readLines(paste0(filename, '.R')))
     invisible(NULL)
 }

@@ -14,6 +14,7 @@ SimFunctions(
   summarise = TRUE,
   comments = FALSE,
   openFiles = TRUE,
+  clip = FALSE,
   spin_header = TRUE,
   SimSolve = FALSE
 )
@@ -53,6 +54,9 @@ step can be defined in the analysis function(s) (only recommended for smaller si
 
 \item{openFiles}{logical; after files have been generated, open them in your text editor
 (e.g., if Rstudio is running the scripts will open in a new tab)?}
+
+\item{clip}{logical; use the `clipr` package to copy the simulation template to the
+OS clipboard?}
 
 \item{spin_header}{logical; include a basic \code{knitr::spin} header to allow the simulation
 to be knitted? Default is \code{TRUE}. For those less familiar with \code{spin} documents
