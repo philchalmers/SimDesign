@@ -2,6 +2,9 @@
 
 ## Changes in SimDesign 2.23
 
+- Added `center` arguments to `bias()`, `RMSD()`, and `MSE()` to change central
+  tendency report (suggested by Michael Truong; #81)
+
 - `SimExtract()` gains a `log_times` element to view the generate/analyse
   execution times for each independent replication (see issue #80). Relatedly,
   `runSimulation()` gains `control$logging` element to printing and storing the 
