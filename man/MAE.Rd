@@ -4,7 +4,14 @@
 \alias{MAE}
 \title{Compute the mean absolute error}
 \usage{
-MAE(estimate, parameter = NULL, type = "MAE", percent = FALSE, unname = FALSE)
+MAE(
+  estimate,
+  parameter = NULL,
+  type = "MAE",
+  center = mean,
+  percent = FALSE,
+  unname = FALSE
+)
 }
 \arguments{
 \item{estimate}{a \code{numeric} vector, \code{matrix}/\code{data.frame}, or \code{list}
@@ -26,6 +33,11 @@ form (therefore \code{mean(abs(estimate))} will be returned)}
 \item{type}{type of deviation to compute. Can be \code{'MAE'} (default) for the mean absolute error,
 \code{'NMSE'} for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
 \code{'SMSE'} for the standardized MAE (MAE / sd(estimate))}
+
+\item{center}{function to compute the central tendency. Default uses \code{\link{mean}},
+reflecting the canonical \eqn{mean((\hat{p}_i - p)^2)} difference,
+ but other options can be supplied to provide more robust central tendency estimates, such as
+\code{\link{median}} (i.e., median-squared error) or \code{\(x) mean(x, trim = 0.1)}}
 
 \item{percent}{logical; change returned result to percentage by multiplying by 100?
 Default is FALSE}

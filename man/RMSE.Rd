@@ -9,6 +9,7 @@ RMSE(
   estimate,
   parameter = NULL,
   type = "RMSE",
+  center = mean,
   MSE = FALSE,
   percent = FALSE,
   unname = FALSE
@@ -18,6 +19,7 @@ RMSD(
   estimate,
   parameter = NULL,
   type = "RMSE",
+  center = mean,
   MSE = FALSE,
   percent = FALSE,
   unname = FALSE
@@ -43,6 +45,13 @@ form (therefore \code{sqrt(mean(estimate^2))} will be returned)}
 \code{'NRMSE'} for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
 \code{'SRMSE'} for the standardized RMSE (RMSE / sd(estimate)),
 \code{'CV'} for the coefficient of variation, or \code{'RMSLE'} for the root mean-square log-error}
+
+\item{center}{function to compute the central tendency. Default uses \code{\link{mean}},
+reflecting the canonical \eqn{mean((\hat{p}_i - p)^2)} difference (and subsequently square-rooted),
+ but other options can be supplied to provide more robust central tendency estimates, such as
+\code{\link{median}} (i.e., root median-squared error) or
+\code{\(x) mean(x, trim = 0.1)}. Note that the centering function is also used in the
+denominator of \code{type = 'CV'} and \code{'RMSLE'}}
 
 \item{MSE}{logical; return the mean square error equivalent of the results instead of the root
 mean-square error (in other words, the result is squared)? Default is \code{FALSE}}

@@ -8,6 +8,8 @@ bias(
   estimate,
   parameter = NULL,
   type = "bias",
+  center = mean,
+  deviance = colSDs,
   abs = FALSE,
   percent = FALSE,
   unname = FALSE
@@ -37,6 +39,18 @@ if Type I error rates (\eqn{\alpha}) are supplied will result in the "percentage
 absolute value of each term, then computes the mean estimate,
 and \code{'standardized'} computes the standardized bias estimate
 (standard bias divided by the standard deviation of the sample estimates)}
+
+\item{center}{function to compute the central tendency. Default uses \code{\link{mean}},
+reflecting the canonical \eqn{mean(\hat{p}_i - p)} difference,
+ but other options can be supplied to provide more robust central tendency estimates, such as
+\code{\link{median}} or \code{\(x) mean(x, trim = 0.1)}}
+
+\item{deviance}{function to compute the deviance criterion, currently used when
+\code{type = 'standardize'}. Default uses \code{\link{colSDs}},
+reflecting the canonical standard deviation of an incoming \code{matrix} object (required),
+but other options can be supplied to provide more robust deviation estimates, such as
+\code{\(x) apply(x, 2, IQR)} for the interquartile range. Note that if using an alternative
+\code{center} then, if relevant, this should be adjusted too}
 
 \item{abs}{logical; find the absolute bias between the parameters and estimates? This effectively
 just applies the \code{\link{abs}} transformation to the returned result. Default is FALSE}
@@ -71,6 +85,9 @@ bias(dev)
 # equivalent here
 bias(mean(samp), pop)
 
+# different center function
+bias(samp, pop, center=median)  # median instead of mean
+
 # matrix input
 mat <- cbind(M1=rnorm(100, 2, sd = 0.5), M2 = rnorm(100, 2, sd = 1))
 bias(mat, parameter = 2)
@@ -91,6 +108,7 @@ bias(df, parameter = c(2,2))
 parameters <- 1:10
 estimates <- parameters + rnorm(10)
 bias(estimates, parameters)
+
 
 # relative difference dividing by the magnitude of parameters
 bias(estimates, parameters, type = 'abs_relative')
