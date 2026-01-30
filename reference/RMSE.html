@@ -19,7 +19,7 @@ as well as estimate values which are in deviation form."><!-- mathjax --><script
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22.2</span>
       </span>
     </div>
 
@@ -100,6 +100,7 @@ as well as estimate values which are in deviation form.</p>
 <span>  <span class="va">estimate</span>,</span>
 <span>  parameter <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"RMSE"</span>,</span>
+<span>  center <span class="op">=</span> <span class="va">mean</span>,</span>
 <span>  MSE <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  percent <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  unname <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -109,6 +110,7 @@ as well as estimate values which are in deviation form.</p>
 <span>  <span class="va">estimate</span>,</span>
 <span>  parameter <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"RMSE"</span>,</span>
+<span>  center <span class="op">=</span> <span class="va">mean</span>,</span>
 <span>  MSE <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  percent <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  unname <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -143,6 +145,15 @@ form (therefore <code>sqrt(mean(estimate^2))</code> will be returned)</p></dd>
 <code>'NRMSE'</code> for the normalized RMSE (RMSE / (max(estimate) - min(estimate))),
 <code>'SRMSE'</code> for the standardized RMSE (RMSE / sd(estimate)),
 <code>'CV'</code> for the coefficient of variation, or <code>'RMSLE'</code> for the root mean-square log-error</p></dd>
+
+
+<dt id="arg-center">center<a class="anchor" aria-label="anchor" href="#arg-center"></a></dt>
+<dd><p>function to compute the central tendency. Default uses <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></code>,
+reflecting the canonical \(mean((\hat{p}_i - p)^2)\) difference (and subsequently square-rooted),
+ but other options can be supplied to provide more robust central tendency estimates, such as
+<code><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></code> (i.e., root median-squared error) or
+<code>\(x) mean(x, trim = 0.1)</code>. Note that the centering function is also used in the
+denominator of <code>type = 'CV'</code> and <code>'RMSLE'</code></p></dd>
 
 
 <dt id="arg-mse">MSE<a class="anchor" aria-label="anchor" href="#arg-mse"></a></dt>

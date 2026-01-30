@@ -19,7 +19,7 @@ If relative bias is requested the estimate and parameter inputs are both require
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22.2</span>
       </span>
     </div>
 
@@ -100,6 +100,8 @@ If relative bias is requested the <code>estimate</code> and <code>parameter</cod
 <span>  <span class="va">estimate</span>,</span>
 <span>  parameter <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"bias"</span>,</span>
+<span>  center <span class="op">=</span> <span class="va">mean</span>,</span>
+<span>  deviance <span class="op">=</span> <span class="va">colSDs</span>,</span>
 <span>  abs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  percent <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  unname <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -138,6 +140,22 @@ if Type I error rates (\(\alpha\)) are supplied will result in the "percentage e
 absolute value of each term, then computes the mean estimate,
 and <code>'standardized'</code> computes the standardized bias estimate
 (standard bias divided by the standard deviation of the sample estimates)</p></dd>
+
+
+<dt id="arg-center">center<a class="anchor" aria-label="anchor" href="#arg-center"></a></dt>
+<dd><p>function to compute the central tendency. Default uses <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></code>,
+reflecting the canonical \(mean(\hat{p}_i - p)\) difference,
+ but other options can be supplied to provide more robust central tendency estimates, such as
+<code><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></code> or <code>\(x) mean(x, trim = 0.1)</code></p></dd>
+
+
+<dt id="arg-deviance">deviance<a class="anchor" aria-label="anchor" href="#arg-deviance"></a></dt>
+<dd><p>function to compute the deviance criterion, currently used when
+<code>type = 'standardize'</code>. Default uses <code><a href="colVars.html">colSDs</a></code>,
+reflecting the canonical standard deviation of an incoming <code>matrix</code> object (required),
+but other options can be supplied to provide more robust deviation estimates, such as
+<code>\(x) apply(x, 2, IQR)</code> for the interquartile range. Note that if using an alternative
+<code>center</code> then, if relevant, this should be adjusted too</p></dd>
 
 
 <dt id="arg-abs">abs<a class="anchor" aria-label="anchor" href="#arg-abs"></a></dt>
@@ -200,6 +218,10 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">samp</span><span class="op">)</span>, <span class="va">pop</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.02343577</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># different center function</span></span></span>
+<span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">samp</span>, <span class="va">pop</span>, center<span class="op">=</span><span class="va">median</span><span class="op">)</span>  <span class="co"># median instead of mean</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.006903063</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># matrix input</span></span></span>
 <span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>M1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, M2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">mat</span>, parameter <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
@@ -235,6 +257,7 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-in"><span><span class="va">estimates</span> <span class="op">&lt;-</span> <span class="va">parameters</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">estimates</span>, <span class="va">parameters</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.4862697</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># relative difference dividing by the magnitude of parameters</span></span></span>
 <span class="r-in"><span><span class="fu">bias</span><span class="op">(</span><span class="va">estimates</span>, <span class="va">parameters</span>, type <span class="op">=</span> <span class="st">'abs_relative'</span><span class="op">)</span></span></span>

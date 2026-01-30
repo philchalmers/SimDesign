@@ -18,7 +18,7 @@ Accepts estimate and parameter values, as well as estimate values which are in d
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22.2</span>
       </span>
     </div>
 
@@ -94,7 +94,14 @@ Accepts estimate and parameter values, as well as estimate values which are in d
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">MAE</span><span class="op">(</span><span class="va">estimate</span>, parameter <span class="op">=</span> <span class="cn">NULL</span>, type <span class="op">=</span> <span class="st">"MAE"</span>, percent <span class="op">=</span> <span class="cn">FALSE</span>, unname <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">MAE</span><span class="op">(</span></span>
+<span>  <span class="va">estimate</span>,</span>
+<span>  parameter <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"MAE"</span>,</span>
+<span>  center <span class="op">=</span> <span class="va">mean</span>,</span>
+<span>  percent <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  unname <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -125,6 +132,13 @@ form (therefore <code>mean(abs(estimate))</code> will be returned)</p></dd>
 <dd><p>type of deviation to compute. Can be <code>'MAE'</code> (default) for the mean absolute error,
 <code>'NMSE'</code> for the normalized MAE (MAE / (max(estimate) - min(estimate))), or
 <code>'SMSE'</code> for the standardized MAE (MAE / sd(estimate))</p></dd>
+
+
+<dt id="arg-center">center<a class="anchor" aria-label="anchor" href="#arg-center"></a></dt>
+<dd><p>function to compute the central tendency. Default uses <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></code>,
+reflecting the canonical \(mean((\hat{p}_i - p)^2)\) difference,
+ but other options can be supplied to provide more robust central tendency estimates, such as
+<code><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></code> (i.e., median-squared error) or <code>\(x) mean(x, trim = 0.1)</code></p></dd>
 
 
 <dt id="arg-percent">percent<a class="anchor" aria-label="anchor" href="#arg-percent"></a></dt>
