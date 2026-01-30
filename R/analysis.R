@@ -155,6 +155,15 @@ Analysis <- function(Functions, condition, condition.row, replications, fixed_ob
             }
         }
     }
+    if(is.finite(max_time)){
+        not_timed_out <- sapply(results, \(x) !is(x, 'timed_out'))
+        if(!all(not_timed_out)){
+            warning(sprintf('max_time exceeded; %i replications not evaluated for Design row %i',
+                            length(not_timed_out) - sum(not_timed_out), condition.row),
+                    call.=FALSE )
+            results <- results[not_timed_out]
+        }
+    }
     if(is(results, 'try-error')){
         # deal with fatal errors
         if(stop_on_fatal){

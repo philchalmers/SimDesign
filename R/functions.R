@@ -442,6 +442,11 @@ mainsim <- function(index, condition, condition.row, generate, analyse, fixed_ob
 mainsim_maxtime <- function(max_time, max_time.start, ...){
     st <- proc.time()['elapsed']
     time_left <- max_time - (st - max_time.start)
+    if(time_left <= 0){
+        out <- NA
+        class(out) <- 'timed_out'
+        return(out)
+    }
     out <- R.utils::withTimeout(mainsim(...),
                                 timeout = time_left,
                                 onTimeout = 'warning')
