@@ -1863,9 +1863,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(length(prepare_error_seeds) == 0L) prepare_error_seeds <- NULL
 
     log_times <- lapply(1L:length(Result_list), function(x)
-        attr(Result_list[[x]], "generate_analyse_times")
+        dplyr::as_tibble(attr(Result_list[[x]], "generate_analyse_times"))
     )
-    log_times <- dplyr::as_tibble(log_times)
 
     summarise_list <- lapply(1L:length(Result_list), function(x)
         attr(Result_list[[x]], "summarise_list")
@@ -1972,6 +1971,10 @@ summary.SimDesign <- function(object, ...){
     ret$error_seeds <- NULL
     ret$warning_seeds <- NULL
     ret$summarise_list <- NULL
+    ret$log_times <- NULL
+    ret$prepare_seeds <- NULL
+    ret$functions <- NULL
+
     ret <- ret[!sapply(ret, is.null)]
     ret
 }
