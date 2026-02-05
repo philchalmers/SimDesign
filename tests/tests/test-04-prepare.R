@@ -165,4 +165,6 @@ test_that('prepare RNG management', {
     expect_true(length(random_seeds8) == nrow(Design))
     expect_true(all(sapply(random_seeds8, function(x) nrow(x) == 10)))
 
+    SimClean('test.rds')
+    SimClean(dirs = 'test-seeds_*')
 })
