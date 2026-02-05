@@ -1865,6 +1865,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     log_times <- lapply(1L:length(Result_list), function(x)
         attr(Result_list[[x]], "generate_analyse_times")
     )
+    log_times <- dplyr::as_tibble(log_times)
 
     summarise_list <- lapply(1L:length(Result_list), function(x)
         attr(Result_list[[x]], "summarise_list")
