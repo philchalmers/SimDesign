@@ -61,8 +61,8 @@
 #'
 #' if(FALSE){
 #'   # run the following to see behavior with NA values in dataset
-#'   mtcars[sample(1:3), 'cyl'] <- NA
-#'   mtcars[sample(1:3), 'mpg'] <- NA
+#'   mtcars[sample(1:nrow(mtcars), 3), 'cyl'] <- NA
+#'   mtcars[sample(1:nrow(mtcars), 5), 'mpg'] <- NA
 #' }
 #'
 #' fmtcars <- within(mtcars, {
