@@ -159,7 +159,6 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 
 #' @export
 #' @rdname descript
-#' @param pick function names to extract from list
 get_descriptFuns <- function(){
     out <- c(n=length, mean=mean, trimmed=function(x) mean(x, trim=.1),
       sd=sd, mad=mad, skewness=e1071::skewness, kurtosis=e1071::kurtosis,

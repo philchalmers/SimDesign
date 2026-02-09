@@ -40,8 +40,6 @@ of the descriptive statistics specified in \code{funs}}
 \item{discrete}{logical; include summary statistics for \code{discrete}
 variables only? If \code{TRUE} then only count and proportion
 information will be returned}
-
-\item{pick}{function names to extract from list}
 }
 \description{
 Function returns univariate data summaries for each variable supplied, however
