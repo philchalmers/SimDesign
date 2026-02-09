@@ -36,6 +36,7 @@ Imports:
     R.utils,
     codetools,
     clipr,
+    e1071,
     stats
 Suggests:
     snow,

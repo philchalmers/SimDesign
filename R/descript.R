@@ -1,23 +1,31 @@
 #' Compute univariate descriptive statistics
 #'
 #' Function returns univariate data summaries for each variable supplied, however
-#' discrete and continuous variables are treated separately.
-#' Conditional statistics are evaluated internally using the
-#' \code{\link{by}} function, however group-level specifications are
-#' declared using the \code{dplyr} style inputs; specifically,
-#' \code{\link[dplyr]{group_by}}. Quantitative/continuous variable
-#' information is kept distinct in the output, while \code{discrete} observations
-#' can be returned using the explicit \code{discrete} argument.
+#' discrete and continuous variables are treated separately. Structure provides
+#' a more pipe-friendly API for selecting and subsetting variables using the
+#' \code{dplyr} syntax, however conditional statistics are evaluated internally using the
+#' \code{\link{by}} function. Quantitative/continuous variable
+#' information is kept distinct in the output, while discrete variables (e.g.,
+#' \code{factors} and \code{character} vectors)
+#' can be returned by using the \code{discrete} argument.
 #'
-#' @param df a data.frame or tibble containing the variables of interest.
+#' \emph{Conditioning}: As the function is intended to support
+#' pipe-friendly code specifications, conditioning/group subset
+#' specifications are declared using \code{\link[dplyr]{group_by}}
+#' and subsequently passed to \code{descript}. This is true
+#' of all the verbs available in \code{dplyr}.
+#'
+#' @param df a \code{data.frame} or \code{tibble}-like structure
+#'  containing the variables of interest.
 #'  Note that \code{factor} and \code{character} vectors will be treated as
-#'  discrete observations
+#'  discrete observations, and by default are omitted from the computation
+#'  of the descriptive statistics specified in \code{funs}
 #'
 #' @param funs functions to apply when \code{discrete = FALSE}. Can be modified
 #'  by the user to include or exclude further functions, however each supplied
-#'  function must return a scalar.
-#'
-#'  Default functions returns:
+#'  function must return a scalar. Use \code{\link{get_discreteFuns}} to return
+#'  the full list of functions, which may then be augmented or subsetted
+#'  based on the user's requirements. Default descriptive statistic returned are:
 #'
 #'  \describe{
 #'   \item{\code{n}}{number of non-missing observations}
@@ -25,8 +33,8 @@
 #'   \item{\code{trimmed}}{trimmed mean (10\%)}
 #'   \item{\code{sd}}{standard deviation}
 #'   \item{\code{mad}}{mean absolute deviation}
-#'   \item{\code{skewness}}{skewness (from \code{EnvStats})}
-#'   \item{\code{kurtosis}}{kurtosis (from \code{EnvStats})}
+#'   \item{\code{skewness}}{skewness (from \code{e1701})}
+#'   \item{\code{kurtosis}}{kurtosis (from \code{e1071})}
 #'   \item{\code{min}}{minimum}
 #'   \item{\code{Q_25}}{25\% quantile}
 #'   \item{\code{Q_50}}{50\% quantile (a.k.a., the median)}
@@ -37,6 +45,8 @@
 #' @param discrete logical; include summary statistics for \code{discrete}
 #'  variables only? If \code{TRUE} then only count and proportion
 #'  information will be returned
+#'
+#' @importFrom e1071 skewness kurtosis
 #'
 #' @export
 #'
@@ -54,13 +64,15 @@
 #' })
 #'
 #' # with and without factor variables
-#' mtcars |> descript()  # omitted
-#' fmtcars |> descript()  # omitted
+#' mtcars |> descript()
+#' fmtcars |> descript()               # factors/discrete vars omitted
+#' fmtcars |> descript(discrete=TRUE)  # discrete variables only
 #'
-#' # discrete variables only
-#' fmtcars |> descript(discrete=TRUE)
+#' # usual pipe chaining
+#' fmtcars |> select(mpg, wt) |> descript()
+#' fmtcars |> filter(mpg > 20) |> select(mpg, wt) |> descript()
 #'
-#' # conditioning
+#' # conditioning with group_by()
 #' fmtcars |> group_by(cyl) |> descript()
 #' fmtcars |> group_by(cyl, am) |> descript()
 #'
@@ -68,12 +80,21 @@
 #' fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
 #' fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 #'
+#' # only return a subset of summary statistics
+#' funs <- get_descriptFuns()
+#' sfuns <- funs[c('mean', 'sd')] # subset
+#' fmtcars |> descript(funs=sfuns) # only mean/sd
 #'
-descript <- function(df,
-	funs=c(n=length, mean=mean, trimmed=function(x) mean(x, trim=.1),
-		   sd=sd, mad=mad, skewness=EnvStats::skewness, kurtosis=EnvStats::kurtosis,
-		   min=min, Q_25=function(x) quantile(x, .25), Q_50=median,
-		   Q_75=function(x) quantile(x, .75), max=max), discrete=FALSE)
+#' # add a new functions
+#' funs2 <- c(sfuns,
+#'            Q_5 = \(x) quantile(x, .05),
+#'            median=median,
+#'            Q_95 = \(x) quantile(x, .95))
+#' fmtcars |> descript(funs=funs2)
+#'
+#'
+#'
+descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 {
 	discrete.fun <- function(x){
 		tab <- table(x, useNA = "ifany")
@@ -134,6 +155,17 @@ descript <- function(df,
 		names(ret) <- colnames(df)
 	}
 	ret
+}
+
+#' @export
+#' @rdname descript
+#' @param pick function names to extract from list
+get_descriptFuns <- function(){
+    out <- c(n=length, mean=mean, trimmed=function(x) mean(x, trim=.1),
+      sd=sd, mad=mad, skewness=e1071::skewness, kurtosis=e1071::kurtosis,
+      min=min, Q_25=function(x) quantile(x, .25), Q_50=median,
+      Q_75=function(x) quantile(x, .75), max=max)
+    out
 }
 
 # if(FALSE){
