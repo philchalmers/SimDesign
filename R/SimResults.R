@@ -56,6 +56,8 @@
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #'
+#' @seealso \code{\link{descript}}
+#'
 #' @examples
 #'
 #' \dontrun{

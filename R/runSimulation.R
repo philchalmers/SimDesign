@@ -791,20 +791,23 @@
 #' Final <- runSimulation(design=Design, replications=2,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' Final
-#' SimResults(Final)
+#' (results <- SimResults(Final))
+#' results |> dplyr::group_by(N) |> descript()
 #'
 #' # reproduce exact simulation
 #' Final_rep <- runSimulation(design=Design, replications=2, seed=Final$SEED,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' Final_rep
-#' SimResults(Final_rep)
+#' (results <- SimResults(Final_rep))
+#' results |> dplyr::group_by(N) |> descript()
 #'
 #' \dontrun{
 #' # run with more standard number of replications
 #' Final <- runSimulation(design=Design, replications=1000,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' Final
-#' SimResults(Final)
+#' (results <- SimResults(Final))
+#' results |> dplyr::group_by(N) |> descript()
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Extras
