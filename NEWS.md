@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.23
 
+- Add a `descript()` function for marginal and conditional summary statistics 
+  that work well with `dplyr::group_by()`. Can be used for general data summaries
+  as well
+
 - Added `center` arguments to `bias()`, `RMSD()`, and `MSE()` to change central
   tendency report (suggested by Michael Truong; #81)
 
