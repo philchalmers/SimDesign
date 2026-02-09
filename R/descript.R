@@ -29,6 +29,7 @@
 #'
 #'  \describe{
 #'   \item{\code{n}}{number of non-missing observations}
+#'   \item{\code{miss}}{number of missing observations}
 #'   \item{\code{mean}}{mean}
 #'   \item{\code{trimmed}}{trimmed mean (10\%)}
 #'   \item{\code{sd}}{standard deviation}
@@ -57,6 +58,13 @@
 #' library(dplyr)
 #'
 #' data(mtcars)
+#'
+#' if(FALSE){
+#'   # run the following to see behavior with NA values in dataset
+#'   mtcars[sample(1:3), 'cyl'] <- NA
+#'   mtcars[sample(1:3), 'mpg'] <- NA
+#' }
+#'
 #' fmtcars <- within(mtcars, {
 #' 	cyl <- factor(cyl)
 #' 	am <- factor(am, labels=c('automatic', 'manual'))
@@ -78,6 +86,7 @@
 #'
 #' # conditioning also works with group_by()
 #' fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
+#' fmtcars |> group_by(am) |> descript(discrete=TRUE)
 #' fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 #'
 #' # only return a subset of summary statistics
@@ -87,12 +96,10 @@
 #'
 #' # add a new functions
 #' funs2 <- c(sfuns,
-#'            Q_5 = \(x) quantile(x, .05),
-#'            median=median,
-#'            Q_95 = \(x) quantile(x, .95))
+#'            Q_5 = \(x) quantile(x, .05, na.rm=TRUE),
+#'            median= \(x) median(x, na.rm=TRUE),
+#'            Q_95 = \(x) quantile(x, .95, na.rm=TRUE))
 #' fmtcars |> descript(funs=funs2)
-#'
-#'
 #'
 descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 {
@@ -160,11 +167,22 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 #' @export
 #' @rdname descript
 get_descriptFuns <- function(){
-    out <- c(n=length, mean=mean, trimmed=function(x) mean(x, trim=.1),
-      sd=sd, mad=mad, skewness=e1071::skewness, kurtosis=e1071::kurtosis,
-      min=min, Q_25=function(x) quantile(x, .25), Q_50=median,
-      Q_75=function(x) quantile(x, .75), max=max)
-    out
+    list(n        = function(x) sum(!is.na(x)),
+         miss     = function(x) {
+             out <- sum(is.na(x))
+             ifelse(out == 0, NA, out)
+         },
+         mean     = function(x) mean(x, na.rm=TRUE),
+         trimmed  = function(x) mean(x, trim=.1, na.rm=TRUE),
+         sd       = function(x) sd(x, na.rm=TRUE),
+         mad      = function(x) mad(x, na.rm=TRUE),
+         skewness = function(x) e1071::skewness(x, na.rm=TRUE),
+         kurtosis = function(x) e1071::kurtosis(x, na.rm=TRUE),
+         min      = function(x) min(x, na.rm=TRUE),
+         Q_25     = function(x) quantile(x, probs=.25, na.rm=TRUE),
+         Q_50     = function(x) median(x, na.rm=TRUE),
+         Q_75     = function(x) quantile(x, probs=.75, na.rm=TRUE),
+         max      = function(x) max(x, na.rm=TRUE))
 }
 
 # if(FALSE){

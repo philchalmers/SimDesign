@@ -24,6 +24,7 @@ of the descriptive statistics specified in \code{funs}}
 
  \describe{
   \item{\code{n}}{number of non-missing observations}
+  \item{\code{miss}}{number of missing observations}
   \item{\code{mean}}{mean}
   \item{\code{trimmed}}{trimmed mean (10\%)}
   \item{\code{sd}}{standard deviation}
@@ -63,6 +64,13 @@ of all the verbs available in \code{dplyr}.
 library(dplyr)
 
 data(mtcars)
+
+if(FALSE){
+  # run the following to see behavior with NA values in dataset
+  mtcars[sample(1:3), 'cyl'] <- NA
+  mtcars[sample(1:3), 'mpg'] <- NA
+}
+
 fmtcars <- within(mtcars, {
 	cyl <- factor(cyl)
 	am <- factor(am, labels=c('automatic', 'manual'))
@@ -84,6 +92,7 @@ fmtcars |> group_by(cyl, am) |> descript()
 
 # conditioning also works with group_by()
 fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
+fmtcars |> group_by(am) |> descript(discrete=TRUE)
 fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 
 # only return a subset of summary statistics
@@ -93,12 +102,10 @@ fmtcars |> descript(funs=sfuns) # only mean/sd
 
 # add a new functions
 funs2 <- c(sfuns,
-           Q_5 = \(x) quantile(x, .05),
-           median=median,
-           Q_95 = \(x) quantile(x, .95))
+           Q_5 = \(x) quantile(x, .05, na.rm=TRUE),
+           median= \(x) median(x, na.rm=TRUE),
+           Q_95 = \(x) quantile(x, .95, na.rm=TRUE))
 fmtcars |> descript(funs=funs2)
-
-
 
 }
 \seealso{
