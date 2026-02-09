@@ -193,8 +193,8 @@ Method to Generate Multivariate, Nonnormal Data for Simulation Purposes.
 <span class="r-in"><span><span class="va">kurtosis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">nonnormal</span> <span class="op">&lt;-</span> <span class="fu">rHeadrick</span><span class="op">(</span><span class="va">N</span>, <span class="va">mean</span>, <span class="va">Sigma</span>, <span class="va">skewness</span>, <span class="va">kurtosis</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># cor(nonnormal)</span></span></span>
-<span class="r-in"><span><span class="co"># psych::describe(nonnormal)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">nonnormal</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="descript.html">descript</a></span><span class="op">(</span><span class="va">nonnormal</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#-----------</span></span></span>
 <span class="r-in"><span><span class="co"># compute the coefficients, then supply them back to the function to avoid</span></span></span>
