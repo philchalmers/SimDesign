@@ -23,7 +23,7 @@
 #'
 #' @param funs functions to apply when \code{discrete = FALSE}. Can be modified
 #'  by the user to include or exclude further functions, however each supplied
-#'  function must return a scalar. Use \code{\link{get_discreteFuns}} to return
+#'  function must return a scalar. Use \code{get_discreteFuns()} to return
 #'  the full list of functions, which may then be augmented or subsetted
 #'  based on the user's requirements. Default descriptive statistic returned are:
 #'
