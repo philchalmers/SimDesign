@@ -20,7 +20,7 @@ row value from this list if arrayID is included)."><!-- mathjax --><script src="
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22.3</span>
       </span>
     </div>
 
@@ -157,119 +157,118 @@ Length must be equal to the number of rows in <code>design</code></p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># generate 1 seed (default)</span></span></span>
 <span class="r-in"><span><span class="fu">genSeeds</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 413067025</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 595688410</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># generate 5 unique seeds</span></span></span>
 <span class="r-in"><span><span class="fu">genSeeds</span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  595688410 1809449992 1887503261 1000739687 1129367556</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1809449992 1887503261 1000739687 1129367556  717434384</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># generate from nrow(design)</span></span></span>
 <span class="r-in"><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="createDesign.html">createDesign</a></span><span class="op">(</span>factorA<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                       factorB<span class="op">=</span><span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">seeds</span> <span class="op">&lt;-</span> <span class="fu">genSeeds</span><span class="op">(</span><span class="va">design</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">seeds</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  717434384 1123050453  474408704 1310164663 1607262655  390300427  731677967</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [8]  298354824   27984649</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1123050453  474408704 1310164663 1607262655  390300427  731677967  298354824</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [8]   27984649  225437218</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># construct new seeds that are independent from original (use this sparingly)</span></span></span>
 <span class="r-in"><span><span class="va">newseeds</span> <span class="op">&lt;-</span> <span class="fu">genSeeds</span><span class="op">(</span><span class="va">design</span>, old.seeds<span class="op">=</span><span class="va">seeds</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">newseeds</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  225437218  746949893 1602927401  937942413  992053320 1416086442  823141978</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [8] 1246508874 1619914930</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  746949893 1602927401  937942413  992053320 1416086442  823141978 1246508874</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [8] 1619914930 1610796999</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># can be done in batches too</span></span></span>
 <span class="r-in"><span><span class="va">newseeds2</span> <span class="op">&lt;-</span> <span class="fu">genSeeds</span><span class="op">(</span><span class="va">design</span>, old.seeds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">seeds</span>, <span class="va">newseeds</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">seeds</span>, <span class="va">newseeds</span>, <span class="va">newseeds2</span><span class="op">)</span> <span class="co"># all unique</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            seeds   newseeds  newseeds2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]  717434384  225437218 1610796999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 1123050453  746949893  187037883</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]  474408704 1602927401 1156242821</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 1310164663  937942413 2079951069</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 1607262655  992053320   65720644</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]  390300427 1416086442   63806296</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]  731677967  823141978 2117530059</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]  298354824 1246508874  530569453</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]   27984649 1619914930  983369505</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 1123050453  746949893  187037883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]  474408704 1602927401 1156242821</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 1310164663  937942413 2079951069</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 1607262655  992053320   65720644</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]  390300427 1416086442   63806296</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]  731677967  823141978 2117530059</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]  298354824 1246508874  530569453</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]   27984649 1619914930  983369505</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]  225437218 1610796999 1621803732</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">############</span></span></span>
 <span class="r-in"><span><span class="co"># generate seeds for runArraySimulation()</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">iseed</span> <span class="op">&lt;-</span> <span class="fu">genSeeds</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>  <span class="co"># initial seed</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1621803732</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1772491070</span>
 <span class="r-in"><span><span class="va">seed_list</span> <span class="op">&lt;-</span> <span class="fu">genSeeds</span><span class="op">(</span><span class="va">design</span>, iseed<span class="op">=</span><span class="va">iseed</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">seed_list</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407  -393088597 -1748028176  1267569713  1159145534 -1462476889</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7]  1519588284</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407  -580029603  1390287482 -1112709709   397903704  -684795527</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7] -1962390810</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407  2073295769 -1213792688   115928303   -82479839  -707141313</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7] -1704073572</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407   423224079  1060168791 -1324501878   338685348  -333661873</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7]  1426535804</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407  -870242787   789196619  1776108125   252083774   429837893</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7] -1551619282</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407  1556206344   250047046  -671091177  1369431366 -1111867701</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7]  -764689384</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407  -154385593 -1451335364  2072700444   602812746  -945279022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7] -1896060987</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407 -1804731154 -2068368773   107251773   408911970  -162727637</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7] -2093305321</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]      10407 2142874795 1974175838  400706708 -621277328 1223183922 1877168725</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]      10407  728486110  167295809 -280103446 1575208030  317861460 1753697019</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[6]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]      10407 1167495963  151780166  140739656 -777520365 1910696700  673198308</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]      10407 -771896447 1202492878 2028085115 2083879772 1898270809  973647758</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[7]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407   790963760  1674262040   422428202  -654732746 -1633316309</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7]  -337032649</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407 -1599816698  2079468253  -264522773   836233761   950798835</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7]   362821733</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[8]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407  -580487630  1572901224   246126514  -513772774  1205009976</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7] -1489209156</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]      10407 -197528885  761966381  585609708 1086456883  886957423  949409231</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[9]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407   729665589  1498004745  -251215129 -1587945835 -2139861609</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7]   121097077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407 -2046658214  1757613708 -1833796285   558899161  -471621828</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7] -1012199754</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"iseed")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1621803732</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1772491070</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># expand number of unique seeds given iseed (e.g., in case more replications</span></span></span>
 <span class="r-in"><span><span class="co"># are required at a later date)</span></span></span>
 <span class="r-in"><span><span class="va">seed_list_tmp</span> <span class="op">&lt;-</span> <span class="fu">genSeeds</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span><span class="op">*</span><span class="fl">2</span>, iseed<span class="op">=</span><span class="va">iseed</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">seed_list_tmp</span><span class="op">)</span> <span class="co"># first 9 seeds identical to seed_list</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -393088597 -1748028176 1267569713 1159145534 -1462476889 1519588284</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 2073295769 -1213792688 115928303 -82479839 -707141313 -1704073572</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -870242787 789196619 1776108125 252083774 429837893 -1551619282</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -154385593 -1451335364 2072700444 602812746 -945279022 -1896060987</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 2142874795 1974175838 400706708 -621277328 1223183922 1877168725</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 1167495963 151780166 140739656 -777520365 1910696700 673198308</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 790963760 1674262040 422428202 -654732746 -1633316309 -337032649</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -580487630 1572901224 246126514 -513772774 1205009976 -1489209156</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 729665589 1498004745 -251215129 -1587945835 -2139861609 121097077</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -500765584 -1884258102 -467641450 -1457474979 2081533045 142219828</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 475358860 2067292367 -2032602631 -1535946034 -1556895047 -1457501172</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 469601039 -358140378 441340672 1265872825 -354511135 -455939222</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -1821768114 -752134477 -981915175 -1797154631 1138497185 -234232535</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 1434029461 806223608 632913975 1538473977 -1633173233 1041652166</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 1253882201 -2136258491 1447152181 271033773 1375414422 -1084608369</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -830582776 -1607115150 1467556768 -226635721 -1776085954 1275937975</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -1341095906 1459509467 -283439126 -2000069736 638679578 -1331946233</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -872589327 -1816091312 1073275342 -1537001271 1479780440 443954894</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "iseed")= int 1621803732</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -580029603 1390287482 -1112709709 397903704 -684795527 -1962390810</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 423224079 1060168791 -1324501878 338685348 -333661873 1426535804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 1556206344 250047046 -671091177 1369431366 -1111867701 -764689384</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -1804731154 -2068368773 107251773 408911970 -162727637 -2093305321</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 728486110 167295809 -280103446 1575208030 317861460 1753697019</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -771896447 1202492878 2028085115 2083879772 1898270809 973647758</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -1599816698 2079468253 -264522773 836233761 950798835 362821733</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -197528885 761966381 585609708 1086456883 886957423 949409231</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -2046658214 1757613708 -1833796285 558899161 -471621828 -1012199754</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -892100723 1207090254 768831129 1189817772 1518025971 1373914233</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 1479195856 244939414 394870487 -371255709 1814167031 -1382791282</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -387912108 -1893140266 193720225 2127211886 -1688118839 1117183337</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 -1553696551 90230369 309561123 1798044693 786698682 939024774</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 559525644 -244814480 -229511897 1204499670 823224812 -940625420</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 1800935859 486943487 663011968 -1326933647 2021538014 -977998928</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 1568681969 -520501636 -595531759 1489746325 1061905805 -464685662</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 283799279 -135043436 -469163823 347157787 1236230248 960318884</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ : int [1:7] 10407 1551887724 -1031693495 1568587414 -89566573 1638824253 -925190692</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "iseed")= int 1772491070</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># more usefully for HPC, extract only the seed associated with an arrayID</span></span></span>
 <span class="r-in"><span><span class="va">arraySeed.15</span> <span class="op">&lt;-</span> <span class="fu">genSeeds</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span><span class="op">*</span><span class="fl">2</span>, iseed<span class="op">=</span><span class="va">iseed</span>, arrayID<span class="op">=</span><span class="fl">15</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">arraySeed.15</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407  1253882201 -2136258491  1447152181   271033773  1375414422</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7] -1084608369</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]       10407  1800935859   486943487   663011968 -1326933647  2021538014</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7]  -977998928</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"arrayID")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 15</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"iseed")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1621803732</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1772491070</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
