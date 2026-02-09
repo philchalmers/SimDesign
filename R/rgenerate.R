@@ -161,7 +161,7 @@ rmgh <- function(n, g, h, mean = rep(0, length(g)), sigma = diag(length(mean))) 
 #'
 #' # univariate with skew
 #' nonnormal <- rValeMaurelli(10000, mean=10, sigma=5, skew=1, kurt=3)
-#' # psych::describe(nonnormal)
+#' descript(nonnormal)
 #'
 #' # multivariate with skew and kurtosis
 #' n <- 10000
@@ -173,8 +173,8 @@ rmgh <- function(n, g, h, mean = rep(0, length(g)), sigma = diag(length(mean))) 
 #' ku <- c(3.75,3.5,0.5)
 #'
 #' nonnormal <- rValeMaurelli(n, sigma=cor, skew=sk, kurt=ku)
-#' # cor(nonnormal)
-#' # psych::describe(nonnormal)
+#' cor(nonnormal) |> round(3)
+#' descript(nonnormal)
 #'
 rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mean)),
                           skew = rep(0, nrow(sigma)), kurt = rep(0, nrow(sigma))) {
@@ -312,8 +312,8 @@ rValeMaurelli <- function(n, mean = rep(0, nrow(sigma)), sigma = diag(length(mea
 #' kurtosis <- c(rep(2,4))
 #'
 #' nonnormal <- rHeadrick(N, mean, Sigma, skewness, kurtosis)
-#' # cor(nonnormal)
-#' # psych::describe(nonnormal)
+#' cor(nonnormal) |> round(3)
+#' descript(nonnormal)
 #'
 #' #-----------
 #' # compute the coefficients, then supply them back to the function to avoid

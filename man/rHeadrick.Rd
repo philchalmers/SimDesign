@@ -62,8 +62,8 @@ skewness <- c(rep(1,4))
 kurtosis <- c(rep(2,4))
 
 nonnormal <- rHeadrick(N, mean, Sigma, skewness, kurtosis)
-# cor(nonnormal)
-# psych::describe(nonnormal)
+cor(nonnormal) |> round(3)
+descript(nonnormal)
 
 #-----------
 # compute the coefficients, then supply them back to the function to avoid

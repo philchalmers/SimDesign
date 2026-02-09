@@ -34,7 +34,7 @@ set.seed(1)
 
 # univariate with skew
 nonnormal <- rValeMaurelli(10000, mean=10, sigma=5, skew=1, kurt=3)
-# psych::describe(nonnormal)
+descript(nonnormal)
 
 # multivariate with skew and kurtosis
 n <- 10000
@@ -46,8 +46,8 @@ sk <- c(1.5,1.5,0.5)
 ku <- c(3.75,3.5,0.5)
 
 nonnormal <- rValeMaurelli(n, sigma=cor, skew=sk, kurt=ku)
-# cor(nonnormal)
-# psych::describe(nonnormal)
+cor(nonnormal) |> round(3)
+descript(nonnormal)
 
 }
 \references{
