@@ -3,8 +3,8 @@
 #' Function returns univariate data summaries for each variable supplied, however
 #' discrete and continuous variables are treated separately. Structure provides
 #' a more pipe-friendly API for selecting and subsetting variables using the
-#' \code{dplyr} syntax, however conditional statistics are evaluated internally using the
-#' \code{\link{by}} function. Quantitative/continuous variable
+#' \code{dplyr} syntax, however conditional statistics are evaluated
+#'  internally using the \code{\link{by}} function. Quantitative/continuous variable
 #' information is kept distinct in the output, while discrete variables (e.g.,
 #' \code{factors} and \code{character} vectors)
 #' can be returned by using the \code{discrete} argument.
@@ -12,14 +12,16 @@
 #' \emph{Conditioning}: As the function is intended to support
 #' pipe-friendly code specifications, conditioning/group subset
 #' specifications are declared using \code{\link[dplyr]{group_by}}
-#' and subsequently passed to \code{descript}. This is true
-#' of all the verbs available in \code{dplyr}.
+#' and subsequently passed to \code{descript}.
 #'
 #' @param df a \code{data.frame} or \code{tibble}-like structure
 #'  containing the variables of interest.
+#'
 #'  Note that \code{factor} and \code{character} vectors will be treated as
 #'  discrete observations, and by default are omitted from the computation
-#'  of the descriptive statistics specified in \code{funs}
+#'  of the quantitative descriptive statistics specified in \code{funs}. However,
+#'  setting \code{discrete = TRUE} will provide count-type information for these
+#'  discrete variables, in which case arguments to \code{funs} are ignored
 #'
 #' @param funs functions to apply when \code{discrete = FALSE}. Can be modified
 #'  by the user to include or exclude further functions, however each supplied
@@ -43,9 +45,12 @@
 #'   \item{\code{max}}{maximum}
 #'  }
 #'
+#'  Note that by default the \code{na.rm} behavior is set to \code{TRUE}
+#'  in each function call
+#'
 #' @param discrete logical; include summary statistics for \code{discrete}
 #'  variables only? If \code{TRUE} then only count and proportion
-#'  information will be returned
+#'  information for the discrete variables will be returned
 #'
 #' @importFrom e1071 skewness kurtosis
 #'
@@ -84,15 +89,15 @@
 #' fmtcars |> group_by(cyl) |> descript()
 #' fmtcars |> group_by(cyl, am) |> descript()
 #'
-#' # conditioning also works with group_by()
+#' # discrete variables also work with group_by()
 #' fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
 #' fmtcars |> group_by(am) |> descript(discrete=TRUE)
 #' fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 #'
 #' # only return a subset of summary statistics
 #' funs <- get_descriptFuns()
-#' sfuns <- funs[c('mean', 'sd')] # subset
-#' fmtcars |> descript(funs=sfuns) # only mean/sd
+#' sfuns <- funs[c('n', 'miss', 'mean', 'sd')] # subset
+#' fmtcars |> descript(funs=sfuns) # only n, miss, mean, and sd
 #'
 #' # add a new functions
 #' funs2 <- c(sfuns,
