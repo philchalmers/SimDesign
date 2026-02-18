@@ -27,17 +27,14 @@ get_descriptFuns()
 
  \describe{
   \item{\code{n}}{number of non-missing observations}
-  \item{\code{miss}}{number of missing observations}
   \item{\code{mean}}{mean}
-  \item{\code{trimmed}}{trimmed mean (10\%)}
+  \item{\code{tmean}}{trimmed mean (10\%)}
+  \item{\code{median}}{median}
   \item{\code{sd}}{standard deviation}
-  \item{\code{mad}}{mean absolute deviation}
-  \item{\code{skewness}}{skewness (from \code{e1701})}
-  \item{\code{kurtosis}}{kurtosis (from \code{e1071})}
+  \item{\code{IQR}}{inter-quartile range}
+  \item{\code{skew}}{skewness (from \code{e1701})}
+  \item{\code{kurt}}{kurtosis (from \code{e1071})}
   \item{\code{min}}{minimum}
-  \item{\code{Q_25}}{25\% quantile}
-  \item{\code{Q_50}}{50\% quantile (a.k.a., the median)}
-  \item{\code{Q_75}}{75\% quantile}
   \item{\code{max}}{maximum}
  }
 
@@ -102,14 +99,14 @@ fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 
 # only return a subset of summary statistics
 funs <- get_descriptFuns()
-sfuns <- funs[c('n', 'miss', 'mean', 'sd')] # subset
+sfuns <- funs[c('n', 'mean', 'sd')] # subset
 fmtcars |> descript(funs=sfuns) # only n, miss, mean, and sd
 
 # add a new functions
 funs2 <- c(sfuns,
-           Q_5 = \(x) quantile(x, .05, na.rm=TRUE),
+           Q_25 = \(x) quantile(x, .25, na.rm=TRUE),
            median= \(x) median(x, na.rm=TRUE),
-           Q_95 = \(x) quantile(x, .95, na.rm=TRUE))
+           Q_75 = \(x) quantile(x, .75, na.rm=TRUE))
 fmtcars |> descript(funs=funs2)
 
 }

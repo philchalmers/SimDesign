@@ -31,17 +31,14 @@
 #'
 #'  \describe{
 #'   \item{\code{n}}{number of non-missing observations}
-#'   \item{\code{miss}}{number of missing observations}
 #'   \item{\code{mean}}{mean}
-#'   \item{\code{trimmed}}{trimmed mean (10\%)}
+#'   \item{\code{tmean}}{trimmed mean (10\%)}
+#'   \item{\code{median}}{median}
 #'   \item{\code{sd}}{standard deviation}
-#'   \item{\code{mad}}{mean absolute deviation}
-#'   \item{\code{skewness}}{skewness (from \code{e1701})}
-#'   \item{\code{kurtosis}}{kurtosis (from \code{e1071})}
+#'   \item{\code{IQR}}{inter-quartile range}
+#'   \item{\code{skew}}{skewness (from \code{e1701})}
+#'   \item{\code{kurt}}{kurtosis (from \code{e1071})}
 #'   \item{\code{min}}{minimum}
-#'   \item{\code{Q_25}}{25\% quantile}
-#'   \item{\code{Q_50}}{50\% quantile (a.k.a., the median)}
-#'   \item{\code{Q_75}}{75\% quantile}
 #'   \item{\code{max}}{maximum}
 #'  }
 #'
@@ -96,14 +93,14 @@
 #'
 #' # only return a subset of summary statistics
 #' funs <- get_descriptFuns()
-#' sfuns <- funs[c('n', 'miss', 'mean', 'sd')] # subset
+#' sfuns <- funs[c('n', 'mean', 'sd')] # subset
 #' fmtcars |> descript(funs=sfuns) # only n, miss, mean, and sd
 #'
 #' # add a new functions
 #' funs2 <- c(sfuns,
-#'            Q_5 = \(x) quantile(x, .05, na.rm=TRUE),
+#'            Q_25 = \(x) quantile(x, .25, na.rm=TRUE),
 #'            median= \(x) median(x, na.rm=TRUE),
-#'            Q_95 = \(x) quantile(x, .95, na.rm=TRUE))
+#'            Q_75 = \(x) quantile(x, .75, na.rm=TRUE))
 #' fmtcars |> descript(funs=funs2)
 #'
 descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
@@ -173,20 +170,14 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 #' @rdname descript
 get_descriptFuns <- function(){
     list(n        = function(x) sum(!is.na(x)),
-         miss     = function(x) {
-             out <- sum(is.na(x))
-             ifelse(out == 0, NA, out)
-         },
          mean     = function(x) mean(x, na.rm=TRUE),
-         trimmed  = function(x) mean(x, trim=.1, na.rm=TRUE),
+         tmean    = function(x) mean(x, trim=.1, na.rm=TRUE),
+         median   = function(x) median(x, na.rm=TRUE),
          sd       = function(x) sd(x, na.rm=TRUE),
-         mad      = function(x) mad(x, na.rm=TRUE),
-         skewness = function(x) e1071::skewness(x, na.rm=TRUE),
-         kurtosis = function(x) e1071::kurtosis(x, na.rm=TRUE),
+         IQR      = function(x) IQR(x, na.rm=TRUE),
+         skew = function(x) e1071::skewness(x, na.rm=TRUE),
+         kurt = function(x) e1071::kurtosis(x, na.rm=TRUE),
          min      = function(x) min(x, na.rm=TRUE),
-         Q_25     = function(x) quantile(x, probs=.25, na.rm=TRUE),
-         Q_50     = function(x) median(x, na.rm=TRUE),
-         Q_75     = function(x) quantile(x, probs=.75, na.rm=TRUE),
          max      = function(x) max(x, na.rm=TRUE))
 }
 
