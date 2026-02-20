@@ -11,8 +11,7 @@ get_descriptFuns()
 }
 \arguments{
 \item{df}{typically a \code{data.frame} or \code{tibble}-like structure
- containing the variables of interest, however if a \code{list} is supplied
- \code{descript} will be applied to each element.
+ containing the variables of interest
 
  Note that \code{factor} and \code{character} vectors will be treated as
  discrete observations, and by default are omitted from the computation

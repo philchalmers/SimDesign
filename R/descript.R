@@ -17,8 +17,7 @@
 #' and subsequently passed to \code{descript}.
 #'
 #' @param df typically a \code{data.frame} or \code{tibble}-like structure
-#'  containing the variables of interest, however if a \code{list} is supplied
-#'  \code{descript} will be applied to each element.
+#'  containing the variables of interest
 #'
 #'  Note that \code{factor} and \code{character} vectors will be treated as
 #'  discrete observations, and by default are omitted from the computation
@@ -121,14 +120,8 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 		ret
 	}
 
-	if(!is.data.frame(df)){
-	    if(is.list(df)){
-	        out <- lapply(df, descript, funs=funs, discrete=discrete)
-	        names(out) <- names(df)
-	        return(out)
-	    }
+	if(!is.data.frame(df))
 		df <- as.data.frame(df)
-	}
 
 	if(length(dplyr::group_keys(df))){
 	    groupkeys <- dplyr::group_keys(df)
