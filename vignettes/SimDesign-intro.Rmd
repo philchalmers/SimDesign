@@ -275,6 +275,7 @@ for(i in 1:1000){
     results[i, ] <- res
 }
 head(results)
+descript(results) # common descriptive statistics
 ```
 
 The matrix stored in `results` contains 1000 parameter estimates returned from each statistic. 
