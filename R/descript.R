@@ -14,8 +14,9 @@
 #' specifications are declared using \code{\link[dplyr]{group_by}}
 #' and subsequently passed to \code{descript}.
 #'
-#' @param df a \code{data.frame} or \code{tibble}-like structure
-#'  containing the variables of interest.
+#' @param df typically a \code{data.frame} or \code{tibble}-like structure
+#'  containing the variables of interest, however if a \code{list} is supplied
+#'  \code{descript} will be applied to each element.
 #'
 #'  Note that \code{factor} and \code{character} vectors will be treated as
 #'  discrete observations, and by default are omitted from the computation
@@ -113,8 +114,14 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 		ret
 	}
 
-	if(!is.data.frame(df))
+	if(!is.data.frame(df)){
+	    if(is.list(df)){
+	        out <- lapply(df, descript, funs=funs, discrete=discrete)
+	        names(out) <- names(df)
+	        return(out)
+	    }
 		df <- as.data.frame(df)
+	}
 	if(length(dplyr::group_keys(df))){
 		indices <- colnames(dplyr::group_keys(df))
 		group <- as.list(df[indices])
