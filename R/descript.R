@@ -4,7 +4,9 @@
 #' discrete and continuous variables are treated separately. Structure provides
 #' a more pipe-friendly API for selecting and subsetting variables using the
 #' \code{dplyr} syntax, however conditional statistics are evaluated
-#'  internally using the \code{\link{by}} function. Quantitative/continuous variable
+#' internally using the \code{\link{by}} function. As a special case,
+#' if only a single variable is being summarised then the canonical output
+#' from \code{dplyr::summarise} will be returned. Quantitative/continuous variable
 #' information is kept distinct in the output, while discrete variables (e.g.,
 #' \code{factors} and \code{character} vectors)
 #' can be returned by using the \code{discrete} argument.
@@ -33,13 +35,14 @@
 #'  \describe{
 #'   \item{\code{n}}{number of non-missing observations}
 #'   \item{\code{mean}}{mean}
-#'   \item{\code{tmean}}{trimmed mean (10\%)}
-#'   \item{\code{median}}{median}
+#'   \item{\code{trim}}{trimmed mean (10\%)}
 #'   \item{\code{sd}}{standard deviation}
-#'   \item{\code{IQR}}{inter-quartile range}
 #'   \item{\code{skew}}{skewness (from \code{e1701})}
 #'   \item{\code{kurt}}{kurtosis (from \code{e1071})}
 #'   \item{\code{min}}{minimum}
+#'   \item{\code{Q25}}{25th percentile (returned from \code{\link{quantile}})}
+#'   \item{\code{Q50}}{50th percentile (a.k.a., the median)}
+#'   \item{\code{Q75}}{75th percentile (returned from \code{\link{quantile}})}
 #'   \item{\code{max}}{maximum}
 #'  }
 #'
@@ -92,6 +95,11 @@
 #' fmtcars |> group_by(am) |> descript(discrete=TRUE)
 #' fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 #'
+#' # with single variables, typical dplyr::summarise() output returned
+#' fmtcars |> select(mpg) |> descript()
+#' fmtcars |> group_by(cyl) |> select(mpg) |> descript()
+#' fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
+#'
 #' # only return a subset of summary statistics
 #' funs <- get_descriptFuns()
 #' sfuns <- funs[c('n', 'mean', 'sd')] # subset
@@ -99,9 +107,8 @@
 #'
 #' # add a new functions
 #' funs2 <- c(sfuns,
-#'            Q_25 = \(x) quantile(x, .25, na.rm=TRUE),
-#'            median= \(x) median(x, na.rm=TRUE),
-#'            Q_75 = \(x) quantile(x, .75, na.rm=TRUE))
+#'            trim_20 = \(x) mean(x, trim=.2, na.rm=TRUE),
+#'            median= \(x) median(x, na.rm=TRUE))
 #' fmtcars |> descript(funs=funs2)
 #'
 descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
@@ -122,14 +129,21 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 	    }
 		df <- as.data.frame(df)
 	}
+
 	if(length(dplyr::group_keys(df))){
-		indices <- colnames(dplyr::group_keys(df))
+	    groupkeys <- dplyr::group_keys(df)
+		indices <- colnames(groupkeys)
 		group <- as.list(df[indices])
 		df <- dplyr::ungroup(df)
 		pick <- setdiff(colnames(df), names(group))
 		df <- df[ ,pick,drop=FALSE]
 		out <- suppressWarnings(by(df, group, descript, funs=funs,
 								   discrete=discrete, simplify=FALSE))
+		if(!discrete && nrow(out[[1]]) == 1){
+		    out <- do.call(rbind, out)
+		    out$VARS <- NULL
+		    out <- dplyr::bind_cols(groupkeys, out)
+		}
 		return(out)
 	}
 
@@ -166,6 +180,7 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 	if(!discrete){
 		retfull <- do.call(rbind, retfull)
 		ret <- data.frame(VARS=factor(colnames(df)), retfull) |> dplyr::as_tibble()
+		if(nrow(ret) == 1) ret$VARS <- NULL
 	} else {
 		ret <- retfull
 		names(ret) <- colnames(df)
@@ -178,13 +193,14 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 get_descriptFuns <- function(){
     list(n        = function(x) sum(!is.na(x)),
          mean     = function(x) mean(x, na.rm=TRUE),
-         tmean    = function(x) mean(x, trim=.1, na.rm=TRUE),
-         median   = function(x) median(x, na.rm=TRUE),
+         trim     = function(x) mean(x, trim=.1, na.rm=TRUE),
          sd       = function(x) sd(x, na.rm=TRUE),
-         IQR      = function(x) IQR(x, na.rm=TRUE),
-         skew = function(x) e1071::skewness(x, na.rm=TRUE),
-         kurt = function(x) e1071::kurtosis(x, na.rm=TRUE),
+         skew     = function(x) e1071::skewness(x, na.rm=TRUE),
+         kurt     = function(x) e1071::kurtosis(x, na.rm=TRUE),
          min      = function(x) min(x, na.rm=TRUE),
+         Q25      = function(x) quantile(x, .25, na.rm=TRUE),
+         Q50      = function(x) median(x, na.rm=TRUE),
+         Q75      = function(x) quantile(x, .75, na.rm=TRUE),
          max      = function(x) max(x, na.rm=TRUE))
 }
 
@@ -216,6 +232,8 @@ get_descriptFuns <- function(){
 # 	# groupings
 # 	fmtcars |> group_by(cyl) |> summarise(mean=mean(wt))
 # 	fmtcars |> group_by(cyl) |> psych::describe() # ignored
+# 	fmtcars |> group_by(cyl) |> summarise(psych::describe()) # error
+# 	fmtcars |> group_by(cyl) |> summarise(psych::describe(mpg)) # but this works?
 # 	fmtcars |> group_by(cyl) |> descript()
 #
 # 	# discrete

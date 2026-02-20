@@ -10,8 +10,9 @@ descript(df, funs = get_descriptFuns(), discrete = FALSE)
 get_descriptFuns()
 }
 \arguments{
-\item{df}{a \code{data.frame} or \code{tibble}-like structure
- containing the variables of interest.
+\item{df}{typically a \code{data.frame} or \code{tibble}-like structure
+ containing the variables of interest, however if a \code{list} is supplied
+ \code{descript} will be applied to each element.
 
  Note that \code{factor} and \code{character} vectors will be treated as
  discrete observations, and by default are omitted from the computation
@@ -28,13 +29,14 @@ get_descriptFuns()
  \describe{
   \item{\code{n}}{number of non-missing observations}
   \item{\code{mean}}{mean}
-  \item{\code{tmean}}{trimmed mean (10\%)}
-  \item{\code{median}}{median}
+  \item{\code{trim}}{trimmed mean (10\%)}
   \item{\code{sd}}{standard deviation}
-  \item{\code{IQR}}{inter-quartile range}
   \item{\code{skew}}{skewness (from \code{e1701})}
   \item{\code{kurt}}{kurtosis (from \code{e1071})}
   \item{\code{min}}{minimum}
+  \item{\code{Q25}}{25th percentile (returned from \code{\link{quantile}})}
+  \item{\code{Q50}}{50th percentile (a.k.a., the median)}
+  \item{\code{Q75}}{75th percentile (returned from \code{\link{quantile}})}
   \item{\code{max}}{maximum}
  }
 
@@ -50,7 +52,9 @@ Function returns univariate data summaries for each variable supplied, however
 discrete and continuous variables are treated separately. Structure provides
 a more pipe-friendly API for selecting and subsetting variables using the
 \code{dplyr} syntax, however conditional statistics are evaluated
- internally using the \code{\link{by}} function. Quantitative/continuous variable
+internally using the \code{\link{by}} function. As a special case,
+if only a single variable is being summarised then the canonical output
+from \code{dplyr::summarise} will be returned. Quantitative/continuous variable
 information is kept distinct in the output, while discrete variables (e.g.,
 \code{factors} and \code{character} vectors)
 can be returned by using the \code{discrete} argument.
@@ -97,6 +101,11 @@ fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
 fmtcars |> group_by(am) |> descript(discrete=TRUE)
 fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 
+# with single variables, typical dplyr::summarise() output returned
+fmtcars |> select(mpg) |> descript()
+fmtcars |> group_by(cyl) |> select(mpg) |> descript()
+fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
+
 # only return a subset of summary statistics
 funs <- get_descriptFuns()
 sfuns <- funs[c('n', 'mean', 'sd')] # subset
@@ -104,9 +113,8 @@ fmtcars |> descript(funs=sfuns) # only n, miss, mean, and sd
 
 # add a new functions
 funs2 <- c(sfuns,
-           Q_25 = \(x) quantile(x, .25, na.rm=TRUE),
-           median= \(x) median(x, na.rm=TRUE),
-           Q_75 = \(x) quantile(x, .75, na.rm=TRUE))
+           trim_20 = \(x) mean(x, trim=.2, na.rm=TRUE),
+           median= \(x) median(x, na.rm=TRUE))
 fmtcars |> descript(funs=funs2)
 
 }
