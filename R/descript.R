@@ -81,6 +81,13 @@
 #' fmtcars |> descript()               # factors/discrete vars omitted
 #' fmtcars |> descript(discrete=TRUE)  # discrete variables only
 #'
+#' # for discrete variables, xtabs() is generally nicer as cross-tabs can
+#' # be specified explicitly (though can be cumbersome)
+#' xtabs(~ am, fmtcars)
+#' xtabs(~ am, fmtcars) |> prop.table()
+#' xtabs(~ am + cyl + vs, fmtcars)
+#' xtabs(~ am + cyl + vs, fmtcars) |> prop.table()
+#'
 #' # usual pipe chaining
 #' fmtcars |> select(mpg, wt) |> descript()
 #' fmtcars |> filter(mpg > 20) |> select(mpg, wt) |> descript()
