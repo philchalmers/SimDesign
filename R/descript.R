@@ -39,9 +39,9 @@
 #'   \item{\code{skew}}{skewness (from \code{e1701})}
 #'   \item{\code{kurt}}{kurtosis (from \code{e1071})}
 #'   \item{\code{min}}{minimum}
-#'   \item{\code{Q25}}{25th percentile (returned from \code{\link{quantile}})}
-#'   \item{\code{Q50}}{50th percentile (a.k.a., the median)}
-#'   \item{\code{Q75}}{75th percentile (returned from \code{\link{quantile}})}
+#'   \item{\code{P25}}{25th percentile (a.k.a., 1st/lower quartile, Q1), returned from \code{\link{quantile}})}
+#'   \item{\code{P50}}{median (50th percentile)}
+#'   \item{\code{P75}}{75th percentile (a.k.a, 3rd/upper quartile, Q3), returned from \code{\link{quantile}})}
 #'   \item{\code{max}}{maximum}
 #'  }
 #'
@@ -131,7 +131,7 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 		df <- as.data.frame(df)
 
 	if(length(dplyr::group_keys(df))){
-	    groupkeys <- dplyr::group_keys(df)
+	    groupkeys <- na.omit(dplyr::group_keys(df))
 		indices <- colnames(groupkeys)
 		group <- as.list(df[indices])
 		df <- dplyr::ungroup(df)
@@ -198,9 +198,9 @@ get_descriptFuns <- function(){
          skew     = function(x) e1071::skewness(x, na.rm=TRUE),
          kurt     = function(x) e1071::kurtosis(x, na.rm=TRUE),
          min      = function(x) min(x, na.rm=TRUE),
-         Q25      = function(x) quantile(x, .25, na.rm=TRUE),
-         Q50      = function(x) median(x, na.rm=TRUE),
-         Q75      = function(x) quantile(x, .75, na.rm=TRUE),
+         P25      = function(x) quantile(x, .25, na.rm=TRUE),
+         P50      = function(x) median(x, na.rm=TRUE),
+         P75      = function(x) quantile(x, .75, na.rm=TRUE),
          max      = function(x) max(x, na.rm=TRUE))
 }
 

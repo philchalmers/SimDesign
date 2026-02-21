@@ -33,9 +33,9 @@ get_descriptFuns()
   \item{\code{skew}}{skewness (from \code{e1701})}
   \item{\code{kurt}}{kurtosis (from \code{e1071})}
   \item{\code{min}}{minimum}
-  \item{\code{Q25}}{25th percentile (returned from \code{\link{quantile}})}
-  \item{\code{Q50}}{50th percentile (a.k.a., the median)}
-  \item{\code{Q75}}{75th percentile (returned from \code{\link{quantile}})}
+  \item{\code{P25}}{25th percentile (a.k.a., 1st/lower quartile, Q1), returned from \code{\link{quantile}})}
+  \item{\code{P50}}{median (50th percentile)}
+  \item{\code{P75}}{75th percentile (a.k.a, 3rd/upper quartile, Q3), returned from \code{\link{quantile}})}
   \item{\code{max}}{maximum}
  }
 
