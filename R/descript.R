@@ -1,15 +1,20 @@
 #' Compute univariate descriptive statistics
 #'
-#' Function returns univariate data summaries for each variable supplied, however
-#' discrete and continuous variables are treated separately. Structure provides
-#' a more pipe-friendly API for selecting and subsetting variables using the
-#' \code{dplyr} syntax, however conditional statistics are evaluated
-#' internally using the \code{\link{by}} function. As a special case,
-#' if only a single variable is being summarised then the canonical output
-#' from \code{dplyr::summarise} will be returned. Quantitative/continuous variable
+#' Function returns univariate data summaries for each variable supplied. For presentation
+#' purposes, discrete and continuous variables are treated separately, the former of which
+#' reflects count/proportion information while the ladder are supplied to a (customizable) list
+#' of univariate summary functions. As such, quantitative/continuous variable
 #' information is kept distinct in the output, while discrete variables (e.g.,
-#' \code{factors} and \code{character} vectors)
-#' can be returned by using the \code{discrete} argument.
+#' \code{factors} and \code{character} vectors) are returned by using the
+#' \code{discrete} argument.
+#'
+#' The purpose of this function is to provide
+#' a more pipe-friendly API for selecting and subsetting variables using the
+#' \code{dplyr} syntax, where conditional statistics are evaluated
+#' internally using the \code{\link{by}} function (when multiple variables are
+#' to be summarised). As a special case,
+#' if only a single variable is being summarised then the canonical output
+#' from \code{dplyr::summarise} will be returned.
 #'
 #' \emph{Conditioning}: As the function is intended to support
 #' pipe-friendly code specifications, conditioning/group subset
@@ -50,13 +55,14 @@
 #'
 #' @param discrete logical; include summary statistics for \code{discrete}
 #'  variables only? If \code{TRUE} then only count and proportion
-#'  information for the discrete variables will be returned
+#'  information for the discrete variables will be returned. For greater flexibility
+#'  in creating cross-tabulated count/proportion information see \code{\link{xtabs}}
 #'
 #' @importFrom e1071 skewness kurtosis
 #'
 #' @export
 #'
-#' @seealso \code{\link[dplyr]{summarise}}, \code{\link[dplyr]{group_by}}
+#' @seealso \code{\link[dplyr]{summarise}}, \code{\link[dplyr]{group_by}}, \code{\link{xtabs}}
 #'
 #' @examples
 #'
