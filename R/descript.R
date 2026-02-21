@@ -95,16 +95,18 @@
 #' # conditioning with group_by()
 #' fmtcars |> group_by(cyl) |> descript()
 #' fmtcars |> group_by(cyl, am) |> descript()
-#'
-#' # discrete variables also work with group_by()
-#' fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
-#' fmtcars |> group_by(am) |> descript(discrete=TRUE)
-#' fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
+#' fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript()
 #'
 #' # with single variables, typical dplyr::summarise() output returned
 #' fmtcars |> select(mpg) |> descript()
 #' fmtcars |> group_by(cyl) |> select(mpg) |> descript()
 #' fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
+#'
+#' # discrete variables also work with group_by(), though again
+#' #  xtabs() is generally more flexible
+#' fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
+#' fmtcars |> group_by(am) |> descript(discrete=TRUE)
+#' fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 #'
 #' # only return a subset of summary statistics
 #' funs <- get_descriptFuns()
