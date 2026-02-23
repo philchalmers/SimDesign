@@ -135,7 +135,7 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 		ret
 	}
 
-	if(!is.data.frame(df))
+	if(!is.data.frame(suppressMessages(df)))
 		df <- as.data.frame(df)
 
 	if(length(dplyr::group_keys(df))){
@@ -147,6 +147,7 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 		df <- df[ ,pick,drop=FALSE]
 		out <- suppressWarnings(by(df, group, descript, funs=funs,
 								   discrete=discrete, simplify=FALSE))
+		class(out) <- c('bybye', class(out))
 		if(!discrete && nrow(out[[1]]) == 1){
 		    out <- do.call(rbind, out)
 		    out$VARS <- NULL
@@ -261,3 +262,26 @@ get_descriptFuns <- function(){
 # 	fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 #
 # }
+
+#' @export
+print.bybye <- function (x, ..., vsep)
+{
+    # copied and modified from base::print.by
+    d <- dim(x)
+    dn <- dimnames(x)
+    dnn <- names(dn)
+    if (missing(vsep))
+        vsep <- paste0('\n', strrep("-", 0.75 * getOption("width")), '\n')
+    lapply(X = seq_along(x), FUN = function(i, x, vsep, ...) {
+        if (i != 1L && !is.null(vsep))
+            cat(vsep, "\n")
+        ii <- i - 1L
+        for (j in seq_along(dn)) {
+            iii <- ii%%d[j] + 1L
+            ii <- ii%/%d[j]
+            cat(dnn[j], ": ", dn[[j]][iii], "\n", sep = "")
+        }
+        print(x[[i]], ...)
+    }, x, vsep, ...)
+    invisible(x)
+}
