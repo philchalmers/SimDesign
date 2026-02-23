@@ -170,8 +170,9 @@ test_that('aggregate', {
     SimClean(dir()[grepl('\\.rds', dir())])
 
     #results
-    tmp <- runSimulation(expandDesign(Design, 2), generate=mysim, analyse=mycompute, summarise=mycollect, verbose=FALSE,
-                         replications = 2, parallel=FALSE, save_results = TRUE, max_errors = Inf)
+    tmp <- runSimulation(expandDesign(Design, 2), generate=mysim, analyse=mycompute, summarise=mycollect,
+                         verbose=FALSE, replications = 2, parallel=FALSE, seed=42,
+                         save_results = TRUE, max_errors = Inf)
     compname = Sys.info()["nodename"]
     DIR <- paste0("SimDesign-results_", compname)
     expect_true(dir.exists(DIR))
