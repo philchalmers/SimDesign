@@ -109,26 +109,65 @@ final simulation object.</p>
 
 <dt id="arg-what">what<a class="anchor" aria-label="anchor" href="#arg-what"></a></dt>
 <dd><p>character vector indicating what information to extract, written in agnostic casing
-  (e.g., <code>'ERRORS'</code> and <code>'errors'</code> are equivalent).</p>
-<p>Possible inputs include <code>'errors'</code>  to return a <code>tibble</code> object containing counts of any
-  error messages, <code>'warnings'</code> to return a <code>data.frame</code> object containing
-  counts of any warning messages, <code>'seeds'</code>  for the specified random number
-  generation seeds,  <code>'Random.seeds'</code> for the complete list of
+  (e.g., <code>'ERRORS'</code> and <code>'errors'</code> are equivalent). Possible inputs include</p>
+<p></p><dl><dt><code>'errors'</code></dt>
+<dd><p>to return a <code>tibble</code> object containing counts of any
+  error messages</p></dd>
+
+
+  <dt><code>'warnings'</code></dt>
+<dd><p>to return a <code>data.frame</code> object containing
+  counts of any warning messages</p></dd>
+
+
+  <dt><code>'seeds'</code></dt>
+<dd><p>for the specified random number
+  generation seeds</p></dd>
+
+
+  <dt><code>'Random.seeds'</code></dt>
+<dd><p>for the complete list of
   <code>.Random.seed</code> states across replications (only stored when
-  <code>runSimulation(..., control = list(store_Random.seeds=TRUE))</code>),
-  <code>'log_times'</code> for the per replication generate/analyse
-  execution times (recorded in seconds),
-  <code>'error_seeds'</code> and <code>'warning_seeds'</code>
-  to extract the associated <code>.Random.seed</code> values associated with the ERROR/WARNING messages,
-  <code>'prepare_seeds'</code> to extract the <code>.Random.seed</code> states captured before
-  <code>prepare()</code> was called for each condition, <code>'prepare_error_seed'</code> to extract the
+  <code>runSimulation(..., control = list(store_Random.seeds=TRUE))</code>)</p></dd>
+
+
+  <dt><code>'log_times'</code></dt>
+<dd><p>for the per replication generate/analyse
+  execution times (recorded in seconds)</p></dd>
+
+
+  <dt><code>'error_seeds'</code> and <code>'warning_seeds'</code></dt>
+<dd><p>to extract the associated <code>.Random.seed</code> values associated with the ERROR/WARNING messages</p></dd>
+
+
+  <dt><code>'prepare_seeds'</code></dt>
+<dd><p>to extract the <code>.Random.seed</code> states captured before
+  <code>prepare()</code> was called for each condition</p></dd>
+
+
+  <dt><code>'prepare_error_seed'</code></dt>
+<dd><p>to extract the
   <code>.Random.seed</code> state when <code>prepare()</code> encountered an error (useful for debugging with
-  <code>load_seed_prepare</code>),
-  <code>'results'</code> to extract the simulation results if the option <code>store_results</code> was passed to
-  <code><a href="runSimulation.html">runSimulation</a></code>, <code>'filename'</code> and <code>'save_results_dirname'</code> for extracting
+  <code>load_seed_prepare</code>)</p></dd>
+
+
+  <dt><code>'results'</code></dt>
+<dd><p>to extract the simulation results if the option <code>store_results</code> was passed to
+  <code><a href="runSimulation.html">runSimulation</a></code></p></dd>
+,
+
+  <dt><code>'filename'</code> and  <code>'save_results_dirname'</code></dt>
+<dd><p>for extracting
   the saved file/directory name information (if used), <code>'functions'</code> to extract the defined functions
-  used in the experiment, and <code>'design'</code> to extract the original design object</p>
-<p>Note that <code>'warning_seeds'</code> are not stored automatically in
+  used in the experiment</p></dd>
+
+
+  <dt><code>'design'</code></dt>
+<dd><p>to extract the original design object</p></dd>
+
+
+
+</dl><p>Note that <code>'warning_seeds'</code> are not stored automatically in
   simulations and require passing <code>store_warning_seeds = TRUE</code> to <code><a href="runSimulation.html">runSimulation</a></code>.</p></dd>
 
 
