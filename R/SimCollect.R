@@ -46,6 +46,12 @@
 #'   memory is severely constrained during the file read-ins. Otherwise, the \code{select}
 #'   argument should be used to take more memory-friendly subsets
 #'
+#' @param simobj an object returned from \code{\link{runSimulation}} that was initially passed
+#'  a \code{design} object expanded by \code{\link{expandDesign}}. This allows the results to
+#'  be aggregated across the simulation according to the expanded design patter. However,
+#'  note that the majority of the technical information will only be available in the original
+#'  simulation object returned from \code{\link{runSimulation}}
+#'
 #' @return returns a \code{data.frame/tibble} with the (weighted) average/aggregate
 #'   of the simulation results
 #'
@@ -157,13 +163,54 @@
 #'
 #' SimClean(dir='sim_files/')
 #'
+#' #####################################################################
+#'
+#' # Similar to the above, however implemented using the less flexible
+#' # and more memory intensive runSimulation() approach
+#'
+#' # objects borrowed from above as the logic is the same
+#' data.frame(Design_long, replications) |> head()
+#'
+#' iseed <- genSeeds()
+#'
+#' # seed must be of length 1
+#' long_final <- runSimulation(Design_long, replications=replications,
+#'                 generate=Generate, analyse=Analyse, summarise=Summarise,
+#'                 seed=iseed)
+#' long_final
+#'
+#' # aggregate simulation
+#' final <- SimCollect(simobj=long_final)
+#' final
+#'
 #' }
-SimCollect <- function(dir=NULL, files = NULL, filename = NULL,
+SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
                        select = NULL, check.only = FALSE,
                        target.reps = NULL,
                        warning_details = FALSE,
                        error_details = TRUE,
                        gc = FALSE){
+    if(!is.null(simobj)){
+        has_stored_results <- !is.null(SimExtract(simobj, 'results'))
+        design.id <- SimExtract(simobj, 'Design.ID')
+        unique.id <- unique(design.id)
+        out <- vector('list', length(unique.id))
+        pick <- attributes(simobj)$design_names$sim
+        for(i in 1:length(unique.id)){
+            sub <- as.data.frame(simobj[unique.id[i] == design.id, ])
+            weights <- sub$REPLICATIONS
+            weights <- weights / sum(weights)
+            collapsed <- sub[nrow(sub), ]
+            collapsed[,pick] <- colSums(sub[,pick] * weights)
+            collapsed$REPLICATIONS <- sum(sub$REPLICATIONS)
+            collapsed$SIM_TIME <- sum(sub$SIM_TIME)
+            if(!is.null(sub$ERRORS)) collapsed$ERRORS <- sum(sub$ERRORS)
+            if(!is.null(sub$WARNINGS)) collapsed$WARNINGS <- sum(sub$WARNINGS)
+            out[[i]] <- collapsed
+        }
+        ret <- dplyr::as_tibble(dplyr::bind_rows(out))
+        return(ret)
+    }
     if(is.null(dir) && is.null(files))
         stop('either dir or files must be specified')
     if(!is.null(dir) && !is.null(files))

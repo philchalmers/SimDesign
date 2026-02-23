@@ -9,6 +9,7 @@ SimCollect(
   dir = NULL,
   files = NULL,
   filename = NULL,
+  simobj = NULL,
   select = NULL,
   check.only = FALSE,
   target.reps = NULL,
@@ -29,6 +30,12 @@ their status with \code{\link{SimCheck}}. For greater specificity use the
 
 \item{filename}{(optional) name of .rds file to save aggregate simulation file to. If not specified
 then the results will only be returned in the R console.}
+
+\item{simobj}{an object returned from \code{\link{runSimulation}} that was initially passed
+a \code{design} object expanded by \code{\link{expandDesign}}. This allows the results to
+be aggregated across the simulation according to the expanded design patter. However,
+note that the majority of the technical information will only be available in the original
+simulation object returned from \code{\link{runSimulation}}}
 
 \item{select}{a character vector indicating columns to variables to select from the
 \code{SimExtract(what='results')} information. This is mainly useful when RAM is an issue
@@ -162,6 +169,26 @@ sim
 SimCollect('sim_files/', select = 'ERRORS')
 
 SimClean(dir='sim_files/')
+
+#####################################################################
+
+# Similar to the above, however implemented using the less flexible
+# and more memory intensive runSimulation() approach
+
+# objects borrowed from above as the logic is the same
+data.frame(Design_long, replications) |> head()
+
+iseed <- genSeeds()
+
+# seed must be of length 1
+long_final <- runSimulation(Design_long, replications=replications,
+                generate=Generate, analyse=Analyse, summarise=Summarise,
+                seed=iseed)
+long_final
+
+# aggregate simulation
+final <- SimCollect(simobj=long_final)
+final
 
 }
 }

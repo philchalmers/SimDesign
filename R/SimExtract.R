@@ -7,26 +7,45 @@
 #' @param object object returned from \code{\link{runSimulation}}
 #'
 #' @param what character vector indicating what information to extract, written in agnostic casing
-#'   (e.g., \code{'ERRORS'} and \code{'errors'} are equivalent).
+#'   (e.g., \code{'ERRORS'} and \code{'errors'} are equivalent). Possible inputs include
 #'
-#'   Possible inputs include \code{'errors'}  to return a \code{tibble} object containing counts of any
-#'   error messages, \code{'warnings'} to return a \code{data.frame} object containing
-#'   counts of any warning messages, \code{'seeds'}  for the specified random number
-#'   generation seeds,  \code{'Random.seeds'} for the complete list of
+#'   \describe{
+#'   \item{\code{'errors'}}{to return a \code{tibble} object containing counts of any
+#'   error messages}
+#'
+#'   \item{\code{'warnings'}}{ to return a \code{data.frame} object containing
+#'   counts of any warning messages}
+#'
+#'   \item{\code{'seeds'}}{  for the specified random number
+#'   generation seeds}
+#'
+#'   \item{\code{'Random.seeds'}}{ for the complete list of
 #'   \code{.Random.seed} states across replications (only stored when
-#'   \code{runSimulation(..., control = list(store_Random.seeds=TRUE))}),
-#'   \code{'log_times'} for the per replication generate/analyse
-#'   execution times (recorded in seconds),
-#'   \code{'error_seeds'} and \code{'warning_seeds'}
-#'   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages,
-#'   \code{'prepare_seeds'} to extract the \code{.Random.seed} states captured before
-#'   \code{prepare()} was called for each condition, \code{'prepare_error_seed'} to extract the
+#'   \code{runSimulation(..., control = list(store_Random.seeds=TRUE))})}
+#'
+#'   \item{\code{'log_times'}}{ for the per replication generate/analyse
+#'   execution times (recorded in seconds)}
+#'
+#'   \item{\code{'error_seeds'} and \code{'warning_seeds'}}{
+#'   to extract the associated \code{.Random.seed} values associated with the ERROR/WARNING messages}
+#'
+#'   \item{\code{'prepare_seeds'}}{ to extract the \code{.Random.seed} states captured before
+#'   \code{prepare()} was called for each condition}
+#'
+#'   \item{\code{'prepare_error_seed'}}{ to extract the
 #'   \code{.Random.seed} state when \code{prepare()} encountered an error (useful for debugging with
-#'   \code{load_seed_prepare}),
-#'   \code{'results'} to extract the simulation results if the option \code{store_results} was passed to
-#'   \code{\link{runSimulation}}, \code{'filename'} and \code{'save_results_dirname'} for extracting
+#'   \code{load_seed_prepare})}
+#'
+#'   \item{\code{'results'}}{ to extract the simulation results if the option \code{store_results} was passed to
+#'   \code{\link{runSimulation}}},
+#'
+#'   \item{\code{'filename'} and  \code{'save_results_dirname'}}{ for extracting
 #'   the saved file/directory name information (if used), \code{'functions'} to extract the defined functions
-#'   used in the experiment, and \code{'design'} to extract the original design object
+#'   used in the experiment}
+#'
+#'   \item{\code{'design'}}{ to extract the original design object}
+#'
+#'   }
 #'
 #'   Note that \code{'warning_seeds'} are not stored automatically in
 #'   simulations and require passing \code{store_warning_seeds = TRUE} to \code{\link{runSimulation}}.

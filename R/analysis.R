@@ -50,7 +50,7 @@ Analysis <- function(Functions, condition, condition.row, replications, fixed_ob
 
     used_mainsim <- if(is.finite(max_time)) mainsim_maxtime else mainsim
     if(useFuture){
-        if(!is.null(seed)) set_seed(seed[condition$ID])
+        if(!is.null(seed)) set_seed(seed)
         iters <- 1L:replications
         p <- progressr::progressor(along = iters)
         results <- try(future.apply::future_lapply(iters,
@@ -73,7 +73,7 @@ Analysis <- function(Functions, condition, condition.row, replications, fixed_ob
                                                    p=p, future.seed=TRUE, allow_gen_errors=allow_gen_errors),
                        silent=TRUE)
     } else if(is.null(cl)){
-        if(!is.null(seed)) set_seed(seed[condition$ID])
+        if(!is.null(seed)) set_seed(seed)
         results <- if(progress){
             try(pbapply::pblapply(1L:replications, used_mainsim, condition=condition,
                                   condition.row=condition.row,
@@ -120,7 +120,7 @@ Analysis <- function(Functions, condition, condition.row, replications, fixed_ob
             if(!is.null(seed)){
                 if(is.list(seed)){
                     clusterSetRNGSubStream(cl=cl, seed=seed)
-                } else parallel::clusterSetRNGStream(cl=cl, seed[condition$ID])
+                } else parallel::clusterSetRNGStream(cl=cl, seed)
             }
             results <- if(progress){
                 try(pbapply::pblapply(1L:replications, used_mainsim,

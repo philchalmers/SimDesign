@@ -1,5 +1,14 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.24
+
+- Small modifications to `descript()` for data-analysis purposes
+
+- `runSimulation()` implementation can now be augmented with the same 
+  `expandDesign()` logic in `runArraySimulation()`. Requires specifying a single
+  `seed` input, and later passed to `SimCollect(..., simobj)` to aggregate
+  the simulation results across the distributed replication conditions
+
 ## Changes in SimDesign 2.23
 
 - Add a `descript()` function for marginal and conditional summary statistics 

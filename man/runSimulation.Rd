@@ -49,9 +49,15 @@ runSimulation(
 }
 \arguments{
 \item{design}{a \code{tibble} or \code{data.frame} object containing the Monte Carlo simulation
-conditions to be studied, where each row represents a unique condition and each column a factor
-to be varied. See \code{\link{createDesign}} for the standard approach
-to create this simulation design object}
+  conditions to be studied, where each row represents a unique condition and each column a factor
+  to be varied. See \code{\link{createDesign}} for the standard approach
+  to create this simulation design object
+
+  As an augmentation of the input, the original \code{design} object can be passed to
+  \code{\link{expandDesign}} to systemically repeat the rows of each simulation condition,
+  allowing smaller numbers of \code{replications} to be supplied per condition. After this
+  distributed job is complete the function \code{\link{SimCollect}} can be used to recombine
+  the results to a form commensurate with the original \code{design} object}
 
 \item{replications}{number of independent replications to perform per
 condition (i.e., each row in \code{design}). Can be a single number, which

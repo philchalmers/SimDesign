@@ -139,6 +139,12 @@
 #'   to be varied. See \code{\link{createDesign}} for the standard approach
 #'   to create this simulation design object
 #'
+#'   As an augmentation of the input, the original \code{design} object can be passed to
+#'   \code{\link{expandDesign}} to systemically repeat the rows of each simulation condition,
+#'   allowing smaller numbers of \code{replications} to be supplied per condition. After this
+#'   distributed job is complete the function \code{\link{SimCollect}} can be used to recombine
+#'   the results to a form commensurate with the original \code{design} object
+#'
 #' @param generate user-defined data and parameter generating function (or named list of functions).
 #'   See \code{\link{Generate}} for details. Note that this argument may be omitted by the
 #'   user if they wish to generate the data with the \code{analyse} step, but for real-world
@@ -1170,7 +1176,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(is.null(control$useAnalyseHandler)) control$useAnalyseHandler <- TRUE
     useAnalyseHandler <- control$useAnalyseHandler
     if(is.null(control$logging)) control$logging <- "none"
-    if(replications < 3L){
+    if(all(replications < 3L)){
         if(verbose)
             message('save, stop_on_fatal, and print_RAM flags disabled for testing purposes')
         control$print_RAM <- FALSE
@@ -1375,8 +1381,12 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         replications <- rep(replications, nrow(design))
     stopifnot("length of replications not equal to nrow(design)"=
                   nrow(design) == length(replications))
+    if(length(attr(design, 'Design.ID')) > length(unique(attr(design, 'Design.ID')))){
+        stopifnot('design constructed with expandDesign() must have exactly one seed'=length(unique(seed)) == 1)
+        seed <- genSeeds(design, iseed=seed)
+    }
     if(!is.null(seed))
-        stopifnot(nrow(design) == length(seed))
+        stopifnot(nrow(design) == length(seed) || length(seed) == 1)
     debug <- tolower(debug)
     # Validate prepare function
     if(!is.null(prepare)){
@@ -1653,7 +1663,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                          prepare=prepare,
                                          load_seed_prepare=load_seed_prepare,
                                          cl=if(i %in% not_parallel) NULL else cl,
-                                         MPI=MPI, .options.mpi=.options.mpi, seed=seed,
+                                         MPI=MPI, .options.mpi=.options.mpi, seed=seed[i],
                                          boot_draws=boot_draws, boot_method=boot_method, CI=CI,
                                          save=save, allow_na=allow_na, allow_nan=allow_nan,
                                          save_results=save_results,
@@ -1697,7 +1707,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                             prepare=prepare,
                             load_seed_prepare=load_seed_prepare,
                             cl=if(i %in% not_parallel) NULL else cl,
-                            MPI=MPI, .options.mpi=.options.mpi, seed=seed,
+                            MPI=MPI, .options.mpi=.options.mpi, seed=seed[i],
                             store_Random.seeds=store_Random.seeds,
                             boot_method=boot_method, boot_draws=boot_draws, CI=CI,
                             save=save, allow_na=allow_na, allow_nan=allow_nan,
@@ -1894,7 +1904,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(!all(is.na(SUMMARISE))) Final$SUMMARISE <- SUMMARISE
     if(all(is.na(Final$FATAL_TERMINATION))) Final$FATAL_TERMINATION <- NULL
     if(is.null(Final$SEED)) Final$SEED <- NA
-    if(!is.null(seed)) Final$SEED <- seed
+    if(!is.null(seed) && !is.list(seed)) Final$SEED <- seed
     filename <- unique_filename(filename, safe=safe, verbose=verbose)
     dn <- colnames(design)
     dn <- dn[!(dn %in% c('ID', 'REPLICATION'))]
