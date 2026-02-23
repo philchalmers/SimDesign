@@ -229,12 +229,14 @@ get_descriptFuns <- function(){
 # 	mtcars |> psych::describe()
 # 	mtcars |> Hmisc::describe()
 # 	mtcars |> pastecs::stat.desc()
+#     mtcars |> rstatix::get_summary_stats() # this one is the closest
 #
 # 	# factors included
 # 	fmtcars |> descript()        # omitted
 # 	fmtcars |> psych::describe() # not smart
-# 	fmtcars |> Hmisc::describe() # good, but verbose
+# 	fmtcars |> Hmisc::describe() # better, but verbose
 # 	fmtcars |> pastecs::stat.desc() # not smart
+# 	fmtcars |> rstatix::get_summary_stats() # smart! Seems we had the same thought
 #
 #
 # 	##################
@@ -244,18 +246,21 @@ get_descriptFuns <- function(){
 # 	fmtcars |> group_by(cyl) |> summarise(psych::describe()) # error
 # 	fmtcars |> group_by(cyl) |> summarise(psych::describe(mpg)) # but this works?
 # 	fmtcars |> group_by(cyl) |> descript()
+# 	fmtcars |> group_by(cyl) |> rstatix::get_summary_stats() # very close to what I wanted ...
 #
 # 	# discrete
 # 	fmtcars |> descript(discrete=TRUE)
 # 	fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
 # 	fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 # 	fmtcars |> group_by(cyl, am, vs) |> descript(discrete=TRUE)
-#
+# 	# rstatix::get_summary_stats() # no discrete support
 #
 # 	fmtcars |> group_by(cyl) |> descript()
 # 	fmtcars |> group_by(cyl, am) |> descript()
 # 	psych::describeBy(fmtcars ~ cyl)
 # 	psych::describeBy(fmtcars ~ cyl + am)
+# 	fmtcars |> group_by(cyl) |> rstatix::get_summary_stats() # good, but too dense
+# 	fmtcars |> group_by(cyl, am) |> rstatix::get_summary_stats()
 #
 #
 # 	fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
