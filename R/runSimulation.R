@@ -1535,7 +1535,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                               '\nIf not intended, use SimClean() prior to calling runSimulation()'),
                             file.path(out_rootdir, tmpfilename)))
 
-        Result_list <- readRDS(file.path(out_rootdir, tmpfilename))
+        Result_list <- qs2::qd_read(file.path(out_rootdir, tmpfilename))
         if(unname(attr(Result_list, 'SimDesign_names')['design_names']) !=
            paste0(colnames(design), collapse=';'))
             stop('design names are not the same upon resuming simulation.', call.=FALSE)
@@ -1550,8 +1550,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             }
         }
         pick_tmp <- min(c(which(sapply(Result_list, is.null)), nrow(design)))
-        if(pick_tmp > 1)
-            if(any(colnames(Result_list[[pick_tmp - 1]]) == 'FATAL_TERMINATION'))
+        if(pick_tmp > 1)                 # TODO 2nd test can throw false positives
+            if(any(colnames(Result_list[[pick_tmp - 1]]) == 'FATAL_TERMINATION' |
+                   grepl('reached elapsed time limit', colnames(Result_list[[pick_tmp - 1]]))))
                 pick_tmp <- pick_tmp - 1
         start <- ifelse(is.na(resume.row), pick_tmp, resume.row)
         time0 <- time1 - Result_list[[start-1L]]$SIM_TIME

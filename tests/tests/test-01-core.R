@@ -182,7 +182,7 @@ test_that('SimDesign', {
                            replications = 2, save=TRUE, verbose = FALSE,
                            control = list(stop_on_fatal=TRUE)))
     compname = Sys.info()["nodename"]
-    tmp <- readRDS(paste0('SIMDESIGN-TEMPFILE_', compname, '.rds'))
+    tmp <- qs2::qd_read(paste0('SIMDESIGN-TEMPFILE_', compname))
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                                replications = 2, save=TRUE, verbose = FALSE, filename = 'newfile')
     SimClean('newfile.rds')

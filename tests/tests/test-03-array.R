@@ -33,7 +33,7 @@ test_that('array', {
                   verbose=FALSE))
     files <- dir()
     file <- files[grepl('SIMDESIGN-TEMPFILE', files)]
-    res <- readRDS(file)
+    res <- qs2::qd_read(file)
     expect_true(is.null(res[[3]]))
 
     # resume from time crash
