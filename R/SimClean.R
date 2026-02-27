@@ -5,8 +5,8 @@
 #' Monte Carlo simulation (e.g., remove files and folders which contained bugs/biased results).
 #'
 #' @param ... one or more character objects indicating which files to remove. Used to remove
-#'   \code{.rds} files which were saved with \code{\link{saveRDS}} or when using the \code{save}
-#'   and \code{filename} inputs to \code{\link{runSimulation}}
+#'   \code{.rds} files which were saved with \code{\link{saveRDS}} or when
+#'   using the \code{filename} input to \code{\link{runSimulation}}
 #'
 #' @param dirs a character vector indicating which directories to remove
 #'
