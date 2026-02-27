@@ -35,6 +35,7 @@
 #' @importFrom future.apply future_lapply
 #' @importFrom progressr progressor
 #' @importFrom beepr beep
+#' @importFrom qs2 qd_save qd_read
 # @importFrom robustbase glmrob
 #' @importFrom utils recover packageVersion head tail capture.output object.size sessionInfo
 #' @keywords package

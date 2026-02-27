@@ -586,8 +586,9 @@
 #'       in the string}
 #'
 #'       \item{\code{tmpfilename}}{string indicating the temporary file name to save
-#'         provisional information to. If not specified the following will be used:
-#'         \code{paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')}}
+#'         provisional information to using the \code{qs2} format.
+#'         If not specified the following will be used:
+#'         \code{paste0('SIMDESIGN-TEMPFILE_', compname)}}
 #'
 #'   }
 #'
@@ -601,7 +602,8 @@
 #' @param ncores number of cores to be used in parallel execution (ignored if using the
 #'   \code{\link[future]{future}} package approach). Default uses all available minus 1
 #'
-#' @param save logical; save the temporary simulation state to the hard-drive? This is useful
+#' @param save logical; save the temporary simulation state to the hard-drive using
+#'   \code{qs2::qd_save()}? This is useful
 #'   for simulations which require an extended amount of time, though for shorter simulations
 #'   can be disabled to slightly improve computational efficiency. When \code{TRUE},
 #'   which is the default when evaluating \code{replications > 2}, a temp file
@@ -1332,7 +1334,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(is.null(out_rootdir)) { out_rootdir <- '.' }
        else { dir.create(out_rootdir, showWarnings=FALSE) }
     if(is.null(tmpfilename))
-        tmpfilename <- paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')
+        tmpfilename <- paste0('SIMDESIGN-TEMPFILE_', compname)
     if(is.null(save_results_dirname)){
         save_results_dirname <-
             if(!is.null(filename)) paste0(filename, '-results_', compname)
@@ -1758,7 +1760,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             time1 <- proc.time()[3L]
             Result_list[[i]]$SIM_TIME <- time1 - time0
             if(save || save_results)
-                saveRDS(Result_list, file.path(out_rootdir, tmpfilename))
+                qs2::qd_save(Result_list, file.path(out_rootdir, tmpfilename))
         }
 
         if(notification == "condition") {

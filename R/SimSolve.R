@@ -628,7 +628,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
     tmpfilename <- paste0('SIMSOLVE-TEMPFILE_', compname, '.rds')
     start <- 1L
     if(resume && file.exists(tmpfilename)){
-        roots <- readRDS(tmpfilename)
+        roots <- qs2::qd_read(tmpfilename)
         start <- min(which(sapply(roots, is.null)))
         if(verbose)
             message(paste0('\nContinuing at design row ', start,

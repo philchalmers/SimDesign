@@ -1,5 +1,10 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.25
+
+- Temp files now stored using `qs2` package to reduce overhead (see #83)
+
+
 ## Changes in SimDesign 2.24
 
 - Small modifications to `descript()` for data-analysis purposes

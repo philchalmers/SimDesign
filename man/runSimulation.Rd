@@ -254,7 +254,8 @@ with seed values. This is particularly useful when prepare encounters an error
 and you need to reproduce the exact state. The prepare error seed can be
 extracted using \code{SimExtract(res, 'prepare_error_seed')}. Default is \code{NULL}}
 
-\item{save}{logical; save the temporary simulation state to the hard-drive? This is useful
+\item{save}{logical; save the temporary simulation state to the hard-drive using
+  \code{qs2::qd_save()}? This is useful
   for simulations which require an extended amount of time, though for shorter simulations
   can be disabled to slightly improve computational efficiency. When \code{TRUE},
   which is the default when evaluating \code{replications > 2}, a temp file
@@ -454,8 +455,9 @@ in the simulation}
       in the string}
 
       \item{\code{tmpfilename}}{string indicating the temporary file name to save
-        provisional information to. If not specified the following will be used:
-        \code{paste0('SIMDESIGN-TEMPFILE_', compname, '.rds')}}
+        provisional information to using the \code{qs2} format.
+        If not specified the following will be used:
+        \code{paste0('SIMDESIGN-TEMPFILE_', compname)}}
 
   }}
 
