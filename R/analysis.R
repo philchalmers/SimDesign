@@ -188,7 +188,7 @@ Analysis <- function(Functions, condition, condition.row, replications, fixed_ob
             tmp <- ifelse(is.null(save_results_filename), 'results-row', save_results_filename)
             tmpfilename <- paste0(save_results_dirname,
                                   sprintf('/%s', tmp), ID, '.rds')
-            saveRDS(list(condition=condition, results=tabled_results),
+            qs2::qd_save(list(condition=condition, results=tabled_results),
                     file.path(save_results_out_rootdir, tmpfilename))
         }
         if(summarise_asis) return(tabled_results)
@@ -227,7 +227,7 @@ Analysis <- function(Functions, condition, condition.row, replications, fixed_ob
                               sprintf('/%s', tmp), ID, '.rds')
         tmpcondition <- condition
         tmpcondition$ID <- NULL
-        saveRDS(list(condition=tmpcondition, results=results, errors=try_errors,
+        qs2::qd_save(list(condition=tmpcondition, results=results, errors=try_errors,
                      error_seeds=try_error_seeds,
                      warnings=warnings, warning_seeds=warning_message_seeds),
                 file.path(save_results_out_rootdir, tmpfilename))

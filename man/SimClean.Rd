@@ -15,8 +15,7 @@ SimClean(
 }
 \arguments{
 \item{...}{one or more character objects indicating which files to remove. Used to remove
-\code{.rds} files which were saved with \code{\link{saveRDS}} or when
-using the \code{filename} input to \code{\link{runSimulation}}}
+temp files that were saved, or for removing specific file names}
 
 \item{dirs}{a character vector indicating which directories to remove}
 

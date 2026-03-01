@@ -243,7 +243,7 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
     readin <- vector('list', length(filenames))
     for(i in 1:length(filenames)){
         if(i %in% print_when) cat(".")
-        tmp <- try(readRDS(filenames[i]), TRUE)
+        tmp <- try(qs2::qd_read(filenames[i]), TRUE)
         if(is(tmp, 'try-error'))
             stop(c('Could not read file ', filenames[i]))
         readin[[i]] <- if(!is.null(select) && length(select) == 1L &&
