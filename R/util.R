@@ -1050,3 +1050,11 @@ add_cbind <- function(lst){
     }
     dplyr::as_tibble(ret)
 }
+
+SimRead <- function(filename){
+    file_ext <- tools::file_ext(filename)
+    tmp <- if(tolower(file_ext) == 'rds')
+        try(readRDS(filename), TRUE)
+    else try(qs2::qd_read(filename), TRUE)
+    tmp
+}
