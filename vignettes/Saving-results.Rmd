@@ -160,10 +160,10 @@ directory <- dir[grepl('SimDesign-results', dir)]
 dir(directory)
 ```
 
-Here we can see that three files have been saved to the folder with the computer node name and a prefixed `'SimDesign-results'` character string. Each file contains the respective simulation results (including errors and warnings), which can be read in directly with `qs2::qd_read()`:
+Here we can see that three files have been saved to the folder with the computer node name and a prefixed `'SimDesign-results'` character string. Each file contains the respective simulation results (including errors and warnings), which can be read in directly with `SimRead()`:
 
 ```{r}
-row1 <- qs2::qd_read(paste0(directory, '/results-row-1'))
+row1 <- SimRead(paste0(directory, '/results-row-1'))
 str(row1)
 
 row1$condition

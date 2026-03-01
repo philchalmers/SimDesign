@@ -1538,7 +1538,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                               '\nIf not intended, use SimClean() prior to calling runSimulation()'),
                             file.path(out_rootdir, tmpfilename)))
 
-        Result_list <- qs2::qd_read(file.path(out_rootdir, tmpfilename))
+        Result_list <- SimRead(file.path(out_rootdir, tmpfilename))
         if(unname(attr(Result_list, 'SimDesign_names')['design_names']) !=
            paste0(colnames(design), collapse=';'))
             stop('design names are not the same upon resuming simulation.', call.=FALSE)
