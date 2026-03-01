@@ -375,8 +375,10 @@ runArraySimulation <- function(design, ..., replications,
             }
             attr(ret, "extra_info")$stored_results <- results
         }
-        filename.u <- unique_filename(filename[i], safe=TRUE, verbose=FALSE, ext='')
-        qs2::qd_save(ret, filename.u)
+        filename.u <- unique_filename(filename[i], safe=TRUE,
+                                      verbose=FALSE, ext='rds')
+        # qs2::qd_save(ret, filename.u)  ## TODO this errors?
+        saveRDS(ret, filename.u)
     }
     if(length(rowpick) > 1L) ret <- NULL
     invisible(ret)
