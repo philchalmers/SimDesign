@@ -12,14 +12,15 @@ parent_env_fun <- function(level=2){
     ret
 }
 
-unique_filename <- function(filename, safe = TRUE, verbose = TRUE){
+unique_filename <- function(filename, safe = TRUE, verbose = TRUE,
+                            ext = '.rds'){
     if(!is.null(filename) && safe){ #save file
         filename <- gsub('.rds', "", filename)
         filename0 <- filename
         count <- 1L
         # create a new file name if old one exists, and throw warning
         while(TRUE){
-            filename <- paste0(filename, '.rds')
+            filename <- paste0(filename, ext)
             if(file.exists(filename)){
                 filename <- paste0(filename0, '-', count)
                 count <- count + 1L
@@ -27,7 +28,7 @@ unique_filename <- function(filename, safe = TRUE, verbose = TRUE){
         }
         if(count > 1L)
             if(verbose && safe)
-                message(paste0('\nWARNING:\n\"', filename0, '.rds\" existed in the working directory.
+                message(paste0('\nWARNING:\n', filename0, 'existed in the working directory.
                                Using a unique file name instead.\n'))
     }
     filename

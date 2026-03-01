@@ -178,7 +178,7 @@ test_that('aggregate', {
     expect_true(dir.exists(DIR))
     files <- dir(DIR)
     expect_equal(length(files), 16L)
-    x <- readRDS(paste0(DIR, '/', files[1]))
+    x <- qs2::qd_read(paste0(DIR, '/', files[1]))
     expect_true(all(names(x) %in% c('condition', 'results', 'errors', 'warnings', "error_seeds",
                                     'warning_seeds')))
     row1 <- SimResults(tmp, 1)
