@@ -54,7 +54,7 @@ SimCheck <- function(dir = NULL, files = NULL, min = 1L, max = NULL){
     files <- paste0(dir, files)
     filename <- strsplit(files[1], '-')[[1L]][1L]
     if(is.null(max)){
-        tmp <- readRDS(files[1])
+        tmp <- qs2::qd_read(files[1])
         max <- attr(tmp, 'extra_info')$number_of_conditions
     }
     minmax <- min:max

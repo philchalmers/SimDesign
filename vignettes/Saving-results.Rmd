@@ -160,10 +160,10 @@ directory <- dir[grepl('SimDesign-results', dir)]
 dir(directory)
 ```
 
-Here we can see that three `.rds` files have been saved to the folder with the computer node name and a prefixed `'SimDesign-results'` character string. Each `.rds` file contains the respective simulation results (including errors and warnings), which can be read in directly with `readRDS()`:
+Here we can see that three files have been saved to the folder with the computer node name and a prefixed `'SimDesign-results'` character string. Each file contains the respective simulation results (including errors and warnings), which can be read in directly with `qs2::qd_read()`:
 
 ```{r}
-row1 <- readRDS(paste0(directory, '/results-row-1.rds'))
+row1 <- qs2::qd_read(paste0(directory, '/results-row-1.rds'))
 str(row1)
 
 row1$condition
@@ -198,5 +198,5 @@ SimClean(results = TRUE)
 
 My general recommendation when running simulations is to supply a `filename = 'some_simulation_name'` when your simulation is finally ready for run time (particularly for simulations which take a long time to finish), and to leave the default `save = TRUE` and `store_results = TRUE` to track any temporary files in the event of unexpected crashes and to store the `results` objects for future inspection (should the need arise). As the aggregation of the simulation results is often what you are interested in then this approach will ensure that the results are stored in a succinct manner for later analyses. However, if RAM is suspected to be an issue as the simulation progresses then using `save_results = TRUE` is recommended to avoid memory-based storage issues.
 
-Note that for array simulations evaluated via `runArraySimulation()` the results will be stored within each respective `.rds` object using `store_results = TRUE` as files are independently saved on the assigned arrays, negating the implicit RAM issue that could arise when using `runSimulation()`. 
+Note that for array simulations evaluated via `runArraySimulation()` the results will be stored within each respective object using `store_results = TRUE` as files are independently saved on the assigned arrays, negating the implicit RAM issue that could arise when using `runSimulation()`. 
 

@@ -105,7 +105,7 @@ SimResults <- function(obj, which, prefix = "results-row", wd = getwd(),
     stored_Results_list <- vector('list', length(which))
     for(i in seq_len(length(which))){
         pick <- which(files$file_num == which[i])
-        stored_Results_list[[i]] <- readRDS(files$files[pick])
+        stored_Results_list[[i]] <- qs2::qd_read(files$files[pick])
     }
     design <- SimExtract(obj, 'design')
     if(is(stored_Results_list[[1L]]$results, 'data.frame') ||

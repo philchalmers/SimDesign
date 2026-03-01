@@ -179,7 +179,7 @@ arrayID <- 1L
 res <- runArraySimulation(design=Design, replications=50,
                       generate=Generate, analyse=Analyse,
                       summarise=Summarise, arrayID=arrayID,
-                      iseed=iseed, filename='mysim') # saved as 'mysim-1.rds'
+                      iseed=iseed, filename='mysim') # saved as 'mysim-1'
 res
 SimResults(res) # condition and replication count stored
 
