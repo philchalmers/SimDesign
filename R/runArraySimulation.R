@@ -376,7 +376,6 @@ runArraySimulation <- function(design, ..., replications,
             attr(ret, "extra_info")$stored_results <- results
         }
         filename.u <- unique_filename(filename[i], safe=TRUE, verbose=FALSE, ext='')
-        browser()
         qs2::qd_save(ret, filename.u)
     }
     if(length(rowpick) > 1L) ret <- NULL

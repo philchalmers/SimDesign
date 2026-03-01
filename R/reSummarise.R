@@ -157,7 +157,7 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
 
     for(i in 1L:length(files)){
         if(read_files){
-            inp <- readRDS(files[i])
+            inp <- SimRead(files[i])
             conditions[[i]] <- inp$condition
             summ <- if(nargs == 3)
                 try(summarise(condition=inp$condition, results=inp$results,
