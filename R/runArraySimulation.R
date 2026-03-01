@@ -50,11 +50,8 @@
 #' @param filename file name to save simulation files to (does not need to
 #'   specify extension). However, the array ID will be appended to each
 #'   \code{filename}. For example, if
-#'   \code{filename = 'mysim'} then files stored will be \code{'mysim-1'},
-#'   \code{'mysim-2'}, and so on for each row ID in \code{design}. Note that
-#'   files are saved using \code{qs2::qd_save()} instead of the usual
-#'   \code{saveRDS()} binary as these are saved and read-in later on
-#'   more efficiently
+#'   \code{filename = 'mysim'} then files stored will be \code{'mysim-1.rds'},
+#'   \code{'mysim-2.rds'}, and so on for each row ID in \code{design}
 #'
 #' @param dirname directory to save the files associated with \code{filename}
 #'   to. If omitted the files will be stored in the same working directory
@@ -238,7 +235,7 @@
 #' # check that all files saved (warnings will be raised if missing files)
 #' SimCheck('sim/')
 #'
-#' condition14 <- qs2::qd_read('sim/condition-14.rds')
+#' condition14 <- readRDS('sim/condition-14.rds')
 #' condition14
 #' SimResults(condition14)
 #'
@@ -289,7 +286,7 @@
 #'
 #' # note that all row conditions are still stored separately, though note that
 #' #  arrayID is now 2 instead
-#' condition14 <- qs2::qd_read('sim/condition-14.rds')
+#' condition14 <- readRDS('sim/condition-14.rds')
 #' condition14
 #' SimResults(condition14)
 #'
@@ -375,9 +372,7 @@ runArraySimulation <- function(design, ..., replications,
             }
             attr(ret, "extra_info")$stored_results <- results
         }
-        filename.u <- unique_filename(filename[i], safe=TRUE,
-                                      verbose=FALSE, ext='rds')
-        # qs2::qd_save(ret, filename.u)  ## TODO this errors?
+        filename.u <- unique_filename(filename[i], safe=TRUE, verbose=FALSE)
         saveRDS(ret, filename.u)
     }
     if(length(rowpick) > 1L) ret <- NULL
