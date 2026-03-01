@@ -213,7 +213,7 @@ runArraySimulation(design=Design5, replications=10,
                    summarise=Summarise, iseed=iseed,
                    filename='mylongsim', arrayID=arrayID)
 
-res <- readRDS('mylongsim-14.rds')
+res <- SimRead('mylongsim-14.rds')
 res
 SimResults(res) # condition and replication count stored
 
@@ -246,7 +246,7 @@ dir('sim/')
 # check that all files saved (warnings will be raised if missing files)
 SimCheck('sim/')
 
-condition14 <- readRDS('sim/condition-14.rds')
+condition14 <- SimRead('sim/condition-14.rds')
 condition14
 SimResults(condition14)
 
@@ -297,7 +297,7 @@ if(FALSE){
 
 # note that all row conditions are still stored separately, though note that
 #  arrayID is now 2 instead
-condition14 <- readRDS('sim/condition-14.rds')
+condition14 <- SimRead('sim/condition-14.rds')
 condition14
 SimResults(condition14)
 
@@ -318,7 +318,7 @@ with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4
 }
 \seealso{
 \code{\link{runSimulation}}, \code{\link{expandDesign}},
-  \code{\link{genSeeds}}, \code{\link{SimCheck}},
+  \code{\link{genSeeds}}, \code{\link{SimCheck}}, \code{\link{SimRead}},
   \code{\link{SimCollect}}, \code{\link{getArrayID}}
 }
 \author{

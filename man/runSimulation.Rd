@@ -269,7 +269,8 @@ extracted using \code{SimExtract(res, 'prepare_error_seed')}. Default is \code{N
   To recover your simulation at the last known location (having patched the issues in the
   previous execution code) simply re-run the code you used to
   initially define the simulation and the external file will automatically be detected and read-in.
-  Default is \code{TRUE} when \code{replications > 10} and \code{FALSE} otherwise}
+  Default is \code{TRUE} when \code{replications > 10} and \code{FALSE} otherwise.
+  See also \code{\link{SimRead}} to read and inspect the stored files}
 
 \item{store_results}{logical; store the complete tables of simulation results
   in the returned object? This is \code{TRUE} default, though if RAM anticipated to
@@ -291,7 +292,8 @@ extracted using \code{SimExtract(res, 'prepare_error_seed')}. Default is \code{N
   Each saved object will contain a list of three elements containing the
   condition (row from \code{design}),
   results (as a \code{list} or \code{matrix}), and try-errors.
-  See \code{\link{SimResults}} for an example of how to read these \code{.rds} files back into R
+  See \code{\link{SimResults}} and \code{\link{SimRead}}
+  for an example of how to read these \code{.rds} files back into R
   after the simulation is complete. Default is \code{FALSE}.
 
   WARNING: saving results to your hard-drive can fill up space very quickly for
@@ -433,7 +435,7 @@ in the simulation}
       in the current working directory then a unique one will be created automatically. Default is
       \code{'SimDesign-results_'} with the associated \code{compname} appended if no
       \code{filename} is defined, otherwise the filename is used to replace 'SimDesign'
-      in the string}
+      in the string. See \code{\link{SimRead}} to read in the individual files}
 
     \item{\code{save_results_filename}}{a string indicating the name file to store, where the
       \code{Design} row ID will be appended to ensure uniqueness across rows. Specifying
@@ -444,7 +446,8 @@ in the simulation}
       for HPC structures that allow asynchronous file storage).
       WARNING: the uniqueness of the file names are not checked using
       this approach, therefore please ensure that each generated name will be unique a priori,
-      such as naming the file based on the supplied row condition information}
+      such as naming the file based on the supplied row condition information.
+      See \code{\link{SimRead}} to read in the individual files}
 
     \item{\code{save_seeds_dirname}}{a string indicating the name of the folder to save
       \code{.Random.seed} objects to when \code{save_seeds = TRUE}. If a directory/folder
@@ -1209,7 +1212,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
   \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
   \code{\link{SimExtract}},
   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
-  \code{\link{SimCollect}}, \code{\link{Attach}}, \code{\link{AnalyseIf}},
+  \code{\link{SimCollect}}, \code{\link{SimRead}}, \code{\link{Attach}}, \code{\link{AnalyseIf}},
   \code{\link{SimShiny}}, \code{\link{manageWarnings}}, \code{\link{runArraySimulation}}
 }
 \author{

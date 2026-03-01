@@ -2,7 +2,10 @@
 
 ## Changes in SimDesign 2.25
 
-- Temp files now stored using `qs2` package to reduce overhead (see #83)
+- Temp files and other frequently hard-drive written objects 
+  now stored using `qs2` package to reduce overhead (see #83). Relatedly,
+  the function `SimRead()` has been included to read in the stored object,
+  switching between `qs2::qd_read()` and `readRDS()` where applicable
 
 
 ## Changes in SimDesign 2.24

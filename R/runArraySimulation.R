@@ -127,7 +127,7 @@
 #' \doi{10.20982/tqmp.16.4.p248}
 #'
 #' @seealso \code{\link{runSimulation}}, \code{\link{expandDesign}},
-#'   \code{\link{genSeeds}}, \code{\link{SimCheck}},
+#'   \code{\link{genSeeds}}, \code{\link{SimCheck}}, \code{\link{SimRead}},
 #'   \code{\link{SimCollect}}, \code{\link{getArrayID}}
 #'
 #' @examples
@@ -202,7 +202,7 @@
 #'                    summarise=Summarise, iseed=iseed,
 #'                    filename='mylongsim', arrayID=arrayID)
 #'
-#' res <- readRDS('mylongsim-14.rds')
+#' res <- SimRead('mylongsim-14.rds')
 #' res
 #' SimResults(res) # condition and replication count stored
 #'
@@ -235,7 +235,7 @@
 #' # check that all files saved (warnings will be raised if missing files)
 #' SimCheck('sim/')
 #'
-#' condition14 <- readRDS('sim/condition-14.rds')
+#' condition14 <- SimRead('sim/condition-14.rds')
 #' condition14
 #' SimResults(condition14)
 #'
@@ -286,7 +286,7 @@
 #'
 #' # note that all row conditions are still stored separately, though note that
 #' #  arrayID is now 2 instead
-#' condition14 <- readRDS('sim/condition-14.rds')
+#' condition14 <- SimRead('sim/condition-14.rds')
 #' condition14
 #' SimResults(condition14)
 #'

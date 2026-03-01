@@ -45,10 +45,11 @@ the returned result is either a nested list (when \code{length(which) > 1}) or a
 \description{
 If \code{\link{runSimulation}} was passed the flag \code{save_results = TRUE} then the
 row results corresponding to the \code{design} object will be stored to a suitable
-sub-directory as individual \code{.rds} files. While users could use \code{\link{readRDS}} directly
+sub-directory as individual \code{.rds} or \code{qs2} files.
+While users could use \code{\link{readRDS}} and \code{qs2} directly
 to read these files in themselves, this convenience function will read the desired rows in
 automatically given the returned object
-from the simulation. Can be used to read in 1 or more \code{.rds} files at once (if more than 1 file
+from the simulation. Can be used to read in 1 or more files at once (if more than 1 file
 is read in then the result will be stored in a list).
 }
 \examples{
@@ -83,7 +84,7 @@ Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
 }
 \seealso{
-\code{\link{descript}}
+\code{\link{descript}}, \code{\link{SimRead}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}

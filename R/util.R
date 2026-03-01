@@ -1052,6 +1052,20 @@ add_cbind <- function(lst){
     dplyr::as_tibble(ret)
 }
 
+
+#' Read simulation files
+#'
+#' Convenience function that switches between \code{readRDS()} and
+#' \code{qs2::qs_read()} for functions saved with \code{SimDesign}.
+#' By convention, objects saved with the extension \code{.rds} are read
+#' as R binary files and typically reflect the final object from
+#' \code{\link{runSimulation}} or \code{\link{runArraySimulation}},
+#' while files without an extension are read using \code{qs2} (most often
+#' temporary files or results written to an associated sub-directory).
+#'
+#' @export
+#' @return the R binary object
+#' @param filename name of the file to read in
 SimRead <- function(filename){
     file_ext <- tools::file_ext(filename)
     tmp <- if(tolower(file_ext) == 'rds')
