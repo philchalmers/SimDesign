@@ -112,7 +112,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2026-03-01</h4>
+            <h4 data-toc-skip class="date">2026-03-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/SimDesign-intro.Rmd" class="external-link"><code>vignettes/SimDesign-intro.Rmd</code></a></small>
       <div class="hidden name"><code>SimDesign-intro.Rmd</code></div>
@@ -436,7 +436,118 @@ conditions were performed, <code>SIM_TIME</code>, indicating the time
 <code>SEED</code>, which indicates the random seeds used by
 <code>SimDesign</code> for each condition (for reproducibility). A call
 to <code><a href="https://rdrr.io/r/utils/View.html" class="external-link">View()</a></code> in the R console may also be a nice way to sift
-through the <code>res</code> object.</p>
+through the <code>res</code> object, while for the <code>results</code>
+object one can use functions like <code><a href="../reference/descript.html">descript()</a></code> and verbs from
+the <code>dplyr</code> package to get a better understanding of the
+distributions.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># summary statistics for complete results</span></span>
+<span><span class="fu"><a href="../reference/descript.html">descript</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 5 × 12</span></span></span>
+<span><span class="co">##   VARS      n   mean   trim     sd   skew   kurt   min   P25   P50    P75    max</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> samp…  <span style="text-decoration: underline;">8</span>000 112.   107.   80.4    0.657 -<span style="color: #BB0000;">1.10</span>  30    52.5  90    150    240   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> mean…  <span style="text-decoration: underline;">8</span>000   3.00   3.00  0.234  0.340  3.75   1.86  2.89  3.00   3.10   4.63</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> mean…  <span style="text-decoration: underline;">8</span>000   2.83   2.85  0.279 -<span style="color: #BB0000;">0.555</span>  0.701  1.50  2.65  2.90   3.02   4.25</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> mean…  <span style="text-decoration: underline;">8</span>000   2.76   2.78  0.329 -<span style="color: #BB0000;">0.523</span> -<span style="color: #BB0000;">0.169</span>  1.38  2.50  2.85   3.01   4.23</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> medi…  <span style="text-decoration: underline;">8</span>000   2.69   2.71  0.402 -<span style="color: #BB0000;">0.440</span> -<span style="color: #BB0000;">0.498</span>  1.05  2.36  2.81   3.01   4.16</span></span></code></pre>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># conditional summary statistics using dplyr verbs</span></span>
+<span><span class="va">results</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sample_size</span>, <span class="va">distribution</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../reference/descript.html">descript</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## sample_size: 30</span></span>
+<span><span class="co">## distribution: chi</span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 4 × 12</span></span></span>
+<span><span class="co">##   VARS           n  mean  trim    sd  skew    kurt   min   P25   P50   P75   max</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> mean_no_t…  <span style="text-decoration: underline;">1</span>000  3.02  3.02 0.447 0.149 -<span style="color: #BB0000;">0.117</span>   1.86  2.71  3.02  3.31  4.63</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> mean_trim…  <span style="text-decoration: underline;">1</span>000  2.70  2.69 0.419 0.170 -<span style="color: #BB0000;">0.102</span>   1.50  2.42  2.69  2.96  4.25</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> mean_trim…  <span style="text-decoration: underline;">1</span>000  2.56  2.55 0.423 0.215 -<span style="color: #BB0000;">0.032</span><span style="color: #BB0000; text-decoration: underline;">8</span>  1.38  2.27  2.54  2.83  4.23</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> median      <span style="text-decoration: underline;">1</span>000  2.42  2.41 0.476 0.375  0.313   1.05  2.10  2.38  2.74  4.16</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ------------------------------------------------------------</span></span>
+<span><span class="co">##  </span></span>
+<span><span class="co">## sample_size: 60</span></span>
+<span><span class="co">## distribution: chi</span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 4 × 12</span></span></span>
+<span><span class="co">##   VARS             n  mean  trim    sd  skew  kurt   min   P25   P50   P75   max</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> mean_no_trim  <span style="text-decoration: underline;">1</span>000  3.00  2.99 0.319 0.296 0.108  2.19  2.78  2.98  3.20  4.14</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> mean_trim.1   <span style="text-decoration: underline;">1</span>000  2.65  2.64 0.295 0.368 0.363  1.92  2.45  2.64  2.84  3.96</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> mean_trim.2   <span style="text-decoration: underline;">1</span>000  2.51  2.50 0.293 0.378 0.437  1.78  2.30  2.50  2.69  3.81</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> median        <span style="text-decoration: underline;">1</span>000  2.36  2.35 0.335 0.409 0.484  1.32  2.13  2.34  2.56  3.77</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ------------------------------------------------------------</span></span>
+<span><span class="co">##  </span></span>
+<span><span class="co">## sample_size: 120</span></span>
+<span><span class="co">## distribution: chi</span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 4 × 12</span></span></span>
+<span><span class="co">##   VARS           n  mean  trim    sd  skew    kurt   min   P25   P50   P75   max</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> mean_no_t…  <span style="text-decoration: underline;">1</span>000  2.99  2.99 0.224 0.213 -<span style="color: #BB0000;">0.031</span><span style="color: #BB0000; text-decoration: underline;">9</span>  2.34  2.84  2.99  3.14  3.69</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> mean_trim…  <span style="text-decoration: underline;">1</span>000  2.65  2.65 0.214 0.159 -<span style="color: #BB0000;">0.130</span>   2.07  2.51  2.64  2.80  3.30</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> mean_trim…  <span style="text-decoration: underline;">1</span>000  2.51  2.51 0.215 0.149 -<span style="color: #BB0000;">0.170</span>   1.93  2.37  2.50  2.65  3.15</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> median      <span style="text-decoration: underline;">1</span>000  2.36  2.36 0.240 0.243 -<span style="color: #BB0000;">0.209</span>   1.71  2.20  2.35  2.52  3.04</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ------------------------------------------------------------</span></span>
+<span><span class="co">##  </span></span>
+<span><span class="co">## sample_size: 240</span></span>
+<span><span class="co">## distribution: chi</span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 4 × 12</span></span></span>
+<span><span class="co">##   VARS           n  mean  trim    sd   skew   kurt   min   P25   P50   P75   max</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> mean_no_t…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.158 0.082<span style="text-decoration: underline;">2</span> 0.056<span style="text-decoration: underline;">1</span>  2.47  2.89  3.00  3.10  3.53</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> mean_trim…  <span style="text-decoration: underline;">1</span>000  2.65  2.65 0.148 0.065<span style="text-decoration: underline;">0</span> 0.059<span style="text-decoration: underline;">5</span>  2.10  2.55  2.65  2.75  3.11</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> mean_trim…  <span style="text-decoration: underline;">1</span>000  2.51  2.51 0.148 0.069<span style="text-decoration: underline;">9</span> 0.074<span style="text-decoration: underline;">9</span>  1.94  2.41  2.50  2.61  2.96</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> median      <span style="text-decoration: underline;">1</span>000  2.37  2.37 0.164 0.026<span style="text-decoration: underline;">3</span> 0.081<span style="text-decoration: underline;">2</span>  1.79  2.26  2.37  2.48  2.88</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ------------------------------------------------------------</span></span>
+<span><span class="co">##  </span></span>
+<span><span class="co">## sample_size: 30</span></span>
+<span><span class="co">## distribution: norm</span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 4 × 12</span></span></span>
+<span><span class="co">##   VARS           n  mean  trim    sd   skew   kurt   min   P25   P50   P75   max</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> mean_no_t…  <span style="text-decoration: underline;">1</span>000  3.00  2.99 0.185 0.045<span style="text-decoration: underline;">8</span> 0.034<span style="text-decoration: underline;">2</span>  2.36  2.87  2.99  3.13  3.64</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> mean_trim…  <span style="text-decoration: underline;">1</span>000  3.00  2.99 0.190 0.040<span style="text-decoration: underline;">8</span> 0.022<span style="text-decoration: underline;">5</span>  2.42  2.86  2.99  3.12  3.66</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> mean_trim…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.196 0.027<span style="text-decoration: underline;">7</span> 0.046<span style="text-decoration: underline;">2</span>  2.36  2.86  2.99  3.13  3.67</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> median      <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.222 0.075<span style="text-decoration: underline;">5</span> 0.173   2.26  2.85  3.00  3.15  3.79</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ------------------------------------------------------------</span></span>
+<span><span class="co">##  </span></span>
+<span><span class="co">## sample_size: 60</span></span>
+<span><span class="co">## distribution: norm</span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 4 × 12</span></span></span>
+<span><span class="co">##   VARS           n  mean  trim    sd   skew   kurt   min   P25   P50   P75   max</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> mean_no_t…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.125 0.118  0.326   2.59  2.92  3.00  3.08  3.48</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> mean_trim…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.129 0.130  0.261   2.61  2.92  3.00  3.09  3.49</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> mean_trim…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.134 0.127  0.230   2.57  2.91  3.00  3.09  3.49</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> median      <span style="text-decoration: underline;">1</span>000  3.01  3.01 0.157 0.051<span style="text-decoration: underline;">8</span> 0.057<span style="text-decoration: underline;">9</span>  2.46  2.89  3.00  3.12  3.53</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ------------------------------------------------------------</span></span>
+<span><span class="co">##  </span></span>
+<span><span class="co">## sample_size: 120</span></span>
+<span><span class="co">## distribution: norm</span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 4 × 12</span></span></span>
+<span><span class="co">##   VARS        n  mean  trim     sd   skew     kurt   min   P25   P50   P75   max</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> mean_n…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.090<span style="text-decoration: underline;">8</span> 0.059<span style="text-decoration: underline;">0</span>  3.22<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  2.72  2.94  3.00  3.06  3.29</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> mean_t…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.094<span style="text-decoration: underline;">0</span> 0.088<span style="text-decoration: underline;">4</span>  1.61<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  2.69  2.94  3.00  3.06  3.31</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> mean_t…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.097<span style="text-decoration: underline;">7</span> 0.087<span style="text-decoration: underline;">8</span> -<span style="color: #BB0000;">5.57</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>  2.69  2.93  3.00  3.06  3.32</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> median   <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.113  0.060<span style="text-decoration: underline;">9</span> -<span style="color: #BB0000;">9.05</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  2.64  2.92  3.00  3.07  3.36</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ------------------------------------------------------------</span></span>
+<span><span class="co">##  </span></span>
+<span><span class="co">## sample_size: 240</span></span>
+<span><span class="co">## distribution: norm</span></span>
+<span><span class="co">## <span style="color: #949494;"># A tibble: 4 × 12</span></span></span>
+<span><span class="co">##   VARS        n  mean  trim     sd     skew   kurt   min   P25   P50   P75   max</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> mean_n…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.064<span style="text-decoration: underline;">3</span>  7.45<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span> -<span style="color: #BB0000;">0.189</span>  2.81  2.96  3.00  3.04  3.25</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> mean_t…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.065<span style="text-decoration: underline;">9</span>  8.92<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span> -<span style="color: #BB0000;">0.161</span>  2.80  2.95  3.00  3.05  3.24</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> mean_t…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.068<span style="text-decoration: underline;">4</span>  9.35<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span> -<span style="color: #BB0000;">0.146</span>  2.79  2.95  3.00  3.05  3.23</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> median   <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.081<span style="text-decoration: underline;">7</span> -<span style="color: #BB0000;">9.91</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span> -<span style="color: #BB0000;">0.172</span>  2.71  2.94  3.00  3.06  3.26</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="interpreting-the-results">Interpreting the results<a class="anchor" aria-label="anchor" href="#interpreting-the-results"></a>
@@ -457,7 +568,7 @@ of trimming results in even less efficiency, and using the median as a
 proxy to estimate the mean is the least effective method. This is
 witnessed rather clearly in the following table, which prints the
 relative efficiency of the estimators:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">REs</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">'RE\\.'</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">Design</span>, <span class="va">REs</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   sample_size distribution RE.mean_no_trim RE.mean_trim.1 RE.mean_trim.2</span></span>
@@ -498,18 +609,18 @@ we demonstrate the results from the first condition (row 1 of
 <code>Design</code>) to show what each function returns.</p>
 <p>A single replication in a Monte Carlo simulation results in the
 following objects:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="va">Design</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
 <span><span class="co">##   sample_size distribution</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>          30 norm</span></span></code></pre>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Generate.html">Generate</a></span><span class="op">(</span><span class="va">condition</span><span class="op">)</span></span>
 <span><span class="va">dat</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] 2.37 3.18 2.16 4.60 3.33 2.18 3.49 3.74 3.58 2.69 4.51 3.39 2.38 0.79 4.12</span></span>
 <span><span class="co">## [16] 2.96 2.98 3.94 3.82 3.59 3.92 3.78 3.07 1.01 3.62 2.94 2.84 1.53 2.52 3.42</span></span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Analyse.html">Analyse</a></span><span class="op">(</span><span class="va">condition</span>, <span class="va">dat</span><span class="op">)</span></span>
 <span><span class="va">res</span></span></code></pre></div>
 <pre><code><span><span class="co">## mean_no_trim  mean_trim.1  mean_trim.2       median </span></span>
@@ -521,7 +632,7 @@ using the generated data, and returns a named vector with the observed
 parameter estimates. Of course, this is only a single replication, and
 therefore is not really meaningful in the grand scheme of things; so, it
 must be repeated a number of times.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># repeat 1000x</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span>, <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
@@ -538,7 +649,7 @@ must be repeated a number of times.</p>
 <span><span class="co">## [4,]          2.7         2.6         2.6    2.7</span></span>
 <span><span class="co">## [5,]          3.2         3.2         3.2    3.0</span></span>
 <span><span class="co">## [6,]          3.1         3.1         3.0    3.1</span></span></code></pre>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/descript.html">descript</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span> <span class="co"># common descriptive statistics</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 4 × 12</span></span></span>
 <span><span class="co">##   VARS           n  mean  trim    sd    skew  kurt   min   P25   P50   P75   max</span></span>
@@ -552,7 +663,7 @@ estimates returned from each statistic. After this is obtained, we can
 move on to summarising the output through the <code><a href="../reference/Summarise.html">Summarise()</a></code>
 function to obtain average estimates, their associated sampling error,
 their efficiency, and so on.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/Summarise.html">Summarise</a></span><span class="op">(</span><span class="va">condition</span>, <span class="va">results</span><span class="op">)</span> </span></code></pre></div>
 <pre><code><span><span class="co">## bias.mean_no_trim  bias.mean_trim.1  bias.mean_trim.2       bias.median </span></span>
 <span><span class="co">##           -0.0011           -0.0031           -0.0035           -0.0037 </span></span>
