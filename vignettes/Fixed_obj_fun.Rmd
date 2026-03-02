@@ -157,4 +157,4 @@ res <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_ob
                      parallel = TRUE)
 ```
 
-Again, remember that this is only required for R **objects**, NOT for user-defined or third-party functions!
+Again, remember that this is only required for **R objects that are NOT user-defined functions or third-party functions**!

@@ -148,7 +148,7 @@ runSimulation(Design, replications = 100, load_seed=picked_seed, debug='analyse-
 
 The `.Random.seed` state will be loaded at this exact state, and will always be repeated at this state as well (in case `c` is typed in the debugger, or somehow the error is harder to find while walking through the debug mode). Hence, users must type `Q` to exit the debugger after they have better understood the nature of the error message first-hand, after which the `load_seed` input should be removed. 
 
-# Converting warings to errors explicitly via `manageWarnings()`
+# Converting warnings to errors explicitly via `manageWarnings()`
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(

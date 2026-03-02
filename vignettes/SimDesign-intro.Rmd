@@ -214,7 +214,18 @@ As can be seen from the printed results from the `res` object, each result from 
 respective condition, meta-statistics have been properly named, and three additional columns have been appended
 to the results: `REPLICATIONS`, which indicates how many time the conditions were performed, `SIM_TIME`, indicating
 the time (in seconds) it took to completely finish the respective conditions, and `SEED`, which indicates the random seeds used by `SimDesign` for each condition (for reproducibility). A call to `View()` in the 
-R console may also be a nice way to sift through the `res` object.
+R console may also be a nice way to sift through the `res` object, while for the 
+`results` object one can use functions like `descript()` and verbs from the `dplyr` package to get a better understanding of the distributions.
+
+```{r}
+# summary statistics for complete results
+descript(results)
+
+# conditional summary statistics using dplyr verbs
+results |> dplyr::group_by(sample_size, distribution) |> 
+    descript()
+```
+
 
 ## Interpreting the results
 

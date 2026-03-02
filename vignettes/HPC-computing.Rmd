@@ -13,8 +13,10 @@ output:
       smooth_scroll: false
 vignette: >
   %\VignetteIndexEntry{HPC cluster array jobs (e.g., via Slurm)}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r nomessages, echo = FALSE}
@@ -121,6 +123,7 @@ While generally effective at distributing the computational load, there are a fe
 5) Submitting independent multiple batches to the cluster makes it more difficult to guarantee the quality of the random numbers
     - Setting the `seed` for each condition ensure that within each `design` condition the random numbers are high quality, however there is no guarantee that repeated use of `set.seed()` will result in high-quality random numbers (see next section for example)
     - Hence, repeated job submissions of this type, even with unique seeds per condition, may not generate high quality numbers if repeated too many times (alternative is to isolate each `design` row and submit each row as a unique job, which is demonstrated near the end of this vignette)
+    - Note that there are workarounds with more recent `runSimulation()` implementations when combined with `expandDesign()` (see below), however given the nature of the complete job submission these remain less ideal
 6) Finally, and perhaps most problematic in simulation experiment applications, schedulers frequently cap the maximum number of resources that can be requested (e.g., 256 GB of RAM, 200 CPUs), which limits the application of large RAM and CPU jobs
     - Note that to avoid wasting time by swapping/paging, schedulers will never allocate jobs whose memory requirements exceed the amount of available memory 
     
@@ -166,7 +169,8 @@ print(Design300, show.IDs = TRUE)
 rep_target <- 10000
 
 # replications per row in Design300
-replications <- rep(rep_target  / rc, nrow(Design300))
+replications <- expandReplications(rep_target, repeat_conditions = rc)
+replications
 ```
 The above approach assumes that each `design` condition is equally balanced in terms of computing time and resources, though if this is not the case (e.g., the last condition contains notably higher computing times than the first two conditions) then `repeat_conditions` can be specified as a vector instead, such as `repeat_conditions = c(100, 100, 1000)`, which for the latter portion would be associated with a 10 replications per distributed node instead of 100. 
 
@@ -176,8 +180,9 @@ DesignUnbalanced <- expandDesign(Design, repeat_conditions = rc)
 DesignUnbalanced
 
 rep_target <- 10000
-replicationsUnbalanced <- rep(rep_target / rc, times = rc)
+replicationsUnbalanced <- expandReplications(rep_target, rc)
 head(replicationsUnbalanced)
+tail(replicationsUnbalanced)
 table(replicationsUnbalanced)
 ```
 
@@ -298,7 +303,7 @@ rc <- 100
 Design300 <- expandDesign(Design, repeat_conditions = rc)
 
 rep_target <- 10000
-replications <- rep(rep_target / rc, nrow(Design300))
+replications <- expandReplications(rep_target, repeat_conditions = rc)
 
 # genSeeds() # do this once on the main node/home computer, and store the number!
 iseed <- 1276149341
