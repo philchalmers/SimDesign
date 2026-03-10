@@ -109,7 +109,7 @@
 #' fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
 #'
 #' # post-extraction (if you don't mind doing the extra computations
-#'   and extracting afterword)
+#' #   and extracting afterword)
 #' fmtcars |> descript() |> select(n, mean)
 #' fmtcars |> select(mpg) |> descript() |> select(n, mean)
 #' fmtcars |> group_by(cyl) |> select(mpg) |> descript() |> select(n, mean)
