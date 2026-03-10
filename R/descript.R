@@ -115,6 +115,12 @@
 #' fmtcars |> group_by(cyl) |> select(mpg) |> descript() |> select(n, mean)
 #' fmtcars |> group_by(cyl) |> descript() |> select(n, mean)
 #'
+#' # if you want a tibble from the list of information
+#' fmtcars |> group_by(cyl) |> descript() |>
+#'   select(n, mean) |> bind_rows(.id='id')
+#' fmtcars |> group_by(am, cyl) |> descript() |>
+#'   select(n, mean) |> bind_rows(.id='id')
+#'
 #' # discrete variables also work with group_by(), though again
 #' #  xtabs() is generally more flexible
 #' fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
