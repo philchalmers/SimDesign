@@ -3,11 +3,14 @@
 \name{descript}
 \alias{descript}
 \alias{get_descriptFuns}
+\alias{select.bybye}
 \title{Compute univariate descriptive statistics}
 \usage{
 descript(df, funs = get_descriptFuns(), discrete = FALSE)
 
 get_descriptFuns()
+
+\method{select}{bybye}(.data, ...)
 }
 \arguments{
 \item{df}{typically a \code{data.frame} or \code{tibble}-like structure
@@ -46,6 +49,10 @@ get_descriptFuns()
 variables only? If \code{TRUE} then only count and proportion
 information for the discrete variables will be returned. For greater flexibility
 in creating cross-tabulated count/proportion information see \code{\link{xtabs}}}
+
+\item{.data}{data argument passed to \code{dplyr::select()} after suitable parsing}
+
+\item{...}{additional arguments passed to \code{dplyr::select()}}
 }
 \description{
 Function returns univariate data summaries for each variable supplied. For presentation
@@ -113,6 +120,13 @@ fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript()
 fmtcars |> select(mpg) |> descript()
 fmtcars |> group_by(cyl) |> select(mpg) |> descript()
 fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
+
+# post-extraction (if you don't mind doing the extra computations
+  and extracting afterword)
+fmtcars |> descript() |> select(n, mean)
+fmtcars |> select(mpg) |> descript() |> select(n, mean)
+fmtcars |> group_by(cyl) |> select(mpg) |> descript() |> select(n, mean)
+fmtcars |> group_by(cyl) |> descript() |> select(n, mean)
 
 # discrete variables also work with group_by(), though again
 #  xtabs() is generally more flexible

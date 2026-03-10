@@ -108,6 +108,13 @@
 #' fmtcars |> group_by(cyl) |> select(mpg) |> descript()
 #' fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
 #'
+#' # post-extraction (if you don't mind doing the extra computations
+#'   and extracting afterword)
+#' fmtcars |> descript() |> select(n, mean)
+#' fmtcars |> select(mpg) |> descript() |> select(n, mean)
+#' fmtcars |> group_by(cyl) |> select(mpg) |> descript() |> select(n, mean)
+#' fmtcars |> group_by(cyl) |> descript() |> select(n, mean)
+#'
 #' # discrete variables also work with group_by(), though again
 #' #  xtabs() is generally more flexible
 #' fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
@@ -289,4 +296,13 @@ print.bybye <- function (x, ..., vsep)
         print(x[[i]], ...)
     }, x, vsep, ...)
     invisible(x)
+}
+
+#' @export
+#' @rdname descript
+#' @param .data data argument passed to \code{dplyr::select()} after suitable parsing
+#' @param ... additional arguments passed to \code{dplyr::select()}
+#'
+select.bybye <- function(.data, ...){
+    lapply(.data, function(.d) dplyr::select(.d, ...))
 }
