@@ -3,14 +3,11 @@
 \name{descript}
 \alias{descript}
 \alias{get_descriptFuns}
-\alias{select.bybye}
 \title{Compute univariate descriptive statistics}
 \usage{
-descript(df, funs = get_descriptFuns(), discrete = FALSE)
+descript(df, funs = get_descriptFuns(), discrete = FALSE, collapse = FALSE)
 
 get_descriptFuns()
-
-\method{select}{bybye}(.data, ...)
 }
 \arguments{
 \item{df}{typically a \code{data.frame} or \code{tibble}-like structure
@@ -50,9 +47,9 @@ variables only? If \code{TRUE} then only count and proportion
 information for the discrete variables will be returned. For greater flexibility
 in creating cross-tabulated count/proportion information see \code{\link{xtabs}}}
 
-\item{.data}{data argument passed to \code{dplyr::select()} after suitable parsing}
-
-\item{...}{additional arguments passed to \code{dplyr::select()}}
+\item{collapse}{logical; should the result be returned as a list output
+structured using \code{\link{by}} or as a \code{tibble}?
+Default is \code{FALSE}}
 }
 \description{
 Function returns univariate data summaries for each variable supplied. For presentation
@@ -61,7 +58,8 @@ reflects count/proportion information while the ladder are supplied to a (custom
 of univariate summary functions. As such, quantitative/continuous variable
 information is kept distinct in the output, while discrete variables (e.g.,
 \code{factors} and \code{character} vectors) are returned by using the
-\code{discrete} argument.
+\code{discrete} argument. When applicable a \code{"VARS"} column will be included in the
+output to indicate which variable is being summarised on the respective row.
 }
 \details{
 The purpose of this function is to provide
@@ -78,8 +76,6 @@ specifications are declared using \code{\link[dplyr]{group_by}}
 and subsequently passed to \code{descript}.
 }
 \examples{
-
-library(dplyr)
 
 data(mtcars)
 
@@ -109,7 +105,7 @@ xtabs(~ am + cyl + vs, fmtcars) |> prop.table()
 
 # usual pipe chaining
 fmtcars |> select(mpg, wt) |> descript()
-fmtcars |> filter(mpg > 20) |> select(mpg, wt) |> descript()
+fmtcars |> subset(mpg > 20) |> select(mpg, wt) |> descript()
 
 # conditioning with group_by()
 fmtcars |> group_by(cyl) |> descript()
@@ -121,18 +117,18 @@ fmtcars |> select(mpg) |> descript()
 fmtcars |> group_by(cyl) |> select(mpg) |> descript()
 fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
 
+# if you want a tibble from the list of information instead
+fmtcars |> group_by(cyl) |> descript(collapse=TRUE)
+fmtcars |> group_by(am, cyl) |> select(mpg, wt) |> descript(collapse=TRUE)
+
 # post-extraction (if you don't mind doing the extra computations
 #   and extracting afterword)
 fmtcars |> descript() |> select(n, mean)
 fmtcars |> select(mpg) |> descript() |> select(n, mean)
 fmtcars |> group_by(cyl) |> select(mpg) |> descript() |> select(n, mean)
-fmtcars |> group_by(cyl) |> descript() |> select(n, mean)
-
-# if you want a tibble from the list of information
-fmtcars |> group_by(cyl) |> descript() |>
-  select(n, mean) |> bind_rows(.id='id')
-fmtcars |> group_by(am, cyl) |> descript() |>
-  select(n, mean) |> bind_rows(.id='id')
+fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
+fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |>
+  select(cyl, VARS, n, mean)
 
 # discrete variables also work with group_by(), though again
 #  xtabs() is generally more flexible
@@ -140,7 +136,7 @@ fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
 fmtcars |> group_by(am) |> descript(discrete=TRUE)
 fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 
-# only return a subset of summary statistics
+# only compute a subset of summary statistics
 funs <- get_descriptFuns()
 sfuns <- funs[c('n', 'mean', 'sd')] # subset
 fmtcars |> descript(funs=sfuns) # only n, miss, mean, and sd
@@ -153,5 +149,6 @@ fmtcars |> descript(funs=funs2)
 
 }
 \seealso{
-\code{\link[dplyr]{summarise}}, \code{\link[dplyr]{group_by}}, \code{\link{xtabs}}
+\code{\link[dplyr]{summarise}}, \code{\link[dplyr]{group_by}},
+  \code{\link[dplyr]{select}}, \code{\link{xtabs}}
 }

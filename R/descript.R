@@ -6,7 +6,8 @@
 #' of univariate summary functions. As such, quantitative/continuous variable
 #' information is kept distinct in the output, while discrete variables (e.g.,
 #' \code{factors} and \code{character} vectors) are returned by using the
-#' \code{discrete} argument.
+#' \code{discrete} argument. When applicable a \code{"VARS"} column will be included in the
+#' output to indicate which variable is being summarised on the respective row.
 #'
 #' The purpose of this function is to provide
 #' a more pipe-friendly API for selecting and subsetting variables using the
@@ -29,6 +30,10 @@
 #'  of the quantitative descriptive statistics specified in \code{funs}. However,
 #'  setting \code{discrete = TRUE} will provide count-type information for these
 #'  discrete variables, in which case arguments to \code{funs} are ignored
+#'
+#' @param collapse logical; should the result be returned as a list output
+#'   structured using \code{\link{by}} or as a \code{tibble}?
+#'   Default is \code{FALSE}
 #'
 #' @param funs functions to apply when \code{discrete = FALSE}. Can be modified
 #'  by the user to include or exclude further functions, however each supplied
@@ -62,11 +67,10 @@
 #'
 #' @export
 #'
-#' @seealso \code{\link[dplyr]{summarise}}, \code{\link[dplyr]{group_by}}, \code{\link{xtabs}}
+#' @seealso \code{\link[dplyr]{summarise}}, \code{\link[dplyr]{group_by}},
+#'   \code{\link[dplyr]{select}}, \code{\link{xtabs}}
 #'
 #' @examples
-#'
-#' library(dplyr)
 #'
 #' data(mtcars)
 #'
@@ -96,7 +100,7 @@
 #'
 #' # usual pipe chaining
 #' fmtcars |> select(mpg, wt) |> descript()
-#' fmtcars |> filter(mpg > 20) |> select(mpg, wt) |> descript()
+#' fmtcars |> subset(mpg > 20) |> select(mpg, wt) |> descript()
 #'
 #' # conditioning with group_by()
 #' fmtcars |> group_by(cyl) |> descript()
@@ -108,18 +112,18 @@
 #' fmtcars |> group_by(cyl) |> select(mpg) |> descript()
 #' fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
 #'
+#' # if you want a tibble from the list of information instead
+#' fmtcars |> group_by(cyl) |> descript(collapse=TRUE)
+#' fmtcars |> group_by(am, cyl) |> select(mpg, wt) |> descript(collapse=TRUE)
+#'
 #' # post-extraction (if you don't mind doing the extra computations
 #' #   and extracting afterword)
 #' fmtcars |> descript() |> select(n, mean)
 #' fmtcars |> select(mpg) |> descript() |> select(n, mean)
 #' fmtcars |> group_by(cyl) |> select(mpg) |> descript() |> select(n, mean)
-#' fmtcars |> group_by(cyl) |> descript() |> select(n, mean)
-#'
-#' # if you want a tibble from the list of information
-#' fmtcars |> group_by(cyl) |> descript() |>
-#'   select(n, mean) |> bind_rows(.id='id')
-#' fmtcars |> group_by(am, cyl) |> descript() |>
-#'   select(n, mean) |> bind_rows(.id='id')
+#' fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
+#' fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |>
+#'   select(cyl, VARS, n, mean)
 #'
 #' # discrete variables also work with group_by(), though again
 #' #  xtabs() is generally more flexible
@@ -127,7 +131,7 @@
 #' fmtcars |> group_by(am) |> descript(discrete=TRUE)
 #' fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 #'
-#' # only return a subset of summary statistics
+#' # only compute a subset of summary statistics
 #' funs <- get_descriptFuns()
 #' sfuns <- funs[c('n', 'mean', 'sd')] # subset
 #' fmtcars |> descript(funs=sfuns) # only n, miss, mean, and sd
@@ -138,7 +142,7 @@
 #'            median= \(x) median(x, na.rm=TRUE))
 #' fmtcars |> descript(funs=funs2)
 #'
-descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
+descript <- function(df, funs=get_descriptFuns(), discrete=FALSE, collapse=FALSE)
 {
 	discrete.fun <- function(x){
 		tab <- table(x, useNA = "ifany")
@@ -165,6 +169,15 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE)
 		    out <- do.call(rbind, out)
 		    out$VARS <- NULL
 		    out <- dplyr::bind_cols(groupkeys, out)
+		}
+		if(collapse){
+		    nms <- expand.grid(attr(out, 'dimnames'))
+		    each <- sapply(out, nrow)
+		    nms <- nms[rep(1:nrow(nms), times=each), , drop=FALSE]
+		    tmp <- lapply(out, dplyr::as_tibble)
+		    tmp2 <- as.data.frame(bind_rows(tmp, .id='id'))
+		    tmp2$id <- NULL
+		    out <- dplyr::as_tibble(data.frame(nms, tmp2))
 		}
 		return(out)
 	}
@@ -226,61 +239,6 @@ get_descriptFuns <- function(){
          max      = function(x) max(x, na.rm=TRUE))
 }
 
-# if(FALSE){
-# 	library(dplyr)
-#
-# 	data(mtcars)
-# 	fmtcars <- within(mtcars, {
-# 		cyl <- factor(cyl)
-# 		am <- factor(am)
-# 		vs <- factor(vs)
-# 	})
-#
-# 	# compare
-# 	mtcars |> summarise(mean=mean(wt))
-# 	mtcars |> descript()
-# 	mtcars |> psych::describe()
-# 	mtcars |> Hmisc::describe()
-# 	mtcars |> pastecs::stat.desc()
-#     mtcars |> rstatix::get_summary_stats() # this one is the closest
-#
-# 	# factors included
-# 	fmtcars |> descript()        # omitted
-# 	fmtcars |> psych::describe() # not smart
-# 	fmtcars |> Hmisc::describe() # better, but verbose
-# 	fmtcars |> pastecs::stat.desc() # not smart
-# 	fmtcars |> rstatix::get_summary_stats() # smart! Seems we had the same thought
-#
-#
-# 	##################
-# 	# groupings
-# 	fmtcars |> group_by(cyl) |> summarise(mean=mean(wt))
-# 	fmtcars |> group_by(cyl) |> psych::describe() # ignored
-# 	fmtcars |> group_by(cyl) |> summarise(psych::describe()) # error
-# 	fmtcars |> group_by(cyl) |> summarise(psych::describe(mpg)) # but this works?
-# 	fmtcars |> group_by(cyl) |> descript()
-# 	fmtcars |> group_by(cyl) |> rstatix::get_summary_stats() # very close to what I wanted ...
-#
-# 	# discrete
-# 	fmtcars |> descript(discrete=TRUE)
-# 	fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
-# 	fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
-# 	fmtcars |> group_by(cyl, am, vs) |> descript(discrete=TRUE)
-# 	# rstatix::get_summary_stats() # no discrete support
-#
-# 	fmtcars |> group_by(cyl) |> descript()
-# 	fmtcars |> group_by(cyl, am) |> descript()
-# 	psych::describeBy(fmtcars ~ cyl)
-# 	psych::describeBy(fmtcars ~ cyl + am)
-# 	fmtcars |> group_by(cyl) |> rstatix::get_summary_stats() # good, but too dense
-# 	fmtcars |> group_by(cyl, am) |> rstatix::get_summary_stats()
-#
-#
-# 	fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
-# 	fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
-#
-# }
-
 #' @export
 print.bybye <- function (x, ..., vsep)
 {
@@ -305,10 +263,16 @@ print.bybye <- function (x, ..., vsep)
 }
 
 #' @export
-#' @rdname descript
-#' @param .data data argument passed to \code{dplyr::select()} after suitable parsing
-#' @param ... additional arguments passed to \code{dplyr::select()}
-#'
 select.bybye <- function(.data, ...){
-    lapply(.data, function(.d) dplyr::select(.d, ...))
+    out <- lapply(.data, function(.d) dplyr::select(.d, ...))
+    .data[] <- out
+    .data
 }
+
+#' @export
+#' @importFrom dplyr select
+dplyr::select
+
+#' @export
+#' @importFrom dplyr group_by
+dplyr::group_by
