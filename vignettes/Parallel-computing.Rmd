@@ -35,7 +35,7 @@ The logic presented within this document is based on the notion that the front-e
 
 ## Local parallel computing 
 
-By default, `SimDesign`'s `runSimulation()` function is executed with only a single core. However, setting the argument `runSimulation(..., parallel = TRUE)` will automatically define a cluster object using one core less than the system has available (detect via `parallelly::availableCores()`). This allows a straightforward way to construct a suitable, locally supported cluster object for parallel processing on just the active computer. Depending on the `verbose` and `progress` flags, the progress of each distributed replication will also be printed to the console to indicate the amount of estimated time remaining for the selection simulation condition to complete. This process is then repeated again for each condition in the supplied `design` object until all rows have been evaluated. 
+By default, `SimDesign`'s `runSimulation()` function is executed with only a single core. However, setting the argument `runSimulation(..., parallel = TRUE)` will automatically define a cluster object using one core less than the system has available (detect via `parallelly::availableCores()`) and define a suitable cluster objection using the `mirai` package. This allows a straightforward way to construct a suitable, locally supported cluster object for parallel processing on just the active computer. Depending on the `verbose` and `progress` flags, the progress of each distributed replication will also be printed to the console to indicate the amount of estimated time remaining for the selection simulation condition to complete. This process is then repeated again for each condition in the supplied `design` object until all rows have been evaluated. 
 
 This setup is the most painless way to construct and distribute the independent replications per condition, where within each evaluated condition (i.e., each row of the `design` object) high-quality random numbers are automatically used via Pierre L'Ecuyer's (1999) multiple streams method, limited only by the number of cores that are available. Alternatively, though with a bit of extra effort, users may also define their own cluster computing object by way of the `runSimulation(..., cl)` object, which can be used to link computing resources that are able to communicate via `ssh`, thereby expanding the number of available computing cores detected by `parallel::detectCores()` and friends.
 
@@ -47,14 +47,14 @@ The setup generally requires that the master node
 has `SimDesign` installed, and the slave/master nodes have all the required R packages pre-installed
 (Unix utilities such as `dsh` are very useful for this purpose). Finally,
 the master node must have `ssh` access to the slave nodes, each slave node must have `ssh` access
-with the master node, and a cluster object (`cl`) from the `parallel` package must be manually defined on the
+with the master node, and a cluster object (`cl`) from the `mirai` or  `parallel` package must be manually defined on the
 master node.
 
 Setup for network computing is generally straightforward in that it only requires the specification of a) the respective IP addresses within a defined R script, and b) the user name
 (if different from the master node's user name; otherwise, only a) is required).
 On Linux, it may also be important to include relevant information about the host names
 and IP addresses in the `/etc/hosts` file on the master and slave nodes, and to ensure that
-the selected port (passed to `parallel::makeCluster()`) on the master node is not hindered by a firewall.
+the selected port (passed to `mirai::make_cluster()` or  `parallel::makeCluster()`) on the master node is not hindered by a firewall.
 
 As an example, using the following code the master (primary) node will spawn 7 slave (secondary) and 1 master node,
 while a separate computer on the network with the associated IP address will spawn an additional 6 slave nodes.
