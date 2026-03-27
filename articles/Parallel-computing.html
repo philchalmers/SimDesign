@@ -157,7 +157,8 @@ function is executed with only a single core. However, setting the
 argument <code>runSimulation(..., parallel = TRUE)</code> will
 automatically define a cluster object using one core less than the
 system has available (detect via
-<code><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">parallelly::availableCores()</a></code>). This allows a
+<code><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">parallelly::availableCores()</a></code>) and define a suitable cluster
+objection using the <code>mirai</code> package. This allows a
 straightforward way to construct a suitable, locally supported cluster
 object for parallel processing on just the active computer. Depending on
 the <code>verbose</code> and <code>progress</code> flags, the progress
@@ -190,8 +191,9 @@ the required R packages pre-installed (Unix utilities such as
 <code>dsh</code> are very useful for this purpose). Finally, the master
 node must have <code>ssh</code> access to the slave nodes, each slave
 node must have <code>ssh</code> access with the master node, and a
-cluster object (<code>cl</code>) from the <code>parallel</code> package
-must be manually defined on the master node.</p>
+cluster object (<code>cl</code>) from the <code>mirai</code> or
+<code>parallel</code> package must be manually defined on the master
+node.</p>
 <p>Setup for network computing is generally straightforward in that it
 only requires the specification of a) the respective IP addresses within
 a defined R script, and b) the user name (if different from the master
@@ -199,6 +201,7 @@ node’s user name; otherwise, only a) is required). On Linux, it may also
 be important to include relevant information about the host names and IP
 addresses in the <code>/etc/hosts</code> file on the master and slave
 nodes, and to ensure that the selected port (passed to
+<code><a href="https://mirai.r-lib.org/reference/make_cluster.html" class="external-link">mirai::make_cluster()</a></code> or
 <code><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">parallel::makeCluster()</a></code>) on the master node is not hindered
 by a firewall.</p>
 <p>As an example, using the following code the master (primary) node
