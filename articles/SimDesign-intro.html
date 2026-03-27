@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.24.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.24.4</span>
       </span>
     </div>
 
@@ -112,7 +112,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2026-03-13</h4>
+            <h4 data-toc-skip class="date">2026-03-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/SimDesign-intro.Rmd" class="external-link"><code>vignettes/SimDesign-intro.Rmd</code></a></small>
       <div class="hidden name"><code>SimDesign-intro.Rmd</code></div>
@@ -453,7 +453,7 @@ distributions.</p>
 <span><span class="co">## <span style="color: #BCBCBC;">5</span> medi…  <span style="text-decoration: underline;">8</span>000   2.69   2.71  0.402 -<span style="color: #BB0000;">0.440</span> -<span style="color: #BB0000;">0.498</span>  1.05  2.36  2.81   3.01   4.16</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># conditional summary statistics using dplyr verbs</span></span>
-<span><span class="va">results</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sample_size</span>, <span class="va">distribution</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">results</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sample_size</span>, <span class="va">distribution</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/descript.html">descript</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## sample_size: 30</span></span>
 <span><span class="co">## distribution: chi</span></span>

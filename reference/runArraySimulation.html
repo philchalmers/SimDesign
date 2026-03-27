@@ -26,7 +26,7 @@ vignette for a brief tutorial of this setup."><!-- mathjax --><script src="https
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SimDesign</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.24.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.24.4</span>
       </span>
     </div>
 
@@ -191,14 +191,15 @@ be added to the <code>SimResults(...)</code> output?</p></dd>
 
 
 <dt id="arg-parallel">parallel<a class="anchor" aria-label="anchor" href="#arg-parallel"></a></dt>
-<dd><p>logical; use parallel computations via the a "SOCK" cluster?
+<dd><p>logical; use parallel computations within the distributed arrays?
 Only useful when the instruction shell file requires more than 1 core
 (number of cores detected via <code>ncores</code>). For this application
 the random seeds further distributed using <code><a href="https://rdrr.io/r/parallel/RngStream.html" class="external-link">nextRNGSubStream</a></code></p></dd>
 
 
 <dt id="arg-cl">cl<a class="anchor" aria-label="anchor" href="#arg-cl"></a></dt>
-<dd><p>cluster definition. If omitted a "SOCK" cluster will be defined</p></dd>
+<dd><p>cluster definition. If omitted and the <code>parallel</code> package is used to
+define the cluster then a "SOCK" cluster will used</p></dd>
 
 
 <dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
