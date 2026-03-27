@@ -63,12 +63,13 @@ according the SLURM scheduler}
 \item{addArrayInfo}{logical; should the array ID and original design row number
 be added to the \code{SimResults(...)} output?}
 
-\item{parallel}{logical; use parallel computations via the a "SOCK" cluster?
+\item{parallel}{logical; use parallel computations within the distributed arrays?
 Only useful when the instruction shell file requires more than 1 core
 (number of cores detected via \code{ncores}). For this application
 the random seeds further distributed using \code{\link[parallel]{nextRNGSubStream}}}
 
-\item{cl}{cluster definition. If omitted a "SOCK" cluster will be defined}
+\item{cl}{cluster definition. If omitted and the \code{parallel} package is used to
+define the cluster then a "SOCK" cluster will used}
 
 \item{ncores}{number of cores to use when \code{parallel=TRUE}. Note that
 the default uses 1 minus the number of available cores, therefore this

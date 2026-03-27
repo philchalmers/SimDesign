@@ -222,7 +222,7 @@ R console may also be a nice way to sift through the `res` object, while for the
 descript(results)
 
 # conditional summary statistics using dplyr verbs
-results |> dplyr::group_by(sample_size, distribution) |> 
+results |> group_by(sample_size, distribution) |> 
     descript()
 ```
 

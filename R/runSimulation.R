@@ -403,6 +403,10 @@
 #'
 #'   \describe{
 #'
+#'     \item{\code{use_mirai}}{logical (default is \code{TRUE}); when defining the \code{cl}
+#'       object internally, should the cluster object be built using \code{mirai} or \code{parallel}?
+#'       Set this to \code{FALSE} for parallel behavior prior to \code{SimDesign} version 2.25}
+#'
 #'     \item{\code{stop_on_fatal}}{logical (default is \code{FALSE}); should the simulation be
 #'       terminated immediately when
 #'       the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
@@ -803,14 +807,14 @@
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' Final
 #' (results <- SimResults(Final))
-#' results |> dplyr::group_by(N) |> descript()
+#' results |> group_by(N) |> descript()
 #'
 #' # reproduce exact simulation
 #' Final_rep <- runSimulation(design=Design, replications=2, seed=Final$SEED,
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' Final_rep
 #' (results <- SimResults(Final_rep))
-#' results |> dplyr::group_by(N) |> descript()
+#' results |> group_by(N) |> descript()
 #'
 #' \dontrun{
 #' # run with more standard number of replications
@@ -818,7 +822,7 @@
 #'                        generate=Generate, analyse=Analyse, summarise=Summarise)
 #' Final
 #' (results <- SimResults(Final))
-#' results |> dplyr::group_by(N) |> descript()
+#' results |> group_by(N) |> descript()
 #'
 #' #~~~~~~~~~~~~~~~~~~~~~~~~
 #' #### Extras
@@ -1177,6 +1181,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         stopifnot("Argument(s) to save_details list invalid"=
                       all(names(save_details) %in% valid_save_details.list()))
     }
+    if(is.null(control$use_mirai)) control$use_mirai <- TRUE
     if(is.null(control$global_fun_level)) control$global_fun_level <- 2
     if(is.null(control$useAnalyseHandler)) control$useAnalyseHandler <- TRUE
     useAnalyseHandler <- control$useAnalyseHandler
@@ -1505,8 +1510,13 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     export_funs <- parent_env_fun(control$global_fun_level)
     if(parallel){
         if(!useFuture && is.null(cl)){
-            cl <- parallel::makeCluster(ncores, type=type)
-            on.exit(parallel::stopCluster(cl), add = TRUE)
+            if(control$use_mirai){
+                cl <- mirai::make_cluster(ncores)
+                on.exit(mirai::stop_cluster(cl), add = TRUE)
+            } else {
+                cl <- parallel::makeCluster(ncores, type=type)
+                on.exit(parallel::stopCluster(cl), add = TRUE)
+            }
         }
         if(!useFuture){
             parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))

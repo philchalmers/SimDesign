@@ -57,12 +57,13 @@
 #'   to. If omitted the files will be stored in the same working directory
 #'   where the script was submitted
 #'
-#' @param parallel logical; use parallel computations via the a "SOCK" cluster?
+#' @param parallel logical; use parallel computations within the distributed arrays?
 #'   Only useful when the instruction shell file requires more than 1 core
 #'   (number of cores detected via \code{ncores}). For this application
 #'   the random seeds further distributed using \code{\link[parallel]{nextRNGSubStream}}
 #'
-#' @param cl cluster definition. If omitted a "SOCK" cluster will be defined
+#' @param cl cluster definition. If omitted and the \code{parallel} package is used to
+#'  define the cluster then a "SOCK" cluster will used
 #'
 #' @param ncores number of cores to use when \code{parallel=TRUE}. Note that
 #'   the default uses 1 minus the number of available cores, therefore this

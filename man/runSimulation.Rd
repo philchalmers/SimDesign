@@ -469,6 +469,10 @@ in the simulation}
 
   \describe{
 
+    \item{\code{use_mirai}}{logical (default is \code{TRUE}); when defining the \code{cl}
+      object internally, should the cluster object be built using \code{mirai} or \code{parallel}?
+      Set this to \code{FALSE} for parallel behavior prior to \code{SimDesign} version 2.25}
+
     \item{\code{stop_on_fatal}}{logical (default is \code{FALSE}); should the simulation be
       terminated immediately when
       the maximum number of consecutive errors (\code{max_errors}) is reached? If \code{FALSE},
@@ -847,14 +851,14 @@ Final <- runSimulation(design=Design, replications=2,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 Final
 (results <- SimResults(Final))
-results |> dplyr::group_by(N) |> descript()
+results |> group_by(N) |> descript()
 
 # reproduce exact simulation
 Final_rep <- runSimulation(design=Design, replications=2, seed=Final$SEED,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 Final_rep
 (results <- SimResults(Final_rep))
-results |> dplyr::group_by(N) |> descript()
+results |> group_by(N) |> descript()
 
 \dontrun{
 # run with more standard number of replications
@@ -862,7 +866,7 @@ Final <- runSimulation(design=Design, replications=1000,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 Final
 (results <- SimResults(Final))
-results |> dplyr::group_by(N) |> descript()
+results |> group_by(N) |> descript()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~
 #### Extras

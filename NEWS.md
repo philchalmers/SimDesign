@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.25
 
+- Default cluster type changed from `parallel::makeCluster()` to 
+  `mirai::make_cluster()`. To switch back to the default use the `control`
+  logical element `use_mirai = FALSE`
+
 - Temp files and other frequently hard-drive written objects 
   now stored using `qs2` package to reduce overhead (see #83). Relatedly,
   the function `SimRead()` has been included to read in the stored object,
@@ -10,7 +14,9 @@
 
 ## Changes in SimDesign 2.24
 
-- Small modifications to `descript()` for data-analysis purposes
+- Small modifications to `descript()` for data-analysis purposes, and 
+  selection of `dplyr` verbs exported without attachment (e.g., `group_by()`,
+  `select()`)
 
 - `runSimulation()` implementation can now be augmented with the same 
   `expandDesign()` logic in `runArraySimulation()`. Requires specifying a single
