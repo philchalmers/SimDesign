@@ -1525,7 +1525,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
             if(!is.null(prepare))
                 parallel::clusterExport(cl=cl, "prepare", envir = environment())
             if(verbose)
-                message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
+                message(sprintf("\nNumber of cores used in cluster: %i", length(cl)))
         }
     }
     if(check.globals){
