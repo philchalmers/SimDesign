@@ -18,8 +18,8 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
         
-      - name: Install e1071
-        run: Rscript -e 'install.packages(c("e1071", "qs2"))'
+      - name: Install missing
+        run: Rscript -e 'install.packages(c("e1071", "qs2", "mirai"))'
 
       - name: R CMD CHECK
         run: |
