@@ -221,7 +221,7 @@ analyse the simulated data). See <code><a href="Analyse.html">Analyse</a></code>
   <code>store_results = TRUE</code> or <code>save_results = TRUE</code> were included).</p>
 <p>Omitting this function will return a tibble with the <code>Design</code>
   and associated results information for all
-  <code>nrow(Design) * repliations</code> evaluations if the results from each
+  <code>nrow(Design) * replications</code> evaluations if the results from each
   <code><a href="Analyse.html">Analyse()</a></code> call was a one-dimensional vector.
   For more general objects returned by <code><a href="Analyse.html">Analyse()</a></code>
   (such as <code>list</code>s), a <code>list</code>
@@ -260,7 +260,7 @@ analyse the simulated data). See <code><a href="Analyse.html">Analyse</a></code>
 <p><code>  fixed_objects</code></p>
 <p><code>}</code></p>
 <p>This approach allows you to: (1) pre-generate expensive condition-specific objects
-  prior to running the simulation , (2) save them as individual
+  prior to running the simulation, (2) save them as individual
   RDS files, and (3) load them efficiently during the simulation. This is preferable to
   generating objects within <code>prepare()</code> itself because it allows you to inspect the
   objects, ensures reproducibility, and separates object generation from the simulation workflow.</p>
@@ -354,8 +354,8 @@ primarily useful for debugging purposes.
   E.g., <code>load_seed = 'design-row-2/seed-1'</code>
   will load the first seed in the second row of the <code>design</code> input, or
   explicitly passing the
-  elements from <code>.Random.seed</code> (see <code><a href="SimExtract.html">SimExtract</a></code> to extract
-  the seeds associated explicitly
+  elements from <code>.Random.seed</code> (see <code><a href="SimExtract.html">SimExtract</a></code>
+  or <code><a href="SimErrors.html">SimErrors</a></code> to extract  the seeds associated explicitly
   with errors during the simulation, where each column represents a unique seed).
   If the input is a character vector then it is important NOT
   to modify the <code>design</code> input object, otherwise the path may not point
@@ -848,7 +848,7 @@ relevant when L'Ecuyer-CMRG method used), and, if applicable,
 <code>ERRORS</code> and <code>WARNINGS</code> which contain counts for the number of error or warning
 messages that were caught (if no errors/warnings were observed these columns will be omitted).
 Note that to extract the specific error and warnings messages see
-<code><a href="SimExtract.html">SimExtract</a></code>. Finally,
+<code><a href="SimErrors.html">SimErrors</a></code> and <code><a href="SimWarnings.html">SimWarnings</a></code>. Finally,
 if <code>boot_method</code> was a valid input other than 'none' then the final right-most
 columns will contain the labels
 <code>BOOT_</code> followed by the name of the associated meta-statistic defined in <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code> and
@@ -869,8 +869,8 @@ simulation experiments, as well as the various vignette files associated with th
 <dl><dt>1)</dt>
 <dd><p>Define a suitable <code>Design</code> object (a <code>tibble</code> or <code>data.frame</code>)
       containing fixed conditional
-      information about the Monte Carlo simulations. Each row or this <code>design</code> object pertains
-      to a unique set of simulation to study, while each column the simulation factor under
+      information about the Monte Carlo simulations. Each row of this <code>design</code> object pertains
+      to a unique set of simulation conditions to study, while each column the simulation factor under
       investigation (e.g., sample size,
       distribution types, etc). This is often expedited by using the
       <code><a href="createDesign.html">createDesign</a></code> function, and if necessary the argument <code>subset</code>
@@ -949,7 +949,7 @@ individual <code>.Random.seed</code> terms can then be read in with the
 Most often though, saving the complete list of seeds is unnecessary as problematic seeds are
 automatically stored in the final simulation object to allow for easier replicability
 of potentially problematic errors (which incidentally can be extracted
-using <code>SimExtract(res, 'error_seeds')</code> and passed to the <code>load_seed</code> argument). Finally,
+from <code>SimErrors(res, seeds=TRUE)</code> and passed to the <code>load_seed</code> argument). Finally,
 providing a vector of <code>seeds</code> is also possible to ensure
 that each simulation condition is macro reproducible under the single/multi-core method selected.</p>
 <p>Finally, when the Monte Carlo simulation is complete
@@ -969,7 +969,7 @@ common) mistakes during the process of designing and executing Monte Carlo simul
 <p>In the event of a computer crash, power outage, etc, if <code>save = TRUE</code> was used (the default)
 then the original code used to execute <code>runSimulation()</code> need only be re-run to resume
 the simulation. The saved temp file will be read into the function automatically, and the
-simulation will continue one the condition where it left off before the simulation
+simulation will continue at the condition where it left off before the simulation
 state was terminated. If users wish to remove this temporary
 simulation state entirely so as to start anew then simply pass <code>SimClean(temp = TRUE)</code>
 in the R console to remove any previously saved temporary objects.</p>
@@ -984,7 +984,7 @@ or when using the <code><a href="https://future.futureverse.org/reference/future
 R objects defined in the global environment will generally <em>not</em> be visible across nodes.
 Hence, you may see errors such as <code>Error: object 'something' not found</code> if you try to use
 an object that is defined in the work space but is not passed to <code>runSimulation</code>.
-To avoid this type or error, simply pass additional objects to the
+To avoid this type of error, simply pass additional objects to the
 <code>fixed_objects</code> input (usually it's convenient to supply a named list of these objects).
 Fortunately, however, <em>custom functions defined in the global environment are exported across
 nodes automatically</em>. This makes it convenient when writing code because custom functions will
@@ -1005,7 +1005,7 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="SimFunctions.html">SimFunctions</a></code>, <code><a href="createDesign.html">createDesign</a></code>,
   <code><a href="Generate.html">Generate</a></code>, <code><a href="Analyse.html">Analyse</a></code>, <code><a href="Summarise.html">Summarise</a></code>,
-  <code><a href="SimExtract.html">SimExtract</a></code>,
+  <code><a href="SimErrors.html">SimErrors</a></code>, <code><a href="SimWarnings.html">SimWarnings</a></code>, <code><a href="SimExtract.html">SimExtract</a></code>,
   <code><a href="reSummarise.html">reSummarise</a></code>, <code><a href="SimClean.html">SimClean</a></code>, <code><a href="SimAnova.html">SimAnova</a></code>, <code><a href="SimResults.html">SimResults</a></code>,
   <code><a href="SimCollect.html">SimCollect</a></code>, <code><a href="SimRead.html">SimRead</a></code>, <code><a href="Attach.html">Attach</a></code>, <code><a href="AnalyseIf.html">AnalyseIf</a></code>,
   <code><a href="SimShiny.html">SimShiny</a></code>, <code><a href="manageWarnings.html">manageWarnings</a></code>, <code><a href="runArraySimulation.html">runArraySimulation</a></code></p></div>
@@ -1096,9 +1096,9 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Mon Mar 30 16:36:25 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Mon Mar 30 16:36:25 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Mon Mar 30 16:36:25 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Mon Mar 30 19:27:40 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Mon Mar 30 19:27:40 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Mon Mar 30 19:27:40 20…</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">Final</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N  mean</span>
@@ -1124,9 +1124,9 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Mon Mar 30 16:36:26 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Mon Mar 30 16:36:26 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Mon Mar 30 16:36:26 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Mon Mar 30 19:27:40 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Mon Mar 30 19:27:40 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Mon Mar 30 19:27:40 20…</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">Final_rep</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N  mean</span>

@@ -128,23 +128,101 @@ Moreover, errors may happen in unexpected combinations of the design
 factors under investigation, which can lead to abrupt termination of a
 simulation’s execution.</p>
 <p><code>SimDesign</code> makes managing errors much easier because the
-internal functions are automatically wrapped within <code>try</code>
+internal functions are automatically wrapped within <code><a href="https://rdrr.io/r/base/try.html" class="external-link">try()</a></code>
 blocks, and therefore simulations will not terminate unexpectedly. This
 type of information is also collected in the final simulation object
 since it may be relevant to the writer that something unknown is going
 wrong in the code-base. Below we demonstrate what happens when errors
 are thrown and caught, and how this information is tracked in the
 returned object.</p>
-<div class="section level2">
-<h2 id="define-the-functions">Define the functions<a class="anchor" aria-label="anchor" href="#define-the-functions"></a>
-</h2>
-<p>As usual, define the functions of interest.</p>
+<div class="section level4">
+<h4 id="potential-prerequisite-converting-warnings-to-errors-explicitly-via-managewarnings">(Potential Prerequisite) Converting warnings to errors explicitly
+via <code>manageWarnings()</code><a class="anchor" aria-label="anchor" href="#potential-prerequisite-converting-warnings-to-errors-explicitly-via-managewarnings"></a>
+</h4>
+<p>Before getting into the specifics of error handling, there are often
+occasions where functions outside of the user’s control will return
+<code>warning</code> message that either border on (or should be treated
+as) error messages if they influence the veracity of the simulation
+results. Such examples may include models that appear to ‘converge’ but
+do so with non-nonsensical parameter estimates (e.g., negative
+variances, non-positive definite correlation matrices, maximum
+iterations reached in an numerical searching algorithm, etc). However,
+because such issues are non-fatal third-party software (i.e., functions
+not written by the developer of the simulation) may simply raise a
+<code>warning</code> message for further inspection, whereas in a Monte
+Carlo simulation experiment such issues should generally be treated as
+invalid (though their frequency of occurrence should still be tracked,
+as is the default in <code>SimDesign</code>).</p>
+<p>To resolve this issue, and to avoid using a more nuclear option such
+as setting <code>option(warn=2)</code> to treat <em>all</em> warnings as
+errors in the simulation, the function <code><a href="../reference/manageWarnings.html">manageWarnings()</a></code> can
+be used to explicit convert known warning message strings into errors
+that disrupt the code execution while allowing other warning messages to
+continue to be raised.</p>
+<p>For example, if a function utilized in a simulation was</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">myfun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.1</span>, <span class="fl">.9</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">'This warning is serious'</span><span class="op">)</span></span>
+<span>    <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.5</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">'This warning is no big deal'</span><span class="op">)</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">myfun</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">myfun</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in myfun(): This warning is no big deal</span></span></code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">myfun</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in myfun(): This warning is serious</span></span></code></pre>
+<p>then whenever the serious warning message is raised it could be
+explicitly converted to an error using an internal <code><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl()</a></code>
+test.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">out1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manageWarnings.html">manageWarnings</a></span><span class="op">(</span><span class="fu">myfun</span><span class="op">(</span><span class="op">)</span>, </span>
+<span>                        warning2error<span class="op">=</span><span class="st">'This warning is serious'</span><span class="op">)</span></span>
+<span><span class="va">out1</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 1</span></span></code></pre>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">out2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manageWarnings.html">manageWarnings</a></span><span class="op">(</span><span class="fu">myfun</span><span class="op">(</span><span class="op">)</span>, </span>
+<span>                        warning2error<span class="op">=</span><span class="st">'This warning is serious'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in myfun(): This warning is no big deal</span></span></code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out2</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 1</span></span></code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
+<span><span class="va">out3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manageWarnings.html">manageWarnings</a></span><span class="op">(</span><span class="fu">myfun</span><span class="op">(</span><span class="op">)</span>, </span>
+<span>                        warning2error<span class="op">=</span><span class="st">'This warning is serious'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<span><span class="co">## <span style="color: #BBBB00;">!</span> This warning is serious</span></span></code></pre>
+<p>which now converts the previous warning message into an error
+message, thereby correctly disrupting the flow of the Monte Carlo
+simulation experiment and prompting a new call to
+<code><a href="../reference/Generate.html">Generate()</a></code>. Of course, all warning and error messages are
+tallied in the resulting <code><a href="../reference/runSimulation.html">runSimulation()</a></code> object, though now
+the serious warnings will be tallied as disruptive errors instead of
+warnings that continued normally.</p>
+</div>
+<div class="section level2">
+<h2 id="error-managing-workflow">Error Managing Workflow<a class="anchor" aria-label="anchor" href="#error-managing-workflow"></a>
+</h2>
+<div class="section level3">
+<h3 id="define-the-functions">Define the functions<a class="anchor" aria-label="anchor" href="#define-the-functions"></a>
+</h3>
+<p>As usual, define the functions of interest.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://philchalmers.github.io/SimDesign/">SimDesign</a></span><span class="op">)</span></span>
 <span><span class="co"># SimFunctions(comments=FALSE)</span></span>
 <span></span>
 <span><span class="va">Design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">createDesign</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Generate</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">condition</span>, <span class="va">fixed_objects</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">ret</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">condition</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="va">ret</span></span>
@@ -180,20 +258,20 @@ the data should be re-drawn based on the user’s decision (e.g., when a
 model converges, but fails to do so before some number of predefined
 iterations).</p>
 </div>
-<div class="section level2">
-<h2 id="run-the-simulation">Run the simulation<a class="anchor" aria-label="anchor" href="#run-the-simulation"></a>
-</h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="section level3">
+<h3 id="run-the-simulation">Run the simulation<a class="anchor" aria-label="anchor" href="#run-the-simulation"></a>
+</h3>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">100</span>, </span>
 <span>                       generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
 <span><span class="co">##       N     bias REPLICATIONS SIM_TIME       SEED COMPLETED      ERRORS WARNINGS</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.06s    <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Mon Mar 30 16…     53       59</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.16s     312<span style="text-decoration: underline;">928</span>385 Mon Mar 30 16…     52       60</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.05s     866<span style="text-decoration: underline;">248</span>189 Mon Mar 30 16…     42       56</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.06s    <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Mon Mar 30 19…     53       59</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.14s     312<span style="text-decoration: underline;">928</span>385 Mon Mar 30 19…     52       60</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.05s     866<span style="text-decoration: underline;">248</span>189 Mon Mar 30 19…     42       56</span></span></code></pre>
 <p>What you’ll immediately notice from this output object is that counts
 of the error and warning messages have been appended to the
 <code>result</code> object. This is useful to determine just how
@@ -203,10 +281,9 @@ occurred are also included for each design condition (here the
 <code>t.test.default()</code> error, where no inputs were supplied,
 occurred more often than the manually thrown error as well as the
 invalid-input error) after extracting and inspecting
-<code>SimExtract(results, what = 'errors')</code> and
-<code>SimExtract(results, what = 'warnings')</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/SimExtract.html">SimExtract</a></span><span class="op">(</span><span class="va">result</span>, what <span class="op">=</span> <span class="st">'errors'</span><span class="op">)</span></span></code></pre></div>
+<code>SimErrors(result)</code> and <code>SimWarnings(result)</code>.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/SimErrors.html">SimErrors</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    N ERROR:  Error in t.test.default("invalid") : not enough 'x' observations\n</span></span>
 <span><span class="co">## 1 10                                                                         12</span></span>
 <span><span class="co">## 2 20                                                                          9</span></span>
@@ -219,6 +296,16 @@ invalid-input error) after extracting and inspecting
 <span><span class="co">## 1                            10</span></span>
 <span><span class="co">## 2                             5</span></span>
 <span><span class="co">## 3                             7</span></span></code></pre>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/SimWarnings.html">SimWarnings</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    N WARNING:  This warning happens much more often</span></span>
+<span><span class="co">## 1 10                                             49</span></span>
+<span><span class="co">## 2 20                                             53</span></span>
+<span><span class="co">## 3 30                                             44</span></span>
+<span><span class="co">##   WARNING:  This warning happens rarely</span></span>
+<span><span class="co">## 1                                    10</span></span>
+<span><span class="co">## 2                                     7</span></span>
+<span><span class="co">## 3                                    12</span></span></code></pre>
 <p>Finally, <code>SimDesign</code> has a built-in safety feature
 controlled by with <code>max_errors</code> argument to avoid getting
 stuck in infinite redrawing loops. By default, if more than 50 errors
@@ -239,9 +326,20 @@ be manually halted so that these terminal errors can be attended to
 immediately (e.g., using <code>Ctrl + c</code>, or clicking the ‘Stop’
 icon in Rstudio).</p>
 </div>
+</div>
 <div class="section level2">
-<h2 id="what-to-do-explicit-debugging">What to do (explicit debugging)<a class="anchor" aria-label="anchor" href="#what-to-do-explicit-debugging"></a>
+<h2 id="what-to-do">What to do?<a class="anchor" aria-label="anchor" href="#what-to-do"></a>
 </h2>
+<p>When errors are raised the first step is to locate and potentially
+fix them if the issue affects the quality of the simulation
+experimenter. Note that not all ‘errors’ are problematic (e.g., some
+algorithms simply cannot converge under select empirical conditions, and
+this is worth noting), however in situations where the error was
+surprising, and potentially addressable (e.g., is simply a coding
+mistake), then various strategies can be taken moving forward.</p>
+<div class="section level3">
+<h3 id="explicit-debugging">Explicit debugging<a class="anchor" aria-label="anchor" href="#explicit-debugging"></a>
+</h3>
 <p>If errors occur too often (but not in a fatal way) then the
 respective design conditions should either be extracted out of the
 simulation or further inspected to determine if they can be fixed (e.g.,
@@ -251,7 +349,7 @@ of iterations, etc). For instance, say that the fourth row of the
 be inspected further. One useful approach then would be to debug the 4th
 row on the instance that an error is raised, which can be achieved using
 the following:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">...</span>, debug <span class="op">=</span> <span class="st">'error-4'</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>error</code> flag is used to enter R’s debugger on the
 first instance of an error, while the <code>-4</code> indicates that
@@ -264,64 +362,89 @@ inspected directly. Note that similar arguments can be made for
 explicitly debugging functions in the generate-analyse-summarise chain
 (e.g., <code>debug = 'analyse-4'</code>), though these are less useful
 for debugging (more useful for initial code design).</p>
+</div>
 <div class="section level3">
 <h3 id="manual-debugging-via-try">Manual debugging via <code>try()</code><a class="anchor" aria-label="anchor" href="#manual-debugging-via-try"></a>
 </h3>
-<p>Failing the above approach, manually wrapping the problematic
-functions in a <code><a href="https://rdrr.io/r/base/try.html" class="external-link">try()</a></code> call. Adding the line
+<p>Failing the above approach, manually wrapping the suspected
+problematic function(s) in <code><a href="https://rdrr.io/r/base/try.html" class="external-link">try()</a></code> calls can also work,
+though this may require some waiting if the errors are less frequent.
+Specifically, adding the line
 <code>if(is(object, 'try-error')) browser()</code> will jump into the
 location/replication where the object unexpectedly witnessed, though
 admittedly this is more clunky approach than using <code>debug</code>.
-Nevertheless, jumping into the exact location where the error occurred,
+Nevertheless, jumping into the exact instant when the error occurred,
 particularly in the case where an <code>analyse()</code> function is
-throwing multiple error messages, will greatly help you determine what
-exactly went wrong in the simulation state, allowing you to quickly
-locate and fix the issue.</p>
+throwing multiple error messages, can help diagnose what exactly went
+wrong in the simulation state, thereby allowing you to quickly fix the
+issue.</p>
 </div>
 <div class="section level3">
 <h3 id="extracting-error-seeds-for-hard-to-find-bugs">Extracting error seeds for hard-to-find bugs<a class="anchor" aria-label="anchor" href="#extracting-error-seeds-for-hard-to-find-bugs"></a>
 </h3>
-<p>An alternative approach to locating errors in general is to use
-information stored within the <code>SimDesign</code> objects at the time
-of completion. By default, all <code>.Random.seed</code> states
-associated with errors are stored within the final object, and these can
-be extracted using the <code>SimExtract(..., what='error_seeds')</code>
-option. This function returns a <code>data.frame</code> object with each
-seed stored column-wise, where the associated error message is contained
-in the column name itself (and allowed to be coerced into a valid column
-name to make it easier to use the <code>$</code> operator). For
-example,</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">seeds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimExtract.html">SimExtract</a></span><span class="op">(</span><span class="va">result</span>, what <span class="op">=</span> <span class="st">'error_seeds'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">seeds</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
-<span><span class="co">##   Design_row_1.1..Error.in.t.tes…¹ Design_row_1.2..Manu…² Design_row_1.3..Erro…³</span></span>
-<span><span class="co">##                              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>                            <span style="text-decoration: underline;">10</span>403                  <span style="text-decoration: underline;">10</span>403                  <span style="text-decoration: underline;">10</span>403</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>                              624                     21                     65</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>                       -<span style="color: #BB0000;">159</span><span style="color: #BB0000; text-decoration: underline;">038</span><span style="color: #BB0000;">368</span>             -<span style="color: #BB0000;">230</span><span style="color: #BB0000; text-decoration: underline;">613</span><span style="color: #BB0000;">222</span>             -<span style="color: #BB0000;">230</span><span style="color: #BB0000; text-decoration: underline;">613</span><span style="color: #BB0000;">222</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span>                       <span style="text-decoration: underline;">1</span>905<span style="text-decoration: underline;">303</span>777              203<span style="text-decoration: underline;">707</span>493              203<span style="text-decoration: underline;">707</span>493</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span>                       -<span style="color: #BB0000;">371</span><span style="color: #BB0000; text-decoration: underline;">375</span><span style="color: #BB0000;">826</span>             <span style="text-decoration: underline;">1</span>161<span style="text-decoration: underline;">141</span>503             <span style="text-decoration: underline;">1</span>161<span style="text-decoration: underline;">141</span>503</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span>                      -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">012</span><span style="color: #BB0000; text-decoration: underline;">234</span><span style="color: #BB0000;">281</span>              549<span style="text-decoration: underline;">195</span>142              549<span style="text-decoration: underline;">195</span>142</span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ abbreviated names:</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ¹​Design_row_1.1..Error.in.t.test.default.....argument..x..is.missing..with.no.default.,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ²​Design_row_1.2..Manual.error.thrown.,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ³​Design_row_1.3..Error.in.t.test.default.....argument..x..is.missing..with.no.default.</span></span></span></code></pre>
-<p>Given these seeds, replicating an exact error can be achieved by a)
-extracting a single column into an <code>integer</code> vector, and b)
-passing this vector to the <code>load_seed</code> input. For example,
-replicating the first error message can be achieved as follows, where it
-makes the most sense to immediately go into the debugging mode via the
-<code>debug</code> inputs.</p>
+<p>Finally, failing both approaches stored information can be used to
+locating and repeating the observed errors, which is particularly useful
+if the error raised is rare. By default, all <code>.Random.seed</code>
+states associated with errors are stored within the final object, and
+these can be extracted using the <code>SimErrors(..., seeds=TRUE)</code>
+option. This function returns a <code>tibble</code> object with each
+seed stored column-wise and as <code>list</code> elements, where the
+associated error message is contained in the column name itself (and
+allowed to be coerced into a valid column name to make it easier to use
+the <code>$</code> operator). For example,</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">eseeds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SimErrors.html">SimErrors</a></span><span class="op">(</span><span class="va">result</span>, seeds <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">eseeds</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 2</span></span></span>
+<span><span class="co">##       N SEEDS           </span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>          </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 <span style="color: #949494;">&lt;named list [3]&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 <span style="color: #949494;">&lt;named list [3]&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 <span style="color: #949494;">&lt;named list [3]&gt;</span></span></span></code></pre>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># list elements are named based on the error observed</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">eseeds</span><span class="op">$</span><span class="va">SEEDS</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Error in t test default     argument  x  is missing  with no default "</span></span>
+<span><span class="co">## [2] "Manual error thrown "                                                 </span></span>
+<span><span class="co">## [3] "Error in t test default  invalid     not enough  x  observations "</span></span></code></pre>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># one of the seeds seed associated with a condition error (third unique error raised)</span></span>
+<span><span class="va">eseeds</span><span class="op">$</span><span class="va">SEEDS</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 626 × 1</span></span></span>
+<span><span class="co">##    Design_row_1.11..Error.in.t.test.default..invalid.....not.enough..x..observ…¹</span></span>
+<span><span class="co">##                                                                            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>                                                                         <span style="text-decoration: underline;">10</span>403</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>                                                                           115</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>                                                                    <span style="text-decoration: underline;">2</span>043<span style="text-decoration: underline;">326</span>239</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>                                                                    -<span style="color: #BB0000;">971</span><span style="color: #BB0000; text-decoration: underline;">754</span><span style="color: #BB0000;">976</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>                                                                    -<span style="color: #BB0000;">386</span><span style="color: #BB0000; text-decoration: underline;">998</span><span style="color: #BB0000;">729</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>                                                                    <span style="text-decoration: underline;">1</span>721<span style="text-decoration: underline;">252</span>608</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>                                                                     230<span style="text-decoration: underline;">191</span>164</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>                                                                     546<span style="text-decoration: underline;">351</span>527</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>                                                                     910<span style="text-decoration: underline;">264</span>940</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span>                                                                   -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">637</span><span style="color: #BB0000; text-decoration: underline;">379</span><span style="color: #BB0000;">845</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 616 more rows</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ abbreviated name:</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   ¹​Design_row_1.11..Error.in.t.test.default..invalid.....not.enough..x..observations.</span></span></span></code></pre>
+<p>Given the specific seed of interest, as well as the specific row
+condition that it is associated with, replicating an exact error can be
+achieved by passing this vector to the <code>load_seed</code> input. For
+example, replicating the first error message can be achieved as follows,
+where it makes the most sense to immediately go into the debugging mode
+via the <code>debug</code> inputs.</p>
 <p><strong>Note</strong>: It is important to manually select the correct
 <code>Design</code> row using this error extraction approach; otherwise,
 the seed will clearly not replicate the exact problem state.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">picked_seed</span> <span class="op">&lt;-</span> <span class="va">seeds</span><span class="op">$</span><span class="va">Design_row_1.1..Error.in.t.test.default..invalid.....not.enough..x..observations.</span></span>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">picked_seed</span> <span class="op">&lt;-</span> <span class="va">eseeds</span><span class="op">$</span><span class="va">SEEDS</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># debug analyse() for first row of Design object via debug='analyse-1'</span></span>
 <span><span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span><span class="va">Design</span>, replications <span class="op">=</span> <span class="fl">100</span>, load_seed<span class="op">=</span><span class="va">picked_seed</span>, debug<span class="op">=</span><span class="st">'analyse-1'</span>,</span>
-<span>              generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span></code></pre></div>
+<span>              generate<span class="op">=</span><span class="va">Generate</span>, analyse<span class="op">=</span><span class="va">Analyse</span>, summarise<span class="op">=</span><span class="va">Summarise</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># this is equivalent (not evaluated)</span></span>
+<span><span class="co"># runSimulation(Design[1, ], replications = 100, load_seed=picked_seed, debug='analyse',</span></span>
+<span><span class="co">#              generate=Generate, analyse=Analyse, summarise=Summarise)</span></span></code></pre></div>
 <p>The <code>.Random.seed</code> state will be loaded at this exact
 state, and will always be repeated at this state as well (in case
 <code>c</code> is typed in the debugger, or somehow the error is harder
@@ -330,80 +453,6 @@ to find while walking through the debug mode). Hence, users must type
 the nature of the error message first-hand, after which the
 <code>load_seed</code> input should be removed.</p>
 </div>
-</div>
-<div class="section level2">
-<h2 id="converting-warnings-to-errors-explicitly-via-managewarnings">Converting warnings to errors explicitly via
-<code>manageWarnings()</code><a class="anchor" aria-label="anchor" href="#converting-warnings-to-errors-explicitly-via-managewarnings"></a>
-</h2>
-<p>On occasion functions will return <code>warning</code> message that
-either border on (or should be treated as) error messages if they
-influence the veracity of the simulation results. Such examples may
-include models that appear to ‘converge’ but do so with non-nonsensical
-parameter estimates (e.g., negative variances, non-positive definite
-correlation matrices, maximum iterations reached in an numerical
-searching algorithm, etc). However, because such issues are non-fatal
-third-party software (i.e., functions not written by the developer of
-the simulation) may simply raise a <code>warning</code> message for
-further inspection, whereas in a Monte Carlo simulation experiment such
-issues should generally be treated as invalid (though their frequency of
-occurrence should still be tracked, as is the default in
-<code>SimDesign</code>).</p>
-<p>To resolve this issue, and to avoid using a more nuclear option such
-as setting <code>option(warn=2)</code> to treat <em>all</em> warnings as
-errors in the simulation, the function <code><a href="../reference/manageWarnings.html">manageWarnings()</a></code> can
-be used to explicit convert known warning message strings into errors
-that disrupt the code execution while allowing other warning messages to
-continue to be raised.</p>
-<p>For example, if a function utilized in a simulation was</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">myfun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.1</span>, <span class="fl">.9</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span>        <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">'This warning is serious'</span><span class="op">)</span></span>
-<span>    <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.5</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span>        <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">'This warning is no big deal'</span><span class="op">)</span></span>
-<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">myfun</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">myfun</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in myfun(): This warning is no big deal</span></span></code></pre>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
-<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">myfun</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in myfun(): This warning is serious</span></span></code></pre>
-<p>then whenever the serious warning message is raised it could be
-explicitly converted to an error using an internal <code><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl()</a></code>
-test.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">out1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manageWarnings.html">manageWarnings</a></span><span class="op">(</span><span class="fu">myfun</span><span class="op">(</span><span class="op">)</span>, </span>
-<span>                        warning2error<span class="op">=</span><span class="st">'This warning is serious'</span><span class="op">)</span></span>
-<span><span class="va">out1</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 1</span></span></code></pre>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="va">out2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manageWarnings.html">manageWarnings</a></span><span class="op">(</span><span class="fu">myfun</span><span class="op">(</span><span class="op">)</span>, </span>
-<span>                        warning2error<span class="op">=</span><span class="st">'This warning is serious'</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in myfun(): This warning is no big deal</span></span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">out2</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 1</span></span></code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
-<span><span class="va">out3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manageWarnings.html">manageWarnings</a></span><span class="op">(</span><span class="fu">myfun</span><span class="op">(</span><span class="op">)</span>, </span>
-<span>                        warning2error<span class="op">=</span><span class="st">'This warning is serious'</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
-<span><span class="co">## <span style="color: #BBBB00;">!</span> This warning is serious</span></span></code></pre>
-<p>which now converts the previous warning message into an error
-message, thereby correctly disrupting the flow of the Monte Carlo
-simulation experiment and prompting a new call to
-<code><a href="../reference/Generate.html">Generate()</a></code>. Of course, all warning and error messages are
-tallied in the resulting <code><a href="../reference/runSimulation.html">runSimulation()</a></code> object, though now
-the serious warnings will be tallied as disruptive errors instead of
-warnings that continued normally.</p>
 </div>
   </div>
 
