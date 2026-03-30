@@ -24,6 +24,8 @@
 #'
 #' @seealso \code{\link{SimWarnings}}, \code{\link{SimExtract}}
 #'
+#' @export
+#'
 #' @examples
 #'
 #' sample_sizes <- c(10, 20)

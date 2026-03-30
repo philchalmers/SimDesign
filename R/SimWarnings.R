@@ -22,6 +22,8 @@
 #'
 #' @seealso \code{\link{SimErrors}}, \code{\link{SimExtract}}
 #'
+#' @export
+#'
 #' @examples
 #'
 #' sample_sizes <- c(10, 20)
