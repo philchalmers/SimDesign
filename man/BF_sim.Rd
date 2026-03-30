@@ -8,7 +8,7 @@
 Example results from the Brown and Forsythe (1974) article on robust estimators for
 variance ratio tests. Statistical tests are organized by columns and the unique design conditions
 are organized by rows. See \code{\link{BF_sim_alternative}} for an alternative form of the same
-simulation. Code for this simulation is available of the wiki
+simulation. Code for this simulation is available on the Github wiki
 (\url{https://github.com/philchalmers/SimDesign/wiki}).
 }
 \examples{

@@ -13,10 +13,10 @@ To install the latest stable version of the package from CRAN, please use the fo
 install.packages('SimDesign')
 ```
 
-To install the Github version of the package with `devtools`, type the following (assuming you have already installed the `devtools` package from CRAN).
+To install the Github version of the package with `remotes`, type the following (assuming you have already installed the `remotes` package from CRAN).
 
 ```r
-library('devtools')
+library('remotes')
 install_github('philchalmers/SimDesign')
 ```
 

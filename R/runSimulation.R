@@ -28,8 +28,8 @@
 #' \describe{
 #'    \item{1)}{Define a suitable \code{Design} object (a \code{tibble} or \code{data.frame})
 #'       containing fixed conditional
-#'       information about the Monte Carlo simulations. Each row or this \code{design} object pertains
-#'       to a unique set of simulation to study, while each column the simulation factor under
+#'       information about the Monte Carlo simulations. Each row of this \code{design} object pertains
+#'       to a unique set of simulation conditions to study, while each column the simulation factor under
 #'       investigation (e.g., sample size,
 #'       distribution types, etc). This is often expedited by using the
 #'       \code{\link{createDesign}} function, and if necessary the argument \code{subset}
@@ -114,7 +114,7 @@
 #' In the event of a computer crash, power outage, etc, if \code{save = TRUE} was used (the default)
 #' then the original code used to execute \code{runSimulation()} need only be re-run to resume
 #' the simulation. The saved temp file will be read into the function automatically, and the
-#' simulation will continue one the condition where it left off before the simulation
+#' simulation will continue at the condition where it left off before the simulation
 #' state was terminated. If users wish to remove this temporary
 #' simulation state entirely so as to start anew then simply pass \code{SimClean(temp = TRUE)}
 #' in the R console to remove any previously saved temporary objects.
@@ -126,7 +126,7 @@
 #' R objects defined in the global environment will generally \emph{not} be visible across nodes.
 #' Hence, you may see errors such as \code{Error: object 'something' not found} if you try to use
 #' an object that is defined in the work space but is not passed to \code{runSimulation}.
-#' To avoid this type or error, simply pass additional objects to the
+#' To avoid this type of error, simply pass additional objects to the
 #' \code{fixed_objects} input (usually it's convenient to supply a named list of these objects).
 #' Fortunately, however, \emph{custom functions defined in the global environment are exported across
 #' nodes automatically}. This makes it convenient when writing code because custom functions will
@@ -176,7 +176,7 @@
 #'
 #'   Omitting this function will return a tibble with the \code{Design}
 #'   and associated results information for all
-#'   \code{nrow(Design) * repliations} evaluations if the results from each
+#'   \code{nrow(Design) * replications} evaluations if the results from each
 #'   \code{Analyse()} call was a one-dimensional vector.
 #'   For more general objects returned by \code{Analyse()}
 #'   (such as \code{list}s), a \code{list}
@@ -229,7 +229,7 @@
 #'   \code{\}}
 #'
 #'   This approach allows you to: (1) pre-generate expensive condition-specific objects
-#'   prior to running the simulation , (2) save them as individual
+#'   prior to running the simulation, (2) save them as individual
 #'   RDS files, and (3) load them efficiently during the simulation. This is preferable to
 #'   generating objects within \code{prepare()} itself because it allows you to inspect the
 #'   objects, ensures reproducibility, and separates object generation from the simulation workflow.

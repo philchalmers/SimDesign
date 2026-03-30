@@ -70,7 +70,7 @@ This function prints template versions of the required \code{Design} and Generat
 for \code{SimDesign} to run simulations. Templated output comes complete with the correct inputs,
 class of outputs, and optional comments to help with the initial definitions.
 Use this at the start of your Monte Carlo simulation study. Following
-the definition of the \code{SimDesign} template file please refer to detailed the information
+the definition of the \code{SimDesign} template file please refer to the detailed the information
 in \code{\link{runSimulation}} for how to edit this template to make a working simulation study.
 }
 \details{

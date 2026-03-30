@@ -4,7 +4,7 @@
 #' for \code{SimDesign} to run simulations. Templated output comes complete with the correct inputs,
 #' class of outputs, and optional comments to help with the initial definitions.
 #' Use this at the start of your Monte Carlo simulation study. Following
-#' the definition of the \code{SimDesign} template file please refer to detailed the information
+#' the definition of the \code{SimDesign} template file please refer to the detailed the information
 #' in \code{\link{runSimulation}} for how to edit this template to make a working simulation study.
 #'
 #' The recommended approach to organizing Monte Carlo simulation files is to first save the template generated
@@ -246,7 +246,7 @@ SimFunctions <- function(filename = NULL, dir = getwd(),
                                           paste0('Generate.G', 1L:nGenerate), collapse=', '))
             else "Generate"
             genspace <- if(nGenerate > 1L) '\n                     ' else ""
-            if(SimSolve) cat('solved <- SimSolve(design=Design, b=VALUE, inverval=RANGE,')
+            if(SimSolve) cat('solved <- SimSolve(design=Design, b=VALUE, interval=RANGE,')
             else cat('res <- runSimulation(design=Design, replications=2,')
             if(generate)
                 cat(sprintf('%sgenerate=%s, ', genspace, Generate_string))
