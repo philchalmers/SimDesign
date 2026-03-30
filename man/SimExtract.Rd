@@ -92,13 +92,13 @@ res <- runSimulation(replications = 100, seed=1234,
                      generate=Generate, analyse=Analyse, summarise=Summarise)
 res
 
-SimExtract(res, what = 'errors')
-SimExtract(res, what = 'warnings')
+SimExtract(res, what = 'errors')     # see also SimErrors()
+SimExtract(res, what = 'warnings')   # see also SimWarnings()
 seeds <- SimExtract(res, what = 'error_seeds')
 seeds[,1:3]
 
 # replicate a specific error for debugging (type Q to exit debugger)
-res <- runSimulation(replications = 100, load_seed=seeds[,1], debug='analyse',
+res <- runSimulation(replications = 100, load_seed=seeds[,1], debug='analyse-1',
                      generate=Generate, analyse=Analyse, summarise=Summarise)
 
 

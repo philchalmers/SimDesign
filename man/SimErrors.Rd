@@ -75,7 +75,7 @@ seed_state     # note that Design_row_2 is where the error occurred
 
 \dontrun{
 # pass to runSimulation() to replicate issue (not run as this calls debug())
-runSimulation(design=Design[2,], replications=3, generate=Generate,
+runSimulation(design=Design, replications=3, generate=Generate,
 }
 
 

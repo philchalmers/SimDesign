@@ -96,7 +96,7 @@
 #' Most often though, saving the complete list of seeds is unnecessary as problematic seeds are
 #' automatically stored in the final simulation object to allow for easier replicability
 #' of potentially problematic errors (which incidentally can be extracted
-#' using \code{SimExtract(res, 'error_seeds')} and passed to the \code{load_seed} argument). Finally,
+#' from \code{SimErrors(res, seeds=TRUE)} and passed to the \code{load_seed} argument). Finally,
 #' providing a vector of \code{seeds} is also possible to ensure
 #' that each simulation condition is macro reproducible under the single/multi-core method selected.
 #'
@@ -366,8 +366,8 @@
 #'   E.g., \code{load_seed = 'design-row-2/seed-1'}
 #'   will load the first seed in the second row of the \code{design} input, or
 #'   explicitly passing the
-#'   elements from \code{.Random.seed} (see \code{\link{SimExtract}} to extract
-#'   the seeds associated explicitly
+#'   elements from \code{.Random.seed} (see \code{\link{SimExtract}}
+#'   or \code{\link{SimErrors}} to extract  the seeds associated explicitly
 #'   with errors during the simulation, where each column represents a unique seed).
 #'   If the input is a character vector then it is important NOT
 #'   to modify the \code{design} input object, otherwise the path may not point
@@ -730,7 +730,7 @@
 #' \code{ERRORS} and \code{WARNINGS} which contain counts for the number of error or warning
 #' messages that were caught (if no errors/warnings were observed these columns will be omitted).
 #' Note that to extract the specific error and warnings messages see
-#' \code{\link{SimExtract}}. Finally,
+#' \code{\link{SimErrors}} and \code{\link{SimWarnings}}. Finally,
 #' if \code{boot_method} was a valid input other than 'none' then the final right-most
 #' columns will contain the labels
 #' \code{BOOT_} followed by the name of the associated meta-statistic defined in \code{summarise()} and
@@ -740,7 +740,7 @@
 #'
 #' @seealso \code{\link{SimFunctions}}, \code{\link{createDesign}},
 #'   \code{\link{Generate}}, \code{\link{Analyse}}, \code{\link{Summarise}},
-#'   \code{\link{SimExtract}},
+#'   \code{\link{SimErrors}}, \code{\link{SimWarnings}}, \code{\link{SimExtract}},
 #'   \code{\link{reSummarise}}, \code{\link{SimClean}}, \code{\link{SimAnova}}, \code{\link{SimResults}},
 #'   \code{\link{SimCollect}}, \code{\link{SimRead}}, \code{\link{Attach}}, \code{\link{AnalyseIf}},
 #'   \code{\link{SimShiny}}, \code{\link{manageWarnings}}, \code{\link{runArraySimulation}}

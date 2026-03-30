@@ -81,9 +81,9 @@
 #'
 #' \dontrun{
 #' # pass to runSimulation() to replicate issue (not run as this calls debug())
-#' runSimulation(design=Design[2,], replications=3, generate=Generate,
+#' runSimulation(design=Design, replications=3, generate=Generate,
 #                analyse=Analyse, summarise=Summarise,
-#                load_seed=seed_state, debug='analyse')
+#                load_seed=seed_state, debug='analyse-2') # seed only applies to 2nd design row
 #' }
 #'
 #'
@@ -100,8 +100,10 @@ SimErrors <- function(obj, seeds=FALSE, subset=TRUE){
         for(i in seq_along(pick)){
             p <- pick[i]
             ecol <- eseeds[,grepl(paste0('Design_row_', p, '.'), colnames(eseeds))]
-            nms <- gsub(".*Error", 'Error', colnames(ecol))
+            nms <- gsub(paste0('Design_row_', p, '..'), '', colnames(ecol))
+            nms <- gsub("^[0-9]+", '', nms)
             nms <- gsub("\\.",' ', nms)
+            nms <- gsub("^\\s+", "", nms)
             u <- unique(nms)
             out[[p]] <- lapply(as.list(u), \(mtc) ecol[ ,which(mtc == nms)])
             names(out[[p]]) <- u
