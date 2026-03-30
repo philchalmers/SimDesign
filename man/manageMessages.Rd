@@ -45,7 +45,7 @@ returns the original result of \code{eval(expr)}, with warning
  on the input specifications)
 }
 \description{
-Function provides more nuanced management of known message outputs
+Provides more nuanced management of known message outputs
 messages that appear in function calls outside the front-end users control
 (e.g., functions written in third-party packages). Specifically,
 this function provides a less nuclear approach than

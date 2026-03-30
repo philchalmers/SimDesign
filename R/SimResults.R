@@ -1,4 +1,4 @@
-#' Function to read in saved simulation results
+#' Read in saved simulation results
 #'
 #' If \code{\link{runSimulation}} was passed the flag \code{save_results = TRUE} then the
 #' row results corresponding to the \code{design} object will be stored to a suitable

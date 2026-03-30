@@ -1,4 +1,4 @@
-#' Function for decomposing the simulation into ANOVA-based effect sizes
+#' Decompose the simulation into ANOVA-based effects
 #'
 #' Given the results from a simulation with \code{\link{runSimulation}} form an ANOVA table (without
 #' p-values) with effect sizes based on the eta-squared statistic. These results provide approximate

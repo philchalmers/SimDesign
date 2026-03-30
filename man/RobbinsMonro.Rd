@@ -67,7 +67,7 @@ console?}
 \item{main}{plot title}
 }
 \description{
-Function performs stochastic root solving for the provided \code{f(x)}
+Performs stochastic root solving for the provided \code{f(x)}
 using the Robbins-Monro (1951) algorithm. Differs from deterministic
 cousins such as \code{\link{uniroot}} in that \code{f} may contain stochastic error
 components, where the root is obtained through the running average method

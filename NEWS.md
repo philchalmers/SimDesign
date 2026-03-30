@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.25
 
+- `SimErrors()` and `SimWarnings()`  functions added to better track and 
+  extract error/warning information. Makes it easier to track down specific 
+  seed states to replicate any of the recorded messages
+
 - Default cluster type changed from `parallel::makeCluster()` to 
   `mirai::make_cluster()`. To switch back to the default use the `control`
   logical element `use_mirai = FALSE`

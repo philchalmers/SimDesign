@@ -2,7 +2,7 @@
 % Please edit documentation in R/SimAnova.R
 \name{SimAnova}
 \alias{SimAnova}
-\title{Function for decomposing the simulation into ANOVA-based effect sizes}
+\title{Decompose the simulation into ANOVA-based effects}
 \usage{
 SimAnova(formula, dat, subset = NULL, rates = TRUE)
 }

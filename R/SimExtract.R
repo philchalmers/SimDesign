@@ -1,6 +1,6 @@
-#' Function to extract extra information from SimDesign objects
+#' Extract extra information from SimDesign objects
 #'
-#' Function used to extract any error or warnings messages, the seeds associated
+#' Extracts any error or warnings messages, the seeds associated
 #' with any error or warning messages, and any analysis results that were stored in the
 #' final simulation object.
 #'
@@ -59,6 +59,8 @@
 #' @param append logical; append the design conditions when extracting error/warning messages?
 #'
 #' @export
+#'
+#' @seealso \code{\link{SimErrors}}, \code{\link{SimWarnings}}
 #'
 #' @references
 #'

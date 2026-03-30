@@ -2,7 +2,7 @@
 % Please edit documentation in R/SimResults.R
 \name{SimResults}
 \alias{SimResults}
-\title{Function to read in saved simulation results}
+\title{Read in saved simulation results}
 \usage{
 SimResults(obj, which, prefix = "results-row", wd = getwd(), rbind = FALSE)
 }

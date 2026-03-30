@@ -1,6 +1,6 @@
 #' Increase the intensity or suppress the output of an observed message
 #'
-#' Function provides more nuanced management of known message outputs
+#' Provides more nuanced management of known message outputs
 #' messages that appear in function calls outside the front-end users control
 #' (e.g., functions written in third-party packages). Specifically,
 #' this function provides a less nuclear approach than

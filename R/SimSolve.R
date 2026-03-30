@@ -1,6 +1,6 @@
 #' One Dimensional Root (Zero) Finding in Simulation Experiments
 #'
-#' Function provides a stochastic root-finding approach to solve
+#' Provides a stochastic root-finding approach to solve
 #' specific quantities in simulation experiments (e.g., solving for a specific
 #' sample size to meet a target power rate) using the
 #' Probablistic Bisection Algorithm with Bolstering and Interpolations

@@ -1,6 +1,6 @@
 #' Manage specific warning messages
 #'
-#' Function provides more nuanced management of known warning
+#' Provides more nuanced management of known warning
 #' messages that appear in function calls outside the front-end users control
 #' (e.g., functions written in third-party packages). Specifically,
 #' this function provides a less nuclear approach than

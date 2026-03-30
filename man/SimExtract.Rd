@@ -2,7 +2,7 @@
 % Please edit documentation in R/SimExtract.R
 \name{SimExtract}
 \alias{SimExtract}
-\title{Function to extract extra information from SimDesign objects}
+\title{Extract extra information from SimDesign objects}
 \usage{
 SimExtract(object, what, fuzzy = TRUE, append = TRUE)
 }
@@ -62,7 +62,7 @@ effectively the same, and likely should be reported in the same columns of the e
 \item{append}{logical; append the design conditions when extracting error/warning messages?}
 }
 \description{
-Function used to extract any error or warnings messages, the seeds associated
+Extracts any error or warnings messages, the seeds associated
 with any error or warning messages, and any analysis results that were stored in the
 final simulation object.
 }
@@ -113,6 +113,9 @@ with the SimDesign Package. \code{The Quantitative Methods for Psychology, 16}(4
 Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching statistics with Monte
 Carlo simulation. \code{Journal of Statistics Education, 24}(3), 136-156.
 \doi{10.1080/10691898.2016.1246953}
+}
+\seealso{
+\code{\link{SimErrors}}, \code{\link{SimWarnings}}
 }
 \author{
 Phil Chalmers \email{rphilip.chalmers@gmail.com}

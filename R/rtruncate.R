@@ -1,6 +1,6 @@
 #' Generate a random set of values within a truncated range
 #'
-#' Function generates data given a supplied random number generating function that
+#' Generates data given a supplied random number generating function that
 #' are constructed to fall within a particular range. Sampled values outside this
 #' range are discarded and re-sampled until the desired criteria has been met.
 #'

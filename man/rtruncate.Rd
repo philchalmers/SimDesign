@@ -34,7 +34,7 @@ either a numeric vector or matrix, where all values are within the
   desired \code{range}
 }
 \description{
-Function generates data given a supplied random number generating function that
+Generates data given a supplied random number generating function that
 are constructed to fall within a particular range. Sampled values outside this
 range are discarded and re-sampled until the desired criteria has been met.
 }
