@@ -621,7 +621,7 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
             parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
             parallel::clusterExport(cl=cl, "ANALYSE_FUNCTIONS", envir = environment())
             if(verbose > 0 && verbose < 2)
-                message(sprintf("\nNumber of parallel clusters in use: %i", length(cl)))
+                message(sprintf("\nNumber of cores used in cluster: %i", length(cl)))
         }
     }
     compname <- Sys.info()['nodename']
