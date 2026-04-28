@@ -1,0 +1,99 @@
+# Combine two separate SimDesign objects by row
+
+This function combines two Monte Carlo simulations executed by
+`SimDesign`'s
+[`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+function which, for all intents and purposes, could have been executed
+in a single run. This situation arises when a simulation has been
+completed, however the `Design` object was later modified to include
+more levels in the defined simulation factors. Rather than re-executing
+the previously completed simulation combinations, only the new
+combinations need to be evaluated into a different object and then
+`rbind` together to create the complete object combinations.
+
+## Usage
+
+``` r
+# S3 method for class 'SimDesign'
+rbind(...)
+```
+
+## Arguments
+
+- ...:
+
+  two or more `SimDesign` objects that should be combined by rows
+
+## Value
+
+same object that is returned by
+[`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+
+## References
+
+Chalmers, R. P., & Adkins, M. C. (2020). Writing Effective and Reliable
+Monte Carlo Simulations with the SimDesign Package.
+`The Quantitative Methods for Psychology, 16`(4), 248-280.
+[doi:10.20982/tqmp.16.4.p248](https://doi.org/10.20982/tqmp.16.4.p248)
+
+Sigal, M. J., & Chalmers, R. P. (2016). Play it again: Teaching
+statistics with Monte Carlo simulation.
+`Journal of Statistics Education, 24`(3), 136-156.
+[doi:10.1080/10691898.2016.1246953](https://doi.org/10.1080/10691898.2016.1246953)
+
+## Author
+
+Phil Chalmers <rphilip.chalmers@gmail.com>
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+
+# modified example from runSimulation()
+
+Design <- createDesign(N = c(10, 20),
+                       SD = c(1, 2))
+
+Generate <- function(condition, fixed_objects) {
+    dat <- with(condition, rnorm(N, 10, sd=SD))
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_objects) {
+    ret <- mean(dat) # mean of the sample data vector
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects) {
+    ret <- c(mu=mean(results), SE=sd(results)) # mean and SD summary of the sample means
+    ret
+}
+
+Final1 <- runSimulation(design=Design, replications=1000,
+                       generate=Generate, analyse=Analyse, summarise=Summarise)
+Final1
+
+###
+# later decide that N = 30 should have also been investigated. Rather than
+# running the following object ....
+newDesign <- createDesign(N = c(10, 20, 30),
+                          SD = c(1, 2))
+
+# ... only the new subset levels are executed to save time
+subDesign <- subset(newDesign, N == 30)
+subDesign
+
+Final2 <- runSimulation(design=subDesign, replications=1000,
+                       generate=Generate, analyse=Analyse, summarise=Summarise)
+Final2
+
+# glue results together by row into one object as though the complete 'Design'
+# object were run all at once
+Final <- rbind(Final1, Final2)
+Final
+
+summary(Final)
+
+} # }
+```

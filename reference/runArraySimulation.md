@@ -1,0 +1,381 @@
+# Run a Monte Carlo simulation using array job submissions per condition
+
+This function has the same purpose as
+[`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md),
+however rather than evaluating each row in a `design` object
+(potentially with parallel computing architecture) this function
+evaluates the simulation per independent row condition. This is mainly
+useful when distributing the jobs to HPC clusters where a job array
+number is available (e.g., via SLURM), where the simulation results must
+be saved to independent files as they complete. Use of
+[`expandDesign`](http://philchalmers.github.io/SimDesign/reference/expandDesign.md)
+is useful for distributing replications to different jobs, while
+[`genSeeds`](http://philchalmers.github.io/SimDesign/reference/genSeeds.md)
+is required to ensure high-quality random number generation across the
+array submissions. See the associated vignette for a brief tutorial of
+this setup.
+
+## Usage
+
+``` r
+runArraySimulation(
+  design,
+  ...,
+  replications,
+  iseed,
+  filename,
+  dirname = NULL,
+  arrayID = getArrayID(),
+  array2row = function(arrayID) arrayID,
+  addArrayInfo = TRUE,
+  parallel = FALSE,
+  cl = NULL,
+  ncores = parallelly::availableCores(omit = 1L),
+  save_details = list(),
+  control = list(),
+  verbose = interactive()
+)
+```
+
+## Arguments
+
+- design:
+
+  design object containing simulation conditions on a per row basis.
+  This function is design to submit each row as in independent job on a
+  HPC cluster. See
+  [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+  for further details
+
+- ...:
+
+  additional arguments to be passed to
+  [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+
+- replications:
+
+  number of independent replications to perform per condition (i.e.,
+  each row in `design`). See
+  [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+  for further details
+
+- iseed:
+
+  initial seed to be passed to
+  [`genSeeds`](http://philchalmers.github.io/SimDesign/reference/genSeeds.md)'s
+  argument of the same name, along with the supplied `arrayID`
+
+- filename:
+
+  file name to save simulation files to (does not need to specify
+  extension). However, the array ID will be appended to each `filename`.
+  For example, if `filename = 'mysim'` then files stored will be
+  `'mysim-1.rds'`, `'mysim-2.rds'`, and so on for each row ID in
+  `design`
+
+- dirname:
+
+  directory to save the files associated with `filename` to. If omitted
+  the files will be stored in the same working directory where the
+  script was submitted
+
+- arrayID:
+
+  array identifier from the scheduler. Must be a number between 1 and
+  `nrow(design)`. If not specified then
+  [`getArrayID`](http://philchalmers.github.io/SimDesign/reference/getArrayID.md)
+  will be called automatically, which assumes the environmental
+  variables are available according the SLURM scheduler
+
+- array2row:
+
+  user defined function with the single argument `arrayID`. Used to
+  convert the detected `arrayID` into a suitable row index in the
+  `design` object input. By default each `arrayID` is associated with
+  its respective row in `design`.
+
+  For example, if each `arrayID` should evaluate 10 rows in the `design`
+  object then the function `function(arrayID){1:10 + 10 * (arrayID-1)}`
+  can be passed to `array2row`
+
+- addArrayInfo:
+
+  logical; should the array ID and original design row number be added
+  to the `SimResults(...)` output?
+
+- parallel:
+
+  logical; use parallel computations within the distributed arrays? Only
+  useful when the instruction shell file requires more than 1 core
+  (number of cores detected via `ncores`). For this application the
+  random seeds further distributed using
+  [`nextRNGSubStream`](https://rdrr.io/r/parallel/RngStream.html)
+
+- cl:
+
+  cluster definition. If omitted and the `parallel` package is used to
+  define the cluster then a "SOCK" cluster will used
+
+- ncores:
+
+  number of cores to use when `parallel=TRUE`. Note that the default
+  uses 1 minus the number of available cores, therefore this will only
+  be useful when `ncores > 2` as defined in the shell instruction file
+
+- save_details:
+
+  optional list of extra file saving details. See
+  [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+
+- control:
+
+  control list passed to
+  [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md).
+  In addition to the original `control` elements two additional
+  arguments have been added: `max_time` and `max_RAM`, both of which as
+  specified as character vectors with one element.
+
+  `max_time` specifies the maximum time allowed for a single simulation
+  condition to execute (default does not set any time limits), and is
+  formatted according to the specification in
+  [`timeFormater`](http://philchalmers.github.io/SimDesign/reference/timeFormater.md).
+  This is primarily useful when the HPC cluster will time out after some
+  known elapsed time. In general, this input should be set to somewhere
+  around 80-90 before the cluster is terminated can be saved. Default
+  applies no time limit
+
+  Similarly, `max_RAM` controls the (approximate) maximum size that the
+  simulation storage objects can grow before RAM becomes an issue. This
+  can be specified either in terms of megabytes (MB), gigabytes (GB), or
+  terabytes (TB). For example, `max_RAM = "4GB"` indicates that if the
+  simulation storage objects are larger than 4GB then the workflow will
+  terminate early, returning only the successful results up to this
+  point). Useful for larger HPC cluster jobs with RAM constraints that
+  could terminate abruptly. As a rule of thumb this should be set to
+  around 90 available. Default applies no memory limit
+
+- verbose:
+
+  logical; pass a verbose flag to
+  [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md).
+  Unlike
+  [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+  this is set to FALSE during interactive sessions, though set to TRUE
+  when non-interactive and information about the session itself should
+  be stored (e.g., in SLURM `.out` files)
+
+## Details
+
+Due to the nature of how the replication are split it is important that
+the L'Ecuyer-CMRG (2002) method of random seeds is used across all array
+ID submissions (cf.
+[`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)'s
+`parallel` approach, which uses this method to distribute random seeds
+within each isolated condition rather than between all conditions). As
+such, this function requires the seeds to be generated using
+[`genSeeds`](http://philchalmers.github.io/SimDesign/reference/genSeeds.md)
+with the `iseed` and `arrayID` inputs to ensure that each job is
+analyzing a high-quality set of random numbers via L'Ecuyer-CMRG's
+(2002) method, incremented using
+[`nextRNGStream`](https://rdrr.io/r/parallel/RngStream.html).
+
+Additionally, for timed simulations on HPC clusters it is also
+recommended to pass a `control = list(max_time)` value to avoid
+discarding conditions that require more than the specified time in the
+shell script. The `max_time` value should be less than the maximum time
+allocated on the HPC cluster (e.g., approximately 90 depends on how
+long, and how variable, each replication is). Simulations with missing
+replications should submit a new set of jobs at a later time to collect
+the missing information.
+
+## References
+
+Chalmers, R. P., & Adkins, M. C. (2020). Writing Effective and Reliable
+Monte Carlo Simulations with the SimDesign Package.
+`The Quantitative Methods for Psychology, 16`(4), 248-280.
+[doi:10.20982/tqmp.16.4.p248](https://doi.org/10.20982/tqmp.16.4.p248)
+
+## See also
+
+[`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md),
+[`expandDesign`](http://philchalmers.github.io/SimDesign/reference/expandDesign.md),
+[`genSeeds`](http://philchalmers.github.io/SimDesign/reference/genSeeds.md),
+[`SimCheck`](http://philchalmers.github.io/SimDesign/reference/SimCheck.md),
+[`SimRead`](http://philchalmers.github.io/SimDesign/reference/SimRead.md),
+[`SimCollect`](http://philchalmers.github.io/SimDesign/reference/SimCollect.md),
+[`getArrayID`](http://philchalmers.github.io/SimDesign/reference/getArrayID.md)
+
+## Author
+
+Phil Chalmers <rphilip.chalmers@gmail.com>
+
+## Examples
+
+``` r
+library(SimDesign)
+
+Design <- createDesign(N = c(10, 20, 30))
+
+Generate <- function(condition, fixed_objects) {
+    dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_objects) {
+    ret <- c(mean=mean(dat), median=median(dat)) # mean/median of sample data
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects){
+    colMeans(results)
+}
+
+if (FALSE) { # \dontrun{
+
+# define initial seed (do this only once to keep it constant!)
+# iseed <- genSeeds()
+iseed <- 554184288
+
+### On cluster submission, the active array ID is obtained via getArrayID(),
+###   and therefore should be used in real SLURM submissions
+arrayID <- getArrayID(type = 'slurm')
+
+# However, the following example arrayID is set to
+#  the first row only for testing purposes
+arrayID <- 1L
+
+# run the simulation (results not caught on job submission, only files saved)
+res <- runArraySimulation(design=Design, replications=50,
+                      generate=Generate, analyse=Analyse,
+                      summarise=Summarise, arrayID=arrayID,
+                      iseed=iseed, filename='mysim') # saved as 'mysim-1'
+res
+SimResults(res) # condition and replication count stored
+
+# same, but evaluated with multiple cores
+res <- runArraySimulation(design=Design, replications=50,
+                      generate=Generate, analyse=Analyse,
+                      summarise=Summarise, arrayID=arrayID,
+                      parallel=TRUE, ncores=3,
+                      iseed=iseed, filename='myparsim')
+res
+SimResults(res) # condition and replication count stored
+
+dir()
+SimClean(c('mysim-1.rds', 'myparsim-1.rds'))
+
+########################
+# Same submission job as above, however split the replications over multiple
+# evaluations and combine when complete
+Design5 <- expandDesign(Design, 5)
+Design5
+
+# iseed <- genSeeds()
+iseed <- 554184288
+
+# arrayID <- getArrayID(type = 'slurm')
+arrayID <- 14L
+
+# run the simulation (replications reduced per row, but same in total)
+runArraySimulation(design=Design5, replications=10,
+                   generate=Generate, analyse=Analyse,
+                   summarise=Summarise, iseed=iseed,
+                   filename='mylongsim', arrayID=arrayID)
+
+res <- SimRead('mylongsim-14.rds')
+res
+SimResults(res) # condition and replication count stored
+
+SimClean('mylongsim-14.rds')
+
+
+###
+# Emulate the arrayID distribution, storing all results in a 'sim/' folder
+# (if 'sim/' does not exist in runArraySimulation() it will be
+# created automatically)
+dir.create('sim/')
+
+# Emulate distribution to nrow(Design5) = 15 independent job arrays
+##  (just used for presentation purposes on local computer)
+sapply(1:nrow(Design5), \(arrayID)
+     runArraySimulation(design=Design5, replications=10,
+          generate=Generate, analyse=Analyse,
+          summarise=Summarise, iseed=iseed, arrayID=arrayID,
+          filename='condition', dirname='sim', # files: "sim/condition-#.rds"
+          control = list(max_time="04:00:00", max_RAM="4GB"))) |> invisible()
+
+#  If necessary, conditions above will manually terminate before
+#  4 hours and 4GB of RAM are used, returning any
+#  successfully completed results before the HPC session times
+#  out (provided .slurm script specified more than 4 hours)
+
+# list saved files
+dir('sim/')
+
+# check that all files saved (warnings will be raised if missing files)
+SimCheck('sim/')
+
+condition14 <- SimRead('sim/condition-14.rds')
+condition14
+SimResults(condition14)
+
+# aggregate simulation results into single file
+final <- SimCollect('sim/')
+final
+
+# clean simulation directory
+SimClean(dirs='sim/')
+
+
+############
+# same as above, however passing different amounts of information depending
+# on the array ID
+array2row <- function(arrayID){
+  switch(arrayID,
+    "1"=1:8,
+    "2"=9:14,
+    "3"=15)
+}
+
+# arrayID 1 does row 1 though 8, arrayID 2 does 9 to 14
+array2row(1)
+array2row(2)
+array2row(3)  # arrayID 3 does 15 only
+
+# emulate remote array distribution with only 3 arrays
+sapply(1:3, \(arrayID)
+     runArraySimulation(design=Design5, replications=10,
+          generate=Generate, analyse=Analyse,
+          summarise=Summarise, iseed=iseed, arrayID=arrayID,
+          filename='condition', dirname='sim', array2row=array2row)) |> invisible()
+
+# list saved files
+dir('sim/')
+
+# Also works if the replication input were a suitable vector (not run)
+if(FALSE){
+    reps <- c(rep(10, 14), 100)
+    cbind(Design5, reps)
+    sapply(1:3, \(arrayID)
+        runArraySimulation(design=Design5, replications=reps,
+          generate=Generate, analyse=Analyse,
+          summarise=Summarise, iseed=iseed, arrayID=arrayID,
+          filename='condition', dirname='sim', array2row=array2row)) |> invisible()
+}
+
+
+# note that all row conditions are still stored separately, though note that
+#  arrayID is now 2 instead
+condition14 <- SimRead('sim/condition-14.rds')
+condition14
+SimResults(condition14)
+
+# aggregate simulation results into single file
+final <- SimCollect('sim/')
+final
+
+# clean simulation directory
+SimClean(dirs='sim/')
+
+} # }
+```

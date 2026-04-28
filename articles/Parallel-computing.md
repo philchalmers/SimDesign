@@ -1,0 +1,211 @@
+# Parallel computing information
+
+## Introduction
+
+The purpose of this vignette is to highlight some of the internally
+defined structures that `SimDesign` supports for distributing the
+simulation experiment across computing cores, networks, and clusters. In
+particular, this document includes how the
+[`runSimulation()`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+function distributes the workload across the `replications` on a per
+simulation condition basis. Hence, the `replcations` in each each row
+experiment defined within the `design` object is distributed in
+parallel, which ensures that the independent replications within each
+condition follow proper random number generation control.
+
+The logic presented within this document is based on the notion that the
+front-end user has, in principle, access to each of the computing cores
+(e.g., can be connected via `ssh`, or are available locally), and that
+each simulation condition defined in the `design` object reflect
+independent experiments (default when using
+[`createDesign()`](http://philchalmers.github.io/SimDesign/reference/createDesign.md);
+see
+[`expandDesign()`](http://philchalmers.github.io/SimDesign/reference/expandDesign.md)
+for the non-independent structure that would not be supported by the
+approaches described in this document). For situations where the
+computing architecture is not directly available, such as on high
+performance computing (HPC) super computers, or simply by picking
+independent computers and running batches of the simulation code on each
+computer (with the purpose of collapsing later via
+[`aggregate_simulations()`](http://philchalmers.github.io/SimDesign/reference/SimCollect.md)),
+see the vignette *“Distributing jobs for high-performance computing
+(HPC)”* as managing the random number generation will require additional
+care.
+
+### Local parallel computing
+
+By default, `SimDesign`’s
+[`runSimulation()`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+function is executed with only a single core. However, setting the
+argument `runSimulation(..., parallel = TRUE)` will automatically define
+a cluster object using one core less than the system has available
+(detect via
+[`parallelly::availableCores()`](https://parallelly.futureverse.org/reference/availableCores.html))
+and define a suitable cluster objection using the `mirai` package. This
+allows a straightforward way to construct a suitable, locally supported
+cluster object for parallel processing on just the active computer.
+Depending on the `verbose` and `progress` flags, the progress of each
+distributed replication will also be printed to the console to indicate
+the amount of estimated time remaining for the selection simulation
+condition to complete. This process is then repeated again for each
+condition in the supplied `design` object until all rows have been
+evaluated.
+
+This setup is the most painless way to construct and distribute the
+independent replications per condition, where within each evaluated
+condition (i.e., each row of the `design` object) high-quality random
+numbers are automatically used via Pierre L’Ecuyer’s (1999) multiple
+streams method, limited only by the number of cores that are available.
+Alternatively, though with a bit of extra effort, users may also define
+their own cluster computing object by way of the
+`runSimulation(..., cl)` object, which can be used to link computing
+resources that are able to communicate via `ssh`, thereby expanding the
+number of available computing cores detected by
+[`parallel::detectCores()`](https://rdrr.io/r/parallel/detectCores.html)
+and friends.
+
+### Network computing
+
+If you access have to a set of computers which can be linked via
+secure-shell (`ssh`) on the same LAN network then Network computing
+(a.k.a., a Beowulf cluster) may be a viable and useful option. The setup
+generally requires that the master node has `SimDesign` installed, and
+the slave/master nodes have all the required R packages pre-installed
+(Unix utilities such as `dsh` are very useful for this purpose).
+Finally, the master node must have `ssh` access to the slave nodes, each
+slave node must have `ssh` access with the master node, and a cluster
+object (`cl`) from the `mirai` or `parallel` package must be manually
+defined on the master node.
+
+Setup for network computing is generally straightforward in that it only
+requires the specification of a) the respective IP addresses within a
+defined R script, and b) the user name (if different from the master
+node’s user name; otherwise, only a) is required). On Linux, it may also
+be important to include relevant information about the host names and IP
+addresses in the `/etc/hosts` file on the master and slave nodes, and to
+ensure that the selected port (passed to
+[`mirai::make_cluster()`](https://mirai.r-lib.org/reference/make_cluster.html)
+or
+[`parallel::makeCluster()`](https://rdrr.io/r/parallel/makeCluster.html))
+on the master node is not hindered by a firewall.
+
+As an example, using the following code the master (primary) node will
+spawn 7 slave (secondary) and 1 master node, while a separate computer
+on the network with the associated IP address will spawn an additional 6
+slave nodes. Information will be collected on the master node, which is
+also where the files and objects will be saved using the associated
+`save`/`filename` inputs in
+[`runSimulation()`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md).
+
+``` r
+library(parallel)
+primary <- '192.168.2.1'
+IPs <- list(list(host=primary, user='myname', ncore=8), list(host='192.168.2.2', user='myname', ncore=6))
+spec <- lapply(IPs, function(IP) rep(list(list(host=IP$host, user=IP$user)), IP$ncore))
+spec <- unlist(spec, recursive=FALSE)
+cl <- makeCluster(master=primary, spec=spec, type = 'PSOCK')
+Final <- runSimulation(..., cl=cl)
+stopCluster(cl)
+```
+
+The object `cl` is passed to
+[`runSimulation()`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+on the master node and the computations are distributed across the
+respective IP addresses. Finally, it’s usually good practice to use
+`stopCluster(cl)` when all the simulations are said and done to release
+the communication between the computers, which is what the above code
+shows.
+
+If you have provided suitable names for each respective slave node, as
+well as the master, then you can define the `cl` object using these
+instead (rather than supplying the IP addresses in your R script). This
+requires that the master node has itself and all the slave nodes defined
+in the `/etc/hosts` and `~/.ssh/config` files, while the slave nodes
+require themselves and the master node in the same files (only 2 IP
+addresses required on each slave). Following this setup, and assuming
+the user name is the same across all nodes, the `cl` object could
+instead be defined with
+
+``` r
+library(parallel)
+primary <- 'master'
+IPs <- list(list(host=primary, ncore=8), list(host='slave', ncore=6))
+spec <- lapply(IPs, function(IP) rep(list(list(host=IP$host)), IP$ncore))
+spec <- unlist(spec, recursive=FALSE)
+cl <- makeCluster(master=primary, spec=spec, type = 'PSOCK')
+Final <- runSimulation(..., cl=cl)
+stopCluster(cl)
+```
+
+As was the case with the local cluster definition in the first section,
+random numbers are automatically organized via Pierre L’Ecuyer’s (1999)
+method to ensure quality number generation. A similar setup can also be
+used via the recently supported `future` interface (see below).
+
+### Using the `future` framework
+
+The `future` framework (see
+[`help(future, package = 'future')`](https://future.futureverse.org/reference/future.html))
+can also be used for distributing the asynchronous function evaluations
+for each simulation replication by changing the logical input in
+`runSimulation(..., parallel = TRUE/FALSE)` to the character vector
+`runSimulation(..., parallel = 'future')`. For this to work, the
+computation plan must be pre-specified via
+[`future::plan()`](https://future.futureverse.org/reference/plan.html).
+For example, to initialize a local two-worker parallel processing
+computational plan one can use the follow:
+
+``` r
+library(future)
+plan(multisession, workers = 2)
+
+res <- runSimulation(design=Design, replications=1000, generate=Generate, 
+                     analyse=Analyse, summarise=Summarise,
+                     parallel = 'future')
+```
+
+The benefit of using the `future` framework is the automatic support of
+many distinct back-ends, such as, for instance, HPC clusters that
+control the distribution of jobs via Slurm or TORQUE (e.g., see the
+`future.batchtools` package).
+
+For progress reporting the `progressr` package is required and is
+intended as a wrapper around
+[`runSimulation()`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md).
+Specifically, wrap the function
+[`with_progress()`](https://progressr.futureverse.org/reference/with_progress.html)
+around
+[`runSimulation()`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+after having specified the type of `handler()` to use, such as via the
+following.
+
+``` r
+library(progressr)
+
+# Rstudio style handler (if using RStudio)
+handlers("rstudio")
+
+# or using the cli package for terminal-based progress 
+handlers('cli')
+
+# See help(progressr) for additional options and details
+
+# to use progressr, wrap/pipe inside with_progress() 
+res <- with_progress(runSimulation(design=Design, replications=1000, generate=Generate, 
+                     analyse=Analyse, summarise=Summarise,
+                     parallel = 'future'))
+```
+
+Finally, when the parallel computations are complete be sure to manually
+reset the computation plan to free any workers via
+
+``` r
+plan(sequential) # release workers
+```
+
+The benefit of the future framework is that it provides a unified
+distribution framework for parallel (multisession, multicore, cluster)
+and non-parallel (sequential) processing, manages random number
+generation correctly for Monte Carlo simulations, and as demonstrated
+above has a wide variety of tools that can be applied to a interactive
+sessions.
