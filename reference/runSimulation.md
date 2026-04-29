@@ -629,10 +629,11 @@ print(x, list2char = TRUE, ...)
 
   `use_mirai`
 
-  :   logical (default is `TRUE`); when defining the `cl` object
+  :   logical (default is `FALSE`); when defining the `cl` object
       internally, should the cluster object be built using `mirai` or
       `parallel`? Set this to `FALSE` for parallel behavior prior to
-      `SimDesign` version 2.25
+      `SimDesign` version 2.25. Note that if `mirai` is not available
+      then the `parallel` package will be used by default instead
 
   `stop_on_fatal`
 
@@ -1156,9 +1157,9 @@ Final
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Wed Apr 29 19:53:30 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Wed Apr 29 19:53:30 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Wed Apr 29 19:53:30 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Wed Apr 29 23:20:05 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Wed Apr 29 23:20:05 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Wed Apr 29 23:20:05 20…
 (results <- SimResults(Final))
 #> # A tibble: 6 × 2
 #>       N  mean
@@ -1184,9 +1185,9 @@ Final_rep
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Wed Apr 29 19:53:30 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Wed Apr 29 19:53:30 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Wed Apr 29 19:53:30 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Wed Apr 29 23:20:05 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Wed Apr 29 23:20:05 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Wed Apr 29 23:20:05 20…
 (results <- SimResults(Final_rep))
 #> # A tibble: 6 × 2
 #>       N  mean

@@ -192,7 +192,7 @@ retpba
 #> [1] TRUE
 #> 
 #> $time
-#> [1] 0.14s
+#> [1] 0.15s
 #> 
 #> $iterations
 #> [1] 172
@@ -230,7 +230,7 @@ retpba.noise
 #> [1] TRUE
 #> 
 #> $time
-#> [1] 0.24s
+#> [1] 0.12s
 #> 
 #> $iterations
 #> [1] 138
