@@ -124,7 +124,10 @@
 #'
 #' # if you want a tibble from the list of information instead
 #' fmtcars |> group_by(cyl) |> descript(collapse=TRUE)
+#' fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VARS)
 #' fmtcars |> group_by(am, cyl) |> select(mpg, wt) |> descript(collapse=TRUE)
+#' fmtcars |> group_by(am, cyl) |> select(mpg, wt) |>
+#'   descript(collapse=TRUE) |> arrange(VARS)
 #'
 #' # post-extraction (if you don't mind doing the extra computations
 #' #   and extracting afterword)
@@ -307,3 +310,7 @@ dplyr::select
 #' @export
 #' @importFrom dplyr group_by
 dplyr::group_by
+
+#' @export
+#' @importFrom dplyr arrange
+dplyr::arrange

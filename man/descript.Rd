@@ -135,7 +135,10 @@ fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
 
 # if you want a tibble from the list of information instead
 fmtcars |> group_by(cyl) |> descript(collapse=TRUE)
+fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VARS)
 fmtcars |> group_by(am, cyl) |> select(mpg, wt) |> descript(collapse=TRUE)
+fmtcars |> group_by(am, cyl) |> select(mpg, wt) |>
+  descript(collapse=TRUE) |> arrange(VARS)
 
 # post-extraction (if you don't mind doing the extra computations
 #   and extracting afterword)
