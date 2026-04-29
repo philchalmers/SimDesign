@@ -469,7 +469,7 @@ in the simulation}
 
   \describe{
 
-    \item{\code{use_mirai}}{logical (default is \code{FALSE}); when defining the \code{cl}
+    \item{\code{use_mirai}}{logical (default is \code{TRUE}); when defining the \code{cl}
       object internally, should the cluster object be built using \code{mirai} or \code{parallel}?
       Set this to \code{FALSE} for parallel behavior prior to \code{SimDesign} version 2.25. Note that
       if \code{mirai} is not available then the \code{parallel} package will be used by default instead}
