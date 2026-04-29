@@ -73,7 +73,7 @@ summary(x)
 # compare speed to sample()
 system.time(x <- rint(1000, min = 100, max = 1e8))
 #>    user  system elapsed 
-#>   0.001   0.000   0.001 
+#>       0       0       0 
 system.time(x2 <- sample(100:1e8, 1000, replace = TRUE))
 #>    user  system elapsed 
 #>       0       0       0 
