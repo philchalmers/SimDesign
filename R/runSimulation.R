@@ -403,9 +403,10 @@
 #'
 #'   \describe{
 #'
-#'     \item{\code{use_mirai}}{logical (default is \code{TRUE}); when defining the \code{cl}
+#'     \item{\code{use_mirai}}{logical (default is \code{FALSE}); when defining the \code{cl}
 #'       object internally, should the cluster object be built using \code{mirai} or \code{parallel}?
-#'       Set this to \code{FALSE} for parallel behavior prior to \code{SimDesign} version 2.25}
+#'       Set this to \code{FALSE} for parallel behavior prior to \code{SimDesign} version 2.25. Note that
+#'       if \code{mirai} is not available then the \code{parallel} package will be used by default instead}
 #'
 #'     \item{\code{stop_on_fatal}}{logical (default is \code{FALSE}); should the simulation be
 #'       terminated immediately when
@@ -1182,6 +1183,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                       all(names(save_details) %in% valid_save_details.list()))
     }
     if(is.null(control$use_mirai)) control$use_mirai <- TRUE
+    if(!requireNamespace("mirai", quietly = TRUE)) control$use_mirai <- TRUE
     if(is.null(control$global_fun_level)) control$global_fun_level <- 2
     if(is.null(control$useAnalyseHandler)) control$useAnalyseHandler <- TRUE
     useAnalyseHandler <- control$useAnalyseHandler
@@ -1511,8 +1513,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     if(parallel){
         if(!useFuture && is.null(cl)){
             if(control$use_mirai){
-                cl <- mirai::make_cluster(ncores)
-                on.exit(mirai::stop_cluster(cl), add = TRUE)
+                if(requireNamespace("mirai", quietly = TRUE)){
+                    cl <- mirai::make_cluster(ncores)
+                    on.exit(mirai::stop_cluster(cl), add = TRUE)
+                }
             } else {
                 cl <- parallel::makeCluster(ncores, type=type)
                 on.exit(parallel::stopCluster(cl), add = TRUE)

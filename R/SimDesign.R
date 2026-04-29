@@ -25,7 +25,6 @@
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
 #' @import methods parallel stats
 #' @importFrom sessioninfo session_info
-#' @importFrom mirai make_cluster stop_cluster
 #' @importFrom codetools findGlobals
 #' @importFrom parallelly availableCores
 #' @importFrom graphics abline

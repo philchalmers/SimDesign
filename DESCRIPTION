@@ -30,7 +30,6 @@ Imports:
     sessioninfo,
     beepr,
     pbapply (>= 1.3-0),
-    mirai,
     future,
     future.apply,
     progressr,
@@ -56,6 +55,7 @@ Suggests:
     FrF2,
     rmarkdown,
     RPushbullet,
+    mirai,
     httr
 License: GPL (>=2)
 ByteCompile: yes
