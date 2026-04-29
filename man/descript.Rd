@@ -5,7 +5,13 @@
 \alias{get_descriptFuns}
 \title{Compute univariate descriptive statistics}
 \usage{
-descript(df, funs = get_descriptFuns(), discrete = FALSE, collapse = FALSE)
+descript(
+  df,
+  funs = get_descriptFuns(),
+  by_group = FALSE,
+  discrete = FALSE,
+  collapse = FALSE
+)
 
 get_descriptFuns()
 }
@@ -42,9 +48,14 @@ get_descriptFuns()
  Note that by default the \code{na.rm} behavior is set to \code{TRUE}
  in each function call}
 
+\item{by_group}{logical; when \code{group_by()} were used to define the conditioning levels,
+should the output from \code{by()} be organized by these group levels or by variable
+names? Only applicable when more than one variable is being described}
+
 \item{discrete}{logical; include summary statistics for \code{discrete}
 variables only? If \code{TRUE} then only count and proportion
-information for the discrete variables will be returned. For greater flexibility
+information for the discrete variables will be returned, and \code{by_group} will automatically
+be set to \code{TRUE}. For greater flexibility
 in creating cross-tabulated count/proportion information see \code{\link{xtabs}}}
 
 \item{collapse}{logical; should the result be returned as a list output
@@ -107,10 +118,15 @@ xtabs(~ am + cyl + vs, fmtcars) |> prop.table()
 fmtcars |> select(mpg, wt) |> descript()
 fmtcars |> subset(mpg > 20) |> select(mpg, wt) |> descript()
 
-# conditioning with group_by()
+# conditioning with group_by(), printing across each variable
 fmtcars |> group_by(cyl) |> descript()
 fmtcars |> group_by(cyl, am) |> descript()
 fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript()
+
+# same, but formatting output by group instead of VARIABLE
+fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
+fmtcars |> group_by(cyl, am) |> descript(by_group=TRUE)
+fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript(by_group=TRUE)
 
 # with single variables, typical dplyr::summarise() output returned
 fmtcars |> select(mpg) |> descript()

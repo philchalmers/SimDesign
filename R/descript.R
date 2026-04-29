@@ -60,8 +60,13 @@
 #'
 #' @param discrete logical; include summary statistics for \code{discrete}
 #'  variables only? If \code{TRUE} then only count and proportion
-#'  information for the discrete variables will be returned. For greater flexibility
+#'  information for the discrete variables will be returned, and \code{by_group} will automatically
+#'  be set to \code{TRUE}. For greater flexibility
 #'  in creating cross-tabulated count/proportion information see \code{\link{xtabs}}
+#'
+#' @param by_group logical; when \code{group_by()} were used to define the conditioning levels,
+#'   should the output from \code{by()} be organized by these group levels or by variable
+#'   names? Only applicable when more than one variable is being described
 #'
 #' @importFrom e1071 skewness kurtosis
 #'
@@ -102,10 +107,15 @@
 #' fmtcars |> select(mpg, wt) |> descript()
 #' fmtcars |> subset(mpg > 20) |> select(mpg, wt) |> descript()
 #'
-#' # conditioning with group_by()
+#' # conditioning with group_by(), printing across each variable
 #' fmtcars |> group_by(cyl) |> descript()
 #' fmtcars |> group_by(cyl, am) |> descript()
 #' fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript()
+#'
+#' # same, but formatting output by group instead of VARIABLE
+#' fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
+#' fmtcars |> group_by(cyl, am) |> descript(by_group=TRUE)
+#' fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript(by_group=TRUE)
 #'
 #' # with single variables, typical dplyr::summarise() output returned
 #' fmtcars |> select(mpg) |> descript()
@@ -142,7 +152,8 @@
 #'            median= \(x) median(x, na.rm=TRUE))
 #' fmtcars |> descript(funs=funs2)
 #'
-descript <- function(df, funs=get_descriptFuns(), discrete=FALSE, collapse=FALSE)
+descript <- function(df, funs=get_descriptFuns(),
+                     by_group=FALSE, discrete=FALSE, collapse=FALSE)
 {
 	discrete.fun <- function(x){
 		tab <- table(x, useNA = "ifany")
@@ -154,6 +165,26 @@ descript <- function(df, funs=get_descriptFuns(), discrete=FALSE, collapse=FALSE
 
 	if(!is.data.frame(suppressMessages(df)))
 		df <- as.data.frame(df)
+
+	if(collapse || discrete) by_group <- TRUE
+
+	if(length(dplyr::group_keys(df)) && !by_group){
+	    groupkeys <- na.omit(dplyr::group_keys(df))
+	    vars <- colnames(df)
+	    vars <- vars[!(vars %in% colnames(groupkeys)) & !sapply(df, is.factor)]
+	    if(length(vars) > 1){
+	        ret <- vector('list', length(vars))
+	        names(ret) <- vars
+	        for(i in 1:length(vars)){
+	            df0 <- df[c(colnames(groupkeys), vars[i])]
+	            ret[[i]] <- descript(df0, funs=funs, discrete=discrete, by_group=TRUE)
+	        }
+	        attr(ret, 'dim') <- length(vars)
+	        attr(ret, 'dimnames') <- list(VARIABLE=vars)
+	        class(ret) <- c('bybye', 'by')
+	        return(ret)
+	    }
+	}
 
 	if(length(dplyr::group_keys(df))){
 	    groupkeys <- na.omit(dplyr::group_keys(df))
