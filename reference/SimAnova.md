@@ -65,6 +65,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 data(BF_sim)
 
 # all results (not usually good to mix Power and Type I results together)

@@ -119,6 +119,7 @@ simultaneous perturbation method. IEEE Trans. Autom. Control 45,
 ## Examples
 
 ``` r
+
 # find x that solves f(x) - b = 0 for the following
 f.root <- function(x, b = .6) 1 / (1 + exp(-x)) - b
 f.root(.3)

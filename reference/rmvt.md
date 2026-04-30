@@ -63,6 +63,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 # random t values given variances [3,6], covariance 2, and df = 15
 sigma <- matrix(c(3,2,2,6), 2, 2)
 x <- rmvt(1000, sigma = sigma, df = 15)

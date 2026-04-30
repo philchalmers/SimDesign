@@ -29,10 +29,10 @@ major components:
   given various **design** conditions to be studied (e.g., sample size,
   distributions, group sizes, etc),
 - **analyse** the generated data using whatever statistical analyses you
-  are interested in (e.g., $t$-test, ANOVA, SEMs, IRT, etc), and collect
-  the statistics/CIs/$p$-values/parameter estimates you are interested
-  in, and
-- **summarise** the results after repeating the simulations $R$ number
+  are interested in (e.g., $`t`$-test, ANOVA, SEMs, IRT, etc), and
+  collect the statistics/CIs/$`p`$-values/parameter estimates you are
+  interested in, and
+- **summarise** the results after repeating the simulations $`R`$ number
   of times to obtain empirical estimates of the population’s behavior.
 
 Each operation above represents the essential components of the
@@ -60,6 +60,7 @@ To begin, the following code should be copied and saved to an external
 source (i.e., text) file.
 
 ``` r
+
 library(SimDesign)
 SimFunctions()
 ```
@@ -103,6 +104,7 @@ design/execution and required user-defined functions. For Rstudio users,
 this will also automatically open up the file in a new coding window.
 
 ``` r
+
 SimDesign::SimFunctions('mysim')
 ```
 
@@ -111,6 +113,7 @@ prefer to have helpful comments included then these can be achieved with
 the `singlefile` and `comments` arguments, respectively.
 
 ``` r
+
 SimFunctions('mysim', singlefile = FALSE, comments = TRUE)
 ```
 
@@ -130,7 +133,7 @@ As a toy example, let’s consider how the following investigation using
 
 *Question*: How does trimming affect recovering the mean of a
 distribution? Investigate this using different sample sizes with
-Gaussian and $\chi^{2}$ distributions. Also, demonstrate the effect of
+Gaussian and $`\chi^2`$ distributions. Also, demonstrate the effect of
 using the median to recover the mean.
 
 ### Define the conditions
@@ -143,6 +146,7 @@ is required to create a completely crossed-design for each combination
 (there are 8 in total).
 
 ``` r
+
 Design <- createDesign(sample_size = c(30, 60, 120, 240), 
                        distribution = c('norm', 'chi'))
 Design
@@ -162,7 +166,7 @@ Design
 
 Each row in `Design` represents a unique condition to be studied in the
 simulation. In this case, the first condition to be studied comes from
-row 1, where $N = 30$ and the distribution is from the Gaussian/normal
+row 1, where $`N=30`$ and the distribution is from the Gaussian/normal
 family.
 
 ### Define the functions
@@ -176,6 +180,7 @@ fixed sets of population parameters and other conditions, however for
 this simple simulation this input is not required.
 
 ``` r
+
 Generate <- function(condition, fixed_objects) {
     N <- condition$sample_size
     dist <- condition$distribution
@@ -190,12 +195,13 @@ Generate <- function(condition, fixed_objects) {
 
 As we can see above,
 [`Generate()`](http://philchalmers.github.io/SimDesign/reference/Generate.md)
-will return a numeric vector of length $N$ containing the data to be
-analysed, each with a population mean of 3 (because a $\chi^{2}$
+will return a numeric vector of length $`N`$ containing the data to be
+analysed, each with a population mean of 3 (because a $`\chi^2`$
 distribution has a mean equal to its df). Next, we define the `analyse`
 component to analyse said data:
 
 ``` r
+
 Analyse <- function(condition, dat, fixed_objects) {
     M0 <- mean(dat)
     M1 <- mean(dat, trim = .1)
@@ -215,10 +221,10 @@ the row-conditions, however it will often make conceptual sense to do
 so.
 
 At this point, we may conceptually think of the first two functions as
-being evaluated independently $R$ times to obtain $R$ sets of results.
-In other words, if we wanted the number of replications to be 100, the
-first two functions would be independently run (at least) 100 times, the
-results from
+being evaluated independently $`R`$ times to obtain $`R`$ sets of
+results. In other words, if we wanted the number of replications to be
+100, the first two functions would be independently run (at least) 100
+times, the results from
 [`Analyse()`](http://philchalmers.github.io/SimDesign/reference/Analyse.md)
 would be stored, and we would then need to summarise these 100 elements
 into meaningful meta statistics to describe their empirical properties.
@@ -227,6 +233,7 @@ error, detection rates, and so on are of primary importance.
 Unsurprisingly, then, this is the purpose of the `summarise` component:
 
 ``` r
+
 Summarise <- function(condition, results, fixed_objects) {
     obs_bias <- bias(results, parameter = 3)
     obs_RMSE <- RMSE(results, parameter = 3)
@@ -244,7 +251,7 @@ single vector returned by
 [`Analyse()`](http://philchalmers.github.io/SimDesign/reference/Analyse.md).
 
 That sounds much more complicated than it is — all you really need to
-know for this simulation is that an $R$ x 4 matrix called `results` is
+know for this simulation is that an $`R`$ x 4 matrix called `results` is
 available to build a suitable summary from. Because the results is a
 matrix, [`apply()`](https://rdrr.io/r/base/apply.html) is useful to
 apply a function over each respective row. The bias and RMSE are
@@ -275,6 +282,7 @@ on a single processor, and finally store the results to an object called
 `res`.
 
 ``` r
+
 res <- runSimulation(Design, replications = 1000, generate=Generate, 
                          analyse=Analyse, summarise=Summarise)
 
@@ -304,6 +312,7 @@ current default in the package if RAM is not an issue, then the complete
 stored results can be viewed using
 
 ``` r
+
 # Extract complete set of stored results
 results <- SimResults(res)
 results
@@ -342,6 +351,7 @@ and verbs from the `dplyr` package to get a better understanding of the
 distributions.
 
 ``` r
+
 # summary statistics for complete results
 descript(results)
 ```
@@ -356,6 +366,7 @@ descript(results)
     ## 5 medi…  8000   2.69   2.71  0.402 -0.440 -0.498  1.05  2.36  2.81   3.01   4.16
 
 ``` r
+
 # conditional summary statistics using dplyr verbs
 results |> group_by(sample_size, distribution) |> 
     descript()
@@ -444,6 +455,7 @@ witnessed rather clearly in the following table, which prints the
 relative efficiency of the estimators:
 
 ``` r
+
 REs <- res[,grepl('RE\\.', colnames(res))]
 data.frame(Design, REs)
 ```
@@ -467,7 +479,7 @@ data.frame(Design, REs)
     ## 7       9.2
     ## 8      17.1
 
-Finally, when the $\chi^{2}$ distribution was investigated only the
+Finally, when the $`\chi^2`$ distribution was investigated only the
 un-adjusted mean accurately portrayed the population mean. This isn’t
 surprising, because the trimmed mean is, after all, making inferences
 about the population trimmed mean, and the median is making inferences
@@ -487,6 +499,7 @@ A single replication in a Monte Carlo simulation results in the
 following objects:
 
 ``` r
+
 (condition <- Design[1, ])
 ```
 
@@ -496,6 +509,7 @@ following objects:
     ## 1          30 norm
 
 ``` r
+
 dat <- Generate(condition)
 dat
 ```
@@ -504,6 +518,7 @@ dat
     ## [16] 2.96 2.98 3.94 3.82 3.59 3.92 3.78 3.07 1.01 3.62 2.94 2.84 1.53 2.52 3.42
 
 ``` r
+
 res <- Analyse(condition, dat)
 res
 ```
@@ -524,6 +539,7 @@ meaningful in the grand scheme of things; so, it must be repeated a
 number of times.
 
 ``` r
+
 # repeat 1000x
 results <- matrix(0, 1000, 4)
 colnames(results) <- names(res)
@@ -544,6 +560,7 @@ head(results)
     ## [6,]          3.1         3.1         3.0    3.1
 
 ``` r
+
 descript(results) # common descriptive statistics
 ```
 
@@ -563,6 +580,7 @@ function to obtain average estimates, their associated sampling error,
 their efficiency, and so on.
 
 ``` r
+
 Summarise(condition, results) 
 ```
 

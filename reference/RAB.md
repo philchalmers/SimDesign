@@ -53,6 +53,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 pop <- 1
 samp1 <- rnorm(5000, 1)
 bias1 <- bias(samp1, pop)

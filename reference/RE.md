@@ -60,6 +60,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 pop <- 1
 samp1 <- rnorm(100, 1, sd = 0.5)
 RMSE1 <- RMSE(samp1, pop)

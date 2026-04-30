@@ -21,6 +21,7 @@ To demonstrate the issue, let’s define two objects and a function which
 uses these objects.
 
 ``` r
+
 obj1 <- 10
 obj2 <- 20
 ```
@@ -31,6 +32,7 @@ by typing in the R console by typing
 objects with the same name will also be able to locate these values.
 
 ``` r
+
 myfun <- function(x) obj1 + obj2
 myfun(1)
 ```
@@ -44,6 +46,7 @@ using other methods (e.g., in the `parallel` package this is done with
 [`clusterExport()`](https://rdrr.io/r/parallel/clusterApply.html)).
 
 ``` r
+
 library(parallel)
 cl <- makeCluster(2)
 res <- try(parSapply(cl=cl, 1:4, myfun))
@@ -56,6 +59,7 @@ res
 Exporting the objects to the cluster fixes the issue.
 
 ``` r
+
 clusterExport(cl=cl, c('obj1', 'obj2'))
 parSapply(cl=cl, 1:4, myfun)
 ```
@@ -132,6 +136,7 @@ is really only useful when the defined objects contain a large amount of
 code or information.
 
 ``` r
+
 library(SimDesign)
 #SimFunctions(comments = FALSE)
 
@@ -176,9 +181,9 @@ res
     ## # A tibble: 3 × 6
     ##       N     p REPLICATIONS SIM_TIME       SEED COMPLETED               
     ##   <dbl> <dbl>        <dbl> <chr>         <int> <chr>                   
-    ## 1    10 0.044         1000 0.18s     488349520 Wed Apr 29 23:33:03 2026
-    ## 2    20 0.06          1000 0.29s     469344150 Wed Apr 29 23:33:04 2026
-    ## 3    30 0.054         1000 0.17s    1550099436 Wed Apr 29 23:33:04 2026
+    ## 1    10 0.044         1000 0.27s     488349520 Thu Apr 30 18:41:14 2026
+    ## 2    20 0.06          1000 0.37s     469344150 Thu Apr 30 18:41:14 2026
+    ## 3    30 0.054         1000 0.26s    1550099436 Thu Apr 30 18:41:15 2026
 
 By placing objects in a list and passing this to `fixed_objects`, the
 objects are safely exported to all relevant functions. Furthermore,
@@ -186,6 +191,7 @@ running this code in parallel will also be valid as a consequence (see
 below) because all objects are properly exported to each core.
 
 ``` r
+
 res <- runSimulation(Design, replications, verbose=FALSE, fixed_objects=fixed_objects,
                      generate=Generate, analyse=Analyse, summarise=Summarise, debug='none',
                      parallel = TRUE)

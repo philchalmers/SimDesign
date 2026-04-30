@@ -63,6 +63,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 # Cochran's criteria at alpha = .05 (i.e., 0.5 +- .01), assuming N = 2000
 Serlin2000(p = .051, alpha = .05, delta = .01, R = 2000)
 #>       p z(|p-a| - d))   Pr(>|z|) robust        CV1        CV2

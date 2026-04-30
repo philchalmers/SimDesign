@@ -56,6 +56,7 @@ statistics with Monte Carlo simulation.
 ## Examples
 
 ``` r
+
 myfun <- function(x, warn=FALSE){
    message('This function is rather chatty')
    cat("It even prints in different output forms!\n")

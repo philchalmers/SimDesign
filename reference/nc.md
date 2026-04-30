@@ -43,6 +43,7 @@ statistics with Monte Carlo simulation.
 ## Examples
 
 ``` r
+
 A <- 1
 B <- 2
 C <- 3

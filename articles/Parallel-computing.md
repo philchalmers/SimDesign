@@ -98,6 +98,7 @@ also where the files and objects will be saved using the associated
 [`runSimulation()`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md).
 
 ``` r
+
 library(parallel)
 primary <- '192.168.2.1'
 IPs <- list(list(host=primary, user='myname', ncore=8), list(host='192.168.2.2', user='myname', ncore=6))
@@ -127,6 +128,7 @@ the user name is the same across all nodes, the `cl` object could
 instead be defined with
 
 ``` r
+
 library(parallel)
 primary <- 'master'
 IPs <- list(list(host=primary, ncore=8), list(host='slave', ncore=6))
@@ -156,6 +158,7 @@ For example, to initialize a local two-worker parallel processing
 computational plan one can use the follow:
 
 ``` r
+
 library(future)
 plan(multisession, workers = 2)
 
@@ -180,6 +183,7 @@ after having specified the type of `handler()` to use, such as via the
 following.
 
 ``` r
+
 library(progressr)
 
 # Rstudio style handler (if using RStudio)
@@ -200,6 +204,7 @@ Finally, when the parallel computations are complete be sure to manually
 reset the computation plan to free any workers via
 
 ``` r
+
 plan(sequential) # release workers
 ```
 

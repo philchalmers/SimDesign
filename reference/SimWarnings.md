@@ -47,6 +47,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 sample_sizes <- c(10, 20)
 standard_deviations <- 1
 

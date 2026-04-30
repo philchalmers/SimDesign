@@ -103,6 +103,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 set.seed(4321)
 Design <- createDesign(sigma = c(1, 2))
 

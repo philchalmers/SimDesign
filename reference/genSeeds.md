@@ -63,6 +63,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 # generate 1 seed (default)
 genSeeds()
 #> [1] 1243352586

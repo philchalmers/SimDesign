@@ -61,6 +61,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 R <- 10000
 par_ests <- cbind(rnorm(R), rnorm(R, sd=1/10),
                   rnorm(R, sd=1/15))

@@ -38,6 +38,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 results <- matrix(rnorm(100), ncol=4)
 colnames(results) <- paste0('stat', 1:4)
 

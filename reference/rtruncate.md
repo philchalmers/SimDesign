@@ -88,6 +88,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 # n = 1000 truncated normal vector between [-2,3]
 vec <- rtruncate(1000, rnorm, c(-2,3))
 summary(vec)

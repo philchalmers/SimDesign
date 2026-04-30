@@ -49,6 +49,7 @@ hours and 30 minutes.
 ## Examples
 
 ``` r
+
 # Test cases (outputs in seconds)
 timeFormater("4-12")        # day-hours
 #> [1] 388800

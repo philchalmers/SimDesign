@@ -54,6 +54,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 # random inverse Wishart matrix given variances [3,6], covariance 2, and df=15
 sigma <- matrix(c(3,2,2,6), 2, 2)
 x <- rinvWishart(sigma = sigma, df = 15)

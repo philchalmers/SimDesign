@@ -50,6 +50,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 # random normal values with mean [5, 10] and variances [3,6], and covariance 2
 sigma <- matrix(c(3,2,2,6), 2, 2)
 mu <- c(5,10)

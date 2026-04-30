@@ -1,4 +1,4 @@
-pandoc: 3.1.11
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
@@ -9,7 +9,7 @@ articles:
   Parallel-computing: Parallel-computing.html
   Saving-results: Saving-results.html
   SimDesign-intro: SimDesign-intro.html
-last_built: 2026-04-29T23:32Z
+last_built: 2026-04-30T18:40Z
 urls:
   reference: http://philchalmers.github.io/SimDesign/reference
   article: http://philchalmers.github.io/SimDesign/articles

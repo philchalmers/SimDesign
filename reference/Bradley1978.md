@@ -96,6 +96,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 # interval criteria used for empirical detection rates
 Bradley1978()
 #> liberal.lower liberal.upper 

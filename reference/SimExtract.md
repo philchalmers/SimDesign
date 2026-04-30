@@ -122,6 +122,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 
 Generate <- function(condition, fixed_objects) {

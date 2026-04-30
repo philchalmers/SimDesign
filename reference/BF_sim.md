@@ -31,6 +31,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 data(BF_sim)
 head(BF_sim)

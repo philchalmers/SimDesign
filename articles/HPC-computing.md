@@ -56,6 +56,7 @@ which occurs automatically when using
 `runSimulation(..., parallel=TRUE)`.
 
 ``` r
+
 # SimDesign::SimFunctions()
 library(SimDesign)
 
@@ -77,6 +78,7 @@ Summarise <- function(condition, results, fixed_objects){
 ```
 
 ``` r
+
 # standard setup (not ideal for HPC clusters as parallelization
 #  occurs within the design conditions, not across)
 res <- runSimulation(design=Design, replications=10000, generate=Generate,
@@ -252,6 +254,7 @@ according to how many replications should be used within each of these
 to-be-distributed conditions, which need not be equal (see below).
 
 ``` r
+
 rc <- 100   # number of times the design row was repeated
 Design300 <- expandDesign(Design, repeat_conditions = rc)
 Design300
@@ -273,6 +276,7 @@ Design300
     ## # ℹ 290 more rows
 
 ``` r
+
 # compare the Design.IDs
 print(Design, show.IDs = TRUE)
 ```
@@ -285,6 +289,7 @@ print(Design, show.IDs = TRUE)
     ## 3         3    30
 
 ``` r
+
 print(Design300, show.IDs = TRUE)
 ```
 
@@ -304,6 +309,7 @@ print(Design300, show.IDs = TRUE)
     ## # ℹ 290 more rows
 
 ``` r
+
 # target replication number for each condition
 rep_target <- 10000
 
@@ -324,6 +330,7 @@ would be associated with a 10 replications per distributed node instead
 of 100.
 
 ``` r
+
 rc <- c(100, 100, 1000)
 DesignUnbalanced <- expandDesign(Design, repeat_conditions = rc)
 DesignUnbalanced
@@ -345,6 +352,7 @@ DesignUnbalanced
     ## # ℹ 1,190 more rows
 
 ``` r
+
 rep_target <- 10000
 replicationsUnbalanced <- expandReplications(rep_target, rc)
 head(replicationsUnbalanced)
@@ -353,12 +361,14 @@ head(replicationsUnbalanced)
     ## [1] 100 100 100 100 100 100
 
 ``` r
+
 tail(replicationsUnbalanced)
 ```
 
     ## [1] 10 10 10 10 10 10
 
 ``` r
+
 table(replicationsUnbalanced)
 ```
 
@@ -385,6 +395,7 @@ guarantee independent high-quality random numbers between different
 instances. For example,
 
 ``` r
+
 set.seed(0)
 x <- runif(100)
 set.seed(1)
@@ -396,6 +407,7 @@ plot(x, y)           ## seemingly independent
 ![](HPC-computing_files/figure-html/unnamed-chunk-6-1.png)
 
 ``` r
+
 plot(x[-1], y[-100]) ## subsets perfectly correlated
 ```
 
@@ -429,6 +441,7 @@ must constant across all job arrays, so **make sure to define `iseed`
 once and only once**!
 
 ``` r
+
 # genSeeds()   # do this once on the main node/home computer and store the number!
 iseed <- 1276149341
 ```
@@ -486,6 +499,7 @@ Collecting this single number assigned by the Slurm scheduler is also
 easy. Just include
 
 ``` r
+
 # get assigned array ID (default uses type = 'slurm')
 arrayID <- getArrayID()
 ```
@@ -514,6 +528,7 @@ way, and saves the `SimDesign` results to file names based on the
 `mysim-2.rds` for array 2, …, `mysim-300.rds` for array 300).
 
 ``` r
+
 # run the simulation on subset based on arrayID subset information
 runArraySimulation(design=Design300, replications=replications,
                    generate=Generate, analyse=Analyse,
@@ -533,6 +548,7 @@ in R, `dir.create('mysimfiles')`) in the location where your `.R` and
 300 collected `.rds` files, making use of the `dirname` argument.
 
 ``` r
+
 # run the simulation on subset based on arrayID subset information
 runArraySimulation(design=Design300, replications=replications,
                    generate=Generate, analyse=Analyse,
@@ -559,6 +575,7 @@ presented above. This assumes that
   files on the computer used to submit the array job
 
 ``` r
+
 library(SimDesign)
 
 Design <- createDesign(N = c(10, 20, 30))
@@ -620,6 +637,7 @@ containing the simulation files and use
 [`SimCollect()`](http://philchalmers.github.io/SimDesign/reference/SimCollect.md):
 
 ``` r
+
 library(SimDesign)
 
 # automatically checks whether all saved files are present via SimCheck()
@@ -642,6 +660,7 @@ collection of the results from the 300 array jobs, organized into one
 neat little (object) package.
 
 ``` r
+
 # save the aggregated simulation object for subsequent analyses
 saveRDS(Final, "../final_sim.rds")
 ```
@@ -681,6 +700,7 @@ with the associated `.R` file containing, in this case, nine simulation
 conditions across the rows in `Design`.
 
 ``` r
+
 library(SimDesign)
 
 Design <- createDesign(N = c(10, 20, 30),
@@ -722,6 +742,7 @@ distribute more than one row of the `Design` object to each array
 to distribute each row in the `Design` object to each assigned array.
 
 ``` r
+
 # get array ID
 arrayID <- getArrayID()
 
@@ -805,6 +826,7 @@ replications. Setting this to around 90-95% of the respective
 `#SBATCH --time=` input should, however, be sufficient in most cases.
 
 ``` r
+
 # Return successful results up to the 11 hour mark
 runArraySimulation(design=Design300, replications=replications,
                    generate=Generate, analyse=Analyse,
@@ -835,6 +857,7 @@ do not meet the target replication criteria. This could be obtained via
 inspection of the aggregated results
 
 ``` r
+
 Final <- SimCollect('mysimfiles/')
 Final
 ```
@@ -850,6 +873,7 @@ or via the more informative (and less memory intensive)
 `SimCollect(..., check.only=TRUE)` flag.
 
 ``` r
+
 Missed <- SimCollect(files=dir(), check.only=TRUE)
 Missed
 ```
@@ -866,6 +890,7 @@ Next, build a new simulation structure containing only the missing
 information components.
 
 ``` r
+
 subDesign <- Design[c(1,3),]
 replications_missed <- subset(Missed, select=MISSED_REPLICATIONS)
 ```
@@ -874,6 +899,7 @@ Notice that the `Design.ID` terms below are associated with the
 problematic conditions in the original `Design` object.
 
 ``` r
+
 print(subDesign, show.IDs = TRUE)
 ```
 
@@ -884,6 +910,7 @@ print(subDesign, show.IDs = TRUE)
     ## 2         3    30
 
 ``` r
+
 replications_missed
 ```
 
@@ -908,6 +935,7 @@ with `keep.IDs = TRUE` (the default), though telling the scheduler to
 only evaluate these new rows in the `#SBATCH --array` specification.
 
 ``` r
+
 rc <- 50
 Design_left <- expandDesign(subDesign, rc) # smaller number of reps per array
 Design_left
@@ -929,6 +957,7 @@ Design_left
     ## # ℹ 90 more rows
 
 ``` r
+
 replications_left <- rep(replications_missed/rc, each=rc)
 table(replications_left)
 ```
@@ -938,6 +967,7 @@ table(replications_left)
     ## 50 50
 
 ``` r
+
 # new total design and replication objects
 Design_total <- rbindDesign(Design300, Design_left, keep.IDs=TRUE)
 nrow(Design_total)
@@ -946,6 +976,7 @@ nrow(Design_total)
     ## [1] 400
 
 ``` r
+
 print(Design_total, show.IDs = TRUE)
 ```
 
@@ -965,6 +996,7 @@ print(Design_total, show.IDs = TRUE)
     ## # ℹ 390 more rows
 
 ``` r
+
 replications_total <- c(replications, replications_left)
 table(replications_total)
 ```
@@ -974,6 +1006,7 @@ table(replications_total)
     ##  50  50   1
 
 ``` r
+
 # this *must* be the same as the original submission!
 iseed <- 1276149341
 ```
@@ -1006,6 +1039,7 @@ saved.
 Once complete, run
 
 ``` r
+
 # See if any missing still
 SimCollect('mysimfiles', check.only=TRUE)
 

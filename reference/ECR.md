@@ -96,6 +96,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 CIs <- matrix(NA, 100, 2)
 for(i in 1:100){
    dat <- rnorm(100)

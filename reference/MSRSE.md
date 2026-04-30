@@ -80,6 +80,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 Generate <- function(condition, fixed_objects) {
    X <- rep(0:1, each = 50)
    y <- 10 + 5 * X + rnorm(100, 0, .2)
@@ -104,6 +105,6 @@ results
 #> # A tibble: 1 × 6
 #>   `SE.(Intercept)`   SE.X REPLICATIONS SIM_TIME      SEED COMPLETED             
 #>              <dbl>  <dbl>        <dbl> <chr>        <int> <chr>                 
-#> 1          0.98822 1.1781          500 0.37s    402147477 Wed Apr 29 23:32:29 2…
+#> 1          0.98822 1.1781          500 0.51s    402147477 Thu Apr 30 18:40:39 2…
 
 ```

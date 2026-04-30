@@ -120,6 +120,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 pop <- 2
 samp <- rnorm(100, 2, sd = 0.5)
 bias(samp, pop)

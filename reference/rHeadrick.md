@@ -103,6 +103,7 @@ Oscar L. Olvera Astivia and Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 set.seed(1)
 

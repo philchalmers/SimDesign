@@ -43,6 +43,7 @@ messages to continue to be raised.
 For example, if a function utilized in a simulation was
 
 ``` r
+
 myfun <- function() {
     if(sample(c(TRUE, FALSE), 1, prob = c(.1, .9)))
         warning('This warning is serious')
@@ -61,6 +62,7 @@ out <- myfun()
     ## Warning in myfun(): This warning is no big deal
 
 ``` r
+
 set.seed(7)
 out <- myfun()
 ```
@@ -72,6 +74,7 @@ explicitly converted to an error using an internal
 [`grepl()`](https://rdrr.io/r/base/grep.html) test.
 
 ``` r
+
 set.seed(1)
 out1 <- manageWarnings(myfun(), 
                         warning2error='This warning is serious')
@@ -81,6 +84,7 @@ out1
     ## [1] 1
 
 ``` r
+
 set.seed(2)
 out2 <- manageWarnings(myfun(), 
                         warning2error='This warning is serious')
@@ -89,12 +93,14 @@ out2 <- manageWarnings(myfun(),
     ## Warning in myfun(): This warning is no big deal
 
 ``` r
+
 out2
 ```
 
     ## [1] 1
 
 ``` r
+
 set.seed(7)
 out3 <- manageWarnings(myfun(), 
                         warning2error='This warning is serious')
@@ -119,6 +125,7 @@ errors instead of warnings that continued normally.
 As usual, define the functions of interest.
 
 ``` r
+
 library(SimDesign)
 # SimFunctions(comments=FALSE)
 
@@ -126,6 +133,7 @@ Design <- createDesign(N = c(10,20,30))
 ```
 
 ``` r
+
 Generate <- function(condition, fixed_objects) {
     ret <- with(condition, rnorm(N))
     ret
@@ -166,20 +174,22 @@ iterations).
 ### Run the simulation
 
 ``` r
+
 result <- runSimulation(Design, replications = 100, 
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
 
 ``` r
+
 print(result)
 ```
 
     ## # A tibble: 3 × 8
     ##       N     bias REPLICATIONS SIM_TIME       SEED COMPLETED      ERRORS WARNINGS
     ##   <dbl>    <dbl>        <dbl> <chr>         <int> <chr>           <int>    <int>
-    ## 1    10 0.061138          100 0.04s    1140350788 Wed Apr 29 23…     53       59
-    ## 2    20 0.014295          100 0.15s     312928385 Wed Apr 29 23…     52       60
-    ## 3    30 0.017927          100 0.04s     866248189 Wed Apr 29 23…     42       56
+    ## 1    10 0.061138          100 0.06s    1140350788 Thu Apr 30 18…     53       59
+    ## 2    20 0.014295          100 0.15s     312928385 Thu Apr 30 18…     52       60
+    ## 3    30 0.017927          100 0.05s     866248189 Thu Apr 30 18…     42       56
 
 What you’ll immediately notice from this output object is that counts of
 the error and warning messages have been appended to the `result`
@@ -192,6 +202,7 @@ as well as the invalid-input error) after extracting and inspecting
 `SimErrors(result)` and `SimWarnings(result)`.
 
 ``` r
+
 SimErrors(result)
 ```
 
@@ -209,6 +220,7 @@ SimErrors(result)
     ## 3                             7
 
 ``` r
+
 SimWarnings(result)
 ```
 
@@ -264,6 +276,7 @@ instance that an error is raised, which can be achieved using the
 following:
 
 ``` r
+
 runSimulation(..., debug = 'error-4')
 ```
 
@@ -305,6 +318,7 @@ the column name itself (and allowed to be coerced into a valid column
 name to make it easier to use the `$` operator). For example,
 
 ``` r
+
 eseeds <- SimErrors(result, seeds = TRUE)
 eseeds
 ```
@@ -317,6 +331,7 @@ eseeds
     ## 3    30 <named list [3]>
 
 ``` r
+
 # list elements are named based on the error observed
 names(eseeds$SEEDS[[1]])
 ```
@@ -326,6 +341,7 @@ names(eseeds$SEEDS[[1]])
     ## [3] "Error in t test default  invalid     not enough  x  observations "
 
 ``` r
+
 # one of the seeds seed associated with a condition error (third unique error raised)
 eseeds$SEEDS[[1]][[3]][,1]
 ```
@@ -359,6 +375,7 @@ using this error extraction approach; otherwise, the seed will clearly
 not replicate the exact problem state.
 
 ``` r
+
 picked_seed <- eseeds$SEEDS[[1]][[3]][,1]
 
 # debug analyse() for first row of Design object via debug='analyse-1'

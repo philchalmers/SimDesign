@@ -8,6 +8,7 @@ To install the latest stable version of the package from CRAN, please
 use the following in your R console:
 
 ``` r
+
 install.packages('SimDesign')
 ```
 
@@ -16,6 +17,7 @@ following (assuming you have already installed the `remotes` package
 from CRAN).
 
 ``` r
+
 library('remotes')
 install_github('philchalmers/SimDesign')
 ```

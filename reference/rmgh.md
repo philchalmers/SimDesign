@@ -53,6 +53,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 set.seed(1)
 
 # univariate

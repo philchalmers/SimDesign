@@ -11,6 +11,7 @@ purposes, and so on. This document demonstrates various ways in which
 As usual, define the functions of interest.
 
 ``` r
+
 library(SimDesign)
 # SimFunctions()
 
@@ -18,6 +19,7 @@ Design <- createDesign(N = c(10,20,30))
 ```
 
 ``` r
+
 Generate <- function(condition, fixed_objects) {
     dat <- rnorm(condition$N)    
     dat
@@ -51,7 +53,7 @@ will automatically detect temporary files to resume from (so long as
 they are resumed from the same computer node; otherwise, see the
 `save_details` list).
 
-As a simple example, say that in the $N = 30$ condition something went
+As a simple example, say that in the $`N=30`$ condition something went
 terribly wrong and the simulation crashed. However, the first two design
 conditions are perfectly fine. The `save` flag is very helpful here
 because the state is not lost and the results are still useful. Finally,
@@ -60,6 +62,7 @@ simulation results to the hard-drive for future reference; however, this
 won’t be called until the simulation is complete.
 
 ``` r
+
 Analyse <- function(condition, dat, fixed_objects) {
     if(condition$N == 30) stop('Danger Will Robinson!')
     ret <- c(p = t.test(dat)$p.value)
@@ -74,6 +77,7 @@ res <- runSimulation(Design, replications = 1000, save=TRUE, filename='my-simple
 Check that temporary file still exists.
 
 ``` r
+
 files <- dir()
 files[grepl('SIMDESIGN', files)]
 ```
@@ -92,6 +96,7 @@ the previous state and continue on as normal. Therefore, in the event of
 unforeseen program execution crashes no time is lost.
 
 ``` r
+
 Analyse <- function(condition, dat, fixed_objects) {
     ret <- c(p = t.test(dat)$p.value)
     ret
@@ -104,6 +109,7 @@ res <- runSimulation(Design, replications = 1000, save=TRUE, filename='my-simple
 Check which files exist.
 
 ``` r
+
 files <- dir()
 files[grepl('SIMDESIGN', files)]
 ```
@@ -111,6 +117,7 @@ files[grepl('SIMDESIGN', files)]
     ## character(0)
 
 ``` r
+
 files[grepl('my-simp', files)]
 ```
 
@@ -140,6 +147,7 @@ simulation is complete, these results can be extracted using
 `SimExtract(res, what = 'results')`). For example,
 
 ``` r
+
 # store_results=TRUE by default
 res <- runSimulation(Design, replications = 3, 
               generate=Generate, analyse=Analyse, summarise=Summarise)
@@ -179,6 +187,7 @@ that when using `save_results` the `save` flag is automatically set to
 `TRUE` to ensure that the simulation state is correctly tracked.
 
 ``` r
+
 res <- runSimulation(Design, replications = 1000, save_results=TRUE,
                      generate=Generate, analyse=Analyse, summarise=Summarise)
 dir <- dir()
@@ -195,6 +204,7 @@ errors and warnings), which can be read in directly with
 [`SimRead()`](http://philchalmers.github.io/SimDesign/reference/SimRead.md):
 
 ``` r
+
 row1 <- SimRead(paste0(directory, '/results-row-1'))
 str(row1)
 ```
@@ -214,6 +224,7 @@ str(row1)
     ##  $ warning_seeds: NULL
 
 ``` r
+
 row1$condition
 ```
 
@@ -223,6 +234,7 @@ row1$condition
     ## 1    10
 
 ``` r
+
 head(row1$results)
 ```
 
@@ -239,6 +251,7 @@ or, equivalently, with the
 function
 
 ``` r
+
 # first row
 row1 <- SimResults(res, which = 1)
 str(row1)
@@ -256,6 +269,7 @@ or simply hand pick which ones should be inspected. For example, here is
 how all the saved results can be inspected:
 
 ``` r
+
 input <- SimResults(res)
 str(input)
 ```
@@ -270,6 +284,7 @@ function is the easiest way to remove all unwanted files and
 directories.
 
 ``` r
+
 SimClean(results = TRUE)
 ```
 

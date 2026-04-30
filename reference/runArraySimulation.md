@@ -212,6 +212,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 library(SimDesign)
 
 Design <- createDesign(N = c(10, 20, 30))

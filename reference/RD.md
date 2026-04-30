@@ -60,6 +60,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 # vector
 pop <- seq(1, 100, length.out=9)
 est1 <- pop + rnorm(9, 0, .2)

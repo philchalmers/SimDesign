@@ -32,6 +32,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 data(BF_sim_alternative)
 head(BF_sim_alternative)

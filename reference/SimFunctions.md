@@ -147,6 +147,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 SimFunctions()
 #> #-------------------------------------------------------------------
 #> 

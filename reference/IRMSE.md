@@ -93,6 +93,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 # logistic regression function with one slope and intercept
 fn <- function(theta, param) 1 / (1 + exp(-(param[1] + param[2] * theta)))
 

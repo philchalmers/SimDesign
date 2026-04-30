@@ -99,6 +99,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 Design <- createDesign(N1=c(10,20),
                        N2=c(10,20),
                        sd=c(1,2))

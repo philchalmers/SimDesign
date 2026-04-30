@@ -49,6 +49,7 @@ Phil Chalmers <rphilip.chalmers@gmail.com>
 ## Examples
 
 ``` r
+
 vec1 <- runif(1000)
 vec2 <- runif(1000)
 

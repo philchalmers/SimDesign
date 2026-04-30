@@ -29,6 +29,7 @@ The usual work-flow with `SimDesign` requires first calling
 to generate a working template, such as the following.
 
 ``` r
+
 SimDesign::SimFunctions()
 ```
 
@@ -67,12 +68,13 @@ which uses the default `nAnalyses=1` to generate only a single
 function. In the context of multiple analysis functions, however, users
 may be more interested in passing the number of analysis functions they
 believe they will need in their simulation (e.g., if analyzing a
-$t$-test setup to compare the Welch versus independent samples t-test,
+$`t`$-test setup to compare the Welch versus independent samples t-test,
 then two analysis functions should be used). Passing `nAnalyses=2` to
 [`SimFunctions()`](http://philchalmers.github.io/SimDesign/reference/SimFunctions.md)
 creates the following template:
 
 ``` r
+
 SimDesign::SimFunctions(nAnalyses = 2)
 ```
 
@@ -153,6 +155,7 @@ Wiki](http://philchalmers.github.io/SimDesign/html/03-Parameter_recovery_simulat
 and so details about the simulation should be obtained from that source.
 
 ``` r
+
 # Note that all attached packages are automatically exported in SimDesign
 library(SimDesign)
 library(mirt)
@@ -177,6 +180,7 @@ P_ogive <- function(a, d, Theta) pnorm(a * Theta + d)
 ```
 
 ``` r
+
 Generate <- function(condition, fixed_objects) {
 
     N <- condition$sample_size
@@ -240,6 +244,7 @@ Summarise <- function(condition, results, fixed_objects) {
 ```
 
 ``` r
+
 res <- runSimulation(Design, replications=100, verbose=FALSE, parallel=TRUE,
                      generate=Generate, 
                      analyse=list(FIML=Analyse.FIML, DWLS=Analyse.DWLS), 
@@ -248,6 +253,7 @@ res <- runSimulation(Design, replications=100, verbose=FALSE, parallel=TRUE,
 ```
 
 ``` r
+
 res
 ```
 
@@ -293,6 +299,7 @@ where the observed indicator variable were continuous as well as
 discrete. The `Design` definition may therefore look like the following.
 
 ``` r
+
 Design <- createDesign(sample_size = sample_sizes, 
                        nitems = nitems, 
                        indicators = c('discrete', 'continuous'))
@@ -329,6 +336,7 @@ following replacement definition that used `mirt`, but now includes an
 logical given the `indicators` variable’s state.
 
 ``` r
+
 Analyse.FIML <- function(condition, dat, fixed_objects) {
     AnalyseIf(condition$indicators == 'discrete')
     # equivalently: 
@@ -361,6 +369,7 @@ interested in this type of structure, the following could be used to
 separate the discrete/continuous data generation per `Design` row:
 
 ``` r
+
 Generate.G1 <- function(condition, fixed_objects) {
     GenerateIf(condition$indicators == 'discrete')
     ...
@@ -388,6 +397,7 @@ the components in the `Design` object. For instance, if the `Design`
 definition were constructed using
 
 ``` r
+
 Design <- createDesign(sample_size = sample_sizes, 
                        nitems = nitems, 
                        method = c('FIML', 'DWLS'))
@@ -413,6 +423,7 @@ Design
 and the analysis functions above were supplied defined as
 
 ``` r
+
 Analyse.FIML <- function(condition, dat, fixed_objects) {
     AnalyseIf(method == 'FIML', condition)
     #...
