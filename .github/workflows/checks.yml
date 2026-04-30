@@ -17,10 +17,8 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
-        
-      - name: Install missing
-        run: Rscript -e 'install.packages(c("e1071", "qs2", "mirai"))'
 
       - name: R CMD CHECK
         run: |
-          Rscript -e 'devtools::check(error_on = "warning")'
+          R CMD build ../SimDesign
+          R CMD check --as-cran SimDesign_*
