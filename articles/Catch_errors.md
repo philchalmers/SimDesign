@@ -188,7 +188,7 @@ print(result)
     ##       N     bias REPLICATIONS SIM_TIME       SEED COMPLETED      ERRORS WARNINGS
     ##   <dbl>    <dbl>        <dbl> <chr>         <int> <chr>           <int>    <int>
     ## 1    10 0.061138          100 0.06s    1140350788 Fri May  1 11…     53       59
-    ## 2    20 0.014295          100 0.16s     312928385 Fri May  1 11…     52       60
+    ## 2    20 0.014295          100 0.18s     312928385 Fri May  1 11…     52       60
     ## 3    30 0.017927          100 0.05s     866248189 Fri May  1 11…     42       56
 
 What you’ll immediately notice from this output object is that counts of
