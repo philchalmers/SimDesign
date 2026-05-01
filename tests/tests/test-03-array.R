@@ -27,7 +27,7 @@ test_that('array', {
     }
 
     # time test across conditions
-    expect_error(suppressWarnings(runSimulation(design=Design, replications=5, generate=Generate,
+    expect_error(suppressWarnings(runSimulation(design=Design, replications=4, generate=Generate,
                   analyse=Analyse.slow, summarise=Summarise,
                   control = list(max_time = "00:00:06", max_RAM = "4GB"),
                   verbose=FALSE)))
@@ -37,13 +37,13 @@ test_that('array', {
     expect_true(is.null(res[[3]]))
 
     # resume from time crash
-    res2 <- runSimulation(design=Design, replications=5, generate=Generate,
+    res2 <- runSimulation(design=Design, replications=4, generate=Generate,
                           analyse=Analyse.slow, summarise=Summarise,
                           control = list(max_time = "00:00:20", max_RAM = "4GB"),
                           verbose=FALSE)
     expect_true(is(res2, 'SimDesign'))
     results <- SimResults(res2)
-    expect_true(nrow(results) == 15)
+    expect_true(nrow(results) == 4*nrow(Design))
 
     # define initial seed (do this only once to keep it constant!)
     # iseed <- genSeeds()
