@@ -18,9 +18,7 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
         
-      - name: Global
-        env:
-          _R_CHECK_FORCE_SUGGESTS_: false
+      
 
       - name: R CMD CHECK
         run: |
