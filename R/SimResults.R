@@ -105,7 +105,7 @@ SimResults <- function(obj, which, prefix = "results-row", wd = getwd(),
     files <- data.frame(file_nums, files, stringsAsFactors = FALSE)
     stored_Results_list <- vector('list', length(which))
     for(i in seq_len(length(which))){
-        pick <- which(files$file_num == which[i])
+        pick <- which(files$file_nums == which[i])
         stored_Results_list[[i]] <- SimRead(files$files[pick])
     }
     design <- SimExtract(obj, 'design')
