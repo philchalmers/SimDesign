@@ -17,6 +17,10 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
+        
+      - name: Install
+        run: |
+          R CMD INSTALL --no-docs --no-html ../SimDesign \
 
       - name: Run tests
         run: |
