@@ -253,6 +253,9 @@ descript <- function(df, funs=get_descriptFuns(),
 	} else {
 		ret <- retfull
 		names(ret) <- colnames(df)
+		class(ret) <- 'bybye'
+		attr(ret, 'dim') <- length(ret)
+		attr(ret, 'dimnames') <- list(VARIABLE = colnames(df))
 	}
 	ret
 }
