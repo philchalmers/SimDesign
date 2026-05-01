@@ -27,10 +27,10 @@ test_that('array', {
     }
 
     # time test across conditions
-    expect_error(runSimulation(design=Design, replications=5, generate=Generate,
+    expect_error(suppressWarnings(runSimulation(design=Design, replications=5, generate=Generate,
                   analyse=Analyse.slow, summarise=Summarise,
                   control = list(max_time = "00:00:06", max_RAM = "4GB"),
-                  verbose=FALSE))
+                  verbose=FALSE)))
     files <- dir()
     file <- files[grepl('SIMDESIGN-TEMPFILE', files)]
     res <- SimRead(file)

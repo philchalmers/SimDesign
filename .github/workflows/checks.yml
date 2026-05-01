@@ -19,9 +19,10 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Global
-        run: _R_CHECK_FORCE_SUGGESTS_ = false
+        env:
+          _R_CHECK_FORCE_SUGGESTS_: false
 
       - name: R CMD CHECK
         run: |
-          R CMD build --no-manual --no-build-vignettes ../SimDesign \
+          R CMD build --no-manual --no-build-vignettes ../SimDesign && \
           R CMD check --no-manual --ignore-vignettes --as-cran SimDesign_*
