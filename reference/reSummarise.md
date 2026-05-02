@@ -169,9 +169,9 @@ res
 #> # A tibble: 3 × 7
 #>       N   mean median REPLICATIONS SIM_TIME       SEED COMPLETED               
 #>   <dbl>  <dbl>  <dbl>        <dbl> <chr>         <int> <chr>                   
-#> 1    10 10.192 10.230           50 0.01s    1771457935 Fri May  1 13:15:40 2026
-#> 2    20 10.146 10.084           50 0.01s     590590962 Fri May  1 13:15:40 2026
-#> 3    30 10.257 10.328           50 0.01s     273992574 Fri May  1 13:15:40 2026
+#> 1    10 10.192 10.230           50 0.01s    1771457935 Sat May  2 13:23:50 2026
+#> 2    20 10.146 10.084           50 0.01s     590590962 Sat May  2 13:23:50 2026
+#> 3    30 10.257 10.328           50 0.01s     273992574 Sat May  2 13:23:50 2026
 
 # same summarise but with bootstrapping
 res2 <- reSummarise(Summarise, results = res, boot_method = 'basic')

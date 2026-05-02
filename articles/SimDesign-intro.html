@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2026-05-01</h4>
+            <h4 data-toc-skip class="date">2026-05-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/SimDesign-intro.Rmd" class="external-link"><code>vignettes/SimDesign-intro.Rmd</code></a></small>
       <div class="d-none name"><code>SimDesign-intro.Rmd</code></div>
@@ -417,6 +417,7 @@ distributions.</p>
 <span><span class="va">results</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sample_size</span>, <span class="va">distribution</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/descript.html">descript</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## VARIABLE: mean_no_trim</span></span>
+<span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 13</span></span></span>
 <span><span class="co">##   sample_size distribution     n  mean  trim     sd   skew    kurt   min   P25</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -433,6 +434,7 @@ distributions.</p>
 <span><span class="co">## ------------------------------------------------------------</span></span>
 <span><span class="co">##  </span></span>
 <span><span class="co">## VARIABLE: mean_trim.1</span></span>
+<span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 13</span></span></span>
 <span><span class="co">##   sample_size distribution     n  mean  trim     sd   skew    kurt   min   P25</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -449,6 +451,7 @@ distributions.</p>
 <span><span class="co">## ------------------------------------------------------------</span></span>
 <span><span class="co">##  </span></span>
 <span><span class="co">## VARIABLE: mean_trim.2</span></span>
+<span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 13</span></span></span>
 <span><span class="co">##   sample_size distribution     n  mean  trim     sd   skew      kurt   min   P25</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -465,6 +468,7 @@ distributions.</p>
 <span><span class="co">## ------------------------------------------------------------</span></span>
 <span><span class="co">##  </span></span>
 <span><span class="co">## VARIABLE: median</span></span>
+<span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 13</span></span></span>
 <span><span class="co">##   sample_size distribution     n  mean  trim     sd     skew    kurt   min   P25</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>

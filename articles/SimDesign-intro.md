@@ -373,6 +373,7 @@ results |> group_by(sample_size, distribution) |>
 ```
 
     ## VARIABLE: mean_no_trim
+    ## 
     ## # A tibble: 8 × 13
     ##   sample_size distribution     n  mean  trim     sd   skew    kurt   min   P25
     ##         <dbl> <chr>        <dbl> <dbl> <dbl>  <dbl>  <dbl>   <dbl> <dbl> <dbl>
@@ -389,6 +390,7 @@ results |> group_by(sample_size, distribution) |>
     ## ------------------------------------------------------------
     ##  
     ## VARIABLE: mean_trim.1
+    ## 
     ## # A tibble: 8 × 13
     ##   sample_size distribution     n  mean  trim     sd   skew    kurt   min   P25
     ##         <dbl> <chr>        <dbl> <dbl> <dbl>  <dbl>  <dbl>   <dbl> <dbl> <dbl>
@@ -405,6 +407,7 @@ results |> group_by(sample_size, distribution) |>
     ## ------------------------------------------------------------
     ##  
     ## VARIABLE: mean_trim.2
+    ## 
     ## # A tibble: 8 × 13
     ##   sample_size distribution     n  mean  trim     sd   skew      kurt   min   P25
     ##         <dbl> <chr>        <dbl> <dbl> <dbl>  <dbl>  <dbl>     <dbl> <dbl> <dbl>
@@ -421,6 +424,7 @@ results |> group_by(sample_size, distribution) |>
     ## ------------------------------------------------------------
     ##  
     ## VARIABLE: median
+    ## 
     ## # A tibble: 8 × 13
     ##   sample_size distribution     n  mean  trim     sd     skew    kurt   min   P25
     ##         <dbl> <chr>        <dbl> <dbl> <dbl>  <dbl>    <dbl>   <dbl> <dbl> <dbl>
