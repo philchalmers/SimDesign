@@ -96,13 +96,6 @@
 #' fmtcars |> descript()               # factors/discrete vars omitted
 #' fmtcars |> descript(discrete=TRUE)  # discrete variables only
 #'
-#' # for discrete variables, xtabs() is generally nicer as cross-tabs can
-#' # be specified explicitly (though can be cumbersome)
-#' xtabs(~ am, fmtcars)
-#' xtabs(~ am, fmtcars) |> prop.table()
-#' xtabs(~ am + cyl + vs, fmtcars)
-#' xtabs(~ am + cyl + vs, fmtcars) |> prop.table()
-#'
 #' # usual pipe chaining
 #' fmtcars |> select(mpg, wt) |> descript()
 #' fmtcars |> subset(mpg > 20) |> select(mpg, wt) |> descript()
@@ -114,8 +107,12 @@
 #'
 #' # same, but formatting output by group instead of VARIABLE
 #' fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
-#' fmtcars |> group_by(cyl, am) |> descript(by_group=TRUE)
-#' fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript(by_group=TRUE)
+#'
+#' # discrete variables also work with group_by()
+#' fmtcars |> descript(discrete=TRUE)
+#' fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
+#' fmtcars |> group_by(am) |> descript(discrete=TRUE)
+#' fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 #'
 #' # with single variables, typical dplyr::summarise() output returned
 #' fmtcars |> select(mpg) |> descript()
@@ -138,12 +135,6 @@
 #' fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |>
 #'   select(cyl, VARS, n, mean)
 #'
-#' # discrete variables also work with group_by(), though again
-#' #  xtabs() is generally more flexible
-#' fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
-#' fmtcars |> group_by(am) |> descript(discrete=TRUE)
-#' fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
-#'
 #' # only compute a subset of summary statistics
 #' funs <- get_descriptFuns()
 #' sfuns <- funs[c('n', 'mean', 'sd')] # subset
@@ -160,9 +151,8 @@ descript <- function(df, funs=get_descriptFuns(),
 {
 	discrete.fun <- function(x){
 		tab <- table(x, useNA = "ifany")
-		ret <- data.frame(values=factor(names(tab)),
-						  count=as.integer(tab), proportion=as.numeric(prop.table(tab))) |>
-			dplyr::as_tibble()
+		ret <- data.frame(count=as.integer(tab), proportion=as.numeric(prop.table(tab)))
+		rownames(ret) <- factor(names(tab))
 		ret
 	}
 
@@ -170,6 +160,23 @@ descript <- function(df, funs=get_descriptFuns(),
 		df <- as.data.frame(df)
 
 	if(collapse || discrete) by_group <- TRUE
+
+	if(length(dplyr::group_keys(df)) && discrete){
+	    groupkeys <- na.omit(dplyr::group_keys(df))
+	    gnames <- colnames(groupkeys)
+	    vars <- colnames(df)
+	    vars <- vars[!(vars %in% colnames(groupkeys)) & sapply(df, is.factor)]
+	    ret <- lapply(vars, \(x){
+	        form <- sprintf("~ %s + %s", x, paste0(gnames, collapse='+'))
+	        xtab <- xtabs(as.formula(form), data = df)
+	        list(count=xtab, proportions=round(prop.table(xtab),3))
+	    })
+	    attr(ret, 'dim') <- length(vars)
+	    attr(ret, 'dimnames') <- list(VARIABLE=paste0(vars, '\n'))
+	    class(ret) <- c('bybye', 'by')
+	    return(ret)
+
+	}
 
 	if(length(dplyr::group_keys(df)) && !by_group){
 	    groupkeys <- na.omit(dplyr::group_keys(df))
@@ -183,7 +190,7 @@ descript <- function(df, funs=get_descriptFuns(),
 	            ret[[i]] <- descript(df0, funs=funs, discrete=discrete, by_group=TRUE)
 	        }
 	        attr(ret, 'dim') <- length(vars)
-	        attr(ret, 'dimnames') <- list(VARIABLE=vars)
+	        attr(ret, 'dimnames') <- list(VARIABLE=paste0(vars, '\n'))
 	        class(ret) <- c('bybye', 'by')
 	        return(ret)
 	    }
@@ -255,7 +262,7 @@ descript <- function(df, funs=get_descriptFuns(),
 		names(ret) <- colnames(df)
 		class(ret) <- 'bybye'
 		attr(ret, 'dim') <- length(ret)
-		attr(ret, 'dimnames') <- list(VARIABLE = colnames(df))
+		attr(ret, 'dimnames') <- list(VARIABLE = paste0(colnames(df), '\n'))
 	}
 	ret
 }

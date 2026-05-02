@@ -107,13 +107,6 @@ mtcars |> descript()
 fmtcars |> descript()               # factors/discrete vars omitted
 fmtcars |> descript(discrete=TRUE)  # discrete variables only
 
-# for discrete variables, xtabs() is generally nicer as cross-tabs can
-# be specified explicitly (though can be cumbersome)
-xtabs(~ am, fmtcars)
-xtabs(~ am, fmtcars) |> prop.table()
-xtabs(~ am + cyl + vs, fmtcars)
-xtabs(~ am + cyl + vs, fmtcars) |> prop.table()
-
 # usual pipe chaining
 fmtcars |> select(mpg, wt) |> descript()
 fmtcars |> subset(mpg > 20) |> select(mpg, wt) |> descript()
@@ -125,8 +118,12 @@ fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript()
 
 # same, but formatting output by group instead of VARIABLE
 fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
-fmtcars |> group_by(cyl, am) |> descript(by_group=TRUE)
-fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript(by_group=TRUE)
+
+# discrete variables also work with group_by()
+fmtcars |> descript(discrete=TRUE)
+fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
+fmtcars |> group_by(am) |> descript(discrete=TRUE)
+fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 
 # with single variables, typical dplyr::summarise() output returned
 fmtcars |> select(mpg) |> descript()
@@ -148,12 +145,6 @@ fmtcars |> group_by(cyl) |> select(mpg) |> descript() |> select(n, mean)
 fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
 fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |>
   select(cyl, VARS, n, mean)
-
-# discrete variables also work with group_by(), though again
-#  xtabs() is generally more flexible
-fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
-fmtcars |> group_by(am) |> descript(discrete=TRUE)
-fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 
 # only compute a subset of summary statistics
 funs <- get_descriptFuns()
