@@ -151,8 +151,11 @@ descript <- function(df, funs=get_descriptFuns(),
 {
 	discrete.fun <- function(x){
 		tab <- table(x, useNA = "ifany")
-		ret <- data.frame(count=as.integer(tab), proportion=as.numeric(prop.table(tab)))
-		rownames(ret) <- factor(names(tab))
+		ret <- data.frame(count=as.integer(tab),
+		                  proportion=as.numeric(prop.table(tab)))
+		nms <- names(tab)
+		nms[is.na(nms)] <- '<NA>'
+		rownames(ret) <- factor(nms)
 		ret
 	}
 
