@@ -193,7 +193,7 @@ retpba
 #> [1] TRUE
 #> 
 #> $time
-#> [1] 0.12s
+#> [1] 0.13s
 #> 
 #> $iterations
 #> [1] 172
