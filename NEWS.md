@@ -2,6 +2,13 @@
 
 ## Changes in SimDesign 2.25
 
+- Fixed a bug where list-based (L'Ecuyer-CMRG) seeds were not applied on the
+  serial (non-parallel) execution path, causing `runArraySimulation(..., iseed)`
+  and `runSimulation(seed = <genSeeds() list>)` to be non-reproducible when
+  `parallel = FALSE`. The internal `set_seed()` helper was assigning
+  `.Random.seed` to its local frame rather than `.GlobalEnv`, so the RNG state
+  was silently discarded. The parallel path was unaffected
+
 - `SimErrors()` and `SimWarnings()`  functions added to better track and 
   extract error/warning information. Makes it easier to track down specific 
   seed states to replicate any of the recorded messages

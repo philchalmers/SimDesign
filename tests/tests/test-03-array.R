@@ -70,6 +70,22 @@ test_that('array', {
 
     SimClean('mysim-1.rds')
 
+    # serial iseed must be byte-for-byte reproducible (L'Ecuyer-CMRG seed
+    # applied via set_seed(); see GitHub bug re: .GlobalEnv assignment)
+    res_s1 <- runArraySimulation(design=Design, replications=20,
+                                 generate=Generate, analyse=Analyse,
+                                 summarise=Summarise, arrayID=1L,
+                                 iseed=iseed, filename='serialseed',
+                                 parallel=FALSE, verbose=FALSE)
+    res_s2 <- runArraySimulation(design=Design, replications=20,
+                                 generate=Generate, analyse=Analyse,
+                                 summarise=Summarise, arrayID=1L,
+                                 iseed=iseed, filename='serialseed',
+                                 parallel=FALSE, verbose=FALSE)
+    expect_identical(SimExtract(res_s1, what='results'),
+                     SimExtract(res_s2, what='results'))
+    SimClean('serialseed-1.rds')
+
     ########################
     # Same submission job as above, however split the replications over multiple
     # evaluations and combine when complete
