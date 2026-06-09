@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Managing warning and error messages • SimDesign</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Managing warning and error messages">
 </head>
@@ -74,7 +74,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2026-05-04</h4>
+            <h4 data-toc-skip class="date">2026-06-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/Catch_errors.Rmd" class="external-link"><code>vignettes/Catch_errors.Rmd</code></a></small>
       <div class="d-none name"><code>Catch_errors.Rmd</code></div>
@@ -230,9 +230,9 @@ iterations).</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
 <span><span class="co">##       N     bias REPLICATIONS SIM_TIME       SEED COMPLETED      ERRORS WARNINGS</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.06s    <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Mon May  4 00…     53       59</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.15s     312<span style="text-decoration: underline;">928</span>385 Mon May  4 00…     52       60</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.05s     866<span style="text-decoration: underline;">248</span>189 Mon May  4 00…     42       56</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>    10 0.061<span style="text-decoration: underline;">138</span>          100 0.04s    <span style="text-decoration: underline;">1</span>140<span style="text-decoration: underline;">350</span>788 Tue Jun  9 17…     53       59</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>    20 0.014<span style="text-decoration: underline;">295</span>          100 0.14s     312<span style="text-decoration: underline;">928</span>385 Tue Jun  9 17…     52       60</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>    30 0.017<span style="text-decoration: underline;">927</span>          100 0.04s     866<span style="text-decoration: underline;">248</span>189 Tue Jun  9 17…     42       56</span></span></code></pre>
 <p>What you’ll immediately notice from this output object is that counts
 of the error and warning messages have been appended to the
 <code>result</code> object. This is useful to determine just how
