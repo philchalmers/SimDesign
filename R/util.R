@@ -678,7 +678,7 @@ pickReps <- function(replications, iter){
 }
 
 set_seed <- function(seed){
-    if(is.list(seed)) .Random.seed <- seed[[1L]]
+    if(is.list(seed)) .GlobalEnv$.Random.seed <- seed[[1L]]
     else set.seed(seed)
     invisible(NULL)
 }
