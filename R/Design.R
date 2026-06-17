@@ -393,7 +393,7 @@ rbindDesign <- function(..., keep.IDs=FALSE){
     dots <- list(...)
     for(i in 1:length(dots))
         class(dots[[i]]) <- class(dots[[i]])[-1]
-    x <- do.call(rbind, dots)
+    x <- dplyr::bind_rows(dots)
     ID <- 1:nrow(x)
     if(keep.IDs)
         ID <- do.call(c, lapply(dots, \(x) attr(x, 'Design.ID')))
