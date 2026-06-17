@@ -312,6 +312,66 @@ nc <- function(..., use.names=FALSE, error.on.duplicate = TRUE){
     ret
 }
 
+#' Check whether package versions are as expected
+#'
+#' Check if a specific version of a package is installed, and throw an error if not what was
+#' anticipated. Particularly useful when submitting jobs to cluster compute nodes where
+#' package versions may be been updated inadvertently.
+#'
+#' @param ... character vectors indicating package and version to check,
+#'   of the form \code{"package OPERATOR version"}, where
+#'   \code{"OPERATOR"} is one of R's logical expressions (e.g., \code{"dplyr == 1.2.1"}).
+#'   Can contain one or more expressions to evaluate
+#'
+#' @export
+#'
+#' @examples
+#'
+#' \dontrun{
+#'
+#'   CheckPackages('dplyr == 1.2.1') # fails if not exact version
+#'   CheckPackages('dplyr <= 1.2.1') # fails if not equal to or less than
+#'   CheckPackages('dplyr >= 1.2.1') # allows specific version or higher
+#'
+#'   CheckPackages('dplyr <= 1.2.1', 'mirt >= 1.45.1')  # multiple checks
+#'
+#' }
+CheckPackages <- function(...){
+    packageVersion <- list(...)
+    lapply(packageVersion, \(pack){
+        pack <- gsub(" ", "", pack, fixed = TRUE)
+        if(grepl('==', pack, fixed=TRUE)){
+            split <- strsplit(pack, "==", fixed = TRUE)[[1]]
+            if(!package_version(packageVersion(split[1])) == split[2])
+                stop(sprintf("%s version is not equal to %s", split[1], split[2]),
+                     call.=FALSE)
+        } else if(grepl('>', pack, fixed=TRUE)){
+            if(grepl('>=', pack, fixed=TRUE)){
+                split <- strsplit(pack, ">=", fixed = TRUE)[[1]]
+                if(!package_version(packageVersion(split[1])) >= split[2])
+                    stop(sprintf("%s version is not greater than or equal to %s", split[1], split[2]),
+                         call.=FALSE)
+            } else {
+                split <- strsplit(pack, ">", fixed = TRUE)[[1]]
+                if(!package_version(packageVersion(split[1])) > split[2])
+                    stop(sprintf("%s version is not greater than %s", split[1], split[2]), call.=FALSE)
+            }
+        } else if(grepl('<', pack, fixed=TRUE)){
+            if(grepl('<=', pack, fixed=TRUE)){
+                split <- strsplit(pack, "<=", fixed = TRUE)[[1]]
+                if(!package_version(packageVersion(split[1])) <= split[2])
+                    stop(sprintf("%s version is not less than or equal to %s", split[1], split[2]),
+                         call.=FALSE)
+            } else {
+                split <- strsplit(pack, "<", fixed = TRUE)[[1]]
+                if(!package_version(packageVersion(split[1])) < split[2])
+                    stop(sprintf("%s version is not less than %s", split[1], split[2]), call.=FALSE)
+            }
+        } else stop('package specification is malformed')
+    })
+    invisible(NULL)
+}
+
 isList <- function(x) !is.data.frame(x) && is.list(x)
 
 reduceTable <- function(tab){

@@ -2,6 +2,8 @@
 
 ## Changes in SimDesign 2.25
 
+- Added `CheckPackages()` to evaluate whether package versions are as expected.
+
 - Fixed a bug where list-based (L'Ecuyer-CMRG) seeds were not applied on the
   serial (non-parallel) execution path, causing `runArraySimulation(..., iseed)`
   and `runSimulation(seed = <genSeeds() list>)` to be non-reproducible when
