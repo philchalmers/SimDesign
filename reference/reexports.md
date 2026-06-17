@@ -5,6 +5,6 @@ to see their documentation.
 
 - dplyr:
 
-  [`arrange`](https://dplyr.tidyverse.org/reference/arrange.html),
-  [`group_by`](https://dplyr.tidyverse.org/reference/group_by.html),
-  [`select`](https://dplyr.tidyverse.org/reference/select.html)
+  [`arrange()`](https://dplyr.tidyverse.org/reference/arrange.html),
+  [`group_by()`](https://dplyr.tidyverse.org/reference/group_by.html),
+  [`select()`](https://dplyr.tidyverse.org/reference/select.html)

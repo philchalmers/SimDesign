@@ -27,6 +27,9 @@
 - [`CC()`](http://philchalmers.github.io/SimDesign/reference/CC.md) :
   Compute congruence coefficient
 
+- [`CheckPackages()`](http://philchalmers.github.io/SimDesign/reference/CheckPackages.md)
+  : Check whether package versions are as expected
+
 - [`ECR()`](http://philchalmers.github.io/SimDesign/reference/ECR.md) :
   Compute empirical coverage rates
 
