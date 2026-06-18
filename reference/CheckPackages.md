@@ -20,6 +20,10 @@ CheckPackages(...)
   expressions (e.g., `"dplyr == 1.2.1"`). Can contain one or more
   expressions to evaluate
 
+## Value
+
+invisible return of the package names as a character vector
+
 ## Examples
 
 ``` r
