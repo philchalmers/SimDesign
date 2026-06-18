@@ -1,8 +1,10 @@
 # NEWS file for SimDesign
 
-## Changes in SimDesign 2.25
+## Changes in SimDesign 2.26
 
 - Added `CheckPackages()` to evaluate whether package versions are as expected.
+  This is also now used in `runSimulation(..., packages)`, when applicable,
+  to ensure package version pass sanity checks before code execution
 
 - Fixed a bug where list-based (L'Ecuyer-CMRG) seeds were not applied on the
   serial (non-parallel) execution path, causing `runArraySimulation(..., iseed)`
@@ -10,6 +12,8 @@
   `parallel = FALSE`. The internal `set_seed()` helper was assigning
   `.Random.seed` to its local frame rather than `.GlobalEnv`, so the RNG state
   was silently discarded. The parallel path was unaffected
+
+## Changes in SimDesign 2.25
 
 - `SimErrors()` and `SimWarnings()`  functions added to better track and 
   extract error/warning information. Makes it easier to track down specific 

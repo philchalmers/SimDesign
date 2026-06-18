@@ -12,6 +12,9 @@ of the form \code{"package OPERATOR version"}, where
 \code{"OPERATOR"} is one of R's logical expressions (e.g., \code{"dplyr == 1.2.1"}).
 Can contain one or more expressions to evaluate}
 }
+\value{
+invisible return of the package names as a character vector
+}
 \description{
 Check if a specific version of a package is installed, and throw an error if not what was
 anticipated. Particularly useful when submitting jobs to cluster compute nodes where

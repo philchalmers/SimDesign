@@ -172,14 +172,18 @@ common design matrix for linear regression models), or simply control
 constant global elements (e.g., a constant for sample size)}
 
 \item{packages}{a character vector of external packages to be used during the simulation (e.g.,
-\code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when running code in
-parallel to use non-standard functions from additional packages. Note that any previously attached
-packages explicitly loaded via \code{\link{library}} or \code{\link{require}}
-will be automatically added to this list, provided that they are visible
-in the \code{otherPkgs} element
-from \code{\link[utils]{sessionInfo}}. Alternatively, functions can be called
-explicitly without attaching the package with the \code{::} operator
-(e.g., \code{extraDistr::rgumbel()})}
+  \code{c('MASS', 'extraDistr', 'simsem')}), though if a logical operator is detected will be passed to
+  \code{\link{CheckPackages}} as well to ensure that the strong  package version dependencies are
+  verified before executing the code (e.g., \code{c('MASS >= 7.3.65', 'extraDistr == 1.10.0.4')}).
+
+  Use this input when running code in
+  parallel to use non-standard functions from additional packages. Note that any previously attached
+  packages explicitly loaded via \code{\link{library}} or \code{\link{require}}
+  will be automatically added to this list, provided that they are visible
+  in the \code{otherPkgs} element
+  from \code{\link[utils]{sessionInfo}}. Alternatively, functions can be called
+  explicitly without attaching the package with the \code{::} operator
+  (e.g., \code{extraDistr::rgumbel()})}
 
 \item{filename}{(optional) the name of the \code{.rds} file to save the final
 simulation results to. If the extension

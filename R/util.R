@@ -323,6 +323,8 @@ nc <- function(..., use.names=FALSE, error.on.duplicate = TRUE){
 #'   \code{"OPERATOR"} is one of R's logical expressions (e.g., \code{"dplyr == 1.2.1"}).
 #'   Can contain one or more expressions to evaluate
 #'
+#' @return invisible return of the package names as a character vector
+#'
 #' @export
 #'
 #' @examples
@@ -338,7 +340,7 @@ nc <- function(..., use.names=FALSE, error.on.duplicate = TRUE){
 #' }
 CheckPackages <- function(...){
     packageVersion <- list(...)
-    lapply(packageVersion, \(pack){
+    pack.out <- sapply(packageVersion, \(pack){
         pack <- gsub(" ", "", pack, fixed = TRUE)
         if(grepl('==', pack, fixed=TRUE)){
             split <- strsplit(pack, "==", fixed = TRUE)[[1]]
@@ -368,8 +370,9 @@ CheckPackages <- function(...){
                     stop(sprintf("%s version is not less than %s", split[1], split[2]), call.=FALSE)
             }
         } else stop('package specification is malformed')
+        split[1]
     })
-    invisible(NULL)
+    invisible(pack.out)
 }
 
 isList <- function(x) !is.data.frame(x) && is.list(x)

@@ -289,7 +289,11 @@
 #'   \code{plan()} will be followed instead
 #'
 #' @param packages a character vector of external packages to be used during the simulation (e.g.,
-#'   \code{c('MASS', 'extraDistr', 'simsem')} ). Use this input when running code in
+#'   \code{c('MASS', 'extraDistr', 'simsem')}), though if a logical operator is detected will be passed to
+#'   \code{\link{CheckPackages}} as well to ensure that the strong  package version dependencies are
+#'   verified before executing the code (e.g., \code{c('MASS >= 7.3.65', 'extraDistr == 1.10.0.4')}).
+#'
+#'   Use this input when running code in
 #'   parallel to use non-standard functions from additional packages. Note that any previously attached
 #'   packages explicitly loaded via \code{\link{library}} or \code{\link{require}}
 #'   will be automatically added to this list, provided that they are visible
@@ -1462,6 +1466,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
     packages <- unique(c(packages, 'SimDesign'))
     if(all(names(utils::sessionInfo()$otherPkgs) != 'future'))
         packages <- unique(c(packages, names(utils::sessionInfo()$otherPkgs)))
+    has_pkg_logical <- grepl("=|>|<", packages)
+    if(any(has_pkg_logical))
+        packages[has_pkg_logical] <- CheckPackages(packages[has_pkg_logical])
     char_functions <- deparse(substitute(Functions[[i]]))
     if(any(grepl('browser\\(', char_functions))){
         if(verbose && parallel)

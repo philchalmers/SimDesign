@@ -335,10 +335,14 @@ test_that('SimDesign', {
                              parallel=FALSE, save=FALSE, verbose = FALSE,
                              control = list(warnings_as_errors=TRUE))
     expect_true(any(grepl('ERROR', names(results))))
-    results <- runSimulation(Design, replications = 3, packages = 'extraDistr',
+    results <- runSimulation(Design, replications = 3, packages = 'extraDistr >= 1.10.0.3',
                   generate=mygenerate, analyse=mycompute, summarise=mycollect,
                   parallel=TRUE, ncores=2L, save=FALSE, verbose = FALSE)
     expect_true(any(grepl('WARNING', names(results))))
+    expect_error(runSimulation(Design, replications = 3, packages = 'extraDistr <= 1.10.0.3',
+                             generate=mygenerate, analyse=mycompute, summarise=mycollect,
+                             parallel=FALSE, save=FALSE, verbose = FALSE))
+
 
     # permissible warnings
     fn1 <- function(){
