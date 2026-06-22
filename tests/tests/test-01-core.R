@@ -166,6 +166,38 @@ test_that('SimDesign', {
     plan(sequential)
     detach("package:future")
 
+    # regression test: list-valued generate/analyse must work on every backend.
+    # The function lists are stashed in the package-internal .SIMDENV; future
+    # workers start from a freshly loaded package, so the lists must travel with
+    # the futures (otherwise combined_Analyses() errors with
+    # "object 'ANALYSE_FUNCTIONS' not found"). See GH regression.
+    listGenerate <- function(condition, fixed_objects) data.frame(y = rnorm(condition$n))
+    listAnalyse_m <- function(condition, dat, fixed_objects) c(m = mean(dat$y))
+    listAnalyse_s <- function(condition, dat, fixed_objects) c(s = sd(dat$y))
+    listSummarise <- function(condition, results, fixed_objects) colMeans(results)
+    listDesign <- createDesign(n = c(30, 60))
+    expected_cols <- c("mean.m", "sd.s")
+    run_list_sim <- function(...)
+        runSimulation(listDesign, replications = 4, generate = listGenerate,
+                      analyse = list(mean = listAnalyse_m, sd = listAnalyse_s),
+                      summarise = listSummarise, verbose = FALSE, ...)
+
+    res_serial <- run_list_sim(parallel = FALSE)
+    expect_null(res_serial$FATAL_TERMINATION)
+    expect_true(all(expected_cols %in% names(res_serial)))
+
+    res_sock <- run_list_sim(parallel = TRUE, ncores = 2L)
+    expect_null(res_sock$FATAL_TERMINATION)
+    expect_true(all(expected_cols %in% names(res_sock)))
+
+    suppressPackageStartupMessages(suppressWarnings(library(future)))
+    plan(multisession, workers = 2L)
+    res_future <- run_list_sim(parallel = "future")
+    plan(sequential)
+    detach("package:future")
+    expect_null(res_future$FATAL_TERMINATION)
+    expect_true(all(expected_cols %in% names(res_future)))
+
     Final <- runSimulation(Design, generate=mysim, analyse=mycompute, summarise=mycollect,
                            replications = 2, parallel=FALSE, save=FALSE, verbose = FALSE,
                            store_results = TRUE)

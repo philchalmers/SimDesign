@@ -53,6 +53,32 @@ Analysis <- function(Functions, condition, condition.row, replications, fixed_ob
         if(!is.null(seed)) set_seed(seed)
         iters <- 1L:replications
         p <- progressr::progressor(along = iters)
+        # When generate/analyse are supplied as lists the corresponding
+        # function lists are stashed in the package-internal .SIMDENV (see
+        # runSimulation()) and read back by combined_Generate()/combined_Analyses().
+        # The SOCK/MPI path exports them to the workers via clusterExport(), but
+        # future workers start from a freshly loaded package whose .SIMDENV is
+        # empty. Carry the lists along with each future and restore them into the
+        # worker's .SIMDENV before the replication runs, so the lookup succeeds
+        # regardless of the chosen future plan.
+        if(!is.null(.SIMDENV$GENERATE_FUNCTIONS) || !is.null(.SIMDENV$ANALYSE_FUNCTIONS)){
+            used_mainsim <- local({
+                FUN <- used_mainsim
+                GENERATE_FUNCTIONS <- .SIMDENV$GENERATE_FUNCTIONS
+                ANALYSE_FUNCTIONS <- .SIMDENV$ANALYSE_FUNCTIONS
+                TRY_ALL_ANALYSE <- .SIMDENV$TRY_ALL_ANALYSE
+                function(...){
+                    SIMDENV <- utils::getFromNamespace('.SIMDENV', 'SimDesign')
+                    if(!is.null(GENERATE_FUNCTIONS))
+                        SIMDENV$GENERATE_FUNCTIONS <- GENERATE_FUNCTIONS
+                    if(!is.null(ANALYSE_FUNCTIONS)){
+                        SIMDENV$ANALYSE_FUNCTIONS <- ANALYSE_FUNCTIONS
+                        SIMDENV$TRY_ALL_ANALYSE <- TRY_ALL_ANALYSE
+                    }
+                    FUN(...)
+                }
+            })
+        }
         results <- try(future.apply::future_lapply(iters,
                                                    used_mainsim, condition=condition,
                                                    condition.row=condition.row,
