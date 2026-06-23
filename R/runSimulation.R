@@ -1205,7 +1205,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         resume <- TRUE
     }
     if(!verbose) control$print_RAM <- FALSE
-    ANALYSE_FUNCTIONS <- TRY_ALL_ANALYSE <- NULL
+    GENERATE_FUNCTIONS <- ANALYSE_FUNCTIONS <- TRY_ALL_ANALYSE <- NULL
     if(is.character(parallel)){
         useFuture <- tolower(parallel) == 'future'
         parallel <- TRUE
@@ -1234,7 +1234,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         } else {
             for(i in 1L:length(generate))
                 generate[[i]] <- compiler::cmpfun(generate[[i]])
-            .SIMDENV$GENERATE_FUNCTIONS <- generate
+            .SIMDENV$GENERATE_FUNCTIONS <- GENERATE_FUNCTIONS <- generate
             generate <- combined_Generate
             for(i in 1L:length(generate)){
                 char_functions <- deparse(substitute(.SIMDENV$GENERATE_FUNCTIONS[[i]]))
@@ -1531,6 +1531,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         }
         if(!useFuture){
             parallel::clusterExport(cl=cl, export_funs, envir = parent.frame(1L))
+            if(!is.null(GENERATE_FUNCTIONS))
+                parallel::clusterExport(cl=cl, "GENERATE_FUNCTIONS", envir = environment())
             parallel::clusterExport(cl=cl, "ANALYSE_FUNCTIONS", envir = environment())
             parallel::clusterExport(cl=cl, "TRY_ALL_ANALYSE", envir = environment())
             if(!is.null(prepare))
