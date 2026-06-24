@@ -31,6 +31,11 @@
 #' replications should submit a new set of jobs at a later time
 #' to collect the missing information.
 #'
+#' Note that because a large number of files may be stored by this function it is recommended
+#' to change the working directory of your SLURM submissions to your dedicated \code{SCRATCH}
+#' directory. Use something like \code{setwd(Sys.getenv("SCRATCH"))}, if applicable, prior
+#' to executing \code{runArraySimulation()}.
+#'
 #' @param design design object containing simulation conditions on a per row basis.
 #'   This function is design to submit each row as in independent job on a HPC cluster.
 #'   See \code{\link{runSimulation}} for further details

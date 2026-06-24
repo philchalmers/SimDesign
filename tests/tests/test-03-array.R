@@ -77,6 +77,7 @@ test_that('array', {
                                  summarise=Summarise, arrayID=1L,
                                  iseed=iseed, filename='serialseed',
                                  parallel=FALSE, verbose=FALSE)
+    SimClean('serialseed-1.rds')
     res_s2 <- runArraySimulation(design=Design, replications=20,
                                  generate=Generate, analyse=Analyse,
                                  summarise=Summarise, arrayID=1L,

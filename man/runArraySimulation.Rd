@@ -141,6 +141,11 @@ on the HPC cluster (e.g., approximately 90% of this time or less, though
 depends on how long, and how variable, each replication is). Simulations with missing
 replications should submit a new set of jobs at a later time
 to collect the missing information.
+
+Note that because a large number of files may be stored by this function it is recommended
+to change the working directory of your SLURM submissions to your dedicated \code{SCRATCH}
+directory. Use something like \code{setwd(Sys.getenv("SCRATCH"))}, if applicable, prior
+to executing \code{runArraySimulation()}.
 }
 \examples{
 
