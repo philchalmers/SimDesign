@@ -6,6 +6,17 @@
   This is also now used in `runSimulation(..., packages)`, when applicable,
   to ensure package version pass sanity checks before code execution
 
+- Fixed a bug where list-valued `generate`/`analyse` definitions failed on
+  parallel workers, terminating with `object 'GENERATE_FUNCTIONS' not found`
+  or `object 'ANALYSE_FUNCTIONS' not found`. When these arguments are lists the
+  original function lists are stashed in the package-internal environment, which
+  was not delivered to the workers: the socket/MPI path (`parallel = TRUE`)
+  exported `ANALYSE_FUNCTIONS` but not `GENERATE_FUNCTIONS`, and the
+  `parallel = "future"` path exported neither. The `future` worker function is
+  now wrapped to restore the captured function lists before each replication,
+  and `GENERATE_FUNCTIONS` is included in the socket cluster export. The serial
+  (`parallel = FALSE`) path was unaffected
+
 - Fixed a bug where list-based (L'Ecuyer-CMRG) seeds were not applied on the
   serial (non-parallel) execution path, causing `runArraySimulation(..., iseed)`
   and `runSimulation(seed = <genSeeds() list>)` to be non-reproducible when
