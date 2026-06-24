@@ -25,7 +25,7 @@ vignette for a brief tutorial of this setup."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -238,6 +238,10 @@ on the HPC cluster (e.g., approximately 90<!-- % of this time or less, though --
 depends on how long, and how variable, each replication is). Simulations with missing
 replications should submit a new set of jobs at a later time
 to collect the missing information.</p>
+<p>Note that because a large number of files may be stored by this function it is recommended
+to change the working directory of your SLURM submissions to your dedicated <code>SCRATCH</code>
+directory. Use something like <code>setwd(Sys.getenv("SCRATCH"))</code>, if applicable, prior
+to executing <code>runArraySimulation()</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

@@ -188,6 +188,12 @@ long, and how variable, each replication is). Simulations with missing
 replications should submit a new set of jobs at a later time to collect
 the missing information.
 
+Note that because a large number of files may be stored by this function
+it is recommended to change the working directory of your SLURM
+submissions to your dedicated `SCRATCH` directory. Use something like
+`setwd(Sys.getenv("SCRATCH"))`, if applicable, prior to executing
+`runArraySimulation()`.
+
 ## References
 
 Chalmers, R. P., & Adkins, M. C. (2020). Writing Effective and Reliable
