@@ -159,6 +159,7 @@
 - [`createDesign()`](http://philchalmers.github.io/SimDesign/reference/createDesign.md)
   [`print(`*`<Design>`*`)`](http://philchalmers.github.io/SimDesign/reference/createDesign.md)
   [`` `[`( ``*`<Design>`*`)`](http://philchalmers.github.io/SimDesign/reference/createDesign.md)
+  [`rbind(`*`<Design>`*`)`](http://philchalmers.github.io/SimDesign/reference/createDesign.md)
   [`rbindDesign()`](http://philchalmers.github.io/SimDesign/reference/createDesign.md)
   : Create the simulation design object
 

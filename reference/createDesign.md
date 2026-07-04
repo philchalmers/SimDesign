@@ -23,6 +23,9 @@ print(x, list2char = TRUE, pillar.sigfig = 5, show.IDs = FALSE, ...)
 # S3 method for class 'Design'
 x[i, j, ..., drop = FALSE]
 
+# S3 method for class 'Design'
+rbind(..., keep.IDs = FALSE)
+
 rbindDesign(..., keep.IDs = FALSE)
 ```
 

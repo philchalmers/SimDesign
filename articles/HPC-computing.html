@@ -74,7 +74,7 @@
                         <h4 data-toc-skip class="author">Phil
 Chalmers</h4>
             
-            <h4 data-toc-skip class="date">2026-06-24</h4>
+            <h4 data-toc-skip class="date">2026-07-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/philchalmers/SimDesign/blob/main/vignettes/HPC-computing.Rmd" class="external-link"><code>vignettes/HPC-computing.Rmd</code></a></small>
       <div class="d-none name"><code>HPC-computing.Rmd</code></div>
@@ -884,8 +884,8 @@ via inspection of the aggregated results</p>
 1    10                1000               10000
 2    30                2000               10000</code></pre>
 <div class="section level4">
-<h4 id="create-new-conditions-for-missing-replications-and-use-rbinddesign">Create new conditions for missing replications, and use
-<code>rbindDesign()</code><a class="anchor" aria-label="anchor" href="#create-new-conditions-for-missing-replications-and-use-rbinddesign"></a>
+<h4 id="create-new-conditions-for-missing-replications-and-use-rbind">Create new conditions for missing replications, and use
+<code>rbind()</code><a class="anchor" aria-label="anchor" href="#create-new-conditions-for-missing-replications-and-use-rbind"></a>
 </h4>
 <p>Next, build a new simulation structure containing only the missing
 information components.</p>
@@ -918,7 +918,7 @@ were part of the initial job submission. Note that the
 <code>Design</code> object in its construction so that the internal
 <code>Design.ID</code> attributes are properly tracked.</p>
 <p>Finally, the new <code>subDesign</code> information is row-bound to
-the original expanded version using <code><a href="../reference/createDesign.html">rbindDesign()</a></code> with
+the original expanded version using <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code> with
 <code>keep.IDs = TRUE</code> (the default), though telling the scheduler
 to only evaluate these new rows in the <code>#SBATCH --array</code>
 specification.</p>
@@ -948,7 +948,7 @@ specification.</p>
 <span><span class="co">## 50 50</span></span></code></pre>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># new total design and replication objects</span></span>
-<span><span class="va">Design_total</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createDesign.html">rbindDesign</a></span><span class="op">(</span><span class="va">Design300</span>, <span class="va">Design_left</span>, keep.IDs<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">Design_total</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">Design300</span>, <span class="va">Design_left</span>, keep.IDs<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Design_total</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 400</span></span></code></pre>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
