@@ -499,7 +499,7 @@ Missed
 2    30                2000               10000
 ```
 
-### Create new conditions for missing replications, and use `rbindDesign()`
+### Create new conditions for missing replications, and use `rbind()`
 
 Next, build a new simulation structure containing only the missing information components.
 
@@ -525,7 +525,7 @@ At this point, you can return to the above logic of organizing the simulation sc
 original `Design` object in its construction so that the internal 
 `Design.ID` attributes are properly tracked.
 
-Finally, the new `subDesign` information is row-bound to the original expanded version using `rbindDesign()` with `keep.IDs = TRUE` (the default), though telling the scheduler to only evaluate these new rows in the `#SBATCH --array` specification. 
+Finally, the new `subDesign` information is row-bound to the original expanded version using `rbind()` with `keep.IDs = TRUE` (the default), though telling the scheduler to only evaluate these new rows in the `#SBATCH --array` specification. 
 
 ```{r}
 rc <- 50
@@ -536,7 +536,7 @@ replications_left <- rep(replications_missed/rc, each=rc)
 table(replications_left)
 
 # new total design and replication objects
-Design_total <- rbindDesign(Design300, Design_left, keep.IDs=TRUE)
+Design_total <- rbind(Design300, Design_left, keep.IDs=TRUE)
 nrow(Design_total)
 print(Design_total, show.IDs = TRUE)
 replications_total <- c(replications, replications_left)
