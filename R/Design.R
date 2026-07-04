@@ -402,3 +402,7 @@ rbind.Design <- function(..., keep.IDs=FALSE){
     x
 }
 
+#' @rdname createDesign
+#' @export
+rbindDesign <- rbind.Design
+
