@@ -4,7 +4,7 @@
 \alias{createDesign}
 \alias{print.Design}
 \alias{[.Design}
-\alias{rbindDesign}
+\alias{rbind.Design}
 \title{Create the simulation design object}
 \usage{
 createDesign(
@@ -20,7 +20,7 @@ createDesign(
 
 \method{[}{Design}(x, i, j, ..., drop = FALSE)
 
-rbindDesign(..., keep.IDs = FALSE)
+\method{rbind}{Design}(..., keep.IDs = FALSE)
 }
 \arguments{
 \item{...}{comma separated list of named input objects representing the simulation

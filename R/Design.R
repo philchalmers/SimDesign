@@ -389,7 +389,7 @@ printDesign <- function(x, whichlist, ..., show.IDs=TRUE, n = NULL,
 #'   that are matched with previous conditions
 #'   (e.g., when using \code{\link{expandDesign}})
 #' @export
-rbindDesign <- function(..., keep.IDs=FALSE){
+rbind.Design <- function(..., keep.IDs=FALSE){
     dots <- list(...)
     for(i in 1:length(dots))
         class(dots[[i]]) <- class(dots[[i]])[-1]
