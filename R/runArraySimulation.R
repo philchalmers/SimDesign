@@ -118,9 +118,9 @@
 #' @param ... additional arguments to be passed to \code{\link{runSimulation}}
 #'
 #' @param verbose logical; pass a verbose flag to \code{\link{runSimulation}}.
-#'   Unlike \code{\link{runSimulation}} this is set to FALSE during interactive
-#'   sessions, though set to TRUE when non-interactive and information about the
-#'   session itself should be stored (e.g., in SLURM \code{.out} files)
+#'   Unlike \code{\link{runSimulation}} this is set to TRUE during interactive
+#'   sessions to collect passive information about the
+#'   session itself (e.g., in SLURM \code{.out} files)
 #'
 #' @export
 #'
@@ -313,7 +313,7 @@ runArraySimulation <- function(design, ..., replications,
                                parallel = FALSE, cl = NULL,
                                ncores = parallelly::availableCores(omit = 1L),
                                save_details = list(), control = list(),
-                               verbose = interactive()){
+                               verbose = TRUE){
     dots <- list(...)
     if(parallel && ncores == 1L) parallel <- FALSE
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))

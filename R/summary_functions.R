@@ -108,7 +108,6 @@
 #' estimates <- parameters + rnorm(10)
 #' bias(estimates, parameters)
 #'
-
 #'
 #' # relative difference dividing by the magnitude of parameters
 #' bias(estimates, parameters, type = 'abs_relative')
@@ -151,6 +150,8 @@ bias <- function(estimate, parameter = NULL, type = 'bias', center = mean,
     equal_len <- length(estimate) == length(parameter)
     if(!equal_len)
         stopifnot(ncol(estimate) == length(parameter))
+    if(any(is.na(estimate) || is.nan(estimate)))
+        warning('estimate contains NA/NaNs. Please inspect')
     diff <- t(t(estimate) - parameter)
     ret <- if(type == 'relative') apply(t(diff) / parameter, 1, center)
         else if(type == 'abs_relative') apply(abs(t(diff) / parameter), 1, center)
@@ -293,6 +294,8 @@ RMSE <- function(estimate, parameter = NULL, type = 'RMSE', center = mean,
     equal_len <- length(estimate) == length(parameter)
     if(!equal_len)
         stopifnot(ncol(estimate) == length(parameter))
+    if(any(is.na(estimate) || is.nan(estimate)))
+        warning('estimate contains NA/NaNs. Please inspect')
     diff2 <- t( (t(estimate) - parameter)^2 )
     ret <- sqrt(apply(diff2, 2, center))
     if(type == 'NRMSE'){
@@ -515,6 +518,8 @@ MAE <- function(estimate, parameter = NULL, type = 'MAE', center = mean,
     equal_len <- length(estimate) == length(parameter)
     if(!equal_len)
         stopifnot(ncol(estimate) == length(parameter))
+    if(any(is.na(estimate) || is.nan(estimate)))
+        warning('estimate contains NA/NaNs. Please inspect')
     ret <- apply(t(abs(t(estimate) - parameter)), 2, center)
     if(type == 'NMAE'){
         diff <- apply(estimate, 2, max) - apply(estimate, 2, min)
@@ -932,7 +937,9 @@ EDR <- function(p, alpha = .05, unname = FALSE){
     stopifnot(length(alpha) == 1L)
     stopifnot(alpha <= 1 && alpha >= 0)
     if(is.vector(p)) p <- matrix(p)
-    ret <- colMeans(p <= alpha)
+    if(any(is.na(p) || is.nan(p)))
+        warning('p contains NA/NaNs. Please inspect')
+    ret <- colMeans(p <= alpha, na.rm = TRUE)
     if(unname) ret <- unname(ret)
     ret
 }
