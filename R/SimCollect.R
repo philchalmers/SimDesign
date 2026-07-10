@@ -276,9 +276,9 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
     if(length(unique(sapply(readin, ncol))) > 1L){
         tab <- table(sapply(readin, ncol))
         pick <- filenames[as.integer(names(which.min(tab))) == sapply(readin, ncol)]
-        stop(sprintf(c('Number of columns not equal. ',
+        stop(sprintf(c('Number of columns not equal. Please inspect and potentially reSummarise().',
                      'The following files had the fewest columns:\n%s'),
-                     paste0(pick, collapse=', ')))
+                     paste0(pick, collapse='\n')))
     }
     Design.ID <- sapply(readin, \(x) SimExtract(x, 'Design.ID'))
     if(is.matrix(Design.ID)){
