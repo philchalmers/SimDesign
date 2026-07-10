@@ -2,6 +2,9 @@
 
 ## Changes in SimDesign 2.26
 
+- More forgiving behavior when `Summarise()` fails for unexpected reasons. A 
+  placeholder is now returned instead with a suitable error message
+
 - Added `CheckPackages()` to evaluate whether package versions are as expected.
   This is also now used in `runSimulation(..., packages)`, when applicable,
   to ensure package version pass sanity checks before code execution
