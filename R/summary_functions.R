@@ -933,12 +933,12 @@ RD <- function(est, pop, as.vector = TRUE, unname = FALSE){
 #'
 EDR <- function(p, alpha = .05, unname = FALSE){
     if(is.data.frame(p)) p <- as.matrix(p)
-    stopifnot(all(p <= 1 & p >= 0))
+    if(any(is.na(p) | is.nan(p)))
+        warning('p contains NA/NaNs. Please inspect')
+    stopifnot(all(p <= 1 & p >= 0, na.rm = TRUE))
     stopifnot(length(alpha) == 1L)
     stopifnot(alpha <= 1 && alpha >= 0)
     if(is.vector(p)) p <- matrix(p)
-    if(any(is.na(p) || is.nan(p)))
-        warning('p contains NA/NaNs. Please inspect')
     ret <- colMeans(p <= alpha, na.rm = TRUE)
     if(unname) ret <- unname(ret)
     ret
