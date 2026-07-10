@@ -105,6 +105,6 @@ results
 #> # A tibble: 1 × 6
 #>   `SE.(Intercept)`   SE.X REPLICATIONS SIM_TIME      SEED COMPLETED             
 #>              <dbl>  <dbl>        <dbl> <chr>        <int> <chr>                 
-#> 1          0.98822 1.1781          500 0.46s    402147477 Fri Jul 10 01:38:59 2…
+#> 1          0.98822 1.1781          500 0.63s    402147477 Fri Jul 10 02:31:42 2…
 
 ```

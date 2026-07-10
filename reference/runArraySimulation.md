@@ -33,7 +33,7 @@ runArraySimulation(
   ncores = parallelly::availableCores(omit = 1L),
   save_details = list(),
   control = list(),
-  verbose = interactive()
+  verbose = TRUE
 )
 ```
 
@@ -160,9 +160,8 @@ runArraySimulation(
   [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md).
   Unlike
   [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
-  this is set to FALSE during interactive sessions, though set to TRUE
-  when non-interactive and information about the session itself should
-  be stored (e.g., in SLURM `.out` files)
+  this is set to TRUE during interactive sessions to collect passive
+  information about the session itself (e.g., in SLURM `.out` files)
 
 ## Details
 
