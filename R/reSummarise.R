@@ -158,13 +158,19 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
     for(i in 1L:length(files)){
         if(read_files){
             inp <- SimRead(files[i])
-            conditions[[i]] <- inp$condition
+            if(is(inp, 'SimDesign')){
+                conditions[[i]] <- SimExtract(inp, what='design')
+                results <- SimExtract(inp, what='results')
+            } else {
+                conditions[[i]] <- inp$condition
+                results <- inp$results
+            }
             summ <- if(nargs == 3)
-                try(summarise(condition=inp$condition, results=inp$results,
+                try(summarise(condition=conditions[[i]], results=results,
                                   fixed_objects=fixed_objects))
             else if(nargs == 2)
-                try(summarise(results=inp$results, fixed_objects=fixed_objects))
-            else try(summarise(inp$results))
+                try(summarise(results=results, fixed_objects=fixed_objects))
+            else try(summarise(results))
             if(is(summ, 'try-error'))
                 stop(sprintf("File \'%s\' threw an error in the summarise() function", files[i]))
         } else {
