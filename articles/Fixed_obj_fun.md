@@ -181,9 +181,9 @@ res
     ## # A tibble: 3 × 6
     ##       N     p REPLICATIONS SIM_TIME       SEED COMPLETED               
     ##   <dbl> <dbl>        <dbl> <chr>         <int> <chr>                   
-    ## 1    10 0.044         1000 0.39s     488349520 Fri Jul 10 02:32:34 2026
-    ## 2    20 0.06          1000 0.54s     469344150 Fri Jul 10 02:32:34 2026
-    ## 3    30 0.054         1000 0.30s    1550099436 Fri Jul 10 02:32:34 2026
+    ## 1    10 0.044         1000 0.19s     488349520 Sat Jul 11 03:54:41 2026
+    ## 2    20 0.06          1000 0.29s     469344150 Sat Jul 11 03:54:41 2026
+    ## 3    30 0.054         1000 0.17s    1550099436 Sat Jul 11 03:54:41 2026
 
 By placing objects in a list and passing this to `fixed_objects`, the
 objects are safely exported to all relevant functions. Furthermore,

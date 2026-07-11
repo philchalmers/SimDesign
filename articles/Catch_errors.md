@@ -187,9 +187,9 @@ print(result)
     ## # A tibble: 3 × 8
     ##       N     bias REPLICATIONS SIM_TIME       SEED COMPLETED      ERRORS WARNINGS
     ##   <dbl>    <dbl>        <dbl> <chr>         <int> <chr>           <int>    <int>
-    ## 1    10 0.061138          100 0.08s    1140350788 Fri Jul 10 02…     53       59
-    ## 2    20 0.014295          100 0.30s     312928385 Fri Jul 10 02…     52       60
-    ## 3    30 0.017927          100 0.05s     866248189 Fri Jul 10 02…     42       56
+    ## 1    10 0.061138          100 0.04s    1140350788 Sat Jul 11 03…     53       59
+    ## 2    20 0.014295          100 0.14s     312928385 Sat Jul 11 03…     52       60
+    ## 3    30 0.017927          100 0.04s     866248189 Sat Jul 11 03…     42       56
 
 What you’ll immediately notice from this output object is that counts of
 the error and warning messages have been appended to the `result`
