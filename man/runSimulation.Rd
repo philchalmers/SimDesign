@@ -40,7 +40,7 @@ runSimulation(
   control = list(),
   not_parallel = NULL,
   progress = TRUE,
-  verbose = interactive()
+  verbose = TRUE
 )
 
 \method{summary}{SimDesign}(object, ...)
@@ -629,8 +629,7 @@ text-based progress updates that are visible in log files.
 This is useful when simulations conditions take a long time to run (see also the
 \code{notification} argument). Default is \code{TRUE}}
 
-\item{verbose}{logical; print messages to the R console? Default is \code{TRUE} when
-in interactive mode}
+\item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
 
 \item{object}{SimDesign object returned from \code{\link{runSimulation}}}
 
