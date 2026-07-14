@@ -179,17 +179,29 @@ result <- runSimulation(Design, replications = 100,
                        generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
 
+    ## 
+    ## Design: 1/3;   Replications: 100;   RAM Used: 78.9 Mb;   Total Time: 0.00s 
+    ##  Conditions: N=10
+    ## 
+    ## Design: 2/3;   Replications: 100;   RAM Used: 80 Mb;   Total Time: 0.04s 
+    ##  Conditions: N=20
+    ## 
+    ## Design: 3/3;   Replications: 100;   RAM Used: 80.2 Mb;   Total Time: 0.17s 
+    ##  Conditions: N=30
+    ## 
+
 ``` r
 
 print(result)
 ```
 
-    ## # A tibble: 3 × 8
-    ##       N     bias REPLICATIONS SIM_TIME       SEED COMPLETED      ERRORS WARNINGS
-    ##   <dbl>    <dbl>        <dbl> <chr>         <int> <chr>           <int>    <int>
-    ## 1    10 0.061138          100 0.04s    1140350788 Sat Jul 11 03…     53       59
-    ## 2    20 0.014295          100 0.14s     312928385 Sat Jul 11 03…     52       60
-    ## 3    30 0.017927          100 0.04s     866248189 Sat Jul 11 03…     42       56
+    ## # A tibble: 3 × 9
+    ##       N     bias REPLICATIONS SIM_TIME RAM_USED       SEED COMPLETED      ERRORS
+    ##   <dbl>    <dbl>        <dbl> <chr>    <chr>         <int> <chr>           <int>
+    ## 1    10 0.061138          100 0.04s    80 Mb    1140350788 Tue Jul 14 19…     53
+    ## 2    20 0.014295          100 0.13s    80.2 Mb   312928385 Tue Jul 14 19…     52
+    ## 3    30 0.017927          100 0.03s    80.3 Mb   866248189 Tue Jul 14 19…     42
+    ## # ℹ 1 more variable: WARNINGS <int>
 
 What you’ll immediately notice from this output object is that counts of
 the error and warning messages have been appended to the `result`

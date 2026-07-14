@@ -74,6 +74,17 @@ res <- runSimulation(Design, replications = 1000, save=TRUE, filename='my-simple
                      control = list(stop_on_fatal = TRUE))
 ```
 
+    ## 
+    ## Design: 1/3;   Replications: 1000;   RAM Used: 77.7 Mb;   Total Time: 0.00s 
+    ##  Conditions: N=10
+    ## 
+    ## Design: 2/3;   Replications: 1000;   RAM Used: 78.7 Mb;   Total Time: 0.15s 
+    ##  Conditions: N=20
+    ## 
+    ## Design: 3/3;   Replications: 1000;   RAM Used: 78.7 Mb;   Total Time: 0.37s 
+    ##  Conditions: N=30
+    ## 
+
 Check that temporary file still exists.
 
 ``` r
@@ -105,6 +116,11 @@ Analyse <- function(condition, dat, fixed_objects) {
 res <- runSimulation(Design, replications = 1000, save=TRUE, filename='my-simple-sim',
                      generate=Generate, analyse=Analyse, summarise=Summarise)
 ```
+
+    ## 
+    ## Design: 3/3;   Replications: 1000   Total Time: 0.37s 
+    ##  Conditions: N=30
+    ## 
 
 Check which files exist.
 
@@ -151,6 +167,21 @@ simulation is complete, these results can be extracted using
 # store_results=TRUE by default
 res <- runSimulation(Design, replications = 3, 
               generate=Generate, analyse=Analyse, summarise=Summarise)
+```
+
+    ## 
+    ## Design: 1/3;   Replications: 3;   RAM Used: 79.3 Mb;   Total Time: 0.00s 
+    ##  Conditions: N=10
+    ## 
+    ## Design: 2/3;   Replications: 3;   RAM Used: 79.3 Mb;   Total Time: 0.00s 
+    ##  Conditions: N=20
+    ## 
+    ## Design: 3/3;   Replications: 3;   RAM Used: 79.3 Mb;   Total Time: 0.01s 
+    ##  Conditions: N=30
+    ## 
+
+``` r
+
 results <- SimResults(res)
 results
 ```
@@ -190,6 +221,21 @@ that when using `save_results` the `save` flag is automatically set to
 
 res <- runSimulation(Design, replications = 1000, save_results=TRUE,
                      generate=Generate, analyse=Analyse, summarise=Summarise)
+```
+
+    ## 
+    ## Design: 1/3;   Replications: 1000;   RAM Used: 81.9 Mb;   Total Time: 0.00s 
+    ##  Conditions: N=10
+    ## 
+    ## Design: 2/3;   Replications: 1000;   RAM Used: 81.9 Mb;   Total Time: 0.13s 
+    ##  Conditions: N=20
+    ## 
+    ## Design: 3/3;   Replications: 1000;   RAM Used: 81.9 Mb;   Total Time: 0.26s 
+    ##  Conditions: N=30
+    ## 
+
+``` r
+
 dir <- dir()
 directory <- dir[grepl('SimDesign-results', dir)]
 dir(directory)

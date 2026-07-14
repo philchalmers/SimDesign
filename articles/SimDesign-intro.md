@@ -285,12 +285,41 @@ on a single processor, and finally store the results to an object called
 
 res <- runSimulation(Design, replications = 1000, generate=Generate, 
                          analyse=Analyse, summarise=Summarise)
+```
+
+    ## 
+    ## Design: 1/8;   Replications: 1000;   RAM Used: 80.5 Mb;   Total Time: 0.00s 
+    ##  Conditions: sample_size=30, distribution=norm
+    ## 
+    ## Design: 2/8;   Replications: 1000;   RAM Used: 81.5 Mb;   Total Time: 0.17s 
+    ##  Conditions: sample_size=60, distribution=norm
+    ## 
+    ## Design: 3/8;   Replications: 1000;   RAM Used: 81.5 Mb;   Total Time: 0.42s 
+    ##  Conditions: sample_size=120, distribution=norm
+    ## 
+    ## Design: 4/8;   Replications: 1000;   RAM Used: 81.6 Mb;   Total Time: 0.58s 
+    ##  Conditions: sample_size=240, distribution=norm
+    ## 
+    ## Design: 5/8;   Replications: 1000;   RAM Used: 81.6 Mb;   Total Time: 0.74s 
+    ##  Conditions: sample_size=30, distribution=chi
+    ## 
+    ## Design: 6/8;   Replications: 1000;   RAM Used: 81.7 Mb;   Total Time: 0.89s 
+    ##  Conditions: sample_size=60, distribution=chi
+    ## 
+    ## Design: 7/8;   Replications: 1000;   RAM Used: 81.7 Mb;   Total Time: 1.04s 
+    ##  Conditions: sample_size=120, distribution=chi
+    ## 
+    ## Design: 8/8;   Replications: 1000;   RAM Used: 81.8 Mb;   Total Time: 1.20s 
+    ##  Conditions: sample_size=240, distribution=chi
+    ## 
+
+``` r
 
 # Final simulation object
 res
 ```
 
-    ## # A tibble: 8 × 18
+    ## # A tibble: 8 × 19
     ##   sample_size distribution bias.mean_no_trim bias.mean_trim.1 bias.mean_trim.2
     ##         <dbl> <chr>                    <dbl>            <dbl>            <dbl>
     ## 1          30 norm              -0.0048080        -0.0046834       -0.0029265 
@@ -301,11 +330,11 @@ res
     ## 6          60 chi               -0.0042835        -0.34631         -0.49384   
     ## 7         120 chi               -0.0050244        -0.34566         -0.48818   
     ## 8         240 chi               -0.000058300      -0.34650         -0.48943   
-    ## # ℹ 13 more variables: bias.median <dbl>, RMSE.mean_no_trim <dbl>,
+    ## # ℹ 14 more variables: bias.median <dbl>, RMSE.mean_no_trim <dbl>,
     ## #   RMSE.mean_trim.1 <dbl>, RMSE.mean_trim.2 <dbl>, RMSE.median <dbl>,
     ## #   RE.mean_no_trim <dbl>, RE.mean_trim.1 <dbl>, RE.mean_trim.2 <dbl>,
-    ## #   RE.median <dbl>, REPLICATIONS <dbl>, SIM_TIME <chr>, SEED <int>,
-    ## #   COMPLETED <chr>
+    ## #   RE.median <dbl>, REPLICATIONS <dbl>, SIM_TIME <chr>, RAM_USED <chr>,
+    ## #   SEED <int>, COMPLETED <chr>
 
 If `runSimulation(..., store_results = TRUE)` were used, which is the
 current default in the package if RAM is not an issue, then the complete
