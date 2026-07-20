@@ -1170,7 +1170,7 @@ Final <- runSimulation(design=Design, replications=2,
 #>  Conditions: N=20
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 3/3;   Replications: 2   Total Time: 0.00s 
+#> Design: 3/3;   Replications: 2   Total Time: 0.01s 
 #>  Conditions: N=30
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
@@ -1179,9 +1179,9 @@ Final
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Tue Jul 14 19:38:04 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Tue Jul 14 19:38:04 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Tue Jul 14 19:38:04 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Jul 20 18:46:26 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Jul 20 18:46:26 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Jul 20 18:46:26 20…
 (results <- SimResults(Final))
 #> # A tibble: 6 × 2
 #>       N  mean
@@ -1222,9 +1222,9 @@ Final_rep
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Tue Jul 14 19:38:04 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Tue Jul 14 19:38:04 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Tue Jul 14 19:38:04 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Jul 20 18:46:26 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Jul 20 18:46:26 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Jul 20 18:46:26 20…
 (results <- SimResults(Final_rep))
 #> # A tibble: 6 × 2
 #>       N  mean
@@ -1418,7 +1418,7 @@ res <- runSimulation(design=Design, replications=2,
 #>  Conditions: sample_size=30, group_size_ratio=1, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 2/36;   Replications: 2   Total Time: 0.00s 
+#> Design: 2/36;   Replications: 2   Total Time: 0.01s 
 #>  Conditions: sample_size=60, group_size_ratio=1, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
@@ -1426,139 +1426,139 @@ res <- runSimulation(design=Design, replications=2,
 #>  Conditions: sample_size=90, group_size_ratio=1, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 4/36;   Replications: 2   Total Time: 0.01s 
+#> Design: 4/36;   Replications: 2   Total Time: 0.02s 
 #>  Conditions: sample_size=120, group_size_ratio=1, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 5/36;   Replications: 2   Total Time: 0.01s 
+#> Design: 5/36;   Replications: 2   Total Time: 0.02s 
 #>  Conditions: sample_size=30, group_size_ratio=4, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 6/36;   Replications: 2   Total Time: 0.02s 
+#> Design: 6/36;   Replications: 2   Total Time: 0.03s 
 #>  Conditions: sample_size=60, group_size_ratio=4, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 7/36;   Replications: 2   Total Time: 0.02s 
+#> Design: 7/36;   Replications: 2   Total Time: 0.03s 
 #>  Conditions: sample_size=90, group_size_ratio=4, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 8/36;   Replications: 2   Total Time: 0.02s 
+#> Design: 8/36;   Replications: 2   Total Time: 0.04s 
 #>  Conditions: sample_size=120, group_size_ratio=4, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 9/36;   Replications: 2   Total Time: 0.03s 
+#> Design: 9/36;   Replications: 2   Total Time: 0.04s 
 #>  Conditions: sample_size=30, group_size_ratio=8, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 10/36;   Replications: 2   Total Time: 0.03s 
+#> Design: 10/36;   Replications: 2   Total Time: 0.05s 
 #>  Conditions: sample_size=60, group_size_ratio=8, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 11/36;   Replications: 2   Total Time: 0.04s 
+#> Design: 11/36;   Replications: 2   Total Time: 0.05s 
 #>  Conditions: sample_size=90, group_size_ratio=8, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 12/36;   Replications: 2   Total Time: 0.04s 
+#> Design: 12/36;   Replications: 2   Total Time: 0.06s 
 #>  Conditions: sample_size=120, group_size_ratio=8, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 13/36;   Replications: 2   Total Time: 0.04s 
+#> Design: 13/36;   Replications: 2   Total Time: 0.06s 
 #>  Conditions: sample_size=30, group_size_ratio=1, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 14/36;   Replications: 2   Total Time: 0.04s 
+#> Design: 14/36;   Replications: 2   Total Time: 0.07s 
 #>  Conditions: sample_size=60, group_size_ratio=1, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 15/36;   Replications: 2   Total Time: 0.05s 
+#> Design: 15/36;   Replications: 2   Total Time: 0.07s 
 #>  Conditions: sample_size=90, group_size_ratio=1, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 16/36;   Replications: 2   Total Time: 0.05s 
+#> Design: 16/36;   Replications: 2   Total Time: 0.08s 
 #>  Conditions: sample_size=120, group_size_ratio=1, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 17/36;   Replications: 2   Total Time: 0.05s 
+#> Design: 17/36;   Replications: 2   Total Time: 0.08s 
 #>  Conditions: sample_size=30, group_size_ratio=4, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 18/36;   Replications: 2   Total Time: 0.06s 
+#> Design: 18/36;   Replications: 2   Total Time: 0.09s 
 #>  Conditions: sample_size=60, group_size_ratio=4, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 19/36;   Replications: 2   Total Time: 0.06s 
+#> Design: 19/36;   Replications: 2   Total Time: 0.09s 
 #>  Conditions: sample_size=90, group_size_ratio=4, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 20/36;   Replications: 2   Total Time: 0.07s 
+#> Design: 20/36;   Replications: 2   Total Time: 0.10s 
 #>  Conditions: sample_size=120, group_size_ratio=4, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 21/36;   Replications: 2   Total Time: 0.07s 
+#> Design: 21/36;   Replications: 2   Total Time: 0.10s 
 #>  Conditions: sample_size=30, group_size_ratio=8, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 22/36;   Replications: 2   Total Time: 0.07s 
+#> Design: 22/36;   Replications: 2   Total Time: 0.11s 
 #>  Conditions: sample_size=60, group_size_ratio=8, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 23/36;   Replications: 2   Total Time: 0.08s 
+#> Design: 23/36;   Replications: 2   Total Time: 0.12s 
 #>  Conditions: sample_size=90, group_size_ratio=8, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 24/36;   Replications: 2   Total Time: 0.08s 
+#> Design: 24/36;   Replications: 2   Total Time: 0.12s 
 #>  Conditions: sample_size=120, group_size_ratio=8, standard_deviation_ratio=1
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 25/36;   Replications: 2   Total Time: 0.08s 
+#> Design: 25/36;   Replications: 2   Total Time: 0.13s 
 #>  Conditions: sample_size=30, group_size_ratio=1, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 26/36;   Replications: 2   Total Time: 0.09s 
+#> Design: 26/36;   Replications: 2   Total Time: 0.13s 
 #>  Conditions: sample_size=60, group_size_ratio=1, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 27/36;   Replications: 2   Total Time: 0.09s 
+#> Design: 27/36;   Replications: 2   Total Time: 0.13s 
 #>  Conditions: sample_size=90, group_size_ratio=1, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 28/36;   Replications: 2   Total Time: 0.09s 
+#> Design: 28/36;   Replications: 2   Total Time: 0.14s 
 #>  Conditions: sample_size=120, group_size_ratio=1, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 29/36;   Replications: 2   Total Time: 0.10s 
+#> Design: 29/36;   Replications: 2   Total Time: 0.15s 
 #>  Conditions: sample_size=30, group_size_ratio=4, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 30/36;   Replications: 2   Total Time: 0.10s 
+#> Design: 30/36;   Replications: 2   Total Time: 0.15s 
 #>  Conditions: sample_size=60, group_size_ratio=4, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 31/36;   Replications: 2   Total Time: 0.10s 
+#> Design: 31/36;   Replications: 2   Total Time: 0.16s 
 #>  Conditions: sample_size=90, group_size_ratio=4, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 32/36;   Replications: 2   Total Time: 0.11s 
+#> Design: 32/36;   Replications: 2   Total Time: 0.16s 
 #>  Conditions: sample_size=120, group_size_ratio=4, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 33/36;   Replications: 2   Total Time: 0.11s 
+#> Design: 33/36;   Replications: 2   Total Time: 0.17s 
 #>  Conditions: sample_size=30, group_size_ratio=8, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 34/36;   Replications: 2   Total Time: 0.12s 
+#> Design: 34/36;   Replications: 2   Total Time: 0.17s 
 #>  Conditions: sample_size=60, group_size_ratio=8, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 35/36;   Replications: 2   Total Time: 0.12s 
+#> Design: 35/36;   Replications: 2   Total Time: 0.18s 
 #>  Conditions: sample_size=90, group_size_ratio=8, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 36/36;   Replications: 2   Total Time: 0.12s 
+#> Design: 36/36;   Replications: 2   Total Time: 0.18s 
 #>  Conditions: sample_size=120, group_size_ratio=8, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Simulation complete. Total execution time: 0.14s
+#> Simulation complete. Total execution time: 0.21s
 res
 #> # A tibble: 36 × 9
 #>    sample_size group_size_ratio standard_deviation_ratio welch independent

@@ -78,10 +78,10 @@ res <- runSimulation(Design, replications = 1000, save=TRUE, filename='my-simple
     ## Design: 1/3;   Replications: 1000;   RAM Used: 77.7 Mb;   Total Time: 0.00s 
     ##  Conditions: N=10
     ## 
-    ## Design: 2/3;   Replications: 1000;   RAM Used: 78.7 Mb;   Total Time: 0.15s 
+    ## Design: 2/3;   Replications: 1000;   RAM Used: 78.7 Mb;   Total Time: 0.23s 
     ##  Conditions: N=20
     ## 
-    ## Design: 3/3;   Replications: 1000;   RAM Used: 78.7 Mb;   Total Time: 0.37s 
+    ## Design: 3/3;   Replications: 1000;   RAM Used: 78.7 Mb;   Total Time: 0.54s 
     ##  Conditions: N=30
     ## 
 
@@ -93,7 +93,7 @@ files <- dir()
 files[grepl('SIMDESIGN', files)]
 ```
 
-    ## [1] "SIMDESIGN-TEMPFILE_runnervm5mmn9"
+    ## [1] "SIMDESIGN-TEMPFILE_runnervm3jd5f"
 
 Notice here that the simulation stopped at 67% because the third design
 condition threw too many consecutive errors (this is a built-in
@@ -118,7 +118,7 @@ res <- runSimulation(Design, replications = 1000, save=TRUE, filename='my-simple
 ```
 
     ## 
-    ## Design: 3/3;   Replications: 1000   Total Time: 0.37s 
+    ## Design: 3/3;   Replications: 1000   Total Time: 0.54s 
     ##  Conditions: N=30
     ## 
 
@@ -227,10 +227,10 @@ res <- runSimulation(Design, replications = 1000, save_results=TRUE,
     ## Design: 1/3;   Replications: 1000;   RAM Used: 81.9 Mb;   Total Time: 0.00s 
     ##  Conditions: N=10
     ## 
-    ## Design: 2/3;   Replications: 1000;   RAM Used: 81.9 Mb;   Total Time: 0.13s 
+    ## Design: 2/3;   Replications: 1000;   RAM Used: 81.9 Mb;   Total Time: 0.21s 
     ##  Conditions: N=20
     ## 
-    ## Design: 3/3;   Replications: 1000;   RAM Used: 81.9 Mb;   Total Time: 0.26s 
+    ## Design: 3/3;   Replications: 1000;   RAM Used: 81.9 Mb;   Total Time: 0.41s 
     ##  Conditions: N=30
     ## 
 

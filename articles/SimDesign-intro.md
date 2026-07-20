@@ -291,25 +291,25 @@ res <- runSimulation(Design, replications = 1000, generate=Generate,
     ## Design: 1/8;   Replications: 1000;   RAM Used: 80.5 Mb;   Total Time: 0.00s 
     ##  Conditions: sample_size=30, distribution=norm
     ## 
-    ## Design: 2/8;   Replications: 1000;   RAM Used: 81.5 Mb;   Total Time: 0.17s 
+    ## Design: 2/8;   Replications: 1000;   RAM Used: 81.5 Mb;   Total Time: 0.26s 
     ##  Conditions: sample_size=60, distribution=norm
     ## 
-    ## Design: 3/8;   Replications: 1000;   RAM Used: 81.5 Mb;   Total Time: 0.42s 
+    ## Design: 3/8;   Replications: 1000;   RAM Used: 81.5 Mb;   Total Time: 0.61s 
     ##  Conditions: sample_size=120, distribution=norm
     ## 
-    ## Design: 4/8;   Replications: 1000;   RAM Used: 81.6 Mb;   Total Time: 0.58s 
+    ## Design: 4/8;   Replications: 1000;   RAM Used: 81.6 Mb;   Total Time: 0.86s 
     ##  Conditions: sample_size=240, distribution=norm
     ## 
-    ## Design: 5/8;   Replications: 1000;   RAM Used: 81.6 Mb;   Total Time: 0.74s 
+    ## Design: 5/8;   Replications: 1000;   RAM Used: 81.6 Mb;   Total Time: 1.12s 
     ##  Conditions: sample_size=30, distribution=chi
     ## 
-    ## Design: 6/8;   Replications: 1000;   RAM Used: 81.7 Mb;   Total Time: 0.89s 
+    ## Design: 6/8;   Replications: 1000;   RAM Used: 81.7 Mb;   Total Time: 1.35s 
     ##  Conditions: sample_size=60, distribution=chi
     ## 
-    ## Design: 7/8;   Replications: 1000;   RAM Used: 81.7 Mb;   Total Time: 1.04s 
+    ## Design: 7/8;   Replications: 1000;   RAM Used: 81.7 Mb;   Total Time: 1.59s 
     ##  Conditions: sample_size=120, distribution=chi
     ## 
-    ## Design: 8/8;   Replications: 1000;   RAM Used: 81.8 Mb;   Total Time: 1.20s 
+    ## Design: 8/8;   Replications: 1000;   RAM Used: 81.8 Mb;   Total Time: 1.84s 
     ##  Conditions: sample_size=240, distribution=chi
     ## 
 
