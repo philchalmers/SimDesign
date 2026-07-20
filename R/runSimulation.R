@@ -1381,10 +1381,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
         design <- createDesign(dummy_run=NA)
         dummy_run <- TRUE
     }
-    if(nrow(design) == 1L){
-        verbose <- FALSE
+    if(nrow(design) == 1L)
         store_results <- TRUE
-    }
     if(is.null(attr(design, 'Design.ID')))
         attr(design, 'Design.ID') <- 1L:nrow(design)
     Design.ID <- attr(design, 'Design.ID')
