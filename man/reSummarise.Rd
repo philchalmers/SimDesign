@@ -14,7 +14,8 @@ reSummarise(
   boot_method = "none",
   boot_draws = 1000L,
   CI = 0.95,
-  prefix = "results-row"
+  prefix = "results-row",
+  write.dir = NULL
 )
 }
 \arguments{
@@ -61,6 +62,12 @@ function after the generate-analyse replications are collected. Default is 1000}
 \item{CI}{bootstrap confidence interval level (default is 95\%)}
 
 \item{prefix}{character indicating prefix used for stored files}
+
+\item{write.dir}{(optional) a character vector used to indicate that after the
+\code{reSummarise} is complete the input file should be saved with a suitable sub directory.
+This is useful in output like \code{\link{runArraySimulation}} which contains all
+the simulation information as \code{.rds} files that should be carried over into the
+new files. Only applicable when input files are of class \code{'SimDesign'}}
 }
 \description{
 When \code{runSimulation()} uses the option \code{save_results = TRUE}
@@ -110,10 +117,40 @@ res2
 
 SimClean(dir='simresults/')
 
+###################
+# Similar, but using runArraySimulation() implementation
+
+for(i in 1:nrow(Design))
+    runArraySimulation(design=Design, arrayID=i,
+                  replications=50,
+                  generate=Generate, analyse=Analyse,
+                  summarise=Summarise, iseed=42,
+                  filename = 'simresults')
+
+files <- sprintf('simresults-\%i.rds', 1:3)
+res2 <- reSummarise(Summarise2, files = files)
+res2
+
+# save output as though reSummarise() were used in the original .rds files
+reSummarise(Summarise2, files = files, write.dir = 'reSummarise')
+dir('reSummarise')     # new files in sub directory
+
+# inspect newly saved RDS files
+(inp <- SimRead('reSummarise/simresults-1.rds'))
+SimResults(inp)
+
+# collect from all files
+res <- SimCollect(dir='reSummarise')
+SimResults(res)
+
+# clean
+SimClean(dirs='reSummarise', files=files)
+
+
 }
 
 ###
-# Similar, but with results stored within the final object
+# Results stored within the final object instead and resummarised
 
 res <- runSimulation(design=Design, replications=50, store_results = TRUE,
                      generate=Generate, analyse=Analyse, summarise=Summarise)
