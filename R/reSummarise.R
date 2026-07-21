@@ -201,7 +201,8 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
                 results <- SimExtract(inp, what='results')
                 last <- colnames(conditions[[i]])
                 last <- last[length(last)]
-                results <- results[, -c(1:which(colnames(results) == last)), drop=FALSE]
+                if(!is.list(results))
+                    results <- results[, -c(1:which(colnames(results) == last)), drop=FALSE]
             } else {
                 conditions[[i]] <- inp$condition
                 results <- inp$results
