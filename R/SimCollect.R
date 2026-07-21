@@ -216,6 +216,8 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
     if(!is.null(dir) && !is.null(files))
         stop('dir OR files must be specified, not both')
     if(check.only) select <- 'REPLICATIONS'
+    if(!is.null(dir))
+        if(!endsWith(dir, '/')) dir <- paste0(dir, '/')
     if(!is.null(dir)) SimCheck(dir=dir)
     if(!is.null(dir)){
         files <- dir(dir)

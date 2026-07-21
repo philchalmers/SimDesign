@@ -52,6 +52,12 @@
 #'
 #' @param prefix character indicating prefix used for stored files
 #'
+#' @param write.dir (optional) a character vector used to indicate that after the
+#'   \code{reSummarise} is complete the input file should be saved with a suitable sub directory.
+#'   This is useful in output like \code{\link{runArraySimulation}} which contains all
+#'   the simulation information as \code{.rds} files that should be carried over into the
+#'   new files. Only applicable when input files are of class \code{'SimDesign'}
+#'
 #' @export
 #'
 #' @author Phil Chalmers \email{rphilip.chalmers@@gmail.com}
@@ -105,10 +111,40 @@
 #'
 #' SimClean(dir='simresults/')
 #'
+#' ###################
+#' # Similar, but using runArraySimulation() implementation
+#'
+#' for(i in 1:nrow(Design))
+#'     runArraySimulation(design=Design, arrayID=i,
+#'                   replications=50,
+#'                   generate=Generate, analyse=Analyse,
+#'                   summarise=Summarise, iseed=42,
+#'                   filename = 'simresults')
+#'
+#' files <- sprintf('simresults-%i.rds', 1:3)
+#' res2 <- reSummarise(Summarise2, files = files)
+#' res2
+#'
+#' # save output as though reSummarise() were used in the original .rds files
+#' reSummarise(Summarise2, files = files, write.dir = 'reSummarise')
+#' dir('reSummarise')     # new files in sub directory
+#'
+#' # inspect newly saved RDS files
+#' (inp <- SimRead('reSummarise/simresults-1.rds'))
+#' SimResults(inp)
+#'
+#' # collect from all files
+#' res <- SimCollect(dir='reSummarise')
+#' SimResults(res)
+#'
+#' # clean
+#' SimClean(dirs='reSummarise', files=files)
+#'
+#'
 #' }
 #'
 #' ###
-#' # Similar, but with results stored within the final object
+#' # Results stored within the final object instead and resummarised
 #'
 #' res <- runSimulation(design=Design, replications=50, store_results = TRUE,
 #'                      generate=Generate, analyse=Analyse, summarise=Summarise)
@@ -120,7 +156,7 @@
 #'
 reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Design = NULL,
                         fixed_objects = NULL, boot_method = 'none', boot_draws = 1000L, CI = .95,
-                        prefix = "results-row"){
+                        prefix = "results-row", write.dir = NULL){
     if(!is.null(results)){
         read_files <- FALSE
         if(is(results, 'SimDesign')){
@@ -145,10 +181,12 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
         current_wd <- getwd()
         on.exit(setwd(current_wd))
         if(!is.null(dir)) setwd(dir)
-        if(is.null(files)) files <- dir()
-        expect_filenames <- paste0(prefix, '-')
-        if(!all(grepl(expect_filenames, files)))
-            stop('Filenames in select directory did not follow the \'results-row-#\' pattern. Please fix')
+        if(is.null(files)){
+            files <- dir()
+            expect_filenames <- paste0(prefix, '-')
+            if(!all(grepl(expect_filenames, files)))
+                stop('Filenames in select directory did not follow the \'results-row-#\' pattern. Please fix')
+        }
     }
     res <- vector('list', length(files))
     conditions <- vector('list', length(files))
@@ -161,6 +199,9 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
             if(is(inp, 'SimDesign')){
                 conditions[[i]] <- SimExtract(inp, what='design')
                 results <- SimExtract(inp, what='results')
+                last <- colnames(conditions[[i]])
+                last <- last[length(last)]
+                results <- results[, -c(1:which(colnames(results) == last)), drop=FALSE]
             } else {
                 conditions[[i]] <- inp$condition
                 results <- inp$results
@@ -199,6 +240,24 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
                         boot_draws=boot_draws, CI=CI)
             }
             res[[i]] <- c(res[[i]], CIs)
+        }
+        if(!is.null(write.dir) && is(inp, 'SimDesign')){
+            if(!endsWith(write.dir, '/'))
+                write.dir <- paste0(write.dir, '/')
+            dir.create(write.dir, showWarnings = FALSE)
+            nms <- colnames(SimExtract(inp, 'Design'))
+            nms2 <- colnames(inp)
+            rm <- c(which(nms[length(nms)] == nms2) + 1, which(nms2 == 'REPLICATIONS')-1)
+            out <- inp[ ,-rm, drop=FALSE]
+            nms2 <- colnames(out)[!(colnames(out) %in% nms)]
+            tmp <- res[[i]]
+            if(is.numeric(res[[i]])){
+                tmp <- matrix(res[[i]], 1)
+                colnames(tmp) <- names(res[[i]])
+            }
+            out <- dplyr::bind_cols(out, tmp)
+            out <- out[c(nms, colnames(out)[!(colnames(out) %in% c(nms, nms2))], nms2)]
+            saveRDS(out, paste0(write.dir, files[i]))
         }
     }
     is_list <- FALSE
