@@ -249,7 +249,7 @@ reSummarise <- function(summarise, dir = NULL, files = NULL, results = NULL, Des
             nms <- colnames(SimExtract(inp, 'Design'))
             nms2 <- colnames(inp)
             rm <- c(which(nms[length(nms)] == nms2) + 1, which(nms2 == 'REPLICATIONS')-1)
-            out <- inp[ ,-rm, drop=FALSE]
+            out <- inp[ ,-c(rm[1]:rm[2]), drop=FALSE]
             nms2 <- colnames(out)[!(colnames(out) %in% nms)]
             tmp <- res[[i]]
             if(is.numeric(res[[i]])){
