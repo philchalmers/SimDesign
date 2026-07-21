@@ -183,7 +183,7 @@ result <- runSimulation(Design, replications = 100,
     ## Design: 1/3;   Replications: 100;   RAM Used: 79 Mb;   Total Time: 0.00s 
     ##  Conditions: N=10
     ## 
-    ## Design: 2/3;   Replications: 100;   RAM Used: 80.1 Mb;   Total Time: 0.05s 
+    ## Design: 2/3;   Replications: 100;   RAM Used: 80.1 Mb;   Total Time: 0.06s 
     ##  Conditions: N=20
     ## 
     ## Design: 3/3;   Replications: 100;   RAM Used: 80.2 Mb;   Total Time: 0.20s 
@@ -198,9 +198,9 @@ print(result)
     ## # A tibble: 3 × 9
     ##       N     bias REPLICATIONS SIM_TIME RAM_USED       SEED COMPLETED      ERRORS
     ##   <dbl>    <dbl>        <dbl> <chr>    <chr>         <int> <chr>           <int>
-    ## 1    10 0.061138          100 0.05s    80.1 Mb  1140350788 Tue Jul 21 18…     53
+    ## 1    10 0.061138          100 0.06s    80.1 Mb  1140350788 Tue Jul 21 18…     53
     ## 2    20 0.014295          100 0.15s    80.2 Mb   312928385 Tue Jul 21 18…     52
-    ## 3    30 0.017927          100 0.04s    80.3 Mb   866248189 Tue Jul 21 18…     42
+    ## 3    30 0.017927          100 0.05s    80.3 Mb   866248189 Tue Jul 21 18…     42
     ## # ℹ 1 more variable: WARNINGS <int>
 
 What you’ll immediately notice from this output object is that counts of
