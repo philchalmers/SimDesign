@@ -297,7 +297,7 @@ res <- runSimulation(Design, replications = 1000, generate=Generate,
     ## Design: 3/8;   Replications: 1000;   RAM Used: 81.6 Mb;   Total Time: 0.51s 
     ##  Conditions: sample_size=120, distribution=norm
     ## 
-    ## Design: 4/8;   Replications: 1000;   RAM Used: 81.6 Mb;   Total Time: 0.71s 
+    ## Design: 4/8;   Replications: 1000;   RAM Used: 81.6 Mb;   Total Time: 0.70s 
     ##  Conditions: sample_size=240, distribution=norm
     ## 
     ## Design: 5/8;   Replications: 1000;   RAM Used: 81.7 Mb;   Total Time: 0.91s 
