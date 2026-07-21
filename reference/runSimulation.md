@@ -1179,9 +1179,9 @@ Final
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Tue Jul 21 15:00:58 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Tue Jul 21 15:00:58 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Tue Jul 21 15:00:58 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Tue Jul 21 15:05:13 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Tue Jul 21 15:05:13 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Tue Jul 21 15:05:13 20…
 (results <- SimResults(Final))
 #> # A tibble: 6 × 2
 #>       N  mean
@@ -1213,7 +1213,7 @@ Final_rep <- runSimulation(design=Design, replications=2, seed=Final$SEED,
 #>  Conditions: N=20
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 3/3;   Replications: 2   Total Time: 0.00s 
+#> Design: 3/3;   Replications: 2   Total Time: 0.01s 
 #>  Conditions: N=30
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
@@ -1222,9 +1222,9 @@ Final_rep
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Tue Jul 21 15:00:58 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Tue Jul 21 15:00:58 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Tue Jul 21 15:00:59 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Tue Jul 21 15:05:13 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Tue Jul 21 15:05:13 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Tue Jul 21 15:05:13 20…
 (results <- SimResults(Final_rep))
 #> # A tibble: 6 × 2
 #>       N  mean
@@ -1418,7 +1418,7 @@ res <- runSimulation(design=Design, replications=2,
 #>  Conditions: sample_size=30, group_size_ratio=1, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 2/36;   Replications: 2   Total Time: 0.00s 
+#> Design: 2/36;   Replications: 2   Total Time: 0.01s 
 #>  Conditions: sample_size=60, group_size_ratio=1, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
@@ -1446,7 +1446,7 @@ res <- runSimulation(design=Design, replications=2,
 #>  Conditions: sample_size=120, group_size_ratio=4, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 9/36;   Replications: 2   Total Time: 0.03s 
+#> Design: 9/36;   Replications: 2   Total Time: 0.04s 
 #>  Conditions: sample_size=30, group_size_ratio=8, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
@@ -1454,7 +1454,7 @@ res <- runSimulation(design=Design, replications=2,
 #>  Conditions: sample_size=60, group_size_ratio=8, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 11/36;   Replications: 2   Total Time: 0.04s 
+#> Design: 11/36;   Replications: 2   Total Time: 0.05s 
 #>  Conditions: sample_size=90, group_size_ratio=8, standard_deviation_ratio=0.5
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
@@ -1522,7 +1522,7 @@ res <- runSimulation(design=Design, replications=2,
 #>  Conditions: sample_size=90, group_size_ratio=1, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 28/36;   Replications: 2   Total Time: 0.13s 
+#> Design: 28/36;   Replications: 2   Total Time: 0.12s 
 #>  Conditions: sample_size=120, group_size_ratio=1, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
@@ -1530,7 +1530,7 @@ res <- runSimulation(design=Design, replications=2,
 #>  Conditions: sample_size=30, group_size_ratio=4, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Design: 30/36;   Replications: 2   Total Time: 0.14s 
+#> Design: 30/36;   Replications: 2   Total Time: 0.13s 
 #>  Conditions: sample_size=60, group_size_ratio=4, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
@@ -1558,7 +1558,7 @@ res <- runSimulation(design=Design, replications=2,
 #>  Conditions: sample_size=120, group_size_ratio=8, standard_deviation_ratio=2
 #>   |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |==================================================| 100%
 #> 
-#> Simulation complete. Total execution time: 0.17s
+#> Simulation complete. Total execution time: 0.16s
 res
 #> # A tibble: 36 × 9
 #>    sample_size group_size_ratio standard_deviation_ratio welch independent
