@@ -23,7 +23,7 @@ runSimulation(
   store_results = TRUE,
   save_results = FALSE,
   parallel = FALSE,
-  ncores = pmin(parallelly::availableCores(omit = 1L), replications),
+  ncores = min(parallelly::availableCores(omit = 1L), replications),
   cl = NULL,
   notification = "none",
   notifier = NULL,
