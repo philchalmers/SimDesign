@@ -23,7 +23,7 @@ runSimulation(
   store_results = TRUE,
   save_results = FALSE,
   parallel = FALSE,
-  ncores = parallelly::availableCores(omit = 1L),
+  ncores = pmin(parallelly::availableCores(omit = 1L), replications),
   cl = NULL,
   notification = "none",
   notifier = NULL,
@@ -322,7 +322,8 @@ extracted using \code{SimExtract(res, 'prepare_error_seed')}. Default is \code{N
   computing plan when the jobs are completed}
 
 \item{ncores}{number of cores to be used in parallel execution (ignored if using the
-\code{\link[future]{future}} package approach). Default uses all available minus 1}
+\code{\link[future]{future}} package approach). Default uses all available minus 1
+or \code{replications}, whichever is smaller}
 
 \item{cl}{cluster object defined by \code{\link{makeCluster}} used to run code in parallel
   (ignored if using the \code{\link[future]{future}} package approach).

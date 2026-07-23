@@ -612,6 +612,7 @@
 #'
 #' @param ncores number of cores to be used in parallel execution (ignored if using the
 #'   \code{\link[future]{future}} package approach). Default uses all available minus 1
+#'   or \code{replications}, whichever is smaller
 #'
 #' @param save logical; save the temporary simulation state to the hard-drive using
 #'   \code{qs2::qd_save()}? This is useful
@@ -1166,7 +1167,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           debug = 'none', load_seed = NULL, load_seed_prepare = NULL,
                           save = any(replications > 2),
                           store_results = TRUE, save_results = FALSE,
-                          parallel = FALSE, ncores = parallelly::availableCores(omit = 1L),
+                          parallel = FALSE,
+                          ncores = pmin(parallelly::availableCores(omit = 1L), replications),
                           cl = NULL, notification = 'none', notifier = NULL,
                           beep = FALSE, sound = 1, check.globals = FALSE,
                           CI = .95, seed = NULL, boot_method='none', boot_draws = 1000L,
