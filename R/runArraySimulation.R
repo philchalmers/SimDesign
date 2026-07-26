@@ -359,10 +359,20 @@ runArraySimulation <- function(design, ..., replications,
         seed <- genSeeds(design, iseed=iseed, arrayID=row)
         dsub <- design[row, , drop=FALSE]
         attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[row]
+        if(verbose){
+            t0 <- Sys.time()
+            cat(sprintf('Simulation start date: %s\n', format(t0, "%a %b %d %X %Y")))
+        }
         ret <- runSimulation(design=dsub, replications=replications[row], seed=seed,
                              verbose=verbose, save_details=save_details,
                              parallel=parallel, ncores=ncores, cl=cl,
                              control=control, save=FALSE, resume=FALSE, ...)
+        if(verbose){
+            t1 <- Sys.time()
+            cat(sprintf('\nSimulation end date: %s\n', format(t1, "%a %b %d %X %Y")))
+            cat(sprintf('Total elapsed time: %s',
+                        timeFormater(as.numeric(t1 - t0)/60, output='SBATCH')))
+        }
         attr(ret, 'extra_info')$number_of_conditions <- nrow(design)
         if(addArrayInfo && (is.null(dots$store_results) ||
            (!is.null(dots$store_results) && isTRUE(dots$store_results)))){

@@ -966,8 +966,9 @@ genSeeds <- function(design = 1L, iseed = NULL, arrayID = NULL, old.seeds = NULL
 #' timeFormater("4:30:30", output = 'hour')
 #'
 #' # numeric input is understood as minutes
-#' timeFormater(42)               # seconds
-#' timeFormater(42, output='min') # minutes
+#' timeFormater(42)                            # output in seconds
+#' timeFormater(42, input='sec', output='min') # input in sec, output in min
+#' timeFormater(42, output='min')              # in-and-output in minutes
 #'
 #' # convert numeric inputs to SBATCH format
 #' timeFormater(60, output='SBATCH')
@@ -986,7 +987,12 @@ timeFormater <- function(time, output='sec', input = 'min', sround=floor){
         stopifnot(is.numeric(time))
         return(time2SBATCH(time, input=input, sround=sround))
     }
-    if(!is.character(time)) time <- as.character(time)
+    if(!is.character(time)){
+        if(input == 'sec') time <- time / 60
+        if(input == 'hour') time <- time * 60
+        if(input == 'day') time <- time * 60 * 24
+        time <- as.character(time)
+    }
     stopifnot(length(time) == 1L && length(output) == 1L)
     stopifnot(output %in% c('sec', 'min', 'hour', 'day'))
     time <- sbatch_time2sec(time)
@@ -1007,7 +1013,10 @@ time2SBATCH <- function(time, input, sround){
     hours <- floor(remainder / 3600)
     remainder <- remainder - hours * 3600
     minutes <- floor(remainder / 60)
-    seconds <- sround(remainder - minutes * 60)
+    seconds <- as.character(sround(remainder - minutes * 60))
+    minutes <- as.character(minutes)
+    if(nchar(seconds) == 1) seconds <- paste0('0', seconds)
+    if(nchar(minutes) == 1) minutes <- paste0('0', minutes)
     ret <- sprintf('%s:%s:%s', hours, minutes, seconds)
     if(days > 0)
         ret <- paste0(days, '-', ret)
@@ -1042,7 +1051,9 @@ sbatch_time2sec <- function(time){
         splt <- as.numeric(strsplit(time, ":")[[1L]])
         time_vec[2L:4L] <- splt
         sum(c(86400, 3600, 60, 1) * time_vec)   # c(24*60*60, 60*60, 60, 1)
-    } else time
+    } else {
+        time
+    }
     ret
 }
 

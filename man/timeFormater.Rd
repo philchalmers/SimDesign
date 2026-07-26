@@ -59,8 +59,9 @@ timeFormater("30:30", output = 'hour')
 timeFormater("4:30:30", output = 'hour')
 
 # numeric input is understood as minutes
-timeFormater(42)               # seconds
-timeFormater(42, output='min') # minutes
+timeFormater(42)                            # output in seconds
+timeFormater(42, input='sec', output='min') # input in sec, output in min
+timeFormater(42, output='min')              # in-and-output in minutes
 
 # convert numeric inputs to SBATCH format
 timeFormater(60, output='SBATCH')
