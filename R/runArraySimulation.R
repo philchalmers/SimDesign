@@ -361,7 +361,7 @@ runArraySimulation <- function(design, ..., replications,
         attr(dsub, 'Design.ID') <- attr(design, 'Design.ID')[row]
         if(verbose){
             t0 <- Sys.time()
-            cat(sprintf('Simulation start date: %s\n', format(t0, "%a %b %d %X %Y")))
+            cat(sprintf('\nSimulation start date: %s\n', format(t0, "%a %b %d %X %Y")))
         }
         ret <- runSimulation(design=dsub, replications=replications[row], seed=seed,
                              verbose=verbose, save_details=save_details,
