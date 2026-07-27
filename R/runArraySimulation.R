@@ -362,8 +362,10 @@ runArraySimulation <- function(design, ..., replications,
         if(verbose){
             t0 <- Sys.time()
             cat(sprintf('\nSimulation start date: %s\n', format(t0, "%a %b %d %X %Y")))
-            cat(sprintf('\nArrayID: %s\nDesign row(s): %s\n',
+            cat(sprintf('\nArrayID: %s\nDesign row: %s\n',
                         row, paste0(attr(dsub, 'Design.ID'), collapse=',')))
+            if(attr(dsub, 'Design.ID') != row)
+                cat(sprintf('expandDesign row: %s\n', row))
         }
         ret <- runSimulation(design=dsub, replications=replications[row], seed=seed,
                              verbose=verbose, save_details=save_details,
