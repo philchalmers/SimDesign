@@ -532,7 +532,7 @@ res <- structure(list(sample_size = c(250, 500, 1000, 250, 500, 1000
         1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
         1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
         1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
-        1L), .Label = "C:/R/R-4.0.2/library", class = "factor")), row.names = c("assertthat", 
+        1L), levels = "C:/R/R-4.0.2/library", class = "factor")), row.names = c("assertthat", 
     "bayestestR", "cli", "cluster", "coda", "codetools", "crayon", 
     "curl", "datawizard", "DBI", "dcurver", "Deriv", "digest", 
     "dplyr", "effectsize", "ellipsis", "emmeans", "estimability", 
