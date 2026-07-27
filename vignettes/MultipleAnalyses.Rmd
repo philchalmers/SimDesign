@@ -337,8 +337,8 @@ res <- structure(list(sample_size = c(250, 500, 1000, 250, 500, 1000
 "RMSE.DWLS.as12", "RMSE.DWLS.as13", "RMSE.DWLS.as14", "RMSE.DWLS.as15", 
 "RMSE.DWLS.as16", "RMSE.DWLS.as17", "RMSE.DWLS.as18", "RMSE.DWLS.as19", 
 "RMSE.DWLS.as20"), bootCI = character(0), extra = c("REPLICATIONS", 
-"SIM_TIME", "COMPLETED", "SEED"), errors = "ERRORS", warnings = "WARNINGS"), ERROR_msg = structure(list(), .Names = character(0), row.names = c(NA, 
--6L), class = c("tbl_df", "tbl", "data.frame")), WARNING_msg = structure(list(), .Names = character(0), row.names = c(NA, 
+"SIM_TIME", "COMPLETED", "SEED"), errors = "ERRORS", warnings = "WARNINGS"), ERROR_msg = structure(list(), names = character(0), row.names = c(NA, 
+-6L), class = c("tbl_df", "tbl", "data.frame")), WARNING_msg = structure(list(), names = character(0), row.names = c(NA, 
 -6L), class = c("tbl_df", "tbl", "data.frame")), extra_info = list(
     sessionInfo = structure(list(platform = structure(list(version = "R version 4.0.2 (2020-06-22)", 
         os = "Windows 10 x64", system = "x86_64, mingw32", ui = "RStudio", 
@@ -551,8 +551,8 @@ res <- structure(list(sample_size = c(250, 500, 1000, 250, 500, 1000
         "0.6.9")), class = "data.frame", row.names = c(NA, -2L
     )), save_info = c(filename = "mirt_lavaan-1.rds"), ncores = 8L, 
     number_of_conditions = 6L, date_completed = "Fri Jul 30 18:01:26 2021", 
-    total_elapsed_time = 90.87, error_seeds = structure(list(), .Names = character(0), row.names = integer(0), class = c("tbl_df", 
-    "tbl", "data.frame")), warning_seeds = structure(list(), .Names = character(0), row.names = integer(0), class = c("tbl_df", 
+    total_elapsed_time = 90.87, error_seeds = structure(list(), names = character(0), row.names = integer(0), class = c("tbl_df", 
+    "tbl", "data.frame")), warning_seeds = structure(list(), names = character(0), row.names = integer(0), class = c("tbl_df", 
     "tbl", "data.frame")), stored_results = NULL, summarise_list = list(
         NULL, NULL, NULL, NULL, NULL, NULL)))
 ```
