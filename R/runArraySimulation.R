@@ -354,6 +354,7 @@ runArraySimulation <- function(design, ..., replications,
     max_time.start <- proc.time()[3L]
     if(!is.null(control$max_time))
         control$max_time.start <- max_time.start
+    SLURM <- Sys.getenv('SLURM_JOB_ID') != ""
     for(i in 1L:length(rowpick)){
         row <- rowpick[i]
         seed <- genSeeds(design, iseed=iseed, arrayID=row)
@@ -366,6 +367,15 @@ runArraySimulation <- function(design, ..., replications,
                         row, paste0(attr(dsub, 'Design.ID'), collapse=',')))
             if(attr(dsub, 'Design.ID') != row)
                 cat(sprintf('expandDesign row: %s\n', row))
+            if(SLURM){
+                cat('#########\nSLURM information:\n')
+                cat(sprintf('\tNode: %s\n', Sys.info()['nodename']))
+                cat(sprintf('\tncores requested: %d \n\t\tSLURM_CPUS_PER_TASK: %s \n\t\tSLURM_MEM_PER_NODE: %s\n',
+                            ncores, Sys.getenv('SLURM_CPUS_PER_TASK'), Sys.getenv('SLURM_MEM_PER_NODE')))
+                cat(sprintf('\tSLURM_JOB_ID: %s (Array Task: %s)\n',
+                            Sys.getenv('SLURM_JOB_ID'), arrayID))
+                cat('#########\n')
+            }
         }
         ret <- runSimulation(design=dsub, replications=replications[row], seed=seed,
                              verbose=verbose, save_details=save_details,
@@ -376,6 +386,10 @@ runArraySimulation <- function(design, ..., replications,
             cat(sprintf('\nSimulation end date: %s\n', format(t1, "%a %b %d %X %Y")))
             cat(sprintf('Total elapsed time: %s',
                         timeFormater(as.numeric(t1 - t0)/60, output='SBATCH')))
+            if("WARNINGS" %in% colnames(ret)) cat(sprintf('\nWARNINGS: %d\n',
+                                                          sum(ret$WARNINGS, na.rm=TRUE)))
+            if("ERRORS" %in% colnames(ret)) cat(sprintf('\nERRORS: %d\n',
+                                                        sum(ret$ERRORS, na.rm=TRUE)))
         }
         attr(ret, 'extra_info')$number_of_conditions <- nrow(design)
         if(addArrayInfo && (is.null(dots$store_results) ||
@@ -394,6 +408,8 @@ runArraySimulation <- function(design, ..., replications,
         }
         filename.u <- unique_filename(filename[i], safe=TRUE, verbose=FALSE)
         saveRDS(ret, filename.u)
+        if(verbose)
+            cat(paste('\nSimulation results saved to file:', filename.u))
     }
     if(length(rowpick) > 1L) ret <- NULL
     invisible(ret)

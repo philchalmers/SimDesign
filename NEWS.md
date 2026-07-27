@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.26
 
+- `verbose` option in `runArraySimulation()` now prints extract QOL information
+  about SLURM clusters (e.g., requested RAM, cores, IDs, etc), and about
+  the indexed information from the `arrayID`
+
 - More forgiving behavior when `Summarise()` fails for unexpected reasons. A 
   placeholder is now returned instead with a suitable error message
 
