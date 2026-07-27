@@ -369,7 +369,7 @@ runArraySimulation <- function(design, ..., replications,
                 cat(sprintf('expandDesign row: %s\n', row))
             if(SLURM){
                 cat(sprintf('SLURM Node: %s\n', Sys.info()['nodename']))
-                cat(sprintf('SLURM ncores requested: %d \n\t\tSLURM_CPUS_PER_TASK: %s \n\t\tSLURM_MEM_PER_NODE: %s\n',
+                cat(sprintf('SLURM ncores requested: %d \nSLURM_CPUS_PER_TASK: %s \nSLURM_MEM_PER_NODE: %s\n',
                             ncores, Sys.getenv('SLURM_CPUS_PER_TASK'), Sys.getenv('SLURM_MEM_PER_NODE')))
                 cat(sprintf('SLURM_JOB_ID: %s (Array Task: %s)\n\n',
                             Sys.getenv('SLURM_JOB_ID'), arrayID))
@@ -381,7 +381,7 @@ runArraySimulation <- function(design, ..., replications,
                              control=control, save=FALSE, resume=FALSE, ...)
         if(verbose){
             t1 <- Sys.time()
-            cat(sprintf('\nSimulation end date: %s\n', format(t1, "%a %b %d %X %Y")))
+            cat(sprintf('\n\nSimulation end date: %s\n', format(t1, "%a %b %d %X %Y")))
             cat(sprintf('Total elapsed time: %s',
                         timeFormater(as.numeric(t1 - t0)/60, output='SBATCH')))
             if("WARNINGS" %in% colnames(ret)) cat(sprintf('\nWARNINGS: %d\n',
