@@ -368,13 +368,11 @@ runArraySimulation <- function(design, ..., replications,
             if(attr(dsub, 'Design.ID') != row)
                 cat(sprintf('expandDesign row: %s\n', row))
             if(SLURM){
-                cat('#########\nSLURM information:\n')
-                cat(sprintf('\tNode: %s\n', Sys.info()['nodename']))
-                cat(sprintf('\tncores requested: %d \n\t\tSLURM_CPUS_PER_TASK: %s \n\t\tSLURM_MEM_PER_NODE: %s\n',
+                cat(sprintf('SLURM Node: %s\n', Sys.info()['nodename']))
+                cat(sprintf('SLURM ncores requested: %d \n\t\tSLURM_CPUS_PER_TASK: %s \n\t\tSLURM_MEM_PER_NODE: %s\n',
                             ncores, Sys.getenv('SLURM_CPUS_PER_TASK'), Sys.getenv('SLURM_MEM_PER_NODE')))
-                cat(sprintf('\tSLURM_JOB_ID: %s (Array Task: %s)\n',
+                cat(sprintf('SLURM_JOB_ID: %s (Array Task: %s)\n\n',
                             Sys.getenv('SLURM_JOB_ID'), arrayID))
-                cat('#########\n')
             }
         }
         ret <- runSimulation(design=dsub, replications=replications[row], seed=seed,
@@ -409,7 +407,7 @@ runArraySimulation <- function(design, ..., replications,
         filename.u <- unique_filename(filename[i], safe=TRUE, verbose=FALSE)
         saveRDS(ret, filename.u)
         if(verbose)
-            cat(paste('\nSimulation results saved to file:', filename.u))
+            cat(paste('\nSimulation results saved to file:', filename.u), '\n\n')
     }
     if(length(rowpick) > 1L) ret <- NULL
     invisible(ret)
