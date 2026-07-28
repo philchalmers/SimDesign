@@ -38,7 +38,7 @@ jobs:
           needs: website
           
       - name: Install extras
-        run: Rscript -e 'install.packages(c("stringfish", "qs2"))'
+        run: Rscript -e 'options(pkgType="binary"); install.packages(c("stringfish", "qs2"))'
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
