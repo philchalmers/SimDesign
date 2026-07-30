@@ -19,7 +19,7 @@ runArraySimulation(
   ncores = parallelly::availableCores(omit = 1L),
   save_details = list(),
   control = list(),
-  verbose = TRUE
+  verbose = interactive()
 )
 }
 \arguments{
@@ -105,9 +105,8 @@ See \code{\link{runSimulation}}}
   available. Default applies no memory limit}
 
 \item{verbose}{logical; pass a verbose flag to \code{\link{runSimulation}}.
-Unlike \code{\link{runSimulation}} this is set to TRUE during interactive
-sessions to collect passive information about the
-session itself (e.g., in SLURM \code{.out} files)}
+On HPC clusters this is automatically set to \code{TRUE} so that progress can be tracked
+in locally stored files (e.g., in SLURM, the \code{.out} files)}
 }
 \description{
 This function has the same purpose as \code{\link{runSimulation}}, however

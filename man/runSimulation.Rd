@@ -40,7 +40,7 @@ runSimulation(
   control = list(),
   not_parallel = NULL,
   progress = TRUE,
-  verbose = TRUE
+  verbose = interactive()
 )
 
 \method{summary}{SimDesign}(object, ...)
@@ -630,7 +630,9 @@ text-based progress updates that are visible in log files.
 This is useful when simulations conditions take a long time to run (see also the
 \code{notification} argument). Default is \code{TRUE}}
 
-\item{verbose}{logical; print messages to the R console? Default is \code{TRUE}}
+\item{verbose}{logical; print messages to the R console? Set to \code{TRUE} in interactive mode.
+On HPC clusters this is automatically set to \code{TRUE} so that progress can be tracked
+in locally stored files (e.g., in SLURM, the \code{.out} files)}
 
 \item{object}{SimDesign object returned from \code{\link{runSimulation}}}
 
@@ -1196,8 +1198,7 @@ results <- runSimulation(design = Design,
                          prepare = prepare,
                          generate = generate,
                          analyse = analyse,
-                         summarise = summarise,
-                         verbose = FALSE)
+                         summarise = summarise)
 
 results
 

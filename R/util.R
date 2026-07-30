@@ -1069,6 +1069,25 @@ valid_save_details.list <- function()
     c("safe", "compname", "out_rootdir", "save_results_dirname", "save_results_filename",
       "save_seeds_dirname", 'arrayID', "tmpfilename")
 
+on_HPC.cluster <- function() {
+    env_vars <- names(Sys.getenv())
+
+    # Common job scheduler prefixes
+    scheduler_prefixes <- c(
+        "SLURM_",  # Slurm Workload Manager
+        "PBS_",    # PBS / Torque
+        "LSF_",    # IBM Spectrum LSF (e.g., LSB_JOBID)
+        "SGE_"     # Sun Grid Engine / Oracle Grid Engine
+    )
+
+    has_scheduler_prefix <- any(sapply(scheduler_prefixes, function(p) any(grepl(paste0("^", p), env_vars))))
+    has_lsf_var <- "LSB_JOBID" %in% env_vars
+    has_grid_env <- "ENVIRONMENT" %in% env_vars && Sys.getenv("ENVIRONMENT") == "BATCH"
+
+    # Return TRUE if any cluster indicators are found
+    return(has_scheduler_prefix || has_lsf_var || has_grid_env)
+}
+
 # Test cases:
 #
 # sbatch_RAM2bytes("1024MB")

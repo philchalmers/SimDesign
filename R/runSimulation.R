@@ -717,7 +717,9 @@
 #'   of all the simulation results for each condition if \code{nrow(Design) > 1}; otherwise, if
 #'   \code{nrow(Design) == 1} or \code{Design} was missing the \code{results} object will be stored as-is
 #'
-#' @param verbose logical; print messages to the R console? Default is \code{TRUE}
+#' @param verbose logical; print messages to the R console? Set to \code{TRUE} in interactive mode.
+#'    On HPC clusters this is automatically set to \code{TRUE} so that progress can be tracked
+#'    in locally stored files (e.g., in SLURM, the \code{.out} files)
 #'
 #' @return a \code{tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
 #'   with the original \code{design} conditions in the left-most columns,
@@ -1152,8 +1154,7 @@
 #'                          prepare = prepare,
 #'                          generate = generate,
 #'                          analyse = analyse,
-#'                          summarise = summarise,
-#'                          verbose = FALSE)
+#'                          summarise = summarise)
 #'
 #' results
 #'
@@ -1174,8 +1175,9 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           CI = .95, seed = NULL, boot_method='none', boot_draws = 1000L,
                           max_errors = 50L, resume = TRUE, save_details = list(),
                           control = list(), not_parallel = NULL, progress = TRUE,
-                          verbose = TRUE)
+                          verbose = interactive())
 {
+    if(!verbose) verbose <- on_HPC.cluster()
     max_time.start <- if(is.null(control$max_time.start))
         proc.time()[3L] else control$max_time.start
     stopifnot(!missing(analyse))

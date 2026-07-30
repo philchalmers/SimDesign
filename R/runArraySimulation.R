@@ -118,9 +118,8 @@
 #' @param ... additional arguments to be passed to \code{\link{runSimulation}}
 #'
 #' @param verbose logical; pass a verbose flag to \code{\link{runSimulation}}.
-#'   Unlike \code{\link{runSimulation}} this is set to TRUE during interactive
-#'   sessions to collect passive information about the
-#'   session itself (e.g., in SLURM \code{.out} files)
+#'   On HPC clusters this is automatically set to \code{TRUE} so that progress can be tracked
+#'   in locally stored files (e.g., in SLURM, the \code{.out} files)
 #'
 #' @export
 #'
@@ -313,8 +312,9 @@ runArraySimulation <- function(design, ..., replications,
                                parallel = FALSE, cl = NULL,
                                ncores = parallelly::availableCores(omit = 1L),
                                save_details = list(), control = list(),
-                               verbose = TRUE){
+                               verbose = interactive()){
     dots <- list(...)
+    if(!verbose) verbose <- on_HPC.cluster()
     if(parallel && ncores == 1L) parallel <- FALSE
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))
         stop('save_results not supported for array jobs. Please use store_results only')
