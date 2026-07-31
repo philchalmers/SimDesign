@@ -1190,7 +1190,7 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                       all(names(save_details) %in% valid_save_details.list()))
     }
     if(is.null(control$use_mirai)) control$use_mirai <- TRUE
-    if(!requireNamespace("mirai", quietly = TRUE)) control$use_mirai <- TRUE
+    if(!requireNamespace("mirai", quietly = TRUE)) control$use_mirai <- FALSE
     if(is.null(control$global_fun_level)) control$global_fun_level <- 2
     if(is.null(control$useAnalyseHandler)) control$useAnalyseHandler <- TRUE
     useAnalyseHandler <- control$useAnalyseHandler
