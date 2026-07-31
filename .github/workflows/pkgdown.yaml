@@ -38,7 +38,7 @@ jobs:
           use-public-rspm: true
           
       - name: Install extras
-        run: Rscript -e 'install.packages(c("stringfish", "qs2"))'
+        run: Rscript -e 'install.packages(c("stringfish", "qs2"), repos="http://cran.rstudio.com")'
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
