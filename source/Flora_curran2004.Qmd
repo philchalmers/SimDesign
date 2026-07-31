@@ -117,7 +117,9 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
     mod <- cfa(syntax, dat, ordered=colnames(dat), estimator=estimator)
 
     # check that model and coefficients are reasonable
-    if(!lavInspect(mod, 'converged')) stop('Model did not converge')
+    if(!lavInspect(mod, 'converged')) stop('Optimizer did not converge')
+    # if(!lavInspect(mod, 'post.check'))     ## Uncomment if more stringent models required
+    #  stop('Model is not permissible (e.g., negative variances)')
     pick_lambdas <- matrix(TRUE, indicators*factors, factors)
     if(factors == 2)
         pick_lambdas[(indicators+1):(indicators*3)] <- FALSE
