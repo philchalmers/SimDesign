@@ -81,16 +81,18 @@ timeFormater("4:30:30", output = 'hour')
 #> [1] 4.508333
 
 # numeric input is understood as minutes
-timeFormater(42)               # seconds
+timeFormater(42)                            # output in seconds
 #> [1] 2520
-timeFormater(42, output='min') # minutes
+timeFormater(42, input='sec', output='min') # input in sec, output in min
+#> [1] 0.7
+timeFormater(42, output='min')              # in-and-output in minutes
 #> [1] 42
 
 # convert numeric inputs to SBATCH format
 timeFormater(60, output='SBATCH')
-#> [1] "1:0:0"
+#> [1] "1:00:00"
 timeFormater(3, output='SBATCH', input='day')
-#> [1] "3-0:0:0"
+#> [1] "3-0:00:00"
 timeFormater(7000, output='SBATCH', input='sec')
 #> [1] "1:56:40"
 timeFormater(100000, output='SBATCH', input='sec')
@@ -98,10 +100,10 @@ timeFormater(100000, output='SBATCH', input='sec')
 
 # rounding seconds
 timeFormater(1.55555, output='SBATCH', input='sec') # floor default
-#> [1] "0:0:1"
+#> [1] "0:00:01"
 timeFormater(1.55555, output='SBATCH', input='sec', sround=ceiling)
-#> [1] "0:0:2"
+#> [1] "0:00:02"
 timeFormater(1.55555, output='SBATCH', input='sec', sround=\(x) round(x, 3))
-#> [1] "0:0:1.556"
+#> [1] "0:00:1.556"
 
 ```

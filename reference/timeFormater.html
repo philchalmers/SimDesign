@@ -19,7 +19,7 @@ convert numeric input to SBATCH format.'></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.26.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -145,16 +145,18 @@ supported values)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4.508333</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># numeric input is understood as minutes</span></span></span>
-<span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>               <span class="co"># seconds</span></span></span>
+<span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>                            <span class="co"># output in seconds</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2520</span>
-<span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">42</span>, output<span class="op">=</span><span class="st">'min'</span><span class="op">)</span> <span class="co"># minutes</span></span></span>
+<span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">42</span>, input<span class="op">=</span><span class="st">'sec'</span>, output<span class="op">=</span><span class="st">'min'</span><span class="op">)</span> <span class="co"># input in sec, output in min</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7</span>
+<span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">42</span>, output<span class="op">=</span><span class="st">'min'</span><span class="op">)</span>              <span class="co"># in-and-output in minutes</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 42</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># convert numeric inputs to SBATCH format</span></span></span>
 <span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">60</span>, output<span class="op">=</span><span class="st">'SBATCH'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1:0:0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1:00:00"</span>
 <span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">3</span>, output<span class="op">=</span><span class="st">'SBATCH'</span>, input<span class="op">=</span><span class="st">'day'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "3-0:0:0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "3-0:00:00"</span>
 <span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">7000</span>, output<span class="op">=</span><span class="st">'SBATCH'</span>, input<span class="op">=</span><span class="st">'sec'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1:56:40"</span>
 <span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">100000</span>, output<span class="op">=</span><span class="st">'SBATCH'</span>, input<span class="op">=</span><span class="st">'sec'</span><span class="op">)</span></span></span>
@@ -162,11 +164,11 @@ supported values)</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># rounding seconds</span></span></span>
 <span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">1.55555</span>, output<span class="op">=</span><span class="st">'SBATCH'</span>, input<span class="op">=</span><span class="st">'sec'</span><span class="op">)</span> <span class="co"># floor default</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0:0:1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0:00:01"</span>
 <span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">1.55555</span>, output<span class="op">=</span><span class="st">'SBATCH'</span>, input<span class="op">=</span><span class="st">'sec'</span>, sround<span class="op">=</span><span class="va">ceiling</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0:0:2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0:00:02"</span>
 <span class="r-in"><span><span class="fu">timeFormater</span><span class="op">(</span><span class="fl">1.55555</span>, output<span class="op">=</span><span class="st">'SBATCH'</span>, input<span class="op">=</span><span class="st">'sec'</span>, sround<span class="op">=</span>\<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0:0:1.556"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0:00:1.556"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

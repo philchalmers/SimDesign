@@ -33,7 +33,7 @@ runArraySimulation(
   ncores = parallelly::availableCores(omit = 1L),
   save_details = list(),
   control = list(),
-  verbose = TRUE
+  verbose = interactive()
 )
 ```
 
@@ -158,10 +158,9 @@ runArraySimulation(
 
   logical; pass a verbose flag to
   [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md).
-  Unlike
-  [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
-  this is set to TRUE during interactive sessions to collect passive
-  information about the session itself (e.g., in SLURM `.out` files)
+  On HPC clusters this is automatically set to `TRUE` so that progress
+  can be tracked in locally stored files (e.g., in SLURM, the `.out`
+  files)
 
 ## Details
 

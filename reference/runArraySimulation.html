@@ -25,7 +25,7 @@ vignette for a brief tutorial of this setup."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.26.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,7 @@ vignette for a brief tutorial of this setup.</p>
 <span>  ncores <span class="op">=</span> <span class="fu">parallelly</span><span class="fu">::</span><span class="fu"><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">availableCores</a></span><span class="op">(</span>omit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span>,</span>
 <span>  save_details <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -213,9 +213,8 @@ See <code><a href="runSimulation.html">runSimulation</a></code></p></dd>
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>logical; pass a verbose flag to <code><a href="runSimulation.html">runSimulation</a></code>.
-Unlike <code><a href="runSimulation.html">runSimulation</a></code> this is set to TRUE during interactive
-sessions to collect passive information about the
-session itself (e.g., in SLURM <code>.out</code> files)</p></dd>
+On HPC clusters this is automatically set to <code>TRUE</code> so that progress can be tracked
+in locally stored files (e.g., in SLURM, the <code>.out</code> files)</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -105,7 +105,6 @@ job, as well as larger amounts of RAM.
     #SBATCH --job-name="My simulation (multiple CPUs)"
     #SBATCH --mail-type=ALL
     #SBATCH --mail-user=somewhere@out.there
-    #SBATCH --output=/dev/null    ## (optional) delete .out files
     #SBATCH --time=12:00:00       ## HH:MM:SS
     #SBATCH --cpus-per-task=96    ## Build a computer with 96 cores
     #SBATCH --mem-per-cpu=2G      ## Build a computer with 192GB of RAM 
@@ -463,7 +462,6 @@ following, stored into a suitable `.slurm` file:
     #SBATCH --job-name="My simulation (array jobs, distributing conditions + replications)"
     #SBATCH --mail-type=ALL
     #SBATCH --mail-user=somewhere@out.there
-    #SBATCH --output=/dev/null    ## (optional) delete .out files
     #SBATCH --time=12:00:00       ## HH:MM:SS
     #SBATCH --mem-per-cpu=4G      ## 4GB of RAM per cpu
     #SBATCH --cpus-per-task=1
@@ -687,7 +685,6 @@ would work:
     #SBATCH --job-name="My simulation (arrays + multiple CPUs)"
     #SBATCH --mail-type=ALL
     #SBATCH --mail-user=somewhere@out.there
-    #SBATCH --output=/dev/null    ## (optional) delete .out files
     #SBATCH --time=04:00:00       ## HH:MM:SS
     #SBATCH --mem-per-cpu=4G      ## Build a computing cluster with 64GB of RAM 
     #SBATCH --cpus-per-task=16    ## 16 CPUs per array, likely built from 1 node
