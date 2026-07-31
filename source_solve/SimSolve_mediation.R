@@ -62,7 +62,9 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
              total := c + (a*b)
          '
     fit <- lavaan::sem(model, data=dat)
-    if(!lavInspect(fit, 'converged')) stop('Model did not converge')
+    if(!lavInspect(fit, 'converged')) stop('Optimizer did not converge')
+    # if(!lavInspect(fit, 'post.check'))     ## Uncomment if more stringent models required
+    #  stop('Model is not permissible (e.g., negative variances)')
     PE <- parameterEstimates(fit)
     ret <- PE$pvalue[PE$lhs == 'ab']   # joint test
     ret
@@ -86,7 +88,7 @@ interval <- c(20, 1000) # needless wide for most, but shows the point
 # prediction CI is within [.795, .805]
 solved <- SimSolve(design=Design, b=.8, interval=interval,
                    generate=Generate, analyse=Analyse, summarise=Summarise,
-                   packages='lavaan', parallel=TRUE, 
+                   packages='lavaan', parallel=TRUE,
                    ncores = ceiling(parallel::detectCores()/2),
                    verbose=FALSE, check.interval=FALSE,
                    maxiter=100, predCI.tol=.01)

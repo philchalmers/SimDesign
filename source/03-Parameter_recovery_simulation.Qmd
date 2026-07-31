@@ -123,7 +123,9 @@ Analyse <- function(condition, dat, fixed_objects = NULL) {
                      paste0(colnames(dat)[-1L], collapse = ' + '),
                      '\nF ~~ 1*F')
     lmod <- sem(lavmod, dat, ordered = colnames(dat))
-    if(!lavInspect(lmod, 'converged')) stop('lavaan did not converge')
+    if(!lavInspect(lmod, 'converged')) stop('lavaan optimiser did not converge')
+    # if(!lavInspect(lmod, 'post.check'))     ## Uncomment if more stringent models required
+    #  stop('Model is not permissible (e.g., negative variances)')
     cfs2 <- coef(lmod)
     DWLS_alpha <- cfs2[1L:nitems]
     const <- sqrt(1 - DWLS_alpha^2)
