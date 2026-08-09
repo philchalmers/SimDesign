@@ -40,7 +40,6 @@ Imports:
     qs2,
     stats
 Suggests:
-    snow,
     knitr,
     ggplot2,
     tidyr,

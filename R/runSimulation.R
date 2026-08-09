@@ -276,7 +276,7 @@
 #'   \code{parallel} is used, however the overhead that tags along with parallel processing
 #'   results in higher processing times than simply running the simulation with one core.
 #'
-#' @param cl cluster object defined by \code{\link{makeCluster}} used to run code in parallel
+#' @param cl cluster object defined by \code{\link[parallel]{makeCluster}} used to run code in parallel
 #'   (ignored if using the \code{\link[future]{future}} package approach).
 #'   If \code{NULL} and \code{parallel = TRUE}, a local cluster object will be defined which
 #'   selects the maximum number cores available
@@ -675,7 +675,7 @@
 #' @param seed a vector or list of integers to be used for reproducibility.
 #'   The length of the vector must be equal the number of rows in \code{design}.
 #'   If the input is a vector then \code{\link{set.seed}} or
-#'   \code{\link{clusterSetRNGStream}} for each condition will be called, respectively.
+#'   \code{\link[parallel]{clusterSetRNGStream}} for each condition will be called, respectively.
 #'   If a list is provided then these
 #'   numbers must have been generated from \code{\link{genSeeds}}. The list approach
 #'   ensures random number generation independence across conditions and replications,
