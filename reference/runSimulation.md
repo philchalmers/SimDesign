@@ -429,8 +429,9 @@ print(x, list2char = TRUE, ...)
 
 - cl:
 
-  cluster object defined by `makeCluster` used to run code in parallel
-  (ignored if using the
+  cluster object defined by
+  [`makeCluster`](https://rdrr.io/r/parallel/makeCluster.html) used to
+  run code in parallel (ignored if using the
   [`future`](https://future.futureverse.org/reference/future.html)
   package approach). If `NULL` and `parallel = TRUE`, a local cluster
   object will be defined which selects the maximum number cores
@@ -508,8 +509,9 @@ print(x, list2char = TRUE, ...)
   length of the vector must be equal the number of rows in `design`. If
   the input is a vector then
   [`set.seed`](https://rdrr.io/r/base/Random.html) or
-  `clusterSetRNGStream` for each condition will be called, respectively.
-  If a list is provided then these numbers must have been generated from
+  [`clusterSetRNGStream`](https://rdrr.io/r/parallel/RngStream.html) for
+  each condition will be called, respectively. If a list is provided
+  then these numbers must have been generated from
   [`genSeeds`](http://philchalmers.github.io/SimDesign/reference/genSeeds.md).
   The list approach ensures random number generation independence across
   conditions and replications, while the vector input ensures
@@ -1168,9 +1170,9 @@ Final
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Fri Jul 31 14:58:28 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Fri Jul 31 14:58:28 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Fri Jul 31 14:58:28 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Aug 10 15:28:12 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Aug 10 15:28:12 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Aug 10 15:28:12 20…
 (results <- SimResults(Final))
 #> # A tibble: 6 × 2
 #>       N  mean
@@ -1196,9 +1198,9 @@ Final_rep
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Fri Jul 31 14:58:28 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Fri Jul 31 14:58:29 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Fri Jul 31 14:58:29 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Aug 10 15:28:12 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Aug 10 15:28:12 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Aug 10 15:28:12 20…
 (results <- SimResults(Final_rep))
 #> # A tibble: 6 × 2
 #>       N  mean
