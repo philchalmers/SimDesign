@@ -1,5 +1,10 @@
 # NEWS file for SimDesign
 
+## Changes in SimDesign 2.27
+
+- `SimWarnings()` and `SimErrors()` wrappers gain a `fuzzy` argument, 
+  which is passed to their associated `SimExtract()` elements
+
 ## Changes in SimDesign 2.26
 
 - `verbose` option in `runArraySimulation()` now prints extract QOL information

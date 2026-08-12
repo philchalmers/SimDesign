@@ -98,31 +98,43 @@ importFrom(R.utils,withTimeout)
 importFrom(beepr,beep)
 importFrom(clipr,write_clip)
 importFrom(codetools,findGlobals)
-importFrom(dplyr,arrange)
-importFrom(dplyr,as_tibble)
-importFrom(dplyr,bind_rows)
-importFrom(dplyr,group_by)
-importFrom(dplyr,mutate)
-importFrom(dplyr,select)
-importFrom(e1071,kurtosis)
-importFrom(e1071,skewness)
+importFrom(dplyr,
+  arrange,
+  as_tibble,
+  bind_rows,
+  group_by,
+  mutate,
+  select
+)
+importFrom(e1071,
+  kurtosis,
+  skewness
+)
 importFrom(future.apply,future_lapply)
 importFrom(graphics,abline)
 importFrom(parallelly,availableCores)
-importFrom(pbapply,pblapply)
-importFrom(pbapply,pboptions)
+importFrom(pbapply,
+  pblapply,
+  pboptions
+)
 importFrom(progressr,progressor)
-importFrom(qs2,qd_read)
-importFrom(qs2,qd_save)
+importFrom(qs2,
+  qd_read,
+  qd_save
+)
 importFrom(sessioninfo,session_info)
-importFrom(testthat,capture_messages)
-importFrom(testthat,capture_output_lines)
-importFrom(utils,capture.output)
-importFrom(utils,flush.console)
-importFrom(utils,head)
-importFrom(utils,methods)
-importFrom(utils,object.size)
-importFrom(utils,packageVersion)
-importFrom(utils,recover)
-importFrom(utils,sessionInfo)
-importFrom(utils,tail)
+importFrom(testthat,
+  capture_messages,
+  capture_output_lines
+)
+importFrom(utils,
+  capture.output,
+  flush.console,
+  head,
+  methods,
+  object.size,
+  packageVersion,
+  recover,
+  sessionInfo,
+  tail
+)

@@ -386,13 +386,13 @@ mainsim <- function(index, condition, condition.row, generate, analyse, fixed_ob
         if(!allow_nan && !is.list(res) && any(is.nan(res))){
             NA_names <- names(res)[is.nan(res)]
             res <- try(stop(sprintf('The following return NaN and required redrawing: %s',
-                                    paste(NA_names, sep=',')),
+                                    paste(NA_names, collapse=',')),
                             call.=FALSE), silent=TRUE)
         }
         if(!allow_na && !is.list(res) && any(is.na(res))){
             NA_names <- names(res)[is.na(res)]
             res <- try(stop(sprintf('The following return NA and required redrawing: %s',
-                                    paste(NA_names, sep=',')),
+                                    paste(NA_names, collapse=',')),
                             call.=FALSE), silent=TRUE)
         }
 

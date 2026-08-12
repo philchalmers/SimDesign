@@ -243,8 +243,8 @@ fuzzy_reduce <- function(df){
         if(matched[i]) next
         unames <- c(unames, nms[i])
         udf <- cbind(udf, df[,i])
-        temp_matched <- agrepl(nms[i], nms)
-        udf[,ncol(udf)] <- rowSums(df[,temp_matched], na.rm = TRUE)
+        temp_matched <- agrepl(nms[i], nms) & !matched
+        udf[,ncol(udf)] <- rowSums(df[,temp_matched, drop=FALSE], na.rm = TRUE)
         matched <- matched | temp_matched
     }
     udf

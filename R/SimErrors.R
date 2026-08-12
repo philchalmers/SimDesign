@@ -10,6 +10,10 @@
 #' @param subset logical; take a subset of the \code{design} object showing only conditions that
 #'   returned errors?
 #'
+#' @param fuzzy logical; use fuzzy string matching to reduce effectively identical messages?
+#'   This argument is passed to \code{\link{SimExtract}}. Set to \code{FALSE} to report
+#'   every distinct message
+#'
 #' @references
 #'
 #' Chalmers, R. P., & Adkins, M. C.  (2020). Writing Effective and Reliable Monte Carlo Simulations
@@ -90,11 +94,11 @@
 #'
 #'
 #'
-SimErrors <- function(obj, seeds=FALSE, subset=TRUE){
+SimErrors <- function(obj, seeds=FALSE, subset=TRUE, fuzzy=TRUE){
     if(!any(colnames(obj) == 'ERRORS')) return(dplyr::tibble())
     errors <- obj$ERRORS
     pick <- which(errors > 0)
-    ret <- SimExtract(obj, what='errors')
+    ret <- SimExtract(obj, what='errors', fuzzy=fuzzy)
     if(seeds){
         eseeds <- SimExtract(obj, what = 'error_seeds')
         design <- SimExtract(obj, what = 'design')
