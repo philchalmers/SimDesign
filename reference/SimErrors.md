@@ -7,7 +7,7 @@ returned a simulation with detected `ERRORS`.
 ## Usage
 
 ``` r
-SimErrors(obj, seeds = FALSE, subset = TRUE)
+SimErrors(obj, seeds = FALSE, subset = TRUE, fuzzy = TRUE)
 ```
 
 ## Arguments
@@ -26,6 +26,13 @@ SimErrors(obj, seeds = FALSE, subset = TRUE)
 
   logical; take a subset of the `design` object showing only conditions
   that returned errors?
+
+- fuzzy:
+
+  logical; use fuzzy string matching to reduce effectively identical
+  messages? This argument is passed to
+  [`SimExtract`](http://philchalmers.github.io/SimDesign/reference/SimExtract.md).
+  Set to `FALSE` to report every distinct message
 
 ## References
 

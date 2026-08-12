@@ -7,7 +7,7 @@ returned a simulation with detected `WARNINGS`.
 ## Usage
 
 ``` r
-SimWarnings(obj, subset = TRUE)
+SimWarnings(obj, subset = TRUE, fuzzy = TRUE)
 ```
 
 ## Arguments
@@ -22,6 +22,13 @@ SimWarnings(obj, subset = TRUE)
 
   logical; take a subset of the `design` object showing only conditions
   that returned warnings?
+
+- fuzzy:
+
+  logical; use fuzzy string matching to reduce effectively identical
+  messages? This argument is passed to
+  [`SimExtract`](http://philchalmers.github.io/SimDesign/reference/SimExtract.md).
+  Set to `FALSE` to report every distinct message
 
 ## References
 
