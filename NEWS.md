@@ -1,6 +1,6 @@
 # NEWS file for SimDesign
 
-## Changes in SimDesign 2.27
+## Changes in SimDesign 2.26.2
 
 - `SimWarnings()` and `SimErrors()` wrappers gain a `fuzzy` argument, 
   which is passed to their associated `SimExtract()` elements
