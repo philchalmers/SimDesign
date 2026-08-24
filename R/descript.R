@@ -212,7 +212,6 @@ descript <- function(df, funs=get_descriptFuns(),
 		class(out) <- c('bybye', class(out))
 		if(!discrete && nrow(out[[1]]) == 1){
 		    out <- do.call(rbind, out)
-		    out$VARS <- NULL
 		    out <- dplyr::bind_cols(groupkeys, out)
 		}
 		if(collapse){
