@@ -639,10 +639,10 @@ fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 
 # with single variables, typical dplyr::summarise() output returned
 fmtcars |> select(mpg) |> descript()
-#> # A tibble: 1 × 11
-#>       n  mean  trim    sd  skew   kurt   min   P25   P50   P75   max
-#>   <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1    32  20.1  19.7  6.03 0.611 -0.373  10.4  15.4  19.2  22.8  33.9
+#> # A tibble: 1 × 12
+#>   VARS      n  mean  trim    sd  skew   kurt   min   P25   P50   P75   max
+#>   <fct> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1 mpg      32  20.1  19.7  6.03 0.611 -0.373  10.4  15.4  19.2  22.8  33.9
 fmtcars |> group_by(cyl) |> select(mpg) |> descript()
 #> # A tibble: 3 × 12
 #>   cyl       n  mean  trim    sd   skew   kurt   min   P25   P50   P75   max

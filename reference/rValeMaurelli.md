@@ -70,10 +70,10 @@ set.seed(1)
 # univariate with skew
 nonnormal <- rValeMaurelli(10000, mean=10, sigma=5, skew=1, kurt=3)
 descript(nonnormal)
-#> # A tibble: 1 × 11
-#>       n  mean  trim    sd  skew  kurt   min   P25   P50   P75   max
-#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1 10000  9.99  9.83  2.25 0.908  2.42  1.44  8.56  9.68  11.1  26.9
+#> # A tibble: 1 × 12
+#>   VARS      n  mean  trim    sd  skew  kurt   min   P25   P50   P75   max
+#>   <fct> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1 V1    10000  9.99  9.83  2.25 0.908  2.42  1.44  8.56  9.68  11.1  26.9
 
 # multivariate with skew and kurtosis
 n <- 10000
