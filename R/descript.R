@@ -260,7 +260,6 @@ descript <- function(df, funs=get_descriptFuns(),
 	if(!discrete){
 		retfull <- do.call(rbind, retfull)
 		ret <- data.frame(VARS=factor(colnames(df)), retfull) |> dplyr::as_tibble()
-		if(nrow(ret) == 1) ret$VARS <- NULL
 	} else {
 		ret <- retfull
 		names(ret) <- colnames(df)
