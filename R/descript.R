@@ -184,7 +184,8 @@ descript <- function(df, funs=get_descriptFuns(),
 	if(length(dplyr::group_keys(df)) && !by_group){
 	    groupkeys <- na.omit(dplyr::group_keys(df))
 	    vars <- colnames(df)
-	    vars <- vars[!(vars %in% colnames(groupkeys)) & !sapply(df, is.factor)]
+	    vars <- vars[!(vars %in% colnames(groupkeys)) & !sapply(df, is.factor) &
+	                     !sapply(df, is.character)]
 	    if(length(vars) > 1){
 	        ret <- vector('list', length(vars))
 	        names(ret) <- vars
