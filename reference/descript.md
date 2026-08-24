@@ -7,7 +7,7 @@ while the ladder are supplied to a (customizable) list of univariate
 summary functions. As such, quantitative/continuous variable information
 is kept distinct in the output, while discrete variables (e.g.,
 `factors` and `character` vectors) are returned by using the `discrete`
-argument. When applicable a `"VARS"` column will be included in the
+argument. When applicable a `"VAR"` column will be included in the
 output to indicate which variable is being summarised on the respective
 row.
 
@@ -166,7 +166,7 @@ fmtcars <- within(mtcars, {
 # with and without factor variables
 mtcars |> descript()
 #> # A tibble: 11 × 12
-#>    VARS      n    mean    trim      sd   skew    kurt   min    P25    P50    P75
+#>    VAR       n    mean    trim      sd   skew    kurt   min    P25    P50    P75
 #>    <fct> <dbl>   <dbl>   <dbl>   <dbl>  <dbl>   <dbl> <dbl>  <dbl>  <dbl>  <dbl>
 #>  1 mpg      32  20.1    19.7     6.03   0.611 -0.373  10.4   15.4   19.2   22.8 
 #>  2 cyl      32   6.19    6.23    1.79  -0.175 -1.76    4      4      6      8   
@@ -182,7 +182,7 @@ mtcars |> descript()
 #> # ℹ 1 more variable: max <dbl>
 fmtcars |> descript()               # factors/discrete vars omitted
 #> # A tibble: 8 × 12
-#>   VARS      n   mean   trim      sd  skew    kurt   min    P25    P50    P75
+#>   VAR       n   mean   trim      sd  skew    kurt   min    P25    P50    P75
 #>   <fct> <dbl>  <dbl>  <dbl>   <dbl> <dbl>   <dbl> <dbl>  <dbl>  <dbl>  <dbl>
 #> 1 mpg      32  20.1   19.7    6.03  0.611 -0.373  10.4   15.4   19.2   22.8 
 #> 2 disp     32 231.   223.   124.    0.382 -1.21   71.1  121.   196.   326   
@@ -194,8 +194,6 @@ fmtcars |> descript()               # factors/discrete vars omitted
 #> 8 carb     32   2.81   2.65   1.62  1.05   1.26    1      2      2      4   
 #> # ℹ 1 more variable: max <dbl>
 fmtcars |> descript(discrete=TRUE)  # discrete variables only
-#> VARIABLE: cyl
-#> 
 #>   count proportion
 #> 4    11    0.34375
 #> 6     7    0.21875
@@ -203,16 +201,12 @@ fmtcars |> descript(discrete=TRUE)  # discrete variables only
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: vs
-#> 
 #>   count proportion
 #> 0    18     0.5625
 #> 1    14     0.4375
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: am
-#> 
 #>           count proportion
 #> automatic    19    0.59375
 #> manual       13    0.40625
@@ -220,23 +214,21 @@ fmtcars |> descript(discrete=TRUE)  # discrete variables only
 # usual pipe chaining
 fmtcars |> select(mpg, wt) |> descript()
 #> # A tibble: 2 × 12
-#>   VARS      n  mean  trim    sd  skew    kurt   min   P25   P50   P75   max
+#>   VAR       n  mean  trim    sd  skew    kurt   min   P25   P50   P75   max
 #>   <fct> <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 mpg      32 20.1  19.7  6.03  0.611 -0.373  10.4  15.4  19.2  22.8  33.9 
 #> 2 wt       32  3.22  3.15 0.978 0.423 -0.0227  1.51  2.58  3.32  3.61  5.42
 fmtcars |> subset(mpg > 20) |> select(mpg, wt) |> descript()
 #> # A tibble: 2 × 12
-#>   VARS      n  mean  trim    sd    skew  kurt   min   P25   P50   P75   max
+#>   VAR       n  mean  trim    sd    skew  kurt   min   P25   P50   P75   max
 #>   <fct> <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 mpg      14 25.5  25.2  4.60   0.553  -1.38 21    21.4  23.6  29.6  33.9 
 #> 2 wt       14  2.42  2.43 0.577 -0.0349 -1.47  1.51  1.99  2.39  2.85  3.22
 
 # conditioning with group_by(), printing across each variable
 fmtcars |> group_by(cyl) |> descript()
-#> VARIABLE: mpg
-#> 
 #> # A tibble: 3 × 13
-#>   cyl   VARS      n  mean  trim    sd   skew   kurt   min   P25   P50   P75
+#>   cyl   VAR       n  mean  trim    sd   skew   kurt   min   P25   P50   P75
 #> * <fct> <fct> <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     mpg      11  26.7  26.4  4.51  0.259 -1.65   21.4  22.8  26    30.4
 #> 2 6     mpg       7  19.7  19.7  1.45 -0.158 -1.91   17.8  18.6  19.7  21  
@@ -245,10 +237,8 @@ fmtcars |> group_by(cyl) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: disp
-#> 
 #> # A tibble: 3 × 13
-#>   cyl   VARS      n  mean  trim    sd  skew  kurt   min   P25   P50   P75   max
+#>   cyl   VAR       n  mean  trim    sd  skew  kurt   min   P25   P50   P75   max
 #> * <fct> <fct> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     disp     11  105.  104.  26.9 0.121 -1.64  71.1  78.8  108   121.  147.
 #> 2 6     disp      7  183.  183.  41.6 0.795 -1.23 145   160    168.  196.  258 
@@ -256,10 +246,8 @@ fmtcars |> group_by(cyl) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: hp
-#> 
 #> # A tibble: 3 × 13
-#>   cyl   VARS      n  mean  trim    sd    skew    kurt   min   P25   P50   P75
+#>   cyl   VAR       n  mean  trim    sd    skew    kurt   min   P25   P50   P75
 #> * <fct> <fct> <dbl> <dbl> <dbl> <dbl>   <dbl>   <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     hp       11  82.6  82.7  20.9 0.00626 -1.71      52  65.5   91    96 
 #> 2 6     hp        7 122.  122.   24.3 1.36     0.249    105 110    110   123 
@@ -268,10 +256,8 @@ fmtcars |> group_by(cyl) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: drat
-#> 
 #> # A tibble: 3 × 13
-#>   cyl   VARS      n  mean  trim    sd   skew   kurt   min   P25   P50   P75
+#>   cyl   VAR       n  mean  trim    sd   skew   kurt   min   P25   P50   P75
 #> * <fct> <fct> <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     drat     11  4.07  4.02 0.365  0.998  0.123  3.69  3.81  4.08  4.16
 #> 2 6     drat      7  3.59  3.59 0.476 -0.736 -1.40   2.76  3.35  3.9   3.91
@@ -280,10 +266,8 @@ fmtcars |> group_by(cyl) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: wt
-#> 
 #> # A tibble: 3 × 13
-#>   cyl   VARS      n  mean  trim    sd   skew   kurt   min   P25   P50   P75
+#>   cyl   VAR       n  mean  trim    sd   skew   kurt   min   P25   P50   P75
 #> * <fct> <fct> <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     wt       11  2.29  2.27 0.570  0.300 -1.36   1.51  1.88  2.2   2.62
 #> 2 6     wt        7  3.12  3.12 0.356 -0.222 -1.98   2.62  2.82  3.22  3.44
@@ -292,10 +276,8 @@ fmtcars |> group_by(cyl) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: qsec
-#> 
 #> # A tibble: 3 × 13
-#>   cyl   VARS      n  mean  trim    sd   skew    kurt   min   P25   P50   P75
+#>   cyl   VAR       n  mean  trim    sd   skew    kurt   min   P25   P50   P75
 #> * <fct> <fct> <dbl> <dbl> <dbl> <dbl>  <dbl>   <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     qsec     11  19.1  19.0  1.68  0.550 -0.0207  16.7  18.6  18.9  20.0
 #> 2 6     qsec      7  18.0  18.0  1.71 -0.125 -1.75    15.5  16.7  18.3  19.2
@@ -304,10 +286,8 @@ fmtcars |> group_by(cyl) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: gear
-#> 
 #> # A tibble: 3 × 13
-#>   cyl   VARS      n  mean  trim    sd  skew    kurt   min   P25   P50   P75
+#>   cyl   VAR       n  mean  trim    sd  skew    kurt   min   P25   P50   P75
 #> * <fct> <fct> <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     gear     11  4.09  4.11 0.539 0.115 -0.0106     3   4       4     4
 #> 2 6     gear      7  3.86  3.86 0.690 0.106 -1.24       3   3.5     4     4
@@ -316,19 +296,15 @@ fmtcars |> group_by(cyl) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: carb
-#> 
 #> # A tibble: 3 × 13
-#>   cyl   VARS      n  mean  trim    sd   skew  kurt   min   P25   P50   P75   max
+#>   cyl   VAR       n  mean  trim    sd   skew  kurt   min   P25   P50   P75   max
 #> * <fct> <fct> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     carb     11  1.55  1.56 0.522 -0.158 -2.15     1  1      2       2     2
 #> 2 6     carb      7  3.43  3.43 1.81  -0.261 -1.50     1  2.5    4       4     6
 #> 3 8     carb     14  3.5   3.25 1.56   1.48   2.24     2  2.25   3.5     4     8
 fmtcars |> group_by(cyl, am) |> descript()
-#> VARIABLE: mpg
-#> 
 #> # A tibble: 6 × 14
-#>   cyl   am        VARS      n  mean  trim    sd    skew   kurt   min   P25   P50
+#>   cyl   am        VAR       n  mean  trim    sd    skew   kurt   min   P25   P50
 #>   <fct> <fct>     <fct> <dbl> <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl> <dbl> <dbl>
 #> 1 4     automatic mpg       3  22.9  22.9 1.45   0.0685 -2.33   21.5  22.2  22.8
 #> 2 4     manual    mpg       4  19.1  19.1 1.63   0.482  -1.91   17.8  18.0  18.6
@@ -340,10 +316,8 @@ fmtcars |> group_by(cyl, am) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: disp
-#> 
 #> # A tibble: 6 × 14
-#>   cyl   am    VARS      n  mean  trim    sd   skew  kurt   min   P25   P50   P75
+#>   cyl   am    VAR       n  mean  trim    sd   skew  kurt   min   P25   P50   P75
 #>   <fct> <fct> <fct> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     auto… disp      3 136.  136.  14.0  -0.309 -2.33 120.  130.  141.   144.
 #> 2 4     manu… disp      4 205.  205.  44.7   0.168 -2.25 168.  168.  196.   233.
@@ -355,10 +329,8 @@ fmtcars |> group_by(cyl, am) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: hp
-#> 
 #> # A tibble: 6 × 14
-#>   cyl   am        VARS      n  mean  trim    sd    skew  kurt   min   P25   P50
+#>   cyl   am        VAR       n  mean  trim    sd    skew  kurt   min   P25   P50
 #>   <fct> <fct>     <fct> <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     automatic hp        3  84.7  84.7 19.7  -0.380  -2.33    62  78.5  95  
 #> 2 4     manual    hp        4 115.  115.   9.18 -0.0940 -2.33   105 109.  116. 
@@ -370,10 +342,8 @@ fmtcars |> group_by(cyl, am) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: drat
-#> 
 #> # A tibble: 6 × 14
-#>   cyl   am        VARS      n  mean  trim    sd    skew   kurt   min   P25   P50
+#>   cyl   am        VAR       n  mean  trim    sd    skew   kurt   min   P25   P50
 #>   <fct> <fct>     <fct> <dbl> <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl> <dbl> <dbl>
 #> 1 4     automatic drat      3  3.77  3.77 0.13   0.382  -2.33   3.69  3.70  3.7 
 #> 2 4     manual    drat      4  3.42  3.42 0.592 -0.0926 -2.33   2.76  3     3.5 
@@ -385,10 +355,8 @@ fmtcars |> group_by(cyl, am) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: wt
-#> 
 #> # A tibble: 6 × 14
-#>   cyl   am       VARS      n  mean  trim    sd      skew  kurt   min   P25   P50
+#>   cyl   am       VAR       n  mean  trim    sd      skew  kurt   min   P25   P50
 #>   <fct> <fct>    <fct> <dbl> <dbl> <dbl> <dbl>     <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     automat… wt        3  2.94  2.94 0.408 -3.81e- 1 -2.33  2.46  2.81  3.15
 #> 2 4     manual   wt        4  3.39  3.39 0.116 -7.35e- 1 -1.70  3.22  3.38  3.44
@@ -400,10 +368,8 @@ fmtcars |> group_by(cyl, am) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: qsec
-#> 
 #> # A tibble: 6 × 14
-#>   cyl   am     VARS      n  mean  trim     sd      skew   kurt   min   P25   P50
+#>   cyl   am     VAR       n  mean  trim     sd      skew   kurt   min   P25   P50
 #>   <fct> <fct>  <fct> <dbl> <dbl> <dbl>  <dbl>     <dbl>  <dbl> <dbl> <dbl> <dbl>
 #> 1 4     autom… qsec      3  21.0  21.0 1.67    3.85e- 1 -2.33   20    20.0  20.0
 #> 2 4     manual qsec      4  19.2  19.2 0.816   1.05e- 1 -2.02   18.3  18.8  19.2
@@ -415,10 +381,8 @@ fmtcars |> group_by(cyl, am) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: gear
-#> 
 #> # A tibble: 6 × 14
-#>   cyl   am        VARS      n  mean  trim    sd    skew   kurt   min   P25   P50
+#>   cyl   am        VAR       n  mean  trim    sd    skew   kurt   min   P25   P50
 #>   <fct> <fct>     <fct> <dbl> <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl> <dbl> <dbl>
 #> 1 4     automatic gear      3  3.67  3.67 0.577  -0.385  -2.33     3   3.5   4  
 #> 2 4     manual    gear      4  3.5   3.5  0.577   0      -2.44     3   3     3.5
@@ -430,10 +394,8 @@ fmtcars |> group_by(cyl, am) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: carb
-#> 
 #> # A tibble: 6 × 14
-#>   cyl   am    VARS      n  mean  trim    sd   skew  kurt   min   P25   P50   P75
+#>   cyl   am    VAR       n  mean  trim    sd   skew  kurt   min   P25   P50   P75
 #>   <fct> <fct> <fct> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     auto… carb      3  1.67  1.67 0.577 -0.385 -2.33     1   1.5   2       2
 #> 2 4     manu… carb      4  2.5   2.5  1.73   0     -2.44     1   1     2.5     4
@@ -443,10 +405,8 @@ fmtcars |> group_by(cyl, am) |> descript()
 #> 6 8     manu… carb      2  6     6    2.83   0     -2.75     4   5     6       7
 #> # ℹ 1 more variable: max <dbl>
 fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript()
-#> VARIABLE: mpg
-#> 
 #> # A tibble: 6 × 14
-#>   cyl   am        VARS      n  mean  trim    sd    skew   kurt   min   P25   P50
+#>   cyl   am        VAR       n  mean  trim    sd    skew   kurt   min   P25   P50
 #>   <fct> <fct>     <fct> <dbl> <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl> <dbl> <dbl>
 #> 1 4     automatic mpg       3  22.9  22.9 1.45   0.0685 -2.33   21.5  22.2  22.8
 #> 2 4     manual    mpg       4  19.1  19.1 1.63   0.482  -1.91   17.8  18.0  18.6
@@ -458,10 +418,8 @@ fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript()
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: wt
-#> 
 #> # A tibble: 6 × 14
-#>   cyl   am       VARS      n  mean  trim    sd      skew  kurt   min   P25   P50
+#>   cyl   am       VAR       n  mean  trim    sd      skew  kurt   min   P25   P50
 #>   <fct> <fct>    <fct> <dbl> <dbl> <dbl> <dbl>     <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     automat… wt        3  2.94  2.94 0.408 -3.81e- 1 -2.33  2.46  2.81  3.15
 #> 2 4     manual   wt        4  3.39  3.39 0.116 -7.35e- 1 -1.70  3.22  3.38  3.44
@@ -473,9 +431,8 @@ fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript()
 
 # same, but formatting output by group instead of VARIABLE
 fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
-#> cyl: 4
 #> # A tibble: 8 × 12
-#>   VARS      n   mean   trim     sd     skew    kurt   min   P25    P50    P75
+#>   VAR       n   mean   trim     sd     skew    kurt   min   P25    P50    P75
 #>   <fct> <dbl>  <dbl>  <dbl>  <dbl>    <dbl>   <dbl> <dbl> <dbl>  <dbl>  <dbl>
 #> 1 mpg      11  26.7   26.4   4.51   0.259   -1.65   21.4  22.8   26     30.4 
 #> 2 disp     11 105.   104.   26.9    0.121   -1.64   71.1  78.8  108    121.  
@@ -489,9 +446,8 @@ fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> cyl: 6
 #> # A tibble: 8 × 12
-#>   VARS      n   mean   trim     sd   skew   kurt    min    P25    P50    P75
+#>   VAR       n   mean   trim     sd   skew   kurt    min    P25    P50    P75
 #>   <fct> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
 #> 1 mpg       7  19.7   19.7   1.45  -0.158 -1.91   17.8   18.6   19.7   21   
 #> 2 disp      7 183.   183.   41.6    0.795 -1.23  145    160    168.   196.  
@@ -505,9 +461,8 @@ fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> cyl: 8
 #> # A tibble: 8 × 12
-#>   VARS      n   mean   trim     sd   skew    kurt    min    P25    P50    P75
+#>   VAR       n   mean   trim     sd   skew    kurt    min    P25    P50    P75
 #>   <fct> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
 #> 1 mpg      14  15.1   15.2   2.56  -0.363 -0.566   10.4   14.4   15.2   16.2 
 #> 2 disp     14 353.   350.   67.8    0.453 -1.26   276.   302.   350.   390   
@@ -521,8 +476,6 @@ fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
 
 # discrete variables also work with group_by()
 fmtcars |> descript(discrete=TRUE)
-#> VARIABLE: cyl
-#> 
 #>   count proportion
 #> 4    11    0.34375
 #> 6     7    0.21875
@@ -530,22 +483,16 @@ fmtcars |> descript(discrete=TRUE)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: vs
-#> 
 #>   count proportion
 #> 0    18     0.5625
 #> 1    14     0.4375
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: am
-#> 
 #>           count proportion
 #> automatic    19    0.59375
 #> manual       13    0.40625
 fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
-#> VARIABLE: vs
-#> 
 #> $count
 #>    cyl
 #> vs   4  6  8
@@ -561,8 +508,6 @@ fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: am
-#> 
 #> $count
 #>            cyl
 #> am           4  6  8
@@ -576,8 +521,6 @@ fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
 #>   manual    0.250 0.094 0.062
 #> 
 fmtcars |> group_by(am) |> descript(discrete=TRUE)
-#> VARIABLE: cyl
-#> 
 #> $count
 #>    am
 #> cyl automatic manual
@@ -595,8 +538,6 @@ fmtcars |> group_by(am) |> descript(discrete=TRUE)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: vs
-#> 
 #> $count
 #>    am
 #> vs  automatic manual
@@ -610,8 +551,6 @@ fmtcars |> group_by(am) |> descript(discrete=TRUE)
 #>   1     0.219  0.219
 #> 
 fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
-#> VARIABLE: vs
-#> 
 #> $count
 #> , , am = automatic
 #> 
@@ -648,12 +587,12 @@ fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 # with single variables, typical dplyr::summarise() output returned
 fmtcars |> select(mpg) |> descript()
 #> # A tibble: 1 × 12
-#>   VARS      n  mean  trim    sd  skew   kurt   min   P25   P50   P75   max
+#>   VAR       n  mean  trim    sd  skew   kurt   min   P25   P50   P75   max
 #>   <fct> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 mpg      32  20.1  19.7  6.03 0.611 -0.373  10.4  15.4  19.2  22.8  33.9
 fmtcars |> group_by(cyl) |> select(mpg) |> descript()
 #> # A tibble: 3 × 13
-#>   cyl   VARS      n  mean  trim    sd   skew   kurt   min   P25   P50   P75
+#>   cyl   VAR       n  mean  trim    sd   skew   kurt   min   P25   P50   P75
 #> * <fct> <fct> <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 4     mpg      11  26.7  26.4  4.51  0.259 -1.65   21.4  22.8  26    30.4
 #> 2 6     mpg       7  19.7  19.7  1.45 -0.158 -1.91   17.8  18.6  19.7  21  
@@ -661,7 +600,7 @@ fmtcars |> group_by(cyl) |> select(mpg) |> descript()
 #> # ℹ 1 more variable: max <dbl>
 fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
 #> # A tibble: 6 × 14
-#>   cyl   am        VARS      n  mean  trim    sd    skew   kurt   min   P25   P50
+#>   cyl   am        VAR       n  mean  trim    sd    skew   kurt   min   P25   P50
 #>   <fct> <fct>     <fct> <dbl> <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl> <dbl> <dbl>
 #> 1 4     automatic mpg       3  22.9  22.9 1.45   0.0685 -2.33   21.5  22.2  22.8
 #> 2 4     manual    mpg       4  19.1  19.1 1.63   0.482  -1.91   17.8  18.0  18.6
@@ -674,7 +613,7 @@ fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
 # if you want a tibble from the list of information instead
 fmtcars |> group_by(cyl) |> descript(collapse=TRUE)
 #> # A tibble: 24 × 13
-#>    cyl   VARS      n   mean   trim     sd     skew    kurt    min    P25    P50
+#>    cyl   VAR       n   mean   trim     sd     skew    kurt    min    P25    P50
 #>    <fct> <fct> <dbl>  <dbl>  <dbl>  <dbl>    <dbl>   <dbl>  <dbl>  <dbl>  <dbl>
 #>  1 4     mpg      11  26.7   26.4   4.51   0.259   -1.65    21.4   22.8   26   
 #>  2 4     disp     11 105.   104.   26.9    0.121   -1.64    71.1   78.8  108   
@@ -688,9 +627,9 @@ fmtcars |> group_by(cyl) |> descript(collapse=TRUE)
 #> 10 6     disp      7 183.   183.   41.6    0.795   -1.23   145    160    168.  
 #> # ℹ 14 more rows
 #> # ℹ 2 more variables: P75 <dbl>, max <dbl>
-fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VARS)
+fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VAR)
 #> # A tibble: 24 × 13
-#>    cyl   VARS      n   mean   trim     sd   skew    kurt    min    P25    P50
+#>    cyl   VAR       n   mean   trim     sd   skew    kurt    min    P25    P50
 #>    <fct> <fct> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl>  <dbl>  <dbl>
 #>  1 4     carb     11   1.55   1.56  0.522 -0.158 -2.15     1      1      2   
 #>  2 6     carb      7   3.43   3.43  1.81  -0.261 -1.50     1      2.5    4   
@@ -706,7 +645,7 @@ fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VARS)
 #> # ℹ 2 more variables: P75 <dbl>, max <dbl>
 fmtcars |> group_by(am, cyl) |> select(mpg, wt) |> descript(collapse=TRUE)
 #> # A tibble: 12 × 14
-#>    am     cyl   VARS      n  mean  trim    sd      skew   kurt   min   P25   P50
+#>    am     cyl   VAR       n  mean  trim    sd      skew   kurt   min   P25   P50
 #>    <fct>  <fct> <fct> <dbl> <dbl> <dbl> <dbl>     <dbl>  <dbl> <dbl> <dbl> <dbl>
 #>  1 autom… 4     mpg       3 22.9  22.9  1.45   6.85e- 2 -2.33  21.5  22.2  22.8 
 #>  2 autom… 4     wt        3  2.94  2.94 0.408 -3.81e- 1 -2.33   2.46  2.81  3.15
@@ -722,9 +661,9 @@ fmtcars |> group_by(am, cyl) |> select(mpg, wt) |> descript(collapse=TRUE)
 #> 12 manual 8     wt        2  3.37  3.37 0.283 -1.15e-15 -2.75   3.17  3.27  3.37
 #> # ℹ 2 more variables: P75 <dbl>, max <dbl>
 fmtcars |> group_by(am, cyl) |> select(mpg, wt) |>
-  descript(collapse=TRUE) |> arrange(VARS)
+  descript(collapse=TRUE) |> arrange(VAR)
 #> # A tibble: 12 × 14
-#>    am     cyl   VARS      n  mean  trim    sd      skew   kurt   min   P25   P50
+#>    am     cyl   VAR       n  mean  trim    sd      skew   kurt   min   P25   P50
 #>    <fct>  <fct> <fct> <dbl> <dbl> <dbl> <dbl>     <dbl>  <dbl> <dbl> <dbl> <dbl>
 #>  1 autom… 4     mpg       3 22.9  22.9  1.45   6.85e- 2 -2.33  21.5  22.2  22.8 
 #>  2 manual 4     mpg       8 28.1  28.1  4.48  -2.08e- 1 -1.66  21.4  25.2  28.8 
@@ -767,8 +706,6 @@ fmtcars |> group_by(cyl) |> select(mpg) |> descript() |> select(n, mean)
 #> 2     7  19.7
 #> 3    14  15.1
 fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
-#> VARIABLE: mpg
-#> 
 #> # A tibble: 6 × 2
 #>       n  mean
 #>   <dbl> <dbl>
@@ -781,8 +718,6 @@ fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: disp
-#> 
 #> # A tibble: 6 × 2
 #>       n  mean
 #>   <dbl> <dbl>
@@ -795,8 +730,6 @@ fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: hp
-#> 
 #> # A tibble: 6 × 2
 #>       n  mean
 #>   <dbl> <dbl>
@@ -809,8 +742,6 @@ fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: drat
-#> 
 #> # A tibble: 6 × 2
 #>       n  mean
 #>   <dbl> <dbl>
@@ -823,8 +754,6 @@ fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: wt
-#> 
 #> # A tibble: 6 × 2
 #>       n  mean
 #>   <dbl> <dbl>
@@ -837,8 +766,6 @@ fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: qsec
-#> 
 #> # A tibble: 6 × 2
 #>       n  mean
 #>   <dbl> <dbl>
@@ -851,8 +778,6 @@ fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: gear
-#> 
 #> # A tibble: 6 × 2
 #>       n  mean
 #>   <dbl> <dbl>
@@ -865,8 +790,6 @@ fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
 #> 
 #> ------------------------------------------------------------
 #>  
-#> VARIABLE: carb
-#> 
 #> # A tibble: 6 × 2
 #>       n  mean
 #>   <dbl> <dbl>
@@ -877,9 +800,9 @@ fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
 #> 5     3  4.67
 #> 6     2  6   
 fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |>
-  select(cyl, VARS, n, mean)
+  select(cyl, VAR, n, mean)
 #> # A tibble: 24 × 4
-#>    cyl   VARS      n   mean
+#>    cyl   VAR       n   mean
 #>    <fct> <fct> <dbl>  <dbl>
 #>  1 4     mpg      11  26.7 
 #>  2 4     disp     11 105.  
@@ -898,7 +821,7 @@ funs <- get_descriptFuns()
 sfuns <- funs[c('n', 'mean', 'sd')] # subset
 fmtcars |> descript(funs=sfuns) # only n, miss, mean, and sd
 #> # A tibble: 8 × 4
-#>   VARS      n   mean      sd
+#>   VAR       n   mean      sd
 #>   <fct> <dbl>  <dbl>   <dbl>
 #> 1 mpg      32  20.1    6.03 
 #> 2 disp     32 231.   124.   
@@ -915,7 +838,7 @@ funs2 <- c(sfuns,
            median= \(x) median(x, na.rm=TRUE))
 fmtcars |> descript(funs=funs2)
 #> # A tibble: 8 × 6
-#>   VARS      n   mean      sd trim_20 median
+#>   VAR       n   mean      sd trim_20 median
 #>   <fct> <dbl>  <dbl>   <dbl>   <dbl>  <dbl>
 #> 1 mpg      32  20.1    6.03    19.2   19.2 
 #> 2 disp     32 231.   124.     219.   196.  

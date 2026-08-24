@@ -357,7 +357,7 @@ descript(results)
 ```
 
     ## # A tibble: 5 × 12
-    ##   VARS      n   mean   trim     sd   skew   kurt   min   P25   P50    P75    max
+    ##   VAR       n   mean   trim     sd   skew   kurt   min   P25   P50    P75    max
     ##   <fct> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl>
     ## 1 samp…  8000 112.   107.   80.4    0.657 -1.10  30    52.5  90    150    240   
     ## 2 mean…  8000   3.00   3.00  0.234  0.340  3.75   1.86  2.89  3.00   3.10   4.63
@@ -372,10 +372,8 @@ results |> group_by(sample_size, distribution) |>
     descript()
 ```
 
-    ## VARIABLE: mean_no_trim
-    ## 
     ## # A tibble: 8 × 14
-    ##   sample_size distribution VARS        n  mean  trim     sd   skew    kurt   min
+    ##   sample_size distribution VAR         n  mean  trim     sd   skew    kurt   min
     ##         <dbl> <chr>        <fct>   <dbl> <dbl> <dbl>  <dbl>  <dbl>   <dbl> <dbl>
     ## 1          30 chi          mean_n…  1000  3.02  3.02 0.447  0.149  -0.117   1.86
     ## 2          30 norm         mean_n…  1000  3.00  2.99 0.319  0.296   0.108   2.19
@@ -389,10 +387,8 @@ results |> group_by(sample_size, distribution) |>
     ## 
     ## ------------------------------------------------------------
     ##  
-    ## VARIABLE: mean_trim.1
-    ## 
     ## # A tibble: 8 × 14
-    ##   sample_size distribution VARS        n  mean  trim     sd   skew    kurt   min
+    ##   sample_size distribution VAR         n  mean  trim     sd   skew    kurt   min
     ##         <dbl> <chr>        <fct>   <dbl> <dbl> <dbl>  <dbl>  <dbl>   <dbl> <dbl>
     ## 1          30 chi          mean_t…  1000  2.70  2.69 0.419  0.170  -0.102   1.50
     ## 2          30 norm         mean_t…  1000  2.65  2.64 0.295  0.368   0.363   1.92
@@ -406,10 +402,8 @@ results |> group_by(sample_size, distribution) |>
     ## 
     ## ------------------------------------------------------------
     ##  
-    ## VARIABLE: mean_trim.2
-    ## 
     ## # A tibble: 8 × 14
-    ##   sample_size distribution VARS       n  mean  trim     sd   skew     kurt   min
+    ##   sample_size distribution VAR        n  mean  trim     sd   skew     kurt   min
     ##         <dbl> <chr>        <fct>  <dbl> <dbl> <dbl>  <dbl>  <dbl>    <dbl> <dbl>
     ## 1          30 chi          mean_…  1000  2.56  2.55 0.423  0.215  -3.28e-2  1.38
     ## 2          30 norm         mean_…  1000  2.51  2.50 0.293  0.378   4.37e-1  1.78
@@ -423,10 +417,8 @@ results |> group_by(sample_size, distribution) |>
     ## 
     ## ------------------------------------------------------------
     ##  
-    ## VARIABLE: median
-    ## 
     ## # A tibble: 8 × 14
-    ##   sample_size distribution VARS      n  mean  trim     sd     skew    kurt   min
+    ##   sample_size distribution VAR       n  mean  trim     sd     skew    kurt   min
     ##         <dbl> <chr>        <fct> <dbl> <dbl> <dbl>  <dbl>    <dbl>   <dbl> <dbl>
     ## 1          30 chi          medi…  1000  2.42  2.41 0.476   3.75e-1  0.313   1.05
     ## 2          30 norm         medi…  1000  2.36  2.35 0.335   4.09e-1  0.484   1.32
@@ -569,7 +561,7 @@ descript(results) # common descriptive statistics
 ```
 
     ## # A tibble: 4 × 12
-    ##   VARS           n  mean  trim    sd    skew  kurt   min   P25   P50   P75   max
+    ##   VAR            n  mean  trim    sd    skew  kurt   min   P25   P50   P75   max
     ##   <fct>      <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
     ## 1 mean_no_t…  1000  3.00  3.00 0.174  0.0821 0.135  2.45  2.89  3.00  3.11  3.67
     ## 2 mean_trim…  1000  3.00  3.00 0.178  0.0656 0.145  2.40  2.88  3.00  3.11  3.67

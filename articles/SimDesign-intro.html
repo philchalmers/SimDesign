@@ -405,7 +405,7 @@ distributions.</p>
 <code class="sourceCode R"><span><span class="co"># summary statistics for complete results</span></span>
 <span><span class="fu"><a href="../reference/descript.html">descript</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 5 × 12</span></span></span>
-<span><span class="co">##   VARS      n   mean   trim     sd   skew   kurt   min   P25   P50    P75    max</span></span>
+<span><span class="co">##   VAR       n   mean   trim     sd   skew   kurt   min   P25   P50    P75    max</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span> samp…  <span style="text-decoration: underline;">8</span>000 112.   107.   80.4    0.657 -<span style="color: #BB0000;">1.10</span>  30    52.5  90    150    240   </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">2</span> mean…  <span style="text-decoration: underline;">8</span>000   3.00   3.00  0.234  0.340  3.75   1.86  2.89  3.00   3.10   4.63</span></span>
@@ -416,10 +416,8 @@ distributions.</p>
 <code class="sourceCode R"><span><span class="co"># conditional summary statistics using dplyr verbs</span></span>
 <span><span class="va">results</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sample_size</span>, <span class="va">distribution</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/descript.html">descript</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## VARIABLE: mean_no_trim</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 14</span></span></span>
-<span><span class="co">##   sample_size distribution VARS        n  mean  trim     sd   skew    kurt   min</span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 14</span></span></span>
+<span><span class="co">##   sample_size distribution VAR         n  mean  trim     sd   skew    kurt   min</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>          30 chi          mean_n…  <span style="text-decoration: underline;">1</span>000  3.02  3.02 0.447  0.149  -<span style="color: #BB0000;">0.117</span>   1.86</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">2</span>          30 norm         mean_n…  <span style="text-decoration: underline;">1</span>000  3.00  2.99 0.319  0.296   0.108   2.19</span></span>
@@ -433,10 +431,8 @@ distributions.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## ------------------------------------------------------------</span></span>
 <span><span class="co">##  </span></span>
-<span><span class="co">## VARIABLE: mean_trim.1</span></span>
-<span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 14</span></span></span>
-<span><span class="co">##   sample_size distribution VARS        n  mean  trim     sd   skew    kurt   min</span></span>
+<span><span class="co">##   sample_size distribution VAR         n  mean  trim     sd   skew    kurt   min</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>          30 chi          mean_t…  <span style="text-decoration: underline;">1</span>000  2.70  2.69 0.419  0.170  -<span style="color: #BB0000;">0.102</span>   1.50</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">2</span>          30 norm         mean_t…  <span style="text-decoration: underline;">1</span>000  2.65  2.64 0.295  0.368   0.363   1.92</span></span>
@@ -450,10 +446,8 @@ distributions.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## ------------------------------------------------------------</span></span>
 <span><span class="co">##  </span></span>
-<span><span class="co">## VARIABLE: mean_trim.2</span></span>
-<span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 14</span></span></span>
-<span><span class="co">##   sample_size distribution VARS       n  mean  trim     sd   skew     kurt   min</span></span>
+<span><span class="co">##   sample_size distribution VAR        n  mean  trim     sd   skew     kurt   min</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>          30 chi          mean_…  <span style="text-decoration: underline;">1</span>000  2.56  2.55 0.423  0.215  -<span style="color: #BB0000;">3.28</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  1.38</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">2</span>          30 norm         mean_…  <span style="text-decoration: underline;">1</span>000  2.51  2.50 0.293  0.378   4.37<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>  1.78</span></span>
@@ -467,10 +461,8 @@ distributions.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## ------------------------------------------------------------</span></span>
 <span><span class="co">##  </span></span>
-<span><span class="co">## VARIABLE: median</span></span>
-<span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 14</span></span></span>
-<span><span class="co">##   sample_size distribution VARS      n  mean  trim     sd     skew    kurt   min</span></span>
+<span><span class="co">##   sample_size distribution VAR       n  mean  trim     sd     skew    kurt   min</span></span>
 <span><span class="co">##         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span>          30 chi          medi…  <span style="text-decoration: underline;">1</span>000  2.42  2.41 0.476   3.75<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>  0.313   1.05</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">2</span>          30 norm         medi…  <span style="text-decoration: underline;">1</span>000  2.36  2.35 0.335   4.09<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>  0.484   1.32</span></span>
@@ -585,7 +577,7 @@ must be repeated a number of times.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/descript.html">descript</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span> <span class="co"># common descriptive statistics</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 4 × 12</span></span></span>
-<span><span class="co">##   VARS           n  mean  trim    sd    skew  kurt   min   P25   P50   P75   max</span></span>
+<span><span class="co">##   VAR            n  mean  trim    sd    skew  kurt   min   P25   P50   P75   max</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span> mean_no_t…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.174  0.082<span style="text-decoration: underline;">1</span> 0.135  2.45  2.89  3.00  3.11  3.67</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">2</span> mean_trim…  <span style="text-decoration: underline;">1</span>000  3.00  3.00 0.178  0.065<span style="text-decoration: underline;">6</span> 0.145  2.40  2.88  3.00  3.11  3.67</span></span>

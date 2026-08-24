@@ -71,7 +71,7 @@ set.seed(1)
 nonnormal <- rValeMaurelli(10000, mean=10, sigma=5, skew=1, kurt=3)
 descript(nonnormal)
 #> # A tibble: 1 × 12
-#>   VARS      n  mean  trim    sd  skew  kurt   min   P25   P50   P75   max
+#>   VAR       n  mean  trim    sd  skew  kurt   min   P25   P50   P75   max
 #>   <fct> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 #> 1 V1    10000  9.99  9.83  2.25 0.908  2.42  1.44  8.56  9.68  11.1  26.9
 
@@ -92,7 +92,7 @@ cor(nonnormal) |> round(3)
 #> [3,] 0.874 0.086 1.000
 descript(nonnormal)
 #> # A tibble: 3 × 12
-#>   VARS      n     mean    trim    sd  skew  kurt   min    P25    P50   P75   max
+#>   VAR       n     mean    trim    sd  skew  kurt   min    P25    P50   P75   max
 #>   <fct> <dbl>    <dbl>   <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl>
 #> 1 V1    10000 -0.00636 -0.136  1.00  1.57  3.95  -2.02 -0.719 -0.237 0.456  7.49
 #> 2 V2    10000  0.00773 -0.125  1.01  1.48  3.20  -1.31 -0.733 -0.218 0.489  6.70
