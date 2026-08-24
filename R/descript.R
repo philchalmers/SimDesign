@@ -6,7 +6,7 @@
 #' of univariate summary functions. As such, quantitative/continuous variable
 #' information is kept distinct in the output, while discrete variables (e.g.,
 #' \code{factors} and \code{character} vectors) are returned by using the
-#' \code{discrete} argument. When applicable a \code{"VARS"} column will be included in the
+#' \code{discrete} argument. When applicable a \code{"VAR"} column will be included in the
 #' output to indicate which variable is being summarised on the respective row.
 #'
 #' The purpose of this function is to provide
@@ -121,10 +121,10 @@
 #'
 #' # if you want a tibble from the list of information instead
 #' fmtcars |> group_by(cyl) |> descript(collapse=TRUE)
-#' fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VARS)
+#' fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VAR)
 #' fmtcars |> group_by(am, cyl) |> select(mpg, wt) |> descript(collapse=TRUE)
 #' fmtcars |> group_by(am, cyl) |> select(mpg, wt) |>
-#'   descript(collapse=TRUE) |> arrange(VARS)
+#'   descript(collapse=TRUE) |> arrange(VAR)
 #'
 #' # post-extraction (if you don't mind doing the extra computations
 #' #   and extracting afterword)
@@ -133,7 +133,7 @@
 #' fmtcars |> group_by(cyl) |> select(mpg) |> descript() |> select(n, mean)
 #' fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
 #' fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |>
-#'   select(cyl, VARS, n, mean)
+#'   select(cyl, VAR, n, mean)
 #'
 #' # only compute a subset of summary statistics
 #' funs <- get_descriptFuns()
@@ -161,6 +161,9 @@ descript <- function(df, funs=get_descriptFuns(),
 
 	if(!is.data.frame(suppressMessages(df)))
 		df <- as.data.frame(df)
+
+	if(any(colnames(df) == 'VAR'))
+	    stop('df cannot contain the name VAR', call.=FALSE)
 
 	if(collapse || discrete) by_group <- TRUE
 
@@ -258,7 +261,7 @@ descript <- function(df, funs=get_descriptFuns(),
 	}
 	if(!discrete){
 		retfull <- do.call(rbind, retfull)
-		ret <- data.frame(VARS=factor(colnames(df)), retfull) |> dplyr::as_tibble()
+		ret <- data.frame(VAR=factor(colnames(df)), retfull) |> dplyr::as_tibble()
 	} else {
 		ret <- retfull
 		names(ret) <- colnames(df)
@@ -297,12 +300,12 @@ print.bybye <- function (x, ..., vsep)
     lapply(X = seq_along(x), FUN = function(i, x, vsep, ...) {
         if (i != 1L && !is.null(vsep))
             cat(vsep, "\n")
-        ii <- i - 1L
-        for (j in seq_along(dn)) {
-            iii <- ii%%d[j] + 1L
-            ii <- ii%/%d[j]
-            cat(dnn[j], ": ", dn[[j]][iii], "\n", sep = "")
-        }
+        # ii <- i - 1L
+        # for (j in seq_along(dn)) {
+        #     iii <- ii%%d[j] + 1L
+        #     ii <- ii%/%d[j]
+        #     cat(dnn[j], ": ", dn[[j]][iii], "\n", sep = "")
+        # }
         print(x[[i]], ...)
     }, x, vsep, ...)
     invisible(x)
