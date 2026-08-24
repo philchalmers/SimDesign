@@ -1170,9 +1170,9 @@ Final
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Aug 24 19:58:32 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Aug 24 19:58:32 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Aug 24 19:58:32 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Aug 24 20:03:49 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Aug 24 20:03:49 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Aug 24 20:03:49 20…
 (results <- SimResults(Final))
 #> # A tibble: 6 × 2
 #>       N  mean
@@ -1184,12 +1184,13 @@ Final
 #> 5    30 10.5 
 #> 6    30  8.74
 results |> group_by(N) |> descript()
-#> # A tibble: 3 × 12
-#>       N     n  mean  trim    sd      skew  kurt   min   P25   P50   P75   max
-#>   <dbl> <dbl> <dbl> <dbl> <dbl>     <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1    10     2 10.2  10.2  1.47   0        -2.75  9.16  9.68 10.2   10.7  11.2
-#> 2    20     2 10.9  10.9  0.319  4.16e-15 -2.75 10.7  10.8  10.9   11.0  11.1
-#> 3    30     2  9.63  9.63 1.25  -1.10e-15 -2.75  8.74  9.18  9.63  10.1  10.5
+#> # A tibble: 3 × 13
+#>       N VARS      n  mean  trim    sd      skew  kurt   min   P25   P50   P75
+#> * <dbl> <fct> <dbl> <dbl> <dbl> <dbl>     <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1    10 mean      2 10.2  10.2  1.47   0        -2.75  9.16  9.68 10.2   10.7
+#> 2    20 mean      2 10.9  10.9  0.319  4.16e-15 -2.75 10.7  10.8  10.9   11.0
+#> 3    30 mean      2  9.63  9.63 1.25  -1.10e-15 -2.75  8.74  9.18  9.63  10.1
+#> # ℹ 1 more variable: max <dbl>
 
 # reproduce exact simulation
 Final_rep <- runSimulation(design=Design, replications=2, seed=Final$SEED,
@@ -1198,9 +1199,9 @@ Final_rep
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Aug 24 19:58:33 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Aug 24 19:58:33 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Aug 24 19:58:33 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Aug 24 20:03:49 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Aug 24 20:03:49 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Aug 24 20:03:49 20…
 (results <- SimResults(Final_rep))
 #> # A tibble: 6 × 2
 #>       N  mean
@@ -1212,12 +1213,13 @@ Final_rep
 #> 5    30 10.5 
 #> 6    30  8.74
 results |> group_by(N) |> descript()
-#> # A tibble: 3 × 12
-#>       N     n  mean  trim    sd      skew  kurt   min   P25   P50   P75   max
-#>   <dbl> <dbl> <dbl> <dbl> <dbl>     <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1    10     2 10.2  10.2  1.47   0        -2.75  9.16  9.68 10.2   10.7  11.2
-#> 2    20     2 10.9  10.9  0.319  4.16e-15 -2.75 10.7  10.8  10.9   11.0  11.1
-#> 3    30     2  9.63  9.63 1.25  -1.10e-15 -2.75  8.74  9.18  9.63  10.1  10.5
+#> # A tibble: 3 × 13
+#>       N VARS      n  mean  trim    sd      skew  kurt   min   P25   P50   P75
+#> * <dbl> <fct> <dbl> <dbl> <dbl> <dbl>     <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1    10 mean      2 10.2  10.2  1.47   0        -2.75  9.16  9.68 10.2   10.7
+#> 2    20 mean      2 10.9  10.9  0.319  4.16e-15 -2.75 10.7  10.8  10.9   11.0
+#> 3    30 mean      2  9.63  9.63 1.25  -1.10e-15 -2.75  8.74  9.18  9.63  10.1
+#> # ℹ 1 more variable: max <dbl>
 
 if (FALSE) { # \dontrun{
 # run with more standard number of replications

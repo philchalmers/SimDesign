@@ -77,7 +77,7 @@ system.time(x <- rint(1000, min = 100, max = 1e8))
 #>   0.002   0.000   0.002 
 system.time(x2 <- sample(100:1e8, 1000, replace = TRUE))
 #>    user  system elapsed 
-#>   0.001   0.000   0.000 
+#>   0.000   0.000   0.001 
 
 # sample 1000 integer values within -20 to 20
 x <- rint(1000, min = -20, max = 20)
