@@ -179,7 +179,7 @@ descript <- function(df, funs=get_descriptFuns(),
 	        list(COUNTS=xtab, PROPORTIONS=round(prop.table(xtab),3))
 	    })
 	    attr(ret, 'dim') <- length(vars)
-	    attr(ret, 'dimnames') <- list(VARIABLE=paste0(vars, '\n'))
+	    attr(ret, 'dimnames') <- list(VARIABLE=vars)
 	    class(ret) <- c('bybye', 'by')
 	    return(ret)
 
@@ -198,7 +198,7 @@ descript <- function(df, funs=get_descriptFuns(),
 	            ret[[i]] <- descript(df0, funs=funs, discrete=discrete, by_group=TRUE)
 	        }
 	        attr(ret, 'dim') <- length(vars)
-	        attr(ret, 'dimnames') <- list(VARIABLE=paste0(vars, '\n'))
+	        attr(ret, 'dimnames') <- list(VARIABLE=vars)
 	        class(ret) <- c('bybye', 'by')
 	        return(ret)
 	    }
@@ -226,6 +226,10 @@ descript <- function(df, funs=get_descriptFuns(),
 		    tmp2 <- as.data.frame(bind_rows(tmp, .id='id'))
 		    tmp2$id <- NULL
 		    out <- dplyr::as_tibble(data.frame(nms, tmp2))
+		}
+		if(by_group){
+		    # browser()
+		    attr(out, 'discrete') <- TRUE
 		}
 		return(out)
 	}
@@ -269,7 +273,7 @@ descript <- function(df, funs=get_descriptFuns(),
 		class(ret) <- 'bybye'
 		attr(ret, 'dim') <- length(ret)
 		attr(ret, 'discrete') <- TRUE
-		attr(ret, 'dimnames') <- list(VARIABLE = paste0(colnames(df), '\n'))
+		attr(ret, 'dimnames') <- list(VARIABLE = colnames(df))
 	}
 	ret
 }
@@ -308,7 +312,7 @@ print.bybye <- function (x, ..., vsep)
             for (j in seq_along(dn)) {
                 iii <- ii%%d[j] + 1L
                 ii <- ii%/%d[j]
-                cat(dnn[j], ": ", dn[[j]][iii], "\n", sep = "")
+                cat(dnn[j], ": ", dn[[j]][iii], "\n\n", sep = "")
             }
         }
         print(x[[i]], ...)
