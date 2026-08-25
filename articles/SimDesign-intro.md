@@ -357,13 +357,14 @@ descript(results)
 ```
 
     ## # A tibble: 5 × 12
-    ##   VAR       n   mean   trim     sd   skew   kurt   min   P25   P50    P75    max
-    ##   <fct> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl>
-    ## 1 samp…  8000 112.   107.   80.4    0.657 -1.10  30    52.5  90    150    240   
-    ## 2 mean…  8000   3.00   3.00  0.234  0.340  3.75   1.86  2.89  3.00   3.10   4.63
-    ## 3 mean…  8000   2.83   2.85  0.279 -0.555  0.701  1.50  2.65  2.90   3.02   4.25
-    ## 4 mean…  8000   2.76   2.78  0.329 -0.523 -0.169  1.38  2.50  2.85   3.01   4.23
-    ## 5 medi…  8000   2.69   2.71  0.402 -0.440 -0.498  1.05  2.36  2.81   3.01   4.16
+    ##   VARIABLE         n   mean   trim     sd   skew   kurt   min   P25   P50    P75
+    ##   <fct>        <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl>  <dbl>
+    ## 1 sample_size   8000 112.   107.   80.4    0.657 -1.10  30    52.5  90    150   
+    ## 2 mean_no_trim  8000   3.00   3.00  0.234  0.340  3.75   1.86  2.89  3.00   3.10
+    ## 3 mean_trim.1   8000   2.83   2.85  0.279 -0.555  0.701  1.50  2.65  2.90   3.02
+    ## 4 mean_trim.2   8000   2.76   2.78  0.329 -0.523 -0.169  1.38  2.50  2.85   3.01
+    ## 5 median        8000   2.69   2.71  0.402 -0.440 -0.498  1.05  2.36  2.81   3.01
+    ## # ℹ 1 more variable: max <dbl>
 
 ``` r
 
@@ -373,62 +374,62 @@ results |> group_by(sample_size, distribution) |>
 ```
 
     ## # A tibble: 8 × 14
-    ##   sample_size distribution VAR         n  mean  trim     sd   skew    kurt   min
-    ##         <dbl> <chr>        <fct>   <dbl> <dbl> <dbl>  <dbl>  <dbl>   <dbl> <dbl>
-    ## 1          30 chi          mean_n…  1000  3.02  3.02 0.447  0.149  -0.117   1.86
-    ## 2          30 norm         mean_n…  1000  3.00  2.99 0.319  0.296   0.108   2.19
-    ## 3          60 chi          mean_n…  1000  2.99  2.99 0.224  0.213  -0.0319  2.34
-    ## 4          60 norm         mean_n…  1000  3.00  3.00 0.158  0.0822  0.0561  2.47
-    ## 5         120 chi          mean_n…  1000  3.00  2.99 0.185  0.0458  0.0342  2.36
-    ## 6         120 norm         mean_n…  1000  3.00  3.00 0.125  0.118   0.326   2.59
-    ## 7         240 chi          mean_n…  1000  3.00  3.00 0.0908 0.0590  0.0322  2.72
-    ## 8         240 norm         mean_n…  1000  3.00  3.00 0.0643 0.0745 -0.189   2.81
-    ## # ℹ 4 more variables: P25 <dbl>, P50 <dbl>, P75 <dbl>, max <dbl>
+    ##   sample_size distribution VARIABLE         n  mean  trim     sd   skew    kurt
+    ##         <dbl> <chr>        <fct>        <dbl> <dbl> <dbl>  <dbl>  <dbl>   <dbl>
+    ## 1          30 chi          mean_no_trim  1000  3.02  3.02 0.447  0.149  -0.117 
+    ## 2          30 norm         mean_no_trim  1000  3.00  2.99 0.319  0.296   0.108 
+    ## 3          60 chi          mean_no_trim  1000  2.99  2.99 0.224  0.213  -0.0319
+    ## 4          60 norm         mean_no_trim  1000  3.00  3.00 0.158  0.0822  0.0561
+    ## 5         120 chi          mean_no_trim  1000  3.00  2.99 0.185  0.0458  0.0342
+    ## 6         120 norm         mean_no_trim  1000  3.00  3.00 0.125  0.118   0.326 
+    ## 7         240 chi          mean_no_trim  1000  3.00  3.00 0.0908 0.0590  0.0322
+    ## 8         240 norm         mean_no_trim  1000  3.00  3.00 0.0643 0.0745 -0.189 
+    ## # ℹ 5 more variables: min <dbl>, P25 <dbl>, P50 <dbl>, P75 <dbl>, max <dbl>
     ## 
     ## ------------------------------------------------------------
     ##  
     ## # A tibble: 8 × 14
-    ##   sample_size distribution VAR         n  mean  trim     sd   skew    kurt   min
-    ##         <dbl> <chr>        <fct>   <dbl> <dbl> <dbl>  <dbl>  <dbl>   <dbl> <dbl>
-    ## 1          30 chi          mean_t…  1000  2.70  2.69 0.419  0.170  -0.102   1.50
-    ## 2          30 norm         mean_t…  1000  2.65  2.64 0.295  0.368   0.363   1.92
-    ## 3          60 chi          mean_t…  1000  2.65  2.65 0.214  0.159  -0.130   2.07
-    ## 4          60 norm         mean_t…  1000  2.65  2.65 0.148  0.0650  0.0595  2.10
-    ## 5         120 chi          mean_t…  1000  3.00  2.99 0.190  0.0408  0.0225  2.42
-    ## 6         120 norm         mean_t…  1000  3.00  3.00 0.129  0.130   0.261   2.61
-    ## 7         240 chi          mean_t…  1000  3.00  3.00 0.0940 0.0884  0.0161  2.69
-    ## 8         240 norm         mean_t…  1000  3.00  3.00 0.0659 0.0892 -0.161   2.80
-    ## # ℹ 4 more variables: P25 <dbl>, P50 <dbl>, P75 <dbl>, max <dbl>
+    ##   sample_size distribution VARIABLE        n  mean  trim     sd   skew    kurt
+    ##         <dbl> <chr>        <fct>       <dbl> <dbl> <dbl>  <dbl>  <dbl>   <dbl>
+    ## 1          30 chi          mean_trim.1  1000  2.70  2.69 0.419  0.170  -0.102 
+    ## 2          30 norm         mean_trim.1  1000  2.65  2.64 0.295  0.368   0.363 
+    ## 3          60 chi          mean_trim.1  1000  2.65  2.65 0.214  0.159  -0.130 
+    ## 4          60 norm         mean_trim.1  1000  2.65  2.65 0.148  0.0650  0.0595
+    ## 5         120 chi          mean_trim.1  1000  3.00  2.99 0.190  0.0408  0.0225
+    ## 6         120 norm         mean_trim.1  1000  3.00  3.00 0.129  0.130   0.261 
+    ## 7         240 chi          mean_trim.1  1000  3.00  3.00 0.0940 0.0884  0.0161
+    ## 8         240 norm         mean_trim.1  1000  3.00  3.00 0.0659 0.0892 -0.161 
+    ## # ℹ 5 more variables: min <dbl>, P25 <dbl>, P50 <dbl>, P75 <dbl>, max <dbl>
     ## 
     ## ------------------------------------------------------------
     ##  
     ## # A tibble: 8 × 14
-    ##   sample_size distribution VAR        n  mean  trim     sd   skew     kurt   min
-    ##         <dbl> <chr>        <fct>  <dbl> <dbl> <dbl>  <dbl>  <dbl>    <dbl> <dbl>
-    ## 1          30 chi          mean_…  1000  2.56  2.55 0.423  0.215  -3.28e-2  1.38
-    ## 2          30 norm         mean_…  1000  2.51  2.50 0.293  0.378   4.37e-1  1.78
-    ## 3          60 chi          mean_…  1000  2.51  2.51 0.215  0.149  -1.70e-1  1.93
-    ## 4          60 norm         mean_…  1000  2.51  2.51 0.148  0.0699  7.49e-2  1.94
-    ## 5         120 chi          mean_…  1000  3.00  3.00 0.196  0.0277  4.62e-2  2.36
-    ## 6         120 norm         mean_…  1000  3.00  3.00 0.134  0.127   2.30e-1  2.57
-    ## 7         240 chi          mean_…  1000  3.00  3.00 0.0977 0.0878 -5.57e-4  2.69
-    ## 8         240 norm         mean_…  1000  3.00  3.00 0.0684 0.0935 -1.46e-1  2.79
-    ## # ℹ 4 more variables: P25 <dbl>, P50 <dbl>, P75 <dbl>, max <dbl>
+    ##   sample_size distribution VARIABLE        n  mean  trim     sd   skew      kurt
+    ##         <dbl> <chr>        <fct>       <dbl> <dbl> <dbl>  <dbl>  <dbl>     <dbl>
+    ## 1          30 chi          mean_trim.2  1000  2.56  2.55 0.423  0.215  -0.0328  
+    ## 2          30 norm         mean_trim.2  1000  2.51  2.50 0.293  0.378   0.437   
+    ## 3          60 chi          mean_trim.2  1000  2.51  2.51 0.215  0.149  -0.170   
+    ## 4          60 norm         mean_trim.2  1000  2.51  2.51 0.148  0.0699  0.0749  
+    ## 5         120 chi          mean_trim.2  1000  3.00  3.00 0.196  0.0277  0.0462  
+    ## 6         120 norm         mean_trim.2  1000  3.00  3.00 0.134  0.127   0.230   
+    ## 7         240 chi          mean_trim.2  1000  3.00  3.00 0.0977 0.0878 -0.000557
+    ## 8         240 norm         mean_trim.2  1000  3.00  3.00 0.0684 0.0935 -0.146   
+    ## # ℹ 5 more variables: min <dbl>, P25 <dbl>, P50 <dbl>, P75 <dbl>, max <dbl>
     ## 
     ## ------------------------------------------------------------
     ##  
     ## # A tibble: 8 × 14
-    ##   sample_size distribution VAR       n  mean  trim     sd     skew    kurt   min
-    ##         <dbl> <chr>        <fct> <dbl> <dbl> <dbl>  <dbl>    <dbl>   <dbl> <dbl>
-    ## 1          30 chi          medi…  1000  2.42  2.41 0.476   3.75e-1  0.313   1.05
-    ## 2          30 norm         medi…  1000  2.36  2.35 0.335   4.09e-1  0.484   1.32
-    ## 3          60 chi          medi…  1000  2.36  2.36 0.240   2.43e-1 -0.209   1.71
-    ## 4          60 norm         medi…  1000  2.37  2.37 0.164   2.63e-2  0.0812  1.79
-    ## 5         120 chi          medi…  1000  3.00  3.00 0.222   7.55e-2  0.173   2.26
-    ## 6         120 norm         medi…  1000  3.01  3.01 0.157   5.18e-2  0.0579  2.46
-    ## 7         240 chi          medi…  1000  3.00  3.00 0.113   6.09e-2 -0.0905  2.64
-    ## 8         240 norm         medi…  1000  3.00  3.00 0.0817 -9.91e-4 -0.172   2.71
-    ## # ℹ 4 more variables: P25 <dbl>, P50 <dbl>, P75 <dbl>, max <dbl>
+    ##   sample_size distribution VARIABLE     n  mean  trim     sd      skew    kurt
+    ##         <dbl> <chr>        <fct>    <dbl> <dbl> <dbl>  <dbl>     <dbl>   <dbl>
+    ## 1          30 chi          median    1000  2.42  2.41 0.476   0.375     0.313 
+    ## 2          30 norm         median    1000  2.36  2.35 0.335   0.409     0.484 
+    ## 3          60 chi          median    1000  2.36  2.36 0.240   0.243    -0.209 
+    ## 4          60 norm         median    1000  2.37  2.37 0.164   0.0263    0.0812
+    ## 5         120 chi          median    1000  3.00  3.00 0.222   0.0755    0.173 
+    ## 6         120 norm         median    1000  3.01  3.01 0.157   0.0518    0.0579
+    ## 7         240 chi          median    1000  3.00  3.00 0.113   0.0609   -0.0905
+    ## 8         240 norm         median    1000  3.00  3.00 0.0817 -0.000991 -0.172 
+    ## # ℹ 5 more variables: min <dbl>, P25 <dbl>, P50 <dbl>, P75 <dbl>, max <dbl>
 
 ### Interpreting the results
 
@@ -561,7 +562,7 @@ descript(results) # common descriptive statistics
 ```
 
     ## # A tibble: 4 × 12
-    ##   VAR            n  mean  trim    sd    skew  kurt   min   P25   P50   P75   max
+    ##   VARIABLE       n  mean  trim    sd    skew  kurt   min   P25   P50   P75   max
     ##   <fct>      <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
     ## 1 mean_no_t…  1000  3.00  3.00 0.174  0.0821 0.135  2.45  2.89  3.00  3.11  3.67
     ## 2 mean_trim…  1000  3.00  3.00 0.178  0.0656 0.145  2.40  2.88  3.00  3.11  3.67
