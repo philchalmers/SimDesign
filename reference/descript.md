@@ -439,6 +439,8 @@ fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript()
 
 # same, but formatting output by group instead of VARIABLE
 fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
+#> cyl: 4
+#> 
 #> # A tibble: 8 × 12
 #>   VARIABLE     n   mean   trim     sd     skew    kurt   min   P25    P50    P75
 #>   <fct>    <dbl>  <dbl>  <dbl>  <dbl>    <dbl>   <dbl> <dbl> <dbl>  <dbl>  <dbl>
@@ -454,6 +456,8 @@ fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
 #> 
 #> ------------------------------------------------------------
 #>  
+#> cyl: 6
+#> 
 #> # A tibble: 8 × 12
 #>   VARIABLE     n   mean   trim     sd   skew   kurt    min    P25    P50    P75
 #>   <fct>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
@@ -469,6 +473,8 @@ fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
 #> 
 #> ------------------------------------------------------------
 #>  
+#> cyl: 8
+#> 
 #> # A tibble: 8 × 12
 #>   VARIABLE     n   mean   trim     sd   skew    kurt    min    P25    P50    P75
 #>   <fct>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
