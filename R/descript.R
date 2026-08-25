@@ -6,7 +6,7 @@
 #' of univariate summary functions. As such, quantitative/continuous variable
 #' information is kept distinct in the output, while discrete variables (e.g.,
 #' \code{factors} and \code{character} vectors) are returned by using the
-#' \code{discrete} argument. When applicable a \code{"VAR"} column will be included in the
+#' \code{discrete} argument. When applicable a \code{"VARIABLE"} column will be included in the
 #' output to indicate which variable is being summarised on the respective row.
 #'
 #' The purpose of this function is to provide
@@ -121,19 +121,20 @@
 #'
 #' # if you want a tibble from the list of information instead
 #' fmtcars |> group_by(cyl) |> descript(collapse=TRUE)
-#' fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VAR)
+#' fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VARIABLE)
 #' fmtcars |> group_by(am, cyl) |> select(mpg, wt) |> descript(collapse=TRUE)
 #' fmtcars |> group_by(am, cyl) |> select(mpg, wt) |>
-#'   descript(collapse=TRUE) |> arrange(VAR)
+#'   descript(collapse=TRUE) |> arrange(VARIABLE)
 #'
 #' # post-extraction (if you don't mind doing the extra computations
 #' #   and extracting afterword)
-#' fmtcars |> descript() |> select(n, mean)
-#' fmtcars |> select(mpg) |> descript() |> select(n, mean)
-#' fmtcars |> group_by(cyl) |> select(mpg) |> descript() |> select(n, mean)
-#' fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
+#' fmtcars |> descript() |> select(VARIABLE, n, mean)
+#' fmtcars |> select(mpg) |> descript() |> select(VARIABLE, n, mean)
+#' fmtcars |> group_by(cyl) |> select(mpg) |> descript() |>
+#'   select(VARIABLE, n, mean)
+#' fmtcars |> group_by(cyl, am) |> descript() |> select(VARIABLE, n, mean)
 #' fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |>
-#'   select(cyl, VAR, n, mean)
+#'   select(cyl, VARIABLE, n, mean)
 #'
 #' # only compute a subset of summary statistics
 #' funs <- get_descriptFuns()
@@ -162,8 +163,8 @@ descript <- function(df, funs=get_descriptFuns(),
 	if(!is.data.frame(suppressMessages(df)))
 		df <- as.data.frame(df)
 
-	if(any(colnames(df) == 'VAR'))
-	    stop('df cannot contain the name VAR', call.=FALSE)
+	if(any(colnames(df) == 'VARIABLE'))
+	    stop('df cannot contain the name VARIABLE', call.=FALSE)
 
 	if(collapse || discrete) by_group <- TRUE
 
@@ -175,7 +176,7 @@ descript <- function(df, funs=get_descriptFuns(),
 	    ret <- lapply(vars, \(x){
 	        form <- sprintf("~ %s + %s", x, paste0(gnames, collapse='+'))
 	        xtab <- xtabs(as.formula(form), data = df)
-	        list(count=xtab, proportions=round(prop.table(xtab),3))
+	        list(COUNTS=xtab, PROPORTIONS=round(prop.table(xtab),3))
 	    })
 	    attr(ret, 'dim') <- length(vars)
 	    attr(ret, 'dimnames') <- list(VARIABLE=paste0(vars, '\n'))
@@ -261,12 +262,13 @@ descript <- function(df, funs=get_descriptFuns(),
 	}
 	if(!discrete){
 		retfull <- do.call(rbind, retfull)
-		ret <- data.frame(VAR=factor(colnames(df)), retfull) |> dplyr::as_tibble()
+		ret <- data.frame(VARIABLE=factor(colnames(df)), retfull) |> dplyr::as_tibble()
 	} else {
 		ret <- retfull
 		names(ret) <- colnames(df)
 		class(ret) <- 'bybye'
 		attr(ret, 'dim') <- length(ret)
+		attr(ret, 'discrete') <- TRUE
 		attr(ret, 'dimnames') <- list(VARIABLE = paste0(colnames(df), '\n'))
 	}
 	ret
@@ -295,17 +297,20 @@ print.bybye <- function (x, ..., vsep)
     d <- dim(x)
     dn <- dimnames(x)
     dnn <- names(dn)
+    is_discrete <- !is.null(attr(x, 'discrete'))
     if (missing(vsep))
         vsep <- paste0('\n', strrep("-", 0.75 * getOption("width")), '\n')
     lapply(X = seq_along(x), FUN = function(i, x, vsep, ...) {
         if (i != 1L && !is.null(vsep))
             cat(vsep, "\n")
-        # ii <- i - 1L
-        # for (j in seq_along(dn)) {
-        #     iii <- ii%%d[j] + 1L
-        #     ii <- ii%/%d[j]
-        #     cat(dnn[j], ": ", dn[[j]][iii], "\n", sep = "")
-        # }
+        if(is_discrete){
+            ii <- i - 1L
+            for (j in seq_along(dn)) {
+                iii <- ii%%d[j] + 1L
+                ii <- ii%/%d[j]
+                cat(dnn[j], ": ", dn[[j]][iii], "\n", sep = "")
+            }
+        }
         print(x[[i]], ...)
     }, x, vsep, ...)
     invisible(x)

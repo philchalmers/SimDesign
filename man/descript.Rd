@@ -69,7 +69,7 @@ reflects count/proportion information while the ladder are supplied to a (custom
 of univariate summary functions. As such, quantitative/continuous variable
 information is kept distinct in the output, while discrete variables (e.g.,
 \code{factors} and \code{character} vectors) are returned by using the
-\code{discrete} argument. When applicable a \code{"VAR"} column will be included in the
+\code{discrete} argument. When applicable a \code{"VARIABLE"} column will be included in the
 output to indicate which variable is being summarised on the respective row.
 }
 \details{
@@ -132,19 +132,20 @@ fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
 
 # if you want a tibble from the list of information instead
 fmtcars |> group_by(cyl) |> descript(collapse=TRUE)
-fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VAR)
+fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VARIABLE)
 fmtcars |> group_by(am, cyl) |> select(mpg, wt) |> descript(collapse=TRUE)
 fmtcars |> group_by(am, cyl) |> select(mpg, wt) |>
-  descript(collapse=TRUE) |> arrange(VAR)
+  descript(collapse=TRUE) |> arrange(VARIABLE)
 
 # post-extraction (if you don't mind doing the extra computations
 #   and extracting afterword)
-fmtcars |> descript() |> select(n, mean)
-fmtcars |> select(mpg) |> descript() |> select(n, mean)
-fmtcars |> group_by(cyl) |> select(mpg) |> descript() |> select(n, mean)
-fmtcars |> group_by(cyl, am) |> descript() |> select(n, mean)
+fmtcars |> descript() |> select(VARIABLE, n, mean)
+fmtcars |> select(mpg) |> descript() |> select(VARIABLE, n, mean)
+fmtcars |> group_by(cyl) |> select(mpg) |> descript() |>
+  select(VARIABLE, n, mean)
+fmtcars |> group_by(cyl, am) |> descript() |> select(VARIABLE, n, mean)
 fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |>
-  select(cyl, VAR, n, mean)
+  select(cyl, VARIABLE, n, mean)
 
 # only compute a subset of summary statistics
 funs <- get_descriptFuns()
