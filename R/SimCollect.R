@@ -185,11 +185,8 @@
 #'
 #' }
 SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
-                       select = NULL, check.only = FALSE,
-                       target.reps = NULL,
-                       warning_details = FALSE,
-                       error_details = TRUE,
-                       gc = FALSE){
+                       select = NULL, check.only = FALSE, target.reps = NULL,
+                       warning_details = FALSE, error_details = TRUE, gc = FALSE){
     if(!is.null(simobj)){
         has_stored_results <- !is.null(SimExtract(simobj, 'results'))
         design.id <- SimExtract(simobj, 'Design.ID')
@@ -335,28 +332,20 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
                     caught_warnings[,match(nmsw, names(caught_warnings))]
             }
             ret$SIM_TIME <- ret$SIM_TIME + readin[[i]]$SIM_TIME
-            if(any(names(ret) == 'SUMMARISE')){
-                stop('SUMMARISE list output is not easily collapsed. This must be done manually by the user',
-                     call.=FALSE)
-                # for(row in 1:length(readin[[i]]$SUMMARISE)){
-                #     for(el in 1:length(readin[[i]]$SUMMARISE[[row]])){
-                #         # TODO make more robust?
-                #         out <- try(readin[[i]]$SUMMARISE[[row]][[el]] * weights[i], silent = TRUE)
-                #         if(is(out, 'try-error'))
-                #             stop('Element in SUMMARISE could not be marginalized')
-                #         if(i == 1) ret$SUMMARISE[[row]][[el]] <- out
-                #         else ret$SUMMARISE[[row]][[el]] <- ret$SUMMARISE[[row]][[el]] + out
-                #     }
-                # }
+            dnames <- SimExtract(readin[[1]], what = 'design')
+            sumfun <- attr(readin[[1]], 'extra_info')$functions$Summarise
+            fo <- attr(readin[[1]], 'extra_info')$fixed_objects
+            simresults_lst <- lapply(readin, SimResults)
+            if(!is.data.frame(simresults_lst[[1]])){
+                simresults <- do.call(c, simresults_lst)
             } else {
-                simresults <- do.call(rbind, lapply(readin, SimResults))
-                dnames <- SimExtract(readin[[1]], what = 'design')
+                simresults <- do.call(rbind, simresults_lst)
                 start <- max(c(which(colnames(simresults) == colnames(dnames)[length(dnames)]) + 1, 1))
                 simresults <- simresults[ , start:ncol(simresults), drop=FALSE]
-                sumfun <- attr(readin[[1]], 'extra_info')$functions$Summarise
-                fo <- attr(readin[[1]], 'extra_info')$fixed_objects
-                ret[,pick] <- matrix(sumfun(condition=dnames, results = simresults, fixed_objects = fo), 1)
             }
+            if(any(names(ret) == 'SUMMARISE'))
+                ret$SUMMARISE <- list(sumfun(condition=dnames, results = simresults, fixed_objects = fo))
+            else ret[,pick] <- matrix(sumfun(condition=dnames, results = simresults, fixed_objects = fo), 1)
             if(has_stored_results & i > 1L){
                 attr(ret, 'extra_info')$stored_results <-
                 rbind(attr(ret, 'extra_info')$stored_results,

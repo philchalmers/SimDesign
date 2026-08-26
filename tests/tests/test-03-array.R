@@ -131,9 +131,6 @@ test_that('array', {
     SimClean('mylongsim-14.rds')
 
     ###
-    # emulate the arrayID distribution, storing all results in a 'sim/' folder
-    dir.create('sim/')
-
     # Emulate distribution to nrow(Design5) = 15 independent job arrays
     sapply(1:nrow(Design5), \(arrayID)
            runArraySimulation(design=Design5, replications=10,
@@ -241,13 +238,51 @@ test_that('array', {
     expect_true(all(files %in% paste0('condition-', 1:nrow(Design5), '.rds')))
 
     setwd('sim')
-    expect_error(final <- SimCollect(files=dir()))
-    # so <- summary(final)
-    # expect_equal(so$ncores, 15L)
-    # results <- SimResults(final)
-    #
-    # expect_equal(final$REPLICATIONS, c(50, 50, 50))
-    # expect_equal(nrow(results), 150)
+    final <- SimCollect(files=dir())
+
+    so <- summary(final)
+    expect_equal(so$ncores, 15L)
+    results <- SimResults(final)
+
+    expect_equal(final$REPLICATIONS, c(50, 50, 50))
+    expect_equal(nrow(results), 150)
+
+    setwd('..')
+    SimClean(dirs='sim/')
+
+
+
+    #############
+    # analyse returns a list
+    Analyse <- function(condition, dat, fixed_objects) {
+        ret <- list(mean=mean(dat), median=median(dat), stuff=rnorm(5))
+        ret
+    }
+
+    Summarise <- function(condition, results, fixed_objects){
+        means <- do.call(c, sapply(results, \(x) x['mean']))
+        medians <- do.call(c, sapply(results, \(x) x['median']))
+        c(means=mean(means), medians=mean(medians))
+    }
+
+    sapply(1:nrow(Design5), \(arrayID)
+           runArraySimulation(design=Design5, replications=10,
+                              generate=Generate, analyse=Analyse,
+                              summarise=Summarise, iseed=iseed, arrayID=arrayID,
+                              dirname='sim', filename='condition', verbose=FALSE)) |> invisible()
+
+    files <- dir('sim/')
+    expect_true(all(files %in% paste0('condition-', 1:nrow(Design5), '.rds')))
+
+    setwd('sim')
+    final <- SimCollect(files=dir())
+
+    so <- summary(final)
+    expect_equal(so$ncores, 15L)
+    results <- SimResults(final)
+
+    expect_equal(final$REPLICATIONS, c(50, 50, 50))
+    expect_equal(length(results), 150)
 
     setwd('..')
     SimClean(dirs='sim/')
