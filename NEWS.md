@@ -7,7 +7,7 @@
 
 - `SimCollect()` works correctly with count data now and avoids 
   Jensen inequality behavior when weighted averages are inappropriate 
-  (reported by Michael Troung)
+  (reported by Michael Truong)
 
 - `SimWarnings()` and `SimErrors()` wrappers gain a `fuzzy` argument, 
   which is passed to their associated `SimExtract()` elements
