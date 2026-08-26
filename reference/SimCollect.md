@@ -20,6 +20,7 @@ SimCollect(
   filename = NULL,
   simobj = NULL,
   select = NULL,
+  summarise = NULL,
   check.only = FALSE,
   target.reps = NULL,
   warning_details = FALSE,
@@ -70,6 +71,14 @@ aggregate_simulations(...)
   includes the results objects in their entirety, though to investigate
   the stored warnings and error messages in isolation pass `'WARNINGS'`
   or `'ERRORS'`, respectively
+
+- summarise:
+
+  an optional summarise function to apply to the read-in files. If not
+  specified the summarise function used in the original simulation will
+  be used. See
+  [`reSummarise`](http://philchalmers.github.io/SimDesign/reference/reSummarise.md)
+  for details.
 
 - check.only:
 

@@ -79,6 +79,7 @@ nodes/computing cores (e.g., see <code><a href="runArraySimulation.html">runArra
 <span>  filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  simobj <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  select <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  summarise <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  check.only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  target.reps <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  warning_details <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -123,6 +124,12 @@ simulation object returned from <code><a href="runSimulation.html">runSimulation
 given simulations with many stored estimates. Default includes the results objects
 in their entirety, though to investigate the stored warnings and error messages in isolation
 pass <code>'WARNINGS'</code> or <code>'ERRORS'</code>, respectively</p></dd>
+
+
+<dt id="arg-summarise">summarise<a class="anchor" aria-label="anchor" href="#arg-summarise"></a></dt>
+<dd><p>an optional summarise function to apply to the read-in files.
+If not specified the summarise function used in the original simulation will be used.
+See <code><a href="reSummarise.html">reSummarise</a></code> for details.</p></dd>
 
 
 <dt id="arg-check-only">check.only<a class="anchor" aria-label="anchor" href="#arg-check-only"></a></dt>
