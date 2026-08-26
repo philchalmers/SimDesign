@@ -67,10 +67,9 @@ aggregate_simulations(...)
   a character vector indicating columns to variables to select from the
   `SimExtract(what='results')` information. This is mainly useful when
   RAM is an issue given simulations with many stored estimates. Default
-  includes the results objects in their entirety, though to omit all
-  internally stored simulation results pass the character `'NONE'`. To
-  investigate the stored warnings and error messages in isolation pass
-  `'WARNINGS'` or `'ERRORS'`, respectively
+  includes the results objects in their entirety, though to investigate
+  the stored warnings and error messages in isolation pass `'WARNINGS'`
+  or `'ERRORS'`, respectively
 
 - check.only:
 
@@ -226,8 +225,9 @@ SimCollect('sim_files/', check.only = TRUE, target.reps=1000)
 sim <- SimCollect('sim_files/')
 sim
 
-# view list of error messages (if there were any raised)
+# view list of error/warning messages (if there were any raised)
 SimCollect('sim_files/', select = 'ERRORS')
+SimCollect('sim_files/', select = 'WARNINGS')
 
 SimClean(dir='sim_files/')
 
