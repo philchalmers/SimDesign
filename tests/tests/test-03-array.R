@@ -1,20 +1,31 @@
 context('array')
 
+Design <- createDesign(N = c(10, 20, 30))
+
+Design5 <- expandDesign(Design, 5)
+
+# iseed <- genSeeds()
+iseed <- 554184288
+
+Generate <- function(condition, fixed_objects) {
+    dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
+    dat
+}
+
+Analyse <- function(condition, dat, fixed_objects) {
+    ret <- c(mean=mean(dat), median=median(dat)) # mean/median of sample data
+    ret
+}
+
+Summarise <- function(condition, results, fixed_objects){
+    colMeans(results)
+}
+
 test_that('array', {
 
     library(SimDesign)
 
     Design <- createDesign(N = c(10, 20, 30))
-
-    Generate <- function(condition, fixed_objects) {
-        dat <- with(condition, rnorm(N, 10, 5)) # distributed N(10, 5)
-        dat
-    }
-
-    Analyse <- function(condition, dat, fixed_objects) {
-        ret <- c(mean=mean(dat), median=median(dat)) # mean/median of sample data
-        ret
-    }
 
     Analyse.slow <- function(condition, dat, fixed_objects) {
         Sys.sleep(1)
@@ -22,11 +33,7 @@ test_that('array', {
         ret
     }
 
-    Summarise <- function(condition, results, fixed_objects){
-        colMeans(results)
-    }
-
-    # time test across conditions
+     # time test across conditions
     expect_error(suppressWarnings(runSimulation(design=Design, replications=4, generate=Generate,
                   analyse=Analyse.slow, summarise=Summarise,
                   control = list(max_time = "00:00:06", max_RAM = "4GB"),
@@ -87,13 +94,15 @@ test_that('array', {
                      SimExtract(res_s2, what='results'))
     SimClean('serialseed-1.rds')
 
+})
+
+test_that('split array', {
+
+
+
     ########################
     # Same submission job as above, however split the replications over multiple
     # evaluations and combine when complete
-    Design5 <- expandDesign(Design, 5)
-
-    # iseed <- genSeeds()
-    iseed <- 554184288
 
     # arrayID <- getArrayID(type = 'slurm')
     arrayID <- 14L
@@ -166,7 +175,9 @@ test_that('array', {
     setwd('..')
     SimClean(dirs='sim/')
 
-    #####################
+})
+
+test_that('lists', {
 
     # list return
     Analyse_list <- function(condition, dat, fixed_objects) {
