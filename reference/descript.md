@@ -17,6 +17,7 @@ row.
 descript(
   df,
   funs = get_descriptFuns(),
+  margin = NULL,
   by_group = FALSE,
   discrete = FALSE,
   collapse = FALSE
@@ -96,6 +97,12 @@ get_descriptFuns()
 
   Note that by default the `na.rm` behavior is set to `TRUE` in each
   function call
+
+- margin:
+
+  matched argument passed to
+  [`prop.table`](https://rdrr.io/r/base/proportions.html) for marginal
+  proportion output (1 = row, 2 = column, etc)
 
 - by_group:
 
@@ -602,6 +609,64 @@ fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 #>   0 0.031 0.094 0.062
 #>   1 0.219 0.000 0.000
 #> 
+#> 
+
+# express proportions as row (1) or column (2) marginals (or higher)
+fmtcars |> group_by(cyl) |> descript(discrete=TRUE, margin = 1)
+#> $COUNTS
+#>    cyl
+#> vs   4  6  8
+#>   0  1  3 14
+#>   1 10  4  0
+#> 
+#> $PROPORTIONS
+#>    cyl
+#> vs      4     6     8
+#>   0 0.056 0.167 0.778
+#>   1 0.714 0.286 0.000
+#> 
+#> 
+#> ------------------------------------------------------------
+#>  
+#> $COUNTS
+#>            cyl
+#> am           4  6  8
+#>   automatic  3  4 12
+#>   manual     8  3  2
+#> 
+#> $PROPORTIONS
+#>            cyl
+#> am              4     6     8
+#>   automatic 0.158 0.211 0.632
+#>   manual    0.615 0.231 0.154
+#> 
+fmtcars |> group_by(cyl) |> descript(discrete=TRUE, margin = 2)
+#> $COUNTS
+#>    cyl
+#> vs   4  6  8
+#>   0  1  3 14
+#>   1 10  4  0
+#> 
+#> $PROPORTIONS
+#>    cyl
+#> vs      4     6     8
+#>   0 0.091 0.429 1.000
+#>   1 0.909 0.571 0.000
+#> 
+#> 
+#> ------------------------------------------------------------
+#>  
+#> $COUNTS
+#>            cyl
+#> am           4  6  8
+#>   automatic  3  4 12
+#>   manual     8  3  2
+#> 
+#> $PROPORTIONS
+#>            cyl
+#> am              4     6     8
+#>   automatic 0.273 0.571 0.857
+#>   manual    0.727 0.429 0.143
 #> 
 
 # with single variables, typical dplyr::summarise() output returned
