@@ -51,6 +51,10 @@
 #'  note that the majority of the technical information will only be available in the original
 #'  simulation object returned from \code{\link{runSimulation}}
 #'
+#' @param summarise an optional summarise function to apply to the read-in files.
+#'   If not specified the summarise function used in the original simulation will be used.
+#'   See \code{\link{reSummarise}} for details.
+#'
 #' @return returns a \code{data.frame/tibble} with the (weighted) average/aggregate
 #'   of the simulation results
 #'
@@ -185,7 +189,8 @@
 #'
 #' }
 SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
-                       select = NULL, check.only = FALSE, target.reps = NULL,
+                       select = NULL, summarise = NULL,
+                       check.only = FALSE, target.reps = NULL,
                        warning_details = FALSE, error_details = TRUE, gc = FALSE){
     if(!is.null(simobj)){
         has_stored_results <- !is.null(SimExtract(simobj, 'results'))
@@ -196,7 +201,8 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
         simresults <- SimResults(simobj)
         dnames <- SimExtract(simobj, what = 'design')
         start <- max(c(which(colnames(simresults) == colnames(dnames)[length(dnames)]) + 1, 1))
-        sumfun <- attr(simobj, 'extra_info')$functions$Summarise
+        sumfun <- if(is.null(summarise)) attr(simobj, 'extra_info')$functions$Summarise
+            else summarise
         fo <- attr(simobj, 'extra_info')$fixed_objects
         for(i in 1:length(unique.id)){
             sub <- as.data.frame(simobj[unique.id[i] == design.id, ])
@@ -333,7 +339,8 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
             }
             ret$SIM_TIME <- ret$SIM_TIME + readin[[i]]$SIM_TIME
             dnames <- SimExtract(readin[[1]], what = 'design')
-            sumfun <- attr(readin[[1]], 'extra_info')$functions$Summarise
+            sumfun <- if(is.null(summarise))
+                attr(readin[[1]], 'extra_info')$functions$Summarise else summarise
             fo <- attr(readin[[1]], 'extra_info')$fixed_objects
             simresults_lst <- lapply(readin, SimResults)
             if(!is.data.frame(simresults_lst[[1]])){
