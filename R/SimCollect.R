@@ -201,7 +201,7 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
             weights <- sub$REPLICATIONS
             weights <- weights / sum(weights)
             collapsed <- sub[nrow(sub), ]
-            collapsed[,pick] <- colSums(sub[,pick] * weights)
+            collapsed[,pick] <- colSums(sub[,pick, drop=FALSE] * weights)
             collapsed$REPLICATIONS <- sum(sub$REPLICATIONS)
             collapsed$SIM_TIME <- sum(sub$SIM_TIME)
             if(!is.null(sub$ERRORS)) collapsed$ERRORS <- sum(sub$ERRORS)
