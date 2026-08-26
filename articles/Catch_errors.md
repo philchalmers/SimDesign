@@ -189,7 +189,7 @@ print(result)
     ##   <dbl>    <dbl>        <dbl> <chr>         <int> <chr>           <int>    <int>
     ## 1    10 0.061138          100 0.05s    1140350788 Wed Aug 26 22…     53       59
     ## 2    20 0.014295          100 0.16s     312928385 Wed Aug 26 22…     52       60
-    ## 3    30 0.017927          100 0.04s     866248189 Wed Aug 26 22…     42       56
+    ## 3    30 0.017927          100 0.05s     866248189 Wed Aug 26 22…     42       56
 
 What you’ll immediately notice from this output object is that counts of
 the error and warning messages have been appended to the `result`
