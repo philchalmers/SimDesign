@@ -8,6 +8,7 @@
 descript(
   df,
   funs = get_descriptFuns(),
+  margin = NULL,
   by_group = FALSE,
   discrete = FALSE,
   collapse = FALSE
@@ -47,6 +48,9 @@ get_descriptFuns()
 
  Note that by default the \code{na.rm} behavior is set to \code{TRUE}
  in each function call}
+
+\item{margin}{matched argument passed to \code{\link{prop.table}} for marginal
+proportion output (1 = row, 2 = column, etc)}
 
 \item{by_group}{logical; when \code{group_by()} were used to define the conditioning levels,
 should the output from \code{by()} be organized by these group levels or by variable
@@ -124,6 +128,10 @@ fmtcars |> descript(discrete=TRUE)
 fmtcars |> group_by(cyl) |> descript(discrete=TRUE)
 fmtcars |> group_by(am) |> descript(discrete=TRUE)
 fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
+
+# express proportions as row (1) or column (2) marginals (or higher)
+fmtcars |> group_by(cyl) |> descript(discrete=TRUE, margin = 1)
+fmtcars |> group_by(cyl) |> descript(discrete=TRUE, margin = 2)
 
 # with single variables, typical dplyr::summarise() output returned
 fmtcars |> select(mpg) |> descript()

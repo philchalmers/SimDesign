@@ -64,6 +64,9 @@
 #'  be set to \code{TRUE}. For greater flexibility
 #'  in creating cross-tabulated count/proportion information see \code{\link{xtabs}}
 #'
+#' @param margin matched argument passed to \code{\link{prop.table}} for marginal
+#'  proportion output (1 = row, 2 = column, etc)
+#'
 #' @param by_group logical; when \code{group_by()} were used to define the conditioning levels,
 #'   should the output from \code{by()} be organized by these group levels or by variable
 #'   names? Only applicable when more than one variable is being described
@@ -114,6 +117,10 @@
 #' fmtcars |> group_by(am) |> descript(discrete=TRUE)
 #' fmtcars |> group_by(cyl, am) |> descript(discrete=TRUE)
 #'
+#' # express proportions as row (1) or column (2) marginals (or higher)
+#' fmtcars |> group_by(cyl) |> descript(discrete=TRUE, margin = 1)
+#' fmtcars |> group_by(cyl) |> descript(discrete=TRUE, margin = 2)
+#'
 #' # with single variables, typical dplyr::summarise() output returned
 #' fmtcars |> select(mpg) |> descript()
 #' fmtcars |> group_by(cyl) |> select(mpg) |> descript()
@@ -147,7 +154,7 @@
 #'            median= \(x) median(x, na.rm=TRUE))
 #' fmtcars |> descript(funs=funs2)
 #'
-descript <- function(df, funs=get_descriptFuns(),
+descript <- function(df, funs=get_descriptFuns(), margin = NULL,
                      by_group=FALSE, discrete=FALSE, collapse=FALSE)
 {
 	discrete.fun <- function(x){
@@ -176,7 +183,7 @@ descript <- function(df, funs=get_descriptFuns(),
 	    ret <- lapply(vars, \(x){
 	        form <- sprintf("~ %s + %s", x, paste0(gnames, collapse='+'))
 	        xtab <- xtabs(as.formula(form), data = df)
-	        list(COUNTS=xtab, PROPORTIONS=round(prop.table(xtab),3))
+	        list(COUNTS=xtab, PROPORTIONS=round(prop.table(xtab, margin=margin),3))
 	    })
 	    attr(ret, 'dim') <- length(vars)
 	    attr(ret, 'dimnames') <- list(VARIABLE=vars)

@@ -2,7 +2,8 @@
 
 ## Changes in SimDesign 2.27
 
-- `descript()` provides better tracking of variable name information
+- `descript()` provides better tracking of variable name information. Added 
+  `margin` for row/column or higher marginalization of proportions
 
 - `SimCollect()` works correctly with count data now and avoids 
   Jensen inequality behavior when weighted averages are inappropriate 
