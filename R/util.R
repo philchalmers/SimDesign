@@ -51,6 +51,16 @@ get_packages <- function(packages){
     sapply(packages, function(x) as.character(packageVersion(x)))
 }
 
+# find rows of dataframe that equal specific pattern. Return row number
+match.df.rows <- function (pattern, df)
+{
+    stopifnot(length(pattern) == ncol(df))
+    matched <- rep(TRUE, nrow(df))
+    for(i in names(pattern))
+        matched <- matched & df[,i,drop=TRUE] == pattern[,i,drop=TRUE]
+    which(matched)
+}
+
 # base-code borrowed and modified from pbapply
 timeFormater_internal <- function(time, decimals = TRUE){
     dec <- time - floor(time)

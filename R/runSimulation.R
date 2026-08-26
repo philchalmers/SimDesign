@@ -1987,7 +1987,8 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                                       stored_results = if(store_results) stored_Results_list else NULL,
                                       Design.ID=Design.ID,
                                       log_times=log_times,
-                                      functions=list(Generate=Generate, Analyse=Analyse, Summarise=Summarise))
+                                      fixed_objects=fixed_objects,
+                                      functions=list(Generate=generate, Analyse=analyse, Summarise=summarise))
     if(dummy_run) Final$dummy_run <- NULL
     class(Final) <- c('SimDesign', class(Final))
     if(!is.null(filename)){ #save file

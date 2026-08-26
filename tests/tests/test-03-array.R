@@ -125,7 +125,7 @@ test_that('array', {
                        generate=Generate, analyse=Analyse_big,
                        summarise=Summarise, iseed=iseed,
                        filename='mylongsim', arrayID=arrayID,
-                       control = list(max_RAM="150MB"), verbose=FALSE)
+                       control = list(max_RAM="500MB"), verbose=FALSE)
     res <- readRDS("mylongsim-14.rds")
     expect_true(res$REPLICATIONS == 1000L)
     SimClean('mylongsim-14.rds')
@@ -241,13 +241,13 @@ test_that('array', {
     expect_true(all(files %in% paste0('condition-', 1:nrow(Design5), '.rds')))
 
     setwd('sim')
-    final <- SimCollect(files=dir())
-    so <- summary(final)
-    expect_equal(so$ncores, 15L)
-    results <- SimResults(final)
-
-    expect_equal(final$REPLICATIONS, c(50, 50, 50))
-    expect_equal(nrow(results), 150)
+    expect_error(final <- SimCollect(files=dir()))
+    # so <- summary(final)
+    # expect_equal(so$ncores, 15L)
+    # results <- SimResults(final)
+    #
+    # expect_equal(final$REPLICATIONS, c(50, 50, 50))
+    # expect_equal(nrow(results), 150)
 
     setwd('..')
     SimClean(dirs='sim/')

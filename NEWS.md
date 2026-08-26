@@ -1,6 +1,10 @@
 # NEWS file for SimDesign
 
-## Changes in SimDesign 2.26.2
+## Changes in SimDesign 2.27
+
+- `SimCollect()` works correctly with count data now and avoids 
+  Jensen inequality behavior when weighted averages are inappropriate 
+  (reported by Michael Troung)
 
 - `SimWarnings()` and `SimErrors()` wrappers gain a `fuzzy` argument, 
   which is passed to their associated `SimExtract()` elements
