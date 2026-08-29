@@ -16,7 +16,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/philchalmers/SimDesign/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/philchalmers/SimDesign/blob/v2.27/inst/CITATION)
 
 R. Philip Chalmers & Adkins, M. C. (2020). Writing effective and
 reliable Monte Carlo simulations with the SimDesign package. The
