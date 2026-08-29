@@ -6,6 +6,8 @@
 \title{Compute the empirical detection/rejection rate for Type I errors and Power}
 \usage{
 EDR(p, alpha = 0.05, unname = FALSE)
+
+ERR(p, alpha = 0.05, unname = FALSE)
 }
 \arguments{
 \item{p}{a \code{numeric} vector or \code{matrix}/\code{data.frame} of p-values from the

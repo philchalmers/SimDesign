@@ -110,6 +110,7 @@ addMissing <- function(y, fun = function(y, rate = .1, ...) rep(rate, length(y))
 }
 
 #' @export
+#' @rdname addMissing
 add_missing <- function(...){
     .Deprecated('addMissing')
     addMissing(...)

@@ -945,6 +945,7 @@ EDR <- function(p, alpha = .05, unname = FALSE){
 }
 
 #' @export
+#' @rdname EDR
 ERR <- EDR
 
 
