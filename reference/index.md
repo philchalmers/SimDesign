@@ -33,7 +33,8 @@
 - [`ECR()`](http://philchalmers.github.io/SimDesign/reference/ECR.md) :
   Compute empirical coverage rates
 
-- [`EDR()`](http://philchalmers.github.io/SimDesign/reference/EDR.md) :
+- [`EDR()`](http://philchalmers.github.io/SimDesign/reference/EDR.md)
+  [`ERR()`](http://philchalmers.github.io/SimDesign/reference/EDR.md) :
   Compute the empirical detection/rejection rate for Type I errors and
   Power
 
@@ -139,6 +140,7 @@
   statistics
 
 - [`addMissing()`](http://philchalmers.github.io/SimDesign/reference/addMissing.md)
+  [`add_missing()`](http://philchalmers.github.io/SimDesign/reference/addMissing.md)
   : Add missing values to a vector given a MCAR, MAR, or MNAR scheme
 
 - [`bias()`](http://philchalmers.github.io/SimDesign/reference/bias.md)

@@ -10,6 +10,8 @@ argument.
 
 ``` r
 addMissing(y, fun = function(y, rate = 0.1, ...) rep(rate, length(y)), ...)
+
+add_missing(...)
 ```
 
 ## Arguments

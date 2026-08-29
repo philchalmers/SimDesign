@@ -7,6 +7,8 @@ error and power rates using information from p-values.
 
 ``` r
 EDR(p, alpha = 0.05, unname = FALSE)
+
+ERR(p, alpha = 0.05, unname = FALSE)
 ```
 
 ## Arguments
