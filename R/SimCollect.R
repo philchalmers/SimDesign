@@ -351,12 +351,16 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
                 simresults <- simresults[ , start:ncol(simresults), drop=FALSE]
             }
             if(nrow(ret) > 1){
+                from_to <- c(0, cumsum(ret$REPLICATIONS))
                 for(row in 1:nrow(ret)){
+                    tmp_results <- if(!(is.data.frame(simresults) || is.matrix(simresults)))
+                        simresults[(from_to[row]+1):from_to[row+1]] else
+                        simresults[(from_to[row]+1):from_to[row+1], , drop=FALSE]
                     if(any(names(ret) == 'SUMMARISE'))
-                        ret$SUMMARISE[row] <- sumfun(condition=dnames[row,],
-                                                     results=simresults_lst[[row]], fixed_objects=fo)
-                    else ret[row, pick] <- matrix(sumfun(condition=dnames[row,], results=simresults_lst[[row]],
-                                                     fixed_objects=fo), 1)
+                        ret$SUMMARISE[row] <- sumfun(condition=dnames[row,], results=tmp_results,
+                                                     fixed_objects=fo)
+                    else ret[row, pick] <- matrix(sumfun(condition=dnames[row,], results=tmp_results,
+                                                         fixed_objects=fo), 1)
                 }
             } else {
                 if(any(names(ret) == 'SUMMARISE'))
