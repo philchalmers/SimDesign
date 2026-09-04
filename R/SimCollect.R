@@ -206,11 +206,11 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
         fo <- attr(simobj, 'extra_info')$fixed_objects
         for(i in 1:length(unique.id)){
             sub <- as.data.frame(simobj[unique.id[i] == design.id, ])
-            tmpresults <- simresults[match.df.rows(sub[1,colnames(dnames)],
-                                                   simresults[,colnames(dnames)]),
+            tmpresults <- simresults[match.df.rows(sub[1,colnames(dnames),drop=FALSE],
+                                                   simresults[,colnames(dnames),drop=FALSE]),
                                      start:ncol(simresults), drop=FALSE]
             collapsed <- sub[nrow(sub), ]
-            collapsed[,pick] <- matrix(sumfun(condition=dnames,
+            collapsed[,pick] <- matrix(sumfun(condition=dnames[i,],
                                               results = tmpresults, fixed_objects = fo), 1)
             collapsed$REPLICATIONS <- sum(sub$REPLICATIONS)
             collapsed$SIM_TIME <- sum(sub$SIM_TIME)
