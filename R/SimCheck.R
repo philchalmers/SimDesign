@@ -53,8 +53,10 @@ SimCheck <- function(dir = NULL, files = NULL, min = 1L, max = NULL){
     } else dir <- './'
     files <- paste0(dir, files)
     filename <- strsplit(files[1], '-')[[1L]][1L]
+    has_seeds <- FALSE
     if(is.null(max)){
         tmp <- SimRead(files[1])
+        if(any(colnames(tmp) == 'SEED')) has_seeds <- TRUE
         max <- attr(tmp, 'extra_info')$number_of_conditions
     }
     minmax <- min:max
@@ -63,7 +65,7 @@ SimCheck <- function(dir = NULL, files = NULL, min = 1L, max = NULL){
     notin <- !have
     names(have) <- mainlist
     ret <- list()
-    if(any(notin)){
+    if(any(notin) && !has_seeds){
         ret$Missing_Row_Conditions <- minmax[notin]
         warning(sprintf('The following row conditions were missing:\n%s\n',
                         paste0(ret$Missing_Row_Conditions, collapse=',')))

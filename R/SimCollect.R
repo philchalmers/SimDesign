@@ -350,9 +350,19 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
                 start <- max(c(which(colnames(simresults) == colnames(dnames)[length(dnames)]) + 1, 1))
                 simresults <- simresults[ , start:ncol(simresults), drop=FALSE]
             }
-            if(any(names(ret) == 'SUMMARISE'))
-                ret$SUMMARISE <- list(sumfun(condition=dnames, results = simresults, fixed_objects = fo))
-            else ret[,pick] <- matrix(sumfun(condition=dnames, results = simresults, fixed_objects = fo), 1)
+            if(nrow(ret) > 1){
+                for(row in 1:nrow(ret)){
+                    if(any(names(ret) == 'SUMMARISE'))
+                        ret$SUMMARISE[row] <- sumfun(condition=dnames[row,],
+                                                     results=simresults_lst[[row]], fixed_objects=fo)
+                    else ret[row, pick] <- matrix(sumfun(condition=dnames[row,], results=simresults_lst[[row]],
+                                                     fixed_objects=fo), 1)
+                }
+            } else {
+                if(any(names(ret) == 'SUMMARISE'))
+                    ret$SUMMARISE <- list(sumfun(condition=dnames, results = simresults, fixed_objects = fo))
+                else ret[,pick] <- matrix(sumfun(condition=dnames, results = simresults, fixed_objects = fo), 1)
+            }
             if(has_stored_results & i > 1L){
                 attr(ret, 'extra_info')$stored_results <-
                 rbind(attr(ret, 'extra_info')$stored_results,

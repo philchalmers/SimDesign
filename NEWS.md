@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.27
 
+- Fixes various subtle `SimCollect()` issues reported in Issue #103
+
+## Changes in SimDesign 2.27
+
 - `descript()` provides better tracking of variable name information. Added 
   `margin` for row/column or higher marginalization of proportions
 
