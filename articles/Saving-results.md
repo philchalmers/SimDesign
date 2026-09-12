@@ -82,7 +82,7 @@ files <- dir()
 files[grepl('SIMDESIGN', files)]
 ```
 
-    ## [1] "SIMDESIGN-TEMPFILE_runnervmejwal"
+    ## [1] "SIMDESIGN-TEMPFILE_runnervmlun5p"
 
 Notice here that the simulation stopped at 67% because the third design
 condition threw too many consecutive errors (this is a built-in

@@ -85,14 +85,14 @@ by sampling values from more manageable proxy distributions.</p>
 
 
 <dt id="arg-df">df<a class="anchor" aria-label="anchor" href="#arg-df"></a></dt>
-<dd><p>the desired (potentially un-normed) density function to draw
+<dd><p>the desired (probability) density function to draw
 independent samples from. Must be in the form of a <code>function</code> with a
 single input corresponding to the values sampled from <code>rg</code>. Function
 is assumed to be vectorized (if not, see <code><a href="https://rdrr.io/r/base/Vectorize.html" class="external-link">Vectorize</a></code>)</p></dd>
 
 
 <dt id="arg-dg">dg<a class="anchor" aria-label="anchor" href="#arg-dg"></a></dt>
-<dd><p>the proxy (potentially un-normed) density function to
+<dd><p>the proxy (probability) density function to
 draw samples from in lieu of drawing samples from <code>df</code>.
 The support for this density function should be the same as <code>df</code>
 (i.e., when <code>df(x) &gt; 0</code> then <code>dg(x) &gt; 0</code>).
@@ -166,16 +166,21 @@ multidimensional distributions</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The accept-reject algorithm is a flexible approach to obtaining i.i.d.'s from
-a difficult to sample from (probability) density function  where either the
-transformation method fails or inverse transform method is
-difficult to manage. The algorithm does so by sampling from
-a more "well-behaved" proxy distribution (with identical support, up to some
+a difficult to sample (probability) density function. Typically, this is
+used whenever either the transformation method fails, or the
+inverse transform method is too difficult to manage. The algorithm obtains
+suitable draws from the target p.d.f. by sampling from
+a more well-behaved proxy distribution with identical support, up to some
 proportionality constant <code>M</code> that reshapes the proposal density
-to envelope the target density), and accepts the
-draws if they are likely within the target density. Hence, the closer the
-shape of <code>dg(x)</code> is to the desired <code>df(x)</code>, the more likely the draws
+to envelope the target density, and accepts the
+draws if they are likely within the target density function. As such, the closer the
+shape of the proxy function (<code>dg(x)</code>) is to the target density to be sampled
+(<code>df(x)</code>) the more likely the draws
 are to be accepted; otherwise, many iterations of the accept-reject algorithm
-may be required, which decreases the computational efficiency.</p>
+may be required, which decreases the computational efficiency. At some point,
+the rejection sampler should be abandoned in favor of taking dependent draws
+from the target distribution using some variant of a Markov chain Monte Carlo
+algorithm.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -204,7 +209,8 @@ may be required, which decreases the computational efficiency.</p>
 <span class="r-in"><span><span class="va">dgn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">dunif</a></span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rgn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># when df and dg both integrate to 1, acceptance probability = 1/M</span></span></span>
+<span class="r-in"><span><span class="co"># When df and dg both integrate to 1 (i.e., are probability density functions),</span></span></span>
+<span class="r-in"><span><span class="co"># the acceptance probability = 1/M</span></span></span>
 <span class="r-in"><span><span class="va">M</span> <span class="op">&lt;-</span> <span class="fu">rejectionSampling</span><span class="op">(</span>df<span class="op">=</span><span class="va">dfn</span>, dg<span class="op">=</span><span class="va">dgn</span>, rg<span class="op">=</span><span class="va">rgn</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">M</span></span></span>
 <span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">rejectionSampling</span><span class="op">(</span><span class="fl">10000</span>, df<span class="op">=</span><span class="va">dfn</span>, dg<span class="op">=</span><span class="va">dgn</span>, rg<span class="op">=</span><span class="va">rgn</span>, M<span class="op">=</span><span class="va">M</span><span class="op">)</span></span></span>

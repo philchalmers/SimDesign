@@ -31,21 +31,20 @@ rejectionSampling(
 
 - df:
 
-  the desired (potentially un-normed) density function to draw
-  independent samples from. Must be in the form of a `function` with a
-  single input corresponding to the values sampled from `rg`. Function
-  is assumed to be vectorized (if not, see
+  the desired (probability) density function to draw independent samples
+  from. Must be in the form of a `function` with a single input
+  corresponding to the values sampled from `rg`. Function is assumed to
+  be vectorized (if not, see
   [`Vectorize`](https://rdrr.io/r/base/Vectorize.html))
 
 - dg:
 
-  the proxy (potentially un-normed) density function to draw samples
-  from in lieu of drawing samples from `df`. The support for this
-  density function should be the same as `df` (i.e., when `df(x) > 0`
-  then `dg(x) > 0`). Must be in the form of a `function` with a single
-  input corresponding to the values sampled from `rg`. Function is
-  assumed to be vectorized (if not, see
-  [`Vectorize`](https://rdrr.io/r/base/Vectorize.html))
+  the proxy (probability) density function to draw samples from in lieu
+  of drawing samples from `df`. The support for this density function
+  should be the same as `df` (i.e., when `df(x) > 0` then `dg(x) > 0`).
+  Must be in the form of a `function` with a single input corresponding
+  to the values sampled from `rg`. Function is assumed to be vectorized
+  (if not, see [`Vectorize`](https://rdrr.io/r/base/Vectorize.html))
 
 - rg:
 
@@ -111,16 +110,21 @@ from `rg`) from the desired `df`
 ## Details
 
 The accept-reject algorithm is a flexible approach to obtaining i.i.d.'s
-from a difficult to sample from (probability) density function where
-either the transformation method fails or inverse transform method is
-difficult to manage. The algorithm does so by sampling from a more
-"well-behaved" proxy distribution (with identical support, up to some
+from a difficult to sample (probability) density function. Typically,
+this is used whenever either the transformation method fails, or the
+inverse transform method is too difficult to manage. The algorithm
+obtains suitable draws from the target p.d.f. by sampling from a more
+well-behaved proxy distribution with identical support, up to some
 proportionality constant `M` that reshapes the proposal density to
-envelope the target density), and accepts the draws if they are likely
-within the target density. Hence, the closer the shape of `dg(x)` is to
-the desired `df(x)`, the more likely the draws are to be accepted;
-otherwise, many iterations of the accept-reject algorithm may be
-required, which decreases the computational efficiency.
+envelope the target density, and accepts the draws if they are likely
+within the target density function. As such, the closer the shape of the
+proxy function (`dg(x)`) is to the target density to be sampled
+(`df(x)`) the more likely the draws are to be accepted; otherwise, many
+iterations of the accept-reject algorithm may be required, which
+decreases the computational efficiency. At some point, the rejection
+sampler should be abandoned in favor of taking dependent draws from the
+target distribution using some variant of a Markov chain Monte Carlo
+algorithm.
 
 ## References
 
@@ -152,7 +156,8 @@ dfn <- function(x) dbeta(x, shape1 = 2.7, shape2 = 6.3)
 dgn <- function(x) dunif(x, min = 0, max = 1)
 rgn <- function(n) runif(n, min = 0, max = 1)
 
-# when df and dg both integrate to 1, acceptance probability = 1/M
+# When df and dg both integrate to 1 (i.e., are probability density functions),
+# the acceptance probability = 1/M
 M <- rejectionSampling(df=dfn, dg=dgn, rg=rgn)
 M
 dat <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, M=M)
