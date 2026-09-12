@@ -5,25 +5,30 @@
 #' by sampling values from more manageable proxy distributions.
 #'
 #' The accept-reject algorithm is a flexible approach to obtaining i.i.d.'s from
-#' a difficult to sample from (probability) density function  where either the
-#' transformation method fails or inverse transform method is
-#' difficult to manage. The algorithm does so by sampling from
-#' a more "well-behaved" proxy distribution (with identical support, up to some
+#' a difficult to sample (probability) density function. Typically, this is
+#' used whenever either the transformation method fails, or the
+#' inverse transform method is too difficult to manage. The algorithm obtains
+#' suitable draws from the target p.d.f. by sampling from
+#' a more well-behaved proxy distribution with identical support, up to some
 #' proportionality constant \code{M} that reshapes the proposal density
-#' to envelope the target density), and accepts the
-#' draws if they are likely within the target density. Hence, the closer the
-#' shape of \code{dg(x)} is to the desired \code{df(x)}, the more likely the draws
+#' to envelope the target density, and accepts the
+#' draws if they are likely within the target density function. As such, the closer the
+#' shape of the proxy function (\code{dg(x)}) is to the target density to be sampled
+#' (\code{df(x)}) the more likely the draws
 #' are to be accepted; otherwise, many iterations of the accept-reject algorithm
-#' may be required, which decreases the computational efficiency.
+#' may be required, which decreases the computational efficiency. At some point,
+#' the rejection sampler should be abandoned in favor of taking dependent draws
+#' from the target distribution using some variant of a Markov chain Monte Carlo
+#' algorithm.
 #'
 #' @param n number of samples to draw
 #'
-#' @param df the desired (potentially un-normed) density function to draw
+#' @param df the desired (probability) density function to draw
 #'   independent samples from. Must be in the form of a \code{function} with a
 #'   single input corresponding to the values sampled from \code{rg}. Function
 #'   is assumed to be vectorized (if not, see \code{\link{Vectorize}})
 #'
-#' @param dg the proxy (potentially un-normed) density function to
+#' @param dg the proxy (probability) density function to
 #'   draw samples from in lieu of drawing samples from \code{df}.
 #'   The support for this density function should be the same as \code{df}
 #'   (i.e., when \code{df(x) > 0} then \code{dg(x) > 0}).
@@ -102,7 +107,8 @@
 #' dgn <- function(x) dunif(x, min = 0, max = 1)
 #' rgn <- function(n) runif(n, min = 0, max = 1)
 #'
-#' # when df and dg both integrate to 1, acceptance probability = 1/M
+#' # When df and dg both integrate to 1 (i.e., are probability density functions),
+#' # the acceptance probability = 1/M
 #' M <- rejectionSampling(df=dfn, dg=dgn, rg=rgn)
 #' M
 #' dat <- rejectionSampling(10000, df=dfn, dg=dgn, rg=rgn, M=M)
