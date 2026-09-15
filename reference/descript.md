@@ -31,7 +31,8 @@ get_descriptFuns()
 - df:
 
   typically a `data.frame` or `tibble`-like structure containing the
-  variables of interest
+  variables of interest, though `vector` objects can be supplied as
+  well.
 
   Note that `factor` and `character` vectors will be treated as discrete
   observations, and by default are omitted from the computation of the
@@ -934,4 +935,12 @@ fmtcars |> descript(funs=funs2)
 #> 6 qsec        32  17.8    1.79    17.8   17.7 
 #> 7 gear        32   3.69   0.738    3.55   4   
 #> 8 carb        32   2.81   1.62     2.7    2   
+
+# function works on vectors as well
+IQ <- rnorm(100, mean=100, sd=15) |> round()
+descript(IQ)
+#> # A tibble: 1 × 12
+#>   VARIABLE     n  mean  trim    sd   skew   kurt   min   P25   P50   P75   max
+#>   <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1 IQ         100  99.7  99.5  14.1 0.0741 -0.518    66  88.8   100  110.   132
 ```

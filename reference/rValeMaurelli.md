@@ -71,9 +71,9 @@ set.seed(1)
 nonnormal <- rValeMaurelli(10000, mean=10, sigma=5, skew=1, kurt=3)
 descript(nonnormal)
 #> # A tibble: 1 × 12
-#>   VARIABLE     n  mean  trim    sd  skew  kurt   min   P25   P50   P75   max
-#>   <fct>    <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1 V1       10000  9.99  9.83  2.25 0.908  2.42  1.44  8.56  9.68  11.1  26.9
+#>   VARIABLE      n  mean  trim    sd  skew  kurt   min   P25   P50   P75   max
+#>   <fct>     <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1 nonnormal 10000  9.99  9.83  2.25 0.908  2.42  1.44  8.56  9.68  11.1  26.9
 
 # multivariate with skew and kurtosis
 n <- 10000
