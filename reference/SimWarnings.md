@@ -115,10 +115,12 @@ res |> select(N1, N2, SD, WARNINGS)
 #> 3    10    20     1        1
 #> 4    20    20     1        0
 SimWarnings(res)
+#> Using fuzzy string matching (set to FALSE for original strings).
 #>   N1 N2 SD WARNING:  Warning in fn1() : Show this warning
 #> 2 20 10  1                                              2
 #> 3 10 20  1                                              1
 SimWarnings(res, subset=FALSE)
+#> Using fuzzy string matching (set to FALSE for original strings).
 #>   N1 N2 SD WARNING:  Warning in fn1() : Show this warning
 #> 1 10 10  1                                              0
 #> 2 20 10  1                                              2

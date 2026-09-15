@@ -79,6 +79,10 @@ SimExtract(object, what, fuzzy = TRUE, append = TRUE)
 
   :   to extract the original design object
 
+  `'sessionInfo'`
+
+  :   to extract the sessionInfo
+
   Note that `'warning_seeds'` are not stored automatically in
   simulations and require passing `store_warning_seeds = TRUE` to
   [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md).

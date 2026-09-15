@@ -23,8 +23,9 @@ SimCollect(
   summarise = NULL,
   check.only = FALSE,
   target.reps = NULL,
-  warning_details = FALSE,
+  warning_details = TRUE,
   error_details = TRUE,
+  warn_mismatch = TRUE,
   gc = FALSE
 )
 
@@ -107,6 +108,11 @@ aggregate_simulations(...)
 
   logical; include the aggregate of the errors to be extracted via
   [`SimExtract`](http://philchalmers.github.io/SimDesign/reference/SimExtract.md)?
+
+- warn_mismatch:
+
+  logical; print warning information if package versions or R build
+  session/information mismatched?
 
 - gc:
 
