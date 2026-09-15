@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.27
 
+- Add `warn_mismatch` to `SimCollect()` to throw warning if packages or 
+  R versions do not match across files, and set `warning_details = TRUE` by 
+  default
+
 - Fixes various subtle `SimCollect()` issues reported in Issue #103
 
 ## Changes in SimDesign 2.27

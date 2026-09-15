@@ -45,6 +45,8 @@
 #'
 #'   \item{\code{'design'}}{ to extract the original design object}
 #'
+#'   \item{\code{'sessionInfo'}}{ to extract the sessionInfo}
+#'
 #'   }
 #'
 #'   Note that \code{'warning_seeds'} are not stored automatically in
@@ -125,6 +127,7 @@ SimExtract <- function(object, what, fuzzy = TRUE, append = TRUE){
     ret <- if(what == 'results'){
         extract_results(object)
     } else if(what == 'errors'){
+        if(fuzzy) message('Using fuzzy string matching (set to FALSE for original strings).')
         err <- extract_errors(object, fuzzy=fuzzy)
         if(length(err) && append) cbind(Design, err) else err
     } else if(what == 'functions'){
@@ -136,6 +139,7 @@ SimExtract <- function(object, what, fuzzy = TRUE, append = TRUE){
     } else if(what == 'error_seeds'){
         extract_error_seeds(object)
     } else if(what == 'warnings'){
+        if(fuzzy) message('Using fuzzy string matching (set to FALSE for original strings).')
         wrn <- extract_warnings(object, fuzzy=fuzzy)
         if(length(wrn) && append) cbind(Design, wrn) else wrn
     } else if(what == 'warning_seeds'){
@@ -152,6 +156,8 @@ SimExtract <- function(object, what, fuzzy = TRUE, append = TRUE){
         attr(object, 'extra_info')$log_times
     } else if(what == 'design.id'){
         attr(object, 'extra_info')$Design.ID
+    } else if(what == 'sessioninfo'){
+        attr(object, 'extra_info')$sessionInfo
     }
     else stop('Input provided to \"what" is not supported')
     ret

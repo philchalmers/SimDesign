@@ -55,6 +55,9 @@
 #'   If not specified the summarise function used in the original simulation will be used.
 #'   See \code{\link{reSummarise}} for details.
 #'
+#' @param warn_mismatch logical; print warning information if package versions or
+#'   R build session/information mismatched?
+#'
 #' @return returns a \code{data.frame/tibble} with the (weighted) average/aggregate
 #'   of the simulation results
 #'
@@ -191,7 +194,8 @@
 SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
                        select = NULL, summarise = NULL,
                        check.only = FALSE, target.reps = NULL,
-                       warning_details = FALSE, error_details = TRUE, gc = FALSE){
+                       warning_details = TRUE, error_details = TRUE,
+                       warn_mismatch = TRUE, gc = FALSE){
     if(!is.null(simobj)){
         has_stored_results <- !is.null(SimExtract(simobj, 'results'))
         design.id <- SimExtract(simobj, 'Design.ID')
@@ -303,10 +307,41 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
     errors.old <- errors
     warnings.old <- warnings
     design_names <- attr(readin[[1L]], "design_names")$design
+    if(warn_mismatch){
+        SIs <- lapply(readin.old, \(x) SimExtract(x, what='sessionInfo'))
+        sapply(1:length(SIs), \(i){
+            x <- SIs[[i]]
+            same <- identical(x[[1]], SIs[[1]][[1]])
+            if(!same){
+                warning("R build information not the same as first file. Printing mismatch", call.=FALSE)
+                cat(sprintf('\n------- Mismatch (%s): \n\n', filename[i]))
+                print(x[[1]])
+            }
+            pack <- SIs[[1]][[2]]$package
+            v1 <- SIs[[1]][[2]]$ondiskversion
+            v2 <- x[[2]]$ondiskversion[match(x[[2]]$package, pack)]
+            if(!all(v1 == v2)){
+                warning("Package versions mismatched from first file", call.=FALSE)
+                pick <- v1 != v2
+                print(dplyr::tibble(package=pack[pick],
+                      original=v1[pick], mismatched=v2[pick],
+                      original_file=filenames[1], mismatched_file=filenames[i]))
+            }
+        })
+    }
     errors_info <- lapply(readin.old, \(x) SimExtract(x, 'errors',
                                                       append=FALSE, fuzzy=FALSE))
+    errors_info <- lapply(readin.old, \(x) SimExtract(x, 'errors',
+                                                      append=FALSE, fuzzy=FALSE))
+    error_seeds <- warning_seeds <- NULL
+    error_seeds <- if(error_details)
+        dplyr::as_tibble(do.call(cbind,
+                            lapply(readin.old, \(x) SimExtract(x, 'error_seeds'))), .name_repair = 'minimal')
     warnings_info <- lapply(readin.old, \(x) SimExtract(x, 'warnings',
                                                         append=FALSE, fuzzy=FALSE))
+    warning_seeds <- if(warning_details)
+        dplyr::as_tibble(do.call(cbind,
+                                 lapply(readin.old, \(x) SimExtract(x, 'warning_seeds'))), .name_repair = 'minimal')
     for(j in unique.set.index){
         readin <- readin.old[which(j == set.index)]
         errors <- errors.old[which(j == set.index)]
@@ -402,10 +437,18 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
                     lapply(full_out, \(x) attr(x, 'extra_info')$stored_results))
             }
         }
-        if(error_details)
+        if(error_details){
             errors_info <- dplyr::bind_rows(errors_info)
-        if(warning_details)
+            if(length(errors_info))
+                errors_info <- dplyr::bind_rows(lapply(sort(unique(Design.ID)),
+                         \(x) colSums(errors_info[x == Design.ID, ], na.rm = TRUE)))
+        }
+        if(warning_details){
             warnings_info <- dplyr::bind_rows(warnings_info)
+            if(length(warnings_info))
+                warnings_info <- dplyr::bind_rows(lapply(sort(unique(Design.ID)),
+                         \(x) colSums(warnings_info[x == Design.ID, ], na.rm = TRUE)))
+        }
     }
     if(check.only){
         if(is.null(target.reps)) target.reps <- max(out$REPLICATIONS)
@@ -433,11 +476,15 @@ SimCollect <- function(dir=NULL, files = NULL, filename = NULL, simobj=NULL,
     extra_info1$total_elapsed_time <- sum(out$SIM_TIME)
     extra_info1$number_of_conditions <- nrow(out)
     extra_info1$ncores <- ncores
-    attr(out, 'extra_info') <- extra_info1
-    if(error_details)
+    if(error_details){
         attr(out, 'ERROR_msg') <- errors_info
-    if(warning_details)
+        extra_info1$error_seeds <- error_seeds
+    }
+    if(warning_details){
         attr(out, 'WARNING_msg') <- warnings_info
+        extra_info1$warning_seeds <- warning_seeds
+    }
+    attr(out, 'extra_info') <- extra_info1
     attr(out, "design_names") <- attr(readin[[1L]], "design_names")
     if(!is.null(filename)){
         message(sprintf('Writing combinded file from %i simulations to \"%s\"',

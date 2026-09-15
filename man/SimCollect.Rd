@@ -14,8 +14,9 @@ SimCollect(
   summarise = NULL,
   check.only = FALSE,
   target.reps = NULL,
-  warning_details = FALSE,
+  warning_details = TRUE,
   error_details = TRUE,
+  warn_mismatch = TRUE,
   gc = FALSE
 )
 
@@ -63,6 +64,9 @@ detected value from the collected set of replication information will be used}
 
 \item{error_details}{logical; include the aggregate of the errors to be extracted via
 \code{\link{SimExtract}}?}
+
+\item{warn_mismatch}{logical; print warning information if package versions or
+R build session/information mismatched?}
 
 \item{gc}{logical; explicitly call R's garbage collector \code{\link{gc}}? May help when
 memory is severely constrained during the file read-ins. Otherwise, the \code{select}

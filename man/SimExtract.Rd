@@ -48,6 +48,8 @@ SimExtract(object, what, fuzzy = TRUE, append = TRUE)
 
   \item{\code{'design'}}{ to extract the original design object}
 
+  \item{\code{'sessionInfo'}}{ to extract the sessionInfo}
+
   }
 
   Note that \code{'warning_seeds'} are not stored automatically in
