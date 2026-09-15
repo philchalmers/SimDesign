@@ -1,6 +1,9 @@
 # NEWS file for SimDesign
 
-## Changes in SimDesign 2.27
+## Changes in SimDesign 2.28
+
+- `descript()` returns name of object as variable identifier when input 
+  is a vector
 
 - Add `warn_mismatch` to `SimCollect()` to throw warning if packages or 
   R versions do not match across files, and set `warning_details = TRUE` by 

@@ -23,7 +23,8 @@
 #' and subsequently passed to \code{descript}.
 #'
 #' @param df typically a \code{data.frame} or \code{tibble}-like structure
-#'  containing the variables of interest
+#'  containing the variables of interest, though \code{vector} objects
+#'  can be supplied as well.
 #'
 #'  Note that \code{factor} and \code{character} vectors will be treated as
 #'  discrete observations, and by default are omitted from the computation
@@ -154,6 +155,10 @@
 #'            median= \(x) median(x, na.rm=TRUE))
 #' fmtcars |> descript(funs=funs2)
 #'
+#' # function works on vectors as well
+#' IQ <- rnorm(100, mean=100, sd=15) |> round()
+#' descript(IQ)
+#'
 descript <- function(df, funs=get_descriptFuns(), margin = NULL,
                      by_group=FALSE, discrete=FALSE, collapse=FALSE)
 {
@@ -167,8 +172,13 @@ descript <- function(df, funs=get_descriptFuns(), margin = NULL,
 		ret
 	}
 
-	if(!is.data.frame(suppressMessages(df)))
-		df <- as.data.frame(df)
+	objname <- NULL
+	if(!is.data.frame(suppressMessages(df))){
+	    objname <- deparse(substitute(df))
+	    df <- as.data.frame(df)
+	    if(ncol(df) == 1)
+	        colnames(df) <- objname
+	}
 
 	if(any(colnames(df) == 'VARIABLE'))
 	    stop('df cannot contain the name VARIABLE', call.=FALSE)
@@ -234,10 +244,8 @@ descript <- function(df, funs=get_descriptFuns(), margin = NULL,
 		    tmp2$id <- NULL
 		    out <- dplyr::as_tibble(data.frame(nms, tmp2))
 		}
-		if(by_group){
-		    # browser()
+		if(by_group)
 		    attr(out, 'discrete') <- TRUE
-		}
 		return(out)
 	}
 

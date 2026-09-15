@@ -18,7 +18,8 @@ get_descriptFuns()
 }
 \arguments{
 \item{df}{typically a \code{data.frame} or \code{tibble}-like structure
- containing the variables of interest
+ containing the variables of interest, though \code{vector} objects
+ can be supplied as well.
 
  Note that \code{factor} and \code{character} vectors will be treated as
  discrete observations, and by default are omitted from the computation
@@ -165,6 +166,10 @@ funs2 <- c(sfuns,
            trim_20 = \(x) mean(x, trim=.2, na.rm=TRUE),
            median= \(x) median(x, na.rm=TRUE))
 fmtcars |> descript(funs=funs2)
+
+# function works on vectors as well
+IQ <- rnorm(100, mean=100, sd=15) |> round()
+descript(IQ)
 
 }
 \seealso{
