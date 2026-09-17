@@ -22,6 +22,10 @@
 #' specifications are declared using \code{\link[dplyr]{group_by}}
 #' and subsequently passed to \code{descript}.
 #'
+#' Finally, should more verbs be required for data manipulation the \code{dplyr}
+#' package should be attached or indexed so that any missing verbs can be used
+#' directly.
+#'
 #' @param df typically a \code{data.frame} or \code{tibble}-like structure
 #'  containing the variables of interest, though \code{vector} objects
 #'  can be supplied as well.
@@ -46,13 +50,12 @@
 #'   \item{\code{n}}{number of non-missing observations}
 #'   \item{\code{mean}}{mean}
 #'   \item{\code{trim}}{trimmed mean (10\%)}
+#'   \item{\code{median}}{median}
 #'   \item{\code{sd}}{standard deviation}
+#'   \item{\code{IQR}}{interquartile range}
 #'   \item{\code{skew}}{skewness (from \code{e1701})}
 #'   \item{\code{kurt}}{kurtosis (from \code{e1071})}
 #'   \item{\code{min}}{minimum}
-#'   \item{\code{P25}}{25th percentile (a.k.a., 1st/lower quartile, Q1), returned from \code{\link{quantile}})}
-#'   \item{\code{P50}}{median (50th percentile)}
-#'   \item{\code{P75}}{75th percentile (a.k.a, 3rd/upper quartile, Q3), returned from \code{\link{quantile}})}
 #'   \item{\code{max}}{maximum}
 #'  }
 #'
@@ -149,10 +152,11 @@
 #' sfuns <- funs[c('n', 'mean', 'sd')] # subset
 #' fmtcars |> descript(funs=sfuns) # only n, miss, mean, and sd
 #'
-#' # add a new functions
+#' # add a new functions (20% trimmed mean, and 25/75th quantile for IQR)
 #' funs2 <- c(sfuns,
 #'            trim_20 = \(x) mean(x, trim=.2, na.rm=TRUE),
-#'            median= \(x) median(x, na.rm=TRUE))
+#'            P_25= \(x) quantile(x, .25, na.rm=TRUE),
+#'            P_75= \(x) quantile(x, .75, na.rm=TRUE))
 #' fmtcars |> descript(funs=funs2)
 #'
 #' # function works on vectors as well
@@ -299,13 +303,12 @@ get_descriptFuns <- function(){
     list(n        = function(x) sum(!is.na(x)),
          mean     = function(x) mean(x, na.rm=TRUE),
          trim     = function(x) mean(x, trim=.1, na.rm=TRUE),
+         median   = function(x) median(x, na.rm=TRUE),
          sd       = function(x) sd(x, na.rm=TRUE),
+         IQR      = function(x) IQR(x, na.rm=TRUE),
          skew     = function(x) e1071::skewness(x, na.rm=TRUE),
          kurt     = function(x) e1071::kurtosis(x, na.rm=TRUE),
          min      = function(x) min(x, na.rm=TRUE),
-         P25      = function(x) quantile(x, .25, na.rm=TRUE),
-         P50      = function(x) median(x, na.rm=TRUE),
-         P75      = function(x) quantile(x, .75, na.rm=TRUE),
          max      = function(x) max(x, na.rm=TRUE))
 }
 
