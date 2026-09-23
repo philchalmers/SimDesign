@@ -48,6 +48,7 @@
 #'
 #'  \describe{
 #'   \item{\code{n}}{number of non-missing observations}
+#'   \item{\code{miss}}{number of missing observations}
 #'   \item{\code{mean}}{mean}
 #'   \item{\code{trim}}{trimmed mean (10\%)}
 #'   \item{\code{median}}{median}
@@ -301,6 +302,7 @@ descript <- function(df, funs=get_descriptFuns(), margin = NULL,
 #' @rdname descript
 get_descriptFuns <- function(){
     list(n        = function(x) sum(!is.na(x)),
+         miss     = function(x) ifelse(any(is.na(x)), sum(is.na(x)), NA),
          mean     = function(x) mean(x, na.rm=TRUE),
          trim     = function(x) mean(x, trim=.1, na.rm=TRUE),
          median   = function(x) median(x, na.rm=TRUE),

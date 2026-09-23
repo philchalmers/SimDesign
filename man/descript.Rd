@@ -35,6 +35,7 @@ get_descriptFuns()
 
  \describe{
   \item{\code{n}}{number of non-missing observations}
+  \item{\code{miss}}{number of missing observations}
   \item{\code{mean}}{mean}
   \item{\code{trim}}{trimmed mean (10\%)}
   \item{\code{median}}{median}
