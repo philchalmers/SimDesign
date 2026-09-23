@@ -48,7 +48,7 @@
 #'
 #'  \describe{
 #'   \item{\code{n}}{number of non-missing observations}
-#'   \item{\code{miss}}{number of missing observations}
+#'   \item{\code{miss}}{number of missing observations (dropped by default if no missing present)}
 #'   \item{\code{mean}}{mean}
 #'   \item{\code{trim}}{trimmed mean (10\%)}
 #'   \item{\code{median}}{median}
@@ -75,6 +75,9 @@
 #' @param by_group logical; when \code{group_by()} were used to define the conditioning levels,
 #'   should the output from \code{by()} be organized by these group levels or by variable
 #'   names? Only applicable when more than one variable is being described
+#'
+#' @param drop.miss logical; if no missing values in the dataset should the element
+#'   \code{'miss'} be removed from the \code{fun} list?
 #'
 #' @importFrom e1071 skewness kurtosis
 #'
@@ -165,7 +168,8 @@
 #' descript(IQ)
 #'
 descript <- function(df, funs=get_descriptFuns(), margin = NULL,
-                     by_group=FALSE, discrete=FALSE, collapse=FALSE)
+                     by_group=FALSE, discrete=FALSE, collapse=FALSE,
+                     drop.miss = TRUE)
 {
 	discrete.fun <- function(x){
 		tab <- table(x, useNA = "ifany")
@@ -183,6 +187,14 @@ descript <- function(df, funs=get_descriptFuns(), margin = NULL,
 	    df <- as.data.frame(df)
 	    if(ncol(df) == 1)
 	        colnames(df) <- objname
+	}
+
+	if(drop.miss){
+	    pick <- colnames(df)
+	    if(length(dplyr::group_keys(df)))
+	        pick <- pick[!(pick %in% colnames(dplyr::group_keys(df)))]
+	    if(!any(is.na(df[,pick, drop=FALSE])) && !is.null(funs$miss))
+	        funs$miss <- NULL
 	}
 
 	if(any(colnames(df) == 'VARIABLE'))
@@ -217,7 +229,8 @@ descript <- function(df, funs=get_descriptFuns(), margin = NULL,
 	        names(ret) <- vars
 	        for(i in 1:length(vars)){
 	            df0 <- df[c(colnames(groupkeys), vars[i])]
-	            ret[[i]] <- descript(df0, funs=funs, discrete=discrete, by_group=TRUE)
+	            ret[[i]] <- descript(df0, funs=funs, discrete=discrete,
+	                                 by_group=TRUE, drop.miss=FALSE)
 	        }
 	        attr(ret, 'dim') <- length(vars)
 	        attr(ret, 'dimnames') <- list(VARIABLE=vars)
@@ -234,7 +247,7 @@ descript <- function(df, funs=get_descriptFuns(), margin = NULL,
 		pick <- setdiff(colnames(df), names(group))
 		df <- df[ ,pick,drop=FALSE]
 		out <- suppressWarnings(by(df, group, descript, funs=funs,
-								   discrete=discrete, simplify=FALSE))
+								   discrete=discrete, simplify=FALSE, drop.miss=FALSE))
 		class(out) <- c('bybye', class(out))
 		if(!discrete && nrow(out[[1]]) == 1){
 		    out <- do.call(rbind, out)

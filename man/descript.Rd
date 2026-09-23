@@ -11,7 +11,8 @@ descript(
   margin = NULL,
   by_group = FALSE,
   discrete = FALSE,
-  collapse = FALSE
+  collapse = FALSE,
+  drop.miss = TRUE
 )
 
 get_descriptFuns()
@@ -35,7 +36,7 @@ get_descriptFuns()
 
  \describe{
   \item{\code{n}}{number of non-missing observations}
-  \item{\code{miss}}{number of missing observations}
+  \item{\code{miss}}{number of missing observations (dropped by default if no missing present)}
   \item{\code{mean}}{mean}
   \item{\code{trim}}{trimmed mean (10\%)}
   \item{\code{median}}{median}
@@ -66,6 +67,9 @@ in creating cross-tabulated count/proportion information see \code{\link{xtabs}}
 \item{collapse}{logical; should the result be returned as a list output
 structured using \code{\link{by}} or as a \code{tibble}?
 Default is \code{FALSE}}
+
+\item{drop.miss}{logical; if no missing values in the dataset should the element
+\code{'miss'} be removed from the \code{fun} list?}
 }
 \description{
 Function returns univariate data summaries for each variable supplied. For presentation
