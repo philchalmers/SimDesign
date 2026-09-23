@@ -20,7 +20,8 @@ descript(
   margin = NULL,
   by_group = FALSE,
   discrete = FALSE,
-  collapse = FALSE
+  collapse = FALSE,
+  drop.miss = TRUE
 )
 
 get_descriptFuns()
@@ -56,7 +57,8 @@ get_descriptFuns()
 
   `miss`
 
-  :   number of missing observations
+  :   number of missing observations (dropped by default if no missing
+      present)
 
   `mean`
 
@@ -127,6 +129,11 @@ get_descriptFuns()
   using [`by`](https://rdrr.io/r/base/by.html) or as a `tibble`? Default
   is `FALSE`
 
+- drop.miss:
+
+  logical; if no missing values in the dataset should the element
+  `'miss'` be removed from the `fun` list?
+
 ## Details
 
 The purpose of this function is to provide a more pipe-friendly API for
@@ -175,34 +182,33 @@ fmtcars <- within(mtcars, {
 
 # with and without factor variables
 mtcars |> descript()
-#> # A tibble: 11 × 12
-#>    VARIABLE     n  miss    mean    trim median      sd    IQR   skew    kurt
-#>    <fct>    <dbl> <dbl>   <dbl>   <dbl>  <dbl>   <dbl>  <dbl>  <dbl>   <dbl>
-#>  1 mpg         32    NA  20.1    19.7    19.2    6.03    7.38  0.611 -0.373 
-#>  2 cyl         32    NA   6.19    6.23    6      1.79    4    -0.175 -1.76  
-#>  3 disp        32    NA 231.    223.    196.   124.    205.    0.382 -1.21  
-#>  4 hp          32    NA 147.    141.    123     68.6    83.5   0.726 -0.136 
-#>  5 drat        32    NA   3.60    3.58    3.70   0.535   0.84  0.266 -0.715 
-#>  6 wt          32    NA   3.22    3.15    3.32   0.978   1.03  0.423 -0.0227
-#>  7 qsec        32    NA  17.8    17.8    17.7    1.79    2.01  0.369  0.335 
-#>  8 vs          32    NA   0.438   0.423   0      0.504   1     0.240 -2.00  
-#>  9 am          32    NA   0.406   0.385   0      0.499   1     0.364 -1.92  
-#> 10 gear        32    NA   3.69    3.62    4      0.738   1     0.529 -1.07  
-#> 11 carb        32    NA   2.81    2.65    2      1.62    2     1.05   1.26  
-#> # ℹ 2 more variables: min <dbl>, max <dbl>
-fmtcars |> descript()               # factors/discrete vars omitted
-#> # A tibble: 8 × 12
-#>   VARIABLE     n  miss   mean   trim median      sd    IQR  skew    kurt   min
-#>   <fct>    <dbl> <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl> <dbl>   <dbl> <dbl>
-#> 1 mpg         32    NA  20.1   19.7   19.2    6.03    7.38 0.611 -0.373  10.4 
-#> 2 disp        32    NA 231.   223.   196.   124.    205.   0.382 -1.21   71.1 
-#> 3 hp          32    NA 147.   141.   123     68.6    83.5  0.726 -0.136  52   
-#> 4 drat        32    NA   3.60   3.58   3.70   0.535   0.84 0.266 -0.715   2.76
-#> 5 wt          32    NA   3.22   3.15   3.32   0.978   1.03 0.423 -0.0227  1.51
-#> 6 qsec        32    NA  17.8   17.8   17.7    1.79    2.01 0.369  0.335  14.5 
-#> 7 gear        32    NA   3.69   3.62   4      0.738   1    0.529 -1.07    3   
-#> 8 carb        32    NA   2.81   2.65   2      1.62    2    1.05   1.26    1   
+#> # A tibble: 11 × 11
+#>    VARIABLE     n    mean    trim median      sd    IQR   skew    kurt   min
+#>    <fct>    <dbl>   <dbl>   <dbl>  <dbl>   <dbl>  <dbl>  <dbl>   <dbl> <dbl>
+#>  1 mpg         32  20.1    19.7    19.2    6.03    7.38  0.611 -0.373  10.4 
+#>  2 cyl         32   6.19    6.23    6      1.79    4    -0.175 -1.76    4   
+#>  3 disp        32 231.    223.    196.   124.    205.    0.382 -1.21   71.1 
+#>  4 hp          32 147.    141.    123     68.6    83.5   0.726 -0.136  52   
+#>  5 drat        32   3.60    3.58    3.70   0.535   0.84  0.266 -0.715   2.76
+#>  6 wt          32   3.22    3.15    3.32   0.978   1.03  0.423 -0.0227  1.51
+#>  7 qsec        32  17.8    17.8    17.7    1.79    2.01  0.369  0.335  14.5 
+#>  8 vs          32   0.438   0.423   0      0.504   1     0.240 -2.00    0   
+#>  9 am          32   0.406   0.385   0      0.499   1     0.364 -1.92    0   
+#> 10 gear        32   3.69    3.62    4      0.738   1     0.529 -1.07    3   
+#> 11 carb        32   2.81    2.65    2      1.62    2     1.05   1.26    1   
 #> # ℹ 1 more variable: max <dbl>
+fmtcars |> descript()               # factors/discrete vars omitted
+#> # A tibble: 8 × 11
+#>   VARIABLE     n   mean   trim median      sd    IQR  skew    kurt   min    max
+#>   <fct>    <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl> <dbl>   <dbl> <dbl>  <dbl>
+#> 1 mpg         32  20.1   19.7   19.2    6.03    7.38 0.611 -0.373  10.4   33.9 
+#> 2 disp        32 231.   223.   196.   124.    205.   0.382 -1.21   71.1  472   
+#> 3 hp          32 147.   141.   123     68.6    83.5  0.726 -0.136  52    335   
+#> 4 drat        32   3.60   3.58   3.70   0.535   0.84 0.266 -0.715   2.76   4.93
+#> 5 wt          32   3.22   3.15   3.32   0.978   1.03 0.423 -0.0227  1.51   5.42
+#> 6 qsec        32  17.8   17.8   17.7    1.79    2.01 0.369  0.335  14.5   22.9 
+#> 7 gear        32   3.69   3.62   4      0.738   1    0.529 -1.07    3      5   
+#> 8 carb        32   2.81   2.65   2      1.62    2    1.05   1.26    1      8   
 fmtcars |> descript(discrete=TRUE)  # discrete variables only
 #> VARIABLE: cyl
 #> 
@@ -229,274 +235,265 @@ fmtcars |> descript(discrete=TRUE)  # discrete variables only
 
 # usual pipe chaining
 fmtcars |> select(mpg, wt) |> descript()
-#> # A tibble: 2 × 12
-#>   VARIABLE     n  miss  mean  trim median    sd   IQR  skew    kurt   min   max
-#>   <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl>
-#> 1 mpg         32    NA 20.1  19.7   19.2  6.03   7.38 0.611 -0.373  10.4  33.9 
-#> 2 wt          32    NA  3.22  3.15   3.32 0.978  1.03 0.423 -0.0227  1.51  5.42
+#> # A tibble: 2 × 11
+#>   VARIABLE     n  mean  trim median    sd   IQR  skew    kurt   min   max
+#>   <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl>
+#> 1 mpg         32 20.1  19.7   19.2  6.03   7.38 0.611 -0.373  10.4  33.9 
+#> 2 wt          32  3.22  3.15   3.32 0.978  1.03 0.423 -0.0227  1.51  5.42
 fmtcars |> subset(mpg > 20) |> select(mpg, wt) |> descript()
-#> # A tibble: 2 × 12
-#>   VARIABLE     n  miss  mean  trim median    sd   IQR    skew  kurt   min   max
-#>   <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl> <dbl>
-#> 1 mpg         14    NA 25.5  25.2   23.6  4.60  8.2    0.553  -1.38 21    33.9 
-#> 2 wt          14    NA  2.42  2.43   2.39 0.577 0.865 -0.0349 -1.47  1.51  3.22
+#> # A tibble: 2 × 11
+#>   VARIABLE     n  mean  trim median    sd   IQR    skew  kurt   min   max
+#>   <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl> <dbl>
+#> 1 mpg         14 25.5  25.2   23.6  4.60  8.2    0.553  -1.38 21    33.9 
+#> 2 wt          14  2.42  2.43   2.39 0.577 0.865 -0.0349 -1.47  1.51  3.22
 
 # conditioning with group_by(), printing across each variable
 fmtcars |> group_by(cyl) |> descript()
-#> # A tibble: 3 × 13
-#>   cyl   VARIABLE     n  miss  mean  trim median    sd   IQR   skew   kurt   min
-#> * <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl>
-#> 1 4     mpg         11    NA  26.7  26.4   26    4.51  7.6   0.259 -1.65   21.4
-#> 2 6     mpg          7    NA  19.7  19.7   19.7  1.45  2.35 -0.158 -1.91   17.8
-#> 3 8     mpg         14    NA  15.1  15.2   15.2  2.56  1.85 -0.363 -0.566  10.4
+#> # A tibble: 3 × 12
+#>   cyl   VARIABLE     n  mean  trim median    sd   IQR   skew   kurt   min   max
+#> * <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl>
+#> 1 4     mpg         11  26.7  26.4   26    4.51  7.6   0.259 -1.65   21.4  33.9
+#> 2 6     mpg          7  19.7  19.7   19.7  1.45  2.35 -0.158 -1.91   17.8  21.4
+#> 3 8     mpg         14  15.1  15.2   15.2  2.56  1.85 -0.363 -0.566  10.4  19.2
+#> 
+#> ------------------------------------------------------------
+#>  
+#> # A tibble: 3 × 12
+#>   cyl   VARIABLE     n  mean  trim median    sd   IQR  skew  kurt   min   max
+#> * <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1 4     disp        11  105.  104.   108   26.9  41.8 0.121 -1.64  71.1  147.
+#> 2 6     disp         7  183.  183.   168.  41.6  36.3 0.795 -1.23 145    258 
+#> 3 8     disp        14  353.  350.   350.  67.8  88.2 0.453 -1.26 276.   472 
+#> 
+#> ------------------------------------------------------------
+#>  
+#> # A tibble: 3 × 12
+#>   cyl   VARIABLE     n  mean  trim median    sd   IQR    skew    kurt   min
+#> * <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>   <dbl> <dbl>
+#> 1 4     hp          11  82.6  82.7    91   20.9  30.5 0.00626 -1.71      52
+#> 2 6     hp           7 122.  122.    110   24.3  13   1.36     0.249    105
+#> 3 8     hp          14 209.  204.    192.  51.0  65   0.909    0.0921   150
 #> # ℹ 1 more variable: max <dbl>
 #> 
 #> ------------------------------------------------------------
 #>  
-#> # A tibble: 3 × 13
-#>   cyl   VARIABLE     n  miss  mean  trim median    sd   IQR  skew  kurt   min
-#> * <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1 4     disp        11    NA  105.  104.   108   26.9  41.8 0.121 -1.64  71.1
-#> 2 6     disp         7    NA  183.  183.   168.  41.6  36.3 0.795 -1.23 145  
-#> 3 8     disp        14    NA  353.  350.   350.  67.8  88.2 0.453 -1.26 276. 
-#> # ℹ 1 more variable: max <dbl>
+#> # A tibble: 3 × 12
+#>   cyl   VARIABLE     n  mean  trim median    sd   IQR   skew   kurt   min   max
+#> * <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl>
+#> 1 4     drat        11  4.07  4.02   4.08 0.365 0.355  0.998  0.123  3.69  4.93
+#> 2 6     drat         7  3.59  3.59   3.9  0.476 0.56  -0.736 -1.40   2.76  3.92
+#> 3 8     drat        14  3.23  3.19   3.12 0.372 0.155  1.34   1.08   2.76  4.22
 #> 
 #> ------------------------------------------------------------
 #>  
-#> # A tibble: 3 × 13
-#>   cyl   VARIABLE     n  miss  mean  trim median    sd   IQR    skew    kurt
-#> * <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>   <dbl>
-#> 1 4     hp          11    NA  82.6  82.7    91   20.9  30.5 0.00626 -1.71  
-#> 2 6     hp           7    NA 122.  122.    110   24.3  13   1.36     0.249 
-#> 3 8     hp          14    NA 209.  204.    192.  51.0  65   0.909    0.0921
-#> # ℹ 2 more variables: min <dbl>, max <dbl>
+#> # A tibble: 3 × 12
+#>   cyl   VARIABLE     n  mean  trim median    sd   IQR   skew   kurt   min   max
+#> * <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl>
+#> 1 4     wt          11  2.29  2.27   2.2  0.570 0.737  0.300 -1.36   1.51  3.19
+#> 2 6     wt           7  3.12  3.12   3.22 0.356 0.618 -0.222 -1.98   2.62  3.46
+#> 3 8     wt          14  4.00  3.95   3.76 0.759 0.481  0.988 -0.713  3.17  5.42
 #> 
 #> ------------------------------------------------------------
 #>  
-#> # A tibble: 3 × 13
-#>   cyl   VARIABLE     n  miss  mean  trim median    sd   IQR   skew   kurt   min
-#> * <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl>
-#> 1 4     drat        11    NA  4.07  4.02   4.08 0.365 0.355  0.998  0.123  3.69
-#> 2 6     drat         7    NA  3.59  3.59   3.9  0.476 0.56  -0.736 -1.40   2.76
-#> 3 8     drat        14    NA  3.23  3.19   3.12 0.372 0.155  1.34   1.08   2.76
-#> # ℹ 1 more variable: max <dbl>
+#> # A tibble: 3 × 12
+#>   cyl   VARIABLE     n  mean  trim median    sd   IQR   skew    kurt   min   max
+#> * <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>   <dbl> <dbl> <dbl>
+#> 1 4     qsec        11  19.1  19.0   18.9  1.68  1.39  0.550 -0.0207  16.7  22.9
+#> 2 6     qsec         7  18.0  18.0   18.3  1.71  2.43 -0.125 -1.75    15.5  20.2
+#> 3 8     qsec        14  16.8  16.9   17.2  1.20  1.46 -0.805 -0.919   14.5  18  
 #> 
 #> ------------------------------------------------------------
 #>  
-#> # A tibble: 3 × 13
-#>   cyl   VARIABLE     n  miss  mean  trim median    sd   IQR   skew   kurt   min
-#> * <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl>
-#> 1 4     wt          11    NA  2.29  2.27   2.2  0.570 0.737  0.300 -1.36   1.51
-#> 2 6     wt           7    NA  3.12  3.12   3.22 0.356 0.618 -0.222 -1.98   2.62
-#> 3 8     wt          14    NA  4.00  3.95   3.76 0.759 0.481  0.988 -0.713  3.17
-#> # ℹ 1 more variable: max <dbl>
+#> # A tibble: 3 × 12
+#>   cyl   VARIABLE     n  mean  trim median    sd   IQR  skew    kurt   min   max
+#> * <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl>
+#> 1 4     gear        11  4.09  4.11      4 0.539   0   0.115 -0.0106     3     5
+#> 2 6     gear         7  3.86  3.86      4 0.690   0.5 0.106 -1.24       3     5
+#> 3 8     gear        14  3.29  3.17      3 0.726   0   1.83   1.45       3     5
 #> 
 #> ------------------------------------------------------------
 #>  
-#> # A tibble: 3 × 13
-#>   cyl   VARIABLE     n  miss  mean  trim median    sd   IQR   skew    kurt   min
-#> * <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>   <dbl> <dbl>
-#> 1 4     qsec        11    NA  19.1  19.0   18.9  1.68  1.39  0.550 -0.0207  16.7
-#> 2 6     qsec         7    NA  18.0  18.0   18.3  1.71  2.43 -0.125 -1.75    15.5
-#> 3 8     qsec        14    NA  16.8  16.9   17.2  1.20  1.46 -0.805 -0.919   14.5
-#> # ℹ 1 more variable: max <dbl>
-#> 
-#> ------------------------------------------------------------
-#>  
-#> # A tibble: 3 × 13
-#>   cyl   VARIABLE     n  miss  mean  trim median    sd   IQR  skew    kurt   min
-#> * <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl>
-#> 1 4     gear        11    NA  4.09  4.11      4 0.539   0   0.115 -0.0106     3
-#> 2 6     gear         7    NA  3.86  3.86      4 0.690   0.5 0.106 -1.24       3
-#> 3 8     gear        14    NA  3.29  3.17      3 0.726   0   1.83   1.45       3
-#> # ℹ 1 more variable: max <dbl>
-#> 
-#> ------------------------------------------------------------
-#>  
-#> # A tibble: 3 × 13
-#>   cyl   VARIABLE     n  miss  mean  trim median    sd   IQR   skew  kurt   min
-#> * <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>
-#> 1 4     carb        11    NA  1.55  1.56    2   0.522  1    -0.158 -2.15     1
-#> 2 6     carb         7    NA  3.43  3.43    4   1.81   1.5  -0.261 -1.50     1
-#> 3 8     carb        14    NA  3.5   3.25    3.5 1.56   1.75  1.48   2.24     2
-#> # ℹ 1 more variable: max <dbl>
+#> # A tibble: 3 × 12
+#>   cyl   VARIABLE     n  mean  trim median    sd   IQR   skew  kurt   min   max
+#> * <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl>
+#> 1 4     carb        11  1.55  1.56    2   0.522  1    -0.158 -2.15     1     2
+#> 2 6     carb         7  3.43  3.43    4   1.81   1.5  -0.261 -1.50     1     6
+#> 3 8     carb        14  3.5   3.25    3.5 1.56   1.75  1.48   2.24     2     8
 fmtcars |> group_by(cyl, am) |> descript()
-#> # A tibble: 6 × 14
-#>   cyl   am    VARIABLE     n  miss  mean  trim median    sd   IQR    skew   kurt
-#>   <fct> <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>  <dbl>
-#> 1 4     auto… mpg          3    NA  22.9  22.9   22.8 1.45  1.45   0.0685 -2.33 
-#> 2 4     manu… mpg          4    NA  19.1  19.1   18.6 1.63  1.72   0.482  -1.91 
-#> 3 6     auto… mpg         12    NA  15.0  15.1   15.2 2.77  2.57  -0.284  -0.964
-#> 4 6     manu… mpg          8    NA  28.1  28.1   28.8 4.48  5.7   -0.208  -1.66 
-#> 5 8     auto… mpg          3    NA  20.6  20.6   21   0.751 0.650 -0.385  -2.33 
-#> 6 8     manu… mpg          2    NA  15.4  15.4   15.4 0.566 0.400  0      -2.75 
+#> # A tibble: 6 × 13
+#>   cyl   am    VARIABLE     n  mean  trim median    sd   IQR    skew   kurt   min
+#>   <fct> <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl>
+#> 1 4     auto… mpg          3  22.9  22.9   22.8 1.45  1.45   0.0685 -2.33   21.5
+#> 2 4     manu… mpg          4  19.1  19.1   18.6 1.63  1.72   0.482  -1.91   17.8
+#> 3 6     auto… mpg         12  15.0  15.1   15.2 2.77  2.57  -0.284  -0.964  10.4
+#> 4 6     manu… mpg          8  28.1  28.1   28.8 4.48  5.7   -0.208  -1.66   21.4
+#> 5 8     auto… mpg          3  20.6  20.6   21   0.751 0.650 -0.385  -2.33   19.7
+#> 6 8     manu… mpg          2  15.4  15.4   15.4 0.566 0.400  0      -2.75   15  
+#> # ℹ 1 more variable: max <dbl>
+#> 
+#> ------------------------------------------------------------
+#>  
+#> # A tibble: 6 × 13
+#>   cyl   am      VARIABLE     n  mean  trim median    sd   IQR   skew  kurt   min
+#>   <fct> <fct>   <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>
+#> 1 4     automa… disp         3 136.  136.   141.  14.0   13.3 -0.309 -2.33 120. 
+#> 2 4     manual  disp         4 205.  205.   196.  44.7   65.6  0.168 -2.25 168. 
+#> 3 6     automa… disp        12 358.  354.   355   71.8  113.   0.303 -1.51 276. 
+#> 4 6     manual  disp         8  93.6  93.6   87.0 20.5   33.1  0.276 -1.89  71.1
+#> 5 8     automa… disp         3 155   155    160    8.66   7.5 -0.385 -2.33 145  
+#> 6 8     manual  disp         2 326   326    326   35.4   25    0     -2.75 301  
+#> # ℹ 1 more variable: max <dbl>
+#> 
+#> ------------------------------------------------------------
+#>  
+#> # A tibble: 6 × 13
+#>   cyl   am     VARIABLE     n  mean  trim median    sd   IQR    skew  kurt   min
+#>   <fct> <fct>  <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl>
+#> 1 4     autom… hp           3  84.7  84.7   95   19.7   17.5 -0.380  -2.33    62
+#> 2 4     manual hp           4 115.  115.   116.   9.18  14.2 -0.0940 -2.33   105
+#> 3 6     autom… hp          12 194.  194.   180   33.4   43.8  0.279  -1.44   150
+#> 4 6     manual hp           8  81.9  81.9   78.5 22.7   31.2  0.137  -1.81    52
+#> 5 8     autom… hp           3 132.  132.   110   37.5   32.5  0.385  -2.33   110
+#> 6 8     manual hp           2 300.  300.   300.  50.2   35.5  0      -2.75   264
+#> # ℹ 1 more variable: max <dbl>
+#> 
+#> ------------------------------------------------------------
+#>  
+#> # A tibble: 6 × 13
+#>   cyl   am    VARIABLE     n  mean  trim median    sd   IQR    skew   kurt   min
+#>   <fct> <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl>
+#> 1 4     auto… drat         3  3.77  3.77   3.7  0.13  0.115  0.382  -2.33   3.69
+#> 2 4     manu… drat         4  3.42  3.42   3.5  0.592 0.92  -0.0926 -2.33   2.76
+#> 3 6     auto… drat        12  3.12  3.10   3.08 0.230 0.113  1.17    1.64   2.76
+#> 4 6     manu… drat         8  4.18  4.18   4.10 0.364 0.25   0.828  -0.472  3.77
+#> 5 8     auto… drat         3  3.81  3.81   3.9  0.162 0.140 -0.385  -2.33   3.62
+#> 6 8     manu… drat         2  3.88  3.88   3.88 0.481 0.34   0      -2.75   3.54
+#> # ℹ 1 more variable: max <dbl>
+#> 
+#> ------------------------------------------------------------
+#>  
+#> # A tibble: 6 × 13
+#>   cyl   am        VARIABLE     n  mean  trim median    sd    IQR      skew  kurt
+#>   <fct> <fct>     <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl>     <dbl> <dbl>
+#> 1 4     automatic wt           3  2.94  2.94   3.15 0.408 0.362  -3.81e- 1 -2.33
+#> 2 4     manual    wt           4  3.39  3.39   3.44 0.116 0.0613 -7.35e- 1 -1.70
+#> 3 6     automatic wt          12  4.10  4.04   3.81 0.768 0.808   8.54e- 1 -1.14
+#> 4 6     manual    wt           8  2.04  2.04   2.04 0.409 0.45    3.49e- 1 -1.15
+#> 5 8     automatic wt           3  2.76  2.76   2.77 0.128 0.127  -1.15e- 1 -2.33
+#> 6 8     manual    wt           2  3.37  3.37   3.37 0.283 0.200  -1.15e-15 -2.75
 #> # ℹ 2 more variables: min <dbl>, max <dbl>
 #> 
 #> ------------------------------------------------------------
 #>  
-#> # A tibble: 6 × 14
-#>   cyl   am      VARIABLE     n  miss  mean  trim median    sd   IQR   skew  kurt
-#>   <fct> <fct>   <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl> <dbl>
-#> 1 4     automa… disp         3    NA 136.  136.   141.  14.0   13.3 -0.309 -2.33
-#> 2 4     manual  disp         4    NA 205.  205.   196.  44.7   65.6  0.168 -2.25
-#> 3 6     automa… disp        12    NA 358.  354.   355   71.8  113.   0.303 -1.51
-#> 4 6     manual  disp         8    NA  93.6  93.6   87.0 20.5   33.1  0.276 -1.89
-#> 5 8     automa… disp         3    NA 155   155    160    8.66   7.5 -0.385 -2.33
-#> 6 8     manual  disp         2    NA 326   326    326   35.4   25    0     -2.75
+#> # A tibble: 6 × 13
+#>   cyl   am      VARIABLE     n  mean  trim median     sd    IQR      skew   kurt
+#>   <fct> <fct>   <fct>    <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl>     <dbl>  <dbl>
+#> 1 4     automa… qsec         3  21.0  21.0   20.0 1.67   1.45    3.85e- 1 -2.33 
+#> 2 4     manual  qsec         4  19.2  19.2   19.2 0.816  0.885   1.05e- 1 -2.02 
+#> 3 6     automa… qsec        12  17.1  17.2   17.4 0.802  0.672  -9.33e- 1 -0.338
+#> 4 6     manual  qsec         8  18.4  18.4   18.6 1.13   0.927  -4.28e- 1 -1.39 
+#> 5 8     automa… qsec         3  16.3  16.3   16.5 0.769  0.760  -1.68e- 1 -2.33 
+#> 6 8     manual  qsec         2  14.6  14.6   14.6 0.0707 0.0500 -1.89e-14 -2.75 
 #> # ℹ 2 more variables: min <dbl>, max <dbl>
 #> 
 #> ------------------------------------------------------------
 #>  
-#> # A tibble: 6 × 14
-#>   cyl   am     VARIABLE     n  miss  mean  trim median    sd   IQR    skew  kurt
-#>   <fct> <fct>  <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl> <dbl>
-#> 1 4     autom… hp           3    NA  84.7  84.7   95   19.7   17.5 -0.380  -2.33
-#> 2 4     manual hp           4    NA 115.  115.   116.   9.18  14.2 -0.0940 -2.33
-#> 3 6     autom… hp          12    NA 194.  194.   180   33.4   43.8  0.279  -1.44
-#> 4 6     manual hp           8    NA  81.9  81.9   78.5 22.7   31.2  0.137  -1.81
-#> 5 8     autom… hp           3    NA 132.  132.   110   37.5   32.5  0.385  -2.33
-#> 6 8     manual hp           2    NA 300.  300.   300.  50.2   35.5  0      -2.75
-#> # ℹ 2 more variables: min <dbl>, max <dbl>
+#> # A tibble: 6 × 13
+#>   cyl   am    VARIABLE     n  mean  trim median    sd   IQR    skew   kurt   min
+#>   <fct> <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl>
+#> 1 4     auto… gear         3  3.67  3.67    4   0.577  0.5   -0.385  -2.33     3
+#> 2 4     manu… gear         4  3.5   3.5     3.5 0.577  1      0      -2.44     3
+#> 3 6     auto… gear        12  3     3       3   0      0    NaN     NaN        3
+#> 4 6     manu… gear         8  4.25  4.25    4   0.463  0.25   0.945  -1.21     4
+#> 5 8     auto… gear         3  4.33  4.33    4   0.577  0.5    0.385  -2.33     4
+#> 6 8     manu… gear         2  5     5       5   0      0    NaN     NaN        5
+#> # ℹ 1 more variable: max <dbl>
 #> 
 #> ------------------------------------------------------------
 #>  
-#> # A tibble: 6 × 14
-#>   cyl   am    VARIABLE     n  miss  mean  trim median    sd   IQR    skew   kurt
-#>   <fct> <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>  <dbl>
-#> 1 4     auto… drat         3    NA  3.77  3.77   3.7  0.13  0.115  0.382  -2.33 
-#> 2 4     manu… drat         4    NA  3.42  3.42   3.5  0.592 0.92  -0.0926 -2.33 
-#> 3 6     auto… drat        12    NA  3.12  3.10   3.08 0.230 0.113  1.17    1.64 
-#> 4 6     manu… drat         8    NA  4.18  4.18   4.10 0.364 0.25   0.828  -0.472
-#> 5 8     auto… drat         3    NA  3.81  3.81   3.9  0.162 0.140 -0.385  -2.33 
-#> 6 8     manu… drat         2    NA  3.88  3.88   3.88 0.481 0.34   0      -2.75 
-#> # ℹ 2 more variables: min <dbl>, max <dbl>
-#> 
-#> ------------------------------------------------------------
-#>  
-#> # A tibble: 6 × 14
-#>   cyl   am        VARIABLE     n  miss  mean  trim median    sd    IQR      skew
-#>   <fct> <fct>     <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl>     <dbl>
-#> 1 4     automatic wt           3    NA  2.94  2.94   3.15 0.408 0.362  -3.81e- 1
-#> 2 4     manual    wt           4    NA  3.39  3.39   3.44 0.116 0.0613 -7.35e- 1
-#> 3 6     automatic wt          12    NA  4.10  4.04   3.81 0.768 0.808   8.54e- 1
-#> 4 6     manual    wt           8    NA  2.04  2.04   2.04 0.409 0.45    3.49e- 1
-#> 5 8     automatic wt           3    NA  2.76  2.76   2.77 0.128 0.127  -1.15e- 1
-#> 6 8     manual    wt           2    NA  3.37  3.37   3.37 0.283 0.200  -1.15e-15
-#> # ℹ 3 more variables: kurt <dbl>, min <dbl>, max <dbl>
-#> 
-#> ------------------------------------------------------------
-#>  
-#> # A tibble: 6 × 14
-#>   cyl   am       VARIABLE     n  miss  mean  trim median     sd    IQR      skew
-#>   <fct> <fct>    <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl>     <dbl>
-#> 1 4     automat… qsec         3    NA  21.0  21.0   20.0 1.67   1.45    3.85e- 1
-#> 2 4     manual   qsec         4    NA  19.2  19.2   19.2 0.816  0.885   1.05e- 1
-#> 3 6     automat… qsec        12    NA  17.1  17.2   17.4 0.802  0.672  -9.33e- 1
-#> 4 6     manual   qsec         8    NA  18.4  18.4   18.6 1.13   0.927  -4.28e- 1
-#> 5 8     automat… qsec         3    NA  16.3  16.3   16.5 0.769  0.760  -1.68e- 1
-#> 6 8     manual   qsec         2    NA  14.6  14.6   14.6 0.0707 0.0500 -1.89e-14
-#> # ℹ 3 more variables: kurt <dbl>, min <dbl>, max <dbl>
-#> 
-#> ------------------------------------------------------------
-#>  
-#> # A tibble: 6 × 14
-#>   cyl   am    VARIABLE     n  miss  mean  trim median    sd   IQR    skew   kurt
-#>   <fct> <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>  <dbl>
-#> 1 4     auto… gear         3    NA  3.67  3.67    4   0.577  0.5   -0.385  -2.33
-#> 2 4     manu… gear         4    NA  3.5   3.5     3.5 0.577  1      0      -2.44
-#> 3 6     auto… gear        12    NA  3     3       3   0      0    NaN     NaN   
-#> 4 6     manu… gear         8    NA  4.25  4.25    4   0.463  0.25   0.945  -1.21
-#> 5 8     auto… gear         3    NA  4.33  4.33    4   0.577  0.5    0.385  -2.33
-#> 6 8     manu… gear         2    NA  5     5       5   0      0    NaN     NaN   
-#> # ℹ 2 more variables: min <dbl>, max <dbl>
-#> 
-#> ------------------------------------------------------------
-#>  
-#> # A tibble: 6 × 14
-#>   cyl   am      VARIABLE     n  miss  mean  trim median    sd   IQR   skew  kurt
-#>   <fct> <fct>   <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl> <dbl>
-#> 1 4     automa… carb         3    NA  1.67  1.67    2   0.577   0.5 -0.385 -2.33
-#> 2 4     manual  carb         4    NA  2.5   2.5     2.5 1.73    3    0     -2.44
-#> 3 6     automa… carb        12    NA  3.08  3.1     3   0.900   2   -0.141 -1.85
-#> 4 6     manual  carb         8    NA  1.5   1.5     1.5 0.535   1    0     -2.23
-#> 5 8     automa… carb         3    NA  4.67  4.67    4   1.15    1    0.385 -2.33
-#> 6 8     manual  carb         2    NA  6     6       6   2.83    2    0     -2.75
-#> # ℹ 2 more variables: min <dbl>, max <dbl>
+#> # A tibble: 6 × 13
+#>   cyl   am      VARIABLE     n  mean  trim median    sd   IQR   skew  kurt   min
+#>   <fct> <fct>   <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>
+#> 1 4     automa… carb         3  1.67  1.67    2   0.577   0.5 -0.385 -2.33     1
+#> 2 4     manual  carb         4  2.5   2.5     2.5 1.73    3    0     -2.44     1
+#> 3 6     automa… carb        12  3.08  3.1     3   0.900   2   -0.141 -1.85     2
+#> 4 6     manual  carb         8  1.5   1.5     1.5 0.535   1    0     -2.23     1
+#> 5 8     automa… carb         3  4.67  4.67    4   1.15    1    0.385 -2.33     4
+#> 6 8     manual  carb         2  6     6       6   2.83    2    0     -2.75     4
+#> # ℹ 1 more variable: max <dbl>
 fmtcars |> group_by(cyl, am) |> select(mpg, wt) |> descript()
-#> # A tibble: 6 × 14
-#>   cyl   am    VARIABLE     n  miss  mean  trim median    sd   IQR    skew   kurt
-#>   <fct> <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>  <dbl>
-#> 1 4     auto… mpg          3    NA  22.9  22.9   22.8 1.45  1.45   0.0685 -2.33 
-#> 2 4     manu… mpg          4    NA  19.1  19.1   18.6 1.63  1.72   0.482  -1.91 
-#> 3 6     auto… mpg         12    NA  15.0  15.1   15.2 2.77  2.57  -0.284  -0.964
-#> 4 6     manu… mpg          8    NA  28.1  28.1   28.8 4.48  5.7   -0.208  -1.66 
-#> 5 8     auto… mpg          3    NA  20.6  20.6   21   0.751 0.650 -0.385  -2.33 
-#> 6 8     manu… mpg          2    NA  15.4  15.4   15.4 0.566 0.400  0      -2.75 
-#> # ℹ 2 more variables: min <dbl>, max <dbl>
+#> # A tibble: 6 × 13
+#>   cyl   am    VARIABLE     n  mean  trim median    sd   IQR    skew   kurt   min
+#>   <fct> <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl>
+#> 1 4     auto… mpg          3  22.9  22.9   22.8 1.45  1.45   0.0685 -2.33   21.5
+#> 2 4     manu… mpg          4  19.1  19.1   18.6 1.63  1.72   0.482  -1.91   17.8
+#> 3 6     auto… mpg         12  15.0  15.1   15.2 2.77  2.57  -0.284  -0.964  10.4
+#> 4 6     manu… mpg          8  28.1  28.1   28.8 4.48  5.7   -0.208  -1.66   21.4
+#> 5 8     auto… mpg          3  20.6  20.6   21   0.751 0.650 -0.385  -2.33   19.7
+#> 6 8     manu… mpg          2  15.4  15.4   15.4 0.566 0.400  0      -2.75   15  
+#> # ℹ 1 more variable: max <dbl>
 #> 
 #> ------------------------------------------------------------
 #>  
-#> # A tibble: 6 × 14
-#>   cyl   am        VARIABLE     n  miss  mean  trim median    sd    IQR      skew
-#>   <fct> <fct>     <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl>     <dbl>
-#> 1 4     automatic wt           3    NA  2.94  2.94   3.15 0.408 0.362  -3.81e- 1
-#> 2 4     manual    wt           4    NA  3.39  3.39   3.44 0.116 0.0613 -7.35e- 1
-#> 3 6     automatic wt          12    NA  4.10  4.04   3.81 0.768 0.808   8.54e- 1
-#> 4 6     manual    wt           8    NA  2.04  2.04   2.04 0.409 0.45    3.49e- 1
-#> 5 8     automatic wt           3    NA  2.76  2.76   2.77 0.128 0.127  -1.15e- 1
-#> 6 8     manual    wt           2    NA  3.37  3.37   3.37 0.283 0.200  -1.15e-15
-#> # ℹ 3 more variables: kurt <dbl>, min <dbl>, max <dbl>
+#> # A tibble: 6 × 13
+#>   cyl   am        VARIABLE     n  mean  trim median    sd    IQR      skew  kurt
+#>   <fct> <fct>     <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl>     <dbl> <dbl>
+#> 1 4     automatic wt           3  2.94  2.94   3.15 0.408 0.362  -3.81e- 1 -2.33
+#> 2 4     manual    wt           4  3.39  3.39   3.44 0.116 0.0613 -7.35e- 1 -1.70
+#> 3 6     automatic wt          12  4.10  4.04   3.81 0.768 0.808   8.54e- 1 -1.14
+#> 4 6     manual    wt           8  2.04  2.04   2.04 0.409 0.45    3.49e- 1 -1.15
+#> 5 8     automatic wt           3  2.76  2.76   2.77 0.128 0.127  -1.15e- 1 -2.33
+#> 6 8     manual    wt           2  3.37  3.37   3.37 0.283 0.200  -1.15e-15 -2.75
+#> # ℹ 2 more variables: min <dbl>, max <dbl>
 
 # same, but formatting output by group instead of VARIABLE
 fmtcars |> group_by(cyl) |> descript(by_group=TRUE)
 #> cyl: 4
 #> 
-#> # A tibble: 8 × 12
-#>   VARIABLE     n  miss   mean   trim median     sd    IQR     skew    kurt   min
-#>   <fct>    <dbl> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>    <dbl>   <dbl> <dbl>
-#> 1 mpg         11    NA  26.7   26.4   26     4.51   7.6    0.259   -1.65   21.4 
-#> 2 disp        11    NA 105.   104.   108    26.9   41.8    0.121   -1.64   71.1 
-#> 3 hp          11    NA  82.6   82.7   91    20.9   30.5    0.00626 -1.71   52   
-#> 4 drat        11    NA   4.07   4.02   4.08  0.365  0.355  0.998    0.123   3.69
-#> 5 wt          11    NA   2.29   2.27   2.2   0.570  0.737  0.300   -1.36    1.51
-#> 6 qsec        11    NA  19.1   19.0   18.9   1.68   1.39   0.550   -0.0207 16.7 
-#> 7 gear        11    NA   4.09   4.11   4     0.539  0      0.115   -0.0106  3   
-#> 8 carb        11    NA   1.55   1.56   2     0.522  1     -0.158   -2.15    1   
+#> # A tibble: 8 × 11
+#>   VARIABLE     n   mean   trim median     sd    IQR     skew    kurt   min
+#>   <fct>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>    <dbl>   <dbl> <dbl>
+#> 1 mpg         11  26.7   26.4   26     4.51   7.6    0.259   -1.65   21.4 
+#> 2 disp        11 105.   104.   108    26.9   41.8    0.121   -1.64   71.1 
+#> 3 hp          11  82.6   82.7   91    20.9   30.5    0.00626 -1.71   52   
+#> 4 drat        11   4.07   4.02   4.08  0.365  0.355  0.998    0.123   3.69
+#> 5 wt          11   2.29   2.27   2.2   0.570  0.737  0.300   -1.36    1.51
+#> 6 qsec        11  19.1   19.0   18.9   1.68   1.39   0.550   -0.0207 16.7 
+#> 7 gear        11   4.09   4.11   4     0.539  0      0.115   -0.0106  3   
+#> 8 carb        11   1.55   1.56   2     0.522  1     -0.158   -2.15    1   
 #> # ℹ 1 more variable: max <dbl>
 #> 
 #> ------------------------------------------------------------
 #>  
 #> cyl: 6
 #> 
-#> # A tibble: 8 × 12
-#>   VARIABLE     n  miss   mean   trim median     sd    IQR   skew   kurt    min
-#>   <fct>    <dbl> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
-#> 1 mpg          7    NA  19.7   19.7   19.7   1.45   2.35  -0.158 -1.91   17.8 
-#> 2 disp         7    NA 183.   183.   168.   41.6   36.3    0.795 -1.23  145   
-#> 3 hp           7    NA 122.   122.   110    24.3   13      1.36   0.249 105   
-#> 4 drat         7    NA   3.59   3.59   3.9   0.476  0.56  -0.736 -1.40    2.76
-#> 5 wt           7    NA   3.12   3.12   3.22  0.356  0.618 -0.222 -1.98    2.62
-#> 6 qsec         7    NA  18.0   18.0   18.3   1.71   2.43  -0.125 -1.75   15.5 
-#> 7 gear         7    NA   3.86   3.86   4     0.690  0.5    0.106 -1.24    3   
-#> 8 carb         7    NA   3.43   3.43   4     1.81   1.5   -0.261 -1.50    1   
-#> # ℹ 1 more variable: max <dbl>
+#> # A tibble: 8 × 11
+#>   VARIABLE     n   mean   trim median     sd    IQR   skew   kurt    min    max
+#>   <fct>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
+#> 1 mpg          7  19.7   19.7   19.7   1.45   2.35  -0.158 -1.91   17.8   21.4 
+#> 2 disp         7 183.   183.   168.   41.6   36.3    0.795 -1.23  145    258   
+#> 3 hp           7 122.   122.   110    24.3   13      1.36   0.249 105    175   
+#> 4 drat         7   3.59   3.59   3.9   0.476  0.56  -0.736 -1.40    2.76   3.92
+#> 5 wt           7   3.12   3.12   3.22  0.356  0.618 -0.222 -1.98    2.62   3.46
+#> 6 qsec         7  18.0   18.0   18.3   1.71   2.43  -0.125 -1.75   15.5   20.2 
+#> 7 gear         7   3.86   3.86   4     0.690  0.5    0.106 -1.24    3      5   
+#> 8 carb         7   3.43   3.43   4     1.81   1.5   -0.261 -1.50    1      6   
 #> 
 #> ------------------------------------------------------------
 #>  
 #> cyl: 8
 #> 
-#> # A tibble: 8 × 12
-#>   VARIABLE     n  miss   mean   trim median     sd    IQR   skew    kurt    min
-#>   <fct>    <dbl> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl>
-#> 1 mpg         14    NA  15.1   15.2   15.2   2.56   1.85  -0.363 -0.566   10.4 
-#> 2 disp        14    NA 353.   350.   350.   67.8   88.2    0.453 -1.26   276.  
-#> 3 hp          14    NA 209.   204.   192.   51.0   65      0.909  0.0921 150   
-#> 4 drat        14    NA   3.23   3.19   3.12  0.372  0.155  1.34   1.08     2.76
-#> 5 wt          14    NA   4.00   3.95   3.76  0.759  0.481  0.988 -0.713    3.17
-#> 6 qsec        14    NA  16.8   16.9   17.2   1.20   1.46  -0.805 -0.919   14.5 
-#> 7 gear        14    NA   3.29   3.17   3     0.726  0      1.83   1.45     3   
-#> 8 carb        14    NA   3.5    3.25   3.5   1.56   1.75   1.48   2.24     2   
-#> # ℹ 1 more variable: max <dbl>
+#> # A tibble: 8 × 11
+#>   VARIABLE     n   mean   trim median     sd    IQR   skew    kurt    min    max
+#>   <fct>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl>  <dbl>
+#> 1 mpg         14  15.1   15.2   15.2   2.56   1.85  -0.363 -0.566   10.4   19.2 
+#> 2 disp        14 353.   350.   350.   67.8   88.2    0.453 -1.26   276.   472   
+#> 3 hp          14 209.   204.   192.   51.0   65      0.909  0.0921 150    335   
+#> 4 drat        14   3.23   3.19   3.12  0.372  0.155  1.34   1.08     2.76   4.22
+#> 5 wt          14   4.00   3.95   3.76  0.759  0.481  0.988 -0.713    3.17   5.42
+#> 6 qsec        14  16.8   16.9   17.2   1.20   1.46  -0.805 -0.919   14.5   18   
+#> 7 gear        14   3.29   3.17   3     0.726  0      1.83   1.45     3      5   
+#> 8 carb        14   3.5    3.25   3.5   1.56   1.75   1.48   2.24     2      8   
 
 # discrete variables also work with group_by()
 fmtcars |> descript(discrete=TRUE)
@@ -674,98 +671,97 @@ fmtcars |> group_by(cyl) |> descript(discrete=TRUE, margin = 2)
 
 # with single variables, typical dplyr::summarise() output returned
 fmtcars |> select(mpg) |> descript()
-#> # A tibble: 1 × 12
-#>   VARIABLE     n  miss  mean  trim median    sd   IQR  skew   kurt   min   max
-#>   <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>
-#> 1 mpg         32    NA  20.1  19.7   19.2  6.03  7.38 0.611 -0.373  10.4  33.9
+#> # A tibble: 1 × 11
+#>   VARIABLE     n  mean  trim median    sd   IQR  skew   kurt   min   max
+#>   <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>
+#> 1 mpg         32  20.1  19.7   19.2  6.03  7.38 0.611 -0.373  10.4  33.9
 fmtcars |> group_by(cyl) |> select(mpg) |> descript()
-#> # A tibble: 3 × 13
-#>   cyl   VARIABLE     n  miss  mean  trim median    sd   IQR   skew   kurt   min
-#> * <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl>
-#> 1 4     mpg         11    NA  26.7  26.4   26    4.51  7.6   0.259 -1.65   21.4
-#> 2 6     mpg          7    NA  19.7  19.7   19.7  1.45  2.35 -0.158 -1.91   17.8
-#> 3 8     mpg         14    NA  15.1  15.2   15.2  2.56  1.85 -0.363 -0.566  10.4
-#> # ℹ 1 more variable: max <dbl>
+#> # A tibble: 3 × 12
+#>   cyl   VARIABLE     n  mean  trim median    sd   IQR   skew   kurt   min   max
+#> * <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl>
+#> 1 4     mpg         11  26.7  26.4   26    4.51  7.6   0.259 -1.65   21.4  33.9
+#> 2 6     mpg          7  19.7  19.7   19.7  1.45  2.35 -0.158 -1.91   17.8  21.4
+#> 3 8     mpg         14  15.1  15.2   15.2  2.56  1.85 -0.363 -0.566  10.4  19.2
 fmtcars |> group_by(cyl, am) |> select(mpg) |> descript()
-#> # A tibble: 6 × 14
-#>   cyl   am    VARIABLE     n  miss  mean  trim median    sd   IQR    skew   kurt
-#>   <fct> <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>  <dbl>
-#> 1 4     auto… mpg          3    NA  22.9  22.9   22.8 1.45  1.45   0.0685 -2.33 
-#> 2 4     manu… mpg          4    NA  19.1  19.1   18.6 1.63  1.72   0.482  -1.91 
-#> 3 6     auto… mpg         12    NA  15.0  15.1   15.2 2.77  2.57  -0.284  -0.964
-#> 4 6     manu… mpg          8    NA  28.1  28.1   28.8 4.48  5.7   -0.208  -1.66 
-#> 5 8     auto… mpg          3    NA  20.6  20.6   21   0.751 0.650 -0.385  -2.33 
-#> 6 8     manu… mpg          2    NA  15.4  15.4   15.4 0.566 0.400  0      -2.75 
-#> # ℹ 2 more variables: min <dbl>, max <dbl>
+#> # A tibble: 6 × 13
+#>   cyl   am    VARIABLE     n  mean  trim median    sd   IQR    skew   kurt   min
+#>   <fct> <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl>  <dbl> <dbl>
+#> 1 4     auto… mpg          3  22.9  22.9   22.8 1.45  1.45   0.0685 -2.33   21.5
+#> 2 4     manu… mpg          4  19.1  19.1   18.6 1.63  1.72   0.482  -1.91   17.8
+#> 3 6     auto… mpg         12  15.0  15.1   15.2 2.77  2.57  -0.284  -0.964  10.4
+#> 4 6     manu… mpg          8  28.1  28.1   28.8 4.48  5.7   -0.208  -1.66   21.4
+#> 5 8     auto… mpg          3  20.6  20.6   21   0.751 0.650 -0.385  -2.33   19.7
+#> 6 8     manu… mpg          2  15.4  15.4   15.4 0.566 0.400  0      -2.75   15  
+#> # ℹ 1 more variable: max <dbl>
 
 # if you want a tibble from the list of information instead
 fmtcars |> group_by(cyl) |> descript(collapse=TRUE)
-#> # A tibble: 24 × 13
-#>    cyl   VARIABLE     n  miss   mean   trim median     sd    IQR     skew
-#>    <fct> <fct>    <dbl> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>    <dbl>
-#>  1 4     mpg         11    NA  26.7   26.4   26     4.51   7.6    0.259  
-#>  2 4     disp        11    NA 105.   104.   108    26.9   41.8    0.121  
-#>  3 4     hp          11    NA  82.6   82.7   91    20.9   30.5    0.00626
-#>  4 4     drat        11    NA   4.07   4.02   4.08  0.365  0.355  0.998  
-#>  5 4     wt          11    NA   2.29   2.27   2.2   0.570  0.737  0.300  
-#>  6 4     qsec        11    NA  19.1   19.0   18.9   1.68   1.39   0.550  
-#>  7 4     gear        11    NA   4.09   4.11   4     0.539  0      0.115  
-#>  8 4     carb        11    NA   1.55   1.56   2     0.522  1     -0.158  
-#>  9 6     mpg          7    NA  19.7   19.7   19.7   1.45   2.35  -0.158  
-#> 10 6     disp         7    NA 183.   183.   168.   41.6   36.3    0.795  
-#> # ℹ 14 more rows
-#> # ℹ 3 more variables: kurt <dbl>, min <dbl>, max <dbl>
-fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VARIABLE)
-#> # A tibble: 24 × 13
-#>    cyl   VARIABLE     n  miss   mean   trim median     sd    IQR   skew    kurt
-#>    <fct> <fct>    <dbl> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>
-#>  1 4     carb        11    NA   1.55   1.56   2     0.522  1     -0.158 -2.15  
-#>  2 6     carb         7    NA   3.43   3.43   4     1.81   1.5   -0.261 -1.50  
-#>  3 8     carb        14    NA   3.5    3.25   3.5   1.56   1.75   1.48   2.24  
-#>  4 4     disp        11    NA 105.   104.   108    26.9   41.8    0.121 -1.64  
-#>  5 6     disp         7    NA 183.   183.   168.   41.6   36.3    0.795 -1.23  
-#>  6 8     disp        14    NA 353.   350.   350.   67.8   88.2    0.453 -1.26  
-#>  7 4     drat        11    NA   4.07   4.02   4.08  0.365  0.355  0.998  0.123 
-#>  8 6     drat         7    NA   3.59   3.59   3.9   0.476  0.56  -0.736 -1.40  
-#>  9 8     drat        14    NA   3.23   3.19   3.12  0.372  0.155  1.34   1.08  
-#> 10 4     gear        11    NA   4.09   4.11   4     0.539  0      0.115 -0.0106
+#> # A tibble: 24 × 12
+#>    cyl   VARIABLE     n   mean   trim median     sd    IQR     skew    kurt
+#>    <fct> <fct>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>    <dbl>   <dbl>
+#>  1 4     mpg         11  26.7   26.4   26     4.51   7.6    0.259   -1.65  
+#>  2 4     disp        11 105.   104.   108    26.9   41.8    0.121   -1.64  
+#>  3 4     hp          11  82.6   82.7   91    20.9   30.5    0.00626 -1.71  
+#>  4 4     drat        11   4.07   4.02   4.08  0.365  0.355  0.998    0.123 
+#>  5 4     wt          11   2.29   2.27   2.2   0.570  0.737  0.300   -1.36  
+#>  6 4     qsec        11  19.1   19.0   18.9   1.68   1.39   0.550   -0.0207
+#>  7 4     gear        11   4.09   4.11   4     0.539  0      0.115   -0.0106
+#>  8 4     carb        11   1.55   1.56   2     0.522  1     -0.158   -2.15  
+#>  9 6     mpg          7  19.7   19.7   19.7   1.45   2.35  -0.158   -1.91  
+#> 10 6     disp         7 183.   183.   168.   41.6   36.3    0.795   -1.23  
 #> # ℹ 14 more rows
 #> # ℹ 2 more variables: min <dbl>, max <dbl>
+fmtcars |> group_by(cyl) |> descript(collapse=TRUE) |> arrange(VARIABLE)
+#> # A tibble: 24 × 12
+#>    cyl   VARIABLE     n   mean   trim median     sd    IQR   skew    kurt    min
+#>    <fct> <fct>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl>
+#>  1 4     carb        11   1.55   1.56   2     0.522  1     -0.158 -2.15     1   
+#>  2 6     carb         7   3.43   3.43   4     1.81   1.5   -0.261 -1.50     1   
+#>  3 8     carb        14   3.5    3.25   3.5   1.56   1.75   1.48   2.24     2   
+#>  4 4     disp        11 105.   104.   108    26.9   41.8    0.121 -1.64    71.1 
+#>  5 6     disp         7 183.   183.   168.   41.6   36.3    0.795 -1.23   145   
+#>  6 8     disp        14 353.   350.   350.   67.8   88.2    0.453 -1.26   276.  
+#>  7 4     drat        11   4.07   4.02   4.08  0.365  0.355  0.998  0.123    3.69
+#>  8 6     drat         7   3.59   3.59   3.9   0.476  0.56  -0.736 -1.40     2.76
+#>  9 8     drat        14   3.23   3.19   3.12  0.372  0.155  1.34   1.08     2.76
+#> 10 4     gear        11   4.09   4.11   4     0.539  0      0.115 -0.0106   3   
+#> # ℹ 14 more rows
+#> # ℹ 1 more variable: max <dbl>
 fmtcars |> group_by(am, cyl) |> select(mpg, wt) |> descript(collapse=TRUE)
-#> # A tibble: 12 × 14
-#>    am       cyl   VARIABLE     n  miss  mean  trim median    sd    IQR      skew
-#>    <fct>    <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl>     <dbl>
-#>  1 automat… 4     mpg          3    NA 22.9  22.9   22.8  1.45  1.45    6.85e- 2
-#>  2 automat… 4     wt           3    NA  2.94  2.94   3.15 0.408 0.362  -3.81e- 1
-#>  3 manual   4     mpg          8    NA 28.1  28.1   28.8  4.48  5.7    -2.08e- 1
-#>  4 manual   4     wt           8    NA  2.04  2.04   2.04 0.409 0.45    3.49e- 1
-#>  5 automat… 6     mpg          4    NA 19.1  19.1   18.6  1.63  1.72    4.82e- 1
-#>  6 automat… 6     wt           4    NA  3.39  3.39   3.44 0.116 0.0613 -7.35e- 1
-#>  7 manual   6     mpg          3    NA 20.6  20.6   21    0.751 0.650  -3.85e- 1
-#>  8 manual   6     wt           3    NA  2.76  2.76   2.77 0.128 0.127  -1.15e- 1
-#>  9 automat… 8     mpg         12    NA 15.0  15.1   15.2  2.77  2.57   -2.84e- 1
-#> 10 automat… 8     wt          12    NA  4.10  4.04   3.81 0.768 0.808   8.54e- 1
-#> 11 manual   8     mpg          2    NA 15.4  15.4   15.4  0.566 0.400   0       
-#> 12 manual   8     wt           2    NA  3.37  3.37   3.37 0.283 0.200  -1.15e-15
-#> # ℹ 3 more variables: kurt <dbl>, min <dbl>, max <dbl>
+#> # A tibble: 12 × 13
+#>    am      cyl   VARIABLE     n  mean  trim median    sd    IQR      skew   kurt
+#>    <fct>   <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl>     <dbl>  <dbl>
+#>  1 automa… 4     mpg          3 22.9  22.9   22.8  1.45  1.45    6.85e- 2 -2.33 
+#>  2 automa… 4     wt           3  2.94  2.94   3.15 0.408 0.362  -3.81e- 1 -2.33 
+#>  3 manual  4     mpg          8 28.1  28.1   28.8  4.48  5.7    -2.08e- 1 -1.66 
+#>  4 manual  4     wt           8  2.04  2.04   2.04 0.409 0.45    3.49e- 1 -1.15 
+#>  5 automa… 6     mpg          4 19.1  19.1   18.6  1.63  1.72    4.82e- 1 -1.91 
+#>  6 automa… 6     wt           4  3.39  3.39   3.44 0.116 0.0613 -7.35e- 1 -1.70 
+#>  7 manual  6     mpg          3 20.6  20.6   21    0.751 0.650  -3.85e- 1 -2.33 
+#>  8 manual  6     wt           3  2.76  2.76   2.77 0.128 0.127  -1.15e- 1 -2.33 
+#>  9 automa… 8     mpg         12 15.0  15.1   15.2  2.77  2.57   -2.84e- 1 -0.964
+#> 10 automa… 8     wt          12  4.10  4.04   3.81 0.768 0.808   8.54e- 1 -1.14 
+#> 11 manual  8     mpg          2 15.4  15.4   15.4  0.566 0.400   0        -2.75 
+#> 12 manual  8     wt           2  3.37  3.37   3.37 0.283 0.200  -1.15e-15 -2.75 
+#> # ℹ 2 more variables: min <dbl>, max <dbl>
 fmtcars |> group_by(am, cyl) |> select(mpg, wt) |>
   descript(collapse=TRUE) |> arrange(VARIABLE)
-#> # A tibble: 12 × 14
-#>    am       cyl   VARIABLE     n  miss  mean  trim median    sd    IQR      skew
-#>    <fct>    <fct> <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl>     <dbl>
-#>  1 automat… 4     mpg          3    NA 22.9  22.9   22.8  1.45  1.45    6.85e- 2
-#>  2 manual   4     mpg          8    NA 28.1  28.1   28.8  4.48  5.7    -2.08e- 1
-#>  3 automat… 6     mpg          4    NA 19.1  19.1   18.6  1.63  1.72    4.82e- 1
-#>  4 manual   6     mpg          3    NA 20.6  20.6   21    0.751 0.650  -3.85e- 1
-#>  5 automat… 8     mpg         12    NA 15.0  15.1   15.2  2.77  2.57   -2.84e- 1
-#>  6 manual   8     mpg          2    NA 15.4  15.4   15.4  0.566 0.400   0       
-#>  7 automat… 4     wt           3    NA  2.94  2.94   3.15 0.408 0.362  -3.81e- 1
-#>  8 manual   4     wt           8    NA  2.04  2.04   2.04 0.409 0.45    3.49e- 1
-#>  9 automat… 6     wt           4    NA  3.39  3.39   3.44 0.116 0.0613 -7.35e- 1
-#> 10 manual   6     wt           3    NA  2.76  2.76   2.77 0.128 0.127  -1.15e- 1
-#> 11 automat… 8     wt          12    NA  4.10  4.04   3.81 0.768 0.808   8.54e- 1
-#> 12 manual   8     wt           2    NA  3.37  3.37   3.37 0.283 0.200  -1.15e-15
-#> # ℹ 3 more variables: kurt <dbl>, min <dbl>, max <dbl>
+#> # A tibble: 12 × 13
+#>    am      cyl   VARIABLE     n  mean  trim median    sd    IQR      skew   kurt
+#>    <fct>   <fct> <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl>     <dbl>  <dbl>
+#>  1 automa… 4     mpg          3 22.9  22.9   22.8  1.45  1.45    6.85e- 2 -2.33 
+#>  2 manual  4     mpg          8 28.1  28.1   28.8  4.48  5.7    -2.08e- 1 -1.66 
+#>  3 automa… 6     mpg          4 19.1  19.1   18.6  1.63  1.72    4.82e- 1 -1.91 
+#>  4 manual  6     mpg          3 20.6  20.6   21    0.751 0.650  -3.85e- 1 -2.33 
+#>  5 automa… 8     mpg         12 15.0  15.1   15.2  2.77  2.57   -2.84e- 1 -0.964
+#>  6 manual  8     mpg          2 15.4  15.4   15.4  0.566 0.400   0        -2.75 
+#>  7 automa… 4     wt           3  2.94  2.94   3.15 0.408 0.362  -3.81e- 1 -2.33 
+#>  8 manual  4     wt           8  2.04  2.04   2.04 0.409 0.45    3.49e- 1 -1.15 
+#>  9 automa… 6     wt           4  3.39  3.39   3.44 0.116 0.0613 -7.35e- 1 -1.70 
+#> 10 manual  6     wt           3  2.76  2.76   2.77 0.128 0.127  -1.15e- 1 -2.33 
+#> 11 automa… 8     wt          12  4.10  4.04   3.81 0.768 0.808   8.54e- 1 -1.14 
+#> 12 manual  8     wt           2  3.37  3.37   3.37 0.283 0.200  -1.15e-15 -2.75 
+#> # ℹ 2 more variables: min <dbl>, max <dbl>
 
 # post-extraction (if you don't mind doing the extra computations
 #   and extracting afterword)
@@ -942,8 +938,8 @@ fmtcars |> descript(funs=funs2)
 # function works on vectors as well
 IQ <- rnorm(100, mean=100, sd=15) |> round()
 descript(IQ)
-#> # A tibble: 1 × 12
-#>   VARIABLE     n  miss  mean  trim median    sd   IQR   skew   kurt   min   max
-#>   <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl>
-#> 1 IQ         100    NA  99.7  99.5    100  14.1  21.5 0.0741 -0.518    66   132
+#> # A tibble: 1 × 11
+#>   VARIABLE     n  mean  trim median    sd   IQR   skew   kurt   min   max
+#>   <fct>    <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl> <dbl>
+#> 1 IQ         100  99.7  99.5    100  14.1  21.5 0.0741 -0.518    66   132
 ```

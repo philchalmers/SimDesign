@@ -356,15 +356,14 @@ distributions.
 descript(results)
 ```
 
-    ## # A tibble: 5 × 12
-    ##   VARIABLE        n  miss   mean   trim median     sd    IQR   skew   kurt   min
-    ##   <fct>       <dbl> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl> <dbl>
-    ## 1 sample_size  8000    NA 112.   107.    90    80.4   97.5    0.657 -1.10  30   
-    ## 2 mean_no_tr…  8000    NA   3.00   3.00   3.00  0.234  0.208  0.340  3.75   1.86
-    ## 3 mean_trim.1  8000    NA   2.83   2.85   2.90  0.279  0.375 -0.555  0.701  1.50
-    ## 4 mean_trim.2  8000    NA   2.76   2.78   2.85  0.329  0.507 -0.523 -0.169  1.38
-    ## 5 median       8000    NA   2.69   2.71   2.81  0.402  0.651 -0.440 -0.498  1.05
-    ## # ℹ 1 more variable: max <dbl>
+    ## # A tibble: 5 × 11
+    ##   VARIABLE       n   mean   trim median     sd    IQR   skew   kurt   min    max
+    ##   <fct>      <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl> <dbl>  <dbl>
+    ## 1 sample_si…  8000 112.   107.    90    80.4   97.5    0.657 -1.10  30    240   
+    ## 2 mean_no_t…  8000   3.00   3.00   3.00  0.234  0.208  0.340  3.75   1.86   4.63
+    ## 3 mean_trim…  8000   2.83   2.85   2.90  0.279  0.375 -0.555  0.701  1.50   4.25
+    ## 4 mean_trim…  8000   2.76   2.78   2.85  0.329  0.507 -0.523 -0.169  1.38   4.23
+    ## 5 median      8000   2.69   2.71   2.81  0.402  0.651 -0.440 -0.498  1.05   4.16
 
 ``` r
 
@@ -373,62 +372,62 @@ results |> group_by(sample_size, distribution) |>
     descript()
 ```
 
-    ## # A tibble: 8 × 14
-    ##   sample_size distribution VARIABLE     n  miss  mean  trim median     sd    IQR
-    ##         <dbl> <chr>        <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl>
-    ## 1          30 chi          mean_no…  1000    NA  3.02  3.02   3.02 0.447  0.594 
-    ## 2          30 norm         mean_no…  1000    NA  3.00  2.99   2.98 0.319  0.415 
-    ## 3          60 chi          mean_no…  1000    NA  2.99  2.99   2.99 0.224  0.305 
-    ## 4          60 norm         mean_no…  1000    NA  3.00  3.00   3.00 0.158  0.210 
-    ## 5         120 chi          mean_no…  1000    NA  3.00  2.99   2.99 0.185  0.255 
-    ## 6         120 norm         mean_no…  1000    NA  3.00  3.00   3.00 0.125  0.159 
-    ## 7         240 chi          mean_no…  1000    NA  3.00  3.00   3.00 0.0908 0.116 
-    ## 8         240 norm         mean_no…  1000    NA  3.00  3.00   3.00 0.0643 0.0891
+    ## # A tibble: 8 × 13
+    ##   sample_size distribution VARIABLE         n  mean  trim median     sd    IQR
+    ##         <dbl> <chr>        <fct>        <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl>
+    ## 1          30 chi          mean_no_trim  1000  3.02  3.02   3.02 0.447  0.594 
+    ## 2          30 norm         mean_no_trim  1000  3.00  2.99   2.98 0.319  0.415 
+    ## 3          60 chi          mean_no_trim  1000  2.99  2.99   2.99 0.224  0.305 
+    ## 4          60 norm         mean_no_trim  1000  3.00  3.00   3.00 0.158  0.210 
+    ## 5         120 chi          mean_no_trim  1000  3.00  2.99   2.99 0.185  0.255 
+    ## 6         120 norm         mean_no_trim  1000  3.00  3.00   3.00 0.125  0.159 
+    ## 7         240 chi          mean_no_trim  1000  3.00  3.00   3.00 0.0908 0.116 
+    ## 8         240 norm         mean_no_trim  1000  3.00  3.00   3.00 0.0643 0.0891
     ## # ℹ 4 more variables: skew <dbl>, kurt <dbl>, min <dbl>, max <dbl>
     ## 
     ## ------------------------------------------------------------
     ##  
-    ## # A tibble: 8 × 14
-    ##   sample_size distribution VARIABLE     n  miss  mean  trim median     sd    IQR
-    ##         <dbl> <chr>        <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl>
-    ## 1          30 chi          mean_tr…  1000    NA  2.70  2.69   2.69 0.419  0.546 
-    ## 2          30 norm         mean_tr…  1000    NA  2.65  2.64   2.64 0.295  0.390 
-    ## 3          60 chi          mean_tr…  1000    NA  2.65  2.65   2.64 0.214  0.288 
-    ## 4          60 norm         mean_tr…  1000    NA  2.65  2.65   2.65 0.148  0.204 
-    ## 5         120 chi          mean_tr…  1000    NA  3.00  2.99   2.99 0.190  0.261 
-    ## 6         120 norm         mean_tr…  1000    NA  3.00  3.00   3.00 0.129  0.167 
-    ## 7         240 chi          mean_tr…  1000    NA  3.00  3.00   3.00 0.0940 0.124 
-    ## 8         240 norm         mean_tr…  1000    NA  3.00  3.00   3.00 0.0659 0.0945
+    ## # A tibble: 8 × 13
+    ##   sample_size distribution VARIABLE        n  mean  trim median     sd    IQR
+    ##         <dbl> <chr>        <fct>       <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl>
+    ## 1          30 chi          mean_trim.1  1000  2.70  2.69   2.69 0.419  0.546 
+    ## 2          30 norm         mean_trim.1  1000  2.65  2.64   2.64 0.295  0.390 
+    ## 3          60 chi          mean_trim.1  1000  2.65  2.65   2.64 0.214  0.288 
+    ## 4          60 norm         mean_trim.1  1000  2.65  2.65   2.65 0.148  0.204 
+    ## 5         120 chi          mean_trim.1  1000  3.00  2.99   2.99 0.190  0.261 
+    ## 6         120 norm         mean_trim.1  1000  3.00  3.00   3.00 0.129  0.167 
+    ## 7         240 chi          mean_trim.1  1000  3.00  3.00   3.00 0.0940 0.124 
+    ## 8         240 norm         mean_trim.1  1000  3.00  3.00   3.00 0.0659 0.0945
     ## # ℹ 4 more variables: skew <dbl>, kurt <dbl>, min <dbl>, max <dbl>
     ## 
     ## ------------------------------------------------------------
     ##  
-    ## # A tibble: 8 × 14
-    ##   sample_size distribution VARIABLE     n  miss  mean  trim median     sd    IQR
-    ##         <dbl> <chr>        <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl>
-    ## 1          30 chi          mean_tr…  1000    NA  2.56  2.55   2.54 0.423  0.561 
-    ## 2          30 norm         mean_tr…  1000    NA  2.51  2.50   2.50 0.293  0.384 
-    ## 3          60 chi          mean_tr…  1000    NA  2.51  2.51   2.50 0.215  0.286 
-    ## 4          60 norm         mean_tr…  1000    NA  2.51  2.51   2.50 0.148  0.198 
-    ## 5         120 chi          mean_tr…  1000    NA  3.00  3.00   2.99 0.196  0.269 
-    ## 6         120 norm         mean_tr…  1000    NA  3.00  3.00   3.00 0.134  0.180 
-    ## 7         240 chi          mean_tr…  1000    NA  3.00  3.00   3.00 0.0977 0.130 
-    ## 8         240 norm         mean_tr…  1000    NA  3.00  3.00   3.00 0.0684 0.0940
+    ## # A tibble: 8 × 13
+    ##   sample_size distribution VARIABLE        n  mean  trim median     sd    IQR
+    ##         <dbl> <chr>        <fct>       <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl>
+    ## 1          30 chi          mean_trim.2  1000  2.56  2.55   2.54 0.423  0.561 
+    ## 2          30 norm         mean_trim.2  1000  2.51  2.50   2.50 0.293  0.384 
+    ## 3          60 chi          mean_trim.2  1000  2.51  2.51   2.50 0.215  0.286 
+    ## 4          60 norm         mean_trim.2  1000  2.51  2.51   2.50 0.148  0.198 
+    ## 5         120 chi          mean_trim.2  1000  3.00  3.00   2.99 0.196  0.269 
+    ## 6         120 norm         mean_trim.2  1000  3.00  3.00   3.00 0.134  0.180 
+    ## 7         240 chi          mean_trim.2  1000  3.00  3.00   3.00 0.0977 0.130 
+    ## 8         240 norm         mean_trim.2  1000  3.00  3.00   3.00 0.0684 0.0940
     ## # ℹ 4 more variables: skew <dbl>, kurt <dbl>, min <dbl>, max <dbl>
     ## 
     ## ------------------------------------------------------------
     ##  
-    ## # A tibble: 8 × 14
-    ##   sample_size distribution VARIABLE     n  miss  mean  trim median     sd   IQR
-    ##         <dbl> <chr>        <fct>    <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl>
-    ## 1          30 chi          median    1000    NA  2.42  2.41   2.38 0.476  0.647
-    ## 2          30 norm         median    1000    NA  2.36  2.35   2.34 0.335  0.432
-    ## 3          60 chi          median    1000    NA  2.36  2.36   2.35 0.240  0.330
-    ## 4          60 norm         median    1000    NA  2.37  2.37   2.37 0.164  0.216
-    ## 5         120 chi          median    1000    NA  3.00  3.00   3.00 0.222  0.293
-    ## 6         120 norm         median    1000    NA  3.01  3.01   3.00 0.157  0.222
-    ## 7         240 chi          median    1000    NA  3.00  3.00   3.00 0.113  0.151
-    ## 8         240 norm         median    1000    NA  3.00  3.00   3.00 0.0817 0.115
+    ## # A tibble: 8 × 13
+    ##   sample_size distribution VARIABLE     n  mean  trim median     sd   IQR
+    ##         <dbl> <chr>        <fct>    <dbl> <dbl> <dbl>  <dbl>  <dbl> <dbl>
+    ## 1          30 chi          median    1000  2.42  2.41   2.38 0.476  0.647
+    ## 2          30 norm         median    1000  2.36  2.35   2.34 0.335  0.432
+    ## 3          60 chi          median    1000  2.36  2.36   2.35 0.240  0.330
+    ## 4          60 norm         median    1000  2.37  2.37   2.37 0.164  0.216
+    ## 5         120 chi          median    1000  3.00  3.00   3.00 0.222  0.293
+    ## 6         120 norm         median    1000  3.01  3.01   3.00 0.157  0.222
+    ## 7         240 chi          median    1000  3.00  3.00   3.00 0.113  0.151
+    ## 8         240 norm         median    1000  3.00  3.00   3.00 0.0817 0.115
     ## # ℹ 4 more variables: skew <dbl>, kurt <dbl>, min <dbl>, max <dbl>
 
 ### Interpreting the results
@@ -561,13 +560,13 @@ head(results)
 descript(results) # common descriptive statistics
 ```
 
-    ## # A tibble: 4 × 12
-    ##   VARIABLE      n  miss  mean  trim median    sd   IQR    skew  kurt   min   max
-    ##   <fct>     <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl> <dbl>
-    ## 1 mean_no_…  1000    NA  3.00  3.00   3.00 0.174 0.223  0.0821 0.135  2.45  3.67
-    ## 2 mean_tri…  1000    NA  3.00  3.00   3.00 0.178 0.228  0.0656 0.145  2.40  3.67
-    ## 3 mean_tri…  1000    NA  3.00  3.00   3.00 0.186 0.240  0.0297 0.142  2.39  3.68
-    ## 4 median     1000    NA  3.00  3.00   3.00 0.215 0.279 -0.0399 0.137  2.24  3.78
+    ## # A tibble: 4 × 11
+    ##   VARIABLE         n  mean  trim median    sd   IQR    skew  kurt   min   max
+    ##   <fct>        <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl> <dbl>
+    ## 1 mean_no_trim  1000  3.00  3.00   3.00 0.174 0.223  0.0821 0.135  2.45  3.67
+    ## 2 mean_trim.1   1000  3.00  3.00   3.00 0.178 0.228  0.0656 0.145  2.40  3.67
+    ## 3 mean_trim.2   1000  3.00  3.00   3.00 0.186 0.240  0.0297 0.142  2.39  3.68
+    ## 4 median        1000  3.00  3.00   3.00 0.215 0.279 -0.0399 0.137  2.24  3.78
 
 The matrix stored in `results` contains 1000 parameter estimates
 returned from each statistic. After this is obtained, we can move on to

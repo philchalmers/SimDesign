@@ -70,10 +70,10 @@ set.seed(1)
 # univariate with skew
 nonnormal <- rValeMaurelli(10000, mean=10, sigma=5, skew=1, kurt=3)
 descript(nonnormal)
-#> # A tibble: 1 × 12
-#>   VARIABLE      n  miss  mean  trim median    sd   IQR  skew  kurt   min   max
-#>   <fct>     <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1 nonnormal 10000    NA  9.99  9.83   9.68  2.25  2.58 0.908  2.42  1.44  26.9
+#> # A tibble: 1 × 11
+#>   VARIABLE      n  mean  trim median    sd   IQR  skew  kurt   min   max
+#>   <fct>     <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1 nonnormal 10000  9.99  9.83   9.68  2.25  2.58 0.908  2.42  1.44  26.9
 
 # multivariate with skew and kurtosis
 n <- 10000
@@ -91,11 +91,10 @@ cor(nonnormal) |> round(3)
 #> [2,] 0.373 1.000 0.086
 #> [3,] 0.874 0.086 1.000
 descript(nonnormal)
-#> # A tibble: 3 × 12
-#>   VARIABLE     n  miss     mean    trim median    sd   IQR  skew  kurt   min
-#>   <fct>    <dbl> <dbl>    <dbl>   <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1 V1       10000    NA -0.00636 -0.136  -0.237 1.00   1.17 1.57  3.95  -2.02
-#> 2 V2       10000    NA  0.00773 -0.125  -0.218 1.01   1.22 1.48  3.20  -1.31
-#> 3 V3       10000    NA -0.00889 -0.0591 -0.103 0.993  1.30 0.546 0.500 -3.04
-#> # ℹ 1 more variable: max <dbl>
+#> # A tibble: 3 × 11
+#>   VARIABLE     n     mean    trim median    sd   IQR  skew  kurt   min   max
+#>   <fct>    <dbl>    <dbl>   <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1 V1       10000 -0.00636 -0.136  -0.237 1.00   1.17 1.57  3.95  -2.02  7.49
+#> 2 V2       10000  0.00773 -0.125  -0.218 1.01   1.22 1.48  3.20  -1.31  6.70
+#> 3 V3       10000 -0.00889 -0.0591 -0.103 0.993  1.30 0.546 0.500 -3.04  5.24
 ```
