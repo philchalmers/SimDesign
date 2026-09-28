@@ -39,14 +39,15 @@ Attach(Design, RStudio_flags = TRUE)
 ```
 
 
-Scratch algebra notes for obtaining $VAR(E)$ given $rxx$ and $VAR(T)$.
+Scratch algebra notes for obtaining $VAR(E) = \sigma^2_E$ given $r_{xx}$ and $VAR(T)= \sigma^2_T$.
 
-$$rxx = VAR(T) / VAR(X) = VAR(T) / (VAR(T) + VAR(E))$$
-$$rxx * (VAR(T) + VAR(E)) = VAR(T)$$
-$$rxx * VAR(T) + rxx*VAR(E) = VAR(T)$$
-$$rxx * VAR(E) = VAR(T) - rxx*VAR(T)$$
-$$VAR(E) = VAR(T)/rxx - VAR(T)$$
-$$VAR(E) = VAR(T) * (1/rxx - 1)$$
+$$r_{xx} = \frac{VAR(T)}{VAR(X)} = \frac{VAR(T)}{VAR(T) + VAR(E)} = \frac{\sigma^2_T}{\sigma^2_T + \sigma^2_E}$$
+$$r_{xx} (\sigma^2_T + \sigma^2_E) = \sigma^2_T$$
+$$r_{xx} \sigma^2_T + r_{xx}\sigma^2_E = \sigma^2_T$$
+$$r_{xx} \sigma^2_E = \sigma^2_T - r_{xx}\sigma^2_T$$
+$$\sigma^2_E = \sigma^2_T/r_{xx} - \sigma^2_T$$
+$$\sigma^2_E = \sigma^2_T (1/r_{xx} - 1)$$
+$$\sigma^2_E = \sigma^2_T \left(\frac{1 - r_{xx}}{r_{xx}}\right)$$
 
 ```{r}
 Generate <- function(condition, fixed_objects = NULL) {
@@ -57,7 +58,7 @@ Generate <- function(condition, fixed_objects = NULL) {
     mu.t <- (0 + dT)/2
     # VAR(T) = E(var_i) + mu^2 = E(s_i^2 + mu_i^2) + mu^2
     var.t <- .5 * (1^2 + 0^2) + .5 * (1^2 + dT^2) - mu.t^2
-    var.e <- var.t * (1/rxx - 1)
+    var.e <- var.t * ((1 - rxx) / rxx)
     X <- true.scores + rnorm(N*2, sd=sqrt(var.e))
     dat <- data.frame(pre=X[group == 'pre'], 
                       post=X[group == 'post'])
