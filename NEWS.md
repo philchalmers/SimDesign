@@ -2,6 +2,10 @@
 
 ## Changes in SimDesign 2.28
 
+- In `runArraySimulation()` `progress` now defaults to `FALSE` as viewing the 
+  progress bar is generally unnecessary for array jobs by default (plus, reduces
+  a small amount of overhead)
+
 - `descript()` returns name of object as variable identifier when input 
   is a vector
 

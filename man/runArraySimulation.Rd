@@ -19,7 +19,8 @@ runArraySimulation(
   ncores = parallelly::availableCores(omit = 1L),
   save_details = list(),
   control = list(),
-  verbose = interactive()
+  verbose = interactive(),
+  progress = TRUE
 )
 }
 \arguments{
@@ -105,8 +106,11 @@ See \code{\link{runSimulation}}}
   available. Default applies no memory limit}
 
 \item{verbose}{logical; pass a verbose flag to \code{\link{runSimulation}}.
-On HPC clusters this is automatically set to \code{TRUE} so that progress can be tracked
-in locally stored files (e.g., in SLURM, the \code{.out} files)}
+On HPC clusters this is automatically set to \code{TRUE} so that progress
+can be tracked in locally stored files (e.g., in SLURM, the \code{.out} files)}
+
+\item{progress}{logical; display progress bar? Unlike the same argument in
+\code{\link{runSimulation}} this is set to \code{FALSE} by default}
 }
 \description{
 This function has the same purpose as \code{\link{runSimulation}}, however
