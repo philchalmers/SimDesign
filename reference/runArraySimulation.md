@@ -33,7 +33,8 @@ runArraySimulation(
   ncores = parallelly::availableCores(omit = 1L),
   save_details = list(),
   control = list(),
-  verbose = interactive()
+  verbose = interactive(),
+  progress = TRUE
 )
 ```
 
@@ -161,6 +162,12 @@ runArraySimulation(
   On HPC clusters this is automatically set to `TRUE` so that progress
   can be tracked in locally stored files (e.g., in SLURM, the `.out`
   files)
+
+- progress:
+
+  logical; display progress bar? Unlike the same argument in
+  [`runSimulation`](http://philchalmers.github.io/SimDesign/reference/runSimulation.md)
+  this is set to `FALSE` by default
 
 ## Details
 
