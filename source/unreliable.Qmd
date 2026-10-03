@@ -98,10 +98,22 @@ res |> select(rxx:SE, -power) |>
     select(-mean_diff) |> knitr::kable()
 ```
 
+Kind of verbose. Here's a better depiction, averaging over the sample sizes. 
+
+```{r}
+library(dplyr)
+res |> select(rxx:SE, -power) |>
+    mutate(bias=dT-mean_diff) |>
+    arrange(N, dT, rxx) |>
+    select(-mean_diff) |> 
+    group_by(rxx, dT) |> summarise(mean.SE=mean(SE)) |> 
+    knitr::kable()
+```
+
 Estimates of the mean differences reflect the true difference between the pre-post observations
-regardless of the reliability (unbiased), however the associated SE is
+regardless of the reliability (unbiased), however the associated SE is  systematically
 larger for more unreliable instruments. This is because the within-subject variability
-is larger as now it is a function of individual differences variance plus the variance
+is larger as now it is a function of individual differences variance *plus* the variance
 of the measurement error. This has direct implications on power to reject
 the null hypothesis of no difference between the pre-post tests, as demonstrated below.
 
@@ -147,5 +159,5 @@ noticeably more observations as the test becomes more unreliable.
 This type of information is important when performing a priori power planning as the
 require samples to achieve a given power rate can and will change as the instruments
 used become less reliable. As Levin and Subkoviak (1977) put it, to determine sample
-sizes "without simultaneously considering errors of measurement is to live
-in a 'fool's paradise'" (p. 337).
+sizes "*without simultaneously considering errors of measurement is to live
+in a 'fool's paradise'*" (p. 337).
