@@ -102,11 +102,8 @@ Kind of verbose. Here's a better depiction, averaging over the sample sizes.
 
 ```{r}
 library(dplyr)
-res |> select(rxx:SE, -power) |>
-    mutate(bias=dT-mean_diff) |>
-    arrange(N, dT, rxx) |>
-    select(-mean_diff) |> 
-    group_by(rxx, dT) |> summarise(mean.SE=mean(SE)) |> 
+res |> group_by(rxx, dT) |> 
+    summarise(mean.SE=mean(SE)) |> 
     knitr::kable()
 ```
 
