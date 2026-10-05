@@ -57,7 +57,7 @@ runSimulation(
   control = list(),
   not_parallel = NULL,
   progress = TRUE,
-  verbose = interactive()
+  verbose
 )
 
 # S3 method for class 'SimDesign'
@@ -843,7 +843,8 @@ print(x, list2char = TRUE, ...)
   logical; print messages to the R console? Set to `TRUE` in interactive
   mode. On HPC clusters this is automatically set to `TRUE` so that
   progress can be tracked in locally stored files (e.g., in SLURM, the
-  `.out` files)
+  `.out` files), however can be set to `FALSE` to override default
+  behavior
 
 - object:
 
@@ -1170,9 +1171,9 @@ Final
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Oct  5 17:55:17 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Oct  5 17:55:17 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Oct  5 17:55:17 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Oct  5 23:45:57 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Oct  5 23:45:57 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Oct  5 23:45:57 20…
 (results <- SimResults(Final))
 #> # A tibble: 6 × 2
 #>       N  mean
@@ -1199,9 +1200,9 @@ Final_rep
 #> # A tibble: 3 × 7
 #>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              
 #>   <dbl>   <dbl>   <dbl>        <dbl> <chr>         <int> <chr>                  
-#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Oct  5 17:55:17 20…
-#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Oct  5 17:55:17 20…
-#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Oct  5 17:55:17 20…
+#> 1    10 10.202  1.4729             2 0.00s     533810122 Mon Oct  5 23:45:57 20…
+#> 2    20 10.885  0.31864            2 0.00s    1340659367 Mon Oct  5 23:45:57 20…
+#> 3    30  9.6268 1.2548             2 0.00s     881068069 Mon Oct  5 23:45:57 20…
 (results <- SimResults(Final_rep))
 #> # A tibble: 6 × 2
 #>       N  mean

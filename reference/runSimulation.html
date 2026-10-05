@@ -33,7 +33,7 @@ must be passed to the fixed_objects input to become available across nodes)."></
 
     <a class="navbar-brand me-2" href="../index.html">SimDesign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.27.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.28</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -128,7 +128,7 @@ must be passed to the <code>fixed_objects</code> input to become available acros
 <span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  not_parallel <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="va">verbose</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'SimDesign'</span></span>
@@ -791,7 +791,8 @@ This is useful when simulations conditions take a long time to run (see also the
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>logical; print messages to the R console? Set to <code>TRUE</code> in interactive mode.
 On HPC clusters this is automatically set to <code>TRUE</code> so that progress can be tracked
-in locally stored files (e.g., in SLURM, the <code>.out</code> files)</p></dd>
+in locally stored files (e.g., in SLURM, the <code>.out</code> files), however can be set to <code>FALSE</code>
+to override default behavior</p></dd>
 
 
 <dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
@@ -1078,9 +1079,9 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Mon Oct  5 17:55:17 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Mon Oct  5 17:55:17 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Mon Oct  5 17:55:17 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Mon Oct  5 23:45:57 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Mon Oct  5 23:45:57 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Mon Oct  5 23:45:57 20…</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">Final</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N  mean</span>
@@ -1107,9 +1108,9 @@ Carlo simulation. <code>Journal of Statistics Education, 24</code>(3), 136-156.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N      mu      SE REPLICATIONS SIM_TIME       SEED COMPLETED              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Mon Oct  5 17:55:17 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Mon Oct  5 17:55:17 20…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Mon Oct  5 17:55:17 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    10 10.202  1.472<span style="text-decoration: underline;">9</span>             2 0.00s     533<span style="text-decoration: underline;">810</span>122 Mon Oct  5 23:45:57 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    20 10.885  0.318<span style="text-decoration: underline;">64</span>            2 0.00s    <span style="text-decoration: underline;">1</span>340<span style="text-decoration: underline;">659</span>367 Mon Oct  5 23:45:57 20…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    30  9.626<span style="text-decoration: underline;">8</span> 1.254<span style="text-decoration: underline;">8</span>             2 0.00s     881<span style="text-decoration: underline;">068</span>069 Mon Oct  5 23:45:57 20…</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="SimResults.html">SimResults</a></span><span class="op">(</span><span class="va">Final_rep</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       N  mean</span>
