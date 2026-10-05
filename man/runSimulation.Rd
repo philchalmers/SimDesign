@@ -40,7 +40,7 @@ runSimulation(
   control = list(),
   not_parallel = NULL,
   progress = TRUE,
-  verbose = interactive()
+  verbose
 )
 
 \method{summary}{SimDesign}(object, ...)
@@ -632,7 +632,8 @@ This is useful when simulations conditions take a long time to run (see also the
 
 \item{verbose}{logical; print messages to the R console? Set to \code{TRUE} in interactive mode.
 On HPC clusters this is automatically set to \code{TRUE} so that progress can be tracked
-in locally stored files (e.g., in SLURM, the \code{.out} files)}
+in locally stored files (e.g., in SLURM, the \code{.out} files), however can be set to \code{FALSE}
+to override default behavior}
 
 \item{object}{SimDesign object returned from \code{\link{runSimulation}}}
 

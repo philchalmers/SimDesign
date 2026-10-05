@@ -319,7 +319,7 @@ runArraySimulation <- function(design, ..., replications,
                                verbose, progress = TRUE){
     dots <- list(...)
     if(missing(verbose))
-        verbose <- interactive() ||on_HPC.cluster()
+        verbose <- interactive() || on_HPC.cluster()
     if(parallel && ncores == 1L) parallel <- FALSE
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))
         stop('save_results not supported for array jobs. Please use store_results only')

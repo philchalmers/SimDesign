@@ -719,7 +719,8 @@
 #'
 #' @param verbose logical; print messages to the R console? Set to \code{TRUE} in interactive mode.
 #'    On HPC clusters this is automatically set to \code{TRUE} so that progress can be tracked
-#'    in locally stored files (e.g., in SLURM, the \code{.out} files)
+#'    in locally stored files (e.g., in SLURM, the \code{.out} files), however can be set to \code{FALSE}
+#'    to override default behavior
 #'
 #' @return a \code{tibble} from the \code{dplyr} package (also of class \code{'SimDesign'})
 #'   with the original \code{design} conditions in the left-most columns,
@@ -1175,9 +1176,10 @@ runSimulation <- function(design, replications, generate, analyse, summarise,
                           CI = .95, seed = NULL, boot_method='none', boot_draws = 1000L,
                           max_errors = 50L, resume = TRUE, save_details = list(),
                           control = list(), not_parallel = NULL, progress = TRUE,
-                          verbose = interactive())
+                          verbose)
 {
-    if(!verbose) verbose <- on_HPC.cluster()
+    if(missing(verbose))
+        verbose <- interactive() || on_HPC.cluster()
     max_time.start <- if(is.null(control$max_time.start))
         proc.time()[3L] else control$max_time.start
     stopifnot(!missing(analyse))
