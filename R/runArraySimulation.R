@@ -118,7 +118,8 @@
 #' @param ... additional arguments to be passed to \code{\link{runSimulation}}
 #'
 #' @param verbose logical; pass a verbose flag to \code{\link{runSimulation}}.
-#'   On HPC clusters this is automatically set to \code{TRUE} so that progress
+#'   On HPC clusters, as well as in interactive mode,
+#'   this is automatically set to \code{TRUE} so that progress
 #'   can be tracked in locally stored files (e.g., in SLURM, the \code{.out} files)
 #'
 #' @param progress logical; display progress bar? Unlike the same argument in
@@ -315,9 +316,10 @@ runArraySimulation <- function(design, ..., replications,
                                parallel = FALSE, cl = NULL,
                                ncores = parallelly::availableCores(omit = 1L),
                                save_details = list(), control = list(),
-                               verbose = interactive(), progress = TRUE){
+                               verbose, progress = TRUE){
     dots <- list(...)
-    if(!verbose) verbose <- on_HPC.cluster()
+    if(missing(verbose))
+        verbose <- interactive() ||on_HPC.cluster()
     if(parallel && ncores == 1L) parallel <- FALSE
     if(!is.null(dots$save_results) && isTRUE(dots$save_results))
         stop('save_results not supported for array jobs. Please use store_results only')
