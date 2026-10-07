@@ -60,5 +60,6 @@ License: GPL (>=2)
 ByteCompile: yes
 LazyData: true
 URL: http://philchalmers.github.io/SimDesign/, https://github.com/philchalmers/SimDesign/wiki
+BugReports: https://github.com/philchalmers/SimDesign/issues?state=open
 Encoding: UTF-8
 Config/roxygen2/version: 8.1.0
