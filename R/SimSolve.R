@@ -482,6 +482,8 @@ SimSolve <- function(design, interval, b, generate, analyse, summarise,
 
     # robust <- FALSE
     org.opts <- options()
+    if(is.data.frame(design))
+        design <- dplyr::as_tibble(design)
     options(warn = 1)
     on.exit(options(org.opts), add = TRUE)
     if(is.null(control$print_RAM)) control$print_RAM <- FALSE
